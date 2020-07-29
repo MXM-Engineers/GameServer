@@ -11,6 +11,11 @@
 
 #define LISTEN_PORT "10900"
 
+const char* IpToString(const u8* ip)
+{
+	return FMT("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+}
+
 struct Client
 {
 	i32 clientID;
@@ -62,14 +67,25 @@ struct Client
 
 		ConstBuffer buff(recvBuff, recvLen);
 		while(buff.CanRead(sizeof(NetHeader))) {
+#ifdef CONF_DEBUG
+			const u8* data = buff.cursor;
+#endif
 			const NetHeader& header = buff.Read<NetHeader>();
 			const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
+
+#ifdef CONF_DEBUG
+			static i32 counter = 0;
+			fileSaveBuff(FMT("cl_%d_%d.raw", header.netID, counter), data, header.size);
+			counter++;
+#endif
 			HandlePacket(header, packetData);
 		}
 	}
 
 	void HandlePacket(const NetHeader& header, const u8* packetData)
 	{
+		const i32 packetSize = header.size - sizeof(NetHeader);
+
 		switch(header.netID) {
 			case Cl_Hello::NET_ID: {
 				LOG("Packet :: Cl_Hello");
@@ -108,7 +124,81 @@ struct Client
 				u8* fileData = fileOpenAndReadAll("sv_account_data.raw", &fileSize);
 				ASSERT(fileSize == sizeof(accountData));
 				memmove(accountData, fileData, sizeof(accountData));
-				SendPacketData(Sv_AccountData::NET_ID, sizeof(accountData), accountData);
+				SendPacketData(Sv_AccountData::NET_ID, sizeof(accountData) - sizeof(NetHeader), accountData + sizeof(NetHeader));
+
+				LOG(">> Send :: Sv_GatewayServerInfo");
+				u8 gatewayData[256];
+				PacketWriter packet(gatewayData, sizeof(gatewayData));
+				const wchar* infoStr = L"Gateway Server CSP 1.17.1017.7954";
+				const i32 infoStrLen = 33;
+				packet.Write<u16>(infoStrLen);
+				packet.WriteRaw(infoStr, infoStrLen*sizeof(wchar));
+				SendPacketData(Sv_GatewayServerInfo::NET_ID, packet.size, packet.data);
+
+			} break;
+
+			case Cl_ConfirmGatewayInfo::NET_ID: {
+				const Cl_ConfirmGatewayInfo& confirm = SafeCast<Cl_ConfirmGatewayInfo>(packetData, packetSize);
+				LOG("Packet :: Cl_ConfirmGatewayInfo :: var=%d", confirm.var);
+
+
+				LOG(">> Send :: Sv_SendStationList");
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u16>(1); // count
+
+				Sv_SendStationList::Station station;
+				station.ID = 12345678;
+				station.count = 1;
+				auto& serverIP = station.serverIPs[0]; // alias
+				serverIP.game[0] = 127;
+				serverIP.game[1] = 0;
+				serverIP.game[2] = 0;
+				serverIP.game[3] = 1;
+				serverIP.ping[0] = 127;
+				serverIP.ping[1] = 0;
+				serverIP.ping[2] = 0;
+				serverIP.ping[3] = 1;
+				serverIP.port = 12900;
+
+				packet.Write(station); // station
+
+				SendPacketData(Sv_SendStationList::NET_ID, packet.size, packet.data);
+			} break;
+
+			case Cl_EnterQueue::NET_ID: {
+				const Cl_EnterQueue& enter = SafeCast<Cl_EnterQueue>(packetData, packetSize);
+				LOG("Packet :: Cl_EnterQueue :: var1=%d gameIp=(%s) unk=%d pingIp=(%s) port=%d unk2=%d stationID=%d", enter.var1, IpToString(enter.gameIp), enter.unk, IpToString(enter.pingIp), enter.port, enter.unk2, enter.stationID);
+
+				LOG(">> Send :: Sv_QueueStatus");
+				Sv_QueueStatus status;
+				memset(&status, 0, sizeof(status));
+				status.var1 = 2;
+				status.var1 = 5;
+				SendPacket(status);
+
+				LOG(">> Send :: Sv_Finish");
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u16>(1); // count
+				u8 ip[4] = { 127, 0, 0, 1};
+				packet.Write<u8[4]>(ip); // ip
+				packet.Write<u16>(11900); // port
+
+				const wchar* serverName = L"XMX_SERVER";
+				packet.Write<u16>(10); // serverNamelen
+				packet.WriteRaw(serverName, 10 * sizeof(wchar)); // serverName
+
+				const wchar* nick = L"LordSk";
+				packet.Write<u16>(6); // nickLen
+				packet.WriteRaw(nick, 6 * sizeof(wchar)); // nick
+
+				packet.Write<i32>(536);
+				packet.Write<i32>(1);
+
+				SendPacketData(Sv_Finish::NET_ID, packet.size, packet.data);
 			} break;
 		}
 	}

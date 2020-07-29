@@ -8,8 +8,10 @@
 extern FILE* g_LogFile;
 void LogInit(const char* name);
 void __Logf(const char* fmt, ...);
-#define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); } while(0)
-#define LOG_NNL(fmt, ...) do { __Logf(fmt, __VA_ARGS__); } while(0)
+
+#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, __VA_ARGS__))
+#define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
+#define LOG_NNL(fmt, ...) do { __Logf(fmt, __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
@@ -383,3 +385,41 @@ privDefer<F> defer_func(F f) {
 #define DEFER_2(x, y) DEFER_1(x, y)
 #define DEFER_3(x)    DEFER_2(x, __COUNTER__)
 #define defer(code)   auto DEFER_3(_defer_) = defer_func([&](){code;})
+
+struct PacketWriter
+{
+	u8*const data;
+	i32 size;
+	const i32 capacity;
+
+	PacketWriter(void* data_, i32 dataSize)
+		: data((u8*)data_),
+		  capacity(dataSize)
+	{
+		size = 0;
+	}
+
+	template<typename T>
+	inline i32 Write(const T& val)
+	{
+		ASSERT(size + sizeof(T) <= capacity);
+		memmove(data + size, &val, sizeof(T));
+		size += sizeof(T);
+		return size;
+	}
+
+	inline i32 WriteRaw(const void* buff, i32 buffSize)
+	{
+		ASSERT(size + buffSize <= capacity);
+		memmove(data + size, buff, buffSize);
+		size += buffSize;
+		return size;
+	}
+};
+
+template<typename T>
+inline T& SafeCast(const void* data, i32 size)
+{
+	ASSERT(sizeof(T) == size);
+	return *(T*)data;
+}

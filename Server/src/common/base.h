@@ -421,6 +421,7 @@ struct PacketWriter
 		if(len == -1) len = wcslen(str);
 		Write<u16>(len);
 		WriteRaw(str, len * sizeof(wchar));
+		return size;
 	}
 };
 

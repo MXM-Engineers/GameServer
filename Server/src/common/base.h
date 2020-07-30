@@ -415,6 +415,13 @@ struct PacketWriter
 		size += buffSize;
 		return size;
 	}
+
+	inline i32 WriteStringObj(const wchar* str, i32 len = -1)
+	{
+		if(len == -1) len = wcslen(str);
+		Write<u16>(len);
+		WriteRaw(str, len * sizeof(wchar));
+	}
 };
 
 template<typename T>

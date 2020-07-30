@@ -16,17 +16,32 @@ const char* IpToString(const u8* ip)
 	return FMT("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 }
 
+const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3)
+{
+	ip[0] = i0;
+	ip[1] = i1;
+	ip[2] = i2;
+	ip[3] = i3;
+}
+
 struct Client
 {
 	i32 clientID;
 	SOCKET sock;
 	sockaddr addr;
+	u8 clientIp[4];
+	u16 clientPort;
 
 	u8 recvBuff[8192];
 	bool running = true;
 
 	void Run()
 	{
+		struct sockaddr_in& sin = *(struct sockaddr_in*)&addr;
+		const u8* clIp = (u8*)&sin.sin_addr;
+		SetIp(clientIp, clIp[0], clIp[1], clIp[2], clIp[3]);
+		clientPort = htons(sin.sin_port);
+
 		while(running) {
 			Receive();
 		}
@@ -75,7 +90,7 @@ struct Client
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("cl_%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("Cl::%d_%d.raw", header.netID, counter), data, header.size);
 			counter++;
 #endif
 			HandlePacket(header, packetData);
@@ -87,17 +102,23 @@ struct Client
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {
-			case Cl_Hello::NET_ID: {
-				LOG("Packet :: Cl_Hello");
+			case Cl::Hello::NET_ID: {
+				LOG("Client :: Hello");
 
-				LOG(">> Send :: Sv_Hello");
-				Sv_Hello hello;
-				const char* key = "\x99\x51\x84\x28\x2c\x9e\x89\x93\x00\xd7\xe9\x41\x57\x19\xc5\x01";
-				memmove(hello.key, key, sizeof(hello.key));
+				Sv::SA_FirstHello hello;
+				hello.dwProtocolCRC = 0x28845199;
+				hello.dwErrorCRC    = 0x93899e2c;
+				hello.serverType    = 0;
+				memmove(hello.clientIp, clientIp, sizeof(hello.clientIp));
+				STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(clientIp));
+				hello.clientPort = clientPort;
+				hello.tqosWorldId = 1;
+
+				LOG("Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
 				SendPacket(hello);
 			} break;
 
-			case Cl_Login::NET_ID: {
+			case Cl::UserLogin::NET_ID: {
 				ConstBuffer data(packetData, header.size);
 
 				u16 loginStrSize = data.Read<u16>();
@@ -107,48 +128,68 @@ struct Client
 				u16 typeSize = data.Read<u16>();
 				wchar* typeStr = (wchar*)data.ReadRaw(sizeof(wchar) * typeSize);
 
-				LOG("Packet :: Cl_Login :: '%.*ws' '%.*ws' '%.*ws'", loginStrSize, loginStr, unkSize, unkStr, typeSize, typeStr);
+				LOG("Client :: UserLogin :: '%.*ws' '%.*ws' '%.*ws'", loginStrSize, loginStr, unkSize, unkStr, typeSize, typeStr);
 
-				LOG(">> Send :: Sv_AcceptLogin");
-				Sv_AcceptLoginType0 accept;
-				accept.ping = 0x33;
+				LOG("Server :: SA_UserloginResult");
+				Sv::SA_UserloginResult accept;
+				accept.result = 0x33;
 				SendPacket(accept);
 			} break;
 
-			case Cl_ConfirmLogin::NET_ID: {
-				LOG("Packet :: Cl_ConfirmLogin ::");
+			case Cl::ConfirmLogin::NET_ID: {
+				LOG("Client :: ConfirmLogin ::");
 
-				LOG(">> Send :: Sv_AccountData");
-				u8 accountData[203];
-				i32 fileSize;
-				u8* fileData = fileOpenAndReadAll("sv_account_data.raw", &fileSize);
-				ASSERT(fileSize == sizeof(accountData));
-				memmove(accountData, fileData, sizeof(accountData));
-				SendPacketData(Sv_AccountData::NET_ID, sizeof(accountData) - sizeof(NetHeader), accountData + sizeof(NetHeader));
+				LOG("Server :: SN_TgchatServerInfo");
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				LOG(">> Send :: Sv_GatewayServerInfo");
-				u8 gatewayData[256];
-				PacketWriter packet(gatewayData, sizeof(gatewayData));
-				const wchar* infoStr = L"Gateway Server CSP 1.17.1017.7954";
-				const i32 infoStrLen = 33;
-				packet.Write<u16>(infoStrLen);
-				packet.WriteRaw(infoStr, infoStrLen*sizeof(wchar));
-				SendPacketData(Sv_GatewayServerInfo::NET_ID, packet.size, packet.data);
+					// host
+					const wchar* host = L"127.0.0.1";
+					packet.Write<u16>(0);
+					//packet.WriteRaw(host, 9 * sizeof(wchar));
 
+					packet.Write<u16>(255); // port
+					packet.Write<i32>(61); // gameID
+					packet.Write<i32>(0); // serverID
+					packet.Write<u32>(424242); // userID
+
+					packet.WriteStringObj(L"XMX"); // gamename
+					packet.WriteStringObj(L"LordSk@0.XMX"); // chatname
+					packet.WriteStringObj(L"LordSk"); // playncname
+
+					u8 signature[128]; // garbage here. TODO: actually fill that in?
+					packet.Write<u16>(sizeof(signature));
+					packet.WriteRaw(signature, sizeof(signature));
+
+					packet.Write<u8>(0); // serverType
+
+					SendPacketData(Sv::SN_TgchatServerInfo::NET_ID, packet.size, packet.data);
+				}
+
+				LOG("Server :: SA_VersionInfo");
+				{
+					u8 gatewayData[256];
+					PacketWriter packet(gatewayData, sizeof(gatewayData));
+					const wchar* infoStr = L"Gateway Server CSP 1.17.1017.7954";
+					const i32 infoStrLen = 33;
+					packet.Write<u16>(infoStrLen);
+					packet.WriteRaw(infoStr, infoStrLen*sizeof(wchar));
+					SendPacketData(Sv::SA_VersionInfo::NET_ID, packet.size, packet.data);
+				}
 			} break;
 
-			case Cl_ConfirmGatewayInfo::NET_ID: {
-				const Cl_ConfirmGatewayInfo& confirm = SafeCast<Cl_ConfirmGatewayInfo>(packetData, packetSize);
-				LOG("Packet :: Cl_ConfirmGatewayInfo :: var=%d", confirm.var);
+			case Cl::ConfirmGatewayInfo::NET_ID: {
+				const Cl::ConfirmGatewayInfo& confirm = SafeCast<Cl::ConfirmGatewayInfo>(packetData, packetSize);
+				LOG("Client :: Cl::ConfirmGatewayInfo :: var=%d", confirm.var);
 
-
-				LOG(">> Send :: Sv_SendStationList");
+				LOG("Server :: Sv::SendStationList");
 				u8 sendData[256];
 				PacketWriter packet(sendData, sizeof(sendData));
 
 				packet.Write<u16>(1); // count
 
-				Sv_SendStationList::Station station;
+				Sv::SendStationList::Station station;
 				station.ID = 12345678;
 				station.count = 1;
 				auto& serverIP = station.serverIPs[0]; // alias
@@ -164,21 +205,21 @@ struct Client
 
 				packet.Write(station); // station
 
-				SendPacketData(Sv_SendStationList::NET_ID, packet.size, packet.data);
+				SendPacketData(Sv::SendStationList::NET_ID, packet.size, packet.data);
 			} break;
 
-			case Cl_EnterQueue::NET_ID: {
-				const Cl_EnterQueue& enter = SafeCast<Cl_EnterQueue>(packetData, packetSize);
-				LOG("Packet :: Cl_EnterQueue :: var1=%d gameIp=(%s) unk=%d pingIp=(%s) port=%d unk2=%d stationID=%d", enter.var1, IpToString(enter.gameIp), enter.unk, IpToString(enter.pingIp), enter.port, enter.unk2, enter.stationID);
+			case Cl::EnterQueue::NET_ID: {
+				const Cl::EnterQueue& enter = SafeCast<Cl::EnterQueue>(packetData, packetSize);
+				LOG("Client :: Cl::EnterQueue :: var1=%d gameIp=(%s) unk=%d pingIp=(%s) port=%d unk2=%d stationID=%d", enter.var1, IpToString(enter.gameIp), enter.unk, IpToString(enter.pingIp), enter.port, enter.unk2, enter.stationID);
 
-				LOG(">> Send :: Sv_QueueStatus");
-				Sv_QueueStatus status;
+				LOG("Server :: Sv::QueueStatus");
+				Sv::QueueStatus status;
 				memset(&status, 0, sizeof(status));
 				status.var1 = 2;
 				status.var1 = 5;
 				SendPacket(status);
 
-				LOG(">> Send :: Sv_Finish");
+				LOG("Server :: Sv::Finish");
 				u8 sendData[256];
 				PacketWriter packet(sendData, sizeof(sendData));
 
@@ -198,7 +239,7 @@ struct Client
 				packet.Write<i32>(536);
 				packet.Write<i32>(1);
 
-				SendPacketData(Sv_Finish::NET_ID, packet.size, packet.data);
+				SendPacketData(Sv::Finish::NET_ID, packet.size, packet.data);
 			} break;
 		}
 	}

@@ -11,18 +11,19 @@ struct NetHeader
 
 ASSERT_SIZE(NetHeader, 4);
 
+// Client packets
+namespace Cl {
 
-// CLIENT -----------------------------------------------------
-struct Cl_Hello
+struct Hello
 {
 	enum { NET_ID = 60002 };
 
 	char key[13];
 };
 
-ASSERT_SIZE(Cl_Hello, 13);
+ASSERT_SIZE(Hello, 13);
 
-struct Cl_Login
+struct UserLogin
 {
 	enum { NET_ID = 60003 };
 
@@ -30,24 +31,24 @@ struct Cl_Login
 	u8 data[1]; // variable size
 };
 
-struct Cl_ConfirmLogin
+struct ConfirmLogin
 {
 	enum { NET_ID = 60035 };
 };
 
-ASSERT_SIZE(Cl_ConfirmLogin, 1);
+ASSERT_SIZE(ConfirmLogin, 1);
 
 // ?
-struct Cl_ConfirmGatewayInfo
+struct ConfirmGatewayInfo
 {
 	enum { NET_ID = 60005 };
 	i32 var;
 };
 
-ASSERT_SIZE(Cl_ConfirmGatewayInfo, 4);
+ASSERT_SIZE(ConfirmGatewayInfo, 4);
 
 PUSH_PACKED
-struct Cl_EnterQueue
+struct EnterQueue
 {
 	enum { NET_ID = 60007 };
 
@@ -61,38 +62,47 @@ struct Cl_EnterQueue
 	u8 unk3[8];
 };
 POP_PACKED
-ASSERT_SIZE(Cl_EnterQueue, 30);
+ASSERT_SIZE(EnterQueue, 30);
+
+} // Cl
 
 
-// SERVER -----------------------------------------------------
-struct Sv_Hello
+// Server packets
+namespace Sv {
+
+PUSH_PACKED
+struct SA_FirstHello
 {
 	enum { NET_ID = 62002 };
 
-	char key[16];
+	u32 dwProtocolCRC;
+	u32 dwErrorCRC;
+	u8 serverType;
+	u8 clientIp[4];
+	u16 clientPort;
+	u8 tqosWorldId;
 };
-
-ASSERT_SIZE(Sv_Hello, 16);
+POP_PACKED
+ASSERT_SIZE(SA_FirstHello, 16);
 
 // type 1 is 62004 - related to packet encryption perhaps?
-struct Sv_AcceptLoginType0
+struct SA_UserloginResult
 {
 	enum { NET_ID = 62003 };
 
-	i32 ping;
+	i32 result;
 };
 
-ASSERT_SIZE(Sv_AcceptLoginType0, 4);
+ASSERT_SIZE(SA_UserloginResult, 4);
 
-struct Sv_AccountData
+struct SN_TgchatServerInfo
 {
 	enum { NET_ID = 62009 };
 
-	u8 unk[16];
 	u8 data[1]; // variable size
 };
 
-struct Sv_GatewayServerInfo
+struct SA_VersionInfo
 {
 	enum { NET_ID = 62047 };
 
@@ -100,7 +110,7 @@ struct Sv_GatewayServerInfo
 	wchar str[1]; // variable size
 };
 
-struct Sv_SendStationList
+struct SendStationList
 {
 	enum { NET_ID = 62007 };
 
@@ -126,7 +136,7 @@ struct Sv_SendStationList
 
 // maybe?
 PUSH_PACKED
-struct Sv_QueueStatus
+struct QueueStatus
 {
 	enum { NET_ID = 62501 };
 
@@ -135,9 +145,9 @@ struct Sv_QueueStatus
 	i32 var2;
 };
 POP_PACKED
-ASSERT_SIZE(Sv_QueueStatus, 13);
+ASSERT_SIZE(QueueStatus, 13);
 
-struct Sv_Finish
+struct Finish
 {
 	enum { NET_ID = 62011 };
 
@@ -154,3 +164,5 @@ struct Sv_Finish
 	i32 var1;
 	i32 var2;
 };
+
+} // Sv

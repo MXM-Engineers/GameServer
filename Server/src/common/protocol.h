@@ -64,6 +64,15 @@ struct EnterQueue
 POP_PACKED
 ASSERT_SIZE(EnterQueue, 30);
 
+struct RequestConnectGame
+{
+	enum { NET_ID = 60008 };
+
+	u16 nickLen;
+	wchar nick[1]; // length is nickLen
+	i32 var;
+};
+
 } // Cl
 
 
@@ -95,6 +104,15 @@ struct SA_UserloginResult
 
 ASSERT_SIZE(SA_UserloginResult, 4);
 
+struct SA_AuthResult
+{
+	enum { NET_ID = 62005 };
+
+	i32 result;
+};
+
+ASSERT_SIZE(SA_UserloginResult, 4);
+
 struct SN_TgchatServerInfo
 {
 	enum { NET_ID = 62009 };
@@ -108,6 +126,13 @@ struct SA_VersionInfo
 
 	u16 strLen;
 	wchar str[1]; // variable size
+};
+
+struct SN_RegionServicePolicy
+{
+	enum { NET_ID = 62006 };
+
+	// TODO: fill in
 };
 
 struct SendStationList

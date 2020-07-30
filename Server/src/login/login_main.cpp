@@ -73,7 +73,7 @@ struct Client
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("Cl_%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("login_cl_%d_%d.raw", header.netID, counter), data, header.size);
 			counter++;
 #endif
 			HandlePacket(header, packetData);

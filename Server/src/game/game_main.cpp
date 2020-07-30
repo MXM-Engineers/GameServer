@@ -150,6 +150,11 @@ struct Server
 			}
 			else {
 				LOG("[client%03d] Received %d bytes", clientID, len);
+				if(len == 0) {
+					DisconnectClient(clientID);
+					continue;
+				}
+
 				// append to pending processing buffer
 				{
 					const std::lock_guard<std::mutex> lock(client.mutexRecv);
@@ -322,7 +327,7 @@ struct Game
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("cl_%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("game_cl_%d_%d.raw", header.netID, counter), data, header.size);
 			counter++;
 #endif
 			ClientHandlePacket(clientID, header, packetData);
@@ -342,7 +347,7 @@ struct Game
 				Sv::SA_FirstHello hello;
 				hello.dwProtocolCRC = 0x28845199;
 				hello.dwErrorCRC    = 0x93899e2c;
-				hello.serverType    = 0;
+				hello.serverType    = 1;
 				memmove(hello.clientIp, info.ip, sizeof(hello.clientIp));
 				STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(info.ip));
 				hello.clientPort = info.port;
@@ -350,6 +355,23 @@ struct Game
 
 				LOG("[client%03d] Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", clientID, hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
 				SendPacket(clientID, hello);
+			} break;
+
+			case Cl::RequestConnectGame::NET_ID: {
+				ConstBuffer request(packetData, packetSize);
+				u16 nickLen = request.Read<u16>();
+				const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
+				i32 var = request.Read<i32>();
+				LOG("[client%03d] Client :: RequestConnectGame :: %.*ws", clientID, nickLen, nick, var);
+
+				const Server::ClientInfo& info = server->clientInfo[clientID];
+
+				Sv::SA_AuthResult auth;
+				auth.result = 91;
+				LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
+				SendPacket(clientID, auth);
+
+				// TODO: send region service policy then big packet
 			} break;
 		}
 	}

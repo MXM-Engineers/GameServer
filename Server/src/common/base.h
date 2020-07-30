@@ -431,3 +431,54 @@ inline T& SafeCast(const void* data, i32 size)
 	ASSERT(sizeof(T) == size);
 	return *(T*)data;
 }
+
+struct GrowableBuffer
+{
+	u8* data = nullptr;
+	i32 size = 0;
+	i32 capacity = 0;
+
+	void Init(i32 capacity_)
+	{
+		ASSERT(data == nullptr);
+		data = (u8*)memAlloc(capacity_);
+		size = 0;
+		capacity = capacity_;
+	}
+
+	~GrowableBuffer()
+	{
+		Release();
+	}
+
+	void Release()
+	{
+		free(data);
+		data = nullptr;
+		size = 0;
+		capacity = 0;
+	}
+
+	void Reserve(i32 newCapacity)
+	{
+		if(newCapacity <= capacity) return;
+		data = (u8*)memRealloc(data, newCapacity);
+		capacity = newCapacity;
+	}
+
+	u8* Append(const void* buff, i32 buffSize)
+	{
+		if(size + buffSize > capacity) {
+			Reserve(MIN(size+buffSize, capacity*2));
+		}
+		memmove(data+size, buff, buffSize);
+		u8* r = data+size;
+		size += buffSize;
+		return r;
+	}
+
+	void Clear()
+	{
+		size = 0;
+	}
+};

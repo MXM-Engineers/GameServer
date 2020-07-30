@@ -93,7 +93,28 @@ project "Login"
 	}
 	
 	files {
-		"src/**.h",
-		"src/**.c",
-		"src/**.cpp",
+		"src/common/**.h",
+		"src/common/**.c",
+		"src/common/**.cpp",
+		"src/login/**.h",
+		"src/login/**.c",
+		"src/login/**.cpp",
+	}
+
+project "Game"
+	kind "ConsoleApp"
+
+	configuration {}
+
+	includedirs {
+		"src",
+	}
+	
+	files {
+		"src/common/**.h",
+		"src/common/**.c",
+		"src/common/**.cpp",
+		"src/game/**.h",
+		"src/game/**.c",
+		"src/game/**.cpp",
 	}

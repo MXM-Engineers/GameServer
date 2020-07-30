@@ -1,28 +1,11 @@
 #include <common/base.h>
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iphlpapi.h>
 #include <common/protocol.h>
+#include <common/network.h>
 
 // TODO:
-// - finish login sequence
 // - connect to bridge server
 
 #define LISTEN_PORT "10900"
-
-const char* IpToString(const u8* ip)
-{
-	return FMT("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-}
-
-const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3)
-{
-	ip[0] = i0;
-	ip[1] = i1;
-	ip[2] = i2;
-	ip[3] = i3;
-}
 
 struct Client
 {
@@ -90,7 +73,7 @@ struct Client
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("Cl::%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("Cl_%d_%d.raw", header.netID, counter), data, header.size);
 			counter++;
 #endif
 			HandlePacket(header, packetData);
@@ -278,12 +261,6 @@ DWORD ThreadClient(void* pData)
 
 	LOG("Client_%d thread :: close", client.clientID);
 	return 0;
-}
-
-const char* GetIpString(const sockaddr& addr)
-{
-	const sockaddr_in& in = *(sockaddr_in*)&addr;
-	return FMT("%s:%d", inet_ntoa(in.sin_addr), in.sin_port);
 }
 
 int main(int argc, char** argv)

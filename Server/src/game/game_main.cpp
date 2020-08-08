@@ -383,43 +383,102 @@ struct Game
 				SendPacket(clientID, auth);
 
 				// SN_RegionServicePolicy
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<u16>(1); // newMasterRestrict_count
-				packet.Write<u8>(1); // newMasterRestrict[0]
+					packet.Write<u16>(1); // newMasterRestrict_count
+					packet.Write<u8>(1); // newMasterRestrict[0]
 
-				packet.Write<u16>(1); // userGradePolicy_count
-				packet.Write<u8>(5); // userGradePolicy[0].userGrade
-				packet.Write<u16>(1); // userGradePolicy[0].benefits_count
-				packet.Write<u8>(9); // userGradePolicy[0].benefits[0]
+					packet.Write<u16>(1); // userGradePolicy_count
+					packet.Write<u8>(5); // userGradePolicy[0].userGrade
+					packet.Write<u16>(1); // userGradePolicy[0].benefits_count
+					packet.Write<u8>(9); // userGradePolicy[0].benefits[0]
 
-				packet.Write<u8>(2); // purchaseCCoinMethod
-				packet.Write<u8>(1); // exchangeCCoinForGoldMethod
-				packet.Write<u8>(0); // rewardCCoinMethod
-				packet.Write<u8>(1); // pveRewardSlotOpenBuyChanceMethod
+					packet.Write<u8>(2); // purchaseCCoinMethod
+					packet.Write<u8>(1); // exchangeCCoinForGoldMethod
+					packet.Write<u8>(0); // rewardCCoinMethod
+					packet.Write<u8>(1); // pveRewardSlotOpenBuyChanceMethod
 
-				packet.Write<u16>(3); // regionBanMaster_count
-				packet.Write<i32>(100000041); // regionBanMaster[0]
-				packet.Write<i32>(100000042); // regionBanMaster[1]
-				packet.Write<i32>(100000043); // regionBanMaster[2]
+					packet.Write<u16>(3); // regionBanMaster_count
+					packet.Write<i32>(100000041); // regionBanMaster[0]
+					packet.Write<i32>(100000042); // regionBanMaster[1]
+					packet.Write<i32>(100000043); // regionBanMaster[2]
 
-				packet.Write<u16>(1); // regionNewMaster_count
-				packet.Write<i32>(100000038); // intList2[0]
+					packet.Write<u16>(1); // regionNewMaster_count
+					packet.Write<i32>(100000038); // intList2[0]
 
-				packet.Write<u16>(0); // eventBanMaster_count
+					packet.Write<u16>(0); // eventBanMaster_count
 
-				packet.Write<i32>(5);	// checkPeriodSec
-				packet.Write<i32>(10);	// maxTalkCount
-				packet.Write<i32>(120); // blockPeriodSec
+					packet.Write<i32>(5);	// checkPeriodSec
+					packet.Write<i32>(10);	// maxTalkCount
+					packet.Write<i32>(120); // blockPeriodSec
 
-				packet.Write<u16>(0); // sub2List_count
-				packet.Write<u16>(0); // sub2List2_count
+					packet.Write<u16>(0); // regionBanSkinList_count
+					packet.Write<u16>(0); // pcCafeSkinList_count
 
-				packet.Write<u8>(1); // useFatigueSystem
+					packet.Write<u8>(1); // useFatigueSystem
 
-				LOG("[client%03d] Server :: SN_RegionServicePolicy :: ", clientID);
-				SendPacketData(clientID, Sv::SN_RegionServicePolicy::NET_ID, packet.size, packet.data);
+					LOG("[client%03d] Server :: SN_RegionServicePolicy :: ", clientID);
+					SendPacketData(clientID, Sv::SN_RegionServicePolicy::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AllCharacterBaseData
+				{
+					u8 sendData[4096];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // charaList_count
+
+					packet.Write<i32>(100000001); // charaList[0].masterID
+					packet.Write<u16>(22); // charaList[0].baseStats_count
+
+					// charaList[0].baseStats
+					typedef Sv::SN_AllCharacterBaseData::Character::Stat Stat;
+					packet.Write(Stat{ 0, 2400.f });
+					packet.Write(Stat{ 2, 200.f });
+					packet.Write(Stat{ 37, 120.f });
+					packet.Write(Stat{ 5, 5.f });
+					packet.Write(Stat{ 42, 0.6f });
+					packet.Write(Stat{ 7, 92.3077f });
+					packet.Write(Stat{ 9, 3.f });
+					packet.Write(Stat{ 10, 150.f });
+					packet.Write(Stat{ 18, 100.f });
+					packet.Write(Stat{ 13, 100.f });
+					packet.Write(Stat{ 14, 100.f });
+					packet.Write(Stat{ 15, 100.f });
+					packet.Write(Stat{ 52, 100.f });
+					packet.Write(Stat{ 16, 1.f });
+					packet.Write(Stat{ 29, 20.f });
+					packet.Write(Stat{ 23, 9.f });
+					packet.Write(Stat{ 31, 14.f });
+					packet.Write(Stat{ 22, 2.f });
+					packet.Write(Stat{ 54, 15.f });
+					packet.Write(Stat{ 63, 3.f });
+					packet.Write(Stat{ 64, 150.f });
+					packet.Write(Stat{ 55, 15.f });
+
+					packet.Write<u16>(7); // charaList[0].skillData_count
+
+					// charaList[0].skillData
+					typedef Sv::SN_AllCharacterBaseData::Character::SkillRatio SkillR;
+					packet.Write(SkillR{ 180010020, 355.f, 0.42f, 0.f, 0.f, 0.f });
+					packet.Write(SkillR{ 180010040, 995.f, 0.81f, 0.f, 0.f, 0.1f });
+					packet.Write(SkillR{ 180010010, 550.f, 0.56f, 0.f, 0.f, 0.f });
+					packet.Write(SkillR{ 180010030, 0.f, 0.f, 0.f, 0.f, 0.f });
+					packet.Write(SkillR{ 180010050, 680.f, 0.37f, 0.f, 0.f, 0.f });
+					packet.Write(SkillR{ 180010000, 0.f, 1.0f, 0.f, 0.f, 0.f });
+					packet.Write(SkillR{ 180010002, 0.f, 1.0f, 0.f, 0.f, 0.f });
+
+					packet.Write<i32>(1); // cur
+					packet.Write<i32>(4); // max
+
+
+					LOG("[client%03d] Server :: SN_AllCharacterBaseData :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AllCharacterBaseData::NET_ID, packet.size, packet.data);
+				}
+
+
 			} break;
 		}
 	}

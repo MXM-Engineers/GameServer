@@ -205,6 +205,42 @@ struct SendStationList
 	Station stations[1]; // variable size
 };
 
+struct SN_AllCharacterBaseData
+{
+	enum { NET_ID = 62109 };
+
+	struct Character
+	{
+		PUSH_PACKED
+		struct Stat {
+			u8 type;
+			f32 value;
+		};
+		POP_PACKED
+
+		struct SkillRatio {
+			i32 skillIndex;
+			f32 baseDamage;
+			f32 attMultiplier;
+			f32 healMultiplier;
+			f32 shieldMultiplier;
+			f32 dotMultiplier;
+		};
+
+		i32 docIndex;
+		u16 baseStats_count;
+		Stat baseStats[1];
+		u16 skillData_count;
+		SkillRatio skillData[1];
+	};
+
+	u16 charaList_count;
+	Character charaList[1];
+
+	i32 cur;
+	i32 max;
+};
+
 // maybe?
 PUSH_PACKED
 struct QueueStatus

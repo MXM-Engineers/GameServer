@@ -84,9 +84,20 @@ struct Server
 				ClientNet& client = clientNet[clientID];
 				client.addr = addr_;
 
-				client.recvPendingProcessingBuff.Init(RECV_BUFF_LEN * 4);
-				client.pendingSendBuff.Init(SEND_BUFF_LEN * 4);
-				client.sendingBuff.Init(SEND_BUFF_LEN);
+				if(client.recvPendingProcessingBuff.data == nullptr) {
+					client.recvPendingProcessingBuff.Init(RECV_BUFF_LEN * 4);
+				}
+				client.recvPendingProcessingBuff.Clear();
+
+				if(client.pendingSendBuff.data == nullptr) {
+					client.pendingSendBuff.Init(SEND_BUFF_LEN * 4);
+				}
+				client.pendingSendBuff.Clear();
+
+				if(client.sendingBuff.data == nullptr) {
+					client.sendingBuff.Init(SEND_BUFF_LEN);
+				}
+				client.sendingBuff.Clear();
 
 				client.recvBuffID = 0;
 				client.sendBuffID = 0;
@@ -371,7 +382,44 @@ struct Game
 				LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
 				SendPacket(clientID, auth);
 
-				// TODO: send region service policy then big packet
+				// SN_RegionServicePolicy
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u16>(1); // newMasterRestrict_count
+				packet.Write<u8>(1); // newMasterRestrict[0]
+
+				packet.Write<u16>(1); // userGradePolicy_count
+				packet.Write<u8>(5); // userGradePolicy[0].userGrade
+				packet.Write<u16>(1); // userGradePolicy[0].benefits_count
+				packet.Write<u8>(9); // userGradePolicy[0].benefits[0]
+
+				packet.Write<u8>(2); // purchaseCCoinMethod
+				packet.Write<u8>(1); // exchangeCCoinForGoldMethod
+				packet.Write<u8>(0); // rewardCCoinMethod
+				packet.Write<u8>(1); // pveRewardSlotOpenBuyChanceMethod
+
+				packet.Write<u16>(3); // regionBanMaster_count
+				packet.Write<i32>(100000041); // regionBanMaster[0]
+				packet.Write<i32>(100000042); // regionBanMaster[1]
+				packet.Write<i32>(100000043); // regionBanMaster[2]
+
+				packet.Write<u16>(1); // regionNewMaster_count
+				packet.Write<i32>(100000038); // intList2[0]
+
+				packet.Write<u16>(0); // eventBanMaster_count
+
+				packet.Write<i32>(5);	// checkPeriodSec
+				packet.Write<i32>(10);	// maxTalkCount
+				packet.Write<i32>(120); // blockPeriodSec
+
+				packet.Write<u16>(0); // sub2List_count
+				packet.Write<u16>(0); // sub2List2_count
+
+				packet.Write<u8>(1); // useFatigueSystem
+
+				LOG("[client%03d] Server :: SN_RegionServicePolicy :: ", clientID);
+				SendPacketData(clientID, Sv::SN_RegionServicePolicy::NET_ID, packet.size, packet.data);
 			} break;
 		}
 	}

@@ -132,7 +132,53 @@ struct SN_RegionServicePolicy
 {
 	enum { NET_ID = 62006 };
 
-	// TODO: fill in
+	/*
+	SN_REGION_SERVICE_POLICY[(bmPolicy:PST_BM_POLICY[(newMasterRestrict:VEC(1)[(1))(userGradePolicy:VEC(1)[(PST_USER_GRADE_POLICY[(userGrade:5)(benefits:VEC(1)[(9))]))(bmServiceMethod:PST_BM_SERVICE_METHOD[(purchaseCCoinMethod:2)(exchangeCCoinForGoldMethod:1)(rewardCCoinMethod:0)(pveRewardSlotOpenBuyChanceMethod:1)])])(regionBanMaster:VEC(3)[(100000041)(100000042)(100000043))(regionNewMaster:VEC(1)[(100000038))(eventBanMaster:VEC(0)[)(floodingRule:PST_USER_CHAT_FLOODING_RULE[(checkPeriodSec:5)(maxTalkCount:10)(blockPeriodSec:120)])(regionBanSkinList:VEC(0)[)(pcCafeSkinList:VEC(0)[)(useFatigueSystem:1)]
+	*/
+
+	u16 newMasterRestrict_count;
+	u8 newMasterRestrict[1];
+
+	struct UserGradePolicy {
+		u8 userGrade;
+		u16 benefits_count;
+		u8 benefits[1];
+	};
+
+	u16 userGradePolicy_count;
+	UserGradePolicy userGradePolicy[1];
+
+	u8 purchaseCCoinMethod;
+	u8 exchangeCCoinForGoldMethod;
+	u8 rewardCCoinMethod;
+	u8 pveRewardSlotOpenBuyChanceMethod;
+
+	u16 regionBanMaster_count;
+	i32 regionBanMaster[1];
+
+	u16 regionNewMaster_count;
+	i32 regionNewMaster[1];
+
+	u16 eventBanMaster_count;
+	i32 eventBanMaster[1];
+
+	// flooding rule
+	i32 checkPeriodSec;
+	i32 maxTalkCount;
+	i32 blockPeriodSec;
+
+	struct SkinHandle {
+		i32 i1;
+		i32 i2;
+	};
+
+	u16 regionBanSkinList_count;
+	SkinHandle regionBanSkinList[1];
+
+	u16 pcCafeSkinList_count;
+	SkinHandle pcCafeSkinList[1];
+
+	u8 useFatigueSystem;
 };
 
 struct SendStationList

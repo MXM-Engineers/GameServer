@@ -210,6 +210,53 @@ struct SendStationList
 	Station stations[1]; // variable size
 };
 
+struct SN_AchieveUpdate
+{
+	enum { NET_ID = 62102 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_AccountInfo
+{
+	enum { NET_ID = 62106 };
+
+	u16 nick_len;
+	wchar_t nick[1];
+
+	i32 inventoryLineCountTab0;
+	i32 inventoryLineCountTab1;
+	i32 inventoryLineCountTab2;
+	i32 displayTitlteIndex;
+	i32 statTitleIndex;
+	i32 warehouseLineCount;
+	i32 tutorialState;
+	i32 masterGearDurability;
+	u8 badgeType;
+};
+
+struct SN_AccountExtraInfo
+{
+	enum { NET_ID = 62107 };
+
+	PUSH_PACKED
+	struct UserGrade
+	{
+		u8 userGrade;
+		u8 activated;
+		i64 expireDateTime64;
+		u8 level;
+		u16 point;
+		u16 nextPoint;
+	};
+	POP_PACKED
+
+	u16 userGradeList_count;
+	UserGrade userGradeList[1];
+	i32 activityPoint;
+	u8 activityRewaredState;
+};
+
 struct SN_AllCharacterBaseData
 {
 	enum { NET_ID = 62109 };
@@ -253,6 +300,15 @@ struct SN_AllCharacterBaseData
 	// and the last is cur:4 max:4
 };
 
+struct SN_LeaderCharacter
+{
+	enum { NET_ID = 62123 };
+
+	i32 leaderID; // characterIndex
+	i32 skinIndex;
+};
+ASSERT_SIZE(SN_LeaderCharacter, 8);
+
 struct SN_ProfileCharacters
 {
 	enum { NET_ID = 62124 };
@@ -279,6 +335,13 @@ struct SN_ProfileCharacters
 	Character chara[1];
 };
 
+struct SN_ProfileItems
+{
+	enum { NET_ID = 62125 };
+
+	// TODO: reverse and send this packet
+};
+
 struct SN_ProfileWeapons
 {
 	enum { NET_ID = 62126 };
@@ -299,6 +362,48 @@ struct SN_ProfileWeapons
 	Weapon weaponList[1];
 };
 
+struct SN_ProfileSkills
+{
+	enum { NET_ID = 62127 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_ProfileTitles
+{
+	enum { NET_ID = 62127 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_ProfileMasterGears
+{
+	enum { NET_ID = 62129 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_FriendList
+{
+	enum { NET_ID = 62257 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_FriendRequestList
+{
+	enum { NET_ID = 62258 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_BlockList
+{
+	enum { NET_ID = 62261 };
+
+	// TODO: reverse and send this packet
+};
+
 struct SN_MyGuild
 {
 	enum { NET_ID = 62330 };
@@ -307,6 +412,40 @@ struct SN_MyGuild
 	wchar_t guildTag[1];
 	i64 dissolutionDate;
 	u8 isFirstTodayRollCall;
+};
+
+struct SN_GuildChannelEnter
+{
+	enum { NET_ID = 62358 };
+
+	u16 guildName_len;
+	wchar_t guildName[1];
+	u16 nick_len;
+	wchar_t nick[1];
+	u8 onlineStatus;
+};
+
+struct SN_ProfileCharacterSkinList
+{
+	enum { NET_ID = 62390 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_PveComradeInfo
+{
+	enum { NET_ID = 62485 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_ClientSettings
+{
+	enum { NET_ID = 62500 };
+
+	u8 settingType;
+	u16 data_len;
+	u8 data[1];
 };
 
 // maybe?
@@ -321,6 +460,14 @@ struct QueueStatus
 };
 POP_PACKED
 ASSERT_SIZE(QueueStatus, 13);
+
+struct SN_AccountEquipmentList
+{
+	enum { NET_ID = 62525 };
+
+	i32 supportKitDocIndex;
+};
+ASSERT_SIZE(SN_AccountEquipmentList, 4);
 
 struct Finish
 {

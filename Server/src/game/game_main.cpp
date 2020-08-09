@@ -471,14 +471,81 @@ struct Game
 					packet.Write(SkillR{ 180010002, 0.f, 1.0f, 0.f, 0.f, 0.f });
 
 					packet.Write<i32>(1); // cur
-					packet.Write<i32>(4); // max
+					packet.Write<i32>(1); // max
 
 
 					LOG("[client%03d] Server :: SN_AllCharacterBaseData :: ", clientID);
 					SendPacketData(clientID, Sv::SN_AllCharacterBaseData::NET_ID, packet.size, packet.data);
 				}
 
+				// SN_MyGuild
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
 
+					packet.WriteStringObj(L"XMX");
+					packet.Write<i64>(0);
+					packet.Write<u8>(0);
+
+					LOG("[client%03d] Server :: SN_MyGuild :: ", clientID);
+					SendPacketData(clientID, Sv::SN_MyGuild::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
+			case Cl::Unknown_60148::NET_ID: {
+				LOG("[client%03d] Client :: Unknown_60148 ::", clientID);
+
+				// SN_ProfileCharacters
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // charaList_count
+
+					Sv::SN_ProfileCharacters::Character chara;
+					chara.characterID = 21003;
+					chara.creatureIndex = 100000001;
+					chara.skillShot1 = 180010020;
+					chara.skillShot2 = 180010040;
+					chara.class_ = 1;
+					chara.x = 12029;
+					chara.y = 12622;
+					chara.z = 3328.29f;
+					chara.characterType = 5;
+					chara.skinIndex = 3;
+					chara.weaponIndex = 131101011;
+					chara.masterGearNo = 1;
+
+					packet.Write(chara);
+
+					LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileWeapons
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // weaponList_count
+
+					Sv::SN_ProfileWeapons::Weapon weap;
+					weap.characterID = 21003;
+					weap.weaponType = 1;
+					weap.weaponIndex = 131101011;
+					weap.grade = 0;
+					weap.isUnlocked = 0;
+					weap.isActivated = 0;
+
+					packet.Write(weap);
+
+					LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
+			default: {
+				LOG("[client%03d] Client :: Unkown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 			} break;
 		}
 	}

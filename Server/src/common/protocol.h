@@ -73,6 +73,11 @@ struct RequestConnectGame
 	i32 var;
 };
 
+struct Unknown_60148
+{
+	enum { NET_ID = 60148 };
+};
+
 } // Cl
 
 
@@ -241,8 +246,67 @@ struct SN_AllCharacterBaseData
 	u16 charaList_count;
 	Character charaList[1];
 
-	i32 cur;
-	i32 max;
+	i32 cur; // current packet ID
+	i32 max; // packet count total
+
+	// the first packet is for example: cur:1 max:4
+	// and the last is cur:4 max:4
+};
+
+struct SN_ProfileCharacters
+{
+	enum { NET_ID = 62124 };
+
+	PUSH_PACKED
+	struct Character
+	{
+		i32 characterID;
+		i32 creatureIndex;
+		i32 skillShot1;
+		i32 skillShot2;
+		i32 class_;
+		f32 x;
+		f32 y;
+		f32 z;
+		i32 characterType;
+		i32 skinIndex;
+		i32 weaponIndex;
+		u8 masterGearNo;
+	};
+	POP_PACKED
+
+	u16 charaList_count;
+	Character chara[1];
+};
+
+struct SN_ProfileWeapons
+{
+	enum { NET_ID = 62126 };
+
+	PUSH_PACKED
+	struct Weapon
+	{
+		i32 characterID;
+		i32 weaponType;
+		i32 weaponIndex;
+		i32 grade;
+		u8 isUnlocked;
+		u8 isActivated;
+	};
+	POP_PACKED
+
+	u16 weaponList_count;
+	Weapon weaponList[1];
+};
+
+struct SN_MyGuild
+{
+	enum { NET_ID = 62330 };
+
+	u16 guildTag_len;
+	wchar_t guildTag[1];
+	i64 dissolutionDate;
+	u8 isFirstTodayRollCall;
 };
 
 // maybe?

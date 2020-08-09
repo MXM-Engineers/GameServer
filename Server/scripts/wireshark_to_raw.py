@@ -1,57 +1,56 @@
 import pyshark
 import sys
 import struct
+import os
 
+if len(sys.argv) < 3:
+    print('Usage: wireshark_to_raw.py capture_file "output/dir"')
+    exit(1)
+
+output_dir = sys.argv[2]
 cap = pyshark.FileCapture(sys.argv[1])
 
-client_buff = bytes()
-server_buff = bytes()
+next_packet_id = 1
 
-def handle_client_data(data):
-    global client_buff
-    client_buff += data.binary_value
+class PacketSpitter:
+    def __init__(self, prefix):
+        self.buff = bytes()
+        self.order = -1
+        self.prefix = prefix
 
-def handle_server_data(data):
-    global server_buff
-    server_buff += data.binary_value
+    def extract_packet(self, size, netid):
+        print(size, netid)
+
+        if self.order == -1:
+            global next_packet_id
+            self.order = next_packet_id
+            next_packet_id += 1
+
+        f = open(os.path.join(output_dir, '%03d_%s_%d.raw' % (self.order, self.prefix, netid)), 'wb')
+        f.write(self.buff[:size])
+        f.close()
+
+        self.buff = self.buff[size:]
+        self.order = -1
+        
+    def push(self, data):
+        self.buff += data
+
+        packet_size, packet_netid = struct.unpack("HH", self.buff[:4])
+
+        while packet_size <= len(self.buff):
+            self.extract_packet(packet_size, packet_netid)
+            if len(self.buff) >= 4:
+                packet_size, packet_netid = struct.unpack("HH", self.buff[:4])
+
+client_spitter = PacketSpitter('cl')
+server_spitter = PacketSpitter('sv')
 
 for p in cap:
     if hasattr(p, 'ip') and hasattr(p, 'tcp') and hasattr(p.tcp, 'payload') and (p.tcp.srcport == '11900' or p.tcp.dstport == '11900'):
-        if p.tcp.dstport == '11900': # client to server
-            handle_client_data(p.tcp.payload)
-        if p.tcp.srcport == '11900': # server to client
-            handle_server_data(p.tcp.payload)
-
         print('%s > %s' % (p.ip.src, p.ip.dst))
 
-
-# print(client_buff)
-# print(server_buff)
-
-print("client")
-cur = 0
-i = 0
-while cur < len(client_buff):
-    header = struct.unpack("HH", client_buff[cur:cur+4])
-    print(header)
-
-    f = open('cl_%d_%d.raw' % (i, header[1]), 'wb')
-    f.write(client_buff[cur:cur+header[0]])
-    f.close()
-
-    cur += header[0]
-    i += 1
-
-print("server")
-cur = 0
-i = 0
-while cur < len(server_buff):
-    header = struct.unpack("HH", server_buff[cur:cur+4])
-    print(header)
-
-    f = open('sv_%d_%d.raw' % (i, header[1]), 'wb')
-    f.write(server_buff[cur:cur+header[0]])
-    f.close()
-
-    cur += header[0]
-    i += 1
+        if p.tcp.dstport == '11900': # client to server
+            client_spitter.push(p.tcp.payload.binary_value)
+        if p.tcp.srcport == '11900': # server to client
+            server_spitter.push(p.tcp.payload.binary_value)

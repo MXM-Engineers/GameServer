@@ -73,6 +73,11 @@ struct RequestConnectGame
 	i32 var;
 };
 
+struct ReadyToLoadCharacter
+{
+	enum { NET_ID = 60014 };
+};
+
 struct Unknown_60148
 {
 	enum { NET_ID = 60148 };
@@ -117,21 +122,6 @@ struct SA_AuthResult
 };
 
 ASSERT_SIZE(SA_UserloginResult, 4);
-
-struct SN_TgchatServerInfo
-{
-	enum { NET_ID = 62009 };
-
-	u8 data[1]; // variable size
-};
-
-struct SA_VersionInfo
-{
-	enum { NET_ID = 62047 };
-
-	u16 strLen;
-	wchar str[1]; // variable size
-};
 
 struct SN_RegionServicePolicy
 {
@@ -210,6 +200,56 @@ struct SendStationList
 	Station stations[1]; // variable size
 };
 
+struct SN_TgchatServerInfo
+{
+	enum { NET_ID = 62009 };
+
+	u8 data[1]; // variable size
+};
+
+struct SA_VersionInfo
+{
+	enum { NET_ID = 62047 };
+
+	u16 strLen;
+	wchar str[1]; // variable size
+};
+
+struct SN_PlayerSkillSlot
+{
+	enum { NET_ID = 62048 };
+
+	struct Property
+	{
+		i32 skillPropertyIndex;
+		i32 level;
+	};
+
+	struct Slot
+	{
+		i32 skillIndex;
+		i32 coolTime;
+		u8 unlocked;
+
+		u16 propList_count;
+		Property propList[1];
+
+		u8 isUnlocked;
+		u8 isActivated;
+	};
+
+	i32 characterID;
+
+	u16 slotList_count;
+	Slot slotList[1];
+
+	i32 stageSkillIndex1;
+	i32 stageSkillIndex2;
+	i32 currentSkillSlot1;
+	i32 currentSkillSlot2;
+	i32 shirkSkillSlot;
+};
+
 struct SN_LoadCharacterStart
 {
 	enum { NET_ID = 62050 };
@@ -226,6 +266,46 @@ struct SN_Money
 POP_PACKED
 
 ASSERT_SIZE(SN_Money, 12);
+
+struct SN_SetGameGvt
+{
+	enum { NET_ID = 62060 };
+
+	i32 sendTime;
+	i32 virtualTime;
+};
+
+ASSERT_SIZE(SN_SetGameGvt, 8);
+
+struct SN_SummaryInfoAll
+{
+	enum { NET_ID = 62097 };
+
+	// TODO: reverse
+	u16 finishedSummaryList_count;
+};
+
+struct SN_AvailableSummaryRewardCountList
+{
+	enum { NET_ID = 62098 };
+
+	// TODO: reverse
+	u16 rewardCountList_count;
+	i32 rewardCountList[1];
+};
+
+struct SN_AchieveInfo
+{
+	enum { NET_ID = 62100 };
+
+	u8 packetNum;
+	i32 achievementScore;
+
+	u16 achList_count;
+	void* achList[1];
+
+	// TODO: finish reversing
+};
 
 struct SN_AchieveUpdate
 {
@@ -388,7 +468,7 @@ struct SN_ProfileSkills
 
 struct SN_ProfileTitles
 {
-	enum { NET_ID = 62127 };
+	enum { NET_ID = 62128 };
 
 	// TODO: reverse and send this packet
 };
@@ -398,6 +478,26 @@ struct SN_ProfileMasterGears
 	enum { NET_ID = 62129 };
 
 	// TODO: reverse and send this packet
+};
+
+struct SN_SummaryInfoLatest
+{
+	enum { NET_ID = 62227 };
+
+	PUSH_PACKED
+	struct Info
+	{
+		i32 summaryIndex;
+		i32 stageIndex;
+		i32 summaryType;
+		i32 summaryData;
+		u8 rewardReceived;
+		i64 completedDate;
+	};
+	POP_PACKED
+
+	u16 infoList_count;
+	Info infoList[1];
 };
 
 struct SN_FriendList

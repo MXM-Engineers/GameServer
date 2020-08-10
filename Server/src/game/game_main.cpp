@@ -4,11 +4,16 @@
 #include <mutex>
 
 // TODO:
+// - Handle instant receive
 
 #define LISTEN_PORT "11900"
 
 DWORD ThreadNetwork(void* pData);
 DWORD ThreadGame(void* pData);
+
+#ifdef CONF_DEBUG
+static i32 packetCounter = 0;
+#endif
 
 struct Server
 {
@@ -49,12 +54,56 @@ struct Server
 	};
 
 	bool running;
+	SOCKET serverSocket;
 	SOCKET clientSocket[MAX_CLIENTS];
 	ClientNet clientNet[MAX_CLIENTS];
 	ClientInfo clientInfo[MAX_CLIENTS];
 
-	void Init()
+	bool Init()
 	{
+		// Initialize Winsock
+		WSADATA wsaData;
+		int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+		if(iResult != 0) {
+			LOG("ERROR: WSAStartup failed: %d", iResult);
+			return false;
+		}
+
+		struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+		ZeroMemory(&hints, sizeof (hints));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags = AI_PASSIVE;
+
+		// Resolve the local address and port to be used by the server
+		iResult = getaddrinfo(NULL, LISTEN_PORT, &hints, &result);
+		if (iResult != 0) {
+			LOG("ERROR: getaddrinfo failed: %d", iResult);
+			return false;
+		}
+		defer(freeaddrinfo(result));
+
+		serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if(serverSocket == INVALID_SOCKET) {
+			LOG("ERROR(socket): %ld", WSAGetLastError());
+			return false;
+		}
+
+		// Setup the TCP listening socket
+		iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
+		if(iResult == SOCKET_ERROR) {
+			LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
+			return false;
+		}
+
+		// listen
+		if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+			LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+			return false;
+		}
+
 		for(int i = 0; i < MAX_CLIENTS; i++) {
 			clientSocket[i] = INVALID_SOCKET;
 			ClientNet& client = clientNet[i];
@@ -64,6 +113,15 @@ struct Server
 
 		CreateThread(NULL, 0, ThreadNetwork, this, 0, NULL);
 		running = true;
+		return true;
+	}
+
+	void Cleanup()
+	{
+		LOG("Server shutting down...");
+
+		closesocket(serverSocket);
+		WSACleanup();
 	}
 
 	i32 AddClient(SOCKET s, const sockaddr& addr_)
@@ -281,6 +339,8 @@ struct Server
 	}
 };
 
+Server* g_Server = nullptr;
+
 DWORD ThreadNetwork(void* pData)
 {
 	Server& server = *(Server*)pData;
@@ -288,6 +348,8 @@ DWORD ThreadNetwork(void* pData)
 	while(server.running) {
 		server.Update();
 	}
+
+	server.Cleanup();
 	return 0;
 }
 
@@ -337,9 +399,8 @@ struct Game
 			const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 
 #ifdef CONF_DEBUG
-			static i32 counter = 0;
-			fileSaveBuff(FMT("trace\\game_%d_cl_%d.raw", counter, header.netID), data, header.size);
-			counter++;
+			fileSaveBuff(FMT("trace\\game_%d_cl_%d.raw", packetCounter, header.netID), data, header.size);
+			packetCounter++;
 #endif
 			ClientHandlePacket(clientID, header, packetData);
 		}
@@ -608,6 +669,11 @@ struct Game
 				// TODO: send SN_GuildMemberStatus
 				// TODO: send SA_GetGuildRankingSeasonList
 
+			} break;
+
+			case Cl::ReadyToLoadCharacter::NET_ID: {
+				LOG("[client%03d] Client :: ReadyToLoadCharacter ::", clientID);
+
 				// SN_Money
 				Sv::SN_Money money;
 				money.nMoney = 1;
@@ -618,6 +684,173 @@ struct Game
 				// SN_LoadCharacterStart
 				LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
 				SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
+
+				// SN_PlayerSkillSlot
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21013);
+
+					packet.Write<u16>(7); // slotList_count
+
+					// slotList[0]
+					packet.Write<i32>(180350010); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(1); // propList_count
+					packet.Write<i32>(280351001); // skillPropertyIndex
+					packet.Write<i32>(1); // level
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[1]
+					packet.Write<i32>(180350030); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(1); // propList_count
+					packet.Write<i32>(280353001); // skillPropertyIndex
+					packet.Write<i32>(1); // level
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[2]
+					packet.Write<i32>(180350040); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(0); // propList_count
+
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[3]
+					packet.Write<i32>(180350020); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(0); // propList_count
+					packet.Write<u8>(0); // isUnlocked
+					packet.Write<u8>(0); // isActivated
+
+					// slotList[4]
+					packet.Write<i32>(180350050); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(0); // propList_count
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[5]
+					packet.Write<i32>(180350000); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(0); // propList_count
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[6]
+					packet.Write<i32>(180350002); // skillIndex
+					packet.Write<i32>(0); // coolTime
+					packet.Write<u8>(1);  // unlocked
+					packet.Write<u16>(0); // propList_count
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+
+					// slotList[7]
+					packet.Write<i32>(-1);
+					packet.Write<i32>(-1);
+					packet.Write<i32>(-1);
+					packet.Write<i32>(-1);
+					packet.Write<i32>(-1);
+
+					ASSERT(packet.size == 133); // TODO: remove
+
+					LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+					SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_SetGameGvt
+				Sv::SN_SetGameGvt gameGvt;
+				gameGvt.sendTime = 0x6c3ed30;
+				gameGvt.virtualTime = 0x6c3ed30;
+				LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
+				SendPacket(clientID, gameGvt);
+
+				// SN_SummaryInfoAll
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0);
+
+					LOG("[client%03d] Server :: SN_SummaryInfoAll :: ", clientID);
+					SendPacketData(clientID, Sv::SN_SummaryInfoAll::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AvailableSummaryRewardCountList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(8);
+
+					const i32 rewardCount[8] = {
+						220004100,
+						2,
+						220002200,
+						3,
+						220005100,
+						3,
+						220003300,
+						2
+					};
+
+					packet.WriteRaw(rewardCount, sizeof(rewardCount));
+
+					LOG("[client%03d] Server :: SN_AvailableSummaryRewardCountList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AvailableSummaryRewardCountList::NET_ID, packet.size, packet.data);
+				}
+
+
+				// SN_SummaryInfoLatest
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(10);
+
+					const Sv::SN_SummaryInfoLatest::Info infoList[10] = {
+						{ 220002200, 200002201, 3, 220002201, 0, (i64)0xa6605c00 },
+						{ 220002200, 200002201, 3, 220002204, 0, (i64)0xa6605c00 },
+						{ 220002200, 200002201, 3, 220002205, 0, (i64)0xa6605c00 },
+						{ 220005100, 200005101, 3, 220005101, 0, (i64)0x6a2bfc00 },
+						{ 220005100, 200005101, 3, 220005102, 0, (i64)0x6a2bfc00 },
+						{ 220005100, 200005101, 3, 220005105, 0, (i64)0x6a2bfc00 },
+						{ 220003300, 200003301, 3, 220003301, 0, (i64)0xe0c7fa00 },
+						{ 220003300, 200003301, 3, 220003305, 0, (i64)0xe0c7fa00 },
+						{ 220004100, 200004101, 3, 220004101, 0, (i64)0x9eea8400 },
+						{ 220004100, 200004101, 3, 220004105, 0, (i64)0x9eea8400 },
+					};
+
+					packet.WriteRaw(infoList, sizeof(infoList));
+
+					LOG("[client%03d] Server :: SN_SummaryInfoLatest :: ", clientID);
+					SendPacketData(clientID, Sv::SN_SummaryInfoLatest::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AchieveInfo
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u8>(1); // packetNum
+					packet.Write<i32>(0); // achievementScore
+					packet.Write<u16>(0); // achList_count
+
+					LOG("[client%03d] Server :: SN_AchieveInfo :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AchieveInfo::NET_ID, packet.size, packet.data);
+				}
+
+
 
 			} break;
 
@@ -646,6 +879,11 @@ struct Game
 		memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 
 		server->ClientSend(clientID, sendBuff, packetTotalSize);
+
+#ifdef CONF_DEBUG
+			fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
+			packetCounter++;
+#endif
 	}
 };
 
@@ -659,69 +897,44 @@ DWORD ThreadGame(void* pData)
 	return 0;
 }
 
+BOOL WINAPI ConsoleHandler(DWORD signal)
+{
+	if(signal == CTRL_C_EVENT || signal == CTRL_CLOSE_EVENT) {
+		LOG(">> Exit signal");
+		g_Server->running = false;
+	}
+
+	return TRUE;
+}
+
 int main(int argc, char** argv)
 {
 	LogInit("game_server.log");
 	LOG(".: Game server :.");
 
-	// Initialize Winsock
-	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-	if(iResult != 0) {
-		LOG("ERROR: WSAStartup failed: %d", iResult);
-		return 1;
-	}
-	defer(WSACleanup());
-
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-	ZeroMemory(&hints, sizeof (hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
-
-	// Resolve the local address and port to be used by the server
-	iResult = getaddrinfo(NULL, LISTEN_PORT, &hints, &result);
-	if (iResult != 0) {
-		LOG("ERROR: getaddrinfo failed: %d", iResult);
-		return 1;
-	}
-	defer(freeaddrinfo(result));
-
-	SOCKET serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %ld", WSAGetLastError());
-		return 1;
-	}
-	defer(closesocket(serverSocket));
-
-	// Setup the TCP listening socket
-	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
-	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
-		return 1;
-	}
-
-	// listen
-	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+	if(!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
+		LOG("ERROR: Could not set control handler");
 		return 1;
 	}
 
 	static Server server;
-	server.Init();
+	bool r = server.Init();
+	if(!r) {
+		LOG("ERROR: failed to initialize server");
+		return 1;
+	}
+	g_Server = &server;
 
 	static Game game;
 	game.Init(&server);
 
 	// accept thread
-	while(true) {
+	while(server.running) {
 		// Accept a client socket
 		LOG("Waiting for a connection...");
 		struct sockaddr clientAddr;
 		int addrLen = sizeof(sockaddr);
-		SOCKET clientSocket = accept(serverSocket, &clientAddr, &addrLen);
+		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
 			LOG("ERROR(accept): failed: %d", WSAGetLastError());
 			return 1;
@@ -730,6 +943,8 @@ int main(int argc, char** argv)
 		LOG("New connection (%s)", GetIpString(clientAddr));
 		server.AddClient(clientSocket, clientAddr);
 	}
+
+	LOG("Done.");
 
 	return 0;
 }

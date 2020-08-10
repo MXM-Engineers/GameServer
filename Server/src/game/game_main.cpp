@@ -850,8 +850,126 @@ struct Game
 					SendPacketData(clientID, Sv::SN_AchieveInfo::NET_ID, packet.size, packet.data);
 				}
 
+				// SN_AchieveLatest
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
 
+					packet.Write<u16>(0); // achList_count
 
+					LOG("[client%03d] Server :: SN_AchieveLatest :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AchieveLatest::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_CityMapInfo
+				Sv::SN_CityMapInfo cityMapInfo;
+				cityMapInfo.cityMapID = 160000042;
+				SendPacket(clientID, cityMapInfo);
+
+				// SQ_CityLobbyJoinCity
+				SendPacketData(clientID, Sv::SQ_CityLobbyJoinCity::NET_ID, 0, nullptr);
+
+			} break;
+
+			case Cl::MapIsLoaded::NET_ID: {
+				LOG("[client%03d] Client :: MapIsLoaded ::", clientID);
+
+				// SN_GameCreateActor
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21043); // objectID
+					packet.Write<i32>(1); // nType
+					packet.Write<i32>(100000017); // nIDX
+					packet.Write<i32>(-1); // dwLocalID
+					packet.Write(Vec3(11959.4f, 6451.76f, 3012)); // p3nPos
+					packet.Write(Vec3(0, 0, 2.68874f)); // p3nDir
+					packet.Write<i32>(0); // spawnType
+					packet.Write<i32>(-1); // actionState
+					packet.Write<i32>(0); // ownerID
+					packet.Write<u8>(0); // bDirectionToNearPC
+					packet.Write<i32>(-1); // AiWanderDistOverride
+					packet.Write<i32>(-1); // tagID
+					packet.Write<i32>(0); // faction
+					packet.Write<i32>(17); // classType
+					packet.Write<i32>(2); // skinIndex
+					packet.Write<i32>(0); // seed
+
+					typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+
+					// initStat ------------------------
+					packet.Write<u16>(53); // maxStats_count
+					packet.Write(Stat{ 0, 2400 });
+					packet.Write(Stat{ 35, 1000 });
+					packet.Write(Stat{ 17, 0 });
+					packet.Write(Stat{ 36, 0 });
+					packet.Write(Stat{ 56, 0 });
+					packet.Write(Stat{ 2, 200 });
+					packet.Write(Stat{ 37, 120 });
+					packet.Write(Stat{ 3, 0 });
+					packet.Write(Stat{ 39, 5 });
+					packet.Write(Stat{ 41, 0 });
+					packet.Write(Stat{ 40, 0 });
+					packet.Write(Stat{ 57, 0 });
+					packet.Write(Stat{ 50, 0 });
+					packet.Write(Stat{ 51, 0 });
+					packet.Write(Stat{ 5, 5 });
+					packet.Write(Stat{ 42, 0.6f });
+					packet.Write(Stat{ 6, 0 });
+					packet.Write(Stat{ 7, 93.75f });
+					packet.Write(Stat{ 8, 0 });
+					packet.Write(Stat{ 9, 3 });
+					packet.Write(Stat{ 10, 150 });
+					packet.Write(Stat{ 12, 0 });
+					packet.Write(Stat{ 20, 0 });
+					packet.Write(Stat{ 21, 0 });
+					packet.Write(Stat{ 18, 100 });
+					packet.Write(Stat{ 13, 100 });
+					packet.Write(Stat{ 14, 98 });
+					packet.Write(Stat{ 15, 100 });
+					packet.Write(Stat{ 52, 100 });
+					packet.Write(Stat{ 16, 1 });
+					packet.Write(Stat{ 27, 0 });
+					packet.Write(Stat{ 47, 0 });
+					packet.Write(Stat{ 49, 0 });
+					packet.Write(Stat{ 48, 0 });
+					packet.Write(Stat{ 29, 20 });
+					packet.Write(Stat{ 23, 9 });
+					packet.Write(Stat{ 44, 15 });
+					packet.Write(Stat{ 46, 0 });
+					packet.Write(Stat{ 45, 0 });
+					packet.Write(Stat{ 26, 0 });
+					packet.Write(Stat{ 25, 0 });
+					packet.Write(Stat{ 31, 14 });
+					packet.Write(Stat{ 22, 2 });
+					packet.Write(Stat{ 54, 15 });
+					packet.Write(Stat{ 60, 0 });
+					packet.Write(Stat{ 61, 0 });
+					packet.Write(Stat{ 62, 0 });
+					packet.Write(Stat{ 63, 3 });
+					packet.Write(Stat{ 64, 150 });
+					packet.Write(Stat{ 53, 0 });
+					packet.Write(Stat{ 58, 0 });
+					packet.Write(Stat{ 65, 0 });
+					packet.Write(Stat{ 55, 15 });
+
+					packet.Write<u16>(2); // curStats_count
+					packet.Write(Stat{ 0, 2400 });
+					packet.Write(Stat{ 2, 200 });
+					// ------------------------------------
+
+					packet.Write<u8>(1); // isInSight
+					packet.Write<u8>(0); // isDead
+					packet.Write<i64>((i64)0x6cf3fe57); // serverTime
+
+					packet.Write<u16>(0); // meshChangeActionHistory_count
+
+					ASSERT(packet.size == 368);
+
+					LOG("[client%03d] Server :: SN_GameCreateActor :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+				}
 			} break;
 
 			default: {

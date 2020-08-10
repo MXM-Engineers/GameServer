@@ -78,6 +78,11 @@ struct ReadyToLoadCharacter
 	enum { NET_ID = 60014 };
 };
 
+struct MapIsLoaded
+{
+	enum { NET_ID = 60034 };
+};
+
 struct Unknown_60148
 {
 	enum { NET_ID = 60148 };
@@ -207,6 +212,62 @@ struct SN_TgchatServerInfo
 	u8 data[1]; // variable size
 };
 
+struct SN_GameCreateActor
+{
+	enum { NET_ID = 62025 };
+
+	struct BaseStat
+	{
+		PUSH_PACKED
+		struct Stat
+		{
+			u8 type;
+			f32 value;
+		};
+		POP_PACKED
+
+		u16 maxStats_count;
+		Stat maxStats[1];
+		u16 curStats_count;
+		Stat curStats[1];
+	};
+
+	struct ST_ActionChangeTime
+	{
+		i32 actionState;
+		i64 serverTime;
+	};
+
+	i32 objectID;
+	i32 nType;
+	i32 nIDX;
+	i32 dwLocalID;
+	Vec3 p3nPos;
+	Vec3 p3nDir;
+	i32 spawnType;
+	i32 actionState;
+	i32 ownerID;
+	u8 bDirectionToNearPC;
+	i32 AiWanderDistOverride;
+	i32 tagID;
+	i32 faction;
+	i32 classType;
+	i32 skinIndex;
+	i32 seed;
+	BaseStat initStat;
+	u8 isInSight;
+	u8 isDead;
+	i64 serverTime;
+
+	u16 meshChangeActionHistory_count;
+	ST_ActionChangeTime meshChangeActionHistory[1];
+};
+
+struct SQ_CityLobbyJoinCity
+{
+	enum { NET_ID = 62033 };
+};
+
 struct SA_VersionInfo
 {
 	enum { NET_ID = 62047 };
@@ -277,6 +338,14 @@ struct SN_SetGameGvt
 
 ASSERT_SIZE(SN_SetGameGvt, 8);
 
+struct SN_CityMapInfo
+{
+	enum { NET_ID = 62091 };
+
+	i32 cityMapID;
+};
+ASSERT_SIZE(SN_CityMapInfo, 4);
+
 struct SN_SummaryInfoAll
 {
 	enum { NET_ID = 62097 };
@@ -300,6 +369,16 @@ struct SN_AchieveInfo
 
 	u8 packetNum;
 	i32 achievementScore;
+
+	u16 achList_count;
+	void* achList[1];
+
+	// TODO: finish reversing
+};
+
+struct SN_AchieveLatest
+{
+	enum { NET_ID = 62101 };
 
 	u16 achList_count;
 	void* achList[1];

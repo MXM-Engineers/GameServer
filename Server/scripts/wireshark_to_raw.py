@@ -19,14 +19,14 @@ class PacketSpitter:
         self.prefix = prefix
 
     def extract_packet(self, size, netid):
-        print(size, netid)
+        print('    %d (%d)' % (netid, size))
 
         if self.order == -1:
             global next_packet_id
             self.order = next_packet_id
             next_packet_id += 1
 
-        f = open(os.path.join(output_dir, '%03d_%s_%d.raw' % (self.order, self.prefix, netid)), 'wb')
+        f = open(os.path.join(output_dir, '%d_%s_%d.raw' % (self.order, self.prefix, netid)), 'wb')
         f.write(self.buff[:size])
         f.close()
 
@@ -46,11 +46,21 @@ class PacketSpitter:
 client_spitter = PacketSpitter('cl')
 server_spitter = PacketSpitter('sv')
 
+last_time = 0
 for p in cap:
     if hasattr(p, 'ip') and hasattr(p, 'tcp') and hasattr(p.tcp, 'payload') and (p.tcp.srcport == '11900' or p.tcp.dstport == '11900'):
-        print('%s > %s' % (p.ip.src, p.ip.dst))
+        # get frame time
+        time = last_time
+        if hasattr(p.frame_info, 'time_relative'):
+            time = p.frame_info.time_relative
+            last_time = time
 
+        info = '%s > %s ' % (p.ip.src, p.ip.dst) + ' (' + time + ')'
+        
         if p.tcp.dstport == '11900': # client to server
+            print('Client ::', info)
             client_spitter.push(p.tcp.payload.binary_value)
+            
         if p.tcp.srcport == '11900': # server to client
+            print('Server ::', info)
             server_spitter.push(p.tcp.payload.binary_value)

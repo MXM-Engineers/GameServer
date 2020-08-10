@@ -1,6 +1,7 @@
 #include <common/base.h>
 #include <common/protocol.h>
 #include <common/network.h>
+#include <direct.h>
 
 // TODO:
 // - connect to bridge server
@@ -73,7 +74,7 @@ struct Client
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("login_cl_%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("trace\\login_%d_cl_%d.raw", counter, header.netID), data, header.size);
 			counter++;
 #endif
 			HandlePacket(header, packetData);
@@ -267,6 +268,8 @@ int main(int argc, char** argv)
 {
 	LogInit("login_server.log");
 	LOG(".: Login server :.");
+
+	_mkdir("trace");
 
 	// Initialize Winsock
 	WSADATA wsaData;

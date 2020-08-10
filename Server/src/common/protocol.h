@@ -210,6 +210,23 @@ struct SendStationList
 	Station stations[1]; // variable size
 };
 
+struct SN_LoadCharacterStart
+{
+	enum { NET_ID = 62050 };
+};
+
+PUSH_PACKED
+struct SN_Money
+{
+	enum { NET_ID = 62057 };
+
+	i64 nMoney;
+	i32 nReason;
+};
+POP_PACKED
+
+ASSERT_SIZE(SN_Money, 12);
+
 struct SN_AchieveUpdate
 {
 	enum { NET_ID = 62102 };
@@ -397,9 +414,44 @@ struct SN_FriendRequestList
 	// TODO: reverse and send this packet
 };
 
+struct SN_MutualFriendList
+{
+	enum { NET_ID = 62259 };
+
+	// TODO: reverse and send this packet
+};
+
 struct SN_BlockList
 {
 	enum { NET_ID = 62261 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SA_GetGuildProfile
+{
+	enum { NET_ID = 62299 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SA_GetGuildMemberList
+{
+	enum { NET_ID = 62300 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SA_GetGuildHistoryList
+{
+	enum { NET_ID = 62302 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SA_GetGuildRankingSeasonList
+{
+	enum { NET_ID = 62322 };
 
 	// TODO: reverse and send this packet
 };
@@ -412,6 +464,13 @@ struct SN_MyGuild
 	wchar_t guildTag[1];
 	i64 dissolutionDate;
 	u8 isFirstTodayRollCall;
+};
+
+struct SN_GuildMemberStatus
+{
+	enum { NET_ID = 62338 };
+
+	// TODO: reverse and send this packet
 };
 
 struct SN_GuildChannelEnter
@@ -428,6 +487,28 @@ struct SN_GuildChannelEnter
 struct SN_ProfileCharacterSkinList
 {
 	enum { NET_ID = 62390 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SN_WarehouseItems
+{
+	enum { NET_ID = 62404 };
+
+	// TODO: reverse and send this packet
+	u16 itemList_count;
+};
+
+struct SN_MailUnreadNotice
+{
+	enum { NET_ID = 62425 };
+
+	// TODO: reverse and send this packet
+};
+
+struct SA_TierRecord
+{
+	enum { NET_ID = 62469 };
 
 	// TODO: reverse and send this packet
 };

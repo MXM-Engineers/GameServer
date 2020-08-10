@@ -338,7 +338,7 @@ struct Game
 
 #ifdef CONF_DEBUG
 			static i32 counter = 0;
-			fileSaveBuff(FMT("game_cl_%d_%d.raw", header.netID, counter), data, header.size);
+			fileSaveBuff(FMT("trace\\game_%d_cl_%d.raw", counter, header.netID), data, header.size);
 			counter++;
 #endif
 			ClientHandlePacket(clientID, header, packetData);
@@ -594,10 +594,30 @@ struct Game
 				// TODO: send SN_ClientSettings 1 and 2
 				// TODO: send SN_FriendList
 				// TODO: send SN_PveComradeInfo
-				// TODO: send Sn_AchieveUpdate x5
+				// TODO: send SN_AchieveUpdate x5
 				// TODO: send SN_FriendRequestList
 				// TODO: send SN_BlockList
+				// TODO: send SN_PveComradeInfo
+				// TODO: send SN_MailUnreadNotice
+				// TODO: send SA_TierRecord
+				// TODO: send SN_WarehouseItems
+				// TODO: send SN_MutualFriendList
+				// TODO: send SA_GetGuildProfile
+				// TODO: send SA_GetGuildMemberList
+				// TODO: send SA_GetGuildHistoryList
+				// TODO: send SN_GuildMemberStatus
+				// TODO: send SA_GetGuildRankingSeasonList
 
+				// SN_Money
+				Sv::SN_Money money;
+				money.nMoney = 1;
+				money.nReason = 1;
+				LOG("[client%03d] Server :: SN_Money :: ", clientID);
+				SendPacket(clientID, money);
+
+				// SN_LoadCharacterStart
+				LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
+				SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
 
 			} break;
 

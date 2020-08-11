@@ -564,7 +564,7 @@ struct Game
 					packet.Write<u16>(1); // charaList_count
 
 					Sv::SN_ProfileCharacters::Character chara;
-					chara.characterID = 21003;
+					chara.characterID = 21013;
 					chara.creatureIndex = 100000001;
 					chara.skillShot1 = 180010020;
 					chara.skillShot2 = 180010040;
@@ -591,7 +591,7 @@ struct Game
 					packet.Write<u16>(1); // weaponList_count
 
 					Sv::SN_ProfileWeapons::Weapon weap;
-					weap.characterID = 21003;
+					weap.characterID = 21013;
 					weap.weaponType = 1;
 					weap.weaponIndex = 131101011;
 					weap.grade = 0;
@@ -606,7 +606,7 @@ struct Game
 
 				// SN_LeaderCharacter
 				Sv::SN_LeaderCharacter leader;
-				leader.leaderID = 21003;
+				leader.leaderID = 21013;
 				leader.skinIndex = 0;
 				SendPacket(clientID, leader);
 
@@ -879,7 +879,7 @@ struct Game
 					u8 sendData[1024];
 					PacketWriter packet(sendData, sizeof(sendData));
 
-					packet.Write<i32>(21043); // objectID
+					packet.Write<i32>(21013); // objectID
 					packet.Write<i32>(1); // nType
 					packet.Write<i32>(100000017); // nIDX
 					packet.Write<i32>(-1); // dwLocalID
@@ -965,11 +965,60 @@ struct Game
 
 					packet.Write<u16>(0); // meshChangeActionHistory_count
 
-					ASSERT(packet.size == 368);
+					ASSERT(packet.size == 368); // TODO: remove
 
 					LOG("[client%03d] Server :: SN_GameCreateActor :: ", clientID);
 					SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
 				}
+
+				// SN_GamePlayerStock
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21013); // playerID
+					packet.WriteStringObj(L"LordSk"); // name
+					packet.Write<i32>(35); // class_
+					packet.Write<i32>(320080005); // displayTitleIDX
+					packet.Write<i32>(320080005); // statTitleIDX
+					packet.Write<u8>(0); // badgeType
+					packet.Write<u8>(0); // badgeTierLevel
+					packet.WriteStringObj(L"XMX"); // guildTag
+					packet.Write<u8>(0); // vipLevel
+					packet.Write<u8>(0); // staffType
+					packet.Write<u8>(0); // isSubstituted
+
+					LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_PlayerStateInTown
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21013); // playerID
+					packet.Write<u8>(0); // playerStateInTown
+					packet.Write<u16>(0); // matchingGameModes_count
+
+					LOG("[client%03d] Server :: SN_PlayerStateInTown :: ", clientID);
+					SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_GamePlayerEquipWeapon
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21013); // characterID
+					packet.Write<i32>(131135012); // weaponDocIndex
+					packet.Write<i32>(0); // additionnalOverHeatGauge
+					packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+
+					LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+				}
+
 			} break;
 
 			default: {

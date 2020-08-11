@@ -338,6 +338,49 @@ struct SN_SetGameGvt
 
 ASSERT_SIZE(SN_SetGameGvt, 8);
 
+struct SN_GamePlayerEquipWeapon
+{
+	enum { NET_ID = 62084 };
+
+	i32 characterID;
+	i32 weaponDocIndex;
+	i32 additionnalOverHeatGauge;
+	i32 additionnalOverHeatGaugeRatio;
+};
+
+ASSERT_SIZE(SN_GamePlayerEquipWeapon, 16);
+
+struct SN_GamePlayerStock
+{
+	enum { NET_ID = 62089 };
+
+	i32 playerID;
+	u16 name_len;
+	wchar name[1];
+	i32 class_;
+	i32 displayTitleIDX;
+	i32 statTitleIDX;
+	u8 badgeType;
+	u8 badgeTierLevel;
+	u16 guildTag_len;
+	wchar guildTag[1];
+	u8 vipLevel;
+	u8 staffType;
+	u8 isSubstituted;
+};
+
+struct SN_PlayerStateInTown
+{
+	enum { NET_ID = 62090 };
+
+	i32 playerID;
+	i8 playerStateInTown;
+
+	// TODO: reverse this
+	u16 matchingGameModes_count;
+	void* matchingGameModes[1];
+};
+
 struct SN_CityMapInfo
 {
 	enum { NET_ID = 62091 };

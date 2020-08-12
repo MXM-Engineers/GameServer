@@ -609,14 +609,34 @@ struct SN_ProfileSkills
 {
 	enum { NET_ID = 62127 };
 
-	// TODO: reverse and send this packet
+	struct Property
+	{
+		i32 skillIndex;
+		i32 level;
+	};
+
+	struct Skill
+	{
+		i32 characterID;
+		i32 skillIndex;
+		u8 isUnlocked;
+		u8 isActivated;
+
+		u16 properties_count;
+		Property properties[1];
+	};
+
+	u8 packetNum;
+	u16 skills_count;
+	Skill skills[1];
 };
 
 struct SN_ProfileTitles
 {
 	enum { NET_ID = 62128 };
 
-	// TODO: reverse and send this packet
+	u16 titles_count;
+	i32 titles[1];
 };
 
 struct SN_ProfileMasterGears

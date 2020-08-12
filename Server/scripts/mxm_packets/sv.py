@@ -331,6 +331,48 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62127(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ProfileSkills {')
+        print('    packetNum=%d' % p.read_u8())
+        print('    skills=[')
+        
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      characterID=%d' % p.read_i32())
+            print('      skillIndex=%d' % p.read_i32())
+            print('      isUnlocked=%d' % p.read_u8())
+            print('      isActivated=%d' % p.read_u8())
+
+            prop_count = p.read_u16()
+            s = ''
+            while prop_count > 0:
+                s += '(skillIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
+                prop_count -= 1
+
+            print('      properties=[%s]' % s)
+
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('}')
+
+    def serialize_62128(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ProfileTitles {')
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    titles=[%s]' % s)
+        print('}')
+
     def serialize_62129(netid, data):
         p = common.PacketReader(data)
 
@@ -362,5 +404,23 @@ class ServerSerializer:
         print('    guildTag="%s"' % p.read_wstr())
         print('    dissolutionDate=%d' % p.read_i64())
         print('    isFirstTodayRollCall=%d' % p.read_u8())
+        print('}')
+
+    def serialize_62390(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ProfileCharacterSkinList {')
+        print('    skins=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      classType=%d' % p.read_i32())
+            print('      skinIndex=%d' % p.read_i32())
+            print('      bufCount=%d' % p.read_i32())
+            print('      expireDateTime=%d' % p.read_i64())
+            print('    },')
+            count -= 1
+
         print('}')
 

@@ -8,6 +8,11 @@ class PacketReader:
     def adv(self, am):
         self.buff = self.buff[am:]
 
+    def read_i8(self):
+        r = struct.unpack("b", self.buff[:1])[0]
+        self.adv(1)
+        return r
+
     def read_u8(self):
         r = struct.unpack("B", self.buff[:1])[0]
         self.adv(1)

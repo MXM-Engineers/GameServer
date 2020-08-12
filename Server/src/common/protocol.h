@@ -167,42 +167,41 @@ struct SN_RegionServicePolicy
 	i32 maxTalkCount;
 	i32 blockPeriodSec;
 
-	struct SkinHandle {
-		i32 i1;
-		i32 i2;
+	struct PST_CharacterSkin {
+		i32 classType;
+		i32 skinIndex;
 	};
 
 	u16 regionBanSkinList_count;
-	SkinHandle regionBanSkinList[1];
+	PST_CharacterSkin regionBanSkinList[1];
 
 	u16 pcCafeSkinList_count;
-	SkinHandle pcCafeSkinList[1];
+	PST_CharacterSkin pcCafeSkinList[1];
 
 	u8 useFatigueSystem;
 };
 
-struct SendStationList
+struct SN_StationList
 {
 	enum { NET_ID = 62007 };
 
-	u16 count;
-
-	struct Station
+	struct PST_Station
 	{
-		u32 ID;
-		u16 count;
+		u32 idc;
+		u16 stations_count;
 
-		struct ServerIP
+		struct PST_Address
 		{
-			u8 game[4];
-			u8 ping[4];
+			u8 gameServerIp[4];
+			u8 pingServerIp[4];
 			u16 port;
 		};
 
-		ServerIP serverIPs[1]; // variable size
+		PST_Address stations[1]; // variable size
 	};
 
-	Station stations[1]; // variable size
+	u16 stationList_count;
+	PST_Station stationList[1]; // variable size
 };
 
 struct SN_TgchatServerInfo
@@ -558,7 +557,32 @@ struct SN_ProfileItems
 {
 	enum { NET_ID = 62125 };
 
-	// TODO: reverse and send this packet
+	PUSH_PACKED
+	struct Property
+	{
+		u8 type;
+		i32 typeDetail;
+		u8 valueType;
+		f32 value;
+		u8 fixed;
+	};
+	POP_PACKED
+
+	struct Item
+	{
+		i32 itemID;
+		u8 invenType;
+		i32 slot;
+		i32 itemIndex;
+		i32 count;
+		i32 propertyGroupIndex;
+		u8 isLifeTimeAbsolute;
+		i64 lifeEndTimeUTC;
+	};
+
+	u8 packetNum;
+	u16 item_count;
+	Item items[1];
 };
 
 struct SN_ProfileWeapons
@@ -599,7 +623,24 @@ struct SN_ProfileMasterGears
 {
 	enum { NET_ID = 62129 };
 
-	// TODO: reverse and send this packet
+	struct Slot
+	{
+		i32 gearType;
+		i32 gearItemID;
+	};
+
+	struct Gear
+	{
+		u8 masterGearNo;
+		u16 name_len;
+		wchar name[1];
+
+		u16 slots_count;
+		Slot slots[1];
+	};
+
+	u16 masterGears_count;
+	Gear masterGears;
 };
 
 struct SN_SummaryInfoLatest

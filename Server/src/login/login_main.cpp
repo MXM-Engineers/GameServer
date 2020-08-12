@@ -173,23 +173,23 @@ struct Client
 
 				packet.Write<u16>(1); // count
 
-				Sv::SendStationList::Station station;
-				station.ID = 12345678;
-				station.count = 1;
-				auto& serverIP = station.serverIPs[0]; // alias
-				serverIP.game[0] = 127;
-				serverIP.game[1] = 0;
-				serverIP.game[2] = 0;
-				serverIP.game[3] = 1;
-				serverIP.ping[0] = 127;
-				serverIP.ping[1] = 0;
-				serverIP.ping[2] = 0;
-				serverIP.ping[3] = 1;
-				serverIP.port = 12900;
+				Sv::SN_StationList::PST_Station station;
+				station.idc = 12345678;
+				station.stations_count = 1;
+				auto& addr = station.stations[0]; // alias
+				addr.gameServerIp[0] = 127;
+				addr.gameServerIp[1] = 0;
+				addr.gameServerIp[2] = 0;
+				addr.gameServerIp[3] = 1;
+				addr.pingServerIp[0] = 127;
+				addr.pingServerIp[1] = 0;
+				addr.pingServerIp[2] = 0;
+				addr.pingServerIp[3] = 1;
+				addr.port = 12900;
 
 				packet.Write(station); // station
 
-				SendPacketData(Sv::SendStationList::NET_ID, packet.size, packet.data);
+				SendPacketData(Sv::SN_StationList::NET_ID, packet.size, packet.data);
 			} break;
 
 			case Cl::EnterQueue::NET_ID: {

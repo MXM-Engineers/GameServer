@@ -429,7 +429,7 @@ struct Game
 				SendPacket(clientID, hello);
 			} break;
 
-			case Cl::RequestConnectGame::NET_ID: {
+			case Cl::UserLogin::NET_ID: {
 				ConstBuffer request(packetData, packetSize);
 				u16 nickLen = request.Read<u16>();
 				const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));

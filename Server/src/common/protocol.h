@@ -262,6 +262,14 @@ struct SN_GameCreateActor
 	ST_ActionChangeTime meshChangeActionHistory[1];
 };
 
+struct SN_SpawnPosForMinimap
+{
+	enum { NET_ID = 62026 };
+
+	i32 objectID;
+	Vec3 p3nPos;
+};
+
 struct SQ_CityLobbyJoinCity
 {
 	enum { NET_ID = 62033 };
@@ -432,7 +440,21 @@ struct SN_AchieveUpdate
 {
 	enum { NET_ID = 62102 };
 
-	// TODO: reverse and send this packet
+	struct ST_AchieveInfo
+	{
+		i32 index;
+		i32 type;
+		u8 isCleared;
+
+		u16 achievedList_count;
+		i32 achievedList[1];
+
+		i64 progressInt64;
+		i64 date;
+	};
+
+	i32 achievementScore;
+	ST_AchieveInfo achieve;
 };
 
 struct SN_AccountInfo
@@ -687,14 +709,35 @@ struct SN_FriendList
 {
 	enum { NET_ID = 62257 };
 
-	// TODO: reverse and send this packet
+	struct Friend
+	{
+		u16 name_len;
+		wchar name[1];
+		i32 leaderCreatureIndex;
+		u8 state;
+		u16 level;
+		u8 isFavorite;
+		u8 isComrade;
+		u8 isOnLeavePenalty;
+		i64 lastLogoutDate;
+	};
+
+	u16 friendList_count;
+	Friend friendList;
 };
 
 struct SN_FriendRequestList
 {
 	enum { NET_ID = 62258 };
 
-	// TODO: reverse and send this packet
+	struct FriendRequest
+	{
+		u16 name_len;
+		wchar name[1];
+	};
+
+	u16 friendRequestList_count;
+	FriendRequest friendRequestList[1];
 };
 
 struct SN_MutualFriendList
@@ -709,6 +752,18 @@ struct SN_BlockList
 	enum { NET_ID = 62261 };
 
 	// TODO: reverse and send this packet
+};
+
+struct SN_Exp
+{
+	enum { NET_ID = 62278 };
+
+	i32 leaderCsn;
+	u16 nickname_len;
+	wchar nickname[1];
+	u8 isLevelUp;
+	u16 level;
+	i32 currentLevelExp;
 };
 
 struct SA_GetGuildProfile

@@ -12,3 +12,9 @@
 1. Start `Login_debug` and `Game_debug`
 2. Start The MxM client with these command line arguments: `/LogEncryption /AuthMethod:local /Network:dev /PacketEncryption:1 /AutoJoinGame /AutoLoginID:USERNAME:PASSWORD`
 
+## Packet Mining
+
+https://www.youtube.com/watch?v=qmJoTYWCL5I
+
+**Requires python 3.7.X, 3.8.X is broken at the moment.**
+

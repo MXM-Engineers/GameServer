@@ -1,5 +1,4 @@
-/Pak/build
-/Pak/releases
-/Server/build
-/Server/scripts/packets*
+/build
+/scripts/packets*
+/scripts/*.log
 **/__pycache__

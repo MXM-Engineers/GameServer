@@ -166,7 +166,7 @@ class ServerSerializer:
     def serialize_62026(netid, data):
         p = common.PacketReader(data)
 
-        print('Sn_SpawnPosForMinimap {')
+        print('SN_SpawnPosForMinimap {')
         print('    objectID=%d' % p.read_i32())
         print('    p3nPos=%s' % read_Vec3(p))
         print('}')
@@ -204,6 +204,16 @@ class ServerSerializer:
         print('    shirkSkillSlot=%d' % p.read_i32())
         print('}')
 
+    def serialize_62050(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_LoadCharacterStart {}')
+
+    def serialize_62051(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ScanEnd {}')
+
     def serialize_62052(netid, data):
         p = common.PacketReader(data)
 
@@ -216,6 +226,14 @@ class ServerSerializer:
         print('    nSpeed=%d' % p.read_f32())
         print('    nState=%d' % p.read_i32())
         print('    nActionIDX=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62057(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_Money {')
+        print('    money=%d' % p.read_i64())
+        print('    nReason=%d' % p.read_i32())
         print('}')
 
     def serialize_62084(netid, data):
@@ -506,6 +524,16 @@ class ServerSerializer:
             print('    },')
             count -= 1
         print('    ]')
+        print('}')
+
+    def serialize_62251(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_FriendStateChanged {')
+        print('    nickname="%s"' % p.read_wstr())
+        print('    newState=%d' % p.read_u8())
+        print('    isOnLeavePenalty=%d' % p.read_u8())
+        print('    stateUpdatedTime=%d' % p.read_i64())
         print('}')
 
     def serialize_62257(netid, data):

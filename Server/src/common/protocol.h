@@ -323,6 +323,11 @@ struct SN_LoadCharacterStart
 	enum { NET_ID = 62050 };
 };
 
+struct SN_ScanEnd
+{
+	enum { NET_ID = 62051 };
+};
+
 PUSH_PACKED
 struct SN_Money
 {

@@ -429,7 +429,7 @@ struct Game
 				SendPacket(clientID, hello);
 			} break;
 
-			case Cl::UserLogin::NET_ID: {
+			case Cl::RequestConnectGame::NET_ID: {
 				ConstBuffer request(packetData, packetSize);
 				u16 nickLen = request.Read<u16>();
 				const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
@@ -1017,6 +1017,24 @@ struct Game
 
 					LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
 					SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_TownHudStatistics
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u8>(0); // gameModeType
+					packet.Write<u8>(0); // gameType
+					packet.Write<u16>(3); // argList_count
+
+					// arglist
+					packet.Write<i32>(479);
+					packet.Write<i32>(0);
+					packet.Write<i32>(16);
+
+					LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
+					SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
 				}
 
 			} break;

@@ -83,6 +83,22 @@ struct MapIsLoaded
 	enum { NET_ID = 60034 };
 };
 
+struct SetNickname
+{
+	enum { NET_ID = 60049 };
+
+	u16 nick_len;
+	wchar nick[1];
+};
+
+struct CheckDupNickname
+{
+	enum { NET_ID = 60050 };
+
+	u16 nick_len;
+	wchar nick[1];
+};
+
 struct Unknown_60148
 {
 	enum { NET_ID = 60148 };
@@ -113,6 +129,13 @@ ASSERT_SIZE(SA_FirstHello, 16);
 struct SA_UserloginResult
 {
 	enum { NET_ID = 62003 };
+
+	i32 result;
+};
+
+struct SA_UserloginResult2
+{
+	enum { NET_ID = 62004 };
 
 	i32 result;
 };
@@ -545,6 +568,16 @@ struct SN_AllCharacterBaseData
 	// and the last is cur:4 max:4
 };
 
+struct SA_CheckDupNickname
+{
+	enum { NET_ID = 62121 };
+
+	u16 statusCode;
+	u8 unk;
+	u16 nick_len;
+	wchar nick[1];
+};
+
 struct SN_LeaderCharacter
 {
 	enum { NET_ID = 62123 };
@@ -553,6 +586,7 @@ struct SN_LeaderCharacter
 	i32 skinIndex;
 };
 ASSERT_SIZE(SN_LeaderCharacter, 8);
+
 
 struct SN_ProfileCharacters
 {
@@ -769,6 +803,17 @@ struct SN_Exp
 	u8 isLevelUp;
 	u16 level;
 	i32 currentLevelExp;
+};
+
+struct SN_TownHudStatistics
+{
+	enum { NET_ID = 62285 };
+
+	u8 gameModeType;
+	u8 gameType;
+
+	u16 argList_count;
+	i32 argList[1];
 };
 
 struct SA_GetGuildProfile

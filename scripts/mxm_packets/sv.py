@@ -171,6 +171,11 @@ class ServerSerializer:
         print('    p3nPos=%s' % read_Vec3(p))
         print('}')
 
+    def serialize_62033(netid, data):
+        p = common.PacketReader(data)
+
+        print('SQ_CityLobbyJoinCity {}')
+
     def serialize_62048(netid, data):
         p = common.PacketReader(data)
 
@@ -236,6 +241,27 @@ class ServerSerializer:
         print('    nReason=%d' % p.read_i32())
         print('}')
 
+    def serialize_62060(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_SetGameGvt {')
+        print('    sendTime=%d' % p.read_i32())
+        print('    virtualTime=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62064(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_LoadClearedStages {')
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    clearedStageList=[%s]' % s)
+        print('}')
+
     def serialize_62084(netid, data):
         p = common.PacketReader(data)
 
@@ -278,6 +304,13 @@ class ServerSerializer:
 
         print('    matchingGameModes=[%s]' % s)
 
+        print('}')
+
+    def serialize_62091(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_CityMapInfo {')
+        print('    cityMapID=%d' % p.read_i32())
         print('}')
 
     def serialize_62102(netid, data):
@@ -628,6 +661,62 @@ class ServerSerializer:
         print('    level=%d' % p.read_u16())
         print('    currentLevelExp=%d' % p.read_i32())
         print('}')
+
+    def serialize_62282(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_JukeboxEnqueuedList {')
+        print('    trackList=[')
+
+        track_count = p.read_u16()
+        while track_count > 0:
+            print('    {')
+            print('      trackId=%d' % p.read_i32())
+            print('      nickname="%s"' % p.read_wstr())
+            print('    },')
+            track_count -= 1
+        print('    ]')
+        print('}')
+
+    def serialize_62283(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_JukeboxPlay {')
+        print('    result=%d' % p.read_i32())
+        print('    track={')
+        print('      trackId=%d' % p.read_i32())
+        print('      nickname="%s"' % p.read_wstr())
+        print('    }')
+        print('    playPositionSec=%d' % p.read_u16())
+        print('}')
+
+    def serialize_62284(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_JukeboxHotTrackList {')
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+        print('    trackList=[%s]' % s)
+        print('}')
+
+    def serialize_62285(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_TownHudStatistics {')
+        print('    gameModeType=%d' % p.read_u8())
+        print('    gameType=%d' % p.read_u8())
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    argList=[%s]' % s)
+        print('}')
         
     def serialize_62330(netid, data):
         p = common.PacketReader(data)
@@ -825,5 +914,12 @@ class ServerSerializer:
             s += '%d, ' % p.read_i32()
             count -= 1
         print('    effectItemDocIndexList=[%s]' % s)
+        print('}')
+
+    def serialize_62595(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ServerUtcTime {')
+        print('    effectItemDocIndexList=%d' % p.read_i64())
         print('}')
 

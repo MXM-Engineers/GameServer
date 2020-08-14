@@ -574,6 +574,21 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62261(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_BlockList {')
+        print('    blocks=[')
+        
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      name="%s"' % p.read_wstr())
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('}')
+
     def serialize_62278(netid, data):
         p = common.PacketReader(data)
 

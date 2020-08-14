@@ -302,6 +302,28 @@ class ServerSerializer:
         print('    date=%d' % p.read_i64())
         print('}')
 
+    def serialize_62103(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_MissionList {')
+        print('    missions=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      index=%d' % p.read_i32())
+            print('      progessCount=%d' % p.read_i64())
+            print('      changedCount=%d' % p.read_u16())
+            print('      isCleared=%d' % p.read_u8())
+            print('      isRewarded=%d' % p.read_u8())
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('    dailyMissionRemainTimeInMs=%d' % p.read_i32())
+        print('    weeklyMissionRemainTimeInMs=%d' % p.read_i32())
+        print('    monthlyMissionRemainTimeInMs=%d' % p.read_i32())
+        print('}')
+
     def serialize_62106(netid, data):
         p = common.PacketReader(data)
 
@@ -589,6 +611,13 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62276(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_NotifyAasRestricted {')
+        print('    isRestrictedByAAS=%d' % p.read_u8())
+        print('}')
+
     def serialize_62278(netid, data):
         p = common.PacketReader(data)
 
@@ -636,6 +665,122 @@ class ServerSerializer:
 
         print('}')
 
+    def serialize_62426(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_UpdateEntrySystem {')
+        print('    entrySystemList=[')
+
+        entry_count = p.read_u16()
+        while entry_count > 0:
+            print('    {')
+
+            print('      entrySystemIndex=%d' % p.read_i32())
+
+            area_count = p.read_u16()
+            s = ''
+            while area_count > 0:
+                s += '(areaKey=%d areaIndex=%d), ' % (p.read_u8(), p.read_i32())
+                area_count -= 1
+
+            print('      areaList=[%s]' % s)
+
+            stage_count = p.read_u16()
+            s = ''
+            while stage_count > 0:
+                s += '(areaKey=%d stageIndex=%d ' % (p.read_u8(), p.read_i32())
+
+                gt_count = p.read_u16()
+                gts = ''
+                while gt_count > 0:
+                    gts += '%d, ' % p.read_u8()
+                    gt_count -= 1
+
+                s += 'gametypes=[%s]), ' % gts
+                stage_count -= 1
+            
+            print('      stageList=[%s]' % s)
+            print('    },')
+            entry_count -= 1
+
+        print('    ]')
+        print('}')
+
+    def serialize_62427(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_GameEventActivated {')
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    eventIndexList=[%s]' %s)
+        print('}')
+
+    def serialize_62428(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_GameEventPending {')
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    eventIndexList=[%s]' %s)
+        print('}')
+
+    def serialize_62455(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_MasterRotationInfo {')
+        print('    refreshCount=%d' % p.read_i32())
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    freeRotation=[%s]' %s)
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    pccafeRotation=[%s]' %s)
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+
+        print('    vipRotation=[%s]' %s)
+        print('}')
+
+    def serialize_62483(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_PveTodayStageInfo {')
+        print('    availablePlayCount=%d' % p.read_u16())
+        print('    maxPlayCount=%d' % p.read_u16())
+        print('}')
+
+    def serialize_62484(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_FatiguePointInfo {')
+        print('    todayFatiguePoint=%d' % p.read_u16())
+        print('    maxFatiguePoint=%d' % p.read_u16())
+        print('}')
+
     def serialize_62485(netid, data):
         p = common.PacketReader(data)
 
@@ -649,5 +794,36 @@ class ServerSerializer:
 
         print('SN_AccountEquipmentList {')
         print('    supportKitDocIndex=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62526(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_AddictionWarning {')
+        print('    addictionLevel=%d' % p.read_u8())
+        print('}')
+
+    def serialize_62551(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ItemLifetimeExpired {')
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+        print('    itemDocIndexList=[%s]' % s)
+        print('}')
+
+    def serialize_62552(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_EffectLifetimeExpired {')
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+        print('    effectItemDocIndexList=[%s]' % s)
         print('}')
 

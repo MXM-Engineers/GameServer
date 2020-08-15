@@ -864,6 +864,28 @@ class ServerSerializer:
             count -= 1
 
         print('}')
+        
+    def serialize_62425(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_MailUnreadNotice {')
+        print('    unreadInboxMailCount=%d' % p.read_u16())
+        print('    unreadArchivedMailCount=%d' % p.read_u16())
+        print('    unreadShopMailCount=%d' % p.read_u16())
+        print('    inboxMailCount=%d' % p.read_u16())
+        print('    archivedMailCount=%d' % p.read_u16())
+        print('    shopMailCount=%d' % p.read_u16())
+
+        print('    newAttachmentsPending=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    element=%d' % p.read_i32())
+            count -= 1
+
+         print('    ]')
+
+        print('}')
 
     def serialize_62426(netid, data):
         p = common.PacketReader(data)

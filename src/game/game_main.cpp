@@ -297,6 +297,68 @@ struct Game
 				}
 			} break;
 
+			case Cl::CQ_GetGuildMemberList::NET_ID: {
+				LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
+
+				// SA_GetGuildMemberList
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(0); // result
+
+					packet.Write<u16>(3); // guildMemberProfileList_count
+
+					// guildMemberProfileList[0]
+					packet.WriteStringObj(L"Malachi");
+					packet.Write<i32>(0);  // membershipID
+					packet.Write<u16>(99); // lvl
+					packet.Write<u16>(10); // leaderClassType
+					packet.Write<u16>(27); // masterCount
+					packet.Write<i32>(12455); // achievementScore
+					packet.Write<u8>(0); // topPvpTierGrade
+					packet.Write<u16>(0); // topPvpTierPoint
+					packet.Write<i32>(16965); // contributedGuildPoint
+					packet.Write<i32>(60047); // contributedGuildFund
+					packet.Write<u16>(0); // guildPvpWin
+					packet.Write<u16>(0); // guildPvpPlay
+					packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+					// guildMemberProfileList[1]
+					packet.WriteStringObj(L"Delta-47");
+					packet.Write<i32>(0);  // membershipID
+					packet.Write<u16>(99); // lvl
+					packet.Write<u16>(10); // leaderClassType
+					packet.Write<u16>(27); // masterCount
+					packet.Write<i32>(12455); // achievementScore
+					packet.Write<u8>(0); // topPvpTierGrade
+					packet.Write<u16>(0); // topPvpTierPoint
+					packet.Write<i32>(16965); // contributedGuildPoint
+					packet.Write<i32>(60047); // contributedGuildFund
+					packet.Write<u16>(0); // guildPvpWin
+					packet.Write<u16>(0); // guildPvpPlay
+					packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+					// guildMemberProfileList[2]
+					packet.WriteStringObj(L"LordSk");
+					packet.Write<i32>(0);  // membershipID
+					packet.Write<u16>(99); // lvl
+					packet.Write<u16>(10); // leaderClassType
+					packet.Write<u16>(27); // masterCount
+					packet.Write<i32>(12455); // achievementScore
+					packet.Write<u8>(0); // topPvpTierGrade
+					packet.Write<u16>(0); // topPvpTierPoint
+					packet.Write<i32>(16965); // contributedGuildPoint
+					packet.Write<i32>(60047); // contributedGuildFund
+					packet.Write<u16>(0); // guildPvpWin
+					packet.Write<u16>(0); // guildPvpPlay
+					packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+					LOG("[client%03d] Server :: SA_GetGuildMemberList :: ", clientID);
+					SendPacketData(clientID, Sv::SA_GetGuildMemberList::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
 				/*
 			case Cl::Unknown_60148::NET_ID: {
 				LOG("[client%03d] Client :: Unknown_60148 ::", clientID);

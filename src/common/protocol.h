@@ -123,7 +123,7 @@ struct CQ_GetGuildProfile
 	enum { NET_ID = 60145 };
 };
 
-struct CQ_GuildMemberList
+struct CQ_GetGuildMemberList
 {
 	enum { NET_ID = 60146 };
 };
@@ -961,7 +961,28 @@ struct SA_GetGuildMemberList
 {
 	enum { NET_ID = 62300 };
 
-	// TODO: reverse and send this packet
+	struct ST_GuildMemberProfile
+	{
+		u16 nickname_len;
+		wchar nickname[1];
+
+		i32 membershipID;
+		u16 lvl;
+		u16 leaderClassType;
+		u16 masterCount;
+		i32 achievementScore;
+		u8 topPvpTierGrade;
+		u16 topPvpTierPoint;
+		i32 contributedGuildPoint;
+		i32 contributedGuildFund;
+		u16 guildPvpWin;
+		u16 guildPvpPlay;
+		i64 lastLogoutDate;
+	};
+
+	i32 result;
+	u16 guildMemberProfileList_count;
+	ST_GuildMemberProfile guildMemberProfileList[1];
 };
 
 struct SA_GetGuildHistoryList

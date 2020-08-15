@@ -810,6 +810,35 @@ class ServerSerializer:
         print('    todayRollCallCount=%d' % p.read_u8())
         print('}')
     
+    def serialize_62300(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GetGuildMemberList {')
+        print('    result=%d' % p.read_i32())
+        print('    guildMemberProfileList=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      nickname="%s"' % p.read_wstr())
+            print('      membershipID=%d' % p.read_i32())
+            print('      lvl=%d' % p.read_u16())
+            print('      leaderClassType=%d' % p.read_u16())
+            print('      masterCount=%d' % p.read_u16())
+            print('      achievmentScore=%d' % p.read_i32())
+            print('      topPvpTierGrade=%d' % p.read_u8())
+            print('      topPvpTierPoint=%d' % p.read_u16())
+            print('      contributedGuildPoint=%d' % p.read_i32())
+            print('      contributedGuildFund=%d' % p.read_i32())
+            print('      guildPvpWin=%d' % p.read_u16())
+            print('      guildPvpPlay=%d' % p.read_u16())
+            print('      lastLogoutDate=%d' % p.read_i64())
+            print('    },')
+            count -= 1
+
+        print('    ]')
+        print('}')
+
     def serialize_62330(netid, data):
         p = common.PacketReader(data)
 

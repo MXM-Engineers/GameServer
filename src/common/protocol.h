@@ -99,6 +99,13 @@ struct CheckDupNickname
 	wchar nick[1];
 };
 
+struct RequestCharacterInfo
+{
+	enum { NET_ID = 60051 };
+
+	i32 characterID;
+};
+
 struct Unknown_60148
 {
 	enum { NET_ID = 60148 };
@@ -567,6 +574,18 @@ struct SN_AllCharacterBaseData
 	// the first packet is for example: cur:1 max:4
 	// and the last is cur:4 max:4
 };
+
+struct SA_GetCharacterInfo
+{
+	enum { NET_ID = 62113 };
+
+	i32 characterID;
+	i32 docIndex;
+	i32 class_;
+	i32 hp;
+	i32 maxHp;
+};
+ASSERT_SIZE(SA_GetCharacterInfo, 20);
 
 struct SA_CheckDupNickname
 {

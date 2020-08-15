@@ -430,6 +430,17 @@ class ServerSerializer:
         print('    max=%d' % p.read_i32())
         print('}')
 
+    def serialize_62113(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GetCharacterInfo {')
+        print('    characterID=%d' % p.read_i32())
+        print('    docIndex=%d' % p.read_i32())
+        print('    class=%d' % p.read_i32())
+        print('    hp=%d' % p.read_i32())
+        print('    maxHp=%d' % p.read_i32())
+        print('}')
+
     def serialize_62123(netid, data):
         p = common.PacketReader(data)
 
@@ -736,6 +747,25 @@ class ServerSerializer:
         print('    onlineStatus=%d' % p.read_u8())
         print('}')
 
+    def serialize_62364(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_PlayerSyncActionStateOnly {')
+        print('    entityID=%d' % p.read_i32())
+        print('    nState=%d' % p.read_i32())
+        print('    nParam1=%d' % p.read_i32())
+        print('    nParam2=%d' % p.read_i32())
+        print('    rotate=%d' % p.read_f32())
+        print('    upperRotate=%d' % p.read_f32())
+        print('    graphMove={')
+        print('      bApply=%d' % p.read_u8())
+        print('      startPos=%s' % read_Vec3(p))
+        print('      endPos=%s' % read_Vec3(p))
+        print('      durationTimeS=%d' % p.read_f32())
+        print('      originDistance=%d' % p.read_f32())
+        print('    }')
+        print('}')
+
     def serialize_62390(netid, data):
         p = common.PacketReader(data)
 
@@ -822,6 +852,11 @@ class ServerSerializer:
 
         print('    eventIndexList=[%s]' %s)
         print('}')
+
+    def serialize_62446(netid, data):
+        p = common.PacketReader(data)
+
+        print('SQ_Heartbeat {}')
 
     def serialize_62455(netid, data):
         p = common.PacketReader(data)

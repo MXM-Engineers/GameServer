@@ -1039,6 +1039,20 @@ struct Game
 
 			} break;
 
+			case Cl::RequestCharacterInfo::NET_ID: {
+				const Cl::RequestCharacterInfo& req = SafeCast<Cl::RequestCharacterInfo>(packetData, packetSize);
+				LOG("[client%03d] Client :: RequestCharacterInfo :: characterID=%d", clientID, req.characterID);
+
+				// SA_GetCharacterInfo
+				Sv::SA_GetCharacterInfo info;
+				info.characterID = req.characterID;
+				info.docIndex = 100000017;
+				info.class_ = 17;
+				info.hp = 100;
+				info.maxHp = 100;
+				SendPacket(clientID, info);
+			} break;
+
 			default: {
 				LOG("[client%03d] Client :: Unkown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 			} break;

@@ -1063,6 +1063,35 @@ class ServerSerializer:
         print('    vipRotation=[%s]' %s)
         print('}')
 
+    def serialize_62469(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_TierRecord {')
+        print('    seasonId=%d' % p.read_u8())
+        print('    allTierWin=%d' % p.read_i32())
+        print('    allTierDraw=%d' % p.read_i32())
+        print('    allTierLose=%d' % p.read_i32())
+        print('    allTierLeave=%d' % p.read_i32())
+        print('    stageRecordList=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      pvpSaveType=%d' % p.read_u8())
+            print('      tierType=%d' % p.read_u8())
+            print('      tierPoint=%d' % p.read_u16())
+            print('      sectorId=%d' % p.read_u16())
+            print('      sectorRanking=%d' % p.read_u8())
+            print('      seasonalWin=%d' % p.read_i32())
+            print('      seasonalDraw=%d' % p.read_i32())
+            print('      seasonalLose=%d' % p.read_i32())
+            print('      seasonalLeave=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+
+        print('    ]')
+        print('}')
+
     def serialize_62483(netid, data):
         p = common.PacketReader(data)
 

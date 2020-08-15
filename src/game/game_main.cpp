@@ -381,7 +381,7 @@ struct Game
 				const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
 				LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
 
-				// SA_GetGuildMemberList
+				// SA_GetGuildRankingSeasonList
 				{
 					u8 sendData[2048];
 					PacketWriter packet(sendData, sizeof(sendData));
@@ -397,9 +397,24 @@ struct Game
 				}
 			} break;
 
-				/*
-			case Cl::Unknown_60148::NET_ID: {
-				LOG("[client%03d] Client :: Unknown_60148 ::", clientID);
+			case Cl::CQ_TierRecord::NET_ID: {
+				LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
+
+				// SA_TierRecord
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u8>(1); // seasonId
+					packet.Write<i32>(0); // allTierWin
+					packet.Write<i32>(0); // allTierDraw
+					packet.Write<i32>(0); // allTierLose
+					packet.Write<i32>(0); // allTierLeave
+					packet.Write<u16>(0); // stageRecordList_count
+
+					LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
+					SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
+				}
 
 				// SN_ProfileCharacters
 				{
@@ -509,7 +524,6 @@ struct Game
 				// TODO: send SN_WarehouseItems
 				// TODO: send SN_MutualFriendList
 				// TODO: send SN_GuildMemberStatus
-				// TODO: send SA_GetGuildRankingSeasonList
 
 			} break;
 
@@ -709,12 +723,18 @@ struct Game
 				SendPacket(clientID, cityMapInfo);
 
 				// SQ_CityLobbyJoinCity
+				LOG("[client%03d] Server :: SQ_CityLobbyJoinCity :: ", clientID);
 				SendPacketData(clientID, Sv::SQ_CityLobbyJoinCity::NET_ID, 0, nullptr);
 
 			} break;
 
-			case Cl::MapIsLoaded::NET_ID: {
-				LOG("[client%03d] Client :: MapIsLoaded ::", clientID);
+			case Cl::CA_SetGameGvt::NET_ID: {
+				const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
+				LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%x virtualTime=%x unk=%x", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
+			} break;
+
+			case Cl::CN_MapIsLoaded::NET_ID: {
+				LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
 
 				// SN_GameCreateActor
 				{
@@ -892,11 +912,12 @@ struct Game
 				info.class_ = 17;
 				info.hp = 100;
 				info.maxHp = 100;
+				LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 				SendPacket(clientID, info);
 			} break;
-*/
+
 			default: {
-				LOG("[client%03d] Client :: Unkown packet :: size=%d netID=%d", clientID, header.size, header.netID);
+				LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 			} break;
 		}
 	}

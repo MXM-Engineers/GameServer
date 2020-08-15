@@ -289,6 +289,7 @@ bool Server::ClientStartReceiving(i32 clientID)
 	ClientNet& client = clientNet[clientID];
 
 	memset(&client.recvOverlapped, 0, sizeof(client.recvOverlapped));
+	WSAResetEvent(client.hEventRecv);
 	client.recvOverlapped.hEvent = client.hEventRecv;
 
 	WSABUF buff;
@@ -303,13 +304,13 @@ bool Server::ClientStartReceiving(i32 clientID)
 		DisconnectClient(clientID);
 		return false;
 	}
-	else if(r == 0) { // instant reception, handle it
+	/*else if(r == 0) { // instant reception, handle it
 		bool hr = ClientHandleReceivedData(clientID, len);
 		if(!hr) return false;
 
 		// start receiving again
 		return ClientStartReceiving(clientID);
-	}
+	}*/
 
 	return true;
 }

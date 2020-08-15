@@ -90,7 +90,17 @@ struct ReadyToLoadCharacter
 	enum { NET_ID = 60014 };
 };
 
-struct MapIsLoaded
+struct CA_SetGameGvt
+{
+	enum { NET_ID = 60024 };
+
+	i32 sendTime;
+	i32 virtualTime;
+	i32 unk;
+};
+ASSERT_SIZE(CA_SetGameGvt, 12);
+
+struct CN_MapIsLoaded
 {
 	enum { NET_ID = 60034 };
 };
@@ -131,6 +141,11 @@ struct CQ_GetGuildMemberList
 struct CQ_GetGuildHistoryList
 {
 	enum { NET_ID = 60148 };
+};
+
+struct CQ_TierRecord
+{
+	enum { NET_ID = 60151 };
 };
 
 struct CQ_GetGuildRankingSeasonList
@@ -1089,7 +1104,28 @@ struct SA_TierRecord
 {
 	enum { NET_ID = 62469 };
 
-	// TODO: reverse and send this packet
+	PUSH_PACKED
+	struct PST_TierStageRecord
+	{
+		u8 pveStageType;
+		u8 tierType;
+		u16 tierPoint;
+		u16 sectorId;
+		u8 sectorRanking;
+		i32 seasonalWin;
+		i32 seasonalDraw;
+		i32 seasonalLose;
+		i32 seasonalLeave;
+	};
+	POP_PACKED
+
+	u8 seasonId;
+	i32 allTierWin;
+	i32 allTierDraw;
+	i32 allTierLose;
+	i32 allTierLeave;
+	u16 stageRecordList_count;
+	PST_TierStageRecord stageRecordList[1];
 };
 
 struct SN_PveComradeInfo

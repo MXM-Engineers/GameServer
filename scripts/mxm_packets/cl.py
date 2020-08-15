@@ -38,3 +38,13 @@ class ClientSerializer:
     def serialize_60148(netid, data):
         print('CQ_GetGuildHistoryList {}')
 
+    def serialize_60151(netid, data):
+        print('CQ_TierRecord {}')
+
+    def serialize_60167(netid, data):
+        p = common.PacketReader(data)
+        
+        print('CQ_GetGuildRankingSeasonList {')
+        print('    rankingType=%d' % p.read_u8())
+        print('}')
+

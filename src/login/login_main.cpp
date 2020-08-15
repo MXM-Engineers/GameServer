@@ -86,7 +86,7 @@ struct Client
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {
-			case Cl::Hello::NET_ID: {
+			case Cl::CQ_FirstHello::NET_ID: {
 				LOG("Client :: Hello");
 
 				Sv::SA_FirstHello hello;
@@ -102,7 +102,7 @@ struct Client
 				SendPacket(hello);
 			} break;
 
-			case Cl::UserLogin::NET_ID: {
+			case Cl::CQ_UserLogin::NET_ID: {
 				ConstBuffer data(packetData, header.size);
 
 				u16 loginStrSize = data.Read<u16>();

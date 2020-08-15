@@ -729,6 +729,87 @@ class ServerSerializer:
         print('    argList=[%s]' % s)
         print('}')
         
+    def serialize_62299(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GetGuildProfile {')
+        print('    result=%d' % p.read_i32())
+        print('    guildName="%s"' % p.read_wstr())
+        print('    guildTag="%s"' % p.read_wstr())
+        print('    emblemIndex=%d' % p.read_i32())
+        print('    guildLvl=%d' % p.read_u8())
+        print('    memberMax=%d' % p.read_u8())
+        print('    ownerNickname="%s"' % p.read_wstr())
+        print('    createdDate=%d' % p.read_i64())
+        print('    dissolutionDate=%d' % p.read_i64())
+        print('    joinType=%d' % p.read_u8())
+        print('    guildInterest={')
+        print('      likePveStage=%d' % p.read_u8())
+        print('      likeDefence=%d' % p.read_u8())
+        print('      likePvpNormal=%d' % p.read_u8())
+        print('      likePvpOccupy=%d' % p.read_u8())
+        print('      likePvpGot=%d' % p.read_u8())
+        print('      likePvpRank=%d' % p.read_u8())
+        print('      likeOlympic=%d' % p.read_u8())
+        print('    }')
+        print('    guildIntro="%s"' % p.read_wstr())
+        print('    guildNotice="%s"' % p.read_wstr())
+        print('    guildPoint=%d' % p.read_i32())
+        print('    guildFund=%d' % p.read_i32())
+        print('    guildPvpRecord={')
+        print('      rp=%d' % p.read_i32())
+        print('      win=%d' % p.read_u16())
+        print('      draw=%d' % p.read_u16())
+        print('      lose=%d' % p.read_u16())
+        print('    }')
+        print('    guildRankNo=%d' % p.read_i32())
+        print('    guildMemberClassList=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      id=%d' % p.read_i32())
+            print('      type=%d' % p.read_u8())
+            print('      iconIndex=%d' % p.read_u8())
+            print('      name="%s"' % p.read_wstr())
+            print('      rights={')
+            print('        hasInviteRight=%d' % p.read_u8())
+            print('        hasExpelRight=%d' % p.read_u8())
+            print('        hasMembershipChgRight=%d' % p.read_u8())
+            print('        hasClassAssignRight=%d' % p.read_u8())
+            print('        hasNoticeChgRight=%d' % p.read_u8())
+            print('        hasIntroChgRight=%d' % p.read_u8())
+            print('        hasInterestChgRight=%d' % p.read_u8())
+            print('        hasFundManageRight=%d' % p.read_u8())
+            print('        hasJoinTypeRight=%d' % p.read_u8())
+            print('        hasEmblemRight=%d' % p.read_u8())
+            print('      }')
+            print('    },')
+            count -= 1
+        
+        print('    ]')
+
+        print('    guildSkills=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      type=%d' % p.read_u8())
+            print('      level=%d' % p.read_u8())
+            print('      expiryDate=%d' % p.read_i64())
+            print('      extensionCount=%d' % p.read_u16())
+            print('    },')
+            count -= 1
+        
+        print('    ]')
+
+        print('    curDailyStageGuildPoint=%d' % p.read_i32())
+        print('    maxDailyStageGuildPoint=%d' % p.read_i32())
+        print('    curDailyArenaGuildPoint=%d' % p.read_i32())
+        print('    maxDailyArenaGuildPoint=%d' % p.read_i32())
+        print('    todayRollCallCount=%d' % p.read_u8())
+        print('}')
+    
     def serialize_62330(netid, data):
         p = common.PacketReader(data)
 

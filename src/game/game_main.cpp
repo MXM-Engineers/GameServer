@@ -74,7 +74,7 @@ struct Game
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {
-			case Cl::Hello::NET_ID: {
+			case Cl::CQ_FirstHello::NET_ID: {
 				LOG("[client%03d] Client :: Hello", clientID);
 
 				const Server::ClientInfo& info = server->clientInfo[clientID];
@@ -92,7 +92,7 @@ struct Game
 				SendPacket(clientID, hello);
 			} break;
 
-			case Cl::RequestConnectGame::NET_ID: {
+			case Cl::CQ_Authenticate::NET_ID: {
 				ConstBuffer request(packetData, packetSize);
 				u16 nickLen = request.Read<u16>();
 				const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
@@ -216,6 +216,88 @@ struct Game
 				}
 			} break;
 
+			case Cl::CQ_GetGuildProfile::NET_ID: {
+				LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
+
+				// SA_GetGuildProfile
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(0); // result;
+					packet.WriteStringObj(L"The XMX dream"); // guildName
+					packet.WriteStringObj(L"XMX"); // guildTag
+					packet.Write<i32>(100203); // emblemIndex
+					packet.Write<u8>(10); // guildLvl
+					packet.Write<u8>(120); // memberMax
+					packet.WriteStringObj(L"Malachi"); // ownerNickname
+					packet.Write<i64>(131474874000000000); // createdDate
+					packet.Write<i64>(0); // dissolutionDate
+					packet.Write<u8>(0); // joinType
+
+					Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
+					guildInterest.likePveStage = 1;
+					guildInterest.likeDefence = 1;
+					guildInterest.likePvpNormal = 1;
+					guildInterest.likePvpOccupy = 1;
+					guildInterest.likePvpGot = 1;
+					guildInterest.likePvpRank = 1;
+					guildInterest.likeOlympic = 1;
+					packet.Write(guildInterest);
+
+					packet.WriteStringObj(L"This is a great intro"); // guildIntro
+					packet.WriteStringObj(L"Notice: this game is dead!"); // guildNotice
+					packet.Write<i32>(460281); // guildPoint
+					packet.Write<i32>(9999); // guildFund
+
+					Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
+					guildPvpRecord.rp = 5;
+					guildPvpRecord.win = 4;
+					guildPvpRecord.draw = 3;
+					guildPvpRecord.lose = 2;
+					packet.Write(guildPvpRecord);
+
+					packet.Write<i32>(-1); // guildRankNo
+
+					packet.Write<u16>(1); // guildMemberClassList_count
+					// guildMemberClassList[0]
+					packet.Write<i32>(12456); // id
+					packet.Write<u8>(3); // type
+					packet.Write<u8>(2); // iconIndex
+					packet.WriteStringObj(L"Malachi");
+
+					Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
+					rights.hasInviteRight = 1;
+					rights.hasExpelRight = 1;
+					rights.hasMembershipChgRight = 1;
+					rights.hasClassAssignRight = 1;
+					rights.hasNoticeChgRight = 1;
+					rights.hasIntroChgRight = 1;
+					rights.hasInterestChgRight = 1;
+					rights.hasFundManageRight = 1;
+					rights.hasJoinTypeRight = 1;
+					rights.hasEmblemRight = 1;
+					packet.Write(rights);
+
+					packet.Write<u16>(1); // guildSkills_count
+					// guildSkills[0]
+					packet.Write<u8>(1); // type
+					packet.Write<u8>(9); // level
+					packet.Write<i64>(0); // expiryDate
+					packet.Write<u16>(0); // extensionCount
+
+					packet.Write<i32>(7); // curDailyStageGuildPoint
+					packet.Write<i32>(500); // maxDailyStageGuildPoint
+					packet.Write<i32>(2); // curDailyArenaGuildPoint
+					packet.Write<i32>(450); // maxDailyArenaGuildPoint
+					packet.Write<u8>(1); // todayRollCallCount
+
+					LOG("[client%03d] Server :: SA_GetGuildProfile :: ", clientID);
+					SendPacketData(clientID, Sv::SA_GetGuildProfile::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
+				/*
 			case Cl::Unknown_60148::NET_ID: {
 				LOG("[client%03d] Client :: Unknown_60148 ::", clientID);
 
@@ -715,7 +797,7 @@ struct Game
 				info.maxHp = 100;
 				SendPacket(clientID, info);
 			} break;
-
+*/
 			default: {
 				LOG("[client%03d] Client :: Unkown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 			} break;

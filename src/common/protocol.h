@@ -14,21 +14,33 @@ ASSERT_SIZE(NetHeader, 4);
 // Client packets
 namespace Cl {
 
-struct Hello
+PUSH_PACKED
+struct CQ_FirstHello
 {
 	enum { NET_ID = 60002 };
 
-	char key[13];
+	u32 dwProtocolCRC;
+	u32 dwErrorCRC;
+	u32 version;
+	u8 unknown;
 };
+POP_PACKED
 
-ASSERT_SIZE(Hello, 13);
+ASSERT_SIZE(CQ_FirstHello, 13);
 
-struct UserLogin
+struct CQ_UserLogin
 {
 	enum { NET_ID = 60003 };
 
 
-	u8 data[1]; // variable size
+	u16 nick_len;
+	wchar nick[1];
+	u16 password_len;
+	wchar password[1];
+	u16 tpye_len;
+	wchar type[1];
+
+	u8 unk[5];
 };
 
 struct ConfirmLogin
@@ -64,7 +76,7 @@ struct EnterQueue
 POP_PACKED
 ASSERT_SIZE(EnterQueue, 30);
 
-struct RequestConnectGame
+struct CQ_Authenticate
 {
 	enum { NET_ID = 60008 };
 
@@ -106,7 +118,17 @@ struct CQ_GetCharacterInfo
 	i32 characterID;
 };
 
-struct Unknown_60148
+struct CQ_GetGuildProfile
+{
+	enum { NET_ID = 60145 };
+};
+
+struct CQ_GuildMemberList
+{
+	enum { NET_ID = 60146 };
+};
+
+struct CQ_GuildHistoryList
 {
 	enum { NET_ID = 60148 };
 };
@@ -839,7 +861,100 @@ struct SA_GetGuildProfile
 {
 	enum { NET_ID = 62299 };
 
-	// TODO: reverse and send this packet
+	PUSH_PACKED
+	struct ST_GuildInterest
+	{
+		u8 likePveStage;
+		u8 likeDefence;
+		u8 likePvpNormal;
+		u8 likePvpOccupy;
+		u8 likePvpGot;
+		u8 likePvpRank;
+		u8 likeOlympic;
+	};
+	POP_PACKED
+
+	PUSH_PACKED
+	struct ST_GuildPvpRecord
+	{
+		i32 rp;
+		u16 win;
+		u16 draw;
+		u16 lose;
+	};
+	POP_PACKED
+
+	PUSH_PACKED
+	struct ST_GuildMemberRights
+	{
+		u8 hasInviteRight;
+		u8 hasExpelRight;
+		u8 hasMembershipChgRight;
+		u8 hasClassAssignRight;
+		u8 hasNoticeChgRight;
+		u8 hasIntroChgRight;
+		u8 hasInterestChgRight;
+		u8 hasFundManageRight;
+		u8 hasJoinTypeRight;
+		u8 hasEmblemRight;
+	};
+	POP_PACKED
+
+	struct ST_GuildMembership
+	{
+		i32 id;
+		u8 type;
+		u8 iconIndex;
+
+		u16 name_len;
+		wchar name[1];
+
+		ST_GuildMemberRights rights;
+	};
+
+	PUSH_PACKED
+	struct ST_GuildSkill
+	{
+		u8 type;
+		u8 level;
+		i64 expiryDate;
+		u16 extensionCount;
+	};
+	POP_PACKED
+
+	i32 result;
+	u16 guildName_len;
+	wchar guildName[1];
+	u16 guildTag_len;
+	wchar guildTag[1];
+	i32 emblemIndex;
+	u8 guildLvl;
+	u8 memberMax;
+	u16 ownerNickname_len;
+	wchar ownerNickname[1];
+	i64 createdDate;
+	i64 dissolutionDate;
+	u8 joinType;
+	ST_GuildInterest guildInterest;
+	u16 guildIntro_len;
+	wchar guildIntro[1];
+	u16 guildNotice_len;
+	wchar guildNotice[1];
+	i32 guildPoint;
+	i32 guildFund;
+	ST_GuildPvpRecord guildPvpRecord;
+	i32 guildRankNo;
+
+	u16 guildMemberClassList_count;
+	ST_GuildMembership guildMemberClassList[1];
+	u16 guildSkills_count;
+	ST_GuildSkill guildSkills[1];
+
+	i32 curDailyStageGuildPoint;
+	i32 maxDailyStageGuildPoint;
+	i32 curDailyArenaGuildPoint;
+	i32 maxDailyArenaGuildPoint;
+	u8 todayRollCallCount;
 };
 
 struct SA_GetGuildMemberList

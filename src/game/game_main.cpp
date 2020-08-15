@@ -359,6 +359,44 @@ struct Game
 				}
 			} break;
 
+			case Cl::CQ_GetGuildHistoryList::NET_ID: {
+				LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
+
+				// SA_GetGuildMemberList
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(0); // result
+
+					packet.Write<u16>(0); // guildHistories_count
+
+
+					LOG("[client%03d] Server :: SA_GetGuildHistoryList :: ", clientID);
+					SendPacketData(clientID, Sv::SA_GetGuildHistoryList::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
+			case Cl::CQ_GetGuildRankingSeasonList::NET_ID: {
+				const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
+				LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
+
+				// SA_GetGuildMemberList
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(0); // result
+					packet.Write<u8>(rank.rankingType); // result
+
+					packet.Write<u16>(0); // rankingSeasonList_count
+
+
+					LOG("[client%03d] Server :: SA_GetGuildRankingSeasonList :: ", clientID);
+					SendPacketData(clientID, Sv::SA_GetGuildRankingSeasonList::NET_ID, packet.size, packet.data);
+				}
+			} break;
+
 				/*
 			case Cl::Unknown_60148::NET_ID: {
 				LOG("[client%03d] Client :: Unknown_60148 ::", clientID);
@@ -470,9 +508,6 @@ struct Game
 				// TODO: send SA_TierRecord
 				// TODO: send SN_WarehouseItems
 				// TODO: send SN_MutualFriendList
-				// TODO: send SA_GetGuildProfile
-				// TODO: send SA_GetGuildMemberList
-				// TODO: send SA_GetGuildHistoryList
 				// TODO: send SN_GuildMemberStatus
 				// TODO: send SA_GetGuildRankingSeasonList
 

@@ -128,10 +128,18 @@ struct CQ_GetGuildMemberList
 	enum { NET_ID = 60146 };
 };
 
-struct CQ_GuildHistoryList
+struct CQ_GetGuildHistoryList
 {
 	enum { NET_ID = 60148 };
 };
+
+struct CQ_GetGuildRankingSeasonList
+{
+	enum { NET_ID = 60167 };
+
+	u8 rankingType;
+};
+ASSERT_SIZE(CQ_GetGuildRankingSeasonList, 1);
 
 } // Cl
 
@@ -989,14 +997,42 @@ struct SA_GetGuildHistoryList
 {
 	enum { NET_ID = 62302 };
 
-	// TODO: reverse and send this packet
+	struct ST_GuildHistory
+	{
+		u8 historyType;
+		u8 eventType;
+		i64 eventDate;
+		u16 strParam1_len;
+		wchar strParam1[1];
+		u16 strParam2_len;
+		wchar strParam2[1];
+		i32 lParam1;
+		i32 lParam2;
+	};
+
+	i32 result;
+	u16 guildHistories_count;
+	ST_GuildHistory guildHistories[1];
 };
 
 struct SA_GetGuildRankingSeasonList
 {
 	enum { NET_ID = 62322 };
 
-	// TODO: reverse and send this packet
+	PUSH_PACKED
+	struct ST_RankingSeason
+	{
+		u16 seasonNo;
+		i64 beginDate;
+		i64 endDate;
+	};
+	POP_PACKED
+
+	i32 result;
+	u8 rankingType;
+
+	u16 rankingSeasonList_count;
+	ST_RankingSeason rankingSeasonList[1];
 };
 
 struct SN_MyGuild

@@ -839,6 +839,49 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62302(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GetGuildHistoryList {')
+        print('    result=%d' % p.read_i32())
+        print('    guildHistories=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      historyType=%d' % p.read_u8())
+            print('      eventType=%d' % p.read_u8())
+            print('      eventDate=%d' % p.read_i64())
+            print('      strParam1="%s"' % p.read_wstr())
+            print('      strParam2="%s"' % p.read_wstr())
+            print('      lParam1=%d' % p.read_i32())
+            print('      lParam2=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+
+        print('    ]')
+        print('}')
+
+    def serialize_62322(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GetGuildRankingSeasonList {')
+        print('    result=%d' % p.read_i32())
+        print('    rankingType=%d' % p.read_u8())
+        print('    rankingSeasonList=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      seasonNo=%d' % p.read_u16())
+            print('      beginDate=%d' % p.read_i64())
+            print('      endDate=%d' % p.read_i64())
+            print('    },')
+            count -= 1
+
+        print('    ]')
+        print('}')
+
     def serialize_62330(netid, data):
         p = common.PacketReader(data)
 
@@ -911,7 +954,7 @@ class ServerSerializer:
         while count > 0:
             print('    %d,' % p.read_i32())
             count -= 1
-         print('    ]')
+        print('    ]')
 
         print('}')
 

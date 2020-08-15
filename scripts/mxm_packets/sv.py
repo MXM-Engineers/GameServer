@@ -880,9 +880,8 @@ class ServerSerializer:
 
         count = p.read_u16()
         while count > 0:
-            print('    element=%d' % p.read_i32())
+            print('    %d,' % p.read_i32())
             count -= 1
-
          print('    ]')
 
         print('}')

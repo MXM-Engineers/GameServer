@@ -99,7 +99,7 @@ struct CheckDupNickname
 	wchar nick[1];
 };
 
-struct RequestCharacterInfo
+struct CQ_GetCharacterInfo
 {
 	enum { NET_ID = 60051 };
 

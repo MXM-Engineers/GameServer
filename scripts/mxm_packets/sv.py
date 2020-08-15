@@ -1125,6 +1125,18 @@ class ServerSerializer:
         print('    effectItemDocIndexList=[%s]' % s)
         print('}')
 
+    def serialize_62572(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_GMDisableMasters {')
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % p.read_i32()
+            count -= 1
+        print('    masterList=[%s],' % s)
+        print('}')
+
     def serialize_62595(netid, data):
         p = common.PacketReader(data)
 

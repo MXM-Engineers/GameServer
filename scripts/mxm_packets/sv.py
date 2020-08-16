@@ -1134,7 +1134,7 @@ class ServerSerializer:
         while count > 0:
             s += '%d, ' % p.read_i32()
             count -= 1
-        print('    masterList=[%s],' % s)
+        print('    masterList=[%s]' % s)
         print('}')
 
     def serialize_62595(netid, data):

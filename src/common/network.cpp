@@ -227,7 +227,9 @@ void Server::Update()
 		}
 		else {
 			if(len > 0) {
+#ifdef CONF_LOG_TRAFFIC_BYTELEN
 				LOG("[client%03d] Sent %d bytes", clientID, len);
+#endif
 				ASSERT(len == client.sendingBuff.size);
 				client.sendingBuff.Clear();
 			}
@@ -320,7 +322,9 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	DBG_ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	ClientNet& client = clientNet[clientID];
 
+#ifdef CONF_LOG_TRAFFIC_BYTELEN
 	LOG("[client%03d] Received %d bytes", clientID, dataLen);
+#endif
 	if(dataLen == 0) {
 		DisconnectClient(clientID);
 		return false;

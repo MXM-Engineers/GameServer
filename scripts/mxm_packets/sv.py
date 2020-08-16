@@ -640,6 +640,23 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62259(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_MutualFriendList {')
+        print('    candidates=[')
+        
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      name="%s"' % p.read_wstr())
+            print('      leaderCreatureIndex=%d' % p.read_i32())
+            print('      mutualCount=%d' % p.read_u8())
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('}')
+
     def serialize_62261(netid, data):
         p = common.PacketReader(data)
 
@@ -937,6 +954,36 @@ class ServerSerializer:
 
         print('}')
         
+    def serialize_62404(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_WarehouseItems {')
+        print('    items=[')
+        
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      itemID=%d' % p.read_i32())
+            print('      invenType=%d' % p.read_u8())
+            print('      slot=%d' % p.read_i32())
+            print('      itemIndex=%d' % p.read_i32())
+            print('      count=%d' % p.read_i32())
+            print('      propertyGroupIndex=%d' % p.read_i32())
+            print('      isLifeTimeAbsolute=%d' % p.read_u8())
+            print('      lifeEndTimeUTC=%d' % p.read_i64())
+
+            prop_count = p.read_u16()
+            s = ''
+            while prop_count > 0:
+                s += '(type=%d typeDetail=%d valueType=%d value=%g fixed=%d), ' % (p.read_u8(), p.read_i32(), p.read_u8(), p.read_f32(), p.read_u8())
+                prop_count -= 1
+
+            print('      properties=[%s]' % s)
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('}')
+    
     def serialize_62425(netid, data):
         p = common.PacketReader(data)
 
@@ -1092,6 +1139,13 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62472(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_Unknown_62472 {')
+        print('    var=%d' % p.read_u8())
+        print('}')
+
     def serialize_62483(netid, data):
         p = common.PacketReader(data)
 
@@ -1114,6 +1168,15 @@ class ServerSerializer:
         print('SN_PveComradeInfo {')
         print('    availableComradeCount=%d' % p.read_i32())
         print('    maxComradeCount=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62500(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_ClientSettings {')
+        print('    settingType=%d' % p.read_u8())
+        data_len = p.read_u16()
+        print('    data="{}"'.format(p.read_raw(data_len)))
         print('}')
 
     def serialize_62525(netid, data):

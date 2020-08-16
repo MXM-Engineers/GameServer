@@ -490,13 +490,24 @@ struct Game
 					SendPacketData(clientID, Sv::SN_AccountInfo::NET_ID, packet.size, packet.data);
 				}
 
+				// SN_Unknown_62472
+				{
+					u8 sendData[32];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u8>(1);
+
+					LOG("[client%03d] Server :: SN_Unknown_62472 :: ", clientID);
+					SendPacketData(clientID, 62472, packet.size, packet.data);
+				}
+
 				// TODO: send SN_AccountExtraInfo
 				// TODO: send SN_AccountEquipmentList
 				// TODO: send SN_GuildChannelEnter
 
 				// SN_ClientSettings
 				// TODO: this is surely encrypted, find out what it represents
-				{
+				/*{
 					u8 sendData[2048];
 					PacketWriter packet(sendData, sizeof(sendData));
 
@@ -510,7 +521,7 @@ struct Game
 
 					LOG("[client%03d] Server :: SN_ClientSettings :: ", clientID);
 					SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
-				}
+				}*/
 
 				// TODO: send SN_ClientSettings 1 and 2
 				// TODO: send SN_FriendList
@@ -520,7 +531,6 @@ struct Game
 				// TODO: send SN_BlockList
 				// TODO: send SN_PveComradeInfo
 				// TODO: send SN_MailUnreadNotice
-				// TODO: send SA_TierRecord
 				// TODO: send SN_WarehouseItems
 				// TODO: send SN_MutualFriendList
 				// TODO: send SN_GuildMemberStatus
@@ -998,8 +1008,13 @@ int main(int argc, char** argv)
 		int addrLen = sizeof(sockaddr);
 		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
-			LOG("ERROR(accept): failed: %d", WSAGetLastError());
-			return 1;
+			if(server.running) {
+				LOG("ERROR(accept): failed: %d", WSAGetLastError());
+				return 1;
+			}
+			else {
+				break;
+			}
 		}
 
 		LOG("New connection (%s)", GetIpString(clientAddr));
@@ -1007,6 +1022,5 @@ int main(int argc, char** argv)
 	}
 
 	LOG("Done.");
-
 	return 0;
 }

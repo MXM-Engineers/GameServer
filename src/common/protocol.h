@@ -678,36 +678,39 @@ struct SN_ProfileCharacters
 	Character chara[1];
 };
 
+PUSH_PACKED
+struct PST_Property
+{
+	u8 type;
+	i32 typeDetail;
+	u8 valueType;
+	f32 value;
+	u8 fixed;
+};
+POP_PACKED
+
+struct PST_ProfileItem
+{
+	i32 itemID;
+	u8 invenType;
+	i32 slot;
+	i32 itemIndex;
+	i32 count;
+	i32 propertyGroupIndex;
+	u8 isLifeTimeAbsolute;
+	i64 lifeEndTimeUTC;
+
+	u16 properties_count;
+	PST_Property properties[1];
+};
+
 struct SN_ProfileItems
 {
 	enum { NET_ID = 62125 };
 
-	PUSH_PACKED
-	struct Property
-	{
-		u8 type;
-		i32 typeDetail;
-		u8 valueType;
-		f32 value;
-		u8 fixed;
-	};
-	POP_PACKED
-
-	struct Item
-	{
-		i32 itemID;
-		u8 invenType;
-		i32 slot;
-		i32 itemIndex;
-		i32 count;
-		i32 propertyGroupIndex;
-		u8 isLifeTimeAbsolute;
-		i64 lifeEndTimeUTC;
-	};
-
 	u8 packetNum;
 	u16 item_count;
-	Item items[1];
+	PST_ProfileItem items[1];
 };
 
 struct SN_ProfileWeapons
@@ -1089,8 +1092,8 @@ struct SN_WarehouseItems
 {
 	enum { NET_ID = 62404 };
 
-	// TODO: reverse and send this packet
-	u16 itemList_count;
+	u16 item_count;
+	PST_ProfileItem items[1];
 };
 
 struct SN_MailUnreadNotice

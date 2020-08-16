@@ -50,4 +50,9 @@ class PacketReader:
         self.adv(len)
         return r
 
+    def read_raw(self, len):
+        r = self.buff[:len]
+        self.adv(len)
+        return r
+
         

@@ -76,6 +76,8 @@ bool Server::Init(const char* listenPort)
 		return false;
 	}
 
+	memset(clientIsConnected, 0, sizeof(clientIsConnected));
+
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
 		ClientNet& client = clientNet[i];
@@ -96,10 +98,16 @@ void Server::Cleanup()
 	WSACleanup();
 }
 
+// NOTE: this is called from the Main thread (listen thread)
 i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-		if(clientSocket[clientID] == INVALID_SOCKET) {
+		if(clientIsConnected[clientID] == 0) {
+			ClientNet& client = clientNet[clientID];
+			const std::lock_guard<std::mutex> lock(client.mutexConnect);
+
+			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
+
 			// set non blocking
 			u_long NonBlocking = true;
 			int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
@@ -110,7 +118,8 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 				return -1;
 			}
 
-			ClientNet& client = clientNet[clientID];
+			clientSocket[clientID] = s;
+
 			client.addr = addr_;
 
 			if(client.recvPendingProcessingBuff.data == nullptr) {
@@ -141,7 +150,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
 			client.sendOverlapped.hEvent = client.hEventSend;
 
-			clientSocket[clientID] = s; // register the socket at the end, when everything is initialized
+			 // register the socket at the end, when everything is initialized
 			// TODO: add a variable clientIsInitialized?
 
 			// start receiving
@@ -155,6 +164,8 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			const u8* clIp = (u8*)&sin.sin_addr;
 			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
 			info.port = htons(sin.sin_port);
+
+			clientIsConnected[clientID] = 1;
 			return clientID;
 		}
 	}
@@ -166,14 +177,18 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 void Server::DisconnectClient(i32 clientID)
 {
 	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
-	if(clientSocket[clientID] == INVALID_SOCKET) return;
+	if(clientIsConnected[clientID] == 0) return;
+
+	ClientNet& client = clientNet[clientID];
+	const std::lock_guard<std::mutex> lock(client.mutexConnect);
 
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
-	ClientNet& client = clientNet[clientID];
+
 	WSAResetEvent(client.hEventRecv);
 	WSAResetEvent(client.hEventSend);
 
+	clientIsConnected[clientID] = 0;
 	LOG("[client%03d] disconnected", clientID);
 }
 
@@ -187,11 +202,14 @@ void Server::ClientSend(i32 clientID, const void* data, i32 dataSize)
 	client.pendingSendBuff.Append(data, dataSize);
 }
 
+// NOTE: this is called from the Poller thread
 void Server::Update()
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
+		if(clientIsConnected[clientID] == 0) continue;
+
 		SOCKET sock = clientSocket[clientID];
-		if(sock == INVALID_SOCKET) continue;
+		ASSERT(sock != INVALID_SOCKET);
 
 		ClientNet& client = clientNet[clientID];
 

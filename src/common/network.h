@@ -30,6 +30,7 @@ struct Server
 		u8 sendBuffID;
 		std::mutex mutexRecv;
 		std::mutex mutexSend;
+		std::mutex mutexConnect;
 		OVERLAPPED recvOverlapped;
 		OVERLAPPED sendOverlapped;
 		HANDLE hEventRecv;
@@ -52,6 +53,7 @@ struct Server
 
 	bool running;
 	SOCKET serverSocket;
+	u8 clientIsConnected[MAX_CLIENTS]; // is guarded by ClientNet.mutexConnect
 	SOCKET clientSocket[MAX_CLIENTS];
 	ClientNet clientNet[MAX_CLIENTS];
 	ClientInfo clientInfo[MAX_CLIENTS];

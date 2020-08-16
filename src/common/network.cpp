@@ -110,7 +110,6 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 				return -1;
 			}
 
-			clientSocket[clientID] = s;
 			ClientNet& client = clientNet[clientID];
 			client.addr = addr_;
 
@@ -141,6 +140,9 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 
 			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
 			client.sendOverlapped.hEvent = client.hEventSend;
+
+			clientSocket[clientID] = s; // register the socket at the end, when everything is initialized
+			// TODO: add a variable clientIsInitialized?
 
 			// start receiving
 			bool r = ClientStartReceiving(clientID);

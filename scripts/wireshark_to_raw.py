@@ -79,11 +79,14 @@ for p in cap:
             last_time = time
 
         info = '%s > %s ' % (p.ip.src, p.ip.dst) + ' (' + time + ')'
-        
-        if p.tcp.dstport == '11900': # client to server
-            print('>>>> Client ::', info)
-            client_spitter.push(p.tcp.payload.binary_value)
-            
-        if p.tcp.srcport == '11900': # server to client
-            print('>>>> Server ::', info)
-            server_spitter.push(p.tcp.payload.binary_value)
+
+        if len(p.tcp.payload.binary_value) >= 4:
+            if p.tcp.dstport == '11900': # client to server
+                print('>>>> Client ::', info)
+                client_spitter.push(p.tcp.payload.binary_value)
+                
+            if p.tcp.srcport == '11900': # server to client
+                print('>>>> Server ::', info)
+                server_spitter.push(p.tcp.payload.binary_value)
+        else:
+            print('payload too small (%d)' % len(p.tcp.payload.binary_value))

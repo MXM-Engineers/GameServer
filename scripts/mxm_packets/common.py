@@ -43,6 +43,13 @@ class PacketReader:
         self.adv(8)
         return r
 
+    def read_str(self):
+        len = struct.unpack("H", self.buff[:2])[0]
+        self.adv(2)
+        r = self.buff[:len].decode('utf-8')
+        self.adv(len)
+        return r
+
     def read_wstr(self):
         len = struct.unpack("H", self.buff[:2])[0] * 2
         self.adv(2)

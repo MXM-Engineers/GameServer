@@ -1,6 +1,10 @@
 # client packets
 from . import common
 
+def read_Vec3(p):
+    x, y, z = p.read_f32(), p.read_f32(), p.read_f32()
+    return 'Vec3(%g, %g, %g)' % (x, y ,z)
+    
 class ClientSerializer:
 
     def serialize_60002(netid, data):
@@ -21,6 +25,20 @@ class ClientSerializer:
         print('}')
 
         # TODO reverse the rest
+
+    def serialize_60022(netid, data):
+        p = common.PacketReader(data)
+
+        print('CN_UpdatePosition {')
+        print('    playerID=%d' % p.read_i32())
+        print('    p3nPos=%s' % read_Vec3(p))
+        print('    p3nDirection=%s' % read_Vec3(p))
+        print('    p3nEye=%s' % read_Vec3(p))
+        print('    nRotate=%d' % p.read_f32())
+        print('    nSpeed=%d' % p.read_f32())
+        print('    nState=%d' % p.read_i32())
+        print('    nActionIDX=%d' % p.read_i32())
+        print('}')
 
     def serialize_60051(netid, data):
         p = common.PacketReader(data)

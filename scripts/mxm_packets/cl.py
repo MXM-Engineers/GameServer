@@ -26,6 +26,9 @@ class ClientSerializer:
 
         # TODO reverse the rest
 
+    def serialize_60014(netid, data):
+        print('ReadyToLoadCharacter {}')
+
     def serialize_60022(netid, data):
         p = common.PacketReader(data)
 
@@ -39,6 +42,9 @@ class ClientSerializer:
         print('    nState=%d' % p.read_i32())
         print('    nActionIDX=%d' % p.read_i32())
         print('}')
+
+    def serialize_60034(netid, data):
+        print('CN_MapIsLoaded {}')
 
     def serialize_60051(netid, data):
         p = common.PacketReader(data)

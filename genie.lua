@@ -69,7 +69,7 @@ solution "Servers"
 		"EnableAVX",
 		"EnableAVX2",
 		"EnableMinimalRebuild",
-		"StaticRuntime",
+		--"StaticRuntime",
 	}
 	
 	defines {
@@ -108,6 +108,15 @@ project "Game"
 
 	includedirs {
 		"src",
+		zlib_includedir,
+	}
+
+	libdirs {
+		zlib_libdir
+	}
+
+	links {
+		"zlibstatic",
 	}
 	
 	files {

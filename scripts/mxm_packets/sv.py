@@ -1127,7 +1127,7 @@ class ServerSerializer:
         count = p.read_u16()
         while count > 0:
             print('    {')
-            print('      nicnkname="%s"' % p.read_wstr())
+            print('      nickname="%s"' % p.read_wstr())
             print('      onlineStatus=%d' % p.read_u8())
             print('    },')
             count -= 1

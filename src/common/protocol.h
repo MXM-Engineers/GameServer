@@ -709,7 +709,7 @@ struct SN_ProfileItems
 	enum { NET_ID = 62125 };
 
 	u8 packetNum;
-	u16 item_count;
+	u16 items_count;
 	PST_ProfileItem items[1];
 };
 
@@ -850,14 +850,30 @@ struct SN_MutualFriendList
 {
 	enum { NET_ID = 62259 };
 
-	// TODO: reverse and send this packet
+	struct Candidate
+	{
+		u16 name_len;
+		wchar name[1];
+		i32 leaderCreatureIndex;
+		u8 mutualCount;
+	};
+
+	u16 candidates_count;
+	Candidate candidates[1];
 };
 
 struct SN_BlockList
 {
 	enum { NET_ID = 62261 };
 
-	// TODO: reverse and send this packet
+	struct Block
+	{
+		u16 name_len;
+		wchar name[1];
+	};
+
+	u16 blocks_count;
+	Block blocks[1];
 };
 
 struct SN_Exp
@@ -1067,7 +1083,15 @@ struct SN_GuildMemberStatus
 {
 	enum { NET_ID = 62338 };
 
-	// TODO: reverse and send this packet
+	struct Member
+	{
+		u16 nickname_len;
+		wchar nickname[1];
+		u8 onlineStatus;
+	};
+
+	u16 guildMemberStatusList_count;
+	Member guildMemberStatusList[1];
 };
 
 struct SN_GuildChannelEnter
@@ -1085,14 +1109,23 @@ struct SN_ProfileCharacterSkinList
 {
 	enum { NET_ID = 62390 };
 
-	// TODO: reverse and send this packet
+	struct Skin
+	{
+		i32 classType;
+		i32 skinIndex;
+		i32 bufCount;
+		i64 expireDateTime;
+	};
+
+	u16 skins_count;
+	Skin skins[1];
 };
 
 struct SN_WarehouseItems
 {
 	enum { NET_ID = 62404 };
 
-	u16 item_count;
+	u16 items_count;
 	PST_ProfileItem items[1];
 };
 
@@ -1100,7 +1133,14 @@ struct SN_MailUnreadNotice
 {
 	enum { NET_ID = 62425 };
 
-	// TODO: reverse and send this packet
+	u16 unreadInboxMailCount;
+	u16 unreadArchivedMailCount;
+	u16 unreadShopMailCount;
+	u16 inboxMailCount;
+	u16 archivedMailCount;
+	u16 shopMailCount;
+	u16 newAttachmentsPending_count;
+	i32 newAttachmentsPending[1];
 };
 
 struct SA_TierRecord
@@ -1135,8 +1175,10 @@ struct SN_PveComradeInfo
 {
 	enum { NET_ID = 62485 };
 
-	// TODO: reverse and send this packet
+	i32 availableComradeCount;
+	i32 maxComradeCount;
 };
+ASSERT_SIZE(SN_PveComradeInfo, 8);
 
 struct SN_ClientSettings
 {
@@ -1144,7 +1186,7 @@ struct SN_ClientSettings
 
 	u8 settingType;
 	u16 data_len;
-	u8 data[1];
+	u8 data[1]; // xml compressed with zlib
 };
 
 // maybe?

@@ -90,3 +90,6 @@ for p in cap:
                 server_spitter.push(p.tcp.payload.binary_value)
         else:
             print('payload too small (%d)' % len(p.tcp.payload.binary_value))
+
+print('server remaining bytes = %d' % len(server_spitter.buff))
+print('client remaining bytes = %d' % len(client_spitter.buff))

@@ -1,6 +1,7 @@
 #include <common/base.h>
 #include <common/protocol.h>
 #include <common/network.h>
+#include <zlib.h>
 
 // TODO:
 
@@ -97,7 +98,7 @@ struct Game
 				u16 nickLen = request.Read<u16>();
 				const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
 				i32 var = request.Read<i32>();
-				LOG("[client%03d] Client :: RequestConnectGame :: %.*ws", clientID, nickLen, nick, var);
+				LOG("[client%03d] Client :: RequestConnectGame :: %.*S var=%d", clientID, nickLen, nick, var);
 
 				const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -214,6 +215,665 @@ struct Game
 					LOG("[client%03d] Server :: SN_MyGuild :: ", clientID);
 					SendPacketData(clientID, Sv::SN_MyGuild::NET_ID, packet.size, packet.data);
 				}
+
+				// SN_ProfileCharacters
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // charaList_count
+
+					Sv::SN_ProfileCharacters::Character chara;
+					chara.characterID = 21013;
+					chara.creatureIndex = 100000035;
+					chara.skillShot1 = 180350010;
+					chara.skillShot2 = 180350030;
+					chara.class_ = 35;
+					chara.x = 12029;
+					chara.y = 12622;
+					chara.z = 3328.29f;
+					chara.characterType = 1;
+					chara.skinIndex = 2;
+					chara.weaponIndex = 131135012;
+					chara.masterGearNo = 1;
+
+					packet.Write(chara);
+
+					LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileWeapons
+				{
+					u8 sendData[2048];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // weaponList_count
+
+					Sv::SN_ProfileWeapons::Weapon weap;
+					weap.characterID = 21013;
+					weap.weaponType = 1;
+					weap.weaponIndex = 131135012;
+					weap.grade = 1;
+					weap.isUnlocked = 1;
+					weap.isActivated = 1;
+
+					packet.Write(weap);
+
+					LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileMasterGears
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // masterGears_count
+
+					LOG("[client%03d] Server :: SN_ProfileMasterGears :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileMasterGears::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileItems
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // packetNum
+					packet.Write<u16>(0); // items_count
+
+					LOG("[client%03d] Server :: SN_ProfileItems :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileItems::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileSkills
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // packetNum
+					packet.Write<u16>(0); // skills_count
+
+					LOG("[client%03d] Server :: SN_ProfileSkills :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileSkills::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileTitles
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // titles_count
+					packet.Write<i32>(320080004); // titles[0]
+
+					LOG("[client%03d] Server :: SN_ProfileTitles :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileTitles::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ProfileCharacterSkinList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // skins_count
+
+					LOG("[client%03d] Server :: SN_ProfileCharacterSkinList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_ProfileCharacterSkinList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_LeaderCharacter
+				Sv::SN_LeaderCharacter leader;
+				leader.leaderID = 21013;
+				leader.skinIndex = 0;
+				SendPacket(clientID, leader);
+
+				// SN_AccountInfo
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.WriteStringObj(L"LordSk"); // nick
+					packet.Write<i32>(4); // inventoryLineCountTab0
+					packet.Write<i32>(4); // inventoryLineCountTab1
+					packet.Write<i32>(4); // inventoryLineCountTab2
+					packet.Write<i32>(320080005); // displayTitlteIndex
+					packet.Write<i32>(320080005); // statTitleIndex
+					packet.Write<i32>(1); // warehouseLineCount
+					packet.Write<i32>(-1); // tutorialState
+					packet.Write<i32>(3600); // masterGearDurability
+					packet.Write<u8>(0); // badgeType
+
+					LOG("[client%03d] Server :: SN_AccountInfo :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AccountInfo::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AccountExtraInfo
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // userGradeList_count
+					packet.Write<i32>(0); // activityPoint
+					packet.Write<u8>(0); // activityRewaredState
+
+					LOG("[client%03d] Server :: SN_AccountExtraInfo :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AccountExtraInfo::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AccountEquipmentList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(-1); // supportKitDocIndex
+
+					LOG("[client%03d] Server :: SN_AccountEquipmentList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AccountEquipmentList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_Unknown_62472
+				{
+					u8 sendData[32];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u8>(1);
+
+					LOG("[client%03d] Server :: SN_Unknown_62472 :: ", clientID);
+					SendPacketData(clientID, 62472, packet.size, packet.data);
+				}
+
+				// SN_GuildChannelEnter
+				{
+					u8 sendData[32];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.WriteStringObj(L"XMX"); // guildName
+					packet.WriteStringObj(L"LordSk"); // nick
+					packet.Write<u8>(0); // onlineStatus
+
+					LOG("[client%03d] Server :: SN_GuildChannelEnter :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GuildChannelEnter::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ClientSettings
+				{
+					u8 sendData[4096];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					const char* src = R"foo(
+					<?xml version="1.0" encoding="utf-8"?>
+					<KEY_DATA highDateTime="30633031" lowDateTime="3986680182" isCustom="0" keyboardLayoutName="00000813">
+					  <data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_SHIRK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
+					  <data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
+					  <data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
+					  <data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
+					  <data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
+					  <data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
+					  <data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
+					  <data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
+					</KEY_DATA>
+					)foo";
+
+					u8 dest[2048];
+					uLongf destLen = sizeof(dest);
+					int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
+					if(r != Z_OK) {
+						if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
+						else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
+						ASSERT_MSG(0, "compress failed");
+					}
+
+					packet.Write<u8>(0); // settingType
+					packet.Write<u16>(destLen);
+					packet.WriteRaw(dest, destLen);
+
+					LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+					SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ClientSettings
+				{
+					u8 sendData[4096];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					const char* src =
+						R"foo(
+						<?xml version="1.0" encoding="utf-8"?>
+						<userdata
+						  version="2">
+						  <useroption>
+							  <displayUserName
+								  version="0"
+								  value="1" />
+							  <displayNameOfUserTeam
+								  version="0"
+								  value="1" />
+							  <displayNameOfOtherTeam
+								  version="0"
+								  value="1" />
+							  <displayMonsterName
+								  version="0"
+								  value="1" />
+							  <displayNpcName
+								  version="0"
+								  value="1" />
+							  <displayUserTitle
+								  version="0"
+								  value="1" />
+							  <displayOtherTitle
+								  version="0"
+								  value="1" />
+							  <displayUserStatusBar
+								  version="0"
+								  value="1" />
+							  <displayStatusBarOfOtherTeam
+								  version="0"
+								  value="1" />
+							  <displayStatusBarOfUserTeam
+								  version="0"
+								  value="1" />
+							  <displayMonsterStatusBar
+								  version="0"
+								  value="1" />
+							  <displayDamage
+								  version="0"
+								  value="1" />
+							  <displayStatus
+								  version="0"
+								  value="1" />
+							  <displayMasterBigImageType
+								  version="0"
+								  value="0" />
+							  <displayCursorSFX
+								  version="0"
+								  value="1" />
+							  <displayTutorialInfos
+								  version="0"
+								  value="1" />
+							  <displayUserStat
+								  version="0"
+								  value="0" />
+							  <chatFiltering
+								  version="0"
+								  value="1" />
+							  <chatTimstamp
+								  version="0"
+								  value="0" />
+							  <useSmartCast
+								  version="0"
+								  value="0" />
+							  <useMouseSight
+								  version="0"
+								  value="0" />
+							  <alwaysActivateHUD
+								  version="0"
+								  value="1" />
+						  </useroption>
+						</userdata>
+						)foo";
+
+					u8 dest[2048];
+					uLongf destLen = sizeof(dest);
+					int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
+					if(r != Z_OK) {
+						if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
+						else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
+						ASSERT_MSG(0, "compress failed");
+					}
+
+					packet.Write<u8>(1); // settingType
+					packet.Write<u16>(destLen);
+					packet.WriteRaw(dest, destLen);
+
+					LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+					SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ClientSettings
+				{
+					u8 sendData[4096];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					const char* src =
+							R"foo(
+							<?xml version="1.0" encoding="utf-8"?>
+							<KEY_DATA highDateTime="30633030" lowDateTime="3827081041" isCustom="0" keyboardLayoutName="00000813">
+								<data input="INPUT_SHIRK" key="MKC_NOKEY" modifier="MKC_SHIFT" isaddkey="0" />
+								<data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
+								<data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
+								<data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
+								<data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
+								<data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
+								<data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
+								<data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
+								<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="1" />
+								<data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
+							</KEY_DATA>
+							)foo";
+
+					u8 dest[2048];
+					uLongf destLen = sizeof(dest);
+					int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
+					if(r != Z_OK) {
+						if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
+						else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
+						ASSERT_MSG(0, "compress failed");
+					}
+
+					packet.Write<u8>(2); // settingType
+					packet.Write<u16>(destLen);
+					packet.WriteRaw(dest, destLen);
+
+					LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+					SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_FriendList
+				{
+					u8 sendData[32];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // friendList_count
+
+					LOG("[client%03d] Server :: SN_FriendList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_FriendList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_PveComradeInfo
+				{
+					u8 sendData[32];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(5); // availableComradeCount
+					packet.Write<i32>(5); // maxComradeCount
+
+					LOG("[client%03d] Server :: SN_PveComradeInfo :: ", clientID);
+					SendPacketData(clientID, Sv::SN_PveComradeInfo::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_AchieveUpdate
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(800); // achievementScore
+					packet.Write<i32>(300190005); // index
+					packet.Write<i32>(1); // type
+					packet.Write<u8>(0); // isCleared
+					packet.Write<u16>(0); // achievedList_count
+					packet.Write<i64>(6); // progressInt64
+					packet.Write<i64>(6); // date
+
+					LOG("[client%03d] Server :: SN_AchieveUpdate :: ", clientID);
+					SendPacketData(clientID, Sv::SN_AchieveUpdate::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_FriendRequestList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // friendRequestList_count
+
+					LOG("[client%03d] Server :: SN_FriendRequestList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_FriendRequestList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_BlockList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // blocks_count
+
+					LOG("[client%03d] Server :: SN_BlockList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_BlockList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_MailUnreadNotice
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(1); // unreadInboxMailCount
+					packet.Write<u16>(0); // unreadArchivedMailCount
+					packet.Write<u16>(4); // unreadShopMailCount
+					packet.Write<u16>(3); // inboxMailCount
+					packet.Write<u16>(3); // archivedMailCount
+					packet.Write<u16>(16); // shopMailCount
+					packet.Write<u16>(0); // newAttachmentsPending_count
+
+					LOG("[client%03d] Server :: SN_MailUnreadNotice :: ", clientID);
+					SendPacketData(clientID, Sv::SN_MailUnreadNotice::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_WarehouseItems
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // items_count
+
+					LOG("[client%03d] Server :: SN_WarehouseItems :: ", clientID);
+					SendPacketData(clientID, Sv::SN_WarehouseItems::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_MutualFriendList
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // candidates_count
+
+					LOG("[client%03d] Server :: SN_MutualFriendList :: ", clientID);
+					SendPacketData(clientID, Sv::SN_MutualFriendList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_GuildMemberStatus
+				{
+					u8 sendData[128];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // guildMemberStatusList_count
+
+					LOG("[client%03d] Server :: SN_GuildMemberStatus :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GuildMemberStatus::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_Money
+				Sv::SN_Money money;
+				money.nMoney = 116472;
+				money.nReason = 1;
+				LOG("[client%03d] Server :: SN_Money :: ", clientID);
+				SendPacket(clientID, money);
 			} break;
 
 			case Cl::CQ_GetGuildProfile::NET_ID: {
@@ -246,7 +906,7 @@ struct Game
 					packet.Write(guildInterest);
 
 					packet.WriteStringObj(L"This is a great intro"); // guildIntro
-					packet.WriteStringObj(L"Notice: this game is dead!"); // guildNotice
+					packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
 					packet.Write<i32>(460281); // guildPoint
 					packet.Write<i32>(9999); // guildFund
 
@@ -416,120 +1076,13 @@ struct Game
 					SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
 				}
 
-				// SN_ProfileCharacters
-				{
-					u8 sendData[2048];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<u16>(1); // charaList_count
-
-					Sv::SN_ProfileCharacters::Character chara;
-					chara.characterID = 21013;
-					chara.creatureIndex = 100000001;
-					chara.skillShot1 = 180010020;
-					chara.skillShot2 = 180010040;
-					chara.class_ = 1;
-					chara.x = 12029;
-					chara.y = 12622;
-					chara.z = 3328.29f;
-					chara.characterType = 5;
-					chara.skinIndex = 3;
-					chara.weaponIndex = 131101011;
-					chara.masterGearNo = 1;
-
-					packet.Write(chara);
-
-					LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
-					SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
-				}
-
-				// SN_ProfileWeapons
-				{
-					u8 sendData[2048];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<u16>(1); // weaponList_count
-
-					Sv::SN_ProfileWeapons::Weapon weap;
-					weap.characterID = 21013;
-					weap.weaponType = 1;
-					weap.weaponIndex = 131101011;
-					weap.grade = 0;
-					weap.isUnlocked = 0;
-					weap.isActivated = 0;
-
-					packet.Write(weap);
-
-					LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
-					SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
-				}
-
-				// SN_LeaderCharacter
-				Sv::SN_LeaderCharacter leader;
-				leader.leaderID = 21013;
-				leader.skinIndex = 0;
-				SendPacket(clientID, leader);
-
-				// SN_AccountInfo
-				{
-					u8 sendData[2048];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.WriteStringObj(L"LordSk"); // nick
-					packet.Write<i32>(4); // inventoryLineCountTab0
-					packet.Write<i32>(4); // inventoryLineCountTab1
-					packet.Write<i32>(4); // inventoryLineCountTab2
-					packet.Write<i32>(320080005); // displayTitlteIndex
-					packet.Write<i32>(320080005); // statTitleIndex
-					packet.Write<i32>(1); // warehouseLineCount
-					packet.Write<i32>(-1); // tutorialState
-					packet.Write<i32>(3600); // masterGearDurability
-					packet.Write<u8>(0); // badgeType
-
-					LOG("[client%03d] Server :: SN_AccountInfo :: ", clientID);
-					SendPacketData(clientID, Sv::SN_AccountInfo::NET_ID, packet.size, packet.data);
-				}
-
-				// SN_Unknown_62472
-				{
-					u8 sendData[32];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<u8>(1);
-
-					LOG("[client%03d] Server :: SN_Unknown_62472 :: ", clientID);
-					SendPacketData(clientID, 62472, packet.size, packet.data);
-				}
-
 				// TODO: send SN_AccountExtraInfo
 				// TODO: send SN_AccountEquipmentList
 				// TODO: send SN_GuildChannelEnter
 
-				// SN_ClientSettings
-				// TODO: this is surely encrypted, find out what it represents
-				/*{
-					u8 sendData[2048];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<u8>(0); // settingType
-					packet.Write<u16>(1127); // dat_len
-
-					const u8 settings0[1127] = {
-						0x78, 0xDA, 0xAD, 0x9A, 0x5D, 0x73, 0xDA, 0x38, 0x14, 0x86, 0xAF, 0x37, 0xBF, 0x82, 0xF1, 0x7D, 0xB7, 0x18, 0x27, 0x7C, 0xCC, 0x84, 0x74, 0x84, 0x2D, 0x1B, 0x15, 0xC9, 0x72, 0x65, 0x09, 0x4A, 0x6E, 0x3C, 0xEC, 0x42, 0x5B, 0x66, 0x9B, 0xB0, 0x93, 0x90, 0xDD, 0xED, 0xBF, 0x5F, 0x91, 0xA4, 0x93, 0x63, 0x0C, 0x2E, 0xF8, 0x88, 0x3B, 0x18, 0x78, 0xF4, 0xBE, 0xE7, 0x48, 0x47, 0x3A, 0x32, 0xD7, 0x1F, 0xFE, 0xBB, 0xFB, 0xDE, 0xFA, 0x67, 0xF5, 0xF0, 0xB8, 0xDE, 0xDC, 0x0F, 0x3D, 0xFF, 0xF7, 0xB6, 0xD7, 0x5A, 0xDD, 0xFF, 0xB9, 0x59, 0xAE, 0xEF, 0xBF, 0x0E, 0xBD, 0xA7, 0xED, 0x97, 0x77, 0x7D, 0xEF, 0xC3, 0xCD, 0xC5, 0xF5, 0x84, 0xCE, 0x8B, 0x88, 0x68, 0xD2, 0xFA, 0xB6, 0xFE, 0xFA, 0x2D, 0x5A, 0x6C, 0x57, 0x7A, 0x7D, 0xB7, 0x1A, 0x7A, 0x41, 0xBB, 0x1B, 0x04, 0xED, 0xC0, 0xF7, 0x5A, 0xDF, 0x37, 0xFF, 0x82, 0x8F, 0x07, 0xFD, 0x6E, 0xB7, 0xDF, 0xF6, 0xFB, 0x1D, 0xAF, 0xB5, 0x7E, 0x0C, 0x9F, 0x1E, 0xB7, 0x9B, 0xBB, 0xA1, 0x67, 0xD1, 0x7F, 0xAD, 0x7E, 0xFC, 0xB1, 0x59, 0x3C, 0x2C, 0xF9, 0xE2, 0xC7, 0xE6, 0x69, 0x9B, 0x2E, 0x76, 0x5F, 0x6E, 0xEF, 0x5E, 0x7D, 0x3F, 0xF0, 0x6E, 0x2E, 0x7E, 0xBB, 0x5E, 0x2E, 0xB6, 0x8B, 0xD6, 0xFA, 0xFE, 0xEF, 0xA7, 0xED, 0xD0, 0x63, 0x69, 0x66, 0x74, 0x61, 0x18, 0x8D, 0x98, 0x16, 0x32, 0xA2, 0xCF, 0x3F, 0x1F, 0x7A, 0x62, 0x12, 0x16, 0xA9, 0xB4, 0x82, 0xBC, 0xD6, 0x9D, 0xD5, 0xF9, 0x65, 0xBD, 0x7A, 0x78, 0xF9, 0x30, 0x94, 0xA9, 0x56, 0x92, 0xEF, 0x86, 0x5C, 0x2C, 0x97, 0xCF, 0xDF, 0xB5, 0x43, 0xBE, 0x3F, 0x8C, 0xCD, 0x58, 0x9A, 0xFC, 0x0A, 0x28, 0x68, 0x6A, 0x4E, 0xA3, 0x71, 0xA2, 0x35, 0x09, 0x27, 0x00, 0xC8, 0x47, 0x46, 0x6B, 0x99, 0xEE, 0x23, 0x5F, 0xC7, 0x39, 0x85, 0x99, 0x10, 0x41, 0xF7, 0x54, 0x1E, 0x81, 0x9E, 0xAE, 0x33, 0x1F, 0x33, 0x05, 0x55, 0x2A, 0xB4, 0x4A, 0x55, 0x71, 0x7E, 0x84, 0x79, 0x56, 0x76, 0x46, 0x16, 0xB9, 0xE7, 0x5D, 0x61, 0xBD, 0x47, 0x24, 0x1F, 0x8F, 0x24, 0x51, 0x11, 0x80, 0x6A, 0x32, 0x42, 0x78, 0x0F, 0xC7, 0xE4, 0x59, 0xD1, 0x9B, 0x46, 0xAA, 0x8D, 0x4A, 0x91, 0xC4, 0x82, 0x70, 0x9E, 0x71, 0x32, 0xA7, 0xAA, 0x90, 0x69, 0x48, 0x7F, 0x89, 0xB7, 0x39, 0x8D, 0xF5, 0x69, 0x78, 0x9A, 0x87, 0x00, 0x67, 0xDF, 0x91, 0x8C, 0x22, 0xD4, 0x7E, 0x34, 0x22, 0x2B, 0x72, 0x12, 0xD3, 0xD8, 0x4A, 0x06, 0xE0, 0x3C, 0x23, 0x21, 0x86, 0xAB, 0xE8, 0xCE, 0x7F, 0x91, 0x48, 0x2D, 0x0B, 0xCE, 0xA6, 0x30, 0x04, 0x6D, 0x64, 0x70, 0x05, 0x09, 0x95, 0x2C, 0xDA, 0x75, 0xC4, 0xB3, 0x26, 0xEA, 0x8C, 0xA8, 0x58, 0x26, 0xBB, 0xEA, 0x54, 0xF8, 0x00, 0xEA, 0x3B, 0x91, 0x59, 0x4B, 0x3C, 0x4B, 0x26, 0x15, 0x52, 0x33, 0x99, 0x96, 0x8C, 0xFB, 0xCD, 0x97, 0x12, 0x70, 0xDD, 0x01, 0xC4, 0x8E, 0x13, 0xD7, 0xB5, 0xC4, 0x46, 0xAE, 0xFD, 0x3A, 0x62, 0x23, 0xD7, 0x01, 0x20, 0x06, 0x4E, 0x5C, 0xD7, 0x12, 0x1B, 0xB9, 0xEE, 0xD4, 0x11, 0x1B, 0xB9, 0xBE, 0x04, 0xC4, 0x4B, 0x27, 0xAE, 0x6B, 0x89, 0x67, 0xB9, 0x7E, 0x63, 0x5E, 0x01, 0xE6, 0x15, 0x8A, 0xA9, 0x65, 0x92, 0x70, 0x5A, 0x68, 0x26, 0xE8, 0xCF, 0x1F, 0x72, 0xAA, 0x00, 0xBE, 0xEB, 0x24, 0x08, 0xDD, 0x3A, 0x62, 0xC3, 0x20, 0xF4, 0x00, 0xB3, 0x87, 0x62, 0xBE, 0x16, 0x63, 0x21, 0xA7, 0x74, 0x54, 0xDE, 0xE8, 0xFB, 0x4E, 0xDC, 0xF7, 0xEB, 0x88, 0x4D, 0x94, 0x66, 0xC4, 0xE4, 0xD4, 0xBE, 0xC9, 0x8D, 0x80, 0x3B, 0xC7, 0xC0, 0x89, 0xDA, 0x41, 0x1D, 0xF1, 0x2C, 0xB5, 0x9F, 0x0C, 0x0B, 0x27, 0x39, 0x97, 0xBA, 0x54, 0x9E, 0x08, 0x42, 0x65, 0x3E, 0x61, 0x9C, 0x9B, 0xAC, 0x9E, 0xD7, 0x54, 0xA3, 0x15, 0xA2, 0x59, 0x3C, 0xAF, 0x43, 0x9F, 0x5E, 0x53, 0xDE, 0xB8, 0x32, 0xD3, 0x00, 0x89, 0x39, 0x8C, 0xBD, 0x31, 0x61, 0x29, 0x0D, 0x31, 0x59, 0xCF, 0xC7, 0x32, 0xAB, 0x63, 0x9D, 0x71, 0xF2, 0xCA, 0x35, 0x49, 0xE8, 0x4B, 0x86, 0xAA, 0x91, 0x0C, 0x9B, 0x47, 0x52, 0xB1, 0x64, 0x0C, 0x23, 0x18, 0x39, 0x89, 0x20, 0xDC, 0x3A, 0xA8, 0x83, 0x19, 0x59, 0xCB, 0x6B, 0x38, 0x23, 0x3B, 0xD5, 0x38, 0xD2, 0xE6, 0x71, 0x24, 0xE1, 0x6E, 0xCF, 0x04, 0xAC, 0x18, 0xD3, 0xB9, 0x19, 0xC6, 0x61, 0x97, 0x91, 0x20, 0x58, 0xDA, 0x68, 0xA9, 0x18, 0x81, 0xC7, 0xEB, 0x31, 0x02, 0xC7, 0xD2, 0x29, 0x4D, 0x2D, 0x11, 0x86, 0x8D, 0x21, 0x78, 0x82, 0xE5, 0xB9, 0x0D, 0x1C, 0x67, 0x39, 0x9C, 0x85, 0x1F, 0x11, 0xC4, 0xD4, 0xB6, 0xBD, 0x45, 0x44, 0x43, 0x09, 0x78, 0x13, 0x04, 0x2F, 0x56, 0x8C, 0xA6, 0xD1, 0x9E, 0x40, 0x8E, 0x99, 0xD4, 0xE1, 0x98, 0x46, 0x86, 0xC3, 0xBD, 0x45, 0x60, 0xFC, 0x42, 0xA3, 0x98, 0xDE, 0xD1, 0x96, 0x52, 0x9B, 0x89, 0x19, 0x4B, 0x23, 0x39, 0x03, 0x48, 0x89, 0xDB, 0xF7, 0x94, 0x5D, 0x19, 0xA5, 0x33, 0x4F, 0x86, 0xE0, 0x65, 0xB2, 0x94, 0x85, 0x0C, 0x51, 0x50, 0x39, 0x8D, 0x21, 0xEA, 0x93, 0x93, 0xBA, 0x67, 0x4A, 0x17, 0x0E, 0x0E, 0x0A, 0x5F, 0x3D, 0xB0, 0x61, 0xE5, 0x33, 0x49, 0xB5, 0xF4, 0xA9, 0xE6, 0xA5, 0x6F, 0xEF, 0x54, 0x97, 0x23, 0x6C, 0x13, 0xAD, 0x15, 0x1B, 0x19, 0x0D, 0xD7, 0x86, 0xC6, 0x14, 0x3F, 0xA6, 0x49, 0x5A, 0x90, 0x29, 0xD1, 0x44, 0x55, 0x3D, 0x6B, 0xC4, 0x3D, 0x98, 0x11, 0x82, 0x94, 0x8A, 0xA0, 0xC1, 0x4C, 0x6B, 0x62, 0x8B, 0xE0, 0x94, 0x56, 0x15, 0x4E, 0x9B, 0x2B, 0x84, 0xD6, 0x01, 0x71, 0x86, 0x90, 0x69, 0xD8, 0x6B, 0x47, 0x03, 0x78, 0x9F, 0x51, 0x73, 0x72, 0x4E, 0x73, 0xC0, 0x9A, 0xA3, 0xAA, 0xB4, 0x1D, 0x17, 0xB0, 0x6E, 0x51, 0xDB, 0x2F, 0x51, 0x11, 0xB3, 0xD1, 0x0B, 0x89, 0x80, 0xB5, 0xD5, 0x88, 0x8C, 0x44, 0x98, 0x0B, 0xA4, 0x19, 0xBB, 0xB5, 0xE4, 0x83, 0x58, 0xCC, 0x85, 0x0F, 0x89, 0x88, 0x38, 0xA2, 0x16, 0x73, 0xA3, 0xA2, 0x0C, 0x99, 0x1C, 0x84, 0x06, 0xE8, 0x15, 0x39, 0xE2, 0x86, 0xEE, 0xD0, 0xA5, 0x56, 0xE3, 0x05, 0x7E, 0xE9, 0x0E, 0xDE, 0xA9, 0xC0, 0xAF, 0xDC, 0xC1, 0x83, 0x0A, 0xBC, 0x8B, 0x86, 0x2B, 0x1A, 0x1D, 0x89, 0x4A, 0xCF, 0x19, 0xBB, 0x1A, 0x94, 0xBE, 0x33, 0x76, 0x35, 0x26, 0x03, 0xFC, 0xC1, 0x6B, 0x5E, 0x09, 0x49, 0xEC, 0xBB, 0xA2, 0xC2, 0x60, 0xC4, 0x1D, 0x57, 0x54, 0x18, 0x86, 0x38, 0x70, 0x45, 0x85, 0x57, 0x5D, 0xF1, 0xA5, 0x2B, 0x2A, 0xBC, 0xEC, 0x8A, 0x31, 0xCB, 0x83, 0xA6, 0x54, 0x1C, 0x48, 0x55, 0xD7, 0x09, 0xB2, 0x94, 0xA7, 0x9E, 0x13, 0x64, 0x29, 0x49, 0x7D, 0x27, 0xC8, 0x52, 0x86, 0x06, 0x4E, 0x90, 0xA5, 0xF4, 0xF8, 0xA8, 0x87, 0x17, 0x96, 0x66, 0x77, 0x09, 0x53, 0xEA, 0x04, 0x63, 0xDF, 0x47, 0x22, 0x89, 0x6D, 0x2F, 0x4B, 0x40, 0xCC, 0x2A, 0x9A, 0xB2, 0x88, 0x4A, 0x5B, 0x4D, 0x42, 0x69, 0xF7, 0xDF, 0xD2, 0xC3, 0xBB, 0x03, 0xDC, 0xF3, 0x2E, 0x36, 0xAD, 0xD4, 0x5B, 0x29, 0x45, 0xF5, 0x00, 0x23, 0xA9, 0x40, 0x3D, 0x6D, 0xD1, 0x8A, 0x44, 0x54, 0xD9, 0xBE, 0x38, 0xB1, 0x55, 0xD0, 0x2E, 0x2C, 0xBD, 0xC7, 0xCE, 0xB8, 0xC9, 0xF1, 0x78, 0xDB, 0x0F, 0xA4, 0xFB, 0x60, 0xAA, 0x98, 0x8C, 0xF0, 0x68, 0x41, 0xA3, 0xD2, 0x9C, 0xD8, 0xB1, 0x31, 0x49, 0xD4, 0x04, 0x26, 0x6E, 0x36, 0xA6, 0x94, 0xDB, 0x86, 0x32, 0xC5, 0x11, 0xAB, 0x47, 0xE3, 0xA3, 0xE0, 0x73, 0x1A, 0x17, 0xAD, 0x39, 0xE5, 0x32, 0xD9, 0x73, 0x8F, 0xDA, 0xC8, 0x5F, 0xAE, 0xFC, 0xED, 0x74, 0xD8, 0x5D, 0x43, 0xB0, 0x34, 0x96, 0x4A, 0x90, 0xBD, 0xAB, 0xA1, 0xDD, 0x18, 0x3D, 0xC7, 0x5D, 0xD2, 0xC1, 0xFF, 0x1F, 0x54, 0x98, 0xFE, 0x39, 0x59, 0x33, 0xD9, 0x89, 0xBC, 0xEB, 0xF7, 0x3F, 0xFF, 0xDD, 0x71, 0x73, 0xF1, 0x3F, 0xDA, 0x87, 0x40, 0x6C,
-					};
-					packet.WriteRaw(settings0, sizeof(settings0)); // dat_len
-
-					LOG("[client%03d] Server :: SN_ClientSettings :: ", clientID);
-					SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
-				}*/
-
-				// TODO: send SN_ClientSettings 1 and 2
-				// TODO: send SN_FriendList
-				// TODO: send SN_PveComradeInfo
 				// TODO: send SN_AchieveUpdate x5
 				// TODO: send SN_FriendRequestList
 				// TODO: send SN_BlockList
-				// TODO: send SN_PveComradeInfo
 				// TODO: send SN_MailUnreadNotice
 				// TODO: send SN_WarehouseItems
 				// TODO: send SN_MutualFriendList
@@ -539,13 +1092,6 @@ struct Game
 
 			case Cl::ReadyToLoadCharacter::NET_ID: {
 				LOG("[client%03d] Client :: ReadyToLoadCharacter ::", clientID);
-
-				// SN_Money
-				Sv::SN_Money money;
-				money.nMoney = 1;
-				money.nReason = 1;
-				LOG("[client%03d] Server :: SN_Money :: ", clientID);
-				SendPacket(clientID, money);
 
 				// SN_LoadCharacterStart
 				LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
@@ -635,11 +1181,13 @@ struct Game
 				}
 
 				// SN_SetGameGvt
-				Sv::SN_SetGameGvt gameGvt;
-				gameGvt.sendTime = 0x6c3ed30;
-				gameGvt.virtualTime = 0x6c3ed30;
-				LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
-				SendPacket(clientID, gameGvt);
+				{
+					Sv::SN_SetGameGvt gameGvt;
+					gameGvt.sendTime = 0x6c3ed30;
+					gameGvt.virtualTime = 0x6c3ed30;
+					LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
+					SendPacket(clientID, gameGvt);
+				}
 
 				// SN_SummaryInfoAll
 				{
@@ -709,7 +1257,7 @@ struct Game
 					PacketWriter packet(sendData, sizeof(sendData));
 
 					packet.Write<u8>(1); // packetNum
-					packet.Write<i32>(0); // achievementScore
+					packet.Write<i32>(800); // achievementScore
 					packet.Write<u16>(0); // achList_count
 
 					LOG("[client%03d] Server :: SN_AchieveInfo :: ", clientID);
@@ -736,6 +1284,14 @@ struct Game
 				LOG("[client%03d] Server :: SQ_CityLobbyJoinCity :: ", clientID);
 				SendPacketData(clientID, Sv::SQ_CityLobbyJoinCity::NET_ID, 0, nullptr);
 
+				// SN_SetGameGvt
+				{
+					Sv::SN_SetGameGvt gameGvt;
+					gameGvt.sendTime = 0;
+					gameGvt.virtualTime = 0;
+					LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
+					SendPacket(clientID, gameGvt);
+				}
 			} break;
 
 			case Cl::CA_SetGameGvt::NET_ID: {
@@ -909,6 +1465,28 @@ struct Game
 					SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
 				}
 
+				// NPCs
+				SendNPCSpawn(clientID, 5000, 100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
+				SendNPCSpawn(clientID, 5001, 100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
+				SendNPCSpawn(clientID, 5002, 100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
+				SendNPCSpawn(clientID, 5003, 100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
+				SendNPCSpawn(clientID, 5004, 100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
+				SendNPCSpawn(clientID, 5005, 100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
+				SendNPCSpawn(clientID, 5006, 100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
+				SendNPCSpawn(clientID, 5007, 100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
+				SendNPCSpawn(clientID, 5008, 100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
+				SendNPCSpawn(clientID, 5009, 100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
+				SendNPCSpawn(clientID, 5010, 100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
+				SendNPCSpawn(clientID, 5011, 100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
+				SendNPCSpawn(clientID, 5012, 100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
+				SendNPCSpawn(clientID, 5013, 100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
+				SendNPCSpawn(clientID, 5014, 100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
+				SendNPCSpawn(clientID, 5015, 100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
+				SendNPCSpawn(clientID, 5016, 100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
+				SendNPCSpawn(clientID, 5017, 100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
+				SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
+				SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
+
 			} break;
 
 			case Cl::CQ_GetCharacterInfo::NET_ID: {
@@ -956,6 +1534,62 @@ struct Game
 			fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
 			packetCounter++;
 #endif
+	}
+
+	void SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir)
+	{
+		// SN_GameCreateActor
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			static i32 localID = 1;
+
+			packet.Write<i32>(objectID); // objectID
+			packet.Write<i32>(1); // nType
+			packet.Write<i32>(nIDX); // nIDX
+			packet.Write<i32>(localID++); // dwLocalID
+			packet.Write(pos); // p3nPos
+			packet.Write(dir); // p3nDir
+			packet.Write<i32>(0); // spawnType
+			packet.Write<i32>(99); // actionState
+			packet.Write<i32>(0); // ownerID
+			packet.Write<u8>(0); // bDirectionToNearPC
+			packet.Write<i32>(-1); // AiWanderDistOverride
+			packet.Write<i32>(-1); // tagID
+			packet.Write<i32>(-1); // faction
+			packet.Write<i32>(-1); // classType
+			packet.Write<i32>(0); // skinIndex
+			packet.Write<i32>(0); // seed
+
+			// initStat ------------------------
+			packet.Write<u16>(0); // maxStats_count
+			packet.Write<u16>(0); // curStats_count
+			// ------------------------------------
+
+			packet.Write<u8>(1); // isInSight
+			packet.Write<u8>(0); // isDead
+			packet.Write<i64>((i64)0x6cf3fe57); // serverTime
+
+			packet.Write<u16>(0); // meshChangeActionHistory_count
+
+			LOG("[client%03d] Server :: SN_GameCreateActor :: NPC objectID=%d nIDX=%d", clientID, objectID, nIDX);
+			SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+		}
+
+		// SN_SpawnPosForMinimap
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<i32>(objectID); // objectID
+			packet.Write(pos); // p3nPos
+
+			LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: NPC objectID=%d nIDX=%d", clientID, objectID, nIDX);
+			SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
+		}
+
+
 	}
 };
 

@@ -1,5 +1,6 @@
 # server packets
 from . import common
+import zlib
 
 def read_Vec3(p):
     x, y, z = p.read_f32(), p.read_f32(), p.read_f32()
@@ -1402,7 +1403,9 @@ class ServerSerializer:
         print('SN_ClientSettings {')
         print('    settingType=%d' % p.read_u8())
         data_len = p.read_u16()
-        print('    data="{}"'.format(p.read_raw(data_len)))
+        data = p.read_raw(data_len)
+        extracted = zlib.decompress(data)
+        print('    decompressed=[%s]' % extracted.decode('utf-8'))
         print('}')
 
     def serialize_62525(netid, data):

@@ -299,6 +299,28 @@ struct SN_TgchatServerInfo
 	enum { NET_ID = 62009 };
 
 	u8 data[1]; // variable size
+
+	// TODO: proper ghidra reverse
+};
+
+struct SN_DoConnectChannelServer
+{
+	enum { NET_ID = 62011 };
+
+	u16 count;
+	u8 ip[4];
+	u16 port;
+
+	u16 serverNamelen;
+	wchar serverName[1]; // length is serverNamelen
+
+	u16 nickLen;
+	wchar nick[1]; // length is nickLen
+
+	i32 var1;
+	i32 var2;
+
+	// TODO: proper ghidra reverse
 };
 
 struct SN_GameCreateActor
@@ -918,6 +940,45 @@ struct SN_Exp
 	i32 currentLevelExp;
 };
 
+struct SN_JukeboxEnqueuedList
+{
+	enum { NET_ID = 62282 };
+
+	struct Track
+	{
+		i32 trackID;
+		u16 nickname_len;
+		wchar nickname[1];
+	};
+
+	u16 trackList_count;
+	Track trackList[1];
+};
+
+struct SN_JukeboxPlay
+{
+	enum { NET_ID = 62283 };
+
+	struct Track
+	{
+		i32 trackID;
+		u16 nickname_len;
+		wchar nickname[1];
+	};
+
+	i32 result;
+	Track track;
+	u16 playPositionSec;
+};
+
+struct SN_JukeboxHotTrackList
+{
+	enum { NET_ID = 62284 };
+
+	u16 trackList_count;
+	i32 trackList[1];
+};
+
 struct SN_TownHudStatistics
 {
 	enum { NET_ID = 62285 };
@@ -1239,23 +1300,5 @@ struct SN_AccountEquipmentList
 	i32 supportKitDocIndex;
 };
 ASSERT_SIZE(SN_AccountEquipmentList, 4);
-
-struct Finish
-{
-	enum { NET_ID = 62011 };
-
-	u16 count;
-	u8 ip[4];
-	u16 port;
-
-	u16 serverNamelen;
-	wchar serverName[1]; // length is serverNamelen
-
-	u16 nickLen;
-	wchar nick[1]; // length is nickLen
-
-	i32 var1;
-	i32 var2;
-};
 
 } // Sv

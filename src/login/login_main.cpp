@@ -223,7 +223,7 @@ struct Client
 				packet.Write<i32>(536);
 				packet.Write<i32>(1);
 
-				SendPacketData(Sv::Finish::NET_ID, packet.size, packet.data);
+				SendPacketData(Sv::SN_DoConnectChannelServer::NET_ID, packet.size, packet.data);
 			} break;
 		}
 	}

@@ -1506,6 +1506,42 @@ struct Game
 					LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
 					SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 				}
+
+				// SN_JukeboxEnqueuedList
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // trackList_count
+
+					LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+					SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_JukeboxHotTrackList
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<u16>(0); // trackList_count
+
+					LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
+					SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_JukeboxPlay
+				{
+					u8 sendData[256];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(0); // result
+					packet.Write<i32>(7770015); // trackID
+					packet.WriteStringObj(L"Flashback"); // nickname
+					packet.Write<u16>(0); // playPositionSec
+
+					LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+					SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+				}
 			} break;
 
 			case Cl::CQ_GetCharacterInfo::NET_ID: {

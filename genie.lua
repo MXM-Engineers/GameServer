@@ -3,7 +3,7 @@ BUILD_DIR = path.getabsolute("build")
 
 solution "Servers"
 	location(BUILD_DIR)
-	
+
 	configurations {
 		"Debug",
 		"Release"
@@ -13,9 +13,9 @@ solution "Servers"
 		"x32",
 		"x64"
 	}
-	
+
 	language "C++"
-	
+
 	configuration {"Debug"}
 		targetsuffix "_debug"
 		flags {
@@ -26,9 +26,7 @@ solution "Servers"
 			"DEBUG",
 			"CONF_DEBUG"
 		}
-		links {
-		}
-	
+
 	configuration {"Release"}
 		flags {
 			"Optimize",
@@ -39,20 +37,18 @@ solution "Servers"
 			"NDEBUG",
 			"CONF_RELEASE",
 		}
-		links {
-		}
-	
+
 	configuration {}
 		flags {
 			"Cpp14"
 		}
-	
+
 	targetdir(BUILD_DIR)
 
 	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
-		targetdir("../build")
+	targetdir("../build")
 	configuration {}
-	
+
 	flags {
 		"NoExceptions",
 		"NoRTTI",
@@ -63,14 +59,14 @@ solution "Servers"
 		"EnableMinimalRebuild",
 		--"StaticRuntime",
 	}
-	
+
 	defines {
 		"_CRT_SECURE_NO_DEPRECATE",
 		"_CRT_NONSTDC_NO_DEPRECATE",
 		"WIN32_LEAN_AND_MEAN",
 		"NOMINMAX",
-    }
-	
+	}
+
 	-- disable exception related warnings
 	buildoptions{ "/wd4577", "/wd4530" }
 

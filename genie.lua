@@ -1,7 +1,5 @@
 --
-dofile("config.lua");
-
-BUILD_DIR = path.getabsolute("./build")
+BUILD_DIR = path.getabsolute("build")
 
 solution "Servers"
 	location(BUILD_DIR)
@@ -49,17 +47,11 @@ solution "Servers"
 			"Cpp14"
 		}
 	
-	targetdir("../build")
-	
-	includedirs {
-		"src",
-	}
-	
-	links {
-		"kernel32",
-		"user32",
-		"ws2_32",
-	}
+	targetdir(BUILD_DIR)
+
+	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
+		targetdir("../build")
+	configuration {}
 	
 	flags {
 		"NoExceptions",
@@ -81,12 +73,21 @@ solution "Servers"
 	
 	-- disable exception related warnings
 	buildoptions{ "/wd4577", "/wd4530" }
+
+	-- erternal dependencies
+	dofile("external/genie_zlib.lua");
 	
 
 project "Login"
 	kind "ConsoleApp"
 
 	configuration {}
+
+	links {
+		"kernel32",
+		"user32",
+		"ws2_32",
+	}
 
 	includedirs {
 		"src",
@@ -106,17 +107,19 @@ project "Game"
 
 	configuration {}
 
+	links {
+		"kernel32",
+		"user32",
+		"ws2_32",
+	}
+
 	includedirs {
 		"src",
 		zlib_includedir,
 	}
 
-	libdirs {
-		zlib_libdir
-	}
-
 	links {
-		"zlibstatic",
+		"zlib",
 	}
 	
 	files {

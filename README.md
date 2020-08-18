@@ -3,11 +3,9 @@
 ## Building
 
 1. Download GENie https://github.com/bkaradzic/GENie
-2. Copy `config.lua.0` and rename it to `config.lua`
-3. Modify it to set the dependencies paths
-4. Run `genie` once to see the usage
-5. Generate your preferred method of building (example: `genie vs2019`)
-6. Build using what you generated
+2. Run `genie` once to see the usage
+3. Generate your preferred method of building (example: `genie vs2019`)
+4. Build using what you generated
 
 ## Running
 

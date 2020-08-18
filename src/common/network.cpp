@@ -1,4 +1,5 @@
 #include "network.h"
+#include "protocol.h"
 
 const char* IpToString(const u8* ip)
 {
@@ -354,4 +355,24 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	const std::lock_guard<std::mutex> lock(client.mutexRecv);
 	client.recvPendingProcessingBuff.Append(client.recvBuff, dataLen);
 	return true;
+}
+
+void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
+{
+	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
+	u8 sendBuff[8192];
+	ASSERT(packetTotalSize <= sizeof(sendBuff));
+
+	NetHeader header;
+	header.size = packetTotalSize;
+	header.netID = netID;
+	memmove(sendBuff, &header, sizeof(header));
+	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
+
+	ClientSend(clientID, sendBuff, packetTotalSize);
+
+#ifdef CONF_DEBUG
+	fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
+	packetCounter++;
+#endif
 }

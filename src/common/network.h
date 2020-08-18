@@ -58,19 +58,30 @@ struct Server
 	ClientNet clientNet[MAX_CLIENTS];
 	ClientInfo clientInfo[MAX_CLIENTS];
 
+#ifdef CONF_DEBUG
+	i32 packetCounter = 0;
+#endif
+
 	bool Init(const char* listenPort);
 	void Cleanup();
 
 	i32 AddClient(SOCKET s, const sockaddr& addr_);
 	void DisconnectClient(i32 clientID);
-	void ClientSend(i32 clientID, const void* data, i32 dataSize);
 
 	void Update();
 
 	void TransferAllReceivedData(GrowableBuffer* out);
 
+	template<typename Packet>
+	inline void SendPacket(i32 clientID, const Packet& packet)
+	{
+		SendPacketData(clientID, Packet::NET_ID, sizeof(packet), &packet);
+	}
+	void SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData);
+
 private:
 
+	void ClientSend(i32 clientID, const void* data, i32 dataSize);
 	bool ClientStartReceiving(i32 clientID);
 	bool ClientHandleReceivedData(i32 clientID, i32 dataLen);
 };

@@ -1183,8 +1183,9 @@ struct Game
 				// SN_SetGameGvt
 				{
 					Sv::SN_SetGameGvt gameGvt;
-					gameGvt.sendTime = 0x6c3ed30;
-					gameGvt.virtualTime = 0x6c3ed30;
+					i32 time = GetTime();
+					gameGvt.sendTime = time;
+					gameGvt.virtualTime = time;
 					LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
 					SendPacket(clientID, gameGvt);
 				}
@@ -1296,7 +1297,7 @@ struct Game
 
 			case Cl::CA_SetGameGvt::NET_ID: {
 				const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
-				LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%x virtualTime=%x unk=%x", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
+				LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
 			} break;
 
 			case Cl::CN_MapIsLoaded::NET_ID: {
@@ -1389,7 +1390,7 @@ struct Game
 
 					packet.Write<u8>(1); // isInSight
 					packet.Write<u8>(0); // isDead
-					packet.Write<i64>((i64)0x6cf3fe57); // serverTime
+					packet.Write<i64>(GetTime()); // serverTime
 
 					packet.Write<u16>(0); // meshChangeActionHistory_count
 
@@ -1426,10 +1427,10 @@ struct Game
 					PacketWriter packet(sendData, sizeof(sendData));
 
 					packet.Write<i32>(21013); // playerID
-					packet.Write<u8>(0); // playerStateInTown
+					packet.Write<u8>(-1); // playerStateInTown
 					packet.Write<u16>(0); // matchingGameModes_count
 
-					LOG("[client%03d] Server :: SN_PlayerStateInTown :: ", clientID);
+					LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
 					SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
 				}
 
@@ -1487,6 +1488,24 @@ struct Game
 				SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
 				SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
 
+				// SN_PlayerStateInTown
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
+
+					packet.Write<i32>(21013); // playerID
+					packet.Write<u8>(0); // playerStateInTown
+					packet.Write<u16>(0); // matchingGameModes_count
+
+					LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, 0);
+					SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+				}
+
+				// SN_ScanEnd
+				{
+					LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
+					SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
+				}
 			} break;
 
 			case Cl::CQ_GetCharacterInfo::NET_ID: {
@@ -1502,6 +1521,24 @@ struct Game
 				info.maxHp = 100;
 				LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 				SendPacket(clientID, info);
+			} break;
+
+			case Cl::CN_UpdatePosition::NET_ID: {
+				const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
+				LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+
+				// SA_GetCharacterInfo
+				Sv::SN_GamePlayerSyncByInt sync;
+				sync.characterID = update.characterID;
+				sync.p3nPos = update.p3nPos;
+				sync.p3nDir = update.p3nDir;
+				sync.p3nEye = update.p3nEye;
+				sync.nRotate = update.nRotate;
+				sync.nSpeed = update.nSpeed;
+				sync.nState = update.nState;
+				sync.nActionIDX = update.nActionIDX;
+				LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: ", clientID);
+				SendPacket(clientID, sync);
 			} break;
 
 			default: {
@@ -1531,8 +1568,8 @@ struct Game
 		server->ClientSend(clientID, sendBuff, packetTotalSize);
 
 #ifdef CONF_DEBUG
-			fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
-			packetCounter++;
+		fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
+		packetCounter++;
 #endif
 	}
 
@@ -1569,7 +1606,7 @@ struct Game
 
 			packet.Write<u8>(1); // isInSight
 			packet.Write<u8>(0); // isDead
-			packet.Write<i64>((i64)0x6cf3fe57); // serverTime
+			packet.Write<i64>(GetTime()); // serverTime
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
@@ -1585,7 +1622,7 @@ struct Game
 			packet.Write<i32>(objectID); // objectID
 			packet.Write(pos); // p3nPos
 
-			LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: NPC objectID=%d nIDX=%d", clientID, objectID, nIDX);
+			LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: objectID=%d", clientID, objectID);
 			SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 		}
 

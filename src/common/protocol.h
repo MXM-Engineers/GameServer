@@ -90,6 +90,21 @@ struct ReadyToLoadCharacter
 	enum { NET_ID = 60014 };
 };
 
+struct CN_UpdatePosition
+{
+	enum { NET_ID = 60022 };
+
+	i32 characterID;
+	Vec3 p3nPos;
+	Vec3 p3nDir;
+	Vec3 p3nEye;
+	f32 nRotate;
+	f32 nSpeed;
+	i32 nState;
+	i32 nActionIDX;
+};
+ASSERT_SIZE(CN_UpdatePosition, 56);
+
 struct CA_SetGameGvt
 {
 	enum { NET_ID = 60024 };
@@ -402,6 +417,21 @@ struct SN_ScanEnd
 {
 	enum { NET_ID = 62051 };
 };
+
+struct SN_GamePlayerSyncByInt
+{
+	enum { NET_ID = 62052 };
+
+	i32 characterID;
+	Vec3 p3nPos;
+	Vec3 p3nDir;
+	Vec3 p3nEye;
+	f32 nRotate;
+	f32 nSpeed;
+	i32 nState;
+	i32 nActionIDX;
+};
+ASSERT_SIZE(SN_GamePlayerSyncByInt, 56);
 
 PUSH_PACKED
 struct SN_Money

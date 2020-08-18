@@ -45,3 +45,17 @@ void __Logf(const char* fmt, ...)
 	}
 #endif
 }
+
+i64 GetGlobalTime()
+{
+#ifdef _WIN32
+	return (i64)_time64(NULL);
+#endif
+}
+
+i32 GetTime()
+{
+#ifdef _WIN32
+	return (i32)clock();
+#endif
+}

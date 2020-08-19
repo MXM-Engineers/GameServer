@@ -16,6 +16,9 @@ void Game::Init(Server* server_)
 	server = server_;
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
+
+	reflection.Init(server);
+	world.Init(&reflection);
 	CreateThread(NULL, 0, ThreadGame, this, 0, NULL);
 }
 
@@ -23,7 +26,7 @@ void Game::Update()
 {
 	processPacketQueue.Clear();
 	{
-		const std::lock_guard<std::mutex> lock(mutexPacketDataQueue);
+		const std::lock_guard<Mutex> lock(mutexPacketDataQueue);
 		processPacketQueue.Append(packetDataQueue.data, packetDataQueue.size);
 		packetDataQueue.Clear();
 	}
@@ -36,6 +39,9 @@ void Game::Update()
 		ClientHandlePacket(clientID, header, packetData);
 	}
 
+	world.Update(1/60.0); // TODO: update delta
+	reflection.FrameEnd();
+
 	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
 }
 
@@ -47,7 +53,7 @@ void Game::CoordinatorClientEnter(i32 clientID, const AccountData* accountData)
 
 void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
-	const std::lock_guard<std::mutex> lock(mutexPacketDataQueue);
+	const std::lock_guard<Mutex> lock(mutexPacketDataQueue);
 	packetDataQueue.Append(&clientID, sizeof(clientID));
 	packetDataQueue.Append(&header, sizeof(header));
 	packetDataQueue.Append(packetData, header.size);
@@ -57,464 +63,20 @@ void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* p
 {
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
+#define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
+
 	switch(header.netID) {
-
-		case Cl::CQ_GetGuildProfile::NET_ID: {
-			LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
-
-			// SA_GetGuildProfile
-			{
-				u8 sendData[2048];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result;
-				packet.WriteStringObj(L"The XMX dream"); // guildName
-				packet.WriteStringObj(L"XMX"); // guildTag
-				packet.Write<i32>(100203); // emblemIndex
-				packet.Write<u8>(10); // guildLvl
-				packet.Write<u8>(120); // memberMax
-				packet.WriteStringObj(L"Malachi"); // ownerNickname
-				packet.Write<i64>(131474874000000000); // createdDate
-				packet.Write<i64>(0); // dissolutionDate
-				packet.Write<u8>(0); // joinType
-
-				Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
-				guildInterest.likePveStage = 1;
-				guildInterest.likeDefence = 1;
-				guildInterest.likePvpNormal = 1;
-				guildInterest.likePvpOccupy = 1;
-				guildInterest.likePvpGot = 1;
-				guildInterest.likePvpRank = 1;
-				guildInterest.likeOlympic = 1;
-				packet.Write(guildInterest);
-
-				packet.WriteStringObj(L"This is a great intro"); // guildIntro
-				packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
-				packet.Write<i32>(460281); // guildPoint
-				packet.Write<i32>(9999); // guildFund
-
-				Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
-				guildPvpRecord.rp = 5;
-				guildPvpRecord.win = 4;
-				guildPvpRecord.draw = 3;
-				guildPvpRecord.lose = 2;
-				packet.Write(guildPvpRecord);
-
-				packet.Write<i32>(-1); // guildRankNo
-
-				packet.Write<u16>(1); // guildMemberClassList_count
-				// guildMemberClassList[0]
-				packet.Write<i32>(12456); // id
-				packet.Write<u8>(3); // type
-				packet.Write<u8>(2); // iconIndex
-				packet.WriteStringObj(L"Malachi");
-
-				Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
-				rights.hasInviteRight = 1;
-				rights.hasExpelRight = 1;
-				rights.hasMembershipChgRight = 1;
-				rights.hasClassAssignRight = 1;
-				rights.hasNoticeChgRight = 1;
-				rights.hasIntroChgRight = 1;
-				rights.hasInterestChgRight = 1;
-				rights.hasFundManageRight = 1;
-				rights.hasJoinTypeRight = 1;
-				rights.hasEmblemRight = 1;
-				packet.Write(rights);
-
-				packet.Write<u16>(1); // guildSkills_count
-				// guildSkills[0]
-				packet.Write<u8>(1); // type
-				packet.Write<u8>(9); // level
-				packet.Write<i64>(0); // expiryDate
-				packet.Write<u16>(0); // extensionCount
-
-				packet.Write<i32>(7); // curDailyStageGuildPoint
-				packet.Write<i32>(500); // maxDailyStageGuildPoint
-				packet.Write<i32>(2); // curDailyArenaGuildPoint
-				packet.Write<i32>(450); // maxDailyArenaGuildPoint
-				packet.Write<u8>(1); // todayRollCallCount
-
-				LOG("[client%03d] Server :: SA_GetGuildProfile :: ", clientID);
-				SendPacketData(clientID, Sv::SA_GetGuildProfile::NET_ID, packet.size, packet.data);
-			}
-		} break;
-
-		case Cl::CQ_GetGuildMemberList::NET_ID: {
-			LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
-
-			// SA_GetGuildMemberList
-			{
-				u8 sendData[2048];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result
-
-				packet.Write<u16>(3); // guildMemberProfileList_count
-
-				// guildMemberProfileList[0]
-				packet.WriteStringObj(L"Malachi");
-				packet.Write<i32>(0);  // membershipID
-				packet.Write<u16>(99); // lvl
-				packet.Write<u16>(10); // leaderClassType
-				packet.Write<u16>(27); // masterCount
-				packet.Write<i32>(12455); // achievementScore
-				packet.Write<u8>(0); // topPvpTierGrade
-				packet.Write<u16>(0); // topPvpTierPoint
-				packet.Write<i32>(16965); // contributedGuildPoint
-				packet.Write<i32>(60047); // contributedGuildFund
-				packet.Write<u16>(0); // guildPvpWin
-				packet.Write<u16>(0); // guildPvpPlay
-				packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-				// guildMemberProfileList[1]
-				packet.WriteStringObj(L"Delta-47");
-				packet.Write<i32>(0);  // membershipID
-				packet.Write<u16>(99); // lvl
-				packet.Write<u16>(10); // leaderClassType
-				packet.Write<u16>(27); // masterCount
-				packet.Write<i32>(12455); // achievementScore
-				packet.Write<u8>(0); // topPvpTierGrade
-				packet.Write<u16>(0); // topPvpTierPoint
-				packet.Write<i32>(16965); // contributedGuildPoint
-				packet.Write<i32>(60047); // contributedGuildFund
-				packet.Write<u16>(0); // guildPvpWin
-				packet.Write<u16>(0); // guildPvpPlay
-				packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-				// guildMemberProfileList[2]
-				packet.WriteStringObj(L"LordSk");
-				packet.Write<i32>(0);  // membershipID
-				packet.Write<u16>(99); // lvl
-				packet.Write<u16>(10); // leaderClassType
-				packet.Write<u16>(27); // masterCount
-				packet.Write<i32>(12455); // achievementScore
-				packet.Write<u8>(0); // topPvpTierGrade
-				packet.Write<u16>(0); // topPvpTierPoint
-				packet.Write<i32>(16965); // contributedGuildPoint
-				packet.Write<i32>(60047); // contributedGuildFund
-				packet.Write<u16>(0); // guildPvpWin
-				packet.Write<u16>(0); // guildPvpPlay
-				packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-				LOG("[client%03d] Server :: SA_GetGuildMemberList :: ", clientID);
-				SendPacketData(clientID, Sv::SA_GetGuildMemberList::NET_ID, packet.size, packet.data);
-			}
-		} break;
-
-		case Cl::CQ_GetGuildHistoryList::NET_ID: {
-			LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
-
-			// SA_GetGuildMemberList
-			{
-				u8 sendData[2048];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result
-
-				packet.Write<u16>(0); // guildHistories_count
-
-
-				LOG("[client%03d] Server :: SA_GetGuildHistoryList :: ", clientID);
-				SendPacketData(clientID, Sv::SA_GetGuildHistoryList::NET_ID, packet.size, packet.data);
-			}
-		} break;
-
-		case Cl::CQ_GetGuildRankingSeasonList::NET_ID: {
-			const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
-			LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
-
-			// SA_GetGuildRankingSeasonList
-			{
-				u8 sendData[2048];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result
-				packet.Write<u8>(rank.rankingType); // result
-
-				packet.Write<u16>(0); // rankingSeasonList_count
-
-
-				LOG("[client%03d] Server :: SA_GetGuildRankingSeasonList :: ", clientID);
-				SendPacketData(clientID, Sv::SA_GetGuildRankingSeasonList::NET_ID, packet.size, packet.data);
-			}
-		} break;
-
-		case Cl::CQ_TierRecord::NET_ID: {
-			LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
-
-			// SA_TierRecord
-			{
-				u8 sendData[2048];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u8>(1); // seasonId
-				packet.Write<i32>(0); // allTierWin
-				packet.Write<i32>(0); // allTierDraw
-				packet.Write<i32>(0); // allTierLose
-				packet.Write<i32>(0); // allTierLeave
-				packet.Write<u16>(0); // stageRecordList_count
-
-				LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
-				SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
-			}
-
-		} break;
-
-		case Cl::ReadyToLoadCharacter::NET_ID: {
-			LOG("[client%03d] Client :: ReadyToLoadCharacter ::", clientID);
-
-			PlayerSpawnInMap(clientID);
-		} break;
-
-		case Cl::CA_SetGameGvt::NET_ID: {
-			const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
-			LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
-		} break;
-
-		case Cl::CN_MapIsLoaded::NET_ID: {
-			LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
-
-			// SN_GameCreateActor
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(21013); // objectID
-				packet.Write<i32>(1); // nType
-				packet.Write<i32>(100000017); // nIDX
-				packet.Write<i32>(-1); // dwLocalID
-				packet.Write(Vec3(11959.4f, 6451.76f, 3012)); // p3nPos
-				packet.Write(Vec3(0, 0, 2.68874f)); // p3nDir
-				packet.Write<i32>(0); // spawnType
-				packet.Write<i32>(-1); // actionState
-				packet.Write<i32>(0); // ownerID
-				packet.Write<u8>(0); // bDirectionToNearPC
-				packet.Write<i32>(-1); // AiWanderDistOverride
-				packet.Write<i32>(-1); // tagID
-				packet.Write<i32>(0); // faction
-				packet.Write<i32>(17); // classType
-				packet.Write<i32>(2); // skinIndex
-				packet.Write<i32>(0); // seed
-
-				typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
-
-				// initStat ------------------------
-				packet.Write<u16>(53); // maxStats_count
-				packet.Write(Stat{ 0, 2400 });
-				packet.Write(Stat{ 35, 1000 });
-				packet.Write(Stat{ 17, 0 });
-				packet.Write(Stat{ 36, 0 });
-				packet.Write(Stat{ 56, 0 });
-				packet.Write(Stat{ 2, 200 });
-				packet.Write(Stat{ 37, 120 });
-				packet.Write(Stat{ 3, 0 });
-				packet.Write(Stat{ 39, 5 });
-				packet.Write(Stat{ 41, 0 });
-				packet.Write(Stat{ 40, 0 });
-				packet.Write(Stat{ 57, 0 });
-				packet.Write(Stat{ 50, 0 });
-				packet.Write(Stat{ 51, 0 });
-				packet.Write(Stat{ 5, 5 });
-				packet.Write(Stat{ 42, 0.6f });
-				packet.Write(Stat{ 6, 0 });
-				packet.Write(Stat{ 7, 93.75f });
-				packet.Write(Stat{ 8, 0 });
-				packet.Write(Stat{ 9, 3 });
-				packet.Write(Stat{ 10, 150 });
-				packet.Write(Stat{ 12, 0 });
-				packet.Write(Stat{ 20, 0 });
-				packet.Write(Stat{ 21, 0 });
-				packet.Write(Stat{ 18, 100 });
-				packet.Write(Stat{ 13, 100 });
-				packet.Write(Stat{ 14, 98 });
-				packet.Write(Stat{ 15, 100 });
-				packet.Write(Stat{ 52, 100 });
-				packet.Write(Stat{ 16, 1 });
-				packet.Write(Stat{ 27, 0 });
-				packet.Write(Stat{ 47, 0 });
-				packet.Write(Stat{ 49, 0 });
-				packet.Write(Stat{ 48, 0 });
-				packet.Write(Stat{ 29, 20 });
-				packet.Write(Stat{ 23, 9 });
-				packet.Write(Stat{ 44, 15 });
-				packet.Write(Stat{ 46, 0 });
-				packet.Write(Stat{ 45, 0 });
-				packet.Write(Stat{ 26, 0 });
-				packet.Write(Stat{ 25, 0 });
-				packet.Write(Stat{ 31, 14 });
-				packet.Write(Stat{ 22, 2 });
-				packet.Write(Stat{ 54, 15 });
-				packet.Write(Stat{ 60, 0 });
-				packet.Write(Stat{ 61, 0 });
-				packet.Write(Stat{ 62, 0 });
-				packet.Write(Stat{ 63, 3 });
-				packet.Write(Stat{ 64, 150 });
-				packet.Write(Stat{ 53, 0 });
-				packet.Write(Stat{ 58, 0 });
-				packet.Write(Stat{ 65, 0 });
-				packet.Write(Stat{ 55, 15 });
-
-				packet.Write<u16>(2); // curStats_count
-				packet.Write(Stat{ 0, 2400 });
-				packet.Write(Stat{ 2, 200 });
-				// ------------------------------------
-
-				packet.Write<u8>(1); // isInSight
-				packet.Write<u8>(0); // isDead
-				packet.Write<i64>(GetTime()); // serverTime
-
-				packet.Write<u16>(0); // meshChangeActionHistory_count
-
-				ASSERT(packet.size == 368); // TODO: remove
-
-				LOG("[client%03d] Server :: SN_GameCreateActor :: ", clientID);
-				SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_GamePlayerStock
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(21013); // playerID
-				packet.WriteStringObj(L"LordSk"); // name
-				packet.Write<i32>(35); // class_
-				packet.Write<i32>(320080005); // displayTitleIDX
-				packet.Write<i32>(320080005); // statTitleIDX
-				packet.Write<u8>(0); // badgeType
-				packet.Write<u8>(0); // badgeTierLevel
-				packet.WriteStringObj(L"XMX"); // guildTag
-				packet.Write<u8>(0); // vipLevel
-				packet.Write<u8>(0); // staffType
-				packet.Write<u8>(0); // isSubstituted
-
-				LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
-				SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_PlayerStateInTown
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(21013); // playerID
-				packet.Write<u8>(-1); // playerStateInTown
-				packet.Write<u16>(0); // matchingGameModes_count
-
-				LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-				SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_GamePlayerEquipWeapon
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(21013); // characterID
-				packet.Write<i32>(131135012); // weaponDocIndex
-				packet.Write<i32>(0); // additionnalOverHeatGauge
-				packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
-
-				LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
-				SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_TownHudStatistics
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u8>(0); // gameModeType
-				packet.Write<u8>(0); // gameType
-				packet.Write<u16>(3); // argList_count
-
-				// arglist
-				packet.Write<i32>(479);
-				packet.Write<i32>(0);
-				packet.Write<i32>(16);
-
-				LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
-				SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
-			}
-
-			// NPCs
-			SendNPCSpawn(clientID, 5000, 100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
-			SendNPCSpawn(clientID, 5001, 100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
-			SendNPCSpawn(clientID, 5002, 100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
-			SendNPCSpawn(clientID, 5003, 100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
-			SendNPCSpawn(clientID, 5004, 100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
-			SendNPCSpawn(clientID, 5005, 100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
-			SendNPCSpawn(clientID, 5006, 100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
-			SendNPCSpawn(clientID, 5007, 100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
-			SendNPCSpawn(clientID, 5008, 100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
-			SendNPCSpawn(clientID, 5009, 100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
-			SendNPCSpawn(clientID, 5010, 100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
-			SendNPCSpawn(clientID, 5011, 100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
-			SendNPCSpawn(clientID, 5012, 100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
-			SendNPCSpawn(clientID, 5013, 100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
-			SendNPCSpawn(clientID, 5014, 100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
-			SendNPCSpawn(clientID, 5015, 100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
-			SendNPCSpawn(clientID, 5016, 100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
-			SendNPCSpawn(clientID, 5017, 100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
-			SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
-			SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
-
-			// SN_PlayerStateInTown
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(21013); // playerID
-				packet.Write<u8>(0); // playerStateInTown
-				packet.Write<u16>(0); // matchingGameModes_count
-
-				LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, 0);
-				SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_ScanEnd
-			{
-				LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
-				SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
-			}
-
-			// SN_JukeboxEnqueuedList
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u16>(0); // trackList_count
-
-				LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_JukeboxHotTrackList
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u16>(0); // trackList_count
-
-				LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_JukeboxPlay
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result
-				packet.Write<i32>(7770015); // trackID
-				packet.WriteStringObj(L"Flashback"); // nickname
-				packet.Write<u16>(0); // playPositionSec
-
-				LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-			}
-		} break;
+		// TODO: move those to the Coordinator?
+		HANDLE_CASE(CQ_GetGuildProfile);
+		HANDLE_CASE(CQ_GetGuildMemberList);
+		HANDLE_CASE(CQ_GetGuildHistoryList);
+		HANDLE_CASE(CQ_GetGuildRankingSeasonList);
+		HANDLE_CASE(CQ_TierRecord);
+		// -----------------------------------
+
+		HANDLE_CASE(CN_ReadyToLoadCharacter);
+		HANDLE_CASE(CA_SetGameGvt);
+		HANDLE_CASE(CN_MapIsLoaded);
 
 		case Cl::CQ_GetCharacterInfo::NET_ID: {
 			const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
@@ -1324,214 +886,466 @@ void Game::ClientEnter(i32 clientID, const AccountData* accountData)
 	SendPacket(clientID, money);
 }
 
-void Game::PlayerSpawnInMap(i32 clientID)
+void Game::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	// SN_LoadCharacterStart
-	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
-	SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
+	LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
 
-	// SN_LeaderCharacter
-	Sv::SN_LeaderCharacter leader;
-	leader.leaderID = 21013;
-	leader.skinIndex = 0;
-	SendPacket(clientID, leader);
-
-	// SN_PlayerSkillSlot
+	// SA_GetGuildProfile
 	{
 		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<i32>(21013);
+		packet.Write<i32>(0); // result;
+		packet.WriteStringObj(L"The XMX dream"); // guildName
+		packet.WriteStringObj(L"XMX"); // guildTag
+		packet.Write<i32>(100203); // emblemIndex
+		packet.Write<u8>(10); // guildLvl
+		packet.Write<u8>(120); // memberMax
+		packet.WriteStringObj(L"Malachi"); // ownerNickname
+		packet.Write<i64>(131474874000000000); // createdDate
+		packet.Write<i64>(0); // dissolutionDate
+		packet.Write<u8>(0); // joinType
 
-		packet.Write<u16>(7); // slotList_count
+		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
+		guildInterest.likePveStage = 1;
+		guildInterest.likeDefence = 1;
+		guildInterest.likePvpNormal = 1;
+		guildInterest.likePvpOccupy = 1;
+		guildInterest.likePvpGot = 1;
+		guildInterest.likePvpRank = 1;
+		guildInterest.likeOlympic = 1;
+		packet.Write(guildInterest);
 
-		// slotList[0]
-		packet.Write<i32>(180350010); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(1); // propList_count
-		packet.Write<i32>(280351001); // skillPropertyIndex
-		packet.Write<i32>(1); // level
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
+		packet.WriteStringObj(L"This is a great intro"); // guildIntro
+		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
+		packet.Write<i32>(460281); // guildPoint
+		packet.Write<i32>(9999); // guildFund
 
-		// slotList[1]
-		packet.Write<i32>(180350030); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(1); // propList_count
-		packet.Write<i32>(280353001); // skillPropertyIndex
-		packet.Write<i32>(1); // level
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
+		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
+		guildPvpRecord.rp = 5;
+		guildPvpRecord.win = 4;
+		guildPvpRecord.draw = 3;
+		guildPvpRecord.lose = 2;
+		packet.Write(guildPvpRecord);
 
-		// slotList[2]
-		packet.Write<i32>(180350040); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(0); // propList_count
+		packet.Write<i32>(-1); // guildRankNo
 
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
+		packet.Write<u16>(1); // guildMemberClassList_count
+		// guildMemberClassList[0]
+		packet.Write<i32>(12456); // id
+		packet.Write<u8>(3); // type
+		packet.Write<u8>(2); // iconIndex
+		packet.WriteStringObj(L"Malachi");
 
-		// slotList[3]
-		packet.Write<i32>(180350020); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(0); // propList_count
-		packet.Write<u8>(0); // isUnlocked
-		packet.Write<u8>(0); // isActivated
+		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
+		rights.hasInviteRight = 1;
+		rights.hasExpelRight = 1;
+		rights.hasMembershipChgRight = 1;
+		rights.hasClassAssignRight = 1;
+		rights.hasNoticeChgRight = 1;
+		rights.hasIntroChgRight = 1;
+		rights.hasInterestChgRight = 1;
+		rights.hasFundManageRight = 1;
+		rights.hasJoinTypeRight = 1;
+		rights.hasEmblemRight = 1;
+		packet.Write(rights);
 
-		// slotList[4]
-		packet.Write<i32>(180350050); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(0); // propList_count
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
+		packet.Write<u16>(1); // guildSkills_count
+		// guildSkills[0]
+		packet.Write<u8>(1); // type
+		packet.Write<u8>(9); // level
+		packet.Write<i64>(0); // expiryDate
+		packet.Write<u16>(0); // extensionCount
 
-		// slotList[5]
-		packet.Write<i32>(180350000); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(0); // propList_count
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
+		packet.Write<i32>(7); // curDailyStageGuildPoint
+		packet.Write<i32>(500); // maxDailyStageGuildPoint
+		packet.Write<i32>(2); // curDailyArenaGuildPoint
+		packet.Write<i32>(450); // maxDailyArenaGuildPoint
+		packet.Write<u8>(1); // todayRollCallCount
 
-		// slotList[6]
-		packet.Write<i32>(180350002); // skillIndex
-		packet.Write<i32>(0); // coolTime
-		packet.Write<u8>(1);  // unlocked
-		packet.Write<u16>(0); // propList_count
-		packet.Write<u8>(1); // isUnlocked
-		packet.Write<u8>(1); // isActivated
-
-		// slotList[7]
-		packet.Write<i32>(-1);
-		packet.Write<i32>(-1);
-		packet.Write<i32>(-1);
-		packet.Write<i32>(-1);
-		packet.Write<i32>(-1);
-
-		ASSERT(packet.size == 133); // TODO: remove
-
-		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
-		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+		LOG("[client%03d] Server :: SA_GetGuildProfile :: ", clientID);
+		SendPacketData(clientID, Sv::SA_GetGuildProfile::NET_ID, packet.size, packet.data);
 	}
+}
 
-	// SN_SetGameGvt
-	{
-		Sv::SN_SetGameGvt gameGvt;
-		i32 time = GetTime();
-		gameGvt.sendTime = time;
-		gameGvt.virtualTime = time;
-		LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
-		SendPacket(clientID, gameGvt);
-	}
+void Game::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
 
-	// SN_SummaryInfoAll
+	// SA_GetGuildMemberList
 	{
-		u8 sendData[128];
+		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(0);
+		packet.Write<i32>(0); // result
 
-		LOG("[client%03d] Server :: SN_SummaryInfoAll :: ", clientID);
-		SendPacketData(clientID, Sv::SN_SummaryInfoAll::NET_ID, packet.size, packet.data);
+		packet.Write<u16>(3); // guildMemberProfileList_count
+
+		// guildMemberProfileList[0]
+		packet.WriteStringObj(L"Malachi");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		// guildMemberProfileList[1]
+		packet.WriteStringObj(L"Delta-47");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		// guildMemberProfileList[2]
+		packet.WriteStringObj(L"LordSk");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		LOG("[client%03d] Server :: SA_GetGuildMemberList :: ", clientID);
+		SendPacketData(clientID, Sv::SA_GetGuildMemberList::NET_ID, packet.size, packet.data);
 	}
+}
 
-	// SN_AvailableSummaryRewardCountList
+void Game::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
+
+	// SA_GetGuildMemberList
 	{
-		u8 sendData[128];
+		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(8);
+		packet.Write<i32>(0); // result
 
-		const i32 rewardCount[8] = {
-			220004100,
-			2,
-			220002200,
-			3,
-			220005100,
-			3,
-			220003300,
-			2
-		};
+		packet.Write<u16>(0); // guildHistories_count
 
-		packet.WriteRaw(rewardCount, sizeof(rewardCount));
 
-		LOG("[client%03d] Server :: SN_AvailableSummaryRewardCountList :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AvailableSummaryRewardCountList::NET_ID, packet.size, packet.data);
+		LOG("[client%03d] Server :: SA_GetGuildHistoryList :: ", clientID);
+		SendPacketData(clientID, Sv::SA_GetGuildHistoryList::NET_ID, packet.size, packet.data);
 	}
+}
+
+void Game::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
+	LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
+
+	// SA_GetGuildRankingSeasonList
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(0); // result
+		packet.Write<u8>(rank.rankingType); // result
+
+		packet.Write<u16>(0); // rankingSeasonList_count
 
 
-	// SN_SummaryInfoLatest
+		LOG("[client%03d] Server :: SA_GetGuildRankingSeasonList :: ", clientID);
+		SendPacketData(clientID, Sv::SA_GetGuildRankingSeasonList::NET_ID, packet.size, packet.data);
+	}
+}
+
+void Game::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
+
+	// SA_TierRecord
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u8>(1); // seasonId
+		packet.Write<i32>(0); // allTierWin
+		packet.Write<i32>(0); // allTierDraw
+		packet.Write<i32>(0); // allTierLose
+		packet.Write<i32>(0); // allTierLeave
+		packet.Write<u16>(0); // stageRecordList_count
+
+		LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
+		SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
+	}
+}
+
+void Game::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client ::CN_ReadyToLoadCharacter ::", clientID);
+
+	world.RegisterNewPlayer(clientID);
+}
+
+void Game::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
+	LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
+}
+
+void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
+
+	world.PlayerFirstSpawn(clientID);
+
+#if 0
+	// SN_GameCreateActor
 	{
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(10);
+		packet.Write<i32>(21013); // objectID
+		packet.Write<i32>(1); // nType
+		packet.Write<i32>(100000017); // nIDX
+		packet.Write<i32>(-1); // dwLocalID
+		packet.Write(Vec3(11959.4f, 6451.76f, 3012)); // p3nPos
+		packet.Write(Vec3(0, 0, 2.68874f)); // p3nDir
+		packet.Write<i32>(0); // spawnType
+		packet.Write<i32>(-1); // actionState
+		packet.Write<i32>(0); // ownerID
+		packet.Write<u8>(0); // bDirectionToNearPC
+		packet.Write<i32>(-1); // AiWanderDistOverride
+		packet.Write<i32>(-1); // tagID
+		packet.Write<i32>(0); // faction
+		packet.Write<i32>(17); // classType
+		packet.Write<i32>(2); // skinIndex
+		packet.Write<i32>(0); // seed
 
-		const Sv::SN_SummaryInfoLatest::Info infoList[10] = {
-			{ 220002200, 200002201, 3, 220002201, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002204, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002205, 0, (i64)0xa6605c00 },
-			{ 220005100, 200005101, 3, 220005101, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005102, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005105, 0, (i64)0x6a2bfc00 },
-			{ 220003300, 200003301, 3, 220003301, 0, (i64)0xe0c7fa00 },
-			{ 220003300, 200003301, 3, 220003305, 0, (i64)0xe0c7fa00 },
-			{ 220004100, 200004101, 3, 220004101, 0, (i64)0x9eea8400 },
-			{ 220004100, 200004101, 3, 220004105, 0, (i64)0x9eea8400 },
-		};
+		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-		packet.WriteRaw(infoList, sizeof(infoList));
+		// initStat ------------------------
+		packet.Write<u16>(53); // maxStats_count
+		packet.Write(Stat{ 0, 2400 });
+		packet.Write(Stat{ 35, 1000 });
+		packet.Write(Stat{ 17, 0 });
+		packet.Write(Stat{ 36, 0 });
+		packet.Write(Stat{ 56, 0 });
+		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 37, 120 });
+		packet.Write(Stat{ 3, 0 });
+		packet.Write(Stat{ 39, 5 });
+		packet.Write(Stat{ 41, 0 });
+		packet.Write(Stat{ 40, 0 });
+		packet.Write(Stat{ 57, 0 });
+		packet.Write(Stat{ 50, 0 });
+		packet.Write(Stat{ 51, 0 });
+		packet.Write(Stat{ 5, 5 });
+		packet.Write(Stat{ 42, 0.6f });
+		packet.Write(Stat{ 6, 0 });
+		packet.Write(Stat{ 7, 93.75f });
+		packet.Write(Stat{ 8, 0 });
+		packet.Write(Stat{ 9, 3 });
+		packet.Write(Stat{ 10, 150 });
+		packet.Write(Stat{ 12, 0 });
+		packet.Write(Stat{ 20, 0 });
+		packet.Write(Stat{ 21, 0 });
+		packet.Write(Stat{ 18, 100 });
+		packet.Write(Stat{ 13, 100 });
+		packet.Write(Stat{ 14, 98 });
+		packet.Write(Stat{ 15, 100 });
+		packet.Write(Stat{ 52, 100 });
+		packet.Write(Stat{ 16, 1 });
+		packet.Write(Stat{ 27, 0 });
+		packet.Write(Stat{ 47, 0 });
+		packet.Write(Stat{ 49, 0 });
+		packet.Write(Stat{ 48, 0 });
+		packet.Write(Stat{ 29, 20 });
+		packet.Write(Stat{ 23, 9 });
+		packet.Write(Stat{ 44, 15 });
+		packet.Write(Stat{ 46, 0 });
+		packet.Write(Stat{ 45, 0 });
+		packet.Write(Stat{ 26, 0 });
+		packet.Write(Stat{ 25, 0 });
+		packet.Write(Stat{ 31, 14 });
+		packet.Write(Stat{ 22, 2 });
+		packet.Write(Stat{ 54, 15 });
+		packet.Write(Stat{ 60, 0 });
+		packet.Write(Stat{ 61, 0 });
+		packet.Write(Stat{ 62, 0 });
+		packet.Write(Stat{ 63, 3 });
+		packet.Write(Stat{ 64, 150 });
+		packet.Write(Stat{ 53, 0 });
+		packet.Write(Stat{ 58, 0 });
+		packet.Write(Stat{ 65, 0 });
+		packet.Write(Stat{ 55, 15 });
 
-		LOG("[client%03d] Server :: SN_SummaryInfoLatest :: ", clientID);
-		SendPacketData(clientID, Sv::SN_SummaryInfoLatest::NET_ID, packet.size, packet.data);
+		packet.Write<u16>(2); // curStats_count
+		packet.Write(Stat{ 0, 2400 });
+		packet.Write(Stat{ 2, 200 });
+		// ------------------------------------
+
+		packet.Write<u8>(1); // isInSight
+		packet.Write<u8>(0); // isDead
+		packet.Write<i64>(GetTime()); // serverTime
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		ASSERT(packet.size == 368); // TODO: remove
+
+		LOG("[client%03d] Server :: SN_GameCreateActor :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
 	}
 
-	// SN_AchieveInfo
+	// SN_GamePlayerStock
 	{
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u8>(1); // packetNum
-		packet.Write<i32>(800); // achievementScore
-		packet.Write<u16>(0); // achList_count
+		packet.Write<i32>(21013); // playerID
+		packet.WriteStringObj(L"LordSk"); // name
+		packet.Write<i32>(35); // class_
+		packet.Write<i32>(320080005); // displayTitleIDX
+		packet.Write<i32>(320080005); // statTitleIDX
+		packet.Write<u8>(0); // badgeType
+		packet.Write<u8>(0); // badgeTierLevel
+		packet.WriteStringObj(L"XMX"); // guildTag
+		packet.Write<u8>(0); // vipLevel
+		packet.Write<u8>(0); // staffType
+		packet.Write<u8>(0); // isSubstituted
 
-		LOG("[client%03d] Server :: SN_AchieveInfo :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AchieveInfo::NET_ID, packet.size, packet.data);
+		LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
 	}
 
-	// SN_AchieveLatest
+	// SN_PlayerStateInTown
 	{
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(0); // achList_count
+		packet.Write<i32>(21013); // playerID
+		packet.Write<u8>(-1); // playerStateInTown
+		packet.Write<u16>(0); // matchingGameModes_count
 
-		LOG("[client%03d] Server :: SN_AchieveLatest :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AchieveLatest::NET_ID, packet.size, packet.data);
+		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
+		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
 	}
 
-	// SN_CityMapInfo
-	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = 160000042;
-	SendPacket(clientID, cityMapInfo);
-
-	// SQ_CityLobbyJoinCity
-	LOG("[client%03d] Server :: SQ_CityLobbyJoinCity :: ", clientID);
-	SendPacketData(clientID, Sv::SQ_CityLobbyJoinCity::NET_ID, 0, nullptr);
-
-	// SN_SetGameGvt
+	// SN_GamePlayerEquipWeapon
 	{
-		Sv::SN_SetGameGvt gameGvt;
-		gameGvt.sendTime = 0;
-		gameGvt.virtualTime = 0;
-		LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
-		SendPacket(clientID, gameGvt);
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(21013); // characterID
+		packet.Write<i32>(131135012); // weaponDocIndex
+		packet.Write<i32>(0); // additionnalOverHeatGauge
+		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+
+		LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
 	}
+
+	// SN_TownHudStatistics
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u8>(0); // gameModeType
+		packet.Write<u8>(0); // gameType
+		packet.Write<u16>(3); // argList_count
+
+		// arglist
+		packet.Write<i32>(479);
+		packet.Write<i32>(0);
+		packet.Write<i32>(16);
+
+		LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
+		SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
+	}
+
+	// NPCs
+	SendNPCSpawn(clientID, 5000, 100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
+	SendNPCSpawn(clientID, 5001, 100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
+	SendNPCSpawn(clientID, 5002, 100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
+	SendNPCSpawn(clientID, 5003, 100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
+	SendNPCSpawn(clientID, 5004, 100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
+	SendNPCSpawn(clientID, 5005, 100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
+	SendNPCSpawn(clientID, 5006, 100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
+	SendNPCSpawn(clientID, 5007, 100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
+	SendNPCSpawn(clientID, 5008, 100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
+	SendNPCSpawn(clientID, 5009, 100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
+	SendNPCSpawn(clientID, 5010, 100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
+	SendNPCSpawn(clientID, 5011, 100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
+	SendNPCSpawn(clientID, 5012, 100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
+	SendNPCSpawn(clientID, 5013, 100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
+	SendNPCSpawn(clientID, 5014, 100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
+	SendNPCSpawn(clientID, 5015, 100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
+	SendNPCSpawn(clientID, 5016, 100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
+	SendNPCSpawn(clientID, 5017, 100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
+	SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
+	SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
+
+	// SN_PlayerStateInTown
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(21013); // playerID
+		packet.Write<u8>(0); // playerStateInTown
+		packet.Write<u16>(0); // matchingGameModes_count
+
+		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, 0);
+		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_JukeboxEnqueuedList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(0); // trackList_count
+
+		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_JukeboxHotTrackList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(0); // trackList_count
+
+		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_JukeboxPlay
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(0); // result
+		packet.Write<i32>(7770015); // trackID
+		packet.WriteStringObj(L"Flashback"); // nickname
+		packet.Write<u16>(0); // playPositionSec
+
+		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+	}
+#endif
 }
 
 void Game::SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir)

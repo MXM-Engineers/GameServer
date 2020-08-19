@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h> // memmove
+#include <EASTL/internal/thread_support.h> // mutex
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -48,10 +49,11 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 typedef float f32;
+typedef double f64;
 
 typedef wchar_t wchar;
 
-inline void* memAlloc(i64 size)
+inline void* memAlloc(size_t size)
 {
 	//ProfileBlock("memAlloc");
 	void* ptr = malloc(size);
@@ -59,7 +61,7 @@ inline void* memAlloc(i64 size)
 	return ptr;
 }
 
-inline void* memRealloc(void* inPtr, i64 size)
+inline void* memRealloc(void* inPtr, size_t size)
 {
 	//ProfileBlock("memRealloc");
 	//ProfileMemFree(inPtr);
@@ -74,7 +76,6 @@ inline void memFree(void* ptr)
 	//ProfileMemFree(ptr)
 	return free(ptr);
 }
-
 
 struct Buffer
 {
@@ -484,15 +485,7 @@ struct GrowableBuffer
 	}
 };
 
-// TODO: move this
-struct Vec3
-{
-	f32 x, y, z;
-
-	Vec3(){}
-	Vec3(f32 x_, f32 y_, f32 z_):
-		x(x_), y(y_), z(z_) {}
-};
-
 i64 GetGlobalTime();
 i32 GetTime();
+
+typedef eastl::Internal::mutex Mutex;

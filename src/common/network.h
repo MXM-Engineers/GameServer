@@ -6,8 +6,6 @@
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 
-#include <mutex>
-
 const char* IpToString(const u8* ip);
 const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3);
 const char* GetIpString(const sockaddr& addr);
@@ -28,9 +26,9 @@ struct Server
 		GrowableBuffer sendingBuff;
 		u8 recvBuffID;
 		u8 sendBuffID;
-		std::mutex mutexRecv;
-		std::mutex mutexSend;
-		std::mutex mutexConnect;
+		Mutex mutexRecv;
+		Mutex mutexSend;
+		Mutex mutexConnect;
 		OVERLAPPED recvOverlapped;
 		OVERLAPPED sendOverlapped;
 		HANDLE hEventRecv;

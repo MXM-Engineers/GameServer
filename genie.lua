@@ -72,6 +72,7 @@ solution "Servers"
 
 	-- erternal dependencies
 	dofile("external/genie_zlib.lua");
+	dofile("external/genie_eastl.lua");
 	
 
 project "Login"
@@ -83,10 +84,12 @@ project "Login"
 		"kernel32",
 		"user32",
 		"ws2_32",
+		"eastl"
 	}
 
 	includedirs {
 		"src",
+		eastl_includedir
 	}
 	
 	files {
@@ -112,10 +115,12 @@ project "Game"
 	includedirs {
 		"src",
 		zlib_includedir,
+		eastl_includedir
 	}
 
 	links {
 		"zlib",
+		"eastl",
 	}
 	
 	files {
@@ -126,3 +131,6 @@ project "Game"
 		"src/game/**.c",
 		"src/game/**.cpp",
 	}
+
+	configuration "windows"
+		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}

@@ -3,6 +3,7 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
+#include "world.h"
 
 // TODO: move this
 struct AccountData
@@ -23,9 +24,12 @@ struct Game
 	Server* server;
 	GrowableBuffer packetDataQueue;
 	GrowableBuffer processPacketQueue;
-	std::mutex mutexPacketDataQueue;
+	Mutex mutexPacketDataQueue;
 
 	const AccountData* playerAccountData[MAX_PLAYERS];
+
+	World world;
+	Reflection reflection;
 
 	void Init(Server* server_);
 	void Update();
@@ -36,8 +40,18 @@ struct Game
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
 	void ClientEnter(i32 clientID, const AccountData* accountData);
 
-	void PlayerSpawnInMap(i32 clientID);
+	void HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
+	void HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+
+	// TODO: remove these, only Reflection/Coordinator should send
 	void SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir);
 
 	template<typename Packet>

@@ -1,5 +1,4 @@
 #include "base.h"
-#include <mutex>
 #include <windows.h>
 
 FILE* g_LogFile;
@@ -7,7 +6,7 @@ const char* g_LogFileName;
 
 struct Logger
 {
-	std::mutex mutex;
+	Mutex mutex;
 
 	~Logger() {
 		fclose(g_LogFile);
@@ -35,7 +34,7 @@ void __Logf(const char* fmt, ...)
 
 	snprintf(final, sizeof(final), "[%x] %s", GetCurrentThreadId(), buff);
 
-	const std::lock_guard<std::mutex> lock(g_Logger.mutex);
+	const std::lock_guard<Mutex> lock(g_Logger.mutex);
 	printf(final);
 	fprintf(g_LogFile, final);
 
@@ -58,4 +57,16 @@ i32 GetTime()
 #ifdef _WIN32
 	return (i32)clock();
 #endif
+}
+
+// EASTL new operators
+void* operator new[](size_t size, const char* name, int flags, unsigned debugFlags, const char* file, int line)
+{
+	return memAlloc(size);
+}
+
+void* operator new[](size_t size, size_t alignment, size_t offset, const char* name, int flags, unsigned debugFlags, const char* file, int line)
+{
+	// TODO: align
+	return memAlloc(size);
 }

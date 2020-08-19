@@ -1,5 +1,6 @@
 #pragma once
 #include <common/base.h>
+#include <common/vector_math.h>
 
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
@@ -85,7 +86,7 @@ struct CQ_Authenticate
 	i32 var;
 };
 
-struct ReadyToLoadCharacter
+struct CN_ReadyToLoadCharacter
 {
 	enum { NET_ID = 60014 };
 };

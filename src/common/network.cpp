@@ -105,7 +105,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
 			ClientNet& client = clientNet[clientID];
-			const std::lock_guard<std::mutex> lock(client.mutexConnect);
+			const std::lock_guard<Mutex> lock(client.mutexConnect);
 
 			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
 
@@ -181,7 +181,7 @@ void Server::DisconnectClient(i32 clientID)
 	if(clientIsConnected[clientID] == 0) return;
 
 	ClientNet& client = clientNet[clientID];
-	const std::lock_guard<std::mutex> lock(client.mutexConnect);
+	const std::lock_guard<Mutex> lock(client.mutexConnect);
 
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
@@ -199,7 +199,7 @@ void Server::ClientSend(i32 clientID, const void* data, i32 dataSize)
 	if(clientSocket[clientID] == INVALID_SOCKET) return;
 
 	ClientNet& client = clientNet[clientID];
-	const std::lock_guard<std::mutex> lock(client.mutexSend);
+	const std::lock_guard<Mutex> lock(client.mutexSend);
 	client.pendingSendBuff.Append(data, dataSize);
 }
 
@@ -260,7 +260,7 @@ void Server::Update()
 
 			if(client.pendingSendBuff.size > 0) {
 				{
-					const std::lock_guard<std::mutex> lock(client.mutexSend);
+					const std::lock_guard<Mutex> lock(client.mutexSend);
 					client.sendingBuff.Append(client.pendingSendBuff.data, client.pendingSendBuff.size);
 					client.pendingSendBuff.Clear();
 				}
@@ -289,7 +289,7 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 		ClientNet& client = clientNet[clientID];
 
 		{
-			const std::lock_guard<std::mutex> lock(client.mutexRecv);
+			const std::lock_guard<Mutex> lock(client.mutexRecv);
 
 			if(client.recvPendingProcessingBuff.size > 0) {
 				ReceiveBufferHeader header;
@@ -352,7 +352,7 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	}
 
 	// append to pending processing buffer
-	const std::lock_guard<std::mutex> lock(client.mutexRecv);
+	const std::lock_guard<Mutex> lock(client.mutexRecv);
 	client.recvPendingProcessingBuff.Append(client.recvBuff, dataLen);
 	return true;
 }
@@ -372,7 +372,10 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 	ClientSend(clientID, sendBuff, packetTotalSize);
 
 #ifdef CONF_DEBUG
+	static Mutex mutexFile;
+	mutexFile.lock();
 	fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
 	packetCounter++;
+	mutexFile.unlock();
 #endif
 }

@@ -4,7 +4,7 @@
 #include <common/vector_math.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
-#include "reflection.h"
+#include "replication.h"
 
 enum class ActorUID: u32 {
 	INVALID = 0
@@ -34,13 +34,13 @@ struct World
 		i32 clientID;
 	};
 
-	Reflection* reflection;
+	Replication* replication;
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::array<Player,MAX_PLAYERS> player;
 	eastl::fixed_vector<ActorCore,2048> actorList;
 	u32 nextPlayerActorUID;
 
-	void Init(Reflection* reflection_);
+	void Init(Replication* replication_);
 	void Update(f64 delta);
 
 	ActorUID RegisterNewPlayer(i32 clientID);

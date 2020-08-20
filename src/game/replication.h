@@ -5,7 +5,7 @@
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
 
-struct Reflection
+struct Replication
 {
 	struct Actor
 	{

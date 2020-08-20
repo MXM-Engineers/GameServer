@@ -1,8 +1,8 @@
 #include "world.h"
 
-void World::Init(Reflection* reflection_)
+void World::Init(Replication* replication_)
 {
-	reflection = reflection_;
+	replication = replication_;
 	memset(&playerActorUID, 0, sizeof(playerActorUID));
 	nextPlayerActorUID = 21013;
 }
@@ -13,7 +13,7 @@ void World::Update(f64 delta)
 	for(int i = 0; i < actorCount; i++) {
 		const ActorCore& actor = actorList[i];
 
-		Reflection::Actor rfl;
+		Replication::Actor rfl;
 		rfl.UID = (u32)actor.UID;
 		rfl.type = actor.type;
 		rfl.modelID = (i32)actor.modelID;
@@ -25,7 +25,7 @@ void World::Update(f64 delta)
 		rfl.faction = 0;
 		rfl.classType = actor.classType;
 		rfl.skinIndex = 0;
-		reflection->FramePushActor(rfl);
+		replication->FramePushActor(rfl);
 	}
 }
 
@@ -36,7 +36,7 @@ ActorUID World::RegisterNewPlayer(i32 clientID)
 
 	playerActorUID[clientID] = (ActorUID)nextPlayerActorUID++;
 
-	reflection->EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
+	replication->EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
 	return playerActorUID[clientID];
 }
 
@@ -49,7 +49,7 @@ void World::PlayerFirstSpawn(i32 clientID)
 	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
 	actor.dir = Vec3(0, 0, 2.68874f);
 
-	reflection->EventPlayerGameEnter(clientID);
+	replication->EventPlayerGameEnter(clientID);
 }
 
 World::ActorCore& World::SpawnActor(ActorUID actorUID)

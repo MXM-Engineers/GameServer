@@ -29,7 +29,7 @@ struct Game
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
 	World world;
-	Reflection reflection;
+	Replication replication;
 
 	void Init(Server* server_);
 	void Update();
@@ -51,7 +51,7 @@ struct Game
 	void HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 
-	// TODO: remove these, only Reflection/Coordinator should send
+	// TODO: remove these, only Replication/Coordinator should send data
 	void SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir);
 
 	template<typename Packet>

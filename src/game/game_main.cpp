@@ -5,7 +5,7 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
-// - reflection: send player info (name, status etc)
+// - replication: send player info (name, status etc)
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 

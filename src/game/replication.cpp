@@ -1,21 +1,21 @@
-#include "reflection.h"
+#include "replication.h"
 #include <common/protocol.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 
-void Reflection::Frame::Clear()
+void Replication::Frame::Clear()
 {
 	memset(&playerDoScanEnd, 0, sizeof(playerDoScanEnd));
 	actorList.clear();
 }
 
-void Reflection::Init(Server* server_)
+void Replication::Init(Server* server_)
 {
 	server = server_;
 	memset(&playerState, 0, sizeof(playerState));
 }
 
-void Reflection::FrameEnd()
+void Replication::FrameEnd()
 {
 	// TODO: reflect all actors
 	eastl::fixed_set<u32,2048> curActorUidSet;
@@ -216,12 +216,12 @@ void Reflection::FrameEnd()
 	frameCur.Clear(); // clear frame
 }
 
-void Reflection::FramePushActor(const Reflection::Actor& actor)
+void Replication::FramePushActor(const Replication::Actor& actor)
 {
 	frameCur.actorList.push_back(actor);
 }
 
-void Reflection::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
+void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalActorUidSet[clientID].clear();
@@ -437,7 +437,7 @@ void Reflection::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 	}
 }
 
-void Reflection::EventPlayerGameEnter(i32 clientID)
+void Replication::EventPlayerGameEnter(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
 	frameCur.playerDoScanEnd[clientID] = true;

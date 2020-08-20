@@ -17,8 +17,8 @@ void Game::Init(Server* server_)
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
 
-	reflection.Init(server);
-	world.Init(&reflection);
+	replication.Init(server);
+	world.Init(&replication);
 	CreateThread(NULL, 0, ThreadGame, this, 0, NULL);
 }
 
@@ -40,7 +40,7 @@ void Game::Update()
 	}
 
 	world.Update(1/60.0); // TODO: update delta
-	reflection.FrameEnd();
+	replication.FrameEnd();
 
 	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
 }

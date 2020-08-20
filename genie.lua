@@ -38,6 +38,17 @@ solution "Servers"
 			"CONF_RELEASE",
 		}
 
+	configuration "windows"
+		defines {
+			"_CRT_SECURE_NO_DEPRECATE",
+			"_CRT_NONSTDC_NO_DEPRECATE",
+			"WIN32_LEAN_AND_MEAN",
+			"NOMINMAX",
+		}
+
+		-- disable exception related warnings
+		buildoptions{ "/wd4577", "/wd4530" }
+
 	configuration {}
 		flags {
 			"Cpp14"
@@ -46,7 +57,7 @@ solution "Servers"
 	targetdir(BUILD_DIR)
 
 	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
-	targetdir("../build")
+		targetdir("../build")
 	configuration {}
 
 	flags {
@@ -60,16 +71,6 @@ solution "Servers"
 		--"StaticRuntime",
 	}
 
-	defines {
-		"_CRT_SECURE_NO_DEPRECATE",
-		"_CRT_NONSTDC_NO_DEPRECATE",
-		"WIN32_LEAN_AND_MEAN",
-		"NOMINMAX",
-	}
-
-	-- disable exception related warnings
-	buildoptions{ "/wd4577", "/wd4530" }
-
 	-- erternal dependencies
 	dofile("external/genie_zlib.lua");
 	dofile("external/genie_eastl.lua");
@@ -81,9 +82,6 @@ project "Login"
 	configuration {}
 
 	links {
-		"kernel32",
-		"user32",
-		"ws2_32",
 		"eastl"
 	}
 
@@ -101,16 +99,15 @@ project "Login"
 		"src/login/**.cpp",
 	}
 
+	configuration "windows"
+		links {
+			"ws2_32",
+		}
+
 project "Game"
 	kind "ConsoleApp"
 
 	configuration {}
-
-	links {
-		"kernel32",
-		"user32",
-		"ws2_32",
-	}
 
 	includedirs {
 		"src",
@@ -134,3 +131,7 @@ project "Game"
 
 	configuration "windows"
 		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
+
+		links {
+			"ws2_32",
+		}

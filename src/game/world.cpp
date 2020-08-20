@@ -3,7 +3,6 @@
 void World::Init(Replication* replication_)
 {
 	replication = replication_;
-	memset(&playerActorUID, 0, sizeof(playerActorUID));
 	nextPlayerActorUID = 21013;
 }
 
@@ -29,27 +28,9 @@ void World::Update(f64 delta)
 	}
 }
 
-ActorUID World::RegisterNewPlayer(i32 clientID)
+ActorUID World::NewPlayerActorUID()
 {
-	ASSERT(clientID >= 0 && clientID < MAX_PLAYERS);
-	ASSERT(playerActorUID[clientID] == ActorUID::INVALID);
-
-	playerActorUID[clientID] = (ActorUID)nextPlayerActorUID++;
-
-	replication->EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
-	return playerActorUID[clientID];
-}
-
-void World::PlayerFirstSpawn(i32 clientID)
-{
-	ActorCore& actor = SpawnActor(playerActorUID[clientID]);
-	actor.type = 1;
-	actor.modelID = (ActorModelID)100000017;
-	actor.classType = 17;
-	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
-	actor.dir = Vec3(0, 0, 2.68874f);
-
-	replication->EventPlayerGameEnter(clientID);
+	return (ActorUID)nextPlayerActorUID++;
 }
 
 World::ActorCore& World::SpawnActor(ActorUID actorUID)
@@ -57,4 +38,45 @@ World::ActorCore& World::SpawnActor(ActorUID actorUID)
 	ActorCore& actor = actorList.push_back();
 	actor.UID = actorUID;
 	return actor;
+}
+
+void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
+{
+	// TODO: frame delta position update
+	/*
+	// SA_GetCharacterInfo
+	Sv::SN_GamePlayerSyncByInt sync;
+	sync.characterID = update.characterID;
+	sync.p3nPos = update.p3nPos;
+	sync.p3nDir = update.p3nDir;
+	sync.p3nEye = update.p3nEye;
+	sync.nRotate = update.nRotate;
+	sync.nSpeed = update.nSpeed;
+	sync.nState = update.nState;
+	sync.nActionIDX = update.nActionIDX;
+	LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: ", clientID);
+	SendPacket(clientID, sync);
+	*/
+
+	ActorCore* actor = FindActor(actorUID);
+
+	// TODO: check for movement hacking
+	actor->pos = pos;
+	actor->dir = dir;
+	actor->eye = eye;
+	actor->rotate = rotate;
+	actor->speed = speed;
+	actor->state = state;
+	actor->actionID = actionID;
+}
+
+World::ActorCore* World::FindActor(ActorUID actorUID)
+{
+	// TODO: UID -> Actor map
+	for(auto it = actorList.begin(), itEnd = actorList.end(); it != itEnd; ++it) {
+		if(it->UID == actorUID) {
+			return it;
+		}
+	}
+	return nullptr;
 }

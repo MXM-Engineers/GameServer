@@ -442,3 +442,23 @@ void Replication::EventPlayerGameEnter(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 	frameCur.playerDoScanEnd[clientID] = true;
 }
+
+void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax)
+{
+	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
+
+	if(playerState[clientID] != PlayerState::IN_GAME) {
+		LOG("WARNING(EventPlayerRequestCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, playerState[clientID]);
+		return;
+	}
+
+	// SA_GetCharacterInfo
+	Sv::SA_GetCharacterInfo info;
+	info.characterID = actorUID;
+	info.docIndex = modelID;
+	info.class_ = classType;
+	info.hp = health;
+	info.maxHp = healthMax;
+	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
+	SendPacket(clientID, info);
+}

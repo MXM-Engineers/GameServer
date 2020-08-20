@@ -31,36 +31,19 @@ struct Game
 	World world;
 	Replication replication;
 
+	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
+
 	void Init(Server* server_);
 	void Update();
 
-	void CoordinatorClientEnter(i32 clientID, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
 
+private:
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
-	void ClientEnter(i32 clientID, const AccountData* accountData);
-
-	void HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 	void HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-
-
-	// TODO: remove these, only Replication/Coordinator should send data
-	void SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir);
-
-	template<typename Packet>
-	inline void SendPacket(i32 clientID, const Packet& packet)
-	{
-		SendPacketData(clientID, Packet::NET_ID, sizeof(packet), &packet);
-	}
-	inline void SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
-	{
-		server->SendPacketData(clientID, netID, packetSize, packetData);
-	}
+	void HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 };

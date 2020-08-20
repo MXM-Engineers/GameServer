@@ -49,6 +49,7 @@ struct Replication
 
 	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID);
 	void EventPlayerGameEnter(i32 clientID);
+	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 
 private:
 	template<typename Packet>

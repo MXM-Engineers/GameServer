@@ -167,6 +167,20 @@ void Reflection::FrameEnd()
 				SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
 			}
 
+			// SN_GamePlayerEquipWeapon
+			{
+				u8 sendData[1024];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<i32>(actor.UID); // characterID
+				packet.Write<i32>(131135012); // weaponDocIndex
+				packet.Write<i32>(0); // additionnalOverHeatGauge
+				packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+
+				LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+				SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+			}
+
 			// SN_PlayerStateInTown
 			{
 				u8 sendData[1024];

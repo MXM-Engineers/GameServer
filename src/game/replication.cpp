@@ -44,6 +44,11 @@ void Replication::FrameEnd()
 			const Actor& actor = *actorIt->second;
 
 			const bool isPlayer = (actor.classType != -1);
+			i32 localID = -1;
+			if(!isPlayer) {
+				static i32 nextLocalID = 1;
+				localID = nextLocalID++;
+			}
 
 			// SN_GameCreateActor
 			{
@@ -53,7 +58,7 @@ void Replication::FrameEnd()
 				packet.Write<i32>(actor.UID); // objectID
 				packet.Write<i32>(actor.type); // nType
 				packet.Write<i32>(actor.modelID); // nIDX
-				packet.Write<i32>(-1); // dwLocalID
+				packet.Write<i32>(localID); // dwLocalID
 				// TODO: localID?
 				packet.Write(actor.pos); // p3nPos
 				packet.Write(actor.dir); // p3nDir
@@ -162,16 +167,9 @@ void Replication::FrameEnd()
 				SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 			}
 
-			if(isPlayer) {
-				// TODO: map
-				PlayerInfo* actorPlayerInfo = nullptr;
-				for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-					if(playerInfo[clientID].actorUID == actor.UID) {
-						actorPlayerInfo = &playerInfo[clientID];
-						break;
-					}
-				}
-				ASSERT(actorPlayerInfo);
+			auto plateIt = actorPlateInfo.find(actor.UID);
+			if(plateIt != actorPlateInfo.end()) {
+				const ActorPlateInfo& plate = plateIt->second;
 
 				// SN_GamePlayerStock
 				{
@@ -179,13 +177,13 @@ void Replication::FrameEnd()
 					PacketWriter packet(sendData, sizeof(sendData));
 
 					packet.Write<i32>(actor.UID); // playerID
-					packet.WriteStringObj(actorPlayerInfo->nick.data()); // name
+					packet.WriteStringObj(plate.nick.data()); // name
 					packet.Write<i32>(actor.classType); // class_
 					packet.Write<i32>(320080005); // displayTitleIDX
 					packet.Write<i32>(320080005); // statTitleIDX
 					packet.Write<u8>(0); // badgeType
 					packet.Write<u8>(0); // badgeTierLevel
-					packet.WriteStringObj(actorPlayerInfo->guildTag.data()); // guildTag
+					packet.WriteStringObj(plate.guildTag.data()); // guildTag
 					packet.Write<u8>(0); // vipLevel
 					packet.Write<u8>(0); // staffType
 					packet.Write<u8>(0); // isSubstituted
@@ -193,6 +191,9 @@ void Replication::FrameEnd()
 					LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
 					SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
 				}
+			}
+
+			if(isPlayer) {
 
 				// SN_GamePlayerEquipWeapon
 				{
@@ -237,6 +238,62 @@ void Replication::FrameEnd()
 				LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
 				SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 			}
+
+			// TODO: proper jukebox replication
+
+			// SN_TownHudStatistics
+			{
+				u8 sendData[1024];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u8>(0); // gameModeType
+				packet.Write<u8>(0); // gameType
+				packet.Write<u16>(3); // argList_count
+
+				// arglist
+				packet.Write<i32>(479);
+				packet.Write<i32>(0);
+				packet.Write<i32>(16);
+
+				LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
+				SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
+			}
+
+			// SN_JukeboxEnqueuedList
+			{
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u16>(0); // trackList_count
+
+				LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+				SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+			}
+
+			// SN_JukeboxHotTrackList
+			{
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<u16>(0); // trackList_count
+
+				LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
+				SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
+			}
+
+			// SN_JukeboxPlay
+			{
+				u8 sendData[256];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<i32>(0); // result
+				packet.Write<i32>(7770015); // trackID
+				packet.WriteStringObj(L"Flashback"); // nickname
+				packet.Write<u16>(0); // playPositionSec
+
+				LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+				SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+			}
 		}
 	}
 
@@ -254,10 +311,10 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, c
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalActorUidSet[clientID].clear();
 
-	PlayerInfo& info = playerInfo[clientID];
-	info.actorUID = playerAssignedActorUID;
-	info.nick = name;
-	info.guildTag = guildTag;
+	ActorPlateInfo plate;
+	plate.nick = name;
+	plate.guildTag = guildTag;
+	actorPlateInfo.emplace(playerAssignedActorUID, plate);
 
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
@@ -270,7 +327,6 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, c
 	LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d", clientID, playerAssignedActorUID);
 	SendPacket(clientID, leader);
 
-	/*
 	// SN_PlayerSkillSlot
 	{
 		u8 sendData[2048];
@@ -353,7 +409,7 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, c
 		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
 		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
 	}
-*/
+
 	// SN_SetGameGvt
 	{
 		Sv::SN_SetGameGvt gameGvt;
@@ -364,7 +420,7 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, c
 		SendPacket(clientID, gameGvt);
 	}
 
-	/*
+
 	// SN_SummaryInfoAll
 	{
 		u8 sendData[128];
@@ -450,7 +506,7 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, c
 		LOG("[client%03d] Server :: SN_AchieveLatest :: ", clientID);
 		SendPacketData(clientID, Sv::SN_AchieveLatest::NET_ID, packet.size, packet.data);
 	}
-*/
+
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
 	cityMapInfo.cityMapID = 160000042;
@@ -494,4 +550,14 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 	info.maxHp = healthMax;
 	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 	SendPacket(clientID, info);
+
+
+}
+
+void Replication::SetActorPlateInfo(u32 actorUID, const wchar* name, const wchar* guildTag)
+{
+	ActorPlateInfo plate;
+	plate.nick = name;
+	plate.guildTag = guildTag;
+	actorPlateInfo.emplace(actorUID, plate);
 }

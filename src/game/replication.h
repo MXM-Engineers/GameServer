@@ -5,6 +5,7 @@
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
+#include <EASTL/fixed_map.h>
 
 struct Replication
 {
@@ -37,9 +38,9 @@ struct Replication
 		IN_GAME=2,
 	};
 
-	struct PlayerInfo
+	// as in "name plate" on top of the model
+	struct ActorPlateInfo
 	{
-		u32 actorUID;
 		WideString nick;
 		WideString guildTag;
 	};
@@ -52,7 +53,7 @@ struct Replication
 	// Use a fixed_vector?
 
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
-	eastl::array<PlayerInfo,Server::MAX_CLIENTS> playerInfo;
+	eastl::fixed_map<u32,ActorPlateInfo,2048> actorPlateInfo;
 	eastl::array<eastl::fixed_set<u32,2048>,Server::MAX_CLIENTS> playerLocalActorUidSet;
 
 	void Init(Server* server_);
@@ -63,6 +64,8 @@ struct Replication
 	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, const wchar* name, const wchar* guildTag);
 	void EventPlayerGameEnter(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
+
+	void SetActorPlateInfo(u32 actorUID, const wchar* name, const wchar* guildTag);
 
 private:
 	template<typename Packet>

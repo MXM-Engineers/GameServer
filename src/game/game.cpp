@@ -102,6 +102,7 @@ void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* p
 		HANDLE_CASE(CN_MapIsLoaded);
 		HANDLE_CASE(CQ_GetCharacterInfo);
 		HANDLE_CASE(CN_UpdatePosition);
+		HANDLE_CASE(CN_ChannelChatMessage);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -144,62 +145,6 @@ void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, co
 	actor.actionID = 0;
 
 	replication.EventPlayerGameEnter(clientID);
-
-#if 0
-	// SN_TownHudStatistics
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u8>(0); // gameModeType
-		packet.Write<u8>(0); // gameType
-		packet.Write<u16>(3); // argList_count
-
-		// arglist
-		packet.Write<i32>(479);
-		packet.Write<i32>(0);
-		packet.Write<i32>(16);
-
-		LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
-		SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_JukeboxEnqueuedList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(0); // trackList_count
-
-		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_JukeboxHotTrackList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(0); // trackList_count
-
-		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_JukeboxPlay
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(0); // result
-		packet.Write<i32>(7770015); // trackID
-		packet.WriteStringObj(L"Flashback"); // nickname
-		packet.Write<u16>(0); // playPositionSec
-
-		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-	}
-#endif
 }
 
 void Game::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -219,6 +164,42 @@ void Game::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header,
 
 	ASSERT(playerActorUID[clientID] == (ActorUID)update.characterID); // TODO: soft cancel, kick client
 	world.PlayerUpdatePosition(playerActorUID[clientID], update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+}
+
+void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	i32 chatType = buff.Read<i32>();
+	const u16 msgLen = buff.Read<u16>();
+	const wchar* msg = (wchar*)buff.ReadRaw(msgLen * 2);
+
+	LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
+
+	// command
+	if(msg[0] == L'!') {
+		msg++;
+
+		if(wcsncmp(msg, L"lego", 4) == 0) {
+			World::ActorCore* playerActor = world.FindActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
+
+			ActorUID actorUID = world.NewNpcActorUID();
+			World::ActorCore& actor = world.SpawnActor(actorUID);
+			actor.type = 1;
+			actor.modelID = (ActorModelID)100000018;
+			actor.classType = 18;
+			actor.pos = playerActor->pos;
+			actor.dir = playerActor->dir;
+			actor.eye = playerActor->eye;
+			actor.rotate = 0;
+			actor.speed = 0;
+			actor.state = 0;
+			actor.actionID = 0;
+
+			// TODO: ability to name actors from the world?
+			replication.SetActorPlateInfo((u32)actorUID, L"legomage15", L"MEME");
+		}
+	}
 }
 
 void Game::SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir)

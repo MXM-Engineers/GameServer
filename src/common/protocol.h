@@ -144,6 +144,15 @@ struct CQ_GetCharacterInfo
 	i32 characterID;
 };
 
+struct CN_ChannelChatMessage
+{
+	enum { NET_ID = 60114 };
+
+	i32 chatType;
+	u16 msg_len;
+	wchar msg[1];
+};
+
 struct CQ_GetGuildProfile
 {
 	enum { NET_ID = 60145 };
@@ -1233,6 +1242,18 @@ struct SN_MailUnreadNotice
 	u16 shopMailCount;
 	u16 newAttachmentsPending_count;
 	i32 newAttachmentsPending[1];
+};
+
+struct SN_ChatChannelMessage
+{
+	enum { NET_ID = 62242 };
+
+	i32 chatType;
+	u16 senderNickname_len;
+	wchar senderNickname[1];
+	u8 senderStaffType;
+	u16 chatMsg_len;
+	wchar chatMsg[1];
 };
 
 struct SA_TierRecord

@@ -4,6 +4,7 @@ void World::Init(Replication* replication_)
 {
 	replication = replication_;
 	nextPlayerActorUID = 21013;
+	nextNpcActorUID = 5000;
 }
 
 void World::Update(f64 delta)
@@ -13,17 +14,36 @@ void World::Update(f64 delta)
 		const ActorCore& actor = actorList[i];
 
 		Replication::Actor rfl;
-		rfl.UID = (u32)actor.UID;
-		rfl.type = actor.type;
-		rfl.modelID = (i32)actor.modelID;
-		rfl.pos = actor.pos;
-		rfl.dir = actor.dir;
-		rfl.spawnType = 0;
-		rfl.actionState = -1;
-		rfl.ownerID = 0;
-		rfl.faction = 0;
-		rfl.classType = actor.classType;
-		rfl.skinIndex = 0;
+
+		// Player ?
+		// TODO: split players from npc from monsters?
+		if(actor.classType != -1) {
+			rfl.UID = (u32)actor.UID;
+			rfl.type = actor.type;
+			rfl.modelID = (i32)actor.modelID;
+			rfl.pos = actor.pos;
+			rfl.dir = actor.dir;
+			rfl.spawnType = 0;
+			rfl.actionState = -1;
+			rfl.ownerID = 0;
+			rfl.faction = 0;
+			rfl.classType = actor.classType;
+			rfl.skinIndex = 0;
+		}
+		else {
+			rfl.UID = (u32)actor.UID;
+			rfl.type = actor.type;
+			rfl.modelID = (i32)actor.modelID;
+			rfl.pos = actor.pos;
+			rfl.dir = actor.dir;
+			rfl.spawnType = 0;
+			rfl.actionState = 99;
+			rfl.ownerID = 0;
+			rfl.faction = -1;
+			rfl.classType = actor.classType;
+			rfl.skinIndex = 0;
+		}
+
 		replication->FramePushActor(rfl);
 	}
 }
@@ -31,6 +51,11 @@ void World::Update(f64 delta)
 ActorUID World::NewPlayerActorUID()
 {
 	return (ActorUID)nextPlayerActorUID++;
+}
+
+ActorUID World::NewNpcActorUID()
+{
+	return (ActorUID)nextNpcActorUID++;
 }
 
 World::ActorCore& World::SpawnActor(ActorUID actorUID)

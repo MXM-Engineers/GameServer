@@ -27,6 +27,7 @@ struct Game
 
 	void Init(Server* server_);
 	void Update();
+	bool LoadMap();
 
 	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
@@ -39,4 +40,6 @@ private:
 	void HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	void SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir);
 };

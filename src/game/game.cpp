@@ -22,6 +22,8 @@ void Game::Init(Server* server_)
 
 	memset(&playerActorUID, 0, sizeof(playerActorUID));
 
+	LoadMap();
+
 	CreateThread(NULL, 0, ThreadGame, this, 0, NULL);
 }
 
@@ -46,6 +48,32 @@ void Game::Update()
 	replication.FrameEnd();
 
 	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
+}
+
+bool Game::LoadMap()
+{
+	// TODO: pull this info from the game's xml files
+	SpawnNPC(100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
+	SpawnNPC(100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
+	SpawnNPC(100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
+	SpawnNPC(100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
+	SpawnNPC(100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
+	SpawnNPC(100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
+	SpawnNPC(100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
+	SpawnNPC(100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
+	SpawnNPC(100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
+	SpawnNPC(100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
+	SpawnNPC(100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
+	SpawnNPC(100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
+	SpawnNPC(100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
+	SpawnNPC(100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
+	SpawnNPC(100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
+	SpawnNPC(100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
+	SpawnNPC(100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
+	SpawnNPC(100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
+	SpawnNPC(100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
+	SpawnNPC(110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
+	return true;
 }
 
 void Game::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
@@ -136,28 +164,6 @@ void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, co
 		SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
 	}
 
-	// NPCs
-	SendNPCSpawn(clientID, 5000, 100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
-	SendNPCSpawn(clientID, 5001, 100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
-	SendNPCSpawn(clientID, 5002, 100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
-	SendNPCSpawn(clientID, 5003, 100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
-	SendNPCSpawn(clientID, 5004, 100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
-	SendNPCSpawn(clientID, 5005, 100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
-	SendNPCSpawn(clientID, 5006, 100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
-	SendNPCSpawn(clientID, 5007, 100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
-	SendNPCSpawn(clientID, 5008, 100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
-	SendNPCSpawn(clientID, 5009, 100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
-	SendNPCSpawn(clientID, 5010, 100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
-	SendNPCSpawn(clientID, 5011, 100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
-	SendNPCSpawn(clientID, 5012, 100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
-	SendNPCSpawn(clientID, 5013, 100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
-	SendNPCSpawn(clientID, 5014, 100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
-	SendNPCSpawn(clientID, 5015, 100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
-	SendNPCSpawn(clientID, 5016, 100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
-	SendNPCSpawn(clientID, 5017, 100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
-	SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
-	SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
-
 	// SN_JukeboxEnqueuedList
 	{
 		u8 sendData[256];
@@ -215,59 +221,18 @@ void Game::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header,
 	world.PlayerUpdatePosition(playerActorUID[clientID], update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
 
-/*
-void Game::SendNPCSpawn(i32 clientID, i32 objectID, i32 nIDX, const Vec3& pos, const Vec3& dir)
+void Game::SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir)
 {
-	// SN_GameCreateActor
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		static i32 localID = 1;
-
-		packet.Write<i32>(objectID); // objectID
-		packet.Write<i32>(1); // nType
-		packet.Write<i32>(nIDX); // nIDX
-		packet.Write<i32>(localID++); // dwLocalID
-		packet.Write(pos); // p3nPos
-		packet.Write(dir); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<i32>(99); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(-1); // faction
-		packet.Write<i32>(-1); // classType
-		packet.Write<i32>(0); // skinIndex
-		packet.Write<i32>(0); // seed
-
-		// initStat ------------------------
-		packet.Write<u16>(0); // maxStats_count
-		packet.Write<u16>(0); // curStats_count
-		// ------------------------------------
-
-		packet.Write<u8>(1); // isInSight
-		packet.Write<u8>(0); // isDead
-		packet.Write<i64>(GetTime()); // serverTime
-
-		packet.Write<u16>(0); // meshChangeActionHistory_count
-
-		LOG("[client%03d] Server :: SN_GameCreateActor :: NPC objectID=%d nIDX=%d", clientID, objectID, nIDX);
-		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_SpawnPosForMinimap
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(objectID); // objectID
-		packet.Write(pos); // p3nPos
-
-		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: objectID=%d", clientID, objectID);
-		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
-	}
+	ActorUID actorUID = world.NewNpcActorUID();
+	World::ActorCore& actor = world.SpawnActor(actorUID);
+	actor.type = 1;
+	actor.modelID = (ActorModelID)modelID;
+	actor.classType = -1;
+	actor.pos = pos;
+	actor.dir = dir;
+	actor.eye = Vec3(0, 0, 0);
+	actor.rotate = 0;
+	actor.speed = 0;
+	actor.state = -1;
+	actor.actionID = -1;
 }
-*/
-

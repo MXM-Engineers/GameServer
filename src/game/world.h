@@ -44,11 +44,13 @@ struct World
 	Replication* replication;
 	eastl::fixed_vector<ActorCore,2048> actorList;
 	u32 nextPlayerActorUID;
+	u32 nextNpcActorUID;
 
 	void Init(Replication* replication_);
 	void Update(f64 delta);
 
 	ActorUID NewPlayerActorUID();
+	ActorUID NewNpcActorUID();
 	ActorCore& SpawnActor(ActorUID actorUID);
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);

@@ -54,6 +54,7 @@ void Replication::FrameEnd()
 				packet.Write<i32>(actor.type); // nType
 				packet.Write<i32>(actor.modelID); // nIDX
 				packet.Write<i32>(-1); // dwLocalID
+				// TODO: localID?
 				packet.Write(actor.pos); // p3nPos
 				packet.Write(actor.dir); // p3nDir
 				packet.Write<i32>(actor.spawnType); // spawnType
@@ -147,6 +148,18 @@ void Replication::FrameEnd()
 
 				LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, actor.UID);
 				SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+			}
+
+			// SN_SpawnPosForMinimap
+			{
+				u8 sendData[1024];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<i32>(actor.UID); // objectID
+				packet.Write(actor.pos); // p3nPos
+
+				LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, actor.UID);
+				SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 			}
 
 			if(isPlayer) {

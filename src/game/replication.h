@@ -1,6 +1,7 @@
 #pragma once
 #include <common/network.h>
 #include <common/vector_math.h>
+#include <common/utils.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
@@ -36,10 +37,22 @@ struct Replication
 		IN_GAME=2,
 	};
 
+	struct PlayerInfo
+	{
+		u32 actorUID;
+		WideString nick;
+		WideString guildTag;
+	};
+
 	Server* server;
 	Frame frameCur;
 	Frame framePrev;
+
+	// TODO: we propably do not need to store every possible client data here
+	// Use a fixed_vector?
+
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
+	eastl::array<PlayerInfo,Server::MAX_CLIENTS> playerInfo;
 	eastl::array<eastl::fixed_set<u32,2048>,Server::MAX_CLIENTS> playerLocalActorUidSet;
 
 	void Init(Server* server_);
@@ -47,7 +60,7 @@ struct Replication
 	void FrameEnd();
 	void FramePushActor(const Actor& actor);
 
-	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID);
+	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, const wchar* name, const wchar* guildTag);
 	void EventPlayerGameEnter(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 

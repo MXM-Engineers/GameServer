@@ -43,6 +43,8 @@ void Replication::FrameEnd()
 			ASSERT(actorIt != actorUidMap.end());
 			const Actor& actor = *actorIt->second;
 
+			const bool isPlayer = (actor.classType != -1);
+
 			// SN_GameCreateActor
 			{
 				u8 sendData[1024];
@@ -65,74 +67,77 @@ void Replication::FrameEnd()
 				packet.Write<i32>(actor.skinIndex); // skinIndex
 				packet.Write<i32>(0); // seed
 
-#if 0
-				packet.Write<u16>(0); // maxStats_count
-				packet.Write<u16>(0); // curStats_count
+				// NPC
+				if(!isPlayer) {
+					packet.Write<u16>(0); // maxStats_count
+					packet.Write<u16>(0); // curStats_count
+				}
+				// Player
+				// TODO: is this really a reliable way to determine this actor is a player?
+				else {
+					typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-#else
-				typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+					// initStat ------------------------
+					packet.Write<u16>(53); // maxStats_count
+					packet.Write(Stat{ 0, 2400 });
+					packet.Write(Stat{ 35, 1000 });
+					packet.Write(Stat{ 17, 0 });
+					packet.Write(Stat{ 36, 0 });
+					packet.Write(Stat{ 56, 0 });
+					packet.Write(Stat{ 2, 200 });
+					packet.Write(Stat{ 37, 120 });
+					packet.Write(Stat{ 3, 0 });
+					packet.Write(Stat{ 39, 5 });
+					packet.Write(Stat{ 41, 0 });
+					packet.Write(Stat{ 40, 0 });
+					packet.Write(Stat{ 57, 0 });
+					packet.Write(Stat{ 50, 0 });
+					packet.Write(Stat{ 51, 0 });
+					packet.Write(Stat{ 5, 5 });
+					packet.Write(Stat{ 42, 0.6f });
+					packet.Write(Stat{ 6, 0 });
+					packet.Write(Stat{ 7, 93.75f });
+					packet.Write(Stat{ 8, 0 });
+					packet.Write(Stat{ 9, 3 });
+					packet.Write(Stat{ 10, 150 });
+					packet.Write(Stat{ 12, 0 });
+					packet.Write(Stat{ 20, 0 });
+					packet.Write(Stat{ 21, 0 });
+					packet.Write(Stat{ 18, 100 });
+					packet.Write(Stat{ 13, 100 });
+					packet.Write(Stat{ 14, 98 });
+					packet.Write(Stat{ 15, 100 });
+					packet.Write(Stat{ 52, 100 });
+					packet.Write(Stat{ 16, 1 });
+					packet.Write(Stat{ 27, 0 });
+					packet.Write(Stat{ 47, 0 });
+					packet.Write(Stat{ 49, 0 });
+					packet.Write(Stat{ 48, 0 });
+					packet.Write(Stat{ 29, 20 });
+					packet.Write(Stat{ 23, 9 });
+					packet.Write(Stat{ 44, 15 });
+					packet.Write(Stat{ 46, 0 });
+					packet.Write(Stat{ 45, 0 });
+					packet.Write(Stat{ 26, 0 });
+					packet.Write(Stat{ 25, 0 });
+					packet.Write(Stat{ 31, 14 });
+					packet.Write(Stat{ 22, 2 });
+					packet.Write(Stat{ 54, 15 });
+					packet.Write(Stat{ 60, 0 });
+					packet.Write(Stat{ 61, 0 });
+					packet.Write(Stat{ 62, 0 });
+					packet.Write(Stat{ 63, 3 });
+					packet.Write(Stat{ 64, 150 });
+					packet.Write(Stat{ 53, 0 });
+					packet.Write(Stat{ 58, 0 });
+					packet.Write(Stat{ 65, 0 });
+					packet.Write(Stat{ 55, 15 });
 
-				// initStat ------------------------
-				packet.Write<u16>(53); // maxStats_count
-				packet.Write(Stat{ 0, 2400 });
-				packet.Write(Stat{ 35, 1000 });
-				packet.Write(Stat{ 17, 0 });
-				packet.Write(Stat{ 36, 0 });
-				packet.Write(Stat{ 56, 0 });
-				packet.Write(Stat{ 2, 200 });
-				packet.Write(Stat{ 37, 120 });
-				packet.Write(Stat{ 3, 0 });
-				packet.Write(Stat{ 39, 5 });
-				packet.Write(Stat{ 41, 0 });
-				packet.Write(Stat{ 40, 0 });
-				packet.Write(Stat{ 57, 0 });
-				packet.Write(Stat{ 50, 0 });
-				packet.Write(Stat{ 51, 0 });
-				packet.Write(Stat{ 5, 5 });
-				packet.Write(Stat{ 42, 0.6f });
-				packet.Write(Stat{ 6, 0 });
-				packet.Write(Stat{ 7, 93.75f });
-				packet.Write(Stat{ 8, 0 });
-				packet.Write(Stat{ 9, 3 });
-				packet.Write(Stat{ 10, 150 });
-				packet.Write(Stat{ 12, 0 });
-				packet.Write(Stat{ 20, 0 });
-				packet.Write(Stat{ 21, 0 });
-				packet.Write(Stat{ 18, 100 });
-				packet.Write(Stat{ 13, 100 });
-				packet.Write(Stat{ 14, 98 });
-				packet.Write(Stat{ 15, 100 });
-				packet.Write(Stat{ 52, 100 });
-				packet.Write(Stat{ 16, 1 });
-				packet.Write(Stat{ 27, 0 });
-				packet.Write(Stat{ 47, 0 });
-				packet.Write(Stat{ 49, 0 });
-				packet.Write(Stat{ 48, 0 });
-				packet.Write(Stat{ 29, 20 });
-				packet.Write(Stat{ 23, 9 });
-				packet.Write(Stat{ 44, 15 });
-				packet.Write(Stat{ 46, 0 });
-				packet.Write(Stat{ 45, 0 });
-				packet.Write(Stat{ 26, 0 });
-				packet.Write(Stat{ 25, 0 });
-				packet.Write(Stat{ 31, 14 });
-				packet.Write(Stat{ 22, 2 });
-				packet.Write(Stat{ 54, 15 });
-				packet.Write(Stat{ 60, 0 });
-				packet.Write(Stat{ 61, 0 });
-				packet.Write(Stat{ 62, 0 });
-				packet.Write(Stat{ 63, 3 });
-				packet.Write(Stat{ 64, 150 });
-				packet.Write(Stat{ 53, 0 });
-				packet.Write(Stat{ 58, 0 });
-				packet.Write(Stat{ 65, 0 });
-				packet.Write(Stat{ 55, 15 });
-
-				packet.Write<u16>(2); // curStats_count
-				packet.Write(Stat{ 0, 2400 });
-				packet.Write(Stat{ 2, 200 });
-				// ------------------------------------
-#endif
+					packet.Write<u16>(2); // curStats_count
+					packet.Write(Stat{ 0, 2400 });
+					packet.Write(Stat{ 2, 200 });
+					// ------------------------------------
+				}
 
 				packet.Write<u8>(1); // isInSight
 				packet.Write<u8>(0); // isDead
@@ -144,54 +149,64 @@ void Replication::FrameEnd()
 				SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
 			}
 
-			// TODO: remove these, this is just for testing
+			if(isPlayer) {
+				// TODO: map
+				PlayerInfo* actorPlayerInfo = nullptr;
+				for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+					if(playerInfo[clientID].actorUID == actor.UID) {
+						actorPlayerInfo = &playerInfo[clientID];
+						break;
+					}
+				}
+				ASSERT(actorPlayerInfo);
 
-			// SN_GamePlayerStock
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+				// SN_GamePlayerStock
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<i32>(actor.UID); // playerID
-				packet.WriteStringObj(L"LordSk"); // name
-				packet.Write<i32>(actor.classType); // class_
-				packet.Write<i32>(320080005); // displayTitleIDX
-				packet.Write<i32>(320080005); // statTitleIDX
-				packet.Write<u8>(0); // badgeType
-				packet.Write<u8>(0); // badgeTierLevel
-				packet.WriteStringObj(L"XMX"); // guildTag
-				packet.Write<u8>(0); // vipLevel
-				packet.Write<u8>(0); // staffType
-				packet.Write<u8>(0); // isSubstituted
+					packet.Write<i32>(actor.UID); // playerID
+					packet.WriteStringObj(actorPlayerInfo->nick.data()); // name
+					packet.Write<i32>(actor.classType); // class_
+					packet.Write<i32>(320080005); // displayTitleIDX
+					packet.Write<i32>(320080005); // statTitleIDX
+					packet.Write<u8>(0); // badgeType
+					packet.Write<u8>(0); // badgeTierLevel
+					packet.WriteStringObj(actorPlayerInfo->guildTag.data()); // guildTag
+					packet.Write<u8>(0); // vipLevel
+					packet.Write<u8>(0); // staffType
+					packet.Write<u8>(0); // isSubstituted
 
-				LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
-				SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
-			}
+					LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
+				}
 
-			// SN_GamePlayerEquipWeapon
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+				// SN_GamePlayerEquipWeapon
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<i32>(actor.UID); // characterID
-				packet.Write<i32>(131135012); // weaponDocIndex
-				packet.Write<i32>(0); // additionnalOverHeatGauge
-				packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+					packet.Write<i32>(actor.UID); // characterID
+					packet.Write<i32>(131135012); // weaponDocIndex
+					packet.Write<i32>(0); // additionnalOverHeatGauge
+					packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
-				LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
-				SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
-			}
+					LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+					SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+				}
 
-			// SN_PlayerStateInTown
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+				// SN_PlayerStateInTown
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<i32>(actor.UID); // playerID
-				packet.Write<u8>(0); // playerStateInTown
-				packet.Write<u16>(0); // matchingGameModes_count
+					packet.Write<i32>(actor.UID); // playerID
+					packet.Write<u8>(0); // playerStateInTown
+					packet.Write<u16>(0); // matchingGameModes_count
 
-				LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-				SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+					LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
+					SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+				}
 			}
 		}
 
@@ -221,10 +236,15 @@ void Replication::FramePushActor(const Replication::Actor& actor)
 	frameCur.actorList.push_back(actor);
 }
 
-void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
+void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, const wchar* name, const wchar* guildTag)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalActorUidSet[clientID].clear();
+
+	PlayerInfo& info = playerInfo[clientID];
+	info.actorUID = playerAssignedActorUID;
+	info.nick = name;
+	info.guildTag = guildTag;
 
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);

@@ -1,4 +1,5 @@
 #include "coordinator.h"
+#include "game.h"
 #include <zlib.h>
 
 DWORD ThreadCoordinator(void* pData)
@@ -128,10 +129,14 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	// TODO: fetch account data
 	AccountData& account = accountData[clientID];
 	account = {};
-	account.nickname.Set(nick, nickLen);
+	account.nickname.assign(nick, nickLen);
+	account.guildTag = L"XMX";
 
 	// send account data
 	ClientSendAccountData(clientID);
+
+	// register new player to the game
+	game->CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -343,6 +348,7 @@ void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& head
 void Coordinator::ClientSendAccountData(i32 clientID)
 {
 	// Send account data
+	const AccountData& account = accountData[clientID];
 
 	// SN_RegionServicePolicy
 	{
@@ -564,7 +570,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		u8 sendData[128];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.WriteStringObj(L"LordSk"); // nick
+		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<i32>(4); // inventoryLineCountTab0
 		packet.Write<i32>(4); // inventoryLineCountTab1
 		packet.Write<i32>(4); // inventoryLineCountTab2
@@ -620,7 +626,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.WriteStringObj(L"XMX"); // guildName
-		packet.WriteStringObj(L"LordSk"); // nick
+		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<u8>(0); // onlineStatus
 
 		LOG("[client%03d] Server :: SN_GuildChannelEnter :: ", clientID);

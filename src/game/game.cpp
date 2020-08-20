@@ -1,4 +1,5 @@
 #include "game.h"
+#include "coordinator.h"
 
 DWORD ThreadGame(void* pData)
 {
@@ -47,6 +48,12 @@ void Game::Update()
 	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
 }
 
+void Game::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
+{
+	LOG("Game:: New player :: '%S'", accountData->nickname.data());
+	playerAccountData[clientID] = accountData;
+}
+
 void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
 	const std::lock_guard<Mutex> lock(mutexPacketDataQueue);
@@ -80,8 +87,10 @@ void Game::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& h
 {
 	LOG("[client%03d] Client ::CN_ReadyToLoadCharacter ::", clientID);
 
+	ASSERT(playerAccountData[clientID]); // account data is not assigned
+
 	playerActorUID[clientID] = world.NewPlayerActorUID();
-	replication.EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
+	replication.EventPlayerConnect(clientID, (u32)playerActorUID[clientID], playerAccountData[clientID]->nickname.data(), playerAccountData[clientID]->guildTag.data());
 }
 
 void Game::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -109,151 +118,6 @@ void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, co
 	replication.EventPlayerGameEnter(clientID);
 
 #if 0
-	// SN_GameCreateActor
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(21013); // objectID
-		packet.Write<i32>(1); // nType
-		packet.Write<i32>(100000017); // nIDX
-		packet.Write<i32>(-1); // dwLocalID
-		packet.Write(Vec3(11959.4f, 6451.76f, 3012)); // p3nPos
-		packet.Write(Vec3(0, 0, 2.68874f)); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<i32>(-1); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(0); // faction
-		packet.Write<i32>(17); // classType
-		packet.Write<i32>(2); // skinIndex
-		packet.Write<i32>(0); // seed
-
-		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
-
-		// initStat ------------------------
-		packet.Write<u16>(53); // maxStats_count
-		packet.Write(Stat{ 0, 2400 });
-		packet.Write(Stat{ 35, 1000 });
-		packet.Write(Stat{ 17, 0 });
-		packet.Write(Stat{ 36, 0 });
-		packet.Write(Stat{ 56, 0 });
-		packet.Write(Stat{ 2, 200 });
-		packet.Write(Stat{ 37, 120 });
-		packet.Write(Stat{ 3, 0 });
-		packet.Write(Stat{ 39, 5 });
-		packet.Write(Stat{ 41, 0 });
-		packet.Write(Stat{ 40, 0 });
-		packet.Write(Stat{ 57, 0 });
-		packet.Write(Stat{ 50, 0 });
-		packet.Write(Stat{ 51, 0 });
-		packet.Write(Stat{ 5, 5 });
-		packet.Write(Stat{ 42, 0.6f });
-		packet.Write(Stat{ 6, 0 });
-		packet.Write(Stat{ 7, 93.75f });
-		packet.Write(Stat{ 8, 0 });
-		packet.Write(Stat{ 9, 3 });
-		packet.Write(Stat{ 10, 150 });
-		packet.Write(Stat{ 12, 0 });
-		packet.Write(Stat{ 20, 0 });
-		packet.Write(Stat{ 21, 0 });
-		packet.Write(Stat{ 18, 100 });
-		packet.Write(Stat{ 13, 100 });
-		packet.Write(Stat{ 14, 98 });
-		packet.Write(Stat{ 15, 100 });
-		packet.Write(Stat{ 52, 100 });
-		packet.Write(Stat{ 16, 1 });
-		packet.Write(Stat{ 27, 0 });
-		packet.Write(Stat{ 47, 0 });
-		packet.Write(Stat{ 49, 0 });
-		packet.Write(Stat{ 48, 0 });
-		packet.Write(Stat{ 29, 20 });
-		packet.Write(Stat{ 23, 9 });
-		packet.Write(Stat{ 44, 15 });
-		packet.Write(Stat{ 46, 0 });
-		packet.Write(Stat{ 45, 0 });
-		packet.Write(Stat{ 26, 0 });
-		packet.Write(Stat{ 25, 0 });
-		packet.Write(Stat{ 31, 14 });
-		packet.Write(Stat{ 22, 2 });
-		packet.Write(Stat{ 54, 15 });
-		packet.Write(Stat{ 60, 0 });
-		packet.Write(Stat{ 61, 0 });
-		packet.Write(Stat{ 62, 0 });
-		packet.Write(Stat{ 63, 3 });
-		packet.Write(Stat{ 64, 150 });
-		packet.Write(Stat{ 53, 0 });
-		packet.Write(Stat{ 58, 0 });
-		packet.Write(Stat{ 65, 0 });
-		packet.Write(Stat{ 55, 15 });
-
-		packet.Write<u16>(2); // curStats_count
-		packet.Write(Stat{ 0, 2400 });
-		packet.Write(Stat{ 2, 200 });
-		// ------------------------------------
-
-		packet.Write<u8>(1); // isInSight
-		packet.Write<u8>(0); // isDead
-		packet.Write<i64>(GetTime()); // serverTime
-
-		packet.Write<u16>(0); // meshChangeActionHistory_count
-
-		ASSERT(packet.size == 368); // TODO: remove
-
-		LOG("[client%03d] Server :: SN_GameCreateActor :: ", clientID);
-		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_GamePlayerStock
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(21013); // playerID
-		packet.WriteStringObj(L"LordSk"); // name
-		packet.Write<i32>(35); // class_
-		packet.Write<i32>(320080005); // displayTitleIDX
-		packet.Write<i32>(320080005); // statTitleIDX
-		packet.Write<u8>(0); // badgeType
-		packet.Write<u8>(0); // badgeTierLevel
-		packet.WriteStringObj(L"XMX"); // guildTag
-		packet.Write<u8>(0); // vipLevel
-		packet.Write<u8>(0); // staffType
-		packet.Write<u8>(0); // isSubstituted
-
-		LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
-		SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_PlayerStateInTown
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(21013); // playerID
-		packet.Write<u8>(-1); // playerStateInTown
-		packet.Write<u16>(0); // matchingGameModes_count
-
-		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_GamePlayerEquipWeapon
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(21013); // characterID
-		packet.Write<i32>(131135012); // weaponDocIndex
-		packet.Write<i32>(0); // additionnalOverHeatGauge
-		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
-
-		LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
-		SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
-	}
-
 	// SN_TownHudStatistics
 	{
 		u8 sendData[1024];
@@ -293,19 +157,6 @@ void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, co
 	SendNPCSpawn(clientID, 5017, 100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
 	SendNPCSpawn(clientID, 5018, 100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
 	SendNPCSpawn(clientID, 5019, 110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
-
-	// SN_PlayerStateInTown
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(21013); // playerID
-		packet.Write<u8>(0); // playerStateInTown
-		packet.Write<u16>(0); // matchingGameModes_count
-
-		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, 0);
-		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-	}
 
 	// SN_JukeboxEnqueuedList
 	{

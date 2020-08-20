@@ -1,5 +1,18 @@
 #pragma once
-#include "game.h"
+#include <common/network.h>
+#include <common/utils.h>
+#include <common/protocol.h>
+
+// TODO: move this
+struct AccountData
+{
+	WideString nickname;
+	WideString guildTag;
+
+	// TODO: add to this
+};
+
+struct Game;
 
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator

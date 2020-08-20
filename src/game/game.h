@@ -5,15 +5,7 @@
 #include <common/utils.h>
 #include "world.h"
 
-// TODO: move this
-struct AccountData
-{
-	WString nickname;
-
-	// TODO: add to this
-};
-
-
+struct AccountData;
 
 struct Game
 {
@@ -36,6 +28,7 @@ struct Game
 	void Init(Server* server_);
 	void Update();
 
+	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
 
 private:

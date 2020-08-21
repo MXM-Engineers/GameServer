@@ -6,9 +6,30 @@
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
 #include <EASTL/fixed_map.h>
+#include <EASTL/fixed_list.h>
 
 struct Replication
 {
+	struct ActorNameplate
+	{
+		WideString name;
+		WideString guildTag;
+	};
+
+	struct ActorStats
+	{
+
+	};
+
+	struct ActorPlayerInfo
+	{
+		i32 weaponID;
+		i32 additionnalOverHeatGauge;
+		i32 additionnalOverHeatGaugeRatio;
+		u8 playerStateInTown;
+		eastl::fixed_vector<u8,16> matchingGameModes;
+	};
+
 	struct Actor
 	{
 		u32 UID;
@@ -22,12 +43,25 @@ struct Replication
 		i32 faction;
 		i32 classType;
 		i32 skinIndex;
+
+	private:
+
+		ActorNameplate* nameplate = nullptr;
+		ActorStats* stats = nullptr;
+		ActorPlayerInfo* playerInfo = nullptr;
+
+		friend struct Replication;
 	};
 
 	struct Frame
 	{
 		eastl::array<bool,Server::MAX_CLIENTS> playerDoScanEnd;
-		eastl::fixed_vector<Actor,2048> actorList;
+		eastl::fixed_list<Actor,2048> actorList;
+		eastl::fixed_list<ActorNameplate,2048> actorNameplateList;
+		eastl::fixed_list<ActorStats,2048> actorStatsList;
+		eastl::fixed_list<ActorPlayerInfo,2048> actorPlayerInfoList;
+		eastl::fixed_map<u32,Actor*,2048> actorUidMap;
+		eastl::fixed_set<u32,2048> actorUidSet;
 
 		void Clear();
 	};
@@ -38,13 +72,6 @@ struct Replication
 		IN_GAME=2,
 	};
 
-	// as in "name plate" on top of the model
-	struct ActorPlateInfo
-	{
-		WideString nick;
-		WideString guildTag;
-	};
-
 	Server* server;
 	Frame frameCur;
 	Frame framePrev;
@@ -53,21 +80,20 @@ struct Replication
 	// Use a fixed_vector?
 
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
-	eastl::fixed_map<u32,ActorPlateInfo,2048> actorPlateInfo;
 	eastl::array<eastl::fixed_set<u32,2048>,Server::MAX_CLIENTS> playerLocalActorUidSet;
 
 	void Init(Server* server_);
 
 	void FrameEnd();
-	void FramePushActor(const Actor& actor);
+	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
 
-	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, const wchar* name, const wchar* guildTag);
+	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID);
 	void EventPlayerGameEnter(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 
-	void SetActorPlateInfo(u32 actorUID, const wchar* name, const wchar* guildTag);
-
 private:
+	void SendActorSpawn(i32 clientID, const Actor& actor);
+
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)
 	{

@@ -7,6 +7,11 @@ void Replication::Frame::Clear()
 {
 	memset(&playerDoScanEnd, 0, sizeof(playerDoScanEnd));
 	actorList.clear();
+	actorNameplateList.clear();
+	actorStatsList.clear();
+	actorPlayerInfoList.clear();
+	actorUidMap.clear();
+	actorUidSet.clear();
 }
 
 void Replication::Init(Server* server_)
@@ -17,15 +22,6 @@ void Replication::Init(Server* server_)
 
 void Replication::FrameEnd()
 {
-	// TODO: reflect all actors
-	eastl::fixed_set<u32,2048> curActorUidSet;
-	eastl::fixed_hash_map<u32,const Actor*,2048> actorUidMap;
-
-	for(auto it = frameCur.actorList.begin(), itEnd = frameCur.actorList.end(); it != itEnd; ++it) {
-		curActorUidSet.insert(it->UID);
-		actorUidMap[it->UID] = it;
-	}
-
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
@@ -33,199 +29,21 @@ void Replication::FrameEnd()
 
 		eastl::fixed_set<u32,2048> localMinusCur;
 		eastl::fixed_set<u32,2048> curMinusLocal;
-		eastl::set_difference(localUidSet.begin(), localUidSet.end(), curActorUidSet.begin(), curActorUidSet.end(), eastl::inserter(localMinusCur, localMinusCur.begin()));
-		eastl::set_difference(curActorUidSet.begin(), curActorUidSet.end(), localUidSet.begin(), localUidSet.end(), eastl::inserter(curMinusLocal, curMinusLocal.begin()));
+		eastl::set_difference(localUidSet.begin(), localUidSet.end(), frameCur.actorUidSet.begin(), frameCur.actorUidSet.end(), eastl::inserter(localMinusCur, localMinusCur.begin()));
+		eastl::set_difference(frameCur.actorUidSet.begin(), frameCur.actorUidSet.end(), localUidSet.begin(), localUidSet.end(), eastl::inserter(curMinusLocal, curMinusLocal.begin()));
 
 		// send new spawns
 		const i32 newActorCount = curMinusLocal.size();
 		for(auto setIt = curMinusLocal.begin(), itEnd = curMinusLocal.end(); setIt != itEnd; ++setIt) {
-			const auto actorIt = actorUidMap.find(*setIt);
-			ASSERT(actorIt != actorUidMap.end());
+			const auto actorIt = frameCur.actorUidMap.find(*setIt);
+			ASSERT(actorIt != frameCur.actorUidMap.end());
 			const Actor& actor = *actorIt->second;
 
-			const bool isPlayer = (actor.classType != -1);
-			i32 localID = -1;
-			if(!isPlayer) {
-				static i32 nextLocalID = 1;
-				localID = nextLocalID++;
-			}
-
-			// SN_GameCreateActor
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(actor.UID); // objectID
-				packet.Write<i32>(actor.type); // nType
-				packet.Write<i32>(actor.modelID); // nIDX
-				packet.Write<i32>(localID); // dwLocalID
-				// TODO: localID?
-				packet.Write(actor.pos); // p3nPos
-				packet.Write(actor.dir); // p3nDir
-				packet.Write<i32>(actor.spawnType); // spawnType
-				packet.Write<i32>(actor.actionState); // actionState
-				packet.Write<i32>(actor.ownerID); // ownerID
-				packet.Write<u8>(0); // bDirectionToNearPC
-				packet.Write<i32>(-1); // AiWanderDistOverride
-				packet.Write<i32>(-1); // tagID
-				packet.Write<i32>(actor.faction); // faction
-				packet.Write<i32>(actor.classType); // classType
-				packet.Write<i32>(actor.skinIndex); // skinIndex
-				packet.Write<i32>(0); // seed
-
-				// NPC
-				if(!isPlayer) {
-					packet.Write<u16>(0); // maxStats_count
-					packet.Write<u16>(0); // curStats_count
-				}
-				// Player
-				// TODO: is this really a reliable way to determine this actor is a player?
-				else {
-					typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
-
-					// initStat ------------------------
-					packet.Write<u16>(53); // maxStats_count
-					packet.Write(Stat{ 0, 2400 });
-					packet.Write(Stat{ 35, 1000 });
-					packet.Write(Stat{ 17, 0 });
-					packet.Write(Stat{ 36, 0 });
-					packet.Write(Stat{ 56, 0 });
-					packet.Write(Stat{ 2, 200 });
-					packet.Write(Stat{ 37, 120 });
-					packet.Write(Stat{ 3, 0 });
-					packet.Write(Stat{ 39, 5 });
-					packet.Write(Stat{ 41, 0 });
-					packet.Write(Stat{ 40, 0 });
-					packet.Write(Stat{ 57, 0 });
-					packet.Write(Stat{ 50, 0 });
-					packet.Write(Stat{ 51, 0 });
-					packet.Write(Stat{ 5, 5 });
-					packet.Write(Stat{ 42, 0.6f });
-					packet.Write(Stat{ 6, 0 });
-					packet.Write(Stat{ 7, 93.75f });
-					packet.Write(Stat{ 8, 0 });
-					packet.Write(Stat{ 9, 3 });
-					packet.Write(Stat{ 10, 150 });
-					packet.Write(Stat{ 12, 0 });
-					packet.Write(Stat{ 20, 0 });
-					packet.Write(Stat{ 21, 0 });
-					packet.Write(Stat{ 18, 100 });
-					packet.Write(Stat{ 13, 100 });
-					packet.Write(Stat{ 14, 98 });
-					packet.Write(Stat{ 15, 100 });
-					packet.Write(Stat{ 52, 100 });
-					packet.Write(Stat{ 16, 1 });
-					packet.Write(Stat{ 27, 0 });
-					packet.Write(Stat{ 47, 0 });
-					packet.Write(Stat{ 49, 0 });
-					packet.Write(Stat{ 48, 0 });
-					packet.Write(Stat{ 29, 20 });
-					packet.Write(Stat{ 23, 9 });
-					packet.Write(Stat{ 44, 15 });
-					packet.Write(Stat{ 46, 0 });
-					packet.Write(Stat{ 45, 0 });
-					packet.Write(Stat{ 26, 0 });
-					packet.Write(Stat{ 25, 0 });
-					packet.Write(Stat{ 31, 14 });
-					packet.Write(Stat{ 22, 2 });
-					packet.Write(Stat{ 54, 15 });
-					packet.Write(Stat{ 60, 0 });
-					packet.Write(Stat{ 61, 0 });
-					packet.Write(Stat{ 62, 0 });
-					packet.Write(Stat{ 63, 3 });
-					packet.Write(Stat{ 64, 150 });
-					packet.Write(Stat{ 53, 0 });
-					packet.Write(Stat{ 58, 0 });
-					packet.Write(Stat{ 65, 0 });
-					packet.Write(Stat{ 55, 15 });
-
-					packet.Write<u16>(2); // curStats_count
-					packet.Write(Stat{ 0, 2400 });
-					packet.Write(Stat{ 2, 200 });
-					// ------------------------------------
-				}
-
-				packet.Write<u8>(1); // isInSight
-				packet.Write<u8>(0); // isDead
-				packet.Write<i64>(GetTime()); // serverTime
-
-				packet.Write<u16>(0); // meshChangeActionHistory_count
-
-				LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, actor.UID);
-				SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_SpawnPosForMinimap
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(actor.UID); // objectID
-				packet.Write(actor.pos); // p3nPos
-
-				LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, actor.UID);
-				SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
-			}
-
-			auto plateIt = actorPlateInfo.find(actor.UID);
-			if(plateIt != actorPlateInfo.end()) {
-				const ActorPlateInfo& plate = plateIt->second;
-
-				// SN_GamePlayerStock
-				{
-					u8 sendData[1024];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<i32>(actor.UID); // playerID
-					packet.WriteStringObj(plate.nick.data()); // name
-					packet.Write<i32>(actor.classType); // class_
-					packet.Write<i32>(320080005); // displayTitleIDX
-					packet.Write<i32>(320080005); // statTitleIDX
-					packet.Write<u8>(0); // badgeType
-					packet.Write<u8>(0); // badgeTierLevel
-					packet.WriteStringObj(plate.guildTag.data()); // guildTag
-					packet.Write<u8>(0); // vipLevel
-					packet.Write<u8>(0); // staffType
-					packet.Write<u8>(0); // isSubstituted
-
-					LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
-					SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
-				}
-			}
-
-			if(isPlayer) {
-
-				// SN_GamePlayerEquipWeapon
-				{
-					u8 sendData[1024];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<i32>(actor.UID); // characterID
-					packet.Write<i32>(131135012); // weaponDocIndex
-					packet.Write<i32>(0); // additionnalOverHeatGauge
-					packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
-
-					LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
-					SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
-				}
-
-				// SN_PlayerStateInTown
-				{
-					u8 sendData[1024];
-					PacketWriter packet(sendData, sizeof(sendData));
-
-					packet.Write<i32>(actor.UID); // playerID
-					packet.Write<u8>(0); // playerStateInTown
-					packet.Write<u16>(0); // matchingGameModes_count
-
-					LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-					SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-				}
-			}
+			SendActorSpawn(clientID, actor);
 		}
 
 		// update local set
-		playerLocalActorUidSet[clientID] = curActorUidSet;
+		playerLocalActorUidSet[clientID] = frameCur.actorUidSet;
 	}
 
 	// send SN_ScanEnd if requested
@@ -301,20 +119,37 @@ void Replication::FrameEnd()
 	frameCur.Clear(); // clear frame
 }
 
-void Replication::FramePushActor(const Replication::Actor& actor)
+void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
 {
-	frameCur.actorList.push_back(actor);
+	ASSERT(frameCur.actorUidMap.find(actor.UID) == frameCur.actorUidMap.end());
+	ASSERT(frameCur.actorUidSet.find(actor.UID) == frameCur.actorUidSet.end());
+
+	Actor& a = frameCur.actorList.push_back();
+	a = actor;
+	frameCur.actorUidMap.emplace(actor.UID, &a);
+	frameCur.actorUidSet.insert(actor.UID);
+
+	if(nameplate) {
+		ActorNameplate& np = frameCur.actorNameplateList.push_back();
+		np = *nameplate;
+		a.nameplate = &np;
+	}
+	if(stats) {
+		ActorStats& s = frameCur.actorStatsList.push_back();
+		s = *stats;
+		a.stats = &s;
+	}
+	if(playerInfo) {
+		ActorPlayerInfo& p = frameCur.actorPlayerInfoList.push_back();
+		p = *playerInfo;
+		a.playerInfo = &p;
+	}
 }
 
-void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID, const wchar* name, const wchar* guildTag)
+void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalActorUidSet[clientID].clear();
-
-	ActorPlateInfo plate;
-	plate.nick = name;
-	plate.guildTag = guildTag;
-	actorPlateInfo.emplace(playerAssignedActorUID, plate);
 
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
@@ -550,14 +385,182 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 	info.maxHp = healthMax;
 	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 	SendPacket(clientID, info);
-
-
 }
 
-void Replication::SetActorPlateInfo(u32 actorUID, const wchar* name, const wchar* guildTag)
+void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 {
-	ActorPlateInfo plate;
-	plate.nick = name;
-	plate.guildTag = guildTag;
-	actorPlateInfo.emplace(actorUID, plate);
+	i32 localID = -1;
+	if(!actor.playerInfo) {
+		static i32 nextLocalID = 1;
+		localID = nextLocalID++;
+	}
+
+	// SN_GameCreateActor
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(actor.UID); // objectID
+		packet.Write<i32>(actor.type); // nType
+		packet.Write<i32>(actor.modelID); // nIDX
+		packet.Write<i32>(localID); // dwLocalID
+		// TODO: localID?
+		packet.Write(actor.pos); // p3nPos
+		packet.Write(actor.dir); // p3nDir
+		packet.Write<i32>(actor.spawnType); // spawnType
+		packet.Write<i32>(actor.actionState); // actionState
+		packet.Write<i32>(actor.ownerID); // ownerID
+		packet.Write<u8>(0); // bDirectionToNearPC
+		packet.Write<i32>(-1); // AiWanderDistOverride
+		packet.Write<i32>(-1); // tagID
+		packet.Write<i32>(actor.faction); // faction
+		packet.Write<i32>(actor.classType); // classType
+		packet.Write<i32>(actor.skinIndex); // skinIndex
+		packet.Write<i32>(0); // seed
+
+		if(!actor.stats) {
+			packet.Write<u16>(0); // maxStats_count
+			packet.Write<u16>(0); // curStats_count
+		}
+		else {
+			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+
+			// initStat ------------------------
+			packet.Write<u16>(53); // maxStats_count
+			packet.Write(Stat{ 0, 2400 });
+			packet.Write(Stat{ 35, 1000 });
+			packet.Write(Stat{ 17, 0 });
+			packet.Write(Stat{ 36, 0 });
+			packet.Write(Stat{ 56, 0 });
+			packet.Write(Stat{ 2, 200 });
+			packet.Write(Stat{ 37, 120 });
+			packet.Write(Stat{ 3, 0 });
+			packet.Write(Stat{ 39, 5 });
+			packet.Write(Stat{ 41, 0 });
+			packet.Write(Stat{ 40, 0 });
+			packet.Write(Stat{ 57, 0 });
+			packet.Write(Stat{ 50, 0 });
+			packet.Write(Stat{ 51, 0 });
+			packet.Write(Stat{ 5, 5 });
+			packet.Write(Stat{ 42, 0.6f });
+			packet.Write(Stat{ 6, 0 });
+			packet.Write(Stat{ 7, 93.75f });
+			packet.Write(Stat{ 8, 0 });
+			packet.Write(Stat{ 9, 3 });
+			packet.Write(Stat{ 10, 150 });
+			packet.Write(Stat{ 12, 0 });
+			packet.Write(Stat{ 20, 0 });
+			packet.Write(Stat{ 21, 0 });
+			packet.Write(Stat{ 18, 100 });
+			packet.Write(Stat{ 13, 100 });
+			packet.Write(Stat{ 14, 98 });
+			packet.Write(Stat{ 15, 100 });
+			packet.Write(Stat{ 52, 100 });
+			packet.Write(Stat{ 16, 1 });
+			packet.Write(Stat{ 27, 0 });
+			packet.Write(Stat{ 47, 0 });
+			packet.Write(Stat{ 49, 0 });
+			packet.Write(Stat{ 48, 0 });
+			packet.Write(Stat{ 29, 20 });
+			packet.Write(Stat{ 23, 9 });
+			packet.Write(Stat{ 44, 15 });
+			packet.Write(Stat{ 46, 0 });
+			packet.Write(Stat{ 45, 0 });
+			packet.Write(Stat{ 26, 0 });
+			packet.Write(Stat{ 25, 0 });
+			packet.Write(Stat{ 31, 14 });
+			packet.Write(Stat{ 22, 2 });
+			packet.Write(Stat{ 54, 15 });
+			packet.Write(Stat{ 60, 0 });
+			packet.Write(Stat{ 61, 0 });
+			packet.Write(Stat{ 62, 0 });
+			packet.Write(Stat{ 63, 3 });
+			packet.Write(Stat{ 64, 150 });
+			packet.Write(Stat{ 53, 0 });
+			packet.Write(Stat{ 58, 0 });
+			packet.Write(Stat{ 65, 0 });
+			packet.Write(Stat{ 55, 15 });
+
+			packet.Write<u16>(2); // curStats_count
+			packet.Write(Stat{ 0, 2400 });
+			packet.Write(Stat{ 2, 200 });
+			// ------------------------------------
+		}
+
+		packet.Write<u8>(1); // isInSight
+		packet.Write<u8>(0); // isDead
+		packet.Write<i64>(GetTime()); // serverTime
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, actor.UID);
+		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_SpawnPosForMinimap
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(actor.UID); // objectID
+		packet.Write(actor.pos); // p3nPos
+
+		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, actor.UID);
+		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
+	}
+
+	if(actor.nameplate) {
+		const ActorNameplate& plate = *actor.nameplate;
+
+		// SN_GamePlayerStock
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<i32>(actor.UID); // playerID
+			packet.WriteStringObj(plate.name.data()); // name
+			packet.Write<i32>(actor.classType); // class_
+			packet.Write<i32>(320080005); // displayTitleIDX
+			packet.Write<i32>(320080005); // statTitleIDX
+			packet.Write<u8>(0); // badgeType
+			packet.Write<u8>(0); // badgeTierLevel
+			packet.WriteStringObj(plate.guildTag.data()); // guildTag
+			packet.Write<u8>(0); // vipLevel
+			packet.Write<u8>(0); // staffType
+			packet.Write<u8>(0); // isSubstituted
+
+			LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
+			SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
+		}
+	}
+
+	if(actor.playerInfo) {
+
+		// SN_GamePlayerEquipWeapon
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<i32>(actor.UID); // characterID
+			packet.Write<i32>(131135012); // weaponDocIndex
+			packet.Write<i32>(0); // additionnalOverHeatGauge
+			packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+
+			LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+			SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+		}
+
+		// SN_PlayerStateInTown
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<i32>(actor.UID); // playerID
+			packet.Write<u8>(0); // playerStateInTown
+			packet.Write<u16>(0); // matchingGameModes_count
+
+			LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
+			SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+		}
+	}
 }

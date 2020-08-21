@@ -6,7 +6,8 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
-// - replication: send player info (name, status etc)
+// - Clear up disconnected clients (destroy actor/entity)
+// - Replicate movement
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 

@@ -118,8 +118,14 @@ void Game::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& h
 
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
 
-	playerActorUID[clientID] = world.NewPlayerActorUID();
-	replication.EventPlayerConnect(clientID, (u32)playerActorUID[clientID], playerAccountData[clientID]->nickname.data(), playerAccountData[clientID]->guildTag.data());
+	const AccountData* account = playerAccountData[clientID];
+	World::ActorCore& actor = world.SpawnPlayerActor(clientID, 35, account->nickname.data(), account->guildTag.data());
+	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
+	actor.dir = Vec3(0, 0, 2.68874f);
+	actor.eye = Vec3(0, 0, 0);
+	playerActorUID[clientID] = actor.UID;
+
+	replication.EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
 }
 
 void Game::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -132,18 +138,6 @@ void Game::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, co
 {
 	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
 
-	World::ActorCore& actor = world.SpawnActor(playerActorUID[clientID]);
-	actor.type = 1;
-	actor.modelID = (ActorModelID)100000035;
-	actor.classType = 35;
-	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
-	actor.dir = Vec3(0, 0, 2.68874f);
-	actor.eye = Vec3(0, 0, 0);
-	actor.rotate = 0;
-	actor.speed = 0;
-	actor.state = 0;
-	actor.actionID = 0;
-
 	replication.EventPlayerGameEnter(clientID);
 }
 
@@ -153,7 +147,7 @@ void Game::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& heade
 	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, req.characterID);
 
 	// TODO: health
-	const World::ActorCore* actor = world.FindActor(playerActorUID[clientID]);
+	const World::ActorPlayer* actor = world.FindPlayerActor(clientID, playerActorUID[clientID]);
 	replication.EventPlayerRequestCharacterInfo(clientID, (u32)actor->UID, (i32)actor->modelID, actor->classType, 100, 100);
 }
 
@@ -184,36 +178,17 @@ void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& hea
 			ASSERT(playerActor);
 
 			ActorUID actorUID = world.NewNpcActorUID();
-			World::ActorCore& actor = world.SpawnActor(actorUID);
-			actor.type = 1;
-			actor.modelID = (ActorModelID)100000018;
-			actor.classType = 18;
+			World::ActorCore& actor = world.SpawnPlayerActor(-1, 18, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;
-			actor.rotate = 0;
-			actor.speed = 0;
-			actor.state = 0;
-			actor.actionID = 0;
-
-			// TODO: ability to name actors from the world?
-			replication.SetActorPlateInfo((u32)actorUID, L"legomage15", L"MEME");
 		}
 	}
 }
 
 void Game::SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir)
 {
-	ActorUID actorUID = world.NewNpcActorUID();
-	World::ActorCore& actor = world.SpawnActor(actorUID);
-	actor.type = 1;
-	actor.modelID = (ActorModelID)modelID;
-	actor.classType = -1;
+	World::ActorCore& actor = world.SpawnNpcActor((ActorModelID)modelID);
 	actor.pos = pos;
 	actor.dir = dir;
-	actor.eye = Vec3(0, 0, 0);
-	actor.rotate = 0;
-	actor.speed = 0;
-	actor.state = -1;
-	actor.actionID = -1;
 }

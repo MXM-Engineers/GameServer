@@ -489,3 +489,6 @@ i64 GetGlobalTime();
 i32 GetTime();
 
 typedef eastl::Internal::mutex Mutex;
+
+// NOTE: this is kinda dirty but funny at the same time? And useful?
+#define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)

@@ -87,7 +87,8 @@ project "Login"
 
 	includedirs {
 		"src",
-		eastl_includedir
+		eastl_includedir,
+		eabase_includedir
 	}
 	
 	files {
@@ -112,7 +113,8 @@ project "Game"
 	includedirs {
 		"src",
 		zlib_includedir,
-		eastl_includedir
+		eastl_includedir,
+		eabase_includedir
 	}
 
 	links {

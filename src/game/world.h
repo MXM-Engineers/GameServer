@@ -3,6 +3,7 @@
 #include <common/network.h>
 #include <common/vector_math.h>
 #include <EASTL/array.h>
+#include <EASTL/fixed_list.h>
 #include <EASTL/fixed_vector.h>
 #include "replication.h"
 
@@ -24,7 +25,6 @@ struct World
 		ActorUID UID;
 		i32 type;
 		ActorModelID modelID;
-		i32 classType;
 		Vec3 pos;
 		Vec3 dir;
 		Vec3 eye;
@@ -34,15 +34,32 @@ struct World
 		i32 actionID;
 	};
 
-	// TODO: there are 3 main actor types
-	// - Players
-	// - Monsters
-	// - NPCs
+	struct ActorPlayer: ActorCore
+	{
+		i32 classType;
+		i32 clientID;
+		WideString name;
+		WideString guildTag;
+	};
 
+	struct ActorNpc: ActorCore
+	{
 
+	};
+
+	struct ActorMonster: ActorCore
+	{
+
+	};
 
 	Replication* replication;
-	eastl::fixed_vector<ActorCore,2048> actorList;
+
+	// TODO: enable overflow for those
+	eastl::fixed_list<ActorPlayer,2048> actorPlayerList;
+	eastl::fixed_list<ActorNpc,2048> actorNpcList;
+	eastl::fixed_list<ActorMonster,2048> actorMonsterList;
+	eastl::fixed_map<ActorUID,ActorCore*,2048> actorMap;
+
 	u32 nextPlayerActorUID;
 	u32 nextNpcActorUID;
 
@@ -51,9 +68,12 @@ struct World
 
 	ActorUID NewPlayerActorUID();
 	ActorUID NewNpcActorUID();
-	ActorCore& SpawnActor(ActorUID actorUID);
+
+	ActorPlayer& SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag);
+	ActorNpc& SpawnNpcActor(ActorModelID modelID);
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 
 	ActorCore* FindActor(ActorUID actorUID);
+	ActorPlayer* FindPlayerActor(i32 clientID, ActorUID actorUID);
 };

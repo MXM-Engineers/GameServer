@@ -9,42 +9,51 @@ void World::Init(Replication* replication_)
 
 void World::Update(f64 delta)
 {
-	const i32 actorCount = actorList.size();
-	for(int i = 0; i < actorCount; i++) {
-		const ActorCore& actor = actorList[i];
+	foreach(it, actorPlayerList) {
+		const ActorPlayer& actor = *it;
 
 		Replication::Actor rfl;
+		rfl.UID = (u32)actor.UID;
+		rfl.type = actor.type;
+		rfl.modelID = (i32)actor.modelID;
+		rfl.pos = actor.pos;
+		rfl.dir = actor.dir;
+		rfl.spawnType = 0;
+		rfl.actionState = -1;
+		rfl.ownerID = 0;
+		rfl.faction = 0;
+		rfl.classType = actor.classType;
+		rfl.skinIndex = 0;
 
-		// Player ?
-		// TODO: split players from npc from monsters?
-		if(actor.classType != -1) {
-			rfl.UID = (u32)actor.UID;
-			rfl.type = actor.type;
-			rfl.modelID = (i32)actor.modelID;
-			rfl.pos = actor.pos;
-			rfl.dir = actor.dir;
-			rfl.spawnType = 0;
-			rfl.actionState = -1;
-			rfl.ownerID = 0;
-			rfl.faction = 0;
-			rfl.classType = actor.classType;
-			rfl.skinIndex = 0;
-		}
-		else {
-			rfl.UID = (u32)actor.UID;
-			rfl.type = actor.type;
-			rfl.modelID = (i32)actor.modelID;
-			rfl.pos = actor.pos;
-			rfl.dir = actor.dir;
-			rfl.spawnType = 0;
-			rfl.actionState = 99;
-			rfl.ownerID = 0;
-			rfl.faction = -1;
-			rfl.classType = actor.classType;
-			rfl.skinIndex = 0;
-		}
+		Replication::ActorNameplate plate;
+		plate.name = actor.name;
+		plate.guildTag = actor.guildTag;
 
-		replication->FramePushActor(rfl);
+		Replication::ActorStats stats;
+		// TODO: fill those
+
+		Replication::ActorPlayerInfo playerInfo;
+		// TODO: fill those
+
+		replication->FramePushActor(rfl, &plate, &stats, &playerInfo);
+	}
+
+	foreach(it, actorNpcList) {
+		const ActorNpc& actor = *it;
+
+		Replication::Actor rfl;
+		rfl.UID = (u32)actor.UID;
+		rfl.type = actor.type;
+		rfl.modelID = (i32)actor.modelID;
+		rfl.pos = actor.pos;
+		rfl.dir = actor.dir;
+		rfl.spawnType = 0;
+		rfl.actionState = 99;
+		rfl.ownerID = 0;
+		rfl.faction = -1;
+		rfl.classType = -1; // -1 for NPCs
+		rfl.skinIndex = 0;
+		replication->FramePushActor(rfl, nullptr, nullptr, nullptr);
 	}
 }
 
@@ -58,10 +67,43 @@ ActorUID World::NewNpcActorUID()
 	return (ActorUID)nextNpcActorUID++;
 }
 
-World::ActorCore& World::SpawnActor(ActorUID actorUID)
+World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag)
 {
-	ActorCore& actor = actorList.push_back();
+	ActorUID actorUID = NewPlayerActorUID();
+	ASSERT(FindActor(actorUID) == nullptr);
+
+	ActorPlayer& actor = actorPlayerList.push_back();
 	actor.UID = actorUID;
+	actor.type = 1;
+	actor.modelID = (ActorModelID)(100000000 + classType);
+	actor.classType = classType;
+	actor.rotate = 0;
+	actor.speed = 0;
+	actor.state = 0;
+	actor.actionID = 0;
+	actor.name = name;
+	actor.guildTag = guildTag;
+
+	actorMap.emplace(actorUID, &actor);
+	return actor;
+}
+
+World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
+{
+	ActorUID actorUID = NewNpcActorUID();
+	ASSERT(FindActor(actorUID) == nullptr);
+
+	ActorNpc& actor = actorNpcList.push_back();
+	actor.UID = actorUID;
+	actor.type = 1;
+	actor.modelID = (ActorModelID)modelID;
+	actor.eye = Vec3(0, 0, 0);
+	actor.rotate = 0;
+	actor.speed = 0;
+	actor.state = -1;
+	actor.actionID = -1;
+
+	actorMap.emplace(actorUID, &actor);
 	return actor;
 }
 
@@ -97,11 +139,15 @@ void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3&
 
 World::ActorCore* World::FindActor(ActorUID actorUID)
 {
-	// TODO: UID -> Actor map
-	for(auto it = actorList.begin(), itEnd = actorList.end(); it != itEnd; ++it) {
-		if(it->UID == actorUID) {
-			return it;
-		}
-	}
+	auto it = actorMap.find(actorUID);
+	if(it != actorMap.end()) return it->second;
 	return nullptr;
+}
+
+World::ActorPlayer* World::FindPlayerActor(i32 clientID, ActorUID actorUID)
+{
+	ActorCore* core = FindActor(actorUID);
+	if(!core) return nullptr;
+	// TODO: check if actor is a player
+	return (ActorPlayer*)core;
 }

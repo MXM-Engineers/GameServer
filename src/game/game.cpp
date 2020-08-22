@@ -198,6 +198,15 @@ void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& hea
 	LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
 
 	// command
+	if(ParseChatCommand(clientID, msg, msgLen)) {
+		return; // we're done here
+	}
+
+	replication.EventChatMessage(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+}
+
+bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+{
 	if(msg[0] == L'!') {
 		msg++;
 
@@ -209,8 +218,18 @@ void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& hea
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;
+
+			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
 		}
 	}
+
+	return false;
+}
+
+void Game::SendDbgMsg(i32 clientID, const wchar* msg)
+{
+	replication.EventChatMessageToClient(clientID, L"System", 1, msg);
 }
 
 void Game::SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir)

@@ -395,6 +395,52 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 	SendPacket(clientID, info);
 }
 
+void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+{
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	// TODO: chat types
+	// TODO: senderStaffType
+	// TODO: Actual chat system
+
+	packet.Write<i32>(chatType); // chatType
+	packet.WriteStringObj(senderName);
+	packet.Write<u8>(0); // senderStaffType
+	packet.WriteStringObj(msg, msgLen);
+
+	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", clientID, senderName, msgLen, msg);
+		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
+	}
+}
+
+void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+{
+	ASSERT(toClientID >= 0 && toClientID < Server::MAX_CLIENTS);
+	if(msgLen == -1) msgLen = wcslen(msg);
+
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	// TODO: chat types
+	// TODO: senderStaffType
+
+	packet.Write<i32>(chatType); // chatType
+	packet.WriteStringObj(senderName);
+	packet.Write<u8>(0); // senderStaffType
+	packet.WriteStringObj(msg, msgLen);
+
+	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", clientID, senderName, msgLen, msg);
+		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
+	}
+}
+
 void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 {
 	DBG_ASSERT(actor.UID != 0);

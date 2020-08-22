@@ -148,19 +148,11 @@ inline bool fileSaveBuff(const char* filename, const void* buff, i32 size)
 	return false;
 }
 
-static const char* _TempStrFormat(const char* fmt, ...)
-{
-	thread_local char buff[4096];
-
-	va_list list;
-	va_start(list, fmt);
-	vsnprintf(buff, sizeof(buff), fmt, list);
-	va_end(list);
-
-	return buff;
-}
-
+const char* _TempStrFormat(const char* fmt, ...);
 #define FMT(...) _TempStrFormat(__VA_ARGS__)
+
+const wchar* _TempWideStrFormat(const wchar* fmt, ...);
+#define LFMT(...) _TempWideStrFormat(__VA_ARGS__)
 
 struct ConstBuffer
 {

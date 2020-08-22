@@ -42,5 +42,8 @@ private:
 	void HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
+	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
+	void SendDbgMsg(i32 clientID, const wchar* msg);
+
 	void SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir);
 };

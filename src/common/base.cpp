@@ -70,6 +70,30 @@ void* operator new[](size_t size, size_t alignment, size_t offset, const char* n
 	// TODO: align
 	return memAlloc(size);
 }
+const char* _TempStrFormat(const char* fmt, ...)
+{
+	thread_local char buff[4096];
+
+	va_list list;
+	va_start(list, fmt);
+	vsnprintf(buff, sizeof(buff), fmt, list);
+	va_end(list);
+
+	return buff;
+}
+
+const wchar* _TempWideStrFormat(const wchar* fmt, ...)
+{
+	thread_local wchar buff[4096];
+
+	va_list list;
+	va_start(list, fmt);
+	vswprintf(buff, ARRAY_COUNT(buff), fmt, list);
+	va_end(list);
+
+	return buff;
+}
+
 
 #define SOKOL_IMPL
 #include "sokol_time.h"
@@ -121,4 +145,3 @@ f64 TimeDurationSinceMs(timept t0)
 {
 	return stm_ms(stm_since(t0));
 }
-

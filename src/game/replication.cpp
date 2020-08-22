@@ -25,6 +25,9 @@ void Replication::Init(Server* server_)
 {
 	server = server_;
 	memset(&playerState, 0, sizeof(playerState));
+
+	framePrev = &frames[0];
+	frameCur = &frames[1];
 }
 
 void Replication::FrameEnd()
@@ -36,28 +39,39 @@ void Replication::FrameEnd()
 
 		eastl::fixed_set<u32,2048> localMinusCur;
 		eastl::fixed_set<u32,2048> curMinusLocal;
-		eastl::set_difference(localUidSet.begin(), localUidSet.end(), frameCur.actorUidSet.begin(), frameCur.actorUidSet.end(), eastl::inserter(localMinusCur, localMinusCur.begin()));
-		eastl::set_difference(frameCur.actorUidSet.begin(), frameCur.actorUidSet.end(), localUidSet.begin(), localUidSet.end(), eastl::inserter(curMinusLocal, curMinusLocal.begin()));
+		eastl::set_difference(localUidSet.begin(), localUidSet.end(), frameCur->actorUidSet.begin(), frameCur->actorUidSet.end(), eastl::inserter(localMinusCur, localMinusCur.begin()));
+		eastl::set_difference(frameCur->actorUidSet.begin(), frameCur->actorUidSet.end(), localUidSet.begin(), localUidSet.end(), eastl::inserter(curMinusLocal, curMinusLocal.begin()));
 
 		// send new spawns
-		const i32 newActorCount = curMinusLocal.size();
 		foreach(setIt, curMinusLocal) {
-			const auto actorIt = frameCur.actorUidMap.find(*setIt);
-			ASSERT(actorIt != frameCur.actorUidMap.end());
+			const auto actorIt = frameCur->actorUidMap.find(*setIt);
+			ASSERT(actorIt != frameCur->actorUidMap.end());
 			const Actor& actor = *actorIt->second;
 
 			SendActorSpawn(clientID, actor);
 		}
 
+		// send destroy entity for deleted actors
+		foreach(setIt, localMinusCur) {
+			const u32 actorUID = *setIt;
+#ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
+			const auto actorIt = framePrev->actorUidMap.find(actorUID);
+			ASSERT(actorIt != framePrev->actorUidMap.end());
+			const Actor& actor = *actorIt->second;
+			ASSERT(actor.UID == actorUID);
+#endif
+			SendActorDestroy(clientID, actorUID);
+		}
+
 		// update local set
-		playerLocalActorUidSet[clientID] = frameCur.actorUidSet;
+		playerLocalActorUidSet[clientID] = frameCur->actorUidSet;
 	}
 
 	// send SN_ScanEnd if requested
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		if(frameCur.playerDoScanEnd[clientID]) {
+		if(frameCur->playerDoScanEnd[clientID]) {
 			// SN_ScanEnd
 			{
 				LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
@@ -122,34 +136,35 @@ void Replication::FrameEnd()
 		}
 	}
 
-	framePrev = frameCur;
-	frameCur.Clear(); // clear frame
+	eastl::swap(frameCur, framePrev);
+	frameCur->Clear(); // clear frame
 }
 
 void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
 {
-	ASSERT(frameCur.actorUidMap.find(actor.UID) == frameCur.actorUidMap.end());
-	ASSERT(frameCur.actorUidSet.find(actor.UID) == frameCur.actorUidSet.end());
+	ASSERT(frameCur->actorUidMap.find(actor.UID) == frameCur->actorUidMap.end());
+	ASSERT(frameCur->actorUidSet.find(actor.UID) == frameCur->actorUidSet.end());
 
-	Actor& a = frameCur.actorList.push_back();
+	Actor& a = frameCur->actorList.push_back();
 	a = actor;
-	frameCur.actorUidMap.emplace(actor.UID, --frameCur.actorList.end());
-	frameCur.actorUidSet.insert(actor.UID);
+	frameCur->actorUidMap.emplace(actor.UID, --frameCur->actorList.end());
+	DBG_ASSERT((*frameCur->actorUidMap.find(actor.UID)->second).UID == actor.UID); // TODO: remove
+	frameCur->actorUidSet.insert(actor.UID);
 
 	if(nameplate) {
-		ActorNameplate& np = frameCur.actorNameplateList.push_back();
+		ActorNameplate& np = frameCur->actorNameplateList.push_back();
 		np = *nameplate;
-		a.nameplate = --frameCur.actorNameplateList.end();
+		a.nameplate = --frameCur->actorNameplateList.end();
 	}
 	if(stats) {
-		ActorStats& s = frameCur.actorStatsList.push_back();
+		ActorStats& s = frameCur->actorStatsList.push_back();
 		s = *stats;
-		a.stats = --frameCur.actorStatsList.end();
+		a.stats = --frameCur->actorStatsList.end();
 	}
 	if(playerInfo) {
-		ActorPlayerInfo& p = frameCur.actorPlayerInfoList.push_back();
+		ActorPlayerInfo& p = frameCur->actorPlayerInfoList.push_back();
 		p = *playerInfo;
-		a.playerInfo = --frameCur.actorPlayerInfoList.end();
+		a.playerInfo = --frameCur->actorPlayerInfoList.end();
 	}
 }
 
@@ -174,7 +189,7 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<i32>(21013);
+		packet.Write<i32>(11111); // characterID
 
 		packet.Write<u16>(7); // slotList_count
 
@@ -372,7 +387,7 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 void Replication::EventPlayerGameEnter(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
-	frameCur.playerDoScanEnd[clientID] = true;
+	frameCur->playerDoScanEnd[clientID] = true;
 }
 
 void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax)
@@ -619,4 +634,15 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 			SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
 		}
 	}
+}
+
+void Replication::SendActorDestroy(i32 clientID, u32 actorUID)
+{
+	u8 sendData[16];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(actorUID); // entityUID
+
+	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, actorUID);
+	SendPacketData(clientID, Sv::SN_DestroyEntity::NET_ID, packet.size, packet.data);
 }

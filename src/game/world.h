@@ -81,4 +81,6 @@ struct World
 
 	ActorPlayer* FindPlayerActor(ActorUID actorUID);
 	ActorNpc* FindNpcActor(ActorUID actorUID);
+
+	bool DestroyPlayerActor(ActorUID actorUID);
 };

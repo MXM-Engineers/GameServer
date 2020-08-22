@@ -76,8 +76,9 @@ struct Replication
 	};
 
 	Server* server;
-	Frame frameCur;
-	Frame framePrev;
+	Frame frames[2];
+	Frame* frameCur;
+	Frame* framePrev;
 
 	// TODO: we propably do not need to store every possible client data here
 	// Use a fixed_vector?
@@ -98,6 +99,7 @@ struct Replication
 
 private:
 	void SendActorSpawn(i32 clientID, const Actor& actor);
+	void SendActorDestroy(i32 clientID, u32 actorUID);
 
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)

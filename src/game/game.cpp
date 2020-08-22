@@ -130,6 +130,7 @@ void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* p
 		HANDLE_CASE(CQ_GetCharacterInfo);
 		HANDLE_CASE(CN_UpdatePosition);
 		HANDLE_CASE(CN_ChannelChatMessage);
+		HANDLE_CASE(CQ_SetLeaderCharacter);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -205,8 +206,16 @@ void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& hea
 	replication.EventChatMessage(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
+void Game::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
+	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, leader.characterID, leader.skinIndex);
+}
+
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
+	static ActorUID lastLegoActorUID = ActorUID::INVALID;
+
 	if(msg[0] == L'!') {
 		msg++;
 
@@ -218,8 +227,16 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;
+			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
+		}
+
+		if(wcsncmp(msg, L"delete", 6) == 0) {
+			world.DestroyPlayerActor(lastLegoActorUID);
+
+			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
 	}

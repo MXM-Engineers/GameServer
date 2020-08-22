@@ -489,8 +489,9 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(1); // charaList_count
+		packet.Write<u16>(3); // charaList_count
 
+		// Lua
 		Sv::SN_ProfileCharacters::Character chara;
 		chara.characterID = 21013;
 		chara.creatureIndex = 100000035;
@@ -501,10 +502,39 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		chara.y = 12622;
 		chara.z = 3328.29f;
 		chara.characterType = 1;
-		chara.skinIndex = 2;
+		chara.skinIndex = 0;
 		chara.weaponIndex = 131135012;
 		chara.masterGearNo = 1;
+		packet.Write(chara);
 
+		// Sizuka
+		chara.characterID = 2;
+		chara.creatureIndex = 100000003;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 3;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		// Poharan
+		chara.characterID = 3;
+		chara.creatureIndex = 100000018;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 18;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
 		packet.Write(chara);
 
 		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);

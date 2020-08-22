@@ -144,6 +144,14 @@ struct CQ_GetCharacterInfo
 	i32 characterID;
 };
 
+struct CQ_SetLeaderCharacter
+{
+	enum { NET_ID = 60052 };
+
+	i32 characterID;
+	i32 skinIndex;
+};
+
 struct CN_ChannelChatMessage
 {
 	enum { NET_ID = 60114 };
@@ -474,8 +482,14 @@ struct SN_Money
 	i32 nReason;
 };
 POP_PACKED
-
 ASSERT_SIZE(SN_Money, 12);
+
+struct SN_DestroyEntity
+{
+	enum { NET_ID = 62059 };
+
+	i32 entityUID;
+};
 
 struct SN_SetGameGvt
 {

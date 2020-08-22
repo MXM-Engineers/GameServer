@@ -150,3 +150,13 @@ World::ActorNpc* World::FindNpcActor(ActorUID actorUID)
 	if(it == actorNpcMap.end()) return nullptr;
 	return &(*it->second);
 }
+
+bool World::DestroyPlayerActor(ActorUID actorUID)
+{
+	auto actorIt = actorPlayerMap.find(actorUID);
+	if(actorIt == actorPlayerMap.end()) return false;
+
+	actorPlayerList.erase(actorIt->second);
+	actorPlayerMap.erase(actorIt);
+	return true;
+}

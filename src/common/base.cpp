@@ -1,5 +1,10 @@
 #include "base.h"
-#include <windows.h>
+#include <time.h>
+#include <EAThread/eathread.h>
+
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 FILE* g_LogFile;
 const char* g_LogFileName;
@@ -32,16 +37,25 @@ void __Logf(const char* fmt, ...)
 	vsnprintf(buff, sizeof(buff), fmt, list);
 	va_end(list);
 
-	snprintf(final, sizeof(final), "[%x] %s", GetCurrentThreadId(), buff);
+	// this one is faster but gives a big number
+	/*
+	EA::Thread::ThreadUniqueId threadID;
+	EAThreadGetUniqueId(threadID);
+	*/
+	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
 
-	const std::lock_guard<Mutex> lock(g_Logger.mutex);
+	snprintf(final, sizeof(final), "[%x] %s", (i32)(intptr_t)threadID, buff);
+
+	const LockGuard lock(g_Logger.mutex);
 	printf(final);
 	fprintf(g_LogFile, final);
 
+#ifdef _WIN32
 #ifdef CONF_DEBUG
 	if(IsDebuggerPresent()) {
 		OutputDebugStringA(final);
 	}
+#endif
 #endif
 }
 

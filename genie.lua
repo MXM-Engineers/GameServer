@@ -74,6 +74,7 @@ solution "Servers"
 	-- erternal dependencies
 	dofile("external/genie_zlib.lua");
 	dofile("external/genie_eastl.lua");
+	dofile("external/genie_eathread.lua");
 	
 
 project "Login"
@@ -82,13 +83,15 @@ project "Login"
 	configuration {}
 
 	links {
-		"eastl"
+		"eastl",
+		"eathread"
 	}
 
 	includedirs {
 		"src",
 		eastl_includedir,
-		eabase_includedir
+		eabase_includedir,
+		eathread_includedir
 	}
 	
 	files {
@@ -114,12 +117,14 @@ project "Game"
 		"src",
 		zlib_includedir,
 		eastl_includedir,
+		eathread_includedir,
 		eabase_includedir
 	}
 
 	links {
 		"zlib",
 		"eastl",
+		"eathread",
 	}
 	
 	files {

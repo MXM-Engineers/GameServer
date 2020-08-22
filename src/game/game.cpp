@@ -1,7 +1,8 @@
 #include "game.h"
 #include "coordinator.h"
+#include <EAThread/eathread_thread.h>
 
-DWORD ThreadGame(void* pData)
+intptr_t ThreadGame(void* pData)
 {
 	Game& game = *(Game*)pData;
 
@@ -24,14 +25,15 @@ void Game::Init(Server* server_)
 
 	LoadMap();
 
-	CreateThread(NULL, 0, ThreadGame, this, 0, NULL);
+	EA::Thread::Thread Thread;
+	Thread.Begin(ThreadGame, this);
 }
 
 void Game::Update()
 {
 	processPacketQueue.Clear();
 	{
-		const std::lock_guard<Mutex> lock(mutexPacketDataQueue);
+		LockGuard lock(mutexPacketDataQueue);
 		processPacketQueue.Append(packetDataQueue.data, packetDataQueue.size);
 		packetDataQueue.Clear();
 	}
@@ -84,7 +86,7 @@ void Game::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* account
 
 void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
-	const std::lock_guard<Mutex> lock(mutexPacketDataQueue);
+	const LockGuard lock(mutexPacketDataQueue);
 	packetDataQueue.Append(&clientID, sizeof(clientID));
 	packetDataQueue.Append(&header, sizeof(header));
 	packetDataQueue.Append(packetData, header.size);

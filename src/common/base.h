@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h> // memmove
-#include <EASTL/internal/thread_support.h> // mutex
+#include <EAThread/eathread_futex.h> // mutex
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -161,159 +161,6 @@ static const char* _TempStrFormat(const char* fmt, ...)
 }
 
 #define FMT(...) _TempStrFormat(__VA_ARGS__)
-
-// Dynamic array holding POD structures
-template<typename T, u32 STACK_COUNT = 1>
-struct Array
-{
-	T _stackData[STACK_COUNT];
-	T* _data = _stackData;
-	i64 _capacity = STACK_COUNT;
-	i64 _count = 0;
-	void* _memBlock = nullptr;
-
-	Array() = default;
-
-	template<u32 from_staticCount>
-	Array(const Array<T, from_staticCount>& from) {
-		Copy(from);
-	}
-
-	Array(const Array& from) {
-		Copy(from);
-	}
-
-	// deep copy
-	template<u32 from_staticCount>
-	void Copy(const Array<T, from_staticCount>& from) {
-		Clear();
-		if(from._count > _capacity) {
-			Reserve(from._count);
-		}
-		_count = from._count;
-		memmove(_data, from._data, _count * sizeof(T));
-	}
-
-	inline Array& operator=(const Array& other) {
-		Copy(other);
-		return *this;
-	}
-
-	~Array() {
-		release();
-	}
-
-	inline void release() {
-		if(_memBlock) {
-			memFree(_memBlock);
-			_memBlock = nullptr;
-		}
-	}
-
-	void Reserve(u32 newCapacity) {
-		if(newCapacity <= _capacity) return;
-		_memBlock = memRealloc(_memBlock, newCapacity * sizeof(T));
-		ASSERT_MSG(_memBlock, "Out of memory");
-
-		T* oldData = _data;
-		_data = (T*)_memBlock;
-		_capacity = newCapacity;
-
-		if(oldData == _stackData) {
-			memmove(_data, _stackData, sizeof(_stackData));
-		}
-	}
-
-	T& Push(const T& elt) {
-		if(_count + 1 > _capacity) {
-			Reserve(_capacity * 2);
-		}
-		return (_data[_count++] = elt);
-	}
-
-	T& PushMany(const T* elements, const u32 eltCount) {
-		if(_count + eltCount > _capacity) {
-			Reserve(MAX(_capacity * 2, _count + eltCount));
-		}
-
-		i64 start = _count;
-		_count += eltCount;
-		memmove(_data + start, elements, eltCount * sizeof(T));
-		return _data[start];
-	}
-
-	void Fill(const i32 eltCount, const T& elt = {}) {
-		if(eltCount > _capacity) {
-			Reserve(MAX(_capacity * 2, eltCount));
-		}
-		_count = eltCount;
-		for(u32 i = 0; i < _count; ++i) {
-			_data[i] = elt;
-		}
-	}
-
-	inline void RemoveByID(i32 id) {
-		ASSERT_MSG(_count > 0 && id < _count, "Element out of range");
-		memmove(_data + id, _data + (_count -1), sizeof(T));
-		--_count;
-	}
-
-	// Swap with last
-	inline void Remove(const T& elt) {
-		const T* eltPtr = &elt;
-		ASSERT_MSG(eltPtr >= _data && eltPtr < _data + _count, "Element out of range");
-
-		u32 id = eltPtr - _data;
-		memmove(_data + id, _data + (_count -1), sizeof(T));
-		--_count;
-	}
-
-	inline void Resize(i32 count_) {
-		if(count_ > _capacity) {
-			Reserve(MAX(_capacity * 2, count_));
-		}
-		_count = count_;
-	}
-
-	inline void Clear() {
-		_count = 0;
-	}
-
-	inline u32 Capacity() const {
-		return _capacity;
-	}
-
-	inline u32 Count() const {
-		return _count;
-	}
-
-	inline u32 DataSize() const {
-		return _count * sizeof(T);
-	}
-
-	inline T* Data() {
-		return _data;
-	}
-
-	inline const T* Data() const {
-		return _data;
-	}
-
-	inline T& operator[](u32 index) {
-		ASSERT(index < _count);
-		return _data[index];
-	}
-
-	inline const T& operator[](u32 index) const {
-		ASSERT(index < _count);
-		return _data[index];
-	}
-
-	inline void ShrinkTo(u32 num) {
-		ASSERT(num < _count);
-		_count = num;
-	}
-};
 
 struct ConstBuffer
 {
@@ -488,7 +335,8 @@ struct GrowableBuffer
 i64 GetGlobalTime();
 i32 GetTime();
 
-typedef eastl::Internal::mutex Mutex;
+typedef EA::Thread::Futex Mutex;
+typedef EA::Thread::AutoFutex LockGuard;
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
 #define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)

@@ -1,8 +1,9 @@
 #include "coordinator.h"
 #include "game.h"
 #include <zlib.h>
+#include <EAThread/eathread_thread.h>
 
-DWORD ThreadCoordinator(void* pData)
+intptr_t ThreadCoordinator(void* pData)
 {
 	Coordinator& coordinator = *(Coordinator*)pData;
 
@@ -18,7 +19,8 @@ void Coordinator::Init(Server* server_, Game* game_)
 	game = game_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	CreateThread(NULL, 0, ThreadCoordinator, this, 0, NULL);
+	EA::Thread::Thread Thread;
+	Thread.Begin(ThreadCoordinator, this);
 }
 
 void Coordinator::Update()

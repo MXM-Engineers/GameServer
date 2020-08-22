@@ -3,7 +3,7 @@
 #include <EAThread/eathread.h>
 
 #ifdef _WIN32
-	#include <windows.h>
+	#include <windows.h> // OutputDebugStringA
 #endif
 
 FILE* g_LogFile;
@@ -59,20 +59,6 @@ void __Logf(const char* fmt, ...)
 #endif
 }
 
-i64 GetGlobalTime()
-{
-#ifdef _WIN32
-	return (i64)_time64(NULL);
-#endif
-}
-
-i32 GetTime()
-{
-#ifdef _WIN32
-	return (i32)clock();
-#endif
-}
-
 // EASTL new operators
 void* operator new[](size_t size, const char* name, int flags, unsigned debugFlags, const char* file, int line)
 {
@@ -84,3 +70,55 @@ void* operator new[](size_t size, size_t alignment, size_t offset, const char* n
 	// TODO: align
 	return memAlloc(size);
 }
+
+#define SOKOL_IMPL
+#include "sokol_time.h"
+
+static timept g_StartTime;
+
+void TimeInit()
+{
+	stm_setup();
+	g_StartTime = TimeNow();
+}
+
+timept TimeNow()
+{
+	return stm_now();
+}
+
+timept TimeRelNow()
+{
+	return stm_since(g_StartTime);
+}
+
+f64 TimeDiffSec(timept t0, timept t1)
+{
+	return stm_sec(stm_diff(t1, t0));
+}
+
+f64 TimeDurationMs(timept t0, timept t1)
+{
+	return stm_ms(stm_diff(t1, t0));
+}
+
+f64 TimeDiffSec(timept diff)
+{
+	return stm_sec(diff);
+}
+
+f64 TimeDiffMs(timept diff)
+{
+	return stm_ms(diff);
+}
+
+f64 TimeDurationSinceSec(timept t0)
+{
+	return stm_sec(stm_since(t0));
+}
+
+f64 TimeDurationSinceMs(timept t0)
+{
+	return stm_ms(stm_since(t0));
+}
+

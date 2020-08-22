@@ -7,8 +7,33 @@ intptr_t ThreadCoordinator(void* pData)
 {
 	Coordinator& coordinator = *(Coordinator*)pData;
 
-	while(coordinator.server->running) {
-		coordinator.Update();
+	thread_local timept t0 = TimeNow();
+	thread_local f64 accumulatorMs = 0.0;
+	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+
+	while(coordinator.server->running)
+	{
+		timept t1 = TimeNow();
+		accumulatorMs += TimeDurationMs(t0, t1);
+		t0 = t1;
+
+		// limit accumulation to max 2 frames
+		if(accumulatorMs > (UPDATE_RATE_MS * 2)) {
+			accumulatorMs = UPDATE_RATE_MS * 2;
+		}
+
+		if(accumulatorMs > UPDATE_RATE_MS) {
+			do
+			{
+				coordinator.Update(UPDATE_RATE_MS);
+				accumulatorMs -= UPDATE_RATE_MS;
+			}
+			while(accumulatorMs > UPDATE_RATE_MS);
+		}
+		else {
+			EA::Thread::ThreadSleep(UPDATE_RATE_MS - accumulatorMs); // yield
+			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
+		}
 	}
 	return 0;
 }
@@ -23,7 +48,7 @@ void Coordinator::Init(Server* server_, Game* game_)
 	Thread.Begin(ThreadCoordinator, this);
 }
 
-void Coordinator::Update()
+void Coordinator::Update(f64 delta)
 {
 	server->TransferAllReceivedData(&recvDataBuff);
 
@@ -35,8 +60,6 @@ void Coordinator::Update()
 	}
 
 	recvDataBuff.Clear();
-
-	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
 }
 
 

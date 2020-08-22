@@ -6,9 +6,36 @@ intptr_t ThreadGame(void* pData)
 {
 	Game& game = *(Game*)pData;
 
-	while(game.server->running) {
-		game.Update();
+	thread_local timept t0 = TimeNow();
+	thread_local f64 accumulatorMs = 0.0;
+	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+
+	while(game.server->running)
+	{
+		timept t1 = TimeNow();
+		accumulatorMs += TimeDurationMs(t0, t1);
+		t0 = t1;
+
+		// limit accumulation to max 2 frames
+		if(accumulatorMs > (UPDATE_RATE_MS * 2)) {
+			accumulatorMs = UPDATE_RATE_MS * 2;
+		}
+
+		if(accumulatorMs > UPDATE_RATE_MS) {
+			do
+			{
+				game.Update(UPDATE_RATE_MS);
+				accumulatorMs -= UPDATE_RATE_MS;
+			}
+			while(accumulatorMs > UPDATE_RATE_MS);
+		}
+		else {
+			EA::Thread::ThreadSleep(UPDATE_RATE_MS - accumulatorMs); // yield
+			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
+			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
+		}
 	}
+
 	return 0;
 }
 
@@ -29,7 +56,7 @@ void Game::Init(Server* server_)
 	Thread.Begin(ThreadGame, this);
 }
 
-void Game::Update()
+void Game::Update(f64 delta)
 {
 	processPacketQueue.Clear();
 	{
@@ -46,10 +73,8 @@ void Game::Update()
 		ClientHandlePacket(clientID, header, packetData);
 	}
 
-	world.Update(1/60.0); // TODO: update delta
+	world.Update(delta); // TODO: update delta
 	replication.FrameEnd();
-
-	Sleep(16); // TODO: do a time accumulator scheme to wait a precise time
 }
 
 bool Game::LoadMap()

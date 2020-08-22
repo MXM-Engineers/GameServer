@@ -255,7 +255,8 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 	// SN_SetGameGvt
 	{
 		Sv::SN_SetGameGvt gameGvt;
-		i32 time = GetTime();
+		// Possible loss of information here? Not sure what the time format should be
+		u32 time = (u32)TimeDiffMs(TimeRelNow());
 		gameGvt.sendTime = time;
 		gameGvt.virtualTime = time;
 		LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
@@ -498,7 +499,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
-		packet.Write<i64>(GetTime()); // serverTime
+		packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 

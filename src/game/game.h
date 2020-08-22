@@ -26,7 +26,7 @@ struct Game
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 
 	void Init(Server* server_);
-	void Update();
+	void Update(f64 delta);
 	bool LoadMap();
 
 	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);

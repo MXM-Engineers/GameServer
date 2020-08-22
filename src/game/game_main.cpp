@@ -24,6 +24,8 @@ BOOL WINAPI ConsoleHandler(DWORD signal)
 int main(int argc, char** argv)
 {
 	LogInit("game_server.log");
+	TimeInit();
+
 	LOG(".: Game server :.");
 
 	if(!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {

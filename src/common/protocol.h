@@ -481,8 +481,8 @@ struct SN_SetGameGvt
 {
 	enum { NET_ID = 62060 };
 
-	i32 sendTime;
-	i32 virtualTime;
+	u32 sendTime;
+	u32 virtualTime;
 };
 
 ASSERT_SIZE(SN_SetGameGvt, 8);

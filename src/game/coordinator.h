@@ -24,7 +24,7 @@ struct Coordinator
 
 	void Init(Server* server_, Game* game_);
 
-	void Update();
+	void Update(f64 delta);
 
 private:
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);

@@ -332,11 +332,21 @@ struct GrowableBuffer
 	}
 };
 
-i64 GetGlobalTime();
-i32 GetTime();
-
 typedef EA::Thread::Futex Mutex;
 typedef EA::Thread::AutoFutex LockGuard;
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
 #define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)
+
+// time API
+typedef u64 timept;
+
+void TimeInit();
+timept TimeNow();
+timept TimeRelNow(); // time ticks since start
+f64 TimeDurationSec(timept t0, timept t1);
+f64 TimeDurationMs(timept t0, timept t1);
+f64 TimeDiffSec(timept diff);
+f64 TimeDiffMs(timept diff);
+f64 TimeDurationSinceSec(timept t0);
+f64 TimeDurationSinceMs(timept t0);

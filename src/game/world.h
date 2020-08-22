@@ -16,6 +16,9 @@ enum class ActorModelID: i32 {
 
 struct World
 {
+	template<class T>
+	using List = eastl::fixed_list<T,2048>;
+
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
@@ -55,10 +58,12 @@ struct World
 	Replication* replication;
 
 	// TODO: enable overflow for those
-	eastl::fixed_list<ActorPlayer,2048> actorPlayerList;
-	eastl::fixed_list<ActorNpc,2048> actorNpcList;
-	eastl::fixed_list<ActorMonster,2048> actorMonsterList;
-	eastl::fixed_map<ActorUID,ActorCore*,2048> actorMap;
+	List<ActorPlayer> actorPlayerList;
+	List<ActorNpc> actorNpcList;
+	List<ActorMonster> actorMonsterList;
+	eastl::fixed_map<ActorUID,List<ActorPlayer>::iterator,2048> actorPlayerMap;
+	eastl::fixed_map<ActorUID,List<ActorNpc>::iterator,2048> actorNpcMap;
+	eastl::fixed_map<ActorUID,List<ActorMonster>::iterator,2048> actorMonsterMap;
 
 	u32 nextPlayerActorUID;
 	u32 nextNpcActorUID;
@@ -74,6 +79,6 @@ struct World
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 
-	ActorCore* FindActor(ActorUID actorUID);
-	ActorPlayer* FindPlayerActor(i32 clientID, ActorUID actorUID);
+	ActorPlayer* FindPlayerActor(ActorUID actorUID);
+	ActorNpc* FindNpcActor(ActorUID actorUID);
 };

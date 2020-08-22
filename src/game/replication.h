@@ -10,6 +10,9 @@
 
 struct Replication
 {
+	template<class T>
+	using List = eastl::fixed_list<T,2048>;
+
 	struct ActorNameplate
 	{
 		WideString name;
@@ -46,9 +49,9 @@ struct Replication
 
 	private:
 
-		ActorNameplate* nameplate = nullptr;
-		ActorStats* stats = nullptr;
-		ActorPlayerInfo* playerInfo = nullptr;
+		List<ActorNameplate>::iterator nameplate = nullptr;
+		List<ActorStats>::iterator stats = nullptr;
+		List<ActorPlayerInfo>::iterator playerInfo = nullptr;
 
 		friend struct Replication;
 	};
@@ -56,11 +59,11 @@ struct Replication
 	struct Frame
 	{
 		eastl::array<bool,Server::MAX_CLIENTS> playerDoScanEnd;
-		eastl::fixed_list<Actor,2048> actorList;
-		eastl::fixed_list<ActorNameplate,2048> actorNameplateList;
-		eastl::fixed_list<ActorStats,2048> actorStatsList;
-		eastl::fixed_list<ActorPlayerInfo,2048> actorPlayerInfoList;
-		eastl::fixed_map<u32,Actor*,2048> actorUidMap;
+		List<Actor> actorList;
+		List<ActorNameplate> actorNameplateList;
+		List<ActorStats> actorStatsList;
+		List<ActorPlayerInfo> actorPlayerInfoList;
+		eastl::fixed_map<u32,List<Actor>::iterator,2048> actorUidMap;
 		eastl::fixed_set<u32,2048> actorUidSet;
 
 		void Clear();

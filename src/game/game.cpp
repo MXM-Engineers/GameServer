@@ -149,7 +149,8 @@ void Game::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& heade
 	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, req.characterID);
 
 	// TODO: health
-	const World::ActorPlayer* actor = world.FindPlayerActor(clientID, playerActorUID[clientID]);
+	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	ASSERT(actor->clientID == clientID);
 	replication.EventPlayerRequestCharacterInfo(clientID, (u32)actor->UID, (i32)actor->modelID, actor->classType, 100, 100);
 }
 
@@ -176,10 +177,9 @@ void Game::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& hea
 		msg++;
 
 		if(wcsncmp(msg, L"lego", 4) == 0) {
-			World::ActorCore* playerActor = world.FindActor(playerActorUID[clientID]);
+			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			ActorUID actorUID = world.NewNpcActorUID();
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, 18, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;

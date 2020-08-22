@@ -3,6 +3,13 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 
+template<typename T>
+inline bool IsListIteratorValid(const T& it)
+{
+	return it.mpNode != nullptr;
+}
+
+
 void Replication::Frame::Clear()
 {
 	memset(&playerDoScanEnd, 0, sizeof(playerDoScanEnd));
@@ -34,7 +41,7 @@ void Replication::FrameEnd()
 
 		// send new spawns
 		const i32 newActorCount = curMinusLocal.size();
-		for(auto setIt = curMinusLocal.begin(), itEnd = curMinusLocal.end(); setIt != itEnd; ++setIt) {
+		foreach(setIt, curMinusLocal) {
 			const auto actorIt = frameCur.actorUidMap.find(*setIt);
 			ASSERT(actorIt != frameCur.actorUidMap.end());
 			const Actor& actor = *actorIt->second;
@@ -126,23 +133,23 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 
 	Actor& a = frameCur.actorList.push_back();
 	a = actor;
-	frameCur.actorUidMap.emplace(actor.UID, &a);
+	frameCur.actorUidMap.emplace(actor.UID, --frameCur.actorList.end());
 	frameCur.actorUidSet.insert(actor.UID);
 
 	if(nameplate) {
 		ActorNameplate& np = frameCur.actorNameplateList.push_back();
 		np = *nameplate;
-		a.nameplate = &np;
+		a.nameplate = --frameCur.actorNameplateList.end();
 	}
 	if(stats) {
 		ActorStats& s = frameCur.actorStatsList.push_back();
 		s = *stats;
-		a.stats = &s;
+		a.stats = --frameCur.actorStatsList.end();
 	}
 	if(playerInfo) {
 		ActorPlayerInfo& p = frameCur.actorPlayerInfoList.push_back();
 		p = *playerInfo;
-		a.playerInfo = &p;
+		a.playerInfo = --frameCur.actorPlayerInfoList.end();
 	}
 }
 
@@ -389,8 +396,10 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 
 void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 {
+	DBG_ASSERT(actor.UID != 0);
+
 	i32 localID = -1;
-	if(!actor.playerInfo) {
+	if(!IsListIteratorValid(actor.playerInfo)) {
 		static i32 nextLocalID = 1;
 		localID = nextLocalID++;
 	}
@@ -418,7 +427,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		packet.Write<i32>(actor.skinIndex); // skinIndex
 		packet.Write<i32>(0); // seed
 
-		if(!actor.stats) {
+		if(!IsListIteratorValid(actor.stats)) {
 			packet.Write<u16>(0); // maxStats_count
 			packet.Write<u16>(0); // curStats_count
 		}
@@ -509,7 +518,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 	}
 
-	if(actor.nameplate) {
+	if(IsListIteratorValid(actor.nameplate)) {
 		const ActorNameplate& plate = *actor.nameplate;
 
 		// SN_GamePlayerStock
@@ -534,7 +543,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		}
 	}
 
-	if(actor.playerInfo) {
+	if(IsListIteratorValid(actor.playerInfo)) {
 
 		// SN_GamePlayerEquipWeapon
 		{

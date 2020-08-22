@@ -70,7 +70,7 @@ ActorUID World::NewNpcActorUID()
 World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag)
 {
 	ActorUID actorUID = NewPlayerActorUID();
-	ASSERT(FindActor(actorUID) == nullptr);
+	ASSERT(FindPlayerActor(actorUID) == nullptr);
 
 	ActorPlayer& actor = actorPlayerList.push_back();
 	actor.UID = actorUID;
@@ -84,14 +84,14 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const w
 	actor.name = name;
 	actor.guildTag = guildTag;
 
-	actorMap.emplace(actorUID, &actor);
+	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
 	return actor;
 }
 
 World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
 {
 	ActorUID actorUID = NewNpcActorUID();
-	ASSERT(FindActor(actorUID) == nullptr);
+	ASSERT(FindNpcActor(actorUID) == nullptr);
 
 	ActorNpc& actor = actorNpcList.push_back();
 	actor.UID = actorUID;
@@ -103,7 +103,7 @@ World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
 	actor.state = -1;
 	actor.actionID = -1;
 
-	actorMap.emplace(actorUID, &actor);
+	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;
 }
 
@@ -125,7 +125,7 @@ void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3&
 	SendPacket(clientID, sync);
 	*/
 
-	ActorCore* actor = FindActor(actorUID);
+	ActorPlayer* actor = FindPlayerActor(actorUID);
 
 	// TODO: check for movement hacking
 	actor->pos = pos;
@@ -137,17 +137,16 @@ void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3&
 	actor->actionID = actionID;
 }
 
-World::ActorCore* World::FindActor(ActorUID actorUID)
+World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID)
 {
-	auto it = actorMap.find(actorUID);
-	if(it != actorMap.end()) return it->second;
-	return nullptr;
+	auto it = actorPlayerMap.find(actorUID);
+	if(it == actorPlayerMap.end()) return nullptr;
+	return &(*it->second);
 }
 
-World::ActorPlayer* World::FindPlayerActor(i32 clientID, ActorUID actorUID)
+World::ActorNpc* World::FindNpcActor(ActorUID actorUID)
 {
-	ActorCore* core = FindActor(actorUID);
-	if(!core) return nullptr;
-	// TODO: check if actor is a player
-	return (ActorPlayer*)core;
+	auto it = actorNpcMap.find(actorUID);
+	if(it == actorNpcMap.end()) return nullptr;
+	return &(*it->second);
 }

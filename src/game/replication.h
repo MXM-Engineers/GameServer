@@ -96,6 +96,7 @@ struct Replication
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 	void EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
+	void EventClientDisconnect(i32 clientID);
 
 private:
 	void SendActorSpawn(i32 clientID, const Actor& actor);

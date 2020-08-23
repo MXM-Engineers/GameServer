@@ -78,7 +78,7 @@ bool Server::Init(const char* listenPort)
 		return false;
 	}
 
-	memset(clientIsConnected, 0, sizeof(clientIsConnected));
+	memset(&clientIsConnected, 0, sizeof(clientIsConnected));
 
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
@@ -181,6 +181,10 @@ void Server::DisconnectClient(i32 clientID)
 {
 	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	if(clientIsConnected[clientID] == 0) return;
+
+	mutexClientDisconnectedList.Lock();
+	clientDisconnectedList.push_back(clientID);
+	mutexClientDisconnectedList.Unlock();
 
 	ClientNet& client = clientNet[clientID];
 	const LockGuard lock(client.mutexConnect);

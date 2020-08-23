@@ -184,6 +184,84 @@ void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
 	LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d", clientID, playerAssignedActorUID);
 	SendPacket(clientID, leader);
 
+	// SN_ProfileCharacters
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(3); // charaList_count
+
+		// Lua
+		Sv::SN_ProfileCharacters::Character chara;
+		chara.characterID = playerAssignedActorUID;
+		chara.creatureIndex = 100000035;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 35;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		// Sizuka
+		chara.characterID = 2;
+		chara.creatureIndex = 100000003;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 3;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		// Poharan
+		chara.characterID = 3;
+		chara.creatureIndex = 100000018;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 18;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
+		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_ProfileWeapons
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(1); // weaponList_count
+
+		Sv::SN_ProfileWeapons::Weapon weap;
+		weap.characterID = playerAssignedActorUID;
+		weap.weaponType = 1;
+		weap.weaponIndex = 131135012;
+		weap.grade = 1;
+		weap.isUnlocked = 1;
+		weap.isActivated = 1;
+
+		packet.Write(weap);
+
+		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
+		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
+	}
+
 	// SN_PlayerSkillSlot
 	{
 		u8 sendData[2048];
@@ -454,6 +532,11 @@ void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderNa
 		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", clientID, senderName, msgLen, msg);
 		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 	}
+}
+
+void Replication::EventClientDisconnect(i32 clientID)
+{
+	playerState[clientID] = PlayerState::DISCONNECTED;
 }
 
 void Replication::SendActorSpawn(i32 clientID, const Actor& actor)

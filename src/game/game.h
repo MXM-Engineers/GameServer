@@ -16,7 +16,9 @@ struct Game
 	Server* server;
 	GrowableBuffer packetDataQueue;
 	GrowableBuffer processPacketQueue;
+	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	Mutex mutexPacketDataQueue;
+	Mutex mutexClientDisconnectedList;
 
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
@@ -31,6 +33,7 @@ struct Game
 
 	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
+	void CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count);
 
 private:
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
@@ -42,6 +45,8 @@ private:
 	void HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	void OnClientDisconnect(i32 clientID);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

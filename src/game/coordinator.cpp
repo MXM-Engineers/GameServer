@@ -50,6 +50,12 @@ void Coordinator::Init(Server* server_, Game* game_)
 
 void Coordinator::Update(f64 delta)
 {
+	// handle client disconnections
+	eastl::fixed_vector<i32,128> clientDisconnectedList;
+	server->TransferDisconnectedClientList(&clientDisconnectedList);
+	game->CoordinatorHandleDisconnectedClients(clientDisconnectedList.data(), clientDisconnectedList.size());
+
+	// handle received data
 	server->TransferAllReceivedData(&recvDataBuff);
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
@@ -482,84 +488,6 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 		LOG("[client%03d] Server :: SN_MyGuild :: ", clientID);
 		SendPacketData(clientID, Sv::SN_MyGuild::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_ProfileCharacters
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(3); // charaList_count
-
-		// Lua
-		Sv::SN_ProfileCharacters::Character chara;
-		chara.characterID = 21013;
-		chara.creatureIndex = 100000035;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 35;
-		chara.x = 12029;
-		chara.y = 12622;
-		chara.z = 3328.29f;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		// Sizuka
-		chara.characterID = 2;
-		chara.creatureIndex = 100000003;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 3;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		// Poharan
-		chara.characterID = 3;
-		chara.creatureIndex = 100000018;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 18;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_ProfileWeapons
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(1); // weaponList_count
-
-		Sv::SN_ProfileWeapons::Weapon weap;
-		weap.characterID = 21013;
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-
-		packet.Write(weap);
-
-		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
 	}
 
 	// SN_ProfileMasterGears

@@ -1,5 +1,7 @@
 #pragma once
 #include "base.h"
+#include <EASTL/array.h>
+#include <EASTL/fixed_vector.h>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -53,10 +55,13 @@ struct Server
 
 	bool running;
 	SOCKET serverSocket;
-	u8 clientIsConnected[MAX_CLIENTS]; // is guarded by ClientNet.mutexConnect
-	SOCKET clientSocket[MAX_CLIENTS];
-	ClientNet clientNet[MAX_CLIENTS];
-	ClientInfo clientInfo[MAX_CLIENTS];
+	eastl::array<u8,MAX_CLIENTS> clientIsConnected; // is guarded by ClientNet.mutexConnect
+	eastl::array<SOCKET,MAX_CLIENTS> clientSocket;
+	eastl::array<ClientNet,MAX_CLIENTS> clientNet;
+	eastl::array<ClientInfo,MAX_CLIENTS> clientInfo;
+
+	eastl::fixed_vector<i32,MAX_CLIENTS> clientDisconnectedList;
+	Mutex mutexClientDisconnectedList;
 
 #ifdef CONF_DEBUG
 	i32 packetCounter = 0;
@@ -71,6 +76,16 @@ struct Server
 	void Update();
 
 	void TransferAllReceivedData(GrowableBuffer* out);
+
+	template<class Array>
+	void TransferDisconnectedClientList(Array* out)
+	{
+		if(clientDisconnectedList.size() > 0) {
+			const LockGuard lock(mutexClientDisconnectedList);
+			eastl::copy(clientDisconnectedList.begin(), clientDisconnectedList.end(), eastl::back_inserter(*out));
+			clientDisconnectedList.clear();
+		}
+	}
 
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)

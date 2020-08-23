@@ -58,9 +58,17 @@ void Game::Init(Server* server_)
 
 void Game::Update(f64 delta)
 {
+	{
+		const LockGuard lock(mutexClientDisconnectedList);
+		foreach(it, clientDisconnectedList) {
+			OnClientDisconnect(*it);
+		}
+		clientDisconnectedList.clear();
+	}
+
 	processPacketQueue.Clear();
 	{
-		LockGuard lock(mutexPacketDataQueue);
+		const LockGuard lock(mutexPacketDataQueue);
 		processPacketQueue.Append(packetDataQueue.data, packetDataQueue.size);
 		packetDataQueue.Clear();
 	}
@@ -115,6 +123,12 @@ void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, 
 	packetDataQueue.Append(&clientID, sizeof(clientID));
 	packetDataQueue.Append(&header, sizeof(header));
 	packetDataQueue.Append(packetData, header.size);
+}
+
+void Game::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
+{
+	const LockGuard lock(mutexClientDisconnectedList);
+	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
 }
 
 void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
@@ -210,6 +224,17 @@ void Game::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& hea
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
 	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, leader.characterID, leader.skinIndex);
+}
+
+void Game::OnClientDisconnect(i32 clientID)
+{
+	ASSERT(playerActorUID[clientID] != ActorUID::INVALID);
+	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, playerActorUID[clientID]);
+
+	world.DestroyPlayerActor(playerActorUID[clientID]);
+	playerActorUID[clientID] = ActorUID::INVALID;
+
+	replication.EventClientDisconnect(clientID);
 }
 
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)

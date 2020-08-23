@@ -3,7 +3,7 @@
 void World::Init(Replication* replication_)
 {
 	replication = replication_;
-	nextPlayerActorUID = 21013;
+	nextPlayerActorUID = 21000;
 	nextNpcActorUID = 5000;
 }
 

@@ -6,8 +6,9 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
-// - Clear up disconnected clients (destroy actor/entity)
 // - Replicate movement
+// - Manage client local actorUID (map)
+// - Reserve a local actorUID for each ProfileCharacter and wpan it on that UID when switching to it (leader)
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 

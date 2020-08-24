@@ -66,6 +66,14 @@ void Game::Update(f64 delta)
 		clientDisconnectedList.clear();
 	}
 
+	{
+		const LockGuard lock(mutexNewPlayerQueue);
+		foreach(it, newPlayerQueue) {
+			OnClientConnect(it->clientID, it->accountData);
+		}
+		newPlayerQueue.clear();
+	}
+
 	processPacketQueue.Clear();
 	{
 		const LockGuard lock(mutexPacketDataQueue);
@@ -113,8 +121,10 @@ bool Game::LoadMap()
 
 void Game::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
 {
-	LOG("Game:: New player :: '%S'", accountData->nickname.data());
-	playerAccountData[clientID] = accountData;
+	LOG("[client%03d] Game:: New player :: '%S'", clientID, accountData->nickname.data());
+
+	const LockGuard lock(mutexNewPlayerQueue);
+	newPlayerQueue.push_back(NewPlayerEntry{ clientID, accountData });
 }
 
 void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
@@ -156,26 +166,8 @@ void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* p
 
 void Game::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client ::CN_ReadyToLoadCharacter ::", clientID);
-
-	ASSERT(playerAccountData[clientID]); // account data is not assigned
-
-	const AccountData* account = playerAccountData[clientID];
-
-	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const eastl::array<i32,40> MasterClass = {
-		35, // Lua
-		3,	// Sizuka
-		18, // Poharan
-	};
-
-	World::ActorCore& actor = world.SpawnPlayerActor(clientID, MasterClass[account->leaderMasterID], account->nickname.data(), account->guildTag.data());
-	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
-	actor.dir = Vec3(0, 0, 2.68874f);
-	actor.eye = Vec3(0, 0, 0);
-	playerActorUID[clientID] = actor.UID;
-
-	replication.EventPlayerConnect(clientID, playerActorUID[clientID], account->leaderMasterID);
+	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
+	replication.EventPlayerLoad(clientID);
 }
 
 void Game::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -232,6 +224,48 @@ void Game::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& hea
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
 	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, leader.characterID, leader.skinIndex);
+
+	const i32 leaderMasterID = (u32)leader.characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
+
+	Vec3 pos(11959.4f, 6451.76f, 3012);
+	Vec3 dir(0, 0, 2.68874f);
+	Vec3 eye(0, 0, 0);
+
+	// TODO: check if already leader character
+	if((playerActorUID[clientID] != ActorUID::INVALID)) {
+		World::ActorCore* actor = world.FindPlayerActor(playerActorUID[clientID]);
+		ASSERT(actor);
+
+		pos = actor->pos;
+		dir = actor->dir;
+		eye = actor->eye;
+
+		world.DestroyPlayerActor(playerActorUID[clientID]);
+	}
+
+	ASSERT(playerAccountData[clientID]); // account data is not assigned
+	const AccountData* account = playerAccountData[clientID];
+
+	// TODO: tie in account->leaderMasterID,skinIndex with class and model
+	const eastl::array<i32,40> MasterClass = {
+		35, // Lua
+		3,	// Sizuka
+		18, // Poharan
+	};
+
+	World::ActorCore& actor = world.SpawnPlayerActor(clientID, MasterClass[leaderMasterID], account->nickname.data(), account->guildTag.data());
+	actor.pos = pos;
+	actor.dir = dir;
+	actor.eye = eye;
+	playerActorUID[clientID] = actor.UID;
+
+	replication.EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID);
+}
+
+void Game::OnClientConnect(i32 clientID, const AccountData* accountData)
+{
+	playerAccountData[clientID] = accountData;
+	replication.EventPlayerConnect(clientID);
 }
 
 void Game::OnClientDisconnect(i32 clientID)

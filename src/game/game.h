@@ -13,12 +13,20 @@ struct Game
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
 
+	struct NewPlayerEntry
+	{
+		i32 clientID;
+		const AccountData* accountData;
+	};
+
 	Server* server;
 	GrowableBuffer packetDataQueue;
 	GrowableBuffer processPacketQueue;
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	Mutex mutexPacketDataQueue;
 	Mutex mutexClientDisconnectedList;
+	eastl::fixed_vector<NewPlayerEntry,128> newPlayerQueue;
+	Mutex mutexNewPlayerQueue;
 
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
@@ -46,6 +54,7 @@ private:
 	void HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
+	void OnClientConnect(i32 clientID, const AccountData* accountData);
 	void OnClientDisconnect(i32 clientID);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);

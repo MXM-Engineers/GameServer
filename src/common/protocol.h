@@ -741,6 +741,16 @@ struct SA_CheckDupNickname
 	wchar nick[1];
 };
 
+struct SA_SetLeader
+{
+	enum { NET_ID = 62122 };
+
+	i32 result;
+	LocalActorID leaderID;
+	i32 skinIndex;
+};
+ASSERT_SIZE(SA_SetLeader, 12);
+
 struct SN_LeaderCharacter
 {
 	enum { NET_ID = 62123 };

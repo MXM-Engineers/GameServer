@@ -161,7 +161,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	AccountData& account = accountData[clientID];
 	account = {};
 	account.nickname.assign(nick, nickLen);
-	account.guildTag = L"XMX";
+	account.guildTag = L"Alpha";
 	account.leaderMasterID = 0; // Lua
 
 	// send account data
@@ -181,8 +181,8 @@ void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader&
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<i32>(0); // result;
-		packet.WriteStringObj(L"The XMX dream"); // guildName
-		packet.WriteStringObj(L"XMX"); // guildTag
+		packet.WriteStringObj(L"Alpha testers"); // guildName
+		packet.WriteStringObj(L"Alpha"); // guildTag
 		packet.Write<i32>(100203); // emblemIndex
 		packet.Write<u8>(10); // guildLvl
 		packet.Write<u8>(120); // memberMax
@@ -576,7 +576,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		u8 sendData[256];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.WriteStringObj(L"XMX");
+		packet.WriteStringObj(L"Alpha");
 		packet.Write<i64>(0);
 		packet.Write<u8>(0);
 
@@ -702,7 +702,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		u8 sendData[32];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.WriteStringObj(L"XMX"); // guildName
+		packet.WriteStringObj(L"Alpha"); // guildName
 		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<u8>(0); // onlineStatus
 

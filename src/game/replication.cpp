@@ -52,6 +52,22 @@ void Replication::FrameEnd()
 		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::inserter(playerMinusCur, playerMinusCur.begin()));
 		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::inserter(curMinusPlayer, curMinusPlayer.begin()));
 
+		// send destroy entity for deleted actors
+		foreach(setIt, playerMinusCur) {
+			const ActorUID actorUID = *setIt;
+#ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
+			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
+			ASSERT(actorIt != framePrev->actorUIDMap.end());
+			const Actor& actor = *actorIt->second;
+			ASSERT(actor.UID == actorUID);
+#endif
+
+			SendActorDestroy(clientID, actorUID);
+
+			// Remove LocalActorID link
+			DeleteLocalActorID(clientID, actorUID);
+		}
+
 		// send new spawns
 		foreach(setIt, curMinusPlayer) {
 			const ActorUID actorUID = *setIt;
@@ -68,22 +84,6 @@ void Replication::FrameEnd()
 			SendActorSpawn(clientID, actor);
 		}
 
-		// send destroy entity for deleted actors
-		foreach(setIt, playerMinusCur) {
-			const ActorUID actorUID = *setIt;
-#ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
-			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
-			ASSERT(actorIt != framePrev->actorUIDMap.end());
-			const Actor& actor = *actorIt->second;
-			ASSERT(actor.UID == actorUID);
-#endif
-
-			SendActorDestroy(clientID, actorUID);
-
-			// Remove LocalActorID link
-
-		}
-
 		playerActorUIDSet = frameCur->actorUIDSet;
 
 		// TODO: remove, extra checks
@@ -94,6 +94,11 @@ void Replication::FrameEnd()
 		}
 		foreach(it, localActorIDMap) {
 			ASSERT(playerActorUIDSet.find(it->first) != playerActorUIDSet.end());
+		}
+		eastl::fixed_set<LocalActorID,2048> laiSet;
+		foreach(it, localActorIDMap) {
+			ASSERT(laiSet.find(it->second) == laiSet.end());
+			laiSet.emplace(it->second);
 		}
 #endif
 	}
@@ -199,26 +204,17 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 	}
 }
 
-void Replication::EventPlayerConnect(i32 clientID, ActorUID masterActorUID, i32 leaderCharacterID)
+void Replication::EventPlayerConnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalInfo[clientID].Reset();
+}
 
+void Replication::EventPlayerLoad(i32 clientID)
+{
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
 	SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
-
-	LocalActorID leaderID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderCharacterID);
-	ASSERT(leaderID >= LocalActorID::FIRST_SELF_MASTER && leaderID < LocalActorID::LAST_SELF_MASTER);
-
-	PlayerForceLocalActorID(clientID, masterActorUID, leaderID);
-
-	// SN_LeaderCharacter
-	Sv::SN_LeaderCharacter leader;
-	leader.leaderID = leaderID;
-	leader.skinIndex = 0;
-	LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d", clientID, masterActorUID);
-	SendPacket(clientID, leader);
 
 	// SN_PlayerSkillSlot
 	{
@@ -444,6 +440,33 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 	info.maxHp = healthMax;
 	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 	SendPacket(clientID, info);
+}
+
+void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID)
+{
+	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderMasterID);
+	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
+
+	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
+
+	if(playerState[clientID] < PlayerState::IN_GAME) {
+		// SN_LeaderCharacter
+		Sv::SN_LeaderCharacter leader;
+		leader.leaderID = laiLeader;
+		leader.skinIndex = 0;
+		LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
+		SendPacket(clientID, leader);
+	}
+	else {
+		// NOTE: only seems to close the master window
+		// SA_LeaderCharacter
+		Sv::SA_SetLeader leader;
+		leader.result = 0;
+		leader.leaderID = laiLeader;
+		leader.skinIndex = 0;
+		LOG("[client%03d] Server :: SA_SetLeader :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
+		SendPacket(clientID, leader);
+	}
 }
 
 void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)

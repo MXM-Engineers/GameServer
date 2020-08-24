@@ -2,11 +2,13 @@
 #include <common/network.h>
 #include <common/vector_math.h>
 #include <common/utils.h>
+#include <common/protocol.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_list.h>
+#include "core.h"
 
 struct Replication
 {
@@ -35,7 +37,7 @@ struct Replication
 
 	struct Actor
 	{
-		u32 UID;
+		ActorUID UID;
 		i32 type;
 		i32 modelID;
 		Vec3 pos;
@@ -63,8 +65,8 @@ struct Replication
 		List<ActorNameplate> actorNameplateList;
 		List<ActorStats> actorStatsList;
 		List<ActorPlayerInfo> actorPlayerInfoList;
-		eastl::fixed_map<u32,List<Actor>::iterator,2048> actorUidMap;
-		eastl::fixed_set<u32,2048> actorUidSet;
+		eastl::fixed_map<ActorUID,List<Actor>::iterator,2048> actorUIDMap;
+		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 
 		void Clear();
 	};
@@ -73,6 +75,17 @@ struct Replication
 		DISCONNECTED=0,
 		CONNECTED=1,
 		IN_GAME=2,
+	};
+
+	struct PlayerLocalInfo
+	{
+		eastl::fixed_map<ActorUID,LocalActorID,2048> localActorIDMap;
+		eastl::fixed_set<ActorUID,2048> actorUIDSet;
+		LocalActorID nextPlayerLocalActorID;
+		LocalActorID nextNpcLocalActorID;
+		LocalActorID nextMonsterLocalActorID;
+
+		void Reset();
 	};
 
 	Server* server;
@@ -84,23 +97,31 @@ struct Replication
 	// Use a fixed_vector?
 
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
-	eastl::array<eastl::fixed_set<u32,2048>,Server::MAX_CLIENTS> playerLocalActorUidSet;
+	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
 
 	void Init(Server* server_);
 
 	void FrameEnd();
 	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
 
-	void EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID);
+	void EventPlayerConnect(i32 clientID, ActorUID masterActorUID, i32 leaderCharacterID);
 	void EventPlayerGameEnter(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 	void EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
 	void EventClientDisconnect(i32 clientID);
 
+	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
+
+	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
+	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
+
 private:
 	void SendActorSpawn(i32 clientID, const Actor& actor);
-	void SendActorDestroy(i32 clientID, u32 actorUID);
+	void SendActorDestroy(i32 clientID, ActorUID actorUID);
+
+	void CreateLocalActorID(i32 clientID, ActorUID actorUID);
+	void DeleteLocalActorID(i32 clientID, ActorUID actorUID);
 
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)

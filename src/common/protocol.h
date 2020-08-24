@@ -2,6 +2,30 @@
 #include <common/base.h>
 #include <common/vector_math.h>
 
+enum class LocalActorID: u32
+{
+	INVALID = 0,
+
+	FIRST_NPC = 5000,
+
+	FIRST_SELF_MASTER = 21000, // First master, Lua
+	// Every master, in order
+	LAST_SELF_MASTER = 21500, // Last master possible. 500 should be enough :)
+	FIRST_OTHER_PLAYER = 21501
+};
+
+/*
+ Leader/Profile Masters have a hardcoded LocalActorID starting at 21000
+ We do this because weed to know preemptively which LocalActorID *each* Master owned will get when setting as leader.
+
+ We then link the LocalActorID on connect or when switching leader so it matches up.
+
+ It goes like this:
+	- Send profile master list (with hardcoded LocalActorID)
+	- Spawn leader actor
+	- Force link LocalActorID so it matches the profile one
+*/
+
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 struct NetHeader
@@ -32,7 +56,6 @@ ASSERT_SIZE(CQ_FirstHello, 13);
 struct CQ_UserLogin
 {
 	enum { NET_ID = 60003 };
-
 
 	u16 nick_len;
 	wchar nick[1];
@@ -95,7 +118,7 @@ struct CN_UpdatePosition
 {
 	enum { NET_ID = 60022 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	Vec3 p3nPos;
 	Vec3 p3nDir;
 	Vec3 p3nEye;
@@ -488,7 +511,7 @@ struct SN_DestroyEntity
 {
 	enum { NET_ID = 62059 };
 
-	i32 entityUID;
+	LocalActorID characterID;
 };
 
 struct SN_SetGameGvt
@@ -722,7 +745,7 @@ struct SN_LeaderCharacter
 {
 	enum { NET_ID = 62123 };
 
-	i32 leaderID; // characterIndex
+	LocalActorID leaderID; // characterIndex
 	i32 skinIndex;
 };
 ASSERT_SIZE(SN_LeaderCharacter, 8);
@@ -735,7 +758,7 @@ struct SN_ProfileCharacters
 	PUSH_PACKED
 	struct Character
 	{
-		i32 characterID;
+		LocalActorID characterID;
 		i32 creatureIndex;
 		i32 skillShot1;
 		i32 skillShot2;
@@ -796,7 +819,7 @@ struct SN_ProfileWeapons
 	PUSH_PACKED
 	struct Weapon
 	{
-		i32 characterID;
+		LocalActorID characterID;
 		i32 weaponType;
 		i32 weaponIndex;
 		i32 grade;

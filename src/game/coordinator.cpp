@@ -162,6 +162,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	account = {};
 	account.nickname.assign(nick, nickLen);
 	account.guildTag = L"XMX";
+	account.leaderMasterID = 0; // Lua
 
 	// send account data
 	ClientSendAccountData(clientID);
@@ -475,6 +476,99 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 		LOG("[client%03d] Server :: SN_AllCharacterBaseData :: ", clientID);
 		SendPacketData(clientID, Sv::SN_AllCharacterBaseData::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_ProfileCharacters
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(3); // charaList_count
+
+		// Lua
+		Sv::SN_ProfileCharacters::Character chara;
+		chara.characterID = LocalActorID::FIRST_SELF_MASTER;
+		chara.creatureIndex = 100000035;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 35;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		// Sizuka
+		chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 1);
+		chara.creatureIndex = 100000003;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 3;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		// Poharan
+		chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 2);
+		chara.creatureIndex = 100000018;
+		chara.skillShot1 = 180350010;
+		chara.skillShot2 = 180350030;
+		chara.class_ = 18;
+		chara.x = 0;
+		chara.y = 0;
+		chara.z = 0;
+		chara.characterType = 1;
+		chara.skinIndex = 0;
+		chara.weaponIndex = 131135012;
+		chara.masterGearNo = 1;
+		packet.Write(chara);
+
+		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
+		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_ProfileWeapons
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(3); // weaponList_count
+
+		Sv::SN_ProfileWeapons::Weapon weap;
+		weap.characterID = LocalActorID::FIRST_SELF_MASTER;
+		weap.weaponType = 1;
+		weap.weaponIndex = 131135012;
+		weap.grade = 1;
+		weap.isUnlocked = 1;
+		weap.isActivated = 1;
+		packet.Write(weap);
+
+		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 1);
+		weap.weaponType = 1;
+		weap.weaponIndex = 131135012;
+		weap.grade = 1;
+		weap.isUnlocked = 1;
+		weap.isActivated = 1;
+		packet.Write(weap);
+
+		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 2);
+		weap.weaponType = 1;
+		weap.weaponIndex = 131135012;
+		weap.grade = 1;
+		weap.isUnlocked = 1;
+		weap.isActivated = 1;
+		packet.Write(weap);
+
+		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
+		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
 	}
 
 	// SN_MyGuild

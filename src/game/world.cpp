@@ -3,8 +3,7 @@
 void World::Init(Replication* replication_)
 {
 	replication = replication_;
-	nextPlayerActorUID = 21000;
-	nextNpcActorUID = 5000;
+	nextActorUID = 1;
 }
 
 void World::Update(f64 delta)
@@ -13,7 +12,7 @@ void World::Update(f64 delta)
 		const ActorPlayer& actor = *it;
 
 		Replication::Actor rfl;
-		rfl.UID = (u32)actor.UID;
+		rfl.UID = actor.UID;
 		rfl.type = actor.type;
 		rfl.modelID = (i32)actor.modelID;
 		rfl.pos = actor.pos;
@@ -42,7 +41,7 @@ void World::Update(f64 delta)
 		const ActorNpc& actor = *it;
 
 		Replication::Actor rfl;
-		rfl.UID = (u32)actor.UID;
+		rfl.UID = actor.UID;
 		rfl.type = actor.type;
 		rfl.modelID = (i32)actor.modelID;
 		rfl.pos = actor.pos;
@@ -57,19 +56,14 @@ void World::Update(f64 delta)
 	}
 }
 
-ActorUID World::NewPlayerActorUID()
+ActorUID World::NewActorUID()
 {
-	return (ActorUID)nextPlayerActorUID++;
-}
-
-ActorUID World::NewNpcActorUID()
-{
-	return (ActorUID)nextNpcActorUID++;
+	return (ActorUID)nextActorUID++;
 }
 
 World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag)
 {
-	ActorUID actorUID = NewPlayerActorUID();
+	ActorUID actorUID = NewActorUID();
 	ASSERT(FindPlayerActor(actorUID) == nullptr);
 
 	ActorPlayer& actor = actorPlayerList.push_back();
@@ -90,7 +84,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const w
 
 World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
 {
-	ActorUID actorUID = NewNpcActorUID();
+	ActorUID actorUID = NewActorUID();
 	ASSERT(FindNpcActor(actorUID) == nullptr);
 
 	ActorNpc& actor = actorNpcList.push_back();

@@ -8,6 +8,7 @@ struct AccountData
 {
 	WideString nickname;
 	WideString guildTag;
+	i32 leaderMasterID;
 
 	// TODO: add to this
 };

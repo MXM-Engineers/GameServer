@@ -77,7 +77,7 @@ void Game::Update(f64 delta)
 	while(buff.CanRead(4)) {
 		const i32 clientID = buff.Read<i32>();
 		const NetHeader& header = buff.Read<NetHeader>();
-		const u8* packetData = buff.ReadRaw(header.size);
+		const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 		ClientHandlePacket(clientID, header, packetData);
 	}
 
@@ -122,7 +122,7 @@ void Game::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, 
 	const LockGuard lock(mutexPacketDataQueue);
 	packetDataQueue.Append(&clientID, sizeof(clientID));
 	packetDataQueue.Append(&header, sizeof(header));
-	packetDataQueue.Append(packetData, header.size);
+	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
 }
 
 void Game::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
@@ -161,13 +161,21 @@ void Game::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& h
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
 
 	const AccountData* account = playerAccountData[clientID];
-	World::ActorCore& actor = world.SpawnPlayerActor(clientID, 35, account->nickname.data(), account->guildTag.data());
+
+	// TODO: tie in account->leaderMasterID,skinIndex with class and model
+	const eastl::array<i32,40> MasterClass = {
+		35, // Lua
+		3,	// Sizuka
+		18, // Poharan
+	};
+
+	World::ActorCore& actor = world.SpawnPlayerActor(clientID, MasterClass[account->leaderMasterID], account->nickname.data(), account->guildTag.data());
 	actor.pos = Vec3(11959.4f, 6451.76f, 3012);
 	actor.dir = Vec3(0, 0, 2.68874f);
 	actor.eye = Vec3(0, 0, 0);
 	playerActorUID[clientID] = actor.UID;
 
-	replication.EventPlayerConnect(clientID, (u32)playerActorUID[clientID]);
+	replication.EventPlayerConnect(clientID, playerActorUID[clientID], account->leaderMasterID);
 }
 
 void Game::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -199,7 +207,7 @@ void Game::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header,
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
 	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 
-	ASSERT(playerActorUID[clientID] == (ActorUID)update.characterID); // TODO: soft cancel, kick client
+	ASSERT(playerActorUID[clientID] == replication.GetActorUID(clientID, update.characterID)); // TODO: soft cancel, kick client
 	world.PlayerUpdatePosition(playerActorUID[clientID], update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
 

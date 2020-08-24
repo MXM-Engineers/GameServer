@@ -17,8 +17,17 @@ void Replication::Frame::Clear()
 	actorNameplateList.clear();
 	actorStatsList.clear();
 	actorPlayerInfoList.clear();
-	actorUidMap.clear();
-	actorUidSet.clear();
+	actorUIDMap.clear();
+	actorUIDSet.clear();
+}
+
+void Replication::PlayerLocalInfo::Reset()
+{
+	localActorIDMap.clear();
+	actorUIDSet.clear();
+	nextPlayerLocalActorID = LocalActorID::FIRST_OTHER_PLAYER;
+	nextNpcLocalActorID = LocalActorID::FIRST_NPC;
+	nextMonsterLocalActorID = LocalActorID::INVALID;
 }
 
 void Replication::Init(Server* server_)
@@ -35,36 +44,58 @@ void Replication::FrameEnd()
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		const auto& localUidSet = playerLocalActorUidSet[clientID];
+		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
+		auto& playerActorUIDSet = localInfo.actorUIDSet; // replicated actors UID set
 
-		eastl::fixed_set<u32,2048> localMinusCur;
-		eastl::fixed_set<u32,2048> curMinusLocal;
-		eastl::set_difference(localUidSet.begin(), localUidSet.end(), frameCur->actorUidSet.begin(), frameCur->actorUidSet.end(), eastl::inserter(localMinusCur, localMinusCur.begin()));
-		eastl::set_difference(frameCur->actorUidSet.begin(), frameCur->actorUidSet.end(), localUidSet.begin(), localUidSet.end(), eastl::inserter(curMinusLocal, curMinusLocal.begin()));
+		eastl::fixed_set<ActorUID,2048> playerMinusCur;
+		eastl::fixed_set<ActorUID,2048> curMinusPlayer;
+		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::inserter(playerMinusCur, playerMinusCur.begin()));
+		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::inserter(curMinusPlayer, curMinusPlayer.begin()));
 
 		// send new spawns
-		foreach(setIt, curMinusLocal) {
-			const auto actorIt = frameCur->actorUidMap.find(*setIt);
-			ASSERT(actorIt != frameCur->actorUidMap.end());
+		foreach(setIt, curMinusPlayer) {
+			const ActorUID actorUID = *setIt;
+			const auto actorIt = frameCur->actorUIDMap.find(actorUID);
+			ASSERT(actorIt != frameCur->actorUIDMap.end());
 			const Actor& actor = *actorIt->second;
+
+			// Create a LocalActorID link if none exists already
+			// If one exists already, we have pre-allocated it (like with leader master)
+			if(GetLocalActorID(clientID, actorUID) == LocalActorID::INVALID) {
+				CreateLocalActorID(clientID, actorUID);
+			}
 
 			SendActorSpawn(clientID, actor);
 		}
 
 		// send destroy entity for deleted actors
-		foreach(setIt, localMinusCur) {
-			const u32 actorUID = *setIt;
+		foreach(setIt, playerMinusCur) {
+			const ActorUID actorUID = *setIt;
 #ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
-			const auto actorIt = framePrev->actorUidMap.find(actorUID);
-			ASSERT(actorIt != framePrev->actorUidMap.end());
+			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
+			ASSERT(actorIt != framePrev->actorUIDMap.end());
 			const Actor& actor = *actorIt->second;
 			ASSERT(actor.UID == actorUID);
 #endif
+
 			SendActorDestroy(clientID, actorUID);
+
+			// Remove LocalActorID link
+
 		}
 
-		// update local set
-		playerLocalActorUidSet[clientID] = frameCur->actorUidSet;
+		playerActorUIDSet = frameCur->actorUIDSet;
+
+		// TODO: remove, extra checks
+#ifdef CONF_DEBUG
+		auto& localActorIDMap = localInfo.localActorIDMap;
+		foreach(it, playerActorUIDSet) {
+			ASSERT(localActorIDMap.find(*it) != localActorIDMap.end());
+		}
+		foreach(it, localActorIDMap) {
+			ASSERT(playerActorUIDSet.find(it->first) != playerActorUIDSet.end());
+		}
+#endif
 	}
 
 	// send SN_ScanEnd if requested
@@ -142,14 +173,14 @@ void Replication::FrameEnd()
 
 void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
 {
-	ASSERT(frameCur->actorUidMap.find(actor.UID) == frameCur->actorUidMap.end());
-	ASSERT(frameCur->actorUidSet.find(actor.UID) == frameCur->actorUidSet.end());
+	ASSERT(frameCur->actorUIDMap.find(actor.UID) == frameCur->actorUIDMap.end());
+	ASSERT(frameCur->actorUIDSet.find(actor.UID) == frameCur->actorUIDSet.end());
 
 	Actor& a = frameCur->actorList.push_back();
 	a = actor;
-	frameCur->actorUidMap.emplace(actor.UID, --frameCur->actorList.end());
-	DBG_ASSERT((*frameCur->actorUidMap.find(actor.UID)->second).UID == actor.UID); // TODO: remove
-	frameCur->actorUidSet.insert(actor.UID);
+	frameCur->actorUIDMap.emplace(actor.UID, --frameCur->actorList.end());
+	DBG_ASSERT((*frameCur->actorUIDMap.find(actor.UID)->second).UID == actor.UID); // TODO: remove
+	frameCur->actorUIDSet.insert(actor.UID);
 
 	if(nameplate) {
 		ActorNameplate& np = frameCur->actorNameplateList.push_back();
@@ -168,99 +199,26 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 	}
 }
 
-void Replication::EventPlayerConnect(i32 clientID, u32 playerAssignedActorUID)
+void Replication::EventPlayerConnect(i32 clientID, ActorUID masterActorUID, i32 leaderCharacterID)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
-	playerLocalActorUidSet[clientID].clear();
+	playerLocalInfo[clientID].Reset();
 
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
 	SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
 
+	LocalActorID leaderID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderCharacterID);
+	ASSERT(leaderID >= LocalActorID::FIRST_SELF_MASTER && leaderID < LocalActorID::LAST_SELF_MASTER);
+
+	PlayerForceLocalActorID(clientID, masterActorUID, leaderID);
+
 	// SN_LeaderCharacter
 	Sv::SN_LeaderCharacter leader;
-	leader.leaderID = playerAssignedActorUID;
+	leader.leaderID = leaderID;
 	leader.skinIndex = 0;
-	LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d", clientID, playerAssignedActorUID);
+	LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d", clientID, masterActorUID);
 	SendPacket(clientID, leader);
-
-	// SN_ProfileCharacters
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(3); // charaList_count
-
-		// Lua
-		Sv::SN_ProfileCharacters::Character chara;
-		chara.characterID = playerAssignedActorUID;
-		chara.creatureIndex = 100000035;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 35;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		// Sizuka
-		chara.characterID = 2;
-		chara.creatureIndex = 100000003;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 3;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		// Poharan
-		chara.characterID = 3;
-		chara.creatureIndex = 100000018;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 18;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_ProfileWeapons
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(1); // weaponList_count
-
-		Sv::SN_ProfileWeapons::Weapon weap;
-		weap.characterID = playerAssignedActorUID;
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-
-		packet.Write(weap);
-
-		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
-	}
 
 	// SN_PlayerSkillSlot
 	{
@@ -539,26 +497,63 @@ void Replication::EventClientDisconnect(i32 clientID)
 	playerState[clientID] = PlayerState::DISCONNECTED;
 }
 
+void Replication::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID)
+{
+	auto& map = playerLocalInfo[clientID].localActorIDMap;
+	ASSERT(map.find(actorUID) == map.end());
+	map.emplace(actorUID, localActorID);
+}
+
+LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID)
+{
+	const auto& map = playerLocalInfo[clientID].localActorIDMap;
+	auto found = map.find(actorUID);
+	if(found != map.end()) {
+		return found->second;
+	}
+	return LocalActorID::INVALID;
+}
+
+ActorUID Replication::GetActorUID(i32 clientID, LocalActorID localActorID)
+{
+	// TODO: second map, for this reverse lookup
+	const auto& map = playerLocalInfo[clientID].localActorIDMap;
+	foreach(it, map) {
+		if(it->second == localActorID) {
+			return it->first;
+		}
+	}
+
+	return ActorUID::INVALID;
+}
+
 void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 {
-	DBG_ASSERT(actor.UID != 0);
+	DBG_ASSERT(actor.UID != ActorUID::INVALID);
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.UID);
+	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
 
-	i32 localID = -1;
-	if(!IsListIteratorValid(actor.playerInfo)) {
-		static i32 nextLocalID = 1;
-		localID = nextLocalID++;
-	}
+	const LocalActorID localActorID = found->second;
+
+	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, actor.UID, localActorID);
 
 	// SN_GameCreateActor
 	{
+		i32 localID = -1;
+		if(!IsListIteratorValid(actor.playerInfo)) {
+			static i32 nextLocalID = 1;
+			localID = nextLocalID++;
+		}
+
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<i32>(actor.UID); // objectID
+		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write<i32>(actor.type); // nType
 		packet.Write<i32>(actor.modelID); // nIDX
 		packet.Write<i32>(localID); // dwLocalID
 		// TODO: localID?
+
 		packet.Write(actor.pos); // p3nPos
 		packet.Write(actor.dir); // p3nDir
 		packet.Write<i32>(actor.spawnType); // spawnType
@@ -656,7 +651,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<i32>(actor.UID); // objectID
+		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
 		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, actor.UID);
@@ -671,7 +666,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 			u8 sendData[1024];
 			PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<i32>(actor.UID); // playerID
+			packet.Write<LocalActorID>(localActorID); // playerID
 			packet.WriteStringObj(plate.name.data()); // name
 			packet.Write<i32>(actor.classType); // class_
 			packet.Write<i32>(320080005); // displayTitleIDX
@@ -695,7 +690,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 			u8 sendData[1024];
 			PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<i32>(actor.UID); // characterID
+			packet.Write<LocalActorID>(localActorID); // characterID
 			packet.Write<i32>(131135012); // weaponDocIndex
 			packet.Write<i32>(0); // additionnalOverHeatGauge
 			packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
@@ -709,7 +704,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 			u8 sendData[1024];
 			PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<i32>(actor.UID); // playerID
+			packet.Write<LocalActorID>(localActorID); // playerID
 			packet.Write<u8>(0); // playerStateInTown
 			packet.Write<u16>(0); // matchingGameModes_count
 
@@ -719,13 +714,31 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 	}
 }
 
-void Replication::SendActorDestroy(i32 clientID, u32 actorUID)
+void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 {
-	u8 sendData[16];
-	PacketWriter packet(sendData, sizeof(sendData));
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
+	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
+	const LocalActorID localActorID = found->second;
 
-	packet.Write<i32>(actorUID); // entityUID
-
+	Sv::SN_DestroyEntity packet;
+	packet.characterID = localActorID;
 	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, actorUID);
-	SendPacketData(clientID, Sv::SN_DestroyEntity::NET_ID, packet.size, packet.data);
+	SendPacket(clientID, packet);
+}
+
+void Replication::CreateLocalActorID(i32 clientID, ActorUID actorUID)
+{
+	PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
+	auto& localActorIDMap = localInfo.localActorIDMap;
+	localActorIDMap.emplace(actorUID, localInfo.nextPlayerLocalActorID);
+	localInfo.nextPlayerLocalActorID = (LocalActorID)((u32)localInfo.nextPlayerLocalActorID + 1);
+	// TODO: find first free LocalActorID
+
+	// TODO: start at 5000 for NPCs? Does it even matter?
+}
+
+void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
+{
+	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
+	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }

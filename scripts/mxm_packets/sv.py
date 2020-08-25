@@ -1454,6 +1454,9 @@ class ServerSerializer:
         print('SN_ClientSettings {')
         print('    settingType=%d' % p.read_u8())
         data_len = p.read_u16()
+        data = p.read_raw(data_len)
+        extracted = zlib.decompress(data)
+        print('    decompressed=[%s]' % extracted.decode('utf-8'))
         print('    data="{}"'.format(p.read_raw(data_len)))
         print('}')
 
@@ -1670,4 +1673,3 @@ class ServerSerializer:
         print('SN_ServerUtcTime {')
         print('    effectItemDocIndexList=%d' % p.read_i64())
         print('}')
-

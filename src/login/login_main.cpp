@@ -1,6 +1,7 @@
 #include <common/base.h>
 #include <common/protocol.h>
 #include <common/network.h>
+#include <common/utils.h>
 #include <direct.h>
 
 // TODO:
@@ -18,6 +19,8 @@ struct Client
 
 	u8 recvBuff[8192];
 	bool running = true;
+
+	WideString nickname;
 
 	void Run()
 	{
@@ -112,7 +115,9 @@ struct Client
 				u16 typeSize = data.Read<u16>();
 				wchar* typeStr = (wchar*)data.ReadRaw(sizeof(wchar) * typeSize);
 
-				LOG("Client :: UserLogin :: '%.*ws' '%.*ws' '%.*ws'", loginStrSize, loginStr, unkSize, unkStr, typeSize, typeStr);
+				LOG("Client :: UserLogin :: login='%.*S' pw='%.*S' type='%.*S'", loginStrSize, loginStr, unkSize, unkStr, typeSize, typeStr);
+
+				nickname.assign(loginStr, loginStrSize);
 
 				LOG("Server :: SA_UserloginResult");
 				Sv::SA_UserloginResult accept;
@@ -138,9 +143,9 @@ struct Client
 					packet.Write<i32>(0); // serverID
 					packet.Write<u32>(424242); // userID
 
-					packet.WriteStringObj(L"XMX"); // gamename
-					packet.WriteStringObj(L"LordSk@0.XMX"); // chatname
-					packet.WriteStringObj(L"LordSk"); // playncname
+					packet.WriteStringObj(L"Alpha"); // gamename
+					packet.WriteStringObj(LFMT(L"%S@0.XMX", nickname.data())); // chatname
+					packet.WriteStringObj(nickname.data(), nickname.size()); // playncname
 
 					u8 signature[128]; // garbage here. TODO: actually fill that in?
 					packet.Write<u16>(sizeof(signature));
@@ -216,9 +221,7 @@ struct Client
 				packet.Write<u16>(10); // serverNamelen
 				packet.WriteRaw(serverName, 10 * sizeof(wchar)); // serverName
 
-				const wchar* nick = L"LordSk";
-				packet.Write<u16>(6); // nickLen
-				packet.WriteRaw(nick, 6 * sizeof(wchar)); // nick
+				packet.WriteStringObj(nickname.data(), nickname.size()); // nick
 
 				packet.Write<i32>(536);
 				packet.Write<i32>(1);

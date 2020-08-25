@@ -164,6 +164,12 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	account.guildTag = L"Alpha";
 	account.leaderMasterID = 0; // Lua
 
+	// remove the @plaync... part
+	i64 f = account.nickname.find(L'@');
+	if(f != -1) {
+		account.nickname = account.nickname.left(f);
+	}
+
 	// send account data
 	ClientSendAccountData(clientID);
 
@@ -699,7 +705,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 	// SN_GuildChannelEnter
 	{
-		u8 sendData[32];
+		u8 sendData[256];
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.WriteStringObj(L"Alpha"); // guildName

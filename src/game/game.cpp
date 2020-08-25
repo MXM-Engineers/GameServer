@@ -253,10 +253,11 @@ void Game::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& hea
 		18, // Poharan
 	};
 
-	World::ActorCore& actor = world.SpawnPlayerActor(clientID, MasterClass[leaderMasterID], account->nickname.data(), account->guildTag.data());
+	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, MasterClass[leaderMasterID], account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
 	actor.eye = eye;
+	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
 	replication.EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID);

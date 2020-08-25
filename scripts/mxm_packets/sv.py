@@ -118,6 +118,13 @@ class ServerSerializer:
 
         print('}')
 
+    def serialize_62018(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_returnToCity {')
+        print('    errCode=%d' % p.read_i32())
+        print('}')
+
     def serialize_62025(netid, data):
         p = common.PacketReader(data)
 
@@ -744,6 +751,13 @@ class ServerSerializer:
         print('    enable=%d' % p.read_u8())
         print('}')
 
+    def serialize_62191(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_partyAddBot {')
+        print('    retval=%d' % p.read_i32())
+        print('}')
+
     def serialize_62201(netid, data):
         p = common.PacketReader(data)
 
@@ -753,6 +767,21 @@ class ServerSerializer:
         print('    avgMatchingTimeMS=%d' % p.read_i32())
         print('    disableMatchExpansion=%d' % p.read_u8())
         print('    isMatchingExpanded=%d' % p.read_u8())
+        print('}')
+
+    def serialize_62208(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_masterPick {')
+        print('    retval=%d' % p.read_i32())
+        print('    characterID=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62217(netid, data):
+        p = common.PacketReader(data)
+        print('SN_StartCountdownSortieRoom {')
+        print('    stageType=%d' % p.read_i32())
+        print('    timeToWaitSec=%d' % p.read_i32())
         print('}')
 
     def serialize_62227(netid, data):
@@ -881,6 +910,15 @@ class ServerSerializer:
             count -= 1
         print('    ]')
         print('}')
+
+    def serialize_62274(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_PVPAvailableReportCount {')
+        print('    isTroll=%d' % p.read_u8())
+        print('    remainingCount=%d' % p.read_u8())
+        print('}')
+
 
     def serialize_62276(netid, data):
         p = common.PacketReader(data)
@@ -1337,6 +1375,19 @@ class ServerSerializer:
         print('    vipRotation=[%s]' %s)
         print('}')
 
+    def serialize_62466(netid, data):
+        print('SN_SortieMasterPickPhaseEnd {')
+        print('}')
+
+
+
+    def serialize_62468(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_SortieMasterPickPhaseStep {')
+        print('    isRandomPick=%d' % p.read_u8())
+        print('}')
+
     def serialize_62469(netid, data):
         p = common.PacketReader(data)
 
@@ -1406,6 +1457,7 @@ class ServerSerializer:
         data = p.read_raw(data_len)
         extracted = zlib.decompress(data)
         print('    decompressed=[%s]' % extracted.decode('utf-8'))
+        print('    data="{}"'.format(p.read_raw(data_len)))
         print('}')
 
     def serialize_62525(netid, data):
@@ -1421,6 +1473,13 @@ class ServerSerializer:
         print('SN_AddictionWarning {')
         print('    addictionLevel=%d' % p.read_u8())
         print('}')
+
+    def serialize_62542(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_DateChanged {')
+        print('}')
+
 
     def serialize_62544(netid, data):
         p = common.PacketReader(data)
@@ -1470,6 +1529,13 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62550(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_SortieMasterPickPhaseStep {')
+        print('    isRandomPick=%d' % p.read_u8())
+        print('}')
+
     def serialize_62551(netid, data):
         p = common.PacketReader(data)
 
@@ -1504,6 +1570,14 @@ class ServerSerializer:
             s += '(effectItemDocIndex=%d expireDateTime=%d)' % (p.read_i32(), p.read_i64())
             count -= 1
         print('    effectItemDocIndexList=[%s]' % s)
+        print('}')
+
+    def serialize_62556(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_guideMissionAccept {')
+        print('    result=%d' % p.read_i32())
+        print('    step=%d' % p.read_u8())
         print('}')
 
     def serialize_62559(netid, data):
@@ -1599,4 +1673,3 @@ class ServerSerializer:
         print('SN_ServerUtcTime {')
         print('    effectItemDocIndexList=%d' % p.read_i64())
         print('}')
-

@@ -58,6 +58,19 @@ struct Replication
 		friend struct Replication;
 	};
 
+	struct Transform
+	{
+		Vec3 pos;
+		Vec3 dir;
+		Vec3 eye;
+		f32 rotate;
+		f32 speed;
+		i32 state;
+		i32 actionID;
+
+		bool IsEqual(const Transform& other) const;
+	};
+
 	struct Frame
 	{
 		eastl::array<bool,Server::MAX_CLIENTS> playerDoScanEnd;
@@ -67,6 +80,8 @@ struct Replication
 		List<ActorPlayerInfo> actorPlayerInfoList;
 		eastl::fixed_map<ActorUID,List<Actor>::iterator,2048> actorUIDMap;
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
+
+		eastl::fixed_map<ActorUID,Transform,2048> transformMap;
 
 		void Clear();
 	};
@@ -102,7 +117,7 @@ struct Replication
 	void Init(Server* server_);
 
 	void FrameEnd();
-	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
+	void FramePushActor(const Actor& actor, const Transform& tf, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
 
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
@@ -119,6 +134,9 @@ struct Replication
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
 private:
+	void UpdatePlayersLocalState();
+	void DoFrameDifference();
+
 	void SendActorSpawn(i32 clientID, const Actor& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 

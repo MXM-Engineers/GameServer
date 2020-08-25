@@ -271,10 +271,12 @@ void Game::OnClientConnect(i32 clientID, const AccountData* accountData)
 
 void Game::OnClientDisconnect(i32 clientID)
 {
-	ASSERT(playerActorUID[clientID] != ActorUID::INVALID);
 	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, playerActorUID[clientID]);
 
-	world.DestroyPlayerActor(playerActorUID[clientID]);
+	// we can disconnect before spawning, so test if we have an actor associated
+	if(playerActorUID[clientID] != ActorUID::INVALID) {
+		world.DestroyPlayerActor(playerActorUID[clientID]);
+	}
 	playerActorUID[clientID] = ActorUID::INVALID;
 
 	replication.EventClientDisconnect(clientID);

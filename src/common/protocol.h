@@ -485,7 +485,7 @@ struct SN_GamePlayerSyncByInt
 {
 	enum { NET_ID = 62052 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	Vec3 p3nPos;
 	Vec3 p3nDir;
 	Vec3 p3nEye;

@@ -19,6 +19,7 @@ void Replication::Frame::Clear()
 	actorPlayerInfoList.clear();
 	actorUIDMap.clear();
 	actorUIDSet.clear();
+	transformMap.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -41,67 +42,9 @@ void Replication::Init(Server* server_)
 
 void Replication::FrameEnd()
 {
-	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+	UpdatePlayersLocalState();
 
-		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
-		auto& playerActorUIDSet = localInfo.actorUIDSet; // replicated actors UID set
-
-		eastl::fixed_set<ActorUID,2048> playerMinusCur;
-		eastl::fixed_set<ActorUID,2048> curMinusPlayer;
-		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::inserter(playerMinusCur, playerMinusCur.begin()));
-		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::inserter(curMinusPlayer, curMinusPlayer.begin()));
-
-		// send destroy entity for deleted actors
-		foreach(setIt, playerMinusCur) {
-			const ActorUID actorUID = *setIt;
-#ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
-			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
-			ASSERT(actorIt != framePrev->actorUIDMap.end());
-			const Actor& actor = *actorIt->second;
-			ASSERT(actor.UID == actorUID);
-#endif
-
-			SendActorDestroy(clientID, actorUID);
-
-			// Remove LocalActorID link
-			DeleteLocalActorID(clientID, actorUID);
-		}
-
-		// send new spawns
-		foreach(setIt, curMinusPlayer) {
-			const ActorUID actorUID = *setIt;
-			const auto actorIt = frameCur->actorUIDMap.find(actorUID);
-			ASSERT(actorIt != frameCur->actorUIDMap.end());
-			const Actor& actor = *actorIt->second;
-
-			// Create a LocalActorID link if none exists already
-			// If one exists already, we have pre-allocated it (like with leader master)
-			if(GetLocalActorID(clientID, actorUID) == LocalActorID::INVALID) {
-				CreateLocalActorID(clientID, actorUID);
-			}
-
-			SendActorSpawn(clientID, actor);
-		}
-
-		playerActorUIDSet = frameCur->actorUIDSet;
-
-		// TODO: remove, extra checks
-#ifdef CONF_DEBUG
-		auto& localActorIDMap = localInfo.localActorIDMap;
-		foreach(it, playerActorUIDSet) {
-			ASSERT(localActorIDMap.find(*it) != localActorIDMap.end());
-		}
-		foreach(it, localActorIDMap) {
-			ASSERT(playerActorUIDSet.find(it->first) != playerActorUIDSet.end());
-		}
-		eastl::fixed_set<LocalActorID,2048> laiSet;
-		foreach(it, localActorIDMap) {
-			ASSERT(laiSet.find(it->second) == laiSet.end());
-			laiSet.emplace(it->second);
-		}
-#endif
-	}
+	DoFrameDifference();
 
 	// send SN_ScanEnd if requested
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
@@ -176,7 +119,7 @@ void Replication::FrameEnd()
 	frameCur->Clear(); // clear frame
 }
 
-void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
+void Replication::FramePushActor(const Actor& actor, const Transform& tf, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
 {
 	ASSERT(frameCur->actorUIDMap.find(actor.UID) == frameCur->actorUIDMap.end());
 	ASSERT(frameCur->actorUIDSet.find(actor.UID) == frameCur->actorUIDSet.end());
@@ -202,6 +145,8 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 		p = *playerInfo;
 		a.playerInfo = --frameCur->actorPlayerInfoList.end();
 	}
+
+	frameCur->transformMap.emplace(actor.UID, tf);
 }
 
 void Replication::EventPlayerConnect(i32 clientID)
@@ -550,6 +495,128 @@ ActorUID Replication::GetActorUID(i32 clientID, LocalActorID localActorID)
 	return ActorUID::INVALID;
 }
 
+void Replication::UpdatePlayersLocalState()
+{
+	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
+		auto& playerActorUIDSet = localInfo.actorUIDSet; // replicated actors UID set
+
+		eastl::fixed_set<ActorUID,2048> playerMinusCur;
+		eastl::fixed_set<ActorUID,2048> curMinusPlayer;
+		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::inserter(playerMinusCur, playerMinusCur.begin()));
+		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::inserter(curMinusPlayer, curMinusPlayer.begin()));
+
+		// send destroy entity for deleted actors
+		foreach(setIt, playerMinusCur) {
+			const ActorUID actorUID = *setIt;
+#ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
+			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
+			ASSERT(actorIt != framePrev->actorUIDMap.end());
+			const Actor& actor = *actorIt->second;
+			ASSERT(actor.UID == actorUID);
+#endif
+
+			SendActorDestroy(clientID, actorUID);
+
+			// Remove LocalActorID link
+			DeleteLocalActorID(clientID, actorUID);
+		}
+
+		// send new spawns
+		foreach(setIt, curMinusPlayer) {
+			const ActorUID actorUID = *setIt;
+			const auto actorIt = frameCur->actorUIDMap.find(actorUID);
+			ASSERT(actorIt != frameCur->actorUIDMap.end());
+			const Actor& actor = *actorIt->second;
+
+			// Create a LocalActorID link if none exists already
+			// If one exists already, we have pre-allocated it (like with leader master)
+			if(GetLocalActorID(clientID, actorUID) == LocalActorID::INVALID) {
+				CreateLocalActorID(clientID, actorUID);
+			}
+
+			SendActorSpawn(clientID, actor);
+		}
+
+		playerActorUIDSet = frameCur->actorUIDSet;
+
+		// TODO: remove, extra checks
+#ifdef CONF_DEBUG
+		auto& localActorIDMap = localInfo.localActorIDMap;
+		foreach(it, playerActorUIDSet) {
+			ASSERT(localActorIDMap.find(*it) != localActorIDMap.end());
+		}
+		foreach(it, localActorIDMap) {
+			ASSERT(playerActorUIDSet.find(it->first) != playerActorUIDSet.end());
+		}
+		eastl::fixed_set<LocalActorID,2048> laiSet;
+		foreach(it, localActorIDMap) {
+			ASSERT(laiSet.find(it->second) == laiSet.end());
+			laiSet.emplace(it->second);
+		}
+#endif
+	}
+}
+
+void Replication::DoFrameDifference()
+{
+	// send position update
+
+	struct Entry
+	{
+		ActorUID actorUID;
+		Transform tf;
+	};
+
+	eastl::fixed_vector<Entry,2048> tfToSendList;
+
+	// find if the position has changed since last frame
+	foreach(it, frameCur->actorUIDSet) {
+		const ActorUID actorUID = *it;
+		if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
+			auto pf = framePrev->transformMap.find(actorUID);
+			ASSERT(pf != framePrev->transformMap.end());
+			const Transform& prevTf = pf->second;
+
+			auto cf = frameCur->transformMap.find(actorUID);
+			ASSERT(cf != frameCur->transformMap.end());
+			const Transform& curTf = cf->second;
+
+			if(!prevTf.IsEqual(curTf)) {
+				Entry e;
+				e.actorUID = actorUID;
+				e.tf = curTf;
+				tfToSendList.push_back(e);
+			}
+		}
+	}
+
+	// send updates
+	foreach(it, tfToSendList) {
+		const Entry& e = *it;
+		const Transform& tf = e.tf;
+
+		Sv::SN_GamePlayerSyncByInt sync;
+		sync.p3nPos = tf.pos;
+		sync.p3nDir = tf.dir;
+		sync.p3nEye = tf.eye;
+		sync.nRotate = tf.rotate;
+		sync.nSpeed = tf.speed;
+		sync.nState = tf.state;
+		sync.nActionIDX = tf.actionID;
+
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+			sync.characterID = GetLocalActorID(clientID, e.actorUID);
+			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, e.actorUID);
+			SendPacket(clientID, sync);
+		}
+	}
+}
+
 void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 {
 	DBG_ASSERT(actor.UID != ActorUID::INVALID);
@@ -764,4 +831,25 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 {
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
+}
+
+bool Replication::Transform::IsEqual(const Transform& other) const
+{
+	const f32 posEpsilon = 0.1f;
+	if(fabs(pos.x - other.pos.x) > posEpsilon) return false;
+	if(fabs(pos.y - other.pos.y) > posEpsilon) return false;
+	if(fabs(pos.z - other.pos.z) > posEpsilon) return false;
+	if(fabs(dir.x - other.dir.x) > posEpsilon) return false;
+	if(fabs(dir.y - other.dir.y) > posEpsilon) return false;
+	if(fabs(dir.z - other.dir.z) > posEpsilon) return false;
+	if(fabs(eye.x - other.eye.x) > posEpsilon) return false;
+	if(fabs(eye.y - other.eye.y) > posEpsilon) return false;
+	if(fabs(eye.z - other.eye.z) > posEpsilon) return false;
+	const f32 rotEpsilon = 0.01f;
+	if(fabs(rotate - other.rotate) > rotEpsilon) return false;
+	const f32 rotSpeed = 0.1f;
+	if(fabs(speed - other.speed) > rotSpeed) return false;
+	if(state != other.state) return false;
+	if(actionID != other.actionID) return false;
+	return true;
 }

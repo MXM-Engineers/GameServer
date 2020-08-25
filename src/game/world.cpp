@@ -34,7 +34,16 @@ void World::Update(f64 delta)
 		Replication::ActorPlayerInfo playerInfo;
 		// TODO: fill those
 
-		replication->FramePushActor(rfl, &plate, &stats, &playerInfo);
+		Replication::Transform tf;
+		tf.pos = actor.pos;
+		tf.dir = actor.dir;
+		tf.eye = actor.eye;
+		tf.rotate = actor.rotate;
+		tf.speed = actor.speed;
+		tf.state = actor.state;
+		tf.actionID = actor.actionID;
+
+		replication->FramePushActor(rfl, tf, &plate, &stats, &playerInfo);
 	}
 
 	foreach(it, actorNpcList) {
@@ -52,7 +61,17 @@ void World::Update(f64 delta)
 		rfl.faction = -1;
 		rfl.classType = -1; // -1 for NPCs
 		rfl.skinIndex = 0;
-		replication->FramePushActor(rfl, nullptr, nullptr, nullptr);
+
+		Replication::Transform tf;
+		tf.pos = actor.pos;
+		tf.dir = actor.dir;
+		tf.eye = actor.eye;
+		tf.rotate = actor.rotate;
+		tf.speed = actor.speed;
+		tf.state = actor.state;
+		tf.actionID = actor.actionID;
+
+		replication->FramePushActor(rfl, tf, nullptr, nullptr, nullptr);
 	}
 }
 
@@ -103,23 +122,8 @@ World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
 
 void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
 {
-	// TODO: frame delta position update
-	/*
-	// SA_GetCharacterInfo
-	Sv::SN_GamePlayerSyncByInt sync;
-	sync.characterID = update.characterID;
-	sync.p3nPos = update.p3nPos;
-	sync.p3nDir = update.p3nDir;
-	sync.p3nEye = update.p3nEye;
-	sync.nRotate = update.nRotate;
-	sync.nSpeed = update.nSpeed;
-	sync.nState = update.nState;
-	sync.nActionIDX = update.nActionIDX;
-	LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: ", clientID);
-	SendPacket(clientID, sync);
-	*/
-
 	ActorPlayer* actor = FindPlayerActor(actorUID);
+	ASSERT(actor);
 
 	// TODO: check for movement hacking
 	actor->pos = pos;

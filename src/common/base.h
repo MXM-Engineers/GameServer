@@ -4,15 +4,22 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h> // memmove
+#include <wchar.h> //wcslen
 #include <EAThread/eathread_futex.h> // mutex
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
 void __Logf(const char* fmt, ...);
 
+#ifdef _MSC_VER
 #define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, __VA_ARGS__))
 #define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
 #define LOG_NNL(fmt, ...) do { __Logf(fmt, __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
+#else
+//ToDo implement macros
+#define LOG(fmt, ...)
+#define LOG_NNL(fmt, ...)
+#endif
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
@@ -21,7 +28,12 @@ inline void __assertion_failed(const char* cond, const char* file, int line)
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);
 	fflush(stdout);
 	fflush(g_LogFile);
+#ifdef _MSC_VER
 	__debugbreak();
+#else
+	//ToDo: needs testing
+	__builtin_expect(!!("break"), 1);
+#endif
 }
 
 #define ASSERT(cond) do { if(!(cond)) { __assertion_failed(#cond, __FILE__, __LINE__); } } while(0)

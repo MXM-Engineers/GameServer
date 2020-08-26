@@ -10,6 +10,11 @@
 	#include <iphlpapi.h>
 # endif
 
+#ifdef __linux__
+	#include <sys/socket.h>
+
+#endif
+
 const char* IpToString(const u8* ip);
 const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3);
 const char* GetIpString(const sockaddr& addr);

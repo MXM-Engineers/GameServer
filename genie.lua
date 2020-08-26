@@ -10,7 +10,6 @@ solution "Servers"
 	}
 
 	platforms {
-		"x32",
 		"x64"
 	}
 
@@ -38,16 +37,19 @@ solution "Servers"
 			"CONF_RELEASE",
 		}
 
-	configuration "windows"
+	configuration {"windows", "vs20*"}
 		defines {
 			"_CRT_SECURE_NO_DEPRECATE",
 			"_CRT_NONSTDC_NO_DEPRECATE",
 			"WIN32_LEAN_AND_MEAN",
 			"NOMINMAX",
 		}
-
 		-- disable exception related warnings
 		buildoptions{ "/wd4577", "/wd4530" }
+
+	configuration "linux"
+		defines {
+		}
 
 	configuration {}
 		flags {
@@ -109,6 +111,12 @@ project "Login"
 			"ws2_32",
 		}
 
+	configuration "linux"
+		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
+		links {
+			"ws2_32",
+		}
+
 project "Game"
 	kind "ConsoleApp"
 
@@ -138,6 +146,13 @@ project "Game"
 	}
 
 	configuration "windows"
+		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
+
+		links {
+			"ws2_32",
+		}
+
+	configuration "linux"
 		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
 
 		links {

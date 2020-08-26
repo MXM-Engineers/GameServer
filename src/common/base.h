@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h> // memmove
+#include <EAThread/eathread_futex.h> // mutex
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -48,10 +49,11 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 typedef float f32;
+typedef double f64;
 
 typedef wchar_t wchar;
 
-inline void* memAlloc(i64 size)
+inline void* memAlloc(size_t size)
 {
 	//ProfileBlock("memAlloc");
 	void* ptr = malloc(size);
@@ -59,7 +61,7 @@ inline void* memAlloc(i64 size)
 	return ptr;
 }
 
-inline void* memRealloc(void* inPtr, i64 size)
+inline void* memRealloc(void* inPtr, size_t size)
 {
 	//ProfileBlock("memRealloc");
 	//ProfileMemFree(inPtr);
@@ -74,7 +76,6 @@ inline void memFree(void* ptr)
 	//ProfileMemFree(ptr)
 	return free(ptr);
 }
-
 
 struct Buffer
 {
@@ -147,172 +148,11 @@ inline bool fileSaveBuff(const char* filename, const void* buff, i32 size)
 	return false;
 }
 
-static const char* _TempStrFormat(const char* fmt, ...)
-{
-	thread_local char buff[4096];
-
-	va_list list;
-	va_start(list, fmt);
-	vsnprintf(buff, sizeof(buff), fmt, list);
-	va_end(list);
-
-	return buff;
-}
-
+const char* _TempStrFormat(const char* fmt, ...);
 #define FMT(...) _TempStrFormat(__VA_ARGS__)
 
-// Dynamic array holding POD structures
-template<typename T, u32 STACK_COUNT = 1>
-struct Array
-{
-	T _stackData[STACK_COUNT];
-	T* _data = _stackData;
-	i64 _capacity = STACK_COUNT;
-	i64 _count = 0;
-	void* _memBlock = nullptr;
-
-	Array() = default;
-
-	template<u32 from_staticCount>
-	Array(const Array<T, from_staticCount>& from) {
-		Copy(from);
-	}
-
-	Array(const Array& from) {
-		Copy(from);
-	}
-
-	// deep copy
-	template<u32 from_staticCount>
-	void Copy(const Array<T, from_staticCount>& from) {
-		Clear();
-		if(from._count > _capacity) {
-			Reserve(from._count);
-		}
-		_count = from._count;
-		memmove(_data, from._data, _count * sizeof(T));
-	}
-
-	inline Array& operator=(const Array& other) {
-		Copy(other);
-		return *this;
-	}
-
-	~Array() {
-		release();
-	}
-
-	inline void release() {
-		if(_memBlock) {
-			memFree(_memBlock);
-			_memBlock = nullptr;
-		}
-	}
-
-	void Reserve(u32 newCapacity) {
-		if(newCapacity <= _capacity) return;
-		_memBlock = memRealloc(_memBlock, newCapacity * sizeof(T));
-		ASSERT_MSG(_memBlock, "Out of memory");
-
-		T* oldData = _data;
-		_data = (T*)_memBlock;
-		_capacity = newCapacity;
-
-		if(oldData == _stackData) {
-			memmove(_data, _stackData, sizeof(_stackData));
-		}
-	}
-
-	T& Push(const T& elt) {
-		if(_count + 1 > _capacity) {
-			Reserve(_capacity * 2);
-		}
-		return (_data[_count++] = elt);
-	}
-
-	T& PushMany(const T* elements, const u32 eltCount) {
-		if(_count + eltCount > _capacity) {
-			Reserve(MAX(_capacity * 2, _count + eltCount));
-		}
-
-		i64 start = _count;
-		_count += eltCount;
-		memmove(_data + start, elements, eltCount * sizeof(T));
-		return _data[start];
-	}
-
-	void Fill(const i32 eltCount, const T& elt = {}) {
-		if(eltCount > _capacity) {
-			Reserve(MAX(_capacity * 2, eltCount));
-		}
-		_count = eltCount;
-		for(u32 i = 0; i < _count; ++i) {
-			_data[i] = elt;
-		}
-	}
-
-	inline void RemoveByID(i32 id) {
-		ASSERT_MSG(_count > 0 && id < _count, "Element out of range");
-		memmove(_data + id, _data + (_count -1), sizeof(T));
-		--_count;
-	}
-
-	// Swap with last
-	inline void Remove(const T& elt) {
-		const T* eltPtr = &elt;
-		ASSERT_MSG(eltPtr >= _data && eltPtr < _data + _count, "Element out of range");
-
-		u32 id = eltPtr - _data;
-		memmove(_data + id, _data + (_count -1), sizeof(T));
-		--_count;
-	}
-
-	inline void Resize(i32 count_) {
-		if(count_ > _capacity) {
-			Reserve(MAX(_capacity * 2, count_));
-		}
-		_count = count_;
-	}
-
-	inline void Clear() {
-		_count = 0;
-	}
-
-	inline u32 Capacity() const {
-		return _capacity;
-	}
-
-	inline u32 Count() const {
-		return _count;
-	}
-
-	inline u32 DataSize() const {
-		return _count * sizeof(T);
-	}
-
-	inline T* Data() {
-		return _data;
-	}
-
-	inline const T* Data() const {
-		return _data;
-	}
-
-	inline T& operator[](u32 index) {
-		ASSERT(index < _count);
-		return _data[index];
-	}
-
-	inline const T& operator[](u32 index) const {
-		ASSERT(index < _count);
-		return _data[index];
-	}
-
-	inline void ShrinkTo(u32 num) {
-		ASSERT(num < _count);
-		_count = num;
-	}
-};
+const wchar* _TempWideStrFormat(const wchar* fmt, ...);
+#define LFMT(...) _TempWideStrFormat(__VA_ARGS__)
 
 struct ConstBuffer
 {
@@ -484,15 +324,21 @@ struct GrowableBuffer
 	}
 };
 
-// TODO: move this
-struct Vec3
-{
-	f32 x, y, z;
+typedef EA::Thread::Futex Mutex;
+typedef EA::Thread::AutoFutex LockGuard;
 
-	Vec3(){}
-	Vec3(f32 x_, f32 y_, f32 z_):
-		x(x_), y(y_), z(z_) {}
-};
+// NOTE: this is kinda dirty but funny at the same time? And useful?
+#define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)
 
-i64 GetGlobalTime();
-i32 GetTime();
+// time API
+typedef u64 timept;
+
+void TimeInit();
+timept TimeNow();
+timept TimeRelNow(); // time ticks since start
+f64 TimeDurationSec(timept t0, timept t1);
+f64 TimeDurationMs(timept t0, timept t1);
+f64 TimeDiffSec(timept diff);
+f64 TimeDiffMs(timept diff);
+f64 TimeDurationSinceSec(timept t0);
+f64 TimeDurationSinceMs(timept t0);

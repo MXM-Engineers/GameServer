@@ -769,6 +769,66 @@ class ServerSerializer:
         print('    isMatchingExpanded=%d' % p.read_u8())
         print('}')
 
+    def serialize_62204(netid, data):
+        p = common.PacketReader(data)
+
+        print('SQ_MatchingPartyFound {')
+        print('    sortieID=%d' % p.read_i64())
+        print('    stageIndex=%d' % p.read_i32())
+        print('    gameType=%d' % p.read_i32())
+        print('    gameDefinitionType=%d' % p.read_i32())
+        print('    stageRule=%d' % p.read_i32())
+
+        print('    m_allies=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      userID=%d' % p.read_i32())
+            print('      nickname=%s' % p.read_wstr())
+            print('      isBot=%d' % p.read_u8())
+            print('      tier=%d' % p.read_i32())
+            print('      tierGroupRanking=%d' % p.read_i32())
+            print('      tierSeriesFlag=%d' % p.read_i32())
+            print('      pvpRate=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    m_enemies=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      userID=%d' % p.read_i32())
+            print('      nickname=%s' % p.read_wstr())
+            print('      isBot=%d' % p.read_u8())
+            print('      tier=%d' % p.read_i32())
+            print('      tierGroupRanking=%d' % p.read_i32())
+            print('      tierSeriesFlag=%d' % p.read_i32())
+            print('      pvpRate=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    m_spectator=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      userID=%d' % p.read_i32())
+            print('      nickname=%s' % p.read_wstr())
+            print('      isBot=%d' % p.read_u8())
+            print('      tier=%d' % p.read_i32())
+            print('      tierGroupRanking=%d' % p.read_i32())
+            print('      tierSeriesFlag=%d' % p.read_i32())
+            print('      pvpRate=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    timeToWaitInSec=%d' % p.read_i32())
+        print('    elementMain=%d' % p.read_u8())
+        print('    elementSub=%d' % p.read_u8())
+        print('}')
+
     def serialize_62208(netid, data):
         p = common.PacketReader(data)
 

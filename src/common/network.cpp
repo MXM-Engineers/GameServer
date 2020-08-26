@@ -1,4 +1,6 @@
 #include "network.h"
+#include "protocol.h"
+#include <EAThread/eathread_thread.h>
 
 const char* IpToString(const u8* ip)
 {
@@ -19,7 +21,7 @@ const char* GetIpString(const sockaddr& addr)
 	return FMT("%s:%d", inet_ntoa(in.sin_addr), in.sin_port);
 }
 
-DWORD ThreadNetwork(void* pData)
+intptr_t ThreadNetwork(void* pData)
 {
 	Server& server = *(Server*)pData;
 
@@ -76,7 +78,7 @@ bool Server::Init(const char* listenPort)
 		return false;
 	}
 
-	memset(clientIsConnected, 0, sizeof(clientIsConnected));
+	memset(&clientIsConnected, 0, sizeof(clientIsConnected));
 
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
@@ -85,7 +87,8 @@ bool Server::Init(const char* listenPort)
 		client.hEventSend = WSA_INVALID_EVENT;
 	}
 
-	CreateThread(NULL, 0, ThreadNetwork, this, 0, NULL);
+	EA::Thread::Thread Thread;
+	Thread.Begin(ThreadNetwork, this);
 	running = true;
 	return true;
 }
@@ -104,7 +107,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
 			ClientNet& client = clientNet[clientID];
-			const std::lock_guard<std::mutex> lock(client.mutexConnect);
+			const LockGuard lock(client.mutexConnect);
 
 			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
 
@@ -179,8 +182,12 @@ void Server::DisconnectClient(i32 clientID)
 	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	if(clientIsConnected[clientID] == 0) return;
 
+	mutexClientDisconnectedList.Lock();
+	clientDisconnectedList.push_back(clientID);
+	mutexClientDisconnectedList.Unlock();
+
 	ClientNet& client = clientNet[clientID];
-	const std::lock_guard<std::mutex> lock(client.mutexConnect);
+	const LockGuard lock(client.mutexConnect);
 
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
@@ -198,7 +205,7 @@ void Server::ClientSend(i32 clientID, const void* data, i32 dataSize)
 	if(clientSocket[clientID] == INVALID_SOCKET) return;
 
 	ClientNet& client = clientNet[clientID];
-	const std::lock_guard<std::mutex> lock(client.mutexSend);
+	const LockGuard lock(client.mutexSend);
 	client.pendingSendBuff.Append(data, dataSize);
 }
 
@@ -259,7 +266,7 @@ void Server::Update()
 
 			if(client.pendingSendBuff.size > 0) {
 				{
-					const std::lock_guard<std::mutex> lock(client.mutexSend);
+					LockGuard lock(client.mutexSend);
 					client.sendingBuff.Append(client.pendingSendBuff.data, client.pendingSendBuff.size);
 					client.pendingSendBuff.Clear();
 				}
@@ -288,7 +295,7 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 		ClientNet& client = clientNet[clientID];
 
 		{
-			const std::lock_guard<std::mutex> lock(client.mutexRecv);
+			const LockGuard lock(client.mutexRecv);
 
 			if(client.recvPendingProcessingBuff.size > 0) {
 				ReceiveBufferHeader header;
@@ -351,7 +358,30 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	}
 
 	// append to pending processing buffer
-	const std::lock_guard<std::mutex> lock(client.mutexRecv);
+	const LockGuard lock(client.mutexRecv);
 	client.recvPendingProcessingBuff.Append(client.recvBuff, dataLen);
 	return true;
+}
+
+void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
+{
+	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
+	u8 sendBuff[8192];
+	ASSERT(packetTotalSize <= sizeof(sendBuff));
+
+	NetHeader header;
+	header.size = packetTotalSize;
+	header.netID = netID;
+	memmove(sendBuff, &header, sizeof(header));
+	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
+
+	ClientSend(clientID, sendBuff, packetTotalSize);
+
+#ifdef CONF_DEBUG
+	static Mutex mutexFile;
+	mutexFile.Lock();
+	fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
+	packetCounter++;
+	mutexFile.Unlock();
+#endif
 }

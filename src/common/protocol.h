@@ -1,5 +1,30 @@
 #pragma once
 #include <common/base.h>
+#include <common/vector_math.h>
+
+enum class LocalActorID: u32
+{
+	INVALID = 0,
+
+	FIRST_NPC = 5000,
+
+	FIRST_SELF_MASTER = 21000, // First master, Lua
+	// Every master, in order
+	LAST_SELF_MASTER = 21500, // Last master possible. 500 should be enough :)
+	FIRST_OTHER_PLAYER = 21501
+};
+
+/*
+ Leader/Profile Masters have a hardcoded LocalActorID starting at 21000
+ We do this because weed to know preemptively which LocalActorID *each* Master owned will get when setting as leader.
+
+ We then link the LocalActorID on connect or when switching leader so it matches up.
+
+ It goes like this:
+	- Send profile master list (with hardcoded LocalActorID)
+	- Spawn leader actor
+	- Force link LocalActorID so it matches the profile one
+*/
 
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
@@ -31,7 +56,6 @@ ASSERT_SIZE(CQ_FirstHello, 13);
 struct CQ_UserLogin
 {
 	enum { NET_ID = 60003 };
-
 
 	u16 nick_len;
 	wchar nick[1];
@@ -85,7 +109,7 @@ struct CQ_Authenticate
 	i32 var;
 };
 
-struct ReadyToLoadCharacter
+struct CN_ReadyToLoadCharacter
 {
 	enum { NET_ID = 60014 };
 };
@@ -94,7 +118,7 @@ struct CN_UpdatePosition
 {
 	enum { NET_ID = 60022 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	Vec3 p3nPos;
 	Vec3 p3nDir;
 	Vec3 p3nEye;
@@ -141,6 +165,23 @@ struct CQ_GetCharacterInfo
 	enum { NET_ID = 60051 };
 
 	i32 characterID;
+};
+
+struct CQ_SetLeaderCharacter
+{
+	enum { NET_ID = 60052 };
+
+	i32 characterID;
+	i32 skinIndex;
+};
+
+struct CN_ChannelChatMessage
+{
+	enum { NET_ID = 60114 };
+
+	i32 chatType;
+	u16 msg_len;
+	wchar msg[1];
 };
 
 struct CQ_GetGuildProfile
@@ -444,7 +485,7 @@ struct SN_GamePlayerSyncByInt
 {
 	enum { NET_ID = 62052 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	Vec3 p3nPos;
 	Vec3 p3nDir;
 	Vec3 p3nEye;
@@ -464,15 +505,21 @@ struct SN_Money
 	i32 nReason;
 };
 POP_PACKED
-
 ASSERT_SIZE(SN_Money, 12);
+
+struct SN_DestroyEntity
+{
+	enum { NET_ID = 62059 };
+
+	LocalActorID characterID;
+};
 
 struct SN_SetGameGvt
 {
 	enum { NET_ID = 62060 };
 
-	i32 sendTime;
-	i32 virtualTime;
+	u32 sendTime;
+	u32 virtualTime;
 };
 
 ASSERT_SIZE(SN_SetGameGvt, 8);
@@ -694,11 +741,21 @@ struct SA_CheckDupNickname
 	wchar nick[1];
 };
 
+struct SA_SetLeader
+{
+	enum { NET_ID = 62122 };
+
+	i32 result;
+	LocalActorID leaderID;
+	i32 skinIndex;
+};
+ASSERT_SIZE(SA_SetLeader, 12);
+
 struct SN_LeaderCharacter
 {
 	enum { NET_ID = 62123 };
 
-	i32 leaderID; // characterIndex
+	LocalActorID leaderID; // characterIndex
 	i32 skinIndex;
 };
 ASSERT_SIZE(SN_LeaderCharacter, 8);
@@ -711,7 +768,7 @@ struct SN_ProfileCharacters
 	PUSH_PACKED
 	struct Character
 	{
-		i32 characterID;
+		LocalActorID characterID;
 		i32 creatureIndex;
 		i32 skillShot1;
 		i32 skillShot2;
@@ -772,7 +829,7 @@ struct SN_ProfileWeapons
 	PUSH_PACKED
 	struct Weapon
 	{
-		i32 characterID;
+		LocalActorID characterID;
 		i32 weaponType;
 		i32 weaponIndex;
 		i32 grade;
@@ -1232,6 +1289,18 @@ struct SN_MailUnreadNotice
 	u16 shopMailCount;
 	u16 newAttachmentsPending_count;
 	i32 newAttachmentsPending[1];
+};
+
+struct SN_ChatChannelMessage
+{
+	enum { NET_ID = 62242 };
+
+	i32 chatType;
+	u16 senderNickname_len;
+	wchar senderNickname[1];
+	u8 senderStaffType;
+	u16 chatMsg_len;
+	wchar chatMsg[1];
 };
 
 struct SA_TierRecord

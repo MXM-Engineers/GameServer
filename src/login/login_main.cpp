@@ -4,10 +4,85 @@
 #include <common/utils.h>
 #include <direct.h>
 
-// TODO:
-// - connect to bridge server
+struct Config
+{
+	i32 listenPort = 10900;
+	u8 gameServerIP[4] = { 127, 0, 0, 1 };
+	i32 gameServerPort = 11900;
 
-#define LISTEN_PORT "10900"
+	bool ParseLine(const char* line)
+	{
+		if(sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
+		i32 ip[4];
+		if(sscanf(line, "GameServerIP=%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) == 4) {
+			gameServerIP[0] = ip[0];
+			gameServerIP[1] = ip[1];
+			gameServerIP[2] = ip[2];
+			gameServerIP[3] = ip[3];
+			return true;
+		}
+		if(sscanf(line, "GameServerPort=%d", &gameServerPort) == 1) return true;
+		return false;
+	}
+
+	// returns false on failing to open the config file
+	bool LoadConfigFile()
+	{
+		i32 fileSize;
+		u8* fileData = fileOpenAndReadAll("login.cfg", &fileSize);
+		if(!fileData) {
+			LOG("WARNING(LoadConfigFile): failed to open 'login.cfg', using default config");
+			return false;
+		}
+		defer(memFree(fileData));
+
+		eastl::fixed_string<char,2048,true> contents;
+		contents.assign((char*)fileData, fileSize);
+
+		auto endLine = contents.find('\n');
+
+		// parse at least one line
+		if(endLine == -1) {
+			bool r = ParseLine(contents.data());
+			if(!r) {
+				LOG("WARNING(LoadConfigFile): failed to parse line '%s'", contents.data());
+				return true;
+			}
+		}
+
+		do {
+			auto line = contents.left(endLine);
+			bool r = ParseLine(line.data());
+			if(!r) {
+				LOG("WARNING(LoadConfigFile): failed to parse line '%s'", line.data());
+			}
+
+			contents = contents.substr(endLine+1, contents.size());
+			endLine = contents.find('\n');
+		} while(endLine != -1);
+
+		// last line
+		if(contents.size() > 0) {
+			bool r = ParseLine(contents.data());
+			if(!r) {
+				LOG("WARNING(LoadConfigFile): failed to parse line '%s'", contents.data());
+			}
+		}
+
+		return true;
+	}
+
+	void Print()
+	{
+		LOG("Config = {");
+		LOG("	ListenPort=%d", listenPort);
+		LOG("	GameServerIP=%d.%d.%d.%d", gameServerIP[0], gameServerIP[1], gameServerIP[2], gameServerIP[3]);
+		LOG("	GameServerPort=%d", gameServerPort);
+		LOG("}");
+	}
+};
+
+static Config g_Config;
 
 struct Client
 {
@@ -182,15 +257,16 @@ struct Client
 				station.idc = 12345678;
 				station.stations_count = 1;
 				auto& addr = station.stations[0]; // alias
-				addr.gameServerIp[0] = 127;
-				addr.gameServerIp[1] = 0;
-				addr.gameServerIp[2] = 0;
-				addr.gameServerIp[3] = 1;
-				addr.pingServerIp[0] = 127;
-				addr.pingServerIp[1] = 0;
-				addr.pingServerIp[2] = 0;
-				addr.pingServerIp[3] = 1;
-				addr.port = 12900;
+				// 92.88.247.43
+				addr.gameServerIp[0] = g_Config.gameServerIP[0];
+				addr.gameServerIp[1] = g_Config.gameServerIP[1];
+				addr.gameServerIp[2] = g_Config.gameServerIP[2];
+				addr.gameServerIp[3] = g_Config.gameServerIP[3];
+				addr.pingServerIp[0] = g_Config.gameServerIP[0];
+				addr.pingServerIp[1] = g_Config.gameServerIP[1];
+				addr.pingServerIp[2] = g_Config.gameServerIP[2];
+				addr.pingServerIp[3] = g_Config.gameServerIP[3];
+				addr.port = 12900; // ping server port
 
 				packet.Write(station); // station
 
@@ -213,9 +289,8 @@ struct Client
 				PacketWriter packet(sendData, sizeof(sendData));
 
 				packet.Write<u16>(1); // count
-				u8 ip[4] = { 127, 0, 0, 1};
-				packet.Write<u8[4]>(ip); // ip
-				packet.Write<u16>(11900); // port
+				packet.Write<u8[4]>(g_Config.gameServerIP); // ip
+				packet.Write<u16>(g_Config.gameServerPort); // port
 
 				const wchar* serverName = L"XMX_SERVER";
 				packet.Write<u16>(10); // serverNamelen
@@ -272,6 +347,9 @@ int main(int argc, char** argv)
 	LogInit("login_server.log");
 	LOG(".: Login server :.");
 
+	g_Config.LoadConfigFile();
+	g_Config.Print();
+
 	_mkdir("trace");
 
 	// Initialize Winsock
@@ -292,7 +370,7 @@ int main(int argc, char** argv)
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the local address and port to be used by the server
-	iResult = getaddrinfo(NULL, LISTEN_PORT, &hints, &result);
+	iResult = getaddrinfo(NULL, FMT("%d", g_Config.listenPort), &hints, &result);
 	if (iResult != 0) {
 		LOG("ERROR: getaddrinfo failed: %d", iResult);
 		return 1;

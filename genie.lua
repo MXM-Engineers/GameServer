@@ -104,6 +104,7 @@ project "Login"
 	}
 
 	configuration "windows"
+		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
 		links {
 			"ws2_32",
 		}

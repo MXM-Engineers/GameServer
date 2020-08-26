@@ -439,25 +439,20 @@ void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const 
 void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	ASSERT(toClientID >= 0 && toClientID < Server::MAX_CLIENTS);
+	if(playerState[toClientID] != PlayerState::IN_GAME) return;
+
 	if(msgLen == -1) msgLen = wcslen(msg);
 
 	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
-
-	// TODO: chat types
-	// TODO: senderStaffType
 
 	packet.Write<i32>(chatType); // chatType
 	packet.WriteStringObj(senderName);
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", clientID, senderName, msgLen, msg);
-		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
-	}
+	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", toClientID, senderName, msgLen, msg);
+	SendPacketData(toClientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 }
 
 void Replication::EventClientDisconnect(i32 clientID)

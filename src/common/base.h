@@ -24,6 +24,12 @@ void __Logf(const char* fmt, ...);
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
+#ifndef _MSC_VER
+typedef uint32_t DWORD;
+typedef uint16_t WORD;
+typedef uint8_t BYTE;
+#endif
+
 inline void __assertion_failed(const char* cond, const char* file, int line)
 {
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);

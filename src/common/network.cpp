@@ -112,7 +112,11 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 
 			// set non blocking
 			u_long NonBlocking = true;
+#ifdef _WIN32
 			int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
+#else
+			int ior = int ioctl(s, FIONBIO);
+#endif
 			if(ior != NO_ERROR) {
 				LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, getLastError());
 				closesocket(s);
@@ -221,6 +225,7 @@ void Server::Update()
 
 		DWORD len;
 		DWORD flags = 0;
+#ifdef _WIN32
 		i32 r = WSAGetOverlappedResult(sock, &client.recvOverlapped, &len, FALSE, &flags);
 		if(r == FALSE) {
 			if(getLastError() != WSA_IO_INCOMPLETE) {
@@ -241,6 +246,7 @@ void Server::Update()
 				continue;
 			}
 		}
+#endif
 
 		len = 0;
 		flags = 0;
@@ -277,11 +283,17 @@ void Server::Update()
 				DWORD len;
 				DWORD flags = 0;
 				int err;
+#ifdef _WIN32
 				int r = WSASend(sock, &buff, 1, &len, flags, &client.sendOverlapped, NULL);
+
 				if(r == SOCKET_ERROR && (err = getLastError()) != WSA_IO_PENDING) {
 					LOG("[client%03d] ERROR: send failed (%d)", clientID, err);
 					DisconnectClient(clientID);
 				}
+#else
+				size_t size = send(sock, &buff, len, flags); //this returns the size, need to call error function to get error number
+#endif
+				
 			}
 		}
 	}
@@ -326,12 +338,17 @@ bool Server::ClientStartReceiving(i32 clientID)
 
 	DWORD len;
 	DWORD flags = 0;
+#ifdef _WIN32
 	int r = WSARecv(sock, &buff, 1, &len, &flags, &client.recvOverlapped, NULL);
 	if(r == SOCKET_ERROR && getLastError() != WSA_IO_PENDING) {
 		LOG("ERROR(ClientStartReceiving): receive failed (%d)", getLastError());
 		DisconnectClient(clientID);
 		return false;
 	}
+
+#else
+	size_t size = recv(sock, &buff, len, flags); //this returns the size, need to call error function to get error number
+#endif
 	/*else if(r == 0) { // instant reception, handle it
 		bool hr = ClientHandleReceivedData(clientID, len);
 		if(!hr) return false;

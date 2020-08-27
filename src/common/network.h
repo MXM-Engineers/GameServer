@@ -47,8 +47,10 @@ struct Server
 		Mutex mutexRecv;
 		Mutex mutexSend;
 		Mutex mutexConnect;
+#ifdef _WIN32
 		OVERLAPPED recvOverlapped;
 		OVERLAPPED sendOverlapped;
+#endif
 		HANDLE hEventRecv;
 		HANDLE hEventSend;
 		char recvBuff[RECV_BUFF_LEN];

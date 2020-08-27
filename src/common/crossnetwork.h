@@ -23,7 +23,13 @@
 #define WSA_INVALID_EVENT NULL //ToDo set linux equivallent value
 #define WSA_IO_PENDING NULL //ToDo set linux equivallent value
 #define WSA_IO_INCOMPLETE NULL //ToDo set linux equivallent value
+#define NO_ERROR 0
 typedef int SOCKET;
+
+typedef struct _WSABUF {
+	size_t len;     /* the length of the buffer */
+	void *buf; /* the pointer to the buffer */
+} WSABUF;
 #endif
 
 int sockInit(void);

@@ -37,3 +37,4 @@ int sockQuit(void);
 int sockClose(SOCKET);
 int getLastError(void);
 HANDLE networkCreateEvent(void);
+void resetEvent(HANDLE);

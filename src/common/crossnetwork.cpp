@@ -52,3 +52,12 @@ HANDLE networkCreateEvent()
 	return NULL;
 #endif
 }
+
+void resetEvent(HANDLE event)
+{
+#ifdef _WIN32
+	WSAResetEvent(event);
+#else
+	//ToDo implement
+#endif
+}

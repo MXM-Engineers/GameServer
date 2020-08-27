@@ -195,8 +195,8 @@ void Server::DisconnectClient(i32 clientID)
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
 
-	WSAResetEvent(client.hEventRecv);
-	WSAResetEvent(client.hEventSend);
+	resetEvent(client.hEventRecv);
+	resetEvent(client.hEventSend);
 
 	clientIsConnected[clientID] = 0;
 	LOG("[client%03d] disconnected", clientID);

@@ -1,3 +1,4 @@
+#include "crossnetwork.h"
 #include "network.h"
 #include "protocol.h"
 #include <EAThread/eathread_thread.h>
@@ -36,8 +37,7 @@ intptr_t ThreadNetwork(void* pData)
 bool Server::Init(const char* listenPort)
 {
 	// Initialize Winsock
-	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+	int iResult = sockInit();
 	if(iResult != 0) {
 		LOG("ERROR: WSAStartup failed: %d", iResult);
 		return false;
@@ -97,8 +97,8 @@ void Server::Cleanup()
 {
 	LOG("Server shutting down...");
 
-	closesocket(serverSocket);
-	WSACleanup();
+	sockClose(serverSocket);
+	sockQuit();
 }
 
 // NOTE: this is called from the Main thread (listen thread)

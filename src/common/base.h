@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <assert.h> // static_assert
 #include <string.h> // memmove
 #include <wchar.h> //wcslen
 #include <EAThread/eathread_futex.h> // mutex
@@ -11,23 +12,26 @@ extern FILE* g_LogFile;
 void LogInit(const char* name);
 void __Logf(const char* fmt, ...);
 
+#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, ##__VA_ARGS__))
+#define LOG(fmt, ...) do { __Logf(fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+#define LOG_NNL(fmt, ...) do { __Logf(fmt, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+
 #ifdef _MSC_VER
-#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, __VA_ARGS__))
-#define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
-#define LOG_NNL(fmt, ...) do { __Logf(fmt, __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
+#define STATIC_ASSERT(cond) static_assert(cond, #cond)
 #else
-//ToDo implement macros
-#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, __VA_ARGS__))
-#define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
-#define LOG_NNL(fmt, ...) printf("LOG_NNL not implemented\n");
+#define STATIC_ASSERT(cond)
 #endif
 
-#define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
 #ifndef _MSC_VER
 typedef uint32_t DWORD;
 typedef uint16_t WORD;
 typedef uint8_t BYTE;
+typedef uint64_t DWORD_PTR;
+typedef void *HANDLE;
+
+#define MAKEWORD(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
+#define ZeroMemory(Destination,Length) memset((Destination),0,(Length))
 #endif
 
 inline void __assertion_failed(const char* cond, const char* file, int line)
@@ -53,11 +57,11 @@ inline void __assertion_failed(const char* cond, const char* file, int line)
 
 #define ARRAY_COUNT(A) (sizeof(A)/sizeof(A[0]))
 #ifdef _MSC_VER
-	#define PUSH_PACKED __pragma(pack(push, 1))
+#define PUSH_PACKED __pragma(pack(push, 1))
 	#define POP_PACKED __pragma(pack(pop))
 #else
 #define PUSH_PACKED
-#define POP_PACKED __attribute__((packed))
+#define POP_PACKED //__attribute__((packed))
 #endif
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))

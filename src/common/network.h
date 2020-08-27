@@ -21,6 +21,7 @@
 	#define INVALID_SOCKET    -1
 	#define SOCKET_ERROR      -1
 	#define closesocket(fd)   close(fd)
+	typedef int SOCKET;
 #endif
 
 const char* IpToString(const u8* ip);

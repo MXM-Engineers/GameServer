@@ -11,8 +11,16 @@
 # endif
 
 #ifdef __linux__
+	#include <sys/types.h>
 	#include <sys/socket.h>
-
+	#include <sys/select.h>
+	#include <unistd.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <netdb.h>
+	#define INVALID_SOCKET    -1
+	#define SOCKET_ERROR      -1
+	#define closesocket(fd)   close(fd)
 #endif
 
 const char* IpToString(const u8* ip);

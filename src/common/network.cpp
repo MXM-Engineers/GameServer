@@ -1,6 +1,5 @@
 #include "crossnetwork.h"
 #include "network.h"
-#include "protocol.h"
 #include <EAThread/eathread_thread.h>
 
 const char* IpToString(const u8* ip)
@@ -61,20 +60,20 @@ bool Server::Init(const char* listenPort)
 
 	serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %ld", WSAGetLastError());
+		LOG("ERROR(socket): %ld", getLastError);
 		return false;
 	}
 
 	// Setup the TCP listening socket
 	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
 	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
+		LOG("ERROR(bind): failed with error: %d", getLastError());
 		return false;
 	}
 
 	// listen
 	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+		LOG("ERROR(listen): failed with error: %ld", getLastError());
 		return false;
 	}
 
@@ -115,7 +114,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			u_long NonBlocking = true;
 			int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
 			if(ior != NO_ERROR) {
-				LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, WSAGetLastError());
+				LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, getLastError());
 				closesocket(s);
 				ASSERT(0); // we want to catch that error
 				return -1;
@@ -144,10 +143,10 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			client.sendBuffID = 0;
 
 			if(client.hEventRecv != WSA_INVALID_EVENT) {
-				client.hEventRecv = WSACreateEvent();
+				client.hEventRecv = networkCreateEvent();
 			}
 			if(client.hEventSend != WSA_INVALID_EVENT) {
-				client.hEventSend = WSACreateEvent();
+				client.hEventSend = networkCreateEvent();
 			}
 
 			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
@@ -224,8 +223,8 @@ void Server::Update()
 		DWORD flags = 0;
 		i32 r = WSAGetOverlappedResult(sock, &client.recvOverlapped, &len, FALSE, &flags);
 		if(r == FALSE) {
-			if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-				LOG("[client%03d] Recv WSAGetOverlappedResult failed (%d)", clientID, WSAGetLastError());
+			if(getLastError() != WSA_IO_INCOMPLETE) {
+				LOG("[client%03d] Recv WSAGetOverlappedResult failed (%d)", clientID, getLastError());
 				DisconnectClient(clientID);
 				continue;
 			}
@@ -247,8 +246,8 @@ void Server::Update()
 		flags = 0;
 		r = WSAGetOverlappedResult(sock, &client.sendOverlapped, &len, FALSE, &flags);
 		if(r == FALSE) {
-			if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-				LOG("[client%03d] Send WSAGetOverlappedResult failed (%d)", clientID, WSAGetLastError());
+			if(getLastError() != WSA_IO_INCOMPLETE) {
+				LOG("[client%03d] Send WSAGetOverlappedResult failed (%d)", clientID, getLastError());
 				DisconnectClient(clientID);
 			}
 		}
@@ -279,7 +278,7 @@ void Server::Update()
 				DWORD flags = 0;
 				int err;
 				int r = WSASend(sock, &buff, 1, &len, flags, &client.sendOverlapped, NULL);
-				if(r == SOCKET_ERROR && (err = WSAGetLastError()) != WSA_IO_PENDING) {
+				if(r == SOCKET_ERROR && (err = getLastError()) != WSA_IO_PENDING) {
 					LOG("[client%03d] ERROR: send failed (%d)", clientID, err);
 					DisconnectClient(clientID);
 				}
@@ -328,8 +327,8 @@ bool Server::ClientStartReceiving(i32 clientID)
 	DWORD len;
 	DWORD flags = 0;
 	int r = WSARecv(sock, &buff, 1, &len, &flags, &client.recvOverlapped, NULL);
-	if(r == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-		LOG("ERROR(ClientStartReceiving): receive failed (%d)", WSAGetLastError());
+	if(r == SOCKET_ERROR && getLastError() != WSA_IO_PENDING) {
+		LOG("ERROR(ClientStartReceiving): receive failed (%d)", getLastError());
 		DisconnectClient(clientID);
 		return false;
 	}

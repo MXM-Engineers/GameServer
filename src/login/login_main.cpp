@@ -1,5 +1,6 @@
 #include <common/base.h>
 #include <common/protocol.h>
+#include <common/crossnetwork.h>
 #include <common/network.h>
 #include <common/utils.h>
 #include <direct.h>
@@ -122,7 +123,7 @@ struct Client
 				Disconnect();
 			}
 			else {
-				LOG("ERROR(recv): failed: %d", WSAGetLastError());
+				LOG("ERROR(recv): failed: %d", getLastError());
 				Disconnect();
 			}
 		} while (len > 0);
@@ -379,7 +380,7 @@ int main(int argc, char** argv)
 
 	SOCKET serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %ld", WSAGetLastError());
+		LOG("ERROR(socket): %ld", getLastError());
 		return 1;
 	}
 	defer(closesocket(serverSocket));
@@ -387,13 +388,13 @@ int main(int argc, char** argv)
 	// Setup the TCP listening socket
 	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
 	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
+		LOG("ERROR(bind): failed with error: %d", getLastError());
 		return 1;
 	}
 
 	// listen
 	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+		LOG("ERROR(listen): failed with error: %ld", getLastError());
 		return 1;
 	}
 
@@ -404,7 +405,7 @@ int main(int argc, char** argv)
 		int addrLen = sizeof(sockaddr);
 		SOCKET clientSocket = accept(serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
-			LOG("ERROR(accept): failed: %d", WSAGetLastError());
+			LOG("ERROR(accept): failed: %d", getLastError());
 			return 1;
 		}
 

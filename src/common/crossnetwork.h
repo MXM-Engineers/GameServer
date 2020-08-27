@@ -1,37 +1,33 @@
 #pragma once
-#include "network.h"
-
-int sockInit(void)
-{
-#ifdef _WIN32
-	WSADATA wsaData;
-	return WSAStartup(MAKEWORD(2, 2), &wsaData);
-#else
-	return 0;
-#endif
-}
-
-int sockQuit(void)
-{
-#ifdef _WIN32
-	return WSACleanup();
-#else
-	return 0;
-#endif
-}
-
-int sockClose(SOCKET sock)
-{
-	int status = 0;
+#include "base.h"
+#include "protocol.h"
 
 #ifdef _WIN32
-	status = shutdown(sock, SD_BOTH);
-	if (status == 0) { status = closesocket(sock); }
-#else
-	status = shutdown(sock, SHUT_RDWR);
-	if (status == 0) { status = close(sock); }
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <iphlpapi.h>
+# endif
+
+#ifdef __linux__
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#define INVALID_SOCKET    -1
+#define SOCKET_ERROR      -1
+#define closesocket(fd)   close(fd)
+#define WSA_INVALID_EVENT NULL //ToDo set linux equivallent value
+#define WSA_IO_PENDING NULL //ToDo set linux equivallent value
+#define WSA_IO_INCOMPLETE NULL //ToDo set linux equivallent value
+typedef int SOCKET;
 #endif
 
-	return status;
-
-}
+int sockInit(void);
+int sockQuit(void);
+int sockClose(SOCKET);
+int getLastError(void);
+HANDLE networkCreateEvent(void);

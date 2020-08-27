@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
 			if(server.running) {
-				LOG("ERROR(accept): failed: %d", WSAGetLastError());
+				LOG("ERROR(accept): failed: %d", getLastError());
 				return 1;
 			}
 			else {

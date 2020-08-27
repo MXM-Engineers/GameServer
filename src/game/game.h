@@ -2,6 +2,7 @@
 #include <common/base.h>
 #include <common/protocol.h>
 #include <common/network.h>
+#include <common/crossnetwork.h>
 #include <common/utils.h>
 #include "world.h"
 

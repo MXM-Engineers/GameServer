@@ -115,7 +115,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 #ifdef _WIN32
 			int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
 #else
-			int ior = int ioctl(s, FIONBIO);
+			int ior = ioctl(s, FIONBIO);
 #endif
 			if(ior != NO_ERROR) {
 				LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, getLastError());
@@ -152,9 +152,10 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			if(client.hEventSend != WSA_INVALID_EVENT) {
 				client.hEventSend = networkCreateEvent();
 			}
-
+#ifdef __WIN32
 			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
 			client.sendOverlapped.hEvent = client.hEventSend;
+#endif
 
 			 // register the socket at the end, when everything is initialized
 			// TODO: add a variable clientIsInitialized?
@@ -250,7 +251,9 @@ void Server::Update()
 
 		len = 0;
 		flags = 0;
+#ifdef _WIN32
 		r = WSAGetOverlappedResult(sock, &client.sendOverlapped, &len, FALSE, &flags);
+
 		if(r == FALSE) {
 			if(getLastError() != WSA_IO_INCOMPLETE) {
 				LOG("[client%03d] Send WSAGetOverlappedResult failed (%d)", clientID, getLastError());
@@ -296,6 +299,7 @@ void Server::Update()
 				
 			}
 		}
+#endif
 	}
 }
 
@@ -327,10 +331,11 @@ bool Server::ClientStartReceiving(i32 clientID)
 	DBG_ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	SOCKET sock = clientSocket[clientID];
 	ClientNet& client = clientNet[clientID];
-
+#ifdef _WIN32
 	memset(&client.recvOverlapped, 0, sizeof(client.recvOverlapped));
 	WSAResetEvent(client.hEventRecv);
 	client.recvOverlapped.hEvent = client.hEventRecv;
+#endif
 
 	WSABUF buff;
 	buff.len = RECV_BUFF_LEN;

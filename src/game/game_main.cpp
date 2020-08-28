@@ -12,6 +12,7 @@ Server* g_Server = nullptr;
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
+#ifdef _WIN32
 BOOL WINAPI ConsoleHandler(DWORD signal)
 {
 	if(signal == CTRL_C_EVENT || signal == CTRL_CLOSE_EVENT) {
@@ -21,6 +22,7 @@ BOOL WINAPI ConsoleHandler(DWORD signal)
 
 	return TRUE;
 }
+#endif
 
 int main(int argc, char** argv)
 {
@@ -29,10 +31,12 @@ int main(int argc, char** argv)
 
 	LOG(".: Game server :.");
 
+#ifdef _WIN32
 	if(!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
 		LOG("ERROR: Could not set control handler");
 		return 1;
 	}
+#endif
 
 	static Server server;
 	bool r = server.Init(LISTEN_PORT);
@@ -55,6 +59,7 @@ int main(int argc, char** argv)
 		LOG("Waiting for a connection...");
 		struct sockaddr clientAddr;
 		int addrLen = sizeof(sockaddr);
+#ifdef _WIN32
 		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
 			if(server.running) {
@@ -68,6 +73,7 @@ int main(int argc, char** argv)
 
 		LOG("New connection (%s)", GetIpString(clientAddr));
 		server.AddClient(clientSocket, clientAddr);
+#endif
 	}
 
 	LOG("Done.");

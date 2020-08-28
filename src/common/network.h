@@ -14,6 +14,7 @@
 	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <sys/select.h>
+	#include <sys/ioctl.h>
 	#include <unistd.h>
 	#include <netinet/in.h>
 	#include <arpa/inet.h>

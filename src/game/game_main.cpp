@@ -42,12 +42,8 @@ int main(int argc, char** argv)
 	}
 	g_Server = &server;
 
-	// TODO: the coordinator should create games
-	static Game game;
-	game.Init(&server);
-
 	static Coordinator coordinator;
-	coordinator.Init(&server, &game);
+	coordinator.Init(&server);
 
 	// accept thread
 	while(server.running) {

@@ -13,17 +13,17 @@ struct AccountData
 	// TODO: add to this
 };
 
-struct Game;
+struct Channel;
 
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
 	Server* server;
-	Game* game;
+	Channel* channel;
 	AccountData accountData[Server::MAX_CLIENTS];
 	GrowableBuffer recvDataBuff;
 
-	void Init(Server* server_, Game* game_);
+	void Init(Server* server_);
 
 	void Update(f64 delta);
 

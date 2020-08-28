@@ -1,5 +1,5 @@
 #include "coordinator.h"
-#include "game.h"
+#include "channel.h"
 #include <zlib.h>
 #include <EAThread/eathread_thread.h>
 
@@ -38,10 +38,14 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
-void Coordinator::Init(Server* server_, Game* game_)
+void Coordinator::Init(Server* server_)
 {
+	// TODO: allocate channels dynamically
+	static Channel channelBridge;
+	channelBridge.Init(server_);
+
 	server = server_;
-	game = game_;
+	channel = &channelBridge;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
 	EA::Thread::Thread Thread;
@@ -53,7 +57,7 @@ void Coordinator::Update(f64 delta)
 	// handle client disconnections
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
-	game->CoordinatorHandleDisconnectedClients(clientDisconnectedList.data(), clientDisconnectedList.size());
+	channel->CoordinatorHandleDisconnectedClients(clientDisconnectedList.data(), clientDisconnectedList.size());
 
 	// handle received data
 	server->TransferAllReceivedData(&recvDataBuff);
@@ -87,7 +91,7 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 
 		default: {
 			// TODO: dispatch packets to games depending on clients playing on them
-			game->CoordinatorClientHandlePacket(clientID, header, packetData);
+			channel->CoordinatorClientHandlePacket(clientID, header, packetData);
 		} break;
 	}
 
@@ -174,7 +178,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	game->CoordinatorRegisterNewPlayer(clientID, &account);
+	channel->CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

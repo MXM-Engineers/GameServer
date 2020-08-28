@@ -181,14 +181,14 @@ struct CQ_GetCharacterInfo
 {
 	enum { NET_ID = 60051 };
 
-	i32 characterID;
+	LocalActorID characterID;
 };
 
 struct CQ_SetLeaderCharacter
 {
 	enum { NET_ID = 60052 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	i32 skinIndex;
 };
 

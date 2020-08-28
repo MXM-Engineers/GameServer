@@ -124,16 +124,19 @@ struct Replication
 	void EventPlayerGameEnter(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
 	void EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID);
+	void EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
+
 	void EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
-	void EventClientDisconnect(i32 clientID);
 
-	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
+	void EventClientDisconnect(i32 clientID);
 
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
 private:
+	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
+
 	void UpdatePlayersLocalState();
 	void DoFrameDifference();
 

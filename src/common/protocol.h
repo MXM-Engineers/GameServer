@@ -129,6 +129,23 @@ struct CN_UpdatePosition
 };
 ASSERT_SIZE(CN_UpdatePosition, 56);
 
+PUSH_PACKED
+struct CN_GamePlayerSyncActionStateOnly
+{
+	enum { NET_ID = 60023 };
+
+	LocalActorID characterID;
+	i32 state;
+	u8 bApply;
+	i32 param1;
+	i32 param2;
+	i32 i4;
+	f32 rotate;
+	f32 upperRotate;
+};
+POP_PACKED
+ASSERT_SIZE(CN_GamePlayerSyncActionStateOnly, 29);
+
 struct CA_SetGameGvt
 {
 	enum { NET_ID = 60024 };
@@ -1252,6 +1269,32 @@ struct SN_GuildChannelEnter
 	wchar_t nick[1];
 	u8 onlineStatus;
 };
+
+PUSH_PACKED
+struct SN_PlayerSyncActionStateOnly
+{
+	enum { NET_ID = 62364 };
+
+	LocalActorID characterID;
+	i32 state;
+	i32 param1;
+	i32 param2;
+	f32 rotate;
+	f32 upperRotate;
+
+	struct ST_GraphMoveData
+	{
+		u8 bApply;
+		Vec3 startPos;
+		Vec3 endPos;
+		f32 durationTimeS;
+		f32 originDistance;
+	};
+
+	ST_GraphMoveData graphMove;
+};
+POP_PACKED
+ASSERT_SIZE(SN_PlayerSyncActionStateOnly, 57);
 
 struct SN_ProfileCharacterSkinList
 {

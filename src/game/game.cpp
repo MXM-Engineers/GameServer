@@ -155,6 +155,7 @@ void Game::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* p
 		HANDLE_CASE(CN_UpdatePosition);
 		HANDLE_CASE(CN_ChannelChatMessage);
 		HANDLE_CASE(CQ_SetLeaderCharacter);
+		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -261,6 +262,34 @@ void Game::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& hea
 	playerActorUID[clientID] = actor.UID;
 
 	replication.EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID);
+}
+
+void Game::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
+
+	i32 state = sync.state;
+	const char* stateStr = g_ActionStateInvalidString;
+	if(state >= 0 && state < ARRAY_COUNT(g_ActionStateString)) {
+		stateStr = g_ActionStateString[state];
+	}
+
+	LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
+	LOG("	characterID=%d", sync.characterID);
+	LOG("	nState=%d (%s)", sync.state, stateStr);
+	LOG("	bApply=%d", sync.bApply);
+	LOG("	param1=%d", sync.param1);
+	LOG("	param2=%d", sync.param2);
+	LOG("	i4=%d", sync.i4);
+	LOG("	rotate=%g", sync.rotate);
+	LOG("	upperRotate=%g", sync.upperRotate);
+	LOG("}");
+
+	DBG_ASSERT(replication.GetLocalActorID(clientID, playerActorUID[clientID]) == sync.characterID);
+
+	// TODO: this should probably pass by the world in a form or another?
+	// So we have actors that change action state
+	replication.EventPlayerActionState(playerActorUID[clientID], sync); // TODO: temporarily directly pass the packet
 }
 
 void Game::OnClientConnect(i32 clientID, const AccountData* accountData)

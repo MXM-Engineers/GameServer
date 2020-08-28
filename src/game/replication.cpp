@@ -414,6 +414,29 @@ void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorU
 	}
 }
 
+void Replication::EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync)
+{
+	// Instant replicate
+	// TODO: find out how to use the graph move (decrypt captures, or randomly input values)
+
+	Sv::SN_PlayerSyncActionStateOnly packet;
+	memset(&packet, 0, sizeof(packet));
+	packet.state = sync.state;
+	packet.param1 = sync.param1;
+	packet.param2 = sync.param2;
+	packet.rotate = sync.rotate;
+	packet.upperRotate = sync.upperRotate;
+
+	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		packet.characterID = GetLocalActorID(clientID, actorUID);
+
+		LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d", clientID, packet.state, packet.param1);
+		SendPacket(clientID, packet);
+	}
+}
+
 void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	u8 sendData[2048];

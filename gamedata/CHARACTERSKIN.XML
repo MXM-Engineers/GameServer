@@ -1,0 +1,1366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <ST_SKIN_TABLE>
+    <_Skin DATAKEY="SKIN_STRIKER_01" _Purchase="True" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="0" _ReleaseDate="20130101" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_STRIKER_01" _IconAlias="skin_striker_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker\Striker.kfm" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker\Striker.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STRIKER_02" _Purchase="True" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="2" _ReleaseDate="20130105" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_STRIKER_02" _IconAlias="skin_striker_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Untouchable\Striker_Untouchable.kfm" _AnimationKeyName="Striker_Untouchable" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Untouchable\Striker_Untouchable.kfm" _AnimationKeyName="Striker_Untouchable" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STRIKER_03" _Purchase="True" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="3" _ReleaseDate="20130104" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_STRIKER_03" _IconAlias="skin_striker_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Suit\Striker_Suit.kfm" _AnimationKeyName="Striker_Suit" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Suit\Striker_Suit.kfm" _AnimationKeyName="Striker_Suit" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STRIKER_04" _Purchase="True" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="1" _ReleaseDate="20130103" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_STRIKER_04" _IconAlias="skin_striker_04" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Khaki\Striker_Khaki.kfm" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Khaki\Striker_Khaki.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STRIKER_06" _Purchase="False" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="5" _ReleaseDate="20140103" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_STRIKER_06" _IconAlias="skin_striker_06" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Tshirt\Striker_Tshirt.kfm" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Tshirt\Striker_Tshirt.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STRIKER_07" _Purchase="True" _ClassType="CLASS_TYPE_STRIKER" _SkinIndex="4" _ReleaseDate="20161029" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_STRIKER_07" _IconAlias="skin_striker_07" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STRIKER" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Mexican\Striker_Mexican.kfm" _AnimationKeyName="Striker_Mexican" />
+        <_Resource _BaseKFMKeyName="AI_STRIKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Striker\Striker_Mexican\Striker_Mexican.kfm" _AnimationKeyName="Striker_Mexican" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ARTILLERY_01" _Purchase="True" _ClassType="CLASS_TYPE_ARTILLERY" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ARTILLERY_01" _IconAlias="skin_artillery_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ARTILLERY" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery\Artillery.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ARTILLERY_Titan" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery\Artillery.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ARTILLERY_02" _Purchase="True" _ClassType="CLASS_TYPE_ARTILLERY" _SkinIndex="2" _ReleaseDate="20130303" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_ARTILLERY_02" _IconAlias="skin_artillery_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ARTILLERY" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Can\Artillery_Can.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ARTILLERY_Titan" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Can\Artillery_Can.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ARTILLERY_05" _Purchase="True" _ClassType="CLASS_TYPE_ARTILLERY" _SkinIndex="4" _ReleaseDate="20151102" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ARTILLERY_05" _IconAlias="skin_artillery_05" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ARTILLERY" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Boombox\Artillery_Boombox.kfm" _AnimationKeyName="Artillery_Boombox" />
+        <_Resource _BaseKFMKeyName="AI_ARTILLERY_Titan" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Boombox\Artillery_Boombox.kfm" _AnimationKeyName="Artillery_Boombox" />
+        <_Resource _BaseKFMKeyName="ARTILLERY_SPIDERMINE" _SkinKFMFile="Graphic\Creature\Pc_Summon\Artillery\ARTILLERY_SPIDERMINE_Boombox\ARTILLERY_SPIDERMINE_Boombox.kfm" _UseTeamColor="True" _ConstantSFX="PC_FX_Artillery_SpiderMine_Stand_BoomBox" _AnimationKeyName="ARTILLERY_SPIDERMINE_BoomBox" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="ARTILLERY_CANNONGUN" _skinEffectResName="ARTILLERY_CANNONGUN_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_CANNONGUN_BOMB" _skinEffectResName="ARTILLERY_CANNONGUN_BOMB_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_DEFENCEBOMB" _skinEffectResName="ARTILLERY_DEFENCEBOMB_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_EP_HOMING" _skinEffectResName="ARTILLERY_EP_HOMING_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_EP_ROCKET" _skinEffectResName="ARTILLERY_EP_ROCKET_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_HIGHANGLESHOT_BOMB" _skinEffectResName="ARTILLERY_HIGHANGLESHOT_BOMB_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_HIGHANGLESHOT_REMOTE" _skinEffectResName="ARTILLERY_HIGHANGLESHOT_REMOTE_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_SIEGE_EXPLODE" _skinEffectResName="ARTILLERY_SIEGE_EXPLODE_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_SMOKESCREEN_AREA" _skinEffectResName="ARTILLERY_SMOKESCREEN_AREA_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_SPIDERMINE_DAMAGE" _skinEffectResName="ARTILLERY_SPIDERMINE_DAMAGE_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_SPIDERMINE_STAND" _skinEffectResName="ARTILLERY_SPIDERMINE_STAND_BOOMBOX" />
+        <_SFX _baseEffectResName="ARTILLERY_SPIDERMINE_MOVE" _skinEffectResName="ARTILLERY_SPIDERMINE_MOVE_BOOMBOX" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Artillery_SiegeMode_Stance" _skinEffectResName="STATUS_SFX_PC_Artillery_SiegeMode_Stance_BoomBox" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ARTILLERY_06" _Purchase="True" _ClassType="CLASS_TYPE_ARTILLERY" _SkinIndex="5" _ReleaseDate="20161026" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_ARTILLERY_06" _IconAlias="skin_artillery_06" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ARTILLERY" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Tintoy\Artillery_Tintoy.kfm" _AnimationKeyName="Artillery_Tintoy" />
+        <_Resource _BaseKFMKeyName="AI_ARTILLERY_Titan" _SkinKFMFile="Graphic\Creature\Pc\Artillery\Artillery_Tintoy\Artillery_Tintoy.kfm" _AnimationKeyName="Artillery_Tintoy" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ASSASSIN_01" _Purchase="True" _ClassType="CLASS_TYPE_ASSASSIN" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ASSASSIN_01" _IconAlias="skin_assassin_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ASSASSIN" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin\Assassin.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ASSASSIN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin\Assassin.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ASSASSIN_02" _Purchase="True" _ClassType="CLASS_TYPE_ASSASSIN" _SkinIndex="2" _ReleaseDate="20130302" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ASSASSIN_02" _IconAlias="skin_assassin_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ASSASSIN" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Cyborg\Assassin_Cyborg.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ASSASSIN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Cyborg\Assassin_Cyborg.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ASSASSIN_03" _Purchase="True" _ClassType="CLASS_TYPE_ASSASSIN" _SkinIndex="1" _ReleaseDate="20130303" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_ASSASSIN_03" _IconAlias="skin_assassin_03" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ASSASSIN" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Color\Assassin_Color.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ASSASSIN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Color\Assassin_Color.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ASSASSIN_04" _Purchase="True" _ClassType="CLASS_TYPE_ASSASSIN" _SkinIndex="3" _ReleaseDate="20150903" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ASSASSIN_04" _IconAlias="skin_assassin_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ASSASSIN" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Spacesuit\Assassin_Spacesuit.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ASSASSIN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Spacesuit\Assassin_Spacesuit.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ASSASSIN_05" _Purchase="True" _ClassType="CLASS_TYPE_ASSASSIN" _SkinIndex="4" _ReleaseDate="20151125" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_ASSASSIN_05" _IconAlias="skin_assassin_05" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ASSASSIN" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Underworld\Assassin_Underworld.kfm" _AnimationKeyName="Assassin_UnderWorld" />
+        <_Resource _BaseKFMKeyName="AI_ASSASSIN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Assassin\Assassin_Underworld\Assassin_Underworld.kfm" _AnimationKeyName="Assassin_UnderWorld" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ELECTRO_01" _Purchase="True" _ClassType="CLASS_TYPE_ELECTRO" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ELECTRO_01" _IconAlias="skin_electro_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ELECTRO" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro\Electro.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" />
+        <_Resource _BaseKFMKeyName="AI_ELECTRO_Titan" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro\Electro.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ELECTRO_02" _Purchase="True" _ClassType="CLASS_TYPE_ELECTRO" _SkinIndex="1" _ReleaseDate="20130302" _SkinType="SKIN_TYPE_SPECIAL" _Name="STR_SKIN_ELECTRO_02" _IconAlias="skin_electro_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ELECTRO" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Nazgul\Electro_Nazgul.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" _AnimationKeyName="Electro_Nazgul" />
+        <_Resource _BaseKFMKeyName="AI_ELECTRO_Titan" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Nazgul\Electro_Nazgul.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" _AnimationKeyName="Electro_Nazgul" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ELECTRO_03" _Purchase="True" _ClassType="CLASS_TYPE_ELECTRO" _SkinIndex="2" _ReleaseDate="20130303" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_ELECTRO_03" _IconAlias="skin_electro_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ELECTRO" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Suit\Electro_Suit.kfm" _ConstantSFX="Pc_Fx_Electro_Suit_Booster" _AnimationKeyName="Electro_Suit" />
+        <_Resource _BaseKFMKeyName="AI_ELECTRO_Titan" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Suit\Electro_Suit.kfm" _ConstantSFX="Pc_Fx_Electro_Suit_Booster" _AnimationKeyName="Electro_Suit" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ELECTRO_04" _Purchase="True" _ClassType="CLASS_TYPE_ELECTRO" _SkinIndex="3" _ReleaseDate="20150905" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ELECTRO_04" _IconAlias="skin_electro_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ELECTRO" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Spartan\Electro_Spartan.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" />
+        <_Resource _BaseKFMKeyName="AI_ELECTRO_Titan" _SkinKFMFile="Graphic\Creature\Pc\Electro\Electro_Spartan\Electro_Spartan.kfm" _ConstantSFX="Pc_Fx_Electro_Always_01" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEFENDER_01" _Purchase="True" _ClassType="CLASS_TYPE_DEFENDER" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_DEFENDER_01" _IconAlias="skin_defender_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEFENDER" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender\Defender.kfm" />
+        <_Resource _BaseKFMKeyName="AI_DEFENDER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender\Defender.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEFENDER_02" _Purchase="True" _ClassType="CLASS_TYPE_DEFENDER" _SkinIndex="3" _ReleaseDate="20130305" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_DEFENDER_02" _IconAlias="skin_defender_02" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEFENDER" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender_Rugbyplayer\Defender_Rugbyplayer.kfm" _AnimationKeyName="Defender_Rugbyplayer" />
+        <_Resource _BaseKFMKeyName="AI_DEFENDER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender_Rugbyplayer\Defender_Rugbyplayer.kfm" _AnimationKeyName="Defender_Rugbyplayer" />
+        <_Resource _BaseKFMKeyName="DEFENDER_SHIELDWALL_1" _SkinKFMFile="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1_COMMON\DEFENDER_SHIELDWALL_1_COMMON.kfm" _AnimationKeyName="DEFENDER_SHIELDWALL_1_COMMON" />
+        <_Resource _BaseKFMKeyName="DEFENDER_SHIELDWALL_2" _SkinKFMFile="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1_COMMON\DEFENDER_SHIELDWALL_2_COMMON.kfm" _AnimationKeyName="DEFENDER_SHIELDWALL_2_COMMON" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEFENDER_04" _Purchase="True" _ClassType="CLASS_TYPE_DEFENDER" _SkinIndex="1" _ReleaseDate="20130303" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_DEFENDER_04" _IconAlias="skin_defender_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEFENDER" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender_Cyborg\Defender_Cyborg.kfm" _AnimationKeyName="Defender_Cyborg" />
+        <_Resource _BaseKFMKeyName="AI_DEFENDER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Defender\Defender_Cyborg\Defender_Cyborg.kfm" _AnimationKeyName="Defender_Cyborg" />
+        <_Resource _BaseKFMKeyName="DEFENDER_SHIELDWALL_1" _SkinKFMFile="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1_CYBORG\DEFENDER_SHIELDWALL_1_CYBORG.kfm" _AnimationKeyName="DEFENDER_SHIELDWALL_1_CYBORG" />
+        <_Resource _BaseKFMKeyName="DEFENDER_SHIELDWALL_2" _SkinKFMFile="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1_CYBORG\DEFENDER_SHIELDWALL_2_CYBORG.kfm" _AnimationKeyName="DEFENDER_SHIELDWALL_2_CYBORG" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="DEFENDER_SHIELD_REFLECT" _skinEffectResName="DEFENDER_SHIELD_REFLECT_DJ" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_DefenderEPBuff" _skinEffectResName="STATUS_SFX_PC_DefenderEPBuff_Cyborg" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Defender_Evade" _skinEffectResName="STATUS_SFX_PC_Defender_Evade_Cyborg" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_01" _Purchase="True" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="0" _ReleaseDate="20130101" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SNIPER_01" _IconAlias="skin_sniper_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper\Sniper.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper\Sniper.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_03" _Purchase="True" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="2" _ReleaseDate="20130103" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_SNIPER_03" _IconAlias="skin_sniper_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Cowgirl\Sniper_Cowgirl.kfm" _AnimationKeyName="Sniper_Cowgirl" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Cowgirl\Sniper_Cowgirl.kfm" _AnimationKeyName="Sniper_Cowgirl" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_04" _Purchase="True" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="1" _ReleaseDate="20130102" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_SNIPER_04" _IconAlias="skin_sniper_04" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Color\Sniper_Color.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Color\Sniper_Color.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_05" _Purchase="True" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="5" _ReleaseDate="20160117" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_SNIPER_05" _IconAlias="skin_sniper_05" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Steampunk\Sniper_Steampunk.kfm" _AnimationKeyName="Sniper_Steampunk" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Steampunk\Sniper_Steampunk.kfm" _AnimationKeyName="Sniper_Steampunk" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_06" _Purchase="True" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="4" _ReleaseDate="20150717" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_SNIPER_06" _IconAlias="skin_sniper_06" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Schoolgirl\Sniper_Schoolgirl.kfm" _AnimationKeyName="Sniper_Schoolgirl" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Schoolgirl\Sniper_Schoolgirl.kfm" _AnimationKeyName="Sniper_Schoolgirl" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SNIPER_07" _Purchase="False" _ClassType="CLASS_TYPE_SNIPER" _SkinIndex="6" _ReleaseDate="20151127" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_SNIPER_07" _IconAlias="skin_sniper_07" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SNIPER" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Tshirts\Sniper_Tshirts.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SNIPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Sniper\Sniper_Tshirts\Sniper_Tshirts.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DESTROYER_01" _Purchase="True" _ClassType="CLASS_TYPE_DESTROYER" _SkinIndex="0" _ReleaseDate="20130501" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_DESTROYER_01" _IconAlias="skin_destroyer_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DESTROYER" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer\Destroyer.kfm" />
+        <_Resource _BaseKFMKeyName="AI_DESTROYER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer\Destroyer.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DESTROYER_03" _Purchase="True" _ClassType="CLASS_TYPE_DESTROYER" _SkinIndex="1" _ReleaseDate="20130503" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DESTROYER_03" _IconAlias="skin_destroyer_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DESTROYER" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Prisoner\Destroyer_Prisoner.kfm" _AnimationKeyName="Destroyer_Prisoner" />
+        <_Resource _BaseKFMKeyName="AI_DESTROYER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Prisoner\Destroyer_Prisoner.kfm" _AnimationKeyName="Destroyer_Prisoner" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DESTROYER_04" _Purchase="True" _ClassType="CLASS_TYPE_DESTROYER" _SkinIndex="2" _ReleaseDate="20141004" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_DESTROYER_04" _IconAlias="skin_destroyer_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DESTROYER" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Warhammer\Destroyer_Warhammer.kfm" _AnimationKeyName="Destroyer_Warhammer" />
+        <_Resource _BaseKFMKeyName="AI_DESTROYER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Warhammer\Destroyer_Warhammer.kfm" _AnimationKeyName="Destroyer_Warhammer" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DESTROYER_05" _Purchase="True" _ClassType="CLASS_TYPE_DESTROYER" _SkinIndex="3" _ReleaseDate="20151004" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DESTROYER_05" _IconAlias="skin_destroyer_05" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DESTROYER" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Mecha\Destroyer_Mecha.kfm" _AnimationKeyName="Destroyer_Mecha" />
+        <_Resource _BaseKFMKeyName="AI_DESTROYER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Destroyer\Destroyer_Mecha\Destroyer_Mecha.kfm" _AnimationKeyName="Destroyer_Mecha" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="DESTROYER_Attack_Remote" _skinEffectResName="DESTROYER_Attack_Remote_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_CHAINHOOK_Remote" _skinEffectResName="DESTROYER_CHAINHOOK_Remote_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_DEMONZATION_1_Attack" _skinEffectResName="DESTROYER_DEMONZATION_1_Attack_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_Evade_Remote" _skinEffectResName="DESTROYER_Evade_Remote_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_FEARCRY_Remote" _skinEffectResName="DESTROYER_FEARCRY_Remote_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_LEAPATTACK_BGHit" _skinEffectResName="DESTROYER_LEAPATTACK_BGHit_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_LeapAttack_Explosion" _skinEffectResName="DESTROYER_LeapAttack_Explosion_Mecha" />
+        <_SFX _baseEffectResName="DESTROYER_DESTRO_Ground_Hit" _skinEffectResName="DESTROYER_DESTRO_Ground_Hit_Mecha" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Destroyer_BURN" _skinEffectResName="STATUS_SFX_PC_Destroyer_BURN_Mecha" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Destroyer_DEMONIZATION" _skinEffectResName="STATUS_SFX_PC_Destroyer_DEMONIZATION_Mecha" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Destroyer_DEMONIZATION2" _skinEffectResName="STATUS_SFX_PC_Destroyer_DEMONIZATION2_Mecha" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Destroyer_Root" _skinEffectResName="STATUS_SFX_PC_Destroyer_Root_Mecha" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MECHANIC_01" _Purchase="True" _ClassType="CLASS_TYPE_MECHANIC" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_MECHANIC_01" _IconAlias="skin_mechanic_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MECHANIC" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic\Mechanic.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MECHANIC_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic\Mechanic.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MECHANIC_03" _Purchase="True" _ClassType="CLASS_TYPE_MECHANIC" _SkinIndex="1" _ReleaseDate="20130303" _SkinType="SKIN_TYPE_SPECIAL" _Name="STR_SKIN_MECHANIC_03" _IconAlias="skin_mechanic_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MECHANIC" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Scubadiver\Mechanic_Scubadiver.kfm" _AnimationKeyName="Mechanic_Scubadiver" />
+        <_Resource _BaseKFMKeyName="AI_MECHANIC_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Scubadiver\Mechanic_Scubadiver.kfm" _AnimationKeyName="Mechanic_Scubadiver" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="Mechanic_BuffTurret_Range" _skinEffectResName="Mechanic_BuffTurret_Range_Scubadiver" />
+        <_SFX _baseEffectResName="Mechanic_SlowTurret_Wall_Remote" _skinEffectResName="Mechanic_SlowTurret_Wall_Remote_Scubadiver" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MECHANIC_04" _Purchase="True" _ClassType="CLASS_TYPE_MECHANIC" _SkinIndex="2" _ReleaseDate="20140904" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_MECHANIC_04" _IconAlias="skin_mechanic_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MECHANIC" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Ladybug\Mechanic_Ladybug.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MECHANIC_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Ladybug\Mechanic_Ladybug.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MECHANIC_05" _Purchase="True" _ClassType="CLASS_TYPE_MECHANIC" _SkinIndex="4" _ReleaseDate="20151201" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_MECHANIC_05" _IconAlias="skin_mechanic_05" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MECHANIC" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Remicon\Mechanic_Remicon.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MECHANIC_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mechanic\Mechanic_Remicon\Mechanic_Remicon.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SOULMASTER_01" _Purchase="True" _ClassType="CLASS_TYPE_SOULMASTER" _SkinIndex="0" _ReleaseDate="20131001" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SOULMASTER_01" _IconAlias="skin_soulmaster_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SOULMASTER" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster\Soulmaster.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SOULMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster\Soulmaster.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SOULMASTER_02" _Purchase="True" _ClassType="CLASS_TYPE_SOULMASTER" _SkinIndex="1" _ReleaseDate="20131002" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_SOULMASTER_02" _IconAlias="skin_soulmaster_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SOULMASTER" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Skulhelmet\Soulmaster_Skulhelmet.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SOULMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Skulhelmet\Soulmaster_Skulhelmet.kfm" />
+        <_Resource _BaseKFMKeyName="SOULMASTER_SHIRKSOUL" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_SkulHelmet\Soulmaster_SkulHelmet.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SOULMASTER_03" _Purchase="True" _ClassType="CLASS_TYPE_SOULMASTER" _SkinIndex="2" _ReleaseDate="20150707" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_SOULMASTER_03" _IconAlias="skin_soulmaster_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SOULMASTER" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Dandi\Soulmaster_Dandi.kfm" _AnimationKeyName="Soulmaster_Dandi" />
+        <_Resource _BaseKFMKeyName="AI_SOULMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Dandi\Soulmaster_Dandi.kfm" _AnimationKeyName="Soulmaster_Dandi" />
+        <_Resource _BaseKFMKeyName="SOULMASTER_SHIRKSOUL" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Dandi\Soulmaster_Dandi.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SOULMASTER_04" _Purchase="True" _ClassType="CLASS_TYPE_SOULMASTER" _SkinIndex="3" _ReleaseDate="20151007" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_SOULMASTER_04" _IconAlias="skin_soulmaster_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SOULMASTER" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Kinder\Soulmaster_Kinder.kfm" _AnimationKeyName="Soulmaster_Kinder" />
+        <_Resource _BaseKFMKeyName="AI_SOULMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Kinder\Soulmaster_Kinder.kfm" _AnimationKeyName="Soulmaster_Kinder" />
+        <_Resource _BaseKFMKeyName="SOULMASTER_SHIRKSOUL" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Kinder\Soulmaster_Kinder.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SOULMASTER_06" _Purchase="True" _ClassType="CLASS_TYPE_SOULMASTER" _SkinIndex="5" _ReleaseDate="20151204" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_SOULMASTER_06" _IconAlias="skin_soulmaster_06" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SOULMASTER" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Emperor\Soulmaster_Emperor.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SOULMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Emperor\Soulmaster_Emperor.kfm" />
+        <_Resource _BaseKFMKeyName="SOULMASTER_SHIRKSOUL" _SkinKFMFile="Graphic\Creature\Pc\Soulmaster\Soulmaster_Emperor\Soulmaster_Emperor.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DOUBLEGUN_01" _Purchase="True" _ClassType="CLASS_TYPE_DOUBLEGUN" _SkinIndex="0" _ReleaseDate="20130301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_DOUBLEGUN_01" _IconAlias="skin_doublegun_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DOUBLEGUN" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun\Doublegun.kfm" />
+        <_Resource _BaseKFMKeyName="AI_DOUBLEGUN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun\Doublegun.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DOUBLEGUN_02" _Purchase="True" _ClassType="CLASS_TYPE_DOUBLEGUN" _SkinIndex="1" _ReleaseDate="20130302" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DOUBLEGUN_02" _IconAlias="skin_doublegun_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DOUBLEGUN" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Spacepirate\Doublegun_Spacepirate.kfm" />
+        <_Resource _BaseKFMKeyName="AI_DOUBLEGUN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Spacepirate\Doublegun_Spacepirate.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DOUBLEGUN_03" _Purchase="True" _ClassType="CLASS_TYPE_DOUBLEGUN" _SkinIndex="2" _ReleaseDate="20150502" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_DOUBLEGUN_03" _IconAlias="skin_doublegun_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DOUBLEGUN" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Whitepants\Doublegun_Whitepants.kfm" />
+        <_Resource _BaseKFMKeyName="AI_DOUBLEGUN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Whitepants\Doublegun_Whitepants.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DOUBLEGUN_04" _Purchase="True" _ClassType="CLASS_TYPE_DOUBLEGUN" _SkinIndex="3" _ReleaseDate="20151216" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DOUBLEGUN_04" _IconAlias="skin_doublegun_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DOUBLEGUN" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Lifeguard\Doublegun_Lifeguard.kfm" _AnimationKeyName="Doublegun_LifeGuard" />
+        <_Resource _BaseKFMKeyName="AI_DOUBLEGUN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Lifeguard\Doublegun_Lifeguard.kfm" _AnimationKeyName="Doublegun_LifeGuard" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DOUBLEGUN_05" _Purchase="True" _ClassType="CLASS_TYPE_DOUBLEGUN" _SkinIndex="4" _ReleaseDate="20151217" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DOUBLEGUN_05" _IconAlias="skin_doublegun_05" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DOUBLEGUN" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Elvis\Doublegun_Elvis.kfm" _AnimationKeyName="Doublegun_Elvis" />
+        <_Resource _BaseKFMKeyName="AI_DOUBLEGUN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Doublegun\Doublegun_Elvis\Doublegun_Elvis.kfm" _AnimationKeyName="Doublegun_Elvis" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_JINSEOYEON_01" _Purchase="True" _ClassType="CLASS_TYPE_JINSEOYEON" _SkinIndex="0" _ReleaseDate="20140201" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_JINSEOYEON_01" _IconAlias="skin_jinseoyeon_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="JINSEOYEON" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon\Jinseoyeon.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail" />
+        <_Resource _BaseKFMKeyName="AI_JINSEOYEON_Titan" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon\Jinseoyeon.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_JINSEOYEON_02" _Purchase="True" _ClassType="CLASS_TYPE_JINSEOYEON" _SkinIndex="1" _ReleaseDate="20140202" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_JINSEOYEON_02" _IconAlias="skin_jinseoyeon_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="JINSEOYEON" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon_Biwol\Jinseoyeon_Biwol.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail_Biwol" _AnimationKeyName="Jinseoyeon_Biwol" />
+        <_Resource _BaseKFMKeyName="AI_JINSEOYEON_Titan" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon_Biwol\Jinseoyeon_Biwol.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail_Biwol" _AnimationKeyName="Jinseoyeon_Biwol" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="JINSEOYEON_Attack" _skinEffectResName="JINSEOYEON_Attack_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_SHIRK" _skinEffectResName="JINSEOYEON_SHIRK_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_POUNCE_SWORD" _skinEffectResName="JINSEOYEON_POUNCE_SWORD_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_3SLASH_HIT" _skinEffectResName="JINSEOYEON_3SLASH_HIT_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_3SLASH_SWORD_HIT" _skinEffectResName="JINSEOYEON_3SLASH_SWORD_HIT_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_CRUSHING" _skinEffectResName="JINSEOYEON_CRUSHING_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_CRUSHING_SWORD" _skinEffectResName="JINSEOYEON_CRUSHING_SWORD_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_ABSORPTION" _skinEffectResName="JINSEOYEON_ABSORPTION_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_ABSORPTION_SWORD" _skinEffectResName="JINSEOYEON_ABSORPTION_SWORD_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_LIGHTNINGSWORD_AREA" _skinEffectResName="JINSEOYEON_LIGHTNINGSWORD_AREA_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_LIGHTNINGSWORD" _skinEffectResName="JINSEOYEON_LIGHTNINGSWORD_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD1" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD1_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD2" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD2_BIWOL" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD3" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD3_BIWOL" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_1" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_1_Biwol" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_2" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_2_Biwol" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_3" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_3_Biwol" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_4" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_4_Biwol" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_5" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_5_Biwol" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_JINSEOYEON_03" _Purchase="True" _ClassType="CLASS_TYPE_JINSEOYEON" _SkinIndex="2" _ReleaseDate="20150802" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_JINSEOYEON_03" _IconAlias="skin_jinseoyeon_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="JINSEOYEON" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon_Faora\Jinseoyeon_Faora.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail_Faora" _AnimationKeyName="Jinseoyeon_Faora" />
+        <_Resource _BaseKFMKeyName="AI_JINSEOYEON_Titan" _SkinKFMFile="Graphic\Creature\Pc\Jinseoyeon\Jinseoyeon_Faora\Jinseoyeon_Faora.kfm" _ConstantSFX="Pc_Fx_Jinseoyeon_Always_Sword_Trail_Faora" _AnimationKeyName="Jinseoyeon_Faora" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="JINSEOYEON_Attack" _skinEffectResName="JINSEOYEON_Attack_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_SHIRK" _skinEffectResName="JINSEOYEON_SHIRK_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_POUNCE_SWORD" _skinEffectResName="JINSEOYEON_POUNCE_SWORD_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_3SLASH_HIT" _skinEffectResName="JINSEOYEON_3SLASH_HIT_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_3SLASH_SWORD_HIT" _skinEffectResName="JINSEOYEON_3SLASH_SWORD_HIT_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_CRUSHING" _skinEffectResName="JINSEOYEON_CRUSHING_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_CRUSHING_SWORD" _skinEffectResName="JINSEOYEON_CRUSHING_SWORD_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_ABSORPTION" _skinEffectResName="JINSEOYEON_ABSORPTION_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_ABSORPTION_SWORD" _skinEffectResName="JINSEOYEON_ABSORPTION_SWORD_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_LIGHTNINGSWORD_AREA" _skinEffectResName="JINSEOYEON_LIGHTNINGSWORD_AREA_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_LIGHTNINGSWORD" _skinEffectResName="JINSEOYEON_LIGHTNINGSWORD_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD1" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD1_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD2" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD2_FAORA" />
+        <_SFX _baseEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD3" _skinEffectResName="JINSEOYEON_EP_LIGHTNINGSWORD3_FAORA" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_1" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_1_Faora" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_2" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_2_Faora" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_3" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_3_Faora" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_4" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_4_Faora" />
+        <_SFX _baseEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_5" _skinEffectResName="Pc_Fx_Jinseoyeon_Passive_Sword_5_Faora" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_KROMEDE_01" _Purchase="True" _ClassType="CLASS_TYPE_KROMEDE" _SkinIndex="0" _ReleaseDate="20140201" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_KROMEDE_01" _IconAlias="skin_kromede_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="KROMEDE" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede\Kromede.kfm" />
+        <_Resource _BaseKFMKeyName="AI_KROMEDE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede\Kromede.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_KROMEDE_02" _Purchase="True" _ClassType="CLASS_TYPE_KROMEDE" _SkinIndex="1" _ReleaseDate="20140202" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_KROMEDE_02" _IconAlias="skin_kromede_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="KROMEDE" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Maid\Kromede_Maid.kfm" _AnimationKeyName="Kromede_Maid" />
+        <_Resource _BaseKFMKeyName="AI_KROMEDE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Maid\Kromede_Maid.kfm" _AnimationKeyName="Kromede_Maid" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_KROMEDE_03" _Purchase="True" _ClassType="CLASS_TYPE_KROMEDE" _SkinIndex="2" _ReleaseDate="20150902" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_KROMEDE_03" _IconAlias="skin_kromede_03" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="KROMEDE" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Elf\Kromede_Elf.kfm" _AnimationKeyName="Kromede_Elf" />
+        <_Resource _BaseKFMKeyName="AI_KROMEDE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Elf\Kromede_Elf.kfm" _AnimationKeyName="Kromede_Elf" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="KROMEDE_ATTACK" _skinEffectResName="KROMEDE_ATTACK_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_CHARGE_1" _skinEffectResName="KROMEDE_CHARGE_1_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_CHARGE_2" _skinEffectResName="KROMEDE_CHARGE_2_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_SNIPINGSHOT" _skinEffectResName="KROMEDE_SNIPINGSHOT_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_SNIPINGSHOT_COMBO1" _skinEffectResName="KROMEDE_SNIPINGSHOT_COMBO1_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_SNIPINGSHOT_COMBO2" _skinEffectResName="KROMEDE_SNIPINGSHOT_COMBO2_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_STRIKINGSHOT" _skinEffectResName="KROMEDE_STRIKINGSHOT_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_ARROWRAIN" _skinEffectResName="KROMEDE_ARROWRAIN_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_ULTRA" _skinEffectResName="KROMEDE_ULTRA_ELF" />
+        <_SFX _baseEffectResName="KROMEDE_TRAP" _skinEffectResName="KROMEDE_TRAP_ELF" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Kromede_Ultra" _skinEffectResName="STATUS_SFX_PC_Kromede_Ultra_Elf" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_KROMEDE_04" _Purchase="True" _ClassType="CLASS_TYPE_KROMEDE" _SkinIndex="3" _ReleaseDate="20160901" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_KROMEDE_04" _IconAlias="skin_kromede_04" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="KROMEDE" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Green\Kromede_Green.kfm" _AnimationKeyName="Kromede_Green" />
+        <_Resource _BaseKFMKeyName="AI_KROMEDE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Kromede\Kromede_Green\Kromede_Green.kfm" _AnimationKeyName="Kromede_Green" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RODMASTER_01" _Purchase="True" _ClassType="CLASS_TYPE_RODMASTER" _SkinIndex="0" _ReleaseDate="20140301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_RODMASTER_01" _IconAlias="skin_rodmaster_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RODMASTER" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Monkeymask\Rodmaster_Monkeymask.kfm" />
+        <_Resource _BaseKFMKeyName="AI_RODMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Monkeymask\Rodmaster_Monkeymask.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RODMASTER_02" _Purchase="True" _ClassType="CLASS_TYPE_RODMASTER" _SkinIndex="1" _ReleaseDate="20140302" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_RODMASTER_02" _IconAlias="skin_rodmaster_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RODMASTER" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster\Rodmaster.kfm" />
+        <_Resource _BaseKFMKeyName="AI_RODMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster\Rodmaster.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RODMASTER_03" _Purchase="True" _ClassType="CLASS_TYPE_RODMASTER" _SkinIndex="2" _ReleaseDate="20150303" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_RODMASTER_03" _IconAlias="skin_rodmaster_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RODMASTER" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Rider\Rodmaster_Rider.kfm" _AnimationKeyName="Rodmaster_Rider" />
+        <_Resource _BaseKFMKeyName="AI_RODMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Rider\Rodmaster_Rider.kfm" _AnimationKeyName="Rodmaster_Rider" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RODMASTER_04" _Purchase="True" _ClassType="CLASS_TYPE_RODMASTER" _SkinIndex="3" _ReleaseDate="20151219" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_RODMASTER_04" _IconAlias="skin_rodmaster_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RODMASTER" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Bruce\Rodmaster_Bruce.kfm" _AnimationKeyName="Rodmaster_Bruce" />
+        <_Resource _BaseKFMKeyName="AI_RODMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Bruce\Rodmaster_Bruce.kfm" _AnimationKeyName="Rodmaster_Bruce" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="RODMASTER_ULTRA" _skinEffectResName="RODMASTER_ULTRA_BRUCE" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RODMASTER_05" _Purchase="True" _ClassType="CLASS_TYPE_RODMASTER" _SkinIndex="4" _ReleaseDate="20151119" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_RODMASTER_05" _IconAlias="skin_rodmaster_05" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RODMASTER" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Chef\Rodmaster_Chef.kfm" _AnimationKeyName="Rodmaster_Chef" />
+        <_Resource _BaseKFMKeyName="AI_RODMASTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rodmaster\Rodmaster_Chef\Rodmaster_Chef.kfm" _AnimationKeyName="Rodmaster_Chef" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PHOTOG_01" _Purchase="True" _ClassType="CLASS_TYPE_PHOTOG" _SkinIndex="0" _ReleaseDate="20140301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_PHOTOG_01" _IconAlias="skin_photog_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PHOTOG" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog\Photog.kfm" />
+        <_Resource _BaseKFMKeyName="AI_PHOTOG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog\Photog.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PHOTOG_02" _Purchase="True" _ClassType="CLASS_TYPE_PHOTOG" _SkinIndex="1" _ReleaseDate="20140302" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_PHOTOG_02" _IconAlias="skin_photog_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PHOTOG" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog_Red\Photog_Red.kfm" />
+        <_Resource _BaseKFMKeyName="AI_PHOTOG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog_Red\Photog_Red.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PHOTOG_03" _Purchase="True" _ClassType="CLASS_TYPE_PHOTOG" _SkinIndex="2" _ReleaseDate="20150720" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_PHOTOG_03" _IconAlias="skin_photog_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PHOTOG" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog_Police\Photog_Police.kfm" _AnimationKeyName="PHOTOG_Police" />
+        <_Resource _BaseKFMKeyName="AI_PHOTOG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Photog\Photog_Police\Photog_Police.kfm" _AnimationKeyName="PHOTOG_Police" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="PHOTOG_PHOTOZONE" _skinEffectResName="PHOTOG_PHOTOZONE_POLICE" />
+        <_SFX _baseEffectResName="PHOTOG_PHOTOZONE_HIT" _skinEffectResName="PHOTOG_PHOTOZONE_POLICE_HIT" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ICEQUEEN_01" _Purchase="True" _ClassType="CLASS_TYPE_ICEQUEEN" _SkinIndex="0" _ReleaseDate="20140301" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ICEQUEEN_01" _IconAlias="skin_icequeen_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ICEQUEEN" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen\Icequeen.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" />
+        <_Resource _BaseKFMKeyName="AI_ICEQUEEN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen\Icequeen.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ICEQUEEN_02" _Purchase="True" _ClassType="CLASS_TYPE_ICEQUEEN" _SkinIndex="1" _ReleaseDate="20140302" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_ICEQUEEN_02" _IconAlias="skin_icequeen_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ICEQUEEN" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Black\Icequeen_Black.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" />
+        <_Resource _BaseKFMKeyName="AI_ICEQUEEN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Black\Icequeen_Black.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ICEQUEEN_03" _Purchase="True" _ClassType="CLASS_TYPE_ICEQUEEN" _SkinIndex="2" _ReleaseDate="20150908" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ICEQUEEN_03" _IconAlias="skin_icequeen_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ICEQUEEN" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Anubis\Icequeen_Anubis.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always_Anubis" _AnimationKeyName="Icequeen_Anubis" />
+        <_Resource _BaseKFMKeyName="AI_ICEQUEEN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Anubis\Icequeen_Anubis.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always_Anubis" _AnimationKeyName="Icequeen_Anubis" />
+        <_Resource _BaseKFMKeyName="ICEQUEEN_STATUE" _SkinKFMFile="Graphic\Creature\Pc_Summon\Icequeen\ICEQUEEN_STATUE\ICEQUEEN_STATUE.kfm" _UseTeamColor="True" _ConstantSFX="Pc_Fx_IceQueen_Statue_Anubis" _AnimationKeyName="ICEQUEEN_STATUE_ANUBIS" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="ICEQUEEN_ATTACK" _skinEffectResName="ICEQUEEN_ATTACK_ANUBIS" />
+        <_SFX _baseEffectResName="ICEQUEEN_FREEZESTEP" _skinEffectResName="ICEQUEEN_FREEZESTEP_ANUBIS" />
+        <_SFX _baseEffectResName="ICEQUEEN_FROZENBREAK" _skinEffectResName="ICEQUEEN_FROZENBREAK_ANUBIS" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_10m" _skinEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_10m_Anubis" />
+        <_SFX _baseEffectResName="ICEQUEEN_ICERUBBLE" _skinEffectResName="ICEQUEEN_ICERUBBLE_ANUBIS" />
+        <_SFX _baseEffectResName="ICEQUEEN_PASSIVE" _skinEffectResName="ICEQUEEN_PASSIVE_ANUBIS" />
+        <_SFX _baseEffectResName="ICEQUEEN_ICEFLOWER" _skinEffectResName="ICEQUEEN_ICEFLOWER_ANUBIS" />
+        <_SFX _baseEffectResName="ICEQUEEN_ICEFLOWER_Hit" _skinEffectResName="ICEQUEEN_ICEFLOWER_Hit_ANUBIS" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_8m" _skinEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_8m_Anubis" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_HIT" _skinEffectResName="STATUS_SFX_PC_ICEQUEEN_ICEPETAL_HIT_ANUBIS" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ICEQUEEN_04" _Purchase="True" _ClassType="CLASS_TYPE_ICEQUEEN" _SkinIndex="3" _ReleaseDate="20160801" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ICEQUEEN_04" _IconAlias="skin_icequeen_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ICEQUEEN" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Maleficent\Icequeen_Maleficent.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" _AnimationKeyName="Icequeen_Maleficent" />
+        <_Resource _BaseKFMKeyName="AI_ICEQUEEN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Icequeen\Icequeen_Maleficent\Icequeen_Maleficent.kfm" _ConstantSFX="Pc_Fx_IceQueen_Always" _AnimationKeyName="Icequeen_Maleficent" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MAGICGIRL_01" _Purchase="True" _ClassType="CLASS_TYPE_MAGICGIRL" _SkinIndex="0" _ReleaseDate="20140501" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_MAGICGIRL_01" _IconAlias="skin_magicgirl_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MAGICGIRL" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl\Magicgirl.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MAGICGIRL_Titan" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl\Magicgirl.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MAGICGIRL_02" _Purchase="True" _ClassType="CLASS_TYPE_MAGICGIRL" _SkinIndex="1" _ReleaseDate="20140502" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_MAGICGIRL_02" _IconAlias="skin_magicgirl_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MAGICGIRL" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Blue\Magicgirl_Blue.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MAGICGIRL_Titan" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Blue\Magicgirl_Blue.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MAGICGIRL_03" _Purchase="True" _ClassType="CLASS_TYPE_MAGICGIRL" _SkinIndex="2" _ReleaseDate="20140503" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_MAGICGIRL_03" _IconAlias="skin_magicgirl_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MAGICGIRL" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Mecha\Magicgirl_Mecha.kfm" _AnimationKeyName="MagicGirl_Mecha" />
+        <_Resource _BaseKFMKeyName="AI_MAGICGIRL_Titan" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Mecha\Magicgirl_Mecha.kfm" _AnimationKeyName="MagicGirl_Mecha" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MAGICGIRL_04" _Purchase="True" _ClassType="CLASS_TYPE_MAGICGIRL" _SkinIndex="3" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_MAGICGIRL_04" _IconAlias="skin_magicgirl_04" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MAGICGIRL" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Schoolgirl\Magicgirl_Schoolgirl.kfm" _AnimationKeyName="MagicGirl_Mecha" />
+        <_Resource _BaseKFMKeyName="AI_MAGICGIRL_Titan" _SkinKFMFile="Graphic\Creature\Pc\Magicgirl\Magicgirl_Schoolgirl\Magicgirl_Schoolgirl.kfm" _AnimationKeyName="MagicGirl_Mecha" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_POHWARAN_01" _Purchase="True" _ClassType="CLASS_TYPE_POHWARAN" _SkinIndex="0" _ReleaseDate="20140601" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_POHWARAN_01" _IconAlias="skin_pohwaran_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="POHWARAN" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran\Pohwaran.kfm" />
+        <_Resource _BaseKFMKeyName="AI_POHWARAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran\Pohwaran.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_POHWARAN_02" _Purchase="True" _ClassType="CLASS_TYPE_POHWARAN" _SkinIndex="1" _ReleaseDate="20140601" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_POHWARAN_02" _IconAlias="skin_pohwaran_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="POHWARAN" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran_Bee\Pohwaran_Bee.kfm" />
+        <_Resource _BaseKFMKeyName="AI_POHWARAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran_Bee\Pohwaran_Bee.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_POHWARAN_03" _Purchase="True" _ClassType="CLASS_TYPE_POHWARAN" _SkinIndex="2" _ReleaseDate="20150703" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_POHWARAN_03" _IconAlias="skin_pohwaran_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="POHWARAN" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran_Nurse\Pohwaran_Nurse.kfm" />
+        <_Resource _BaseKFMKeyName="AI_POHWARAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Pohwaran\Pohwaran_Nurse\Pohwaran_Nurse.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEATHKNIGHT_01" _Purchase="True" _ClassType="CLASS_TYPE_DEATHKNIGHT" _SkinIndex="0" _ReleaseDate="20141016" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_DEATHKNIGHT_01" _IconAlias="skin_deathknight_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEATHKNIGHT" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight\Deathknight.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Head" />
+        <_Resource _BaseKFMKeyName="AI_DEATHKNIGHT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight\Deathknight.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Head" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEATHKNIGHT_03" _Purchase="True" _ClassType="CLASS_TYPE_DEATHKNIGHT" _SkinIndex="1" _ReleaseDate="20141018" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_DEATHKNIGHT_03" _IconAlias="skin_deathknight_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEATHKNIGHT" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_White\Deathknight_White.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Head" />
+        <_Resource _BaseKFMKeyName="AI_DEATHKNIGHT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_White\Deathknight_White.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Head" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEATHKNIGHT_04" _Purchase="True" _ClassType="CLASS_TYPE_DEATHKNIGHT" _SkinIndex="2" _ReleaseDate="20151018" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_DEATHKNIGHT_04" _IconAlias="skin_deathknight_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEATHKNIGHT" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_Pumpkin\Deathknight_Pumpkin.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Halloween_Bat" _AnimationKeyName="DeathKnight_Pumpkin" />
+        <_Resource _BaseKFMKeyName="AI_DEATHKNIGHT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_Pumpkin\Deathknight_Pumpkin.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Halloween_Bat" _AnimationKeyName="DeathKnight_Pumpkin" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_DEATHKNIGHT_06" _Purchase="True" _ClassType="CLASS_TYPE_DEATHKNIGHT" _SkinIndex="4" _ReleaseDate="20160801" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_DEATHKNIGHT_06" _IconAlias="skin_deathknight_06" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="DEATHKNIGHT" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_Arthur\Deathknight_Arthur.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Arthur" _AnimationKeyName="DeathKnight_Arthur" />
+        <_Resource _BaseKFMKeyName="AI_DEATHKNIGHT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Deathknight\Deathknight_Arthur\Deathknight_Arthur.kfm" _ConstantSFX="Pc_Fx_DeathKnight_Always_Arthur" _AnimationKeyName="DeathKnight_Arthur" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOOMERANG_01" _Purchase="True" _ClassType="CLASS_TYPE_BOOMERANG" _SkinIndex="0" _ReleaseDate="20141104" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_BOOMERANG_01" _IconAlias="skin_boomerang_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOOMERANG" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang\Boomerang.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BOOMERANG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang\Boomerang.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOOMERANG_02" _Purchase="True" _ClassType="CLASS_TYPE_BOOMERANG" _SkinIndex="1" _ReleaseDate="20141105" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_BOOMERANG_02" _IconAlias="skin_boomerang_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOOMERANG" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang_Black\Boomerang_Black.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BOOMERANG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang_Black\Boomerang_Black.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOOMERANG_03" _Purchase="True" _ClassType="CLASS_TYPE_BOOMERANG" _SkinIndex="2" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_BOOMERANG_03" _IconAlias="skin_boomerang_03" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOOMERANG" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang_Native\Boomerang_Native.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BOOMERANG_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boomerang\Boomerang_Native\Boomerang_Native.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SLIME_01" _Purchase="True" _ClassType="CLASS_TYPE_SLIME" _SkinIndex="0" _ReleaseDate="20141104" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SLIME_01" _IconAlias="skin_slime_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SLIME" _SkinKFMFile="Graphic\Creature\Pc\Slime\Slime\Slime.kfm" _ConstantSFX="Pc_Fx_Slime_Always" />
+        <_Resource _BaseKFMKeyName="AI_SLIME_Titan" _SkinKFMFile="Graphic\Creature\Pc\Slime\Slime\Slime.kfm" _ConstantSFX="Pc_Fx_Slime_Always" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SLIME_03" _Purchase="True" _ClassType="CLASS_TYPE_SLIME" _SkinIndex="1" _ReleaseDate="20150213" _SkinType="SKIN_TYPE_RARE" _Name="STR_SKIN_SLIME_03" _IconAlias="skin_slime_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SLIME" _SkinKFMFile="Graphic\Creature\Pc\Slime\Slime_Uncle\Slime_Uncle.kfm" _ConstantSFX="Pc_Fx_Slime_Always" _AnimationKeyName="Slime_Uncle" />
+        <_Resource _BaseKFMKeyName="AI_SLIME_Titan" _SkinKFMFile="Graphic\Creature\Pc\Slime\Slime_Uncle\Slime_Uncle.kfm" _ConstantSFX="Pc_Fx_Slime_Always" _AnimationKeyName="Slime_Uncle" />
+        <_Resource _BaseKFMKeyName="SLIME_MINI" _SkinKFMFile="Graphic\Creature\Pc\Slime\Slime_Uncle\Slime_Uncle.kfm" _ConstantSFX="Pc_Fx_Slime_Always" _AnimationKeyName="SLIME_MINI_UNCLE" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="STATUS_SFX_PC_Slime_Skill1_Common" _skinEffectResName="STATUS_SFX_PC_Slime_Skill1_Common_Uncle" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MONDOZAX_01" _Purchase="True" _ClassType="CLASS_TYPE_MONDOZAX" _SkinIndex="0" _ReleaseDate="20141204" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_MONDOZAX_01" _IconAlias="skin_mondozax_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MONDOZAX" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax\Mondozax.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MONDOZAX_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax\Mondozax.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MONDOZAX_02" _Purchase="True" _ClassType="CLASS_TYPE_MONDOZAX" _SkinIndex="1" _ReleaseDate="20141205" _SkinType="SKIN_TYPE_UNIQUE" _Name="STR_SKIN_MONDOZAX_02" _IconAlias="skin_mondozax_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MONDOZAX" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Sailor\Mondozax_Sailor.kfm" _AnimationKeyName="MondoZax_Sailor" />
+        <_Resource _BaseKFMKeyName="AI_MONDOZAX_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Sailor\Mondozax_Sailor.kfm" _AnimationKeyName="MondoZax_Sailor" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MONDOZAX_03" _Purchase="True" _ClassType="CLASS_TYPE_MONDOZAX" _SkinIndex="2" _ReleaseDate="20150812" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_MONDOZAX_03" _IconAlias="skin_mondozax_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MONDOZAX" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Fireman\Mondozax_Fireman.kfm" _ConstantSFX="Pc_Fx_MondoZax_Fireman_Siren" _AnimationKeyName="MondoZax_Fireman" />
+        <_Resource _BaseKFMKeyName="AI_MONDOZAX_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Fireman\Mondozax_Fireman.kfm" _ConstantSFX="Pc_Fx_MondoZax_Fireman_Siren" _AnimationKeyName="MondoZax_Fireman" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="MONDOZAX_Normal_Attack_Remote" _skinEffectResName="MONDOZAX_Normal_Attack_Remote_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Passive" _skinEffectResName="MONDOZAX_Passive_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill1Bot_HideDome" _skinEffectResName="MONDOZAX_Skill1Bot_HideDome_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill3Bot_Remote" _skinEffectResName="MONDOZAX_Skill3Bot_Remote_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill3Bot_BgHit" _skinEffectResName="MONDOZAX_Skill3Bot_BgHit_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill2Bot_Aggro_Area" _skinEffectResName="MONDOZAX_Skill2Bot_Aggro_Area_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill2Bot_Remote" _skinEffectResName="MONDOZAX_Skill2Bot_Remote_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_Skill4Bot_ShieldArea" _skinEffectResName="MONDOZAX_Skill4Bot_ShieldArea_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_EP_Remote" _skinEffectResName="MONDOZAX_EP_Remote_Fireman" />
+        <_SFX _baseEffectResName="MONDOZAX_EP_Target" _skinEffectResName="MONDOZAX_EP_Target_Fireman" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MONDOZAX_04" _Purchase="True" _ClassType="CLASS_TYPE_MONDOZAX" _SkinIndex="3" _ReleaseDate="20150908" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_MONDOZAX_04" _IconAlias="skin_mondozax_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MONDOZAX" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Wonderland\Mondozax_Wonderland.kfm" _AnimationKeyName="MondoZax_Wonderland" />
+        <_Resource _BaseKFMKeyName="AI_MONDOZAX_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Wonderland\Mondozax_Wonderland.kfm" _AnimationKeyName="MondoZax_Wonderland" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="MONDOZAX_Normal_Attack_Remote" _skinEffectResName="MONDOZAX_Normal_Attack_Remote_WONDERLAND" />
+        <_SFX _baseEffectResName="MONDOZAX_Passive" _skinEffectResName="MONDOZAX_Passive_WONDERLAND" />
+        <_SFX _baseEffectResName="MONDOZAX_EP_Remote" _skinEffectResName="MONDOZAX_EP_Remote_WONDERLAND" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_MONDOZAX_05" _Purchase="True" _ClassType="CLASS_TYPE_MONDOZAX" _SkinIndex="4" _ReleaseDate="20160126" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_MONDOZAX_05" _IconAlias="skin_mondozax_05" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="MONDOZAX" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Scottish\Mondozax_Scottish.kfm" />
+        <_Resource _BaseKFMKeyName="AI_MONDOZAX_Titan" _SkinKFMFile="Graphic\Creature\Pc\Mondozax\Mondozax_Scottish\Mondozax_Scottish.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LILU_01" _Purchase="True" _ClassType="CLASS_TYPE_LILU" _SkinIndex="0" _ReleaseDate="20141204" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_LILU_01" _IconAlias="skin_lilu_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LILU" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu\Lilu.kfm" />
+        <_Resource _BaseKFMKeyName="AI_LILU_Titan" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu\Lilu.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LILU_02" _Purchase="True" _ClassType="CLASS_TYPE_LILU" _SkinIndex="1" _ReleaseDate="20141205" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_LILU_02" _IconAlias="skin_lilu_02" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LILU" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu_Yellow\Lilu_Yellow.kfm" />
+        <_Resource _BaseKFMKeyName="AI_LILU_Titan" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu_Yellow\Lilu_Yellow.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LILU_03" _Purchase="True" _ClassType="CLASS_TYPE_LILU" _SkinIndex="2" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_LILU_03" _IconAlias="skin_lilu_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LILU" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu_Witch\Lilu_Witch.kfm" _ConstantSFX="Status_Fx_Pc_Holloween_Bat" _AnimationKeyName="LILU_Witch" />
+        <_Resource _BaseKFMKeyName="AI_LILU_Titan" _SkinKFMFile="Graphic\Creature\Pc\Lilu\Lilu_Witch\Lilu_Witch.kfm" _AnimationKeyName="LILU_Witch" />
+        <_Resource _BaseKFMKeyName="LILU_HAWK" _SkinKFMFile="Graphic\Creature\Pc_Summon\LILU\LILU_HAWK_Witch\LILU_HAWK_Witch.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_EFREET_01" _Purchase="True" _ClassType="CLASS_TYPE_EFREET" _SkinIndex="0" _ReleaseDate="20150112" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_EFREET_01" _IconAlias="skin_efreet_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="EFREET" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet\Efreet.kfm" />
+        <_Resource _BaseKFMKeyName="AI_EFREET_Titan" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet\Efreet.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_EFREET_02" _Purchase="True" _ClassType="CLASS_TYPE_EFREET" _SkinIndex="1" _ReleaseDate="20150113" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_EFREET_02" _IconAlias="skin_efreet_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="EFREET" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet_Blue\Efreet_Blue.kfm" />
+        <_Resource _BaseKFMKeyName="AI_EFREET_Titan" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet_Blue\Efreet_Blue.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_EFREET_03" _Purchase="True" _ClassType="CLASS_TYPE_EFREET" _SkinIndex="2" _ReleaseDate="20150825" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_EFREET_03" _IconAlias="skin_efreet_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="EFREET" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet_5Th\Efreet_5Th.kfm" />
+        <_Resource _BaseKFMKeyName="AI_EFREET_Titan" _SkinKFMFile="Graphic\Creature\Pc\Efreet\Efreet_5Th\Efreet_5Th.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHADOWHUNTER_01" _Purchase="True" _ClassType="CLASS_TYPE_SHADOWHUNTER" _SkinIndex="0" _ReleaseDate="20150112" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SHADOWHUNTER_01" _IconAlias="skin_shadowhunter_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHADOWHUNTER" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter\Shadowhunter.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SHADOWHUNTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter\Shadowhunter.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHADOWHUNTER_03" _Purchase="True" _ClassType="CLASS_TYPE_SHADOWHUNTER" _SkinIndex="2" _ReleaseDate="20150930" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_SHADOWHUNTER_03" _IconAlias="skin_shadowhunter_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHADOWHUNTER" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter_Red\Shadowhunter_Red.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SHADOWHUNTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter_Red\Shadowhunter_Red.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHADOWHUNTER_04" _Purchase="True" _ClassType="CLASS_TYPE_SHADOWHUNTER" _SkinIndex="3" _ReleaseDate="20160105" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_SHADOWHUNTER_04" _IconAlias="skin_shadowhunter_04" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHADOWHUNTER" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter_Rocketeer\Shadowhunter_Rocketeer.kfm" _ConstantSFX="Pc_Fx_ShadowHunter_Always_Rocketeer" />
+        <_Resource _BaseKFMKeyName="AI_SHADOWHUNTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shadowhunter\Shadowhunter_Rocketeer\Shadowhunter_Rocketeer.kfm" _ConstantSFX="Pc_Fx_ShadowHunter_Always_Rocketeer" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RYTLOCK_01" _Purchase="True" _ClassType="CLASS_TYPE_RYTLOCK" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_RYTLOCK_01" _IconAlias="skin_rytlock_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RYTLOCK" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock\Rytlock.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" />
+        <_Resource _BaseKFMKeyName="AI_RYTLOCK_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock\Rytlock.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RYTLOCK_02" _Purchase="True" _ClassType="CLASS_TYPE_RYTLOCK" _SkinIndex="1" _ReleaseDate="20150915" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_RYTLOCK_02" _IconAlias="skin_rytlock_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RYTLOCK" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock_White\Rytlock_White.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" />
+        <_Resource _BaseKFMKeyName="AI_RYTLOCK_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock_White\Rytlock_White.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RYTLOCK_03" _Purchase="True" _ClassType="CLASS_TYPE_RYTLOCK" _SkinIndex="2" _ReleaseDate="20170331" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_RYTLOCK_03" _IconAlias="skin_rytlock_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RYTLOCK" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock_Revenant\Rytlock_Revenant.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" _AnimationKeyName="RYTLOCK_REVENANT" />
+        <_Resource _BaseKFMKeyName="AI_RYTLOCK_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rytlock\Rytlock_Revenant\Rytlock_Revenant.kfm" _ConstantSFX="Pc_Fx_Rytlock_Sword_Always" _AnimationKeyName="RYTLOCK_REVENANT" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_CATTHECAT_01" _Purchase="True" _ClassType="CLASS_TYPE_CATTHECAT" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_CATTHECAT_01" _IconAlias="skin_catthecat_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="CATTHECAT" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat\Catthecat.kfm" />
+        <_Resource _BaseKFMKeyName="AI_CATTHECAT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat\Catthecat.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_CATTHECAT_02" _Purchase="True" _ClassType="CLASS_TYPE_CATTHECAT" _SkinIndex="1" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_CATTHECAT_02" _IconAlias="skin_catthecat_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="CATTHECAT" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat_Exotic\Catthecat_Exotic.kfm" />
+        <_Resource _BaseKFMKeyName="AI_CATTHECAT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat_Exotic\Catthecat_Exotic.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_CATTHECAT_03" _Purchase="True" _ClassType="CLASS_TYPE_CATTHECAT" _SkinIndex="2" _ReleaseDate="20170421" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_CATTHECAT_03" _IconAlias="skin_catthecat_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="CATTHECAT" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat_Martian\Catthecat_Martian.kfm" />
+        <_Resource _BaseKFMKeyName="AI_CATTHECAT_Titan" _SkinKFMFile="Graphic\Creature\Pc\Catthecat\Catthecat_Martian\Catthecat_Martian.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BATTER_01" _Purchase="True" _ClassType="CLASS_TYPE_BATTER" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_BATTER_01" _IconAlias="skin_batter_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BATTER" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter\Batter.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BATTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter\Batter.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BATTER_02" _Purchase="True" _ClassType="CLASS_TYPE_BATTER" _SkinIndex="1" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_BATTER_02" _IconAlias="skin_batter_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BATTER" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter_Red\Batter_Red.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BATTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter_Red\Batter_Red.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BATTER_03" _Purchase="True" _ClassType="CLASS_TYPE_BATTER" _SkinIndex="2" _ReleaseDate="20161220" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_BATTER_03" _IconAlias="skin_batter_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BATTER" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter_Iron\Batter_Iron.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BATTER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Batter\Batter_Iron\Batter_Iron.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RNB_01" _Purchase="True" _ClassType="CLASS_TYPE_RNB" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_RNB_01" _IconAlias="skin_rnb_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RNB" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb\Rnb.kfm" />
+        <_Resource _BaseKFMKeyName="AI_RNB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb\Rnb.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RNB_02" _Purchase="True" _ClassType="CLASS_TYPE_RNB" _SkinIndex="1" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_RNB_02" _IconAlias="skin_rnb_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RNB" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb_Orange\Rnb_Orange.kfm" />
+        <_Resource _BaseKFMKeyName="AI_RNB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb_Orange\Rnb_Orange.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_RNB_03" _Purchase="True" _ClassType="CLASS_TYPE_RNB" _SkinIndex="2" _ReleaseDate="20160712" _SkinType="SKIN_TYPE_UNIQUE" _NCoinPrice="3280" _Name="STR_SKIN_RNB_03" _IconAlias="skin_rnb_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="RNB" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb_Superrobot\Rnb_Superrobot.kfm" _AnimationKeyName="RNB_SuperRobot" />
+        <_Resource _BaseKFMKeyName="AI_RNB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Rnb\Rnb_Superrobot\Rnb_Superrobot.kfm" _AnimationKeyName="RNB_SuperRobot" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROA_01" _Purchase="True" _ClassType="CLASS_TYPE_ANDROA" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ANDROA_01" _IconAlias="skin_androa_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROA" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa\Androa.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROA_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa\Androa.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROA_02" _Purchase="True" _ClassType="CLASS_TYPE_ANDROA" _SkinIndex="1" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ANDROA_02" _IconAlias="skin_androa_02" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROA" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa_Color\Androa_Color.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROA_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa_Color\Androa_Color.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROA_03" _Purchase="True" _ClassType="CLASS_TYPE_ANDROA" _SkinIndex="2" _ReleaseDate="20170419" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ANDROA_03" _IconAlias="skin_androa_03" _ColorTone="SKIN_COLOR_TONE_RED">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROA" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa_Armored\Androa_Armored.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROA_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androa\Androa_Armored\Androa_Armored.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROB_01" _Purchase="True" _ClassType="CLASS_TYPE_ANDROB" _SkinIndex="0" _ReleaseDate="20150623" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ANDROB_01" _IconAlias="skin_androb_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROB" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb\Androb.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb\Androb.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROB_02" _Purchase="True" _ClassType="CLASS_TYPE_ANDROB" _SkinIndex="1" _ReleaseDate="20151001" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ANDROB_02" _IconAlias="skin_androb_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROB" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb_Color\Androb_Color.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb_Color\Androb_Color.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ANDROB_03" _Purchase="True" _ClassType="CLASS_TYPE_ANDROB" _SkinIndex="2" _ReleaseDate="20170420" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ANDROB_03" _IconAlias="skin_androb_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ANDROB" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb_Armored\Androb_Armored.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ANDROB_Titan" _SkinKFMFile="Graphic\Creature\Pc\Androb\Androb_Armored\Androb_Armored.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ATTACKER_01" _Purchase="True" _ClassType="CLASS_TYPE_ATTACKER" _SkinIndex="0" _ReleaseDate="20160401" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ATTACKER_01" _IconAlias="skin_attacker_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ATTACKER" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker\Attacker.kfm" />
+        <_Resource _BaseKFMKeyName="AI_ATTACKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker\Attacker.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ATTACKER_02" _Purchase="True" _ClassType="CLASS_TYPE_ATTACKER" _SkinIndex="1" _ReleaseDate="20160907" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ATTACKER_02" _IconAlias="skin_attacker_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ATTACKER" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker_Rugby\Attacker_Rugby.kfm" _AnimationKeyName="ATTACKER_RUGBY" />
+        <_Resource _BaseKFMKeyName="AI_ATTACKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker_Rugby\Attacker_Rugby.kfm" _AnimationKeyName="ATTACKER_RUGBY" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ATTACKER_03" _Purchase="True" _ClassType="CLASS_TYPE_ATTACKER" _SkinIndex="2" _ReleaseDate="20170411" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ATTACKER_03" _IconAlias="skin_attacker_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ATTACKER" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker_Martial\Attacker_Martial.kfm" _AnimationKeyName="ATTACKER_MARTIAL" />
+        <_Resource _BaseKFMKeyName="AI_ATTACKER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Attacker\Attacker_Martial\Attacker_Martial.kfm" _AnimationKeyName="ATTACKER_MARTIAL" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOXER_01" _Purchase="True" _ClassType="CLASS_TYPE_BOXER" _SkinIndex="0" _ReleaseDate="20160401" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_BOXER_01" _IconAlias="skin_boxer_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOXER" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer\Boxer.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BOXER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer\Boxer.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOXER_02" _Purchase="True" _ClassType="CLASS_TYPE_BOXER" _SkinIndex="1" _ReleaseDate="20160405" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_BOXER_02" _IconAlias="skin_boxer_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOXER" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer_Blue\Boxer_Blue.kfm" />
+        <_Resource _BaseKFMKeyName="AI_BOXER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer_Blue\Boxer_Blue.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_BOXER_03" _Purchase="True" _ClassType="CLASS_TYPE_BOXER" _SkinIndex="2" _ReleaseDate="20170330" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_BOXER_03" _IconAlias="skin_boxer_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="BOXER" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer_Street\Boxer_Street.kfm" _AnimationKeyName="Boxer_Street" />
+        <_Resource _BaseKFMKeyName="AI_BOXER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Boxer\Boxer_Street\Boxer_Street.kfm" _AnimationKeyName="Boxer_Street" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUGOTRADER_01" _Purchase="True" _ClassType="CLASS_TYPE_SHUGOTRADER" _SkinIndex="0" _ReleaseDate="20160401" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SHUGOTRADER_01" _IconAlias="skin_shugotrader_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUGOTRADER" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader\Shugotrader.kfm" />
+        <_Resource _BaseKFMKeyName="AI_SHUGOTRADER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader\Shugotrader.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUGOTRADER_02" _Purchase="True" _ClassType="CLASS_TYPE_SHUGOTRADER" _SkinIndex="1" _ReleaseDate="20160715" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_SHUGOTRADER_02" _IconAlias="skin_shugotrader_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUGOTRADER" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader_Ninja\Shugotrader_Ninja.kfm" _AnimationKeyName="SHUGOTRADER_NINJA" />
+        <_Resource _BaseKFMKeyName="AI_SHUGOTRADER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader_Ninja\Shugotrader_Ninja.kfm" _AnimationKeyName="SHUGOTRADER_NINJA" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUGOTRADER_03" _Purchase="True" _ClassType="CLASS_TYPE_SHUGOTRADER" _SkinIndex="2" _ReleaseDate="20170324" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_SHUGOTRADER_03" _IconAlias="skin_shugotrader_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUGOTRADER" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader_Musician\Shugotrader_Musician.kfm" _AnimationKeyName="SHUGOTRADER_MUSICIAN" />
+        <_Resource _BaseKFMKeyName="AI_SHUGOTRADER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shugotrader\Shugotrader_Musician\Shugotrader_Musician.kfm" _AnimationKeyName="SHUGOTRADER_MUSICIAN" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_NAGA_01" _Purchase="True" _ClassType="CLASS_TYPE_NAGA" _SkinIndex="0" _ReleaseDate="20160401" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_NAGA_01" _IconAlias="skin_naga_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="NAGA" _SkinKFMFile="Graphic\Creature\Pc\Naga\Naga\Naga.kfm" />
+        <_Resource _BaseKFMKeyName="AI_NAGA_Titan" _SkinKFMFile="Graphic\Creature\Pc\Naga\Naga\Naga.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_NAGA_03" _Purchase="True" _ClassType="CLASS_TYPE_NAGA" _SkinIndex="2" _ReleaseDate="20170328" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_NAGA_03" _IconAlias="skin_naga_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="NAGA" _SkinKFMFile="Graphic\Creature\Pc\Naga\Naga_Pirate\Naga_Pirate.kfm" _AnimationKeyName="NAGA_PIRATE" />
+        <_Resource _BaseKFMKeyName="AI_NAGA_Titan" _SkinKFMFile="Graphic\Creature\Pc\Naga\Naga_Pirate\Naga_Pirate.kfm" _AnimationKeyName="NAGA_PIRATE" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LAUNCHER_01" _Purchase="True" _ClassType="CLASS_TYPE_LAUNCHER" _SkinIndex="0" _ReleaseDate="20160401" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_LAUNCHER_01" _IconAlias="skin_launcher_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LAUNCHER" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher\Launcher.kfm" />
+        <_Resource _BaseKFMKeyName="AI_LAUNCHER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher\Launcher.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LAUNCHER_02" _Purchase="True" _ClassType="CLASS_TYPE_LAUNCHER" _SkinIndex="1" _ReleaseDate="20160412" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_LAUNCHER_02" _IconAlias="skin_launcher_02" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LAUNCHER" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Beige\Launcher_Beige.kfm" />
+        <_Resource _BaseKFMKeyName="AI_LAUNCHER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Beige\Launcher_Beige.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LAUNCHER_03" _Purchase="True" _ClassType="CLASS_TYPE_LAUNCHER" _SkinIndex="2" _ReleaseDate="20170424" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_LAUNCHER_03" _IconAlias="skin_launcher_03" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LAUNCHER" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Retro\Launcher_Retro.kfm" />
+        <_Resource _BaseKFMKeyName="AI_LAUNCHER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Retro\Launcher_Retro.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_LAUNCHER_05" _Purchase="True" _ClassType="CLASS_TYPE_LAUNCHER" _SkinIndex="3" _ReleaseDate="20170424" _SkinType="SKIN_TYPE_NORMAL" _Name="STR_SKIN_LAUNCHER_05" _IconAlias="skin_launcher_05" _ColorTone="SKIN_COLOR_TONE_GREEN">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="LAUNCHER" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Contest\Launcher_Contest.kfm" _AnimationKeyName="Launcher_Contest" />
+        <_Resource _BaseKFMKeyName="AI_LAUNCHER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Launcher\Launcher_Contest\Launcher_Contest.kfm" _AnimationKeyName="Launcher_Contest" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="LAUNCHER_SKILL2_REMOTE_UPGRADE" _skinEffectResName="LAUNCHER_SKILL2_REMOTE_UPGRADE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_ATTACK" _skinEffectResName="LAUNCHER_ATTACK_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL2_REMOTE" _skinEffectResName="LAUNCHER_SKILL2_REMOTE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_EP_AREA_REMOTE" _skinEffectResName="LAUNCHER_EP_AREA_REMOTE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_EP_AREA_REMOTE_UPGRADE" _skinEffectResName="LAUNCHER_EP_AREA_REMOTE_UPGRADE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL1_REMOTE" _skinEffectResName="LAUNCHER_SKILL1_REMOTE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL1_GROUND_REMOTE" _skinEffectResName="LAUNCHER_SKILL1_GROUND_REMOTE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL3_REMOTE" _skinEffectResName="LAUNCHER_SKILL3_REMOTE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL3_REMOTE_UPGRADE" _skinEffectResName="LAUNCHER_SKILL3_REMOTE_UPGRADE_CONTEST" />
+        <_SFX _baseEffectResName="LAUNCHER_SKILL4_REMOTE" _skinEffectResName="LAUNCHER_SKILL4_REMOTE_CONTEST" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STATESMAN_01" _Purchase="True" _ClassType="CLASS_TYPE_STATESMAN" _SkinIndex="0" _ReleaseDate="20160701" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_STATESMAN_01" _IconAlias="skin_statesman_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STATESMAN" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman\Statesman.kfm" />
+        <_Resource _BaseKFMKeyName="AI_STATESMAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman\Statesman.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STATESMAN_02" _Purchase="True" _ClassType="CLASS_TYPE_STATESMAN" _SkinIndex="1" _ReleaseDate="20160701" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_STATESMAN_02" _IconAlias="skin_statesman_02" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STATESMAN" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman_Tyrant\Statesman_Tyrant.kfm" />
+        <_Resource _BaseKFMKeyName="AI_STATESMAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman_Tyrant\Statesman_Tyrant.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_STATESMAN_03" _Purchase="True" _ClassType="CLASS_TYPE_STATESMAN" _SkinIndex="2" _ReleaseDate="20170329" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_STATESMAN_03" _IconAlias="skin_statesman_03" _ColorTone="SKIN_COLOR_TONE_BLUE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="STATESMAN" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman_Imperious\Statesman_Imperious.kfm" _AnimationKeyName="STATESMAN_IMPERIOUS" />
+        <_Resource _BaseKFMKeyName="AI_STATESMAN_Titan" _SkinKFMFile="Graphic\Creature\Pc\Statesman\Statesman_Imperious\Statesman_Imperious.kfm" _AnimationKeyName="STATESMAN_IMPERIOUS" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_YURI_01" _Purchase="True" _ClassType="CLASS_TYPE_YURI" _SkinIndex="0" _ReleaseDate="20160727" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_YURI_01" _IconAlias="skin_yuri_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="YURI" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri\Yuri.kfm" />
+        <_Resource _BaseKFMKeyName="AI_YURI_Titan" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri\Yuri.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_YURI_02" _Purchase="True" _ClassType="CLASS_TYPE_YURI" _SkinIndex="1" _ReleaseDate="20160727" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_YURI_02" _IconAlias="skin_yuri_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="YURI" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri_Martial\Yuri_Martial.kfm" _AnimationKeyName="Yuri_Martial" />
+        <_Resource _BaseKFMKeyName="AI_YURI_Titan" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri_Martial\Yuri_Martial.kfm" _AnimationKeyName="Yuri_Martial" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_YURI_03" _Purchase="True" _ClassType="CLASS_TYPE_YURI" _SkinIndex="2" _ReleaseDate="20160727" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_YURI_03" _IconAlias="skin_yuri_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="YURI" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri_Martial_Red\Yuri_Martial_Red.kfm" _AnimationKeyName="Yuri_Martial_Red" />
+        <_Resource _BaseKFMKeyName="AI_YURI_Titan" _SkinKFMFile="Graphic\Creature\Pc\Yuri\Yuri_Martial_Red\Yuri_Martial_Red.kfm" _AnimationKeyName="Yuri_Martial_Red" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ESPER_01" _Purchase="True" _ClassType="CLASS_TYPE_ESPER" _SkinIndex="0" _ReleaseDate="20160912" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_ESPER_01" _IconAlias="skin_esper_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ESPER" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper\Esper.kfm" _ConstantSFX="Pc_Fx_Esper_Stone" />
+        <_Resource _BaseKFMKeyName="AI_ESPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper\Esper.kfm" _ConstantSFX="Pc_Fx_Esper_Stone" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ESPER_02" _Purchase="True" _ClassType="CLASS_TYPE_ESPER" _SkinIndex="1" _ReleaseDate="20160912" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_ESPER_02" _IconAlias="skin_esper_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ESPER" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Punk\Esper_Punk.kfm" _ConstantSFX="Pc_Fx_Esper_Stone" />
+        <_Resource _BaseKFMKeyName="AI_ESPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Punk\Esper_Punk.kfm" _ConstantSFX="Pc_Fx_Esper_Stone" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ESPER_03" _Purchase="True" _ClassType="CLASS_TYPE_ESPER" _SkinIndex="2" _ReleaseDate="20160912" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_ESPER_03" _IconAlias="skin_esper_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ESPER" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Overroll\Esper_Overroll.kfm" _ConstantSFX="Pc_Fx_Esper_Overroll_Stone" _AnimationKeyName="ESPER_Overroll" />
+        <_Resource _BaseKFMKeyName="AI_ESPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Overroll\Esper_Overroll.kfm" _ConstantSFX="Pc_Fx_Esper_Overroll_Stone" _AnimationKeyName="ESPER_Overroll" />
+      </_SkinResource>
+      <_SFXResource>
+        <_SFX _baseEffectResName="ESPER_NORMAL_ATTACK" _skinEffectResName="ESPER_NORMAL_ATTACK_Overoll" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_ESPER_PASSIVE_MARK" _skinEffectResName="STATUS_SFX_PC_ESPER_PASSIVE_MARK_Overoll" />
+        <_SFX _baseEffectResName="STATUS_SFX_PC_ESPER_Normal" _skinEffectResName="STATUS_SFX_PC_ESPER_Normal_Overoll" />
+      </_SFXResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_ESPER_04" _Purchase="True" _ClassType="CLASS_TYPE_ESPER" _SkinIndex="3" _ReleaseDate="20170807" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_ESPER_04" _IconAlias="skin_esper_04" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="ESPER" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Dracula\Esper_Dracula.kfm" _ConstantSFX="Pc_Fx_Esper_Dracula_Stone" _AnimationKeyName="ESPER_Dracula" />
+        <_Resource _BaseKFMKeyName="AI_ESPER_Titan" _SkinKFMFile="Graphic\Creature\Pc\Esper\Esper_Dracula\Esper_Dracula.kfm" _ConstantSFX="Pc_Fx_Esper_Dracula_Stone" _AnimationKeyName="ESPER_Dracula" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PRIEST_01" _Purchase="True" _ClassType="CLASS_TYPE_PRIEST" _SkinIndex="0" _ReleaseDate="20170524" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_PRIEST_01" _IconAlias="skin_priest_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PRIEST" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest\Priest.kfm" />
+        <_Resource _BaseKFMKeyName="AI_PRIEST_Titan" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest\Priest.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PRIEST_02" _Purchase="True" _ClassType="CLASS_TYPE_PRIEST" _SkinIndex="1" _ReleaseDate="20170524" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_PRIEST_02" _IconAlias="skin_priest_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PRIEST" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest_Fedora\Priest_Fedora.kfm" />
+        <_Resource _BaseKFMKeyName="AI_PRIEST_Titan" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest_Fedora\Priest_Fedora.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_PRIEST_03" _Purchase="True" _ClassType="CLASS_TYPE_PRIEST" _SkinIndex="2" _ReleaseDate="20170524" _SkinType="SKIN_TYPE_RARE" _NCoinPrice="2480" _Name="STR_SKIN_PRIEST_03" _IconAlias="skin_priest_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="300" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="PRIEST" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest_Dystopia\Priest_Dystopia.kfm" _AnimationKeyName="Priest_Dystopia" />
+        <_Resource _BaseKFMKeyName="AI_PRIEST_Titan" _SkinKFMFile="Graphic\Creature\Pc\Priest\Priest_Dystopia\Priest_Dystopia.kfm" _AnimationKeyName="Priest_Dystopia" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_GHOSTWIDOW_01" _Purchase="True" _ClassType="CLASS_TYPE_GHOSTWIDOW" _SkinIndex="0" _ReleaseDate="20160912" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_GHOSTWIDOW_01" _IconAlias="skin_ghostwidow_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GHOSTWIDOW" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow\Ghostwidow.kfm" />
+        <_Resource _BaseKFMKeyName="AI_GHOSTWIDOW_Titan" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow\Ghostwidow.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_GHOSTWIDOW_02" _Purchase="True" _ClassType="CLASS_TYPE_GHOSTWIDOW" _SkinIndex="1" _ReleaseDate="20170417" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_GHOSTWIDOW_02" _IconAlias="skin_ghostwidow_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GHOSTWIDOW" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow_Blood\Ghostwidow_Blood.kfm" />
+        <_Resource _BaseKFMKeyName="AI_GHOSTWIDOW_Titan" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow_Blood\Ghostwidow_Blood.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_GHOSTWIDOW_04" _Purchase="True" _ClassType="CLASS_TYPE_GHOSTWIDOW" _SkinIndex="3" _ReleaseDate="20170417" _SkinType="SKIN_TYPE_SPECIAL" _NCoinPrice="3980" _Name="STR_SKIN_GHOSTWIDOW_04" _IconAlias="skin_ghostwidow_04" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="600" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GHOSTWIDOW" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow_Bride\Ghostwidow_Bride.kfm" _ConstantSFX="Status_Fx_Pc_GhostWidow_Holloween_Bat" _AnimationKeyName="GhostWidow_Bride" />
+        <_Resource _BaseKFMKeyName="AI_GHOSTWIDOW_Titan" _SkinKFMFile="Graphic\Creature\Pc\Ghostwidow\Ghostwidow_Bride\Ghostwidow_Bride.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUTTLE_01" _Purchase="True" _ClassType="CLASS_TYPE_SHUTTLE" _SkinIndex="0" _ReleaseDate="20171115" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_SHUTTLE_01" _IconAlias="skin_shuttle_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUTTLE" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle\Shuttle.kfm" _ConstantSFX="Status_Fx_Pc_Shuttle_Always" />
+        <_Resource _BaseKFMKeyName="AI_SHUTTLE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle\Shuttle.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUTTLE_02" _Purchase="True" _ClassType="CLASS_TYPE_SHUTTLE" _SkinIndex="1" _ReleaseDate="20171115" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_SHUTTLE_02" _IconAlias="skin_shuttle_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUTTLE" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle_Color\Shuttle_Color.kfm" _ConstantSFX="Status_Fx_Pc_Shuttle_Always" />
+        <_Resource _BaseKFMKeyName="AI_SHUTTLE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle_Color\Shuttle_Color.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_SHUTTLE_03" _Purchase="True" _ClassType="CLASS_TYPE_SHUTTLE" _SkinIndex="2" _ReleaseDate="20171115" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_SHUTTLE_03" _IconAlias="skin_shuttle_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="SHUTTLE" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle_Caravan\Shuttle_Caravan.kfm" _AnimationKeyName="Shuttle_Caravan" />
+        <_Resource _BaseKFMKeyName="AI_SHUTTLE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle_Caravan\Shuttle_Caravan.kfm" _AnimationKeyName="Shuttle_Caravan" />
+      </_SkinResource>
+    </_Skin>
+  </ST_SKIN_TABLE>
+</ENTITY_FILE>

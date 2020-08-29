@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <string.h> // memmove
 #include <EAThread/eathread_futex.h> // mutex
+#include <EASTL/fixed_vector.h>
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -329,6 +330,7 @@ typedef EA::Thread::AutoFutex LockGuard;
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
 #define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)
+#define foreach_mut(IT,CONTAINER) for(auto IT = CONTAINER.begin(); IT != CONTAINER.end(); ++IT)
 
 // time API
 typedef u64 timept;

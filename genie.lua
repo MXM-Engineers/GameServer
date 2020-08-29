@@ -75,6 +75,7 @@ solution "Servers"
 	dofile("external/genie_zlib.lua");
 	dofile("external/genie_eastl.lua");
 	dofile("external/genie_eathread.lua");
+	dofile("external/genie_tinyxml2.lua");
 	
 
 project "Login"
@@ -119,7 +120,8 @@ project "Game"
 		zlib_includedir,
 		eastl_includedir,
 		eathread_includedir,
-		eabase_includedir
+		eabase_includedir,
+		tinyxml2_includedir
 	}
 
 	links {
@@ -135,6 +137,7 @@ project "Game"
 		"src/game/**.h",
 		"src/game/**.c",
 		"src/game/**.cpp",
+		tinyxml2_files
 	}
 
 	configuration "windows"

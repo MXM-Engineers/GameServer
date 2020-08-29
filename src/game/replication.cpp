@@ -453,7 +453,7 @@ void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const 
 	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", clientID, senderName, msgLen, msg);
+		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%S' msg='%.*S'", clientID, senderName, msgLen, msg);
 		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 	}
 }
@@ -473,7 +473,7 @@ void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderNa
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender=%S msg%.*S", toClientID, senderName, msgLen, msg);
+	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%S' msg='%.*S'", toClientID, senderName, msgLen, msg);
 	SendPacketData(toClientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 }
 

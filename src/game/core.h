@@ -1,5 +1,9 @@
 #pragma once
 #include <common/base.h>
+#include <EASTL/fixed_list.h>
+#include <EASTL/fixed_hash_map.h>
+#include <EASTL/fixed_map.h>
+#include <EASTL/fixed_string.h>
 
 enum class ActorUID: u32
 {
@@ -186,3 +190,26 @@ constexpr char* g_ActionStateString[] = {
 
 constexpr char* g_ActionStateInvalidString = "ACTION_STATE_TYPE_INVALID";
 
+struct GameXmlContent
+{
+	struct Master
+	{
+		i32 ID;
+		eastl::fixed_string<char,64> className;
+		eastl::fixed_vector<i32,20> skinIDs;
+	};
+
+	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
+	// intead of comparing the hash generated from the string? I must be missing something here. LordSk (29/08/2020)
+	eastl::hash<const char*> strHash;
+
+	eastl::fixed_list<Master,100> masters;
+	eastl::fixed_hash_map<size_t,decltype(masters)::iterator,100> masterClassMap;
+
+	bool LoadMasterDefinitions();
+	bool LoadMasterSkinsDefinitions();
+	bool Load();
+};
+
+bool GameXmlContentLoad();
+const GameXmlContent& GetGameXmlContent();

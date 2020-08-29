@@ -34,8 +34,14 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	bool r = GameXmlContentLoad();
+	if(!r) {
+		LOG("ERROR: failed to load game xml content");
+		return 1;
+	}
+
 	static Server server;
-	bool r = server.Init(LISTEN_PORT);
+	r = server.Init(LISTEN_PORT);
 	if(!r) {
 		LOG("ERROR: failed to initialize server");
 		return 1;

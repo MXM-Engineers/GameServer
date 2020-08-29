@@ -73,7 +73,6 @@ struct Replication
 
 	struct Frame
 	{
-		eastl::array<bool,Server::MAX_CLIENTS> playerDoScanEnd;
 		List<Actor> actorList;
 		List<ActorNameplate> actorNameplateList;
 		List<ActorStats> actorStatsList;
@@ -99,6 +98,7 @@ struct Replication
 		LocalActorID nextPlayerLocalActorID;
 		LocalActorID nextNpcLocalActorID;
 		LocalActorID nextMonsterLocalActorID;
+		bool isFirstLoad;
 
 		void Reset();
 	};

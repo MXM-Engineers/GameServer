@@ -12,7 +12,6 @@ inline bool IsListIteratorValid(const T& it)
 
 void Replication::Frame::Clear()
 {
-	memset(&playerDoScanEnd, 0, sizeof(playerDoScanEnd));
 	actorList.clear();
 	actorNameplateList.clear();
 	actorStatsList.clear();
@@ -29,6 +28,7 @@ void Replication::PlayerLocalInfo::Reset()
 	nextPlayerLocalActorID = LocalActorID::FIRST_OTHER_PLAYER;
 	nextNpcLocalActorID = LocalActorID::FIRST_NPC;
 	nextMonsterLocalActorID = LocalActorID::INVALID;
+	isFirstLoad = true;
 }
 
 void Replication::Init(Server* server_)
@@ -50,12 +50,12 @@ void Replication::FrameEnd()
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		if(frameCur->playerDoScanEnd[clientID]) {
+		if(playerLocalInfo[clientID].isFirstLoad) {
+			playerLocalInfo[clientID].isFirstLoad = false;
+
 			// SN_ScanEnd
-			{
-				LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
-				SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
-			}
+			LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
+			SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 
 			// TODO: proper jukebox replication
 
@@ -364,7 +364,6 @@ void Replication::EventPlayerLoad(i32 clientID)
 void Replication::EventPlayerGameEnter(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
-	frameCur->playerDoScanEnd[clientID] = true;
 }
 
 void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax)

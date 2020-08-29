@@ -1,6 +1,7 @@
 #include "base.h"
 #include <time.h>
 #include <EAThread/eathread.h>
+#include <EASTL/array.h>
 
 #ifdef _WIN32
 	#include <windows.h> // OutputDebugStringA
@@ -145,3 +146,18 @@ f64 TimeDurationSinceMs(timept t0)
 {
 	return stm_ms(stm_since(t0));
 }
+
+static void EASTL_AssertionFailed(const char* expression, void* pContext)
+{
+	__assertion_failed(expression, "eastl", 0);
+}
+
+struct EASTLInit
+{
+	EASTLInit() {
+		eastl::SetAssertionFailureFunction(EASTL_AssertionFailed, nullptr);
+		EA::Thread::SetAssertionFailureFunction(EASTL_AssertionFailed, nullptr);
+	}
+};
+
+static EASTLInit;

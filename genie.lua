@@ -23,7 +23,7 @@ solution "Servers"
 			"FullSymbols"
 		}
 		defines {
-			"DEBUG",
+			"_DEBUG",
 			"CONF_DEBUG"
 		}
 

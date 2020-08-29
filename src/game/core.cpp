@@ -86,7 +86,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 
 		auto found = masterClassMap.find(strHash(classType));
 		if(found == masterClassMap.end()) {
-			LOG("ERROR(LoadMasterSkinsDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+			LOG("WARNING(LoadMasterSkinsDefinitions): class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
 			Master& master = *found->second;
@@ -99,6 +99,52 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 	return true;
 }
 
+bool GameXmlContent::LoadMasterWeaponDefinitions()
+{
+	Path xmlPath = gameDataDir;
+	PathAppend(xmlPath, L"/WEAPON.XML");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if(!fileData) {
+		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%S'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if(error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pWeapElt = doc.FirstChildElement()->FirstChildElement();
+	do {
+		i32 ID;
+		pWeapElt->QueryAttribute("ID", &ID);
+
+		XMLElement* pItemComData = pWeapElt->FirstChildElement("ItemComData");
+
+		const char* classType;
+		pItemComData->QueryStringAttribute("_RequireClass", &classType);
+
+		auto found = masterClassMap.find(strHash(classType));
+		if(found == masterClassMap.end()) {
+			LOG("WARNING(LoadMasterWeaponDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+		}
+		else {
+			Master& master = *found->second;
+			master.weaponIDs.push_back(ID);
+		}
+
+		pWeapElt = pWeapElt->NextSiblingElement();
+	} while(pWeapElt);
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	bool r = LoadMasterDefinitions();
@@ -107,15 +153,24 @@ bool GameXmlContent::Load()
 	r = LoadMasterSkinsDefinitions();
 	if(!r) return false;
 
+	r = LoadMasterWeaponDefinitions();
+	if(!r) return false;
+
 	eastl::fixed_string<char,1024> buff;
 	foreach(it, masters) {
+		LOG("%s: ID=%d", it->className.data(), it->ID);
 
 		buff.clear();
 		foreach(s, it->skinIDs) {
 			buff.append(FMT("%d, ", *s));
 		}
+		LOG("	skins=[%s]", buff.data());
 
-		LOG("%s: ID=%d skins=[%s]", it->className.data(), it->ID, buff.data());
+		buff.clear();
+		foreach(s, it->weaponIDs) {
+			buff.append(FMT("%d, ", *s));
+		}
+		LOG("	weapons=[%s]", buff.data());
 	}
 
 	return true;

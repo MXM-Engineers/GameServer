@@ -197,6 +197,7 @@ struct GameXmlContent
 		i32 ID;
 		eastl::fixed_string<char,64> className;
 		eastl::fixed_vector<i32,20> skinIDs;
+		eastl::fixed_vector<i32,32> weaponIDs;
 	};
 
 	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
@@ -208,6 +209,7 @@ struct GameXmlContent
 
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
+	bool LoadMasterWeaponDefinitions();
 	bool Load();
 };
 

@@ -196,6 +196,7 @@ struct GameXmlContent
 	{
 		i32 ID;
 		eastl::fixed_string<char,64> className;
+		eastl::fixed_vector<i32,16> skillIDs;
 		eastl::fixed_vector<i32,20> skinIDs;
 		eastl::fixed_vector<i32,32> weaponIDs;
 	};

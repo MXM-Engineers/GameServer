@@ -34,6 +34,9 @@ bool GameXmlContent::LoadMasterDefinitions()
 	// get master IDs
 	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
 	do {
+		masters.push_back();
+		Master& master = masters.back();
+
 		i32 masterID;
 		pNodeMaster->QueryAttribute("ID", &masterID);
 
@@ -41,13 +44,21 @@ bool GameXmlContent::LoadMasterDefinitions()
 		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
 		pStatsCompData->QueryStringAttribute("_class", &className);
 
+		// read skill ids
+		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
+		do {
+			i32 skillID;
+			pSkillElt->QueryAttribute("_Index", &skillID);
+			master.skillIDs.push_back(skillID);
+
+			pSkillElt = pSkillElt->NextSiblingElement();
+		} while(pSkillElt);
+
 		// save master data
-		masters.push_back();
-		Master& master = masters.back();
 		master.ID = masterID;
 		master.className = className;
 		masterClassMap.emplace(strHash(master.className.data()), --masters.end());
-		ASSERT(masterClassMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassMap.end());
+		DBG_ASSERT(masterClassMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassMap.end());
 
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 	} while(pNodeMaster);
@@ -159,6 +170,12 @@ bool GameXmlContent::Load()
 	eastl::fixed_string<char,1024> buff;
 	foreach(it, masters) {
 		LOG("%s: ID=%d", it->className.data(), it->ID);
+
+		buff.clear();
+		foreach(s, it->skillIDs) {
+			buff.append(FMT("%d, ", *s));
+		}
+		LOG("	skills=[%s]", buff.data());
 
 		buff.clear();
 		foreach(s, it->skinIDs) {

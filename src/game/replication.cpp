@@ -366,7 +366,7 @@ void Replication::EventPlayerGameEnter(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax)
+void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 modelID, ClassType classType, i32 health, i32 healthMax)
 {
 	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 
@@ -377,9 +377,9 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i3
 
 	// SA_GetCharacterInfo
 	Sv::SA_GetCharacterInfo info;
-	info.characterID = actorUID;
+	info.characterID = GetLocalActorID(clientID, actorUID);
 	info.docIndex = modelID;
-	info.class_ = classType;
+	info.classType = classType;
 	info.hp = health;
 	info.maxHp = healthMax;
 	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
@@ -670,8 +670,8 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(actor.faction); // faction
-		packet.Write<i32>(actor.classType); // classType
-		packet.Write<i32>(actor.skinIndex); // skinIndex
+		packet.Write<ClassType>(actor.classType); // classType
+		packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
 		packet.Write<i32>(0); // seed
 
 		if(!IsListIteratorValid(actor.stats)) {
@@ -775,7 +775,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 			packet.Write<LocalActorID>(localActorID); // playerID
 			packet.WriteStringObj(plate.name.data()); // name
-			packet.Write<i32>(actor.classType); // class_
+			packet.Write<ClassType>(actor.classType); // class_
 			packet.Write<i32>(320080005); // displayTitleIDX
 			packet.Write<i32>(320080005); // statTitleIDX
 			packet.Write<u8>(0); // badgeType

@@ -37,7 +37,8 @@ struct World
 
 	struct ActorPlayer: ActorCore
 	{
-		i32 classType;
+		ClassType classType;
+		SkinIndex skinIndex;
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
@@ -70,7 +71,7 @@ struct World
 
 	ActorUID NewActorUID();
 
-	ActorPlayer& SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag);
+	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
 	ActorNpc& SpawnNpcActor(ActorModelID modelID);
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);

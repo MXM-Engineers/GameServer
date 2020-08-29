@@ -1,5 +1,6 @@
 #include "game.h"
 #include "coordinator.h" // account data
+#include "core.h"
 
 
 void Game::Init(Replication* replication_)
@@ -64,7 +65,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	// TODO: health
 	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor->clientID == clientID);
-	replication->EventPlayerRequestCharacterInfo(clientID, (u32)actor->UID, (i32)actor->modelID, actor->classType, 100, 100);
+	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, (i32)actor->modelID, actor->classType, 100, 100);
 }
 
 void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
@@ -83,7 +84,7 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	replication->EventChatMessage(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, i32 skinIndex)
+void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
 
@@ -107,13 +108,9 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, i3
 	const AccountData* account = playerAccountData[clientID];
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const eastl::array<i32,40> MasterClass = {
-		35, // Lua
-		3,	// Sizuka
-		18, // Poharan
-	};
+	const ClassType classType = GetGameXmlContent().masters[leaderMasterID].classType;
 
-	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, MasterClass[leaderMasterID], account->nickname.data(), account->guildTag.data());
+	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
 	actor.eye = eye;
@@ -143,7 +140,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, 18, L"legomage15", L"MEME");
+			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;

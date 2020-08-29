@@ -29,7 +29,7 @@ struct Game
 	void OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID);
 	void OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
-	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, i32 skinIndex);
+	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);

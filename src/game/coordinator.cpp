@@ -1,5 +1,6 @@
 #include "coordinator.h"
 #include "channel.h"
+#include "core.h"
 #include <zlib.h>
 #include <EAThread/eathread_thread.h>
 
@@ -488,63 +489,41 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		SendPacketData(clientID, Sv::SN_AllCharacterBaseData::NET_ID, packet.size, packet.data);
 	}
 
+	const GameXmlContent& content = GetGameXmlContent();
+
 	// SN_ProfileCharacters
 	{
 		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(3); // charaList_count
+		packet.Write<u16>(content.masters.size()); // charaList_count
 
-		// Lua
-		Sv::SN_ProfileCharacters::Character chara;
-		chara.characterID = LocalActorID::FIRST_SELF_MASTER;
-		chara.creatureIndex = 100000035;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 35;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
+		i32 masterProfileID = 0;
+		foreach(it, content.masters) {
+			Sv::SN_ProfileCharacters::Character chara;
+			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + masterProfileID);
+			chara.creatureIndex = it->ID;
+			chara.skillShot1 = it->skillIDs[0];
+			chara.skillShot2 = it->skillIDs[1];
+			chara.classType = it->classType;
+			chara.x = 0;
+			chara.y = 0;
+			chara.z = 0;
+			chara.characterType = 1;
+			chara.skinIndex = 0;
+			chara.weaponIndex = it->weaponIDs[0];
+			chara.masterGearNo = 1;
+			packet.Write(chara);
 
-		// Sizuka
-		chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 1);
-		chara.creatureIndex = 100000003;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 3;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
-
-		// Poharan
-		chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 2);
-		chara.creatureIndex = 100000018;
-		chara.skillShot1 = 180350010;
-		chara.skillShot2 = 180350030;
-		chara.class_ = 18;
-		chara.x = 0;
-		chara.y = 0;
-		chara.z = 0;
-		chara.characterType = 1;
-		chara.skinIndex = 0;
-		chara.weaponIndex = 131135012;
-		chara.masterGearNo = 1;
-		packet.Write(chara);
+			masterProfileID++;
+		}
 
 		LOG("[client%03d] Server :: SN_ProfileCharacters :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
 	}
 
+	// TODO: send weapons
+	/*
 	// SN_ProfileWeapons
 	{
 		u8 sendData[2048];
@@ -580,6 +559,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
 	}
+	*/
 
 	// SN_MyGuild
 	{
@@ -643,10 +623,26 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 	// SN_ProfileCharacterSkinList
 	{
-		u8 sendData[128];
+		u8 sendData[4096];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(0); // skins_count
+		i32 skinCount = 0;
+		foreach(it, content.masters) {
+			skinCount += it->skinIDs.size();
+		}
+
+		packet.Write<u16>(skinCount); // skins_count
+
+		foreach(it, content.masters) {
+			const ClassType classType = it->classType;
+
+			foreach(s, it->skinIDs) {
+				packet.Write<ClassType>(classType); // classType
+				packet.Write<SkinIndex>(*s); // skinIndex
+				packet.Write<i32>(0); // bufCount
+				packet.Write<i64>(0); // expireDateTime
+			}
+		}
 
 		LOG("[client%03d] Server :: SN_ProfileCharacterSkinList :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileCharacterSkinList::NET_ID, packet.size, packet.data);

@@ -26,6 +26,33 @@ enum class LocalActorID: u32
 	- Force link LocalActorID so it matches the profile one
 */
 
+// TODO: move those?
+// TODO: populate those everywhere
+enum class CreatureIndex: i32
+{
+	INVALID = 0,
+};
+
+enum class SkinIndex: i32
+{
+	DEFAULT = 0,
+};
+
+enum class WeaponIndex: i32
+{
+	INVALID = 0,
+};
+
+enum class ClassType: i32
+{
+	NONE = -1,
+};
+
+enum class SkillID: i32
+{
+	INVALID = 0,
+};
+
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 struct NetHeader
@@ -189,7 +216,7 @@ struct CQ_SetLeaderCharacter
 	enum { NET_ID = 60052 };
 
 	LocalActorID characterID;
-	i32 skinIndex;
+	SkinIndex skinIndex;
 };
 
 struct CN_ChannelChatMessage
@@ -407,7 +434,7 @@ struct SN_GameCreateActor
 		i64 serverTime;
 	};
 
-	i32 objectID;
+	LocalActorID objectID;
 	i32 nType;
 	i32 nIDX;
 	i32 dwLocalID;
@@ -740,9 +767,9 @@ struct SA_GetCharacterInfo
 {
 	enum { NET_ID = 62113 };
 
-	i32 characterID;
+	LocalActorID characterID;
 	i32 docIndex;
-	i32 class_;
+	ClassType classType;
 	i32 hp;
 	i32 maxHp;
 };
@@ -786,16 +813,16 @@ struct SN_ProfileCharacters
 	struct Character
 	{
 		LocalActorID characterID;
-		i32 creatureIndex;
-		i32 skillShot1;
-		i32 skillShot2;
-		i32 class_;
+		CreatureIndex creatureIndex;
+		SkillID skillShot1;
+		SkillID skillShot2;
+		ClassType classType;
 		f32 x;
 		f32 y;
 		f32 z;
 		i32 characterType;
 		i32 skinIndex;
-		i32 weaponIndex;
+		WeaponIndex weaponIndex;
 		u8 masterGearNo;
 	};
 	POP_PACKED
@@ -1302,8 +1329,8 @@ struct SN_ProfileCharacterSkinList
 
 	struct Skin
 	{
-		i32 classType;
-		i32 skinIndex;
+		ClassType classType;
+		SkinIndex skinIndex;
 		i32 bufCount;
 		i64 expireDateTime;
 	};

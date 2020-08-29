@@ -46,8 +46,8 @@ struct Replication
 		i32 actionState;
 		i32 ownerID;
 		i32 faction;
-		i32 classType;
-		i32 skinIndex;
+		ClassType classType;
+		SkinIndex skinIndex;
 
 	private:
 
@@ -122,7 +122,7 @@ struct Replication
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
 	void EventPlayerGameEnter(i32 clientID);
-	void EventPlayerRequestCharacterInfo(i32 clientID, u32 actorUID, i32 modelID, i32 classType, i32 health, i32 healthMax);
+	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 modelID, ClassType classType, i32 health, i32 healthMax);
 	void EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID);
 	void EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 

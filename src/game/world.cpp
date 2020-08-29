@@ -22,7 +22,7 @@ void World::Update(f64 delta)
 		rfl.ownerID = 0;
 		rfl.faction = 0;
 		rfl.classType = actor.classType;
-		rfl.skinIndex = 0;
+		rfl.skinIndex = actor.skinIndex;
 
 		Replication::ActorNameplate plate;
 		plate.name = actor.name;
@@ -59,8 +59,8 @@ void World::Update(f64 delta)
 		rfl.actionState = 99;
 		rfl.ownerID = 0;
 		rfl.faction = -1;
-		rfl.classType = -1; // -1 for NPCs
-		rfl.skinIndex = 0;
+		rfl.classType = ClassType::NONE; // -1 for NPCs
+		rfl.skinIndex = SkinIndex::DEFAULT;
 
 		Replication::Transform tf;
 		tf.pos = actor.pos;
@@ -80,7 +80,7 @@ ActorUID World::NewActorUID()
 	return (ActorUID)nextActorUID++;
 }
 
-World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const wchar* name, const wchar* guildTag)
+World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag)
 {
 	ActorUID actorUID = NewActorUID();
 	ASSERT(FindPlayerActor(actorUID) == nullptr);
@@ -88,12 +88,13 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, i32 classType, const w
 	ActorPlayer& actor = actorPlayerList.push_back();
 	actor.UID = actorUID;
 	actor.type = 1;
-	actor.modelID = (ActorModelID)(100000000 + classType);
-	actor.classType = classType;
+	actor.modelID = (ActorModelID)(100000000 + (i32)classType);
 	actor.rotate = 0;
 	actor.speed = 0;
 	actor.state = 0;
 	actor.actionID = 0;
+	actor.classType = classType;
+	actor.skinIndex = skinIndex;
 	actor.name = name;
 	actor.guildTag = guildTag;
 

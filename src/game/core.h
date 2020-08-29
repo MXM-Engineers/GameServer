@@ -1,5 +1,6 @@
 #pragma once
 #include <common/base.h>
+#include <common/protocol.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -9,7 +10,6 @@ enum class ActorUID: u32
 {
 	INVALID = 0,
 };
-
 constexpr char* g_ActionStateString[] = {
 	"ACTION_STATE_TYPE_IDLE",
 	"NORMAL_STAND_MOVESTATE",
@@ -194,19 +194,20 @@ struct GameXmlContent
 {
 	struct Master
 	{
-		i32 ID;
+		CreatureIndex ID;
+		ClassType classType;
 		eastl::fixed_string<char,64> className;
-		eastl::fixed_vector<i32,16> skillIDs;
-		eastl::fixed_vector<i32,20> skinIDs;
-		eastl::fixed_vector<i32,32> weaponIDs;
+		eastl::fixed_vector<SkillID,16> skillIDs;
+		eastl::fixed_vector<SkinIndex,20> skinIDs;
+		eastl::fixed_vector<WeaponIndex,32> weaponIDs;
 	};
 
 	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
 	// intead of comparing the hash generated from the string? I must be missing something here. LordSk (29/08/2020)
 	eastl::hash<const char*> strHash;
 
-	eastl::fixed_list<Master,100> masters;
-	eastl::fixed_hash_map<size_t,decltype(masters)::iterator,100> masterClassMap;
+	eastl::fixed_vector<Master,100> masters;
+	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
 
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();

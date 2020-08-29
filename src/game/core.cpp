@@ -49,15 +49,16 @@ bool GameXmlContent::LoadMasterDefinitions()
 		do {
 			i32 skillID;
 			pSkillElt->QueryAttribute("_Index", &skillID);
-			master.skillIDs.push_back(skillID);
+			master.skillIDs.push_back((SkillID)skillID);
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while(pSkillElt);
 
 		// save master data
-		master.ID = masterID;
+		master.ID = (CreatureIndex)masterID;
+		master.classType = (ClassType)(masterID - 100000000);
 		master.className = className;
-		masterClassMap.emplace(strHash(master.className.data()), --masters.end());
+		masterClassMap.emplace(strHash(master.className.data()), &master);
 		DBG_ASSERT(masterClassMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassMap.end());
 
 		pNodeMaster = pNodeMaster->NextSiblingElement();
@@ -101,7 +102,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 		}
 		else {
 			Master& master = *found->second;
-			master.skinIDs.push_back(skinIndex);
+			master.skinIDs.push_back((SkinIndex)skinIndex);
 		}
 
 		pSkinElt = pSkinElt->NextSiblingElement();
@@ -147,7 +148,7 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 		}
 		else {
 			Master& master = *found->second;
-			master.weaponIDs.push_back(ID);
+			master.weaponIDs.push_back((WeaponIndex)ID);
 		}
 
 		pWeapElt = pWeapElt->NextSiblingElement();

@@ -791,7 +791,7 @@ struct SA_SetLeader
 
 	i32 result;
 	LocalActorID leaderID;
-	i32 skinIndex;
+	SkinIndex skinIndex;
 };
 ASSERT_SIZE(SA_SetLeader, 12);
 
@@ -800,7 +800,7 @@ struct SN_LeaderCharacter
 	enum { NET_ID = 62123 };
 
 	LocalActorID leaderID; // characterIndex
-	i32 skinIndex;
+	SkinIndex skinIndex;
 };
 ASSERT_SIZE(SN_LeaderCharacter, 8);
 

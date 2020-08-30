@@ -386,7 +386,7 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUI
 	SendPacket(clientID, info);
 }
 
-void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID)
+void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderMasterID);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
@@ -397,7 +397,7 @@ void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorU
 		// SN_LeaderCharacter
 		Sv::SN_LeaderCharacter leader;
 		leader.leaderID = laiLeader;
-		leader.skinIndex = 0;
+		leader.skinIndex = skinIndex;
 		LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
 		SendPacket(clientID, leader);
 	}
@@ -407,7 +407,7 @@ void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorU
 		Sv::SA_SetLeader leader;
 		leader.result = 0;
 		leader.leaderID = laiLeader;
-		leader.skinIndex = 0;
+		leader.skinIndex = skinIndex;
 		LOG("[client%03d] Server :: SA_SetLeader :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
 		SendPacket(clientID, leader);
 	}

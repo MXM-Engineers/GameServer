@@ -11,9 +11,10 @@ extern FILE* g_LogFile;
 void LogInit(const char* name);
 void __Logf(const char* fmt, ...);
 
-#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, __VA_ARGS__))
-#define LOG(fmt, ...) do { __Logf(fmt "\n", __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
-#define LOG_NNL(fmt, ...) do { __Logf(fmt, __VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, __VA_ARGS__); } while(0)
+#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, ##__VA_ARGS__))
+#define LOG(fmt, ...) do { __Logf(fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+#define LOG_NNL(fmt, ...) do { __Logf(fmt, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+#define WARN(fmt, ...) do { __Logf("WARNING(" __FUNCTION__ "): " fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 

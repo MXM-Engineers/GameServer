@@ -70,7 +70,12 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 
 void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
 {
-	ASSERT(playerActorUID[clientID] == replication->GetActorUID(clientID, characterID)); // TODO: soft cancel, kick client
+	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
+	// LordSk (30/08/2020)
+	if(playerActorUID[clientID] != replication->GetActorUID(clientID, characterID)) {
+		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, characterID);
+		return;
+	}
 	world.PlayerUpdatePosition(playerActorUID[clientID], pos, dir, eye, rotate, speed, state, actionID);
 }
 
@@ -117,7 +122,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
-	replication->EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID);
+	replication->EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
 }
 
 void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync)

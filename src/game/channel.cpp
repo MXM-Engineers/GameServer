@@ -1,6 +1,8 @@
 #include "channel.h"
-#include "coordinator.h"
+
 #include <EAThread/eathread_thread.h>
+#include "coordinator.h"
+#include "game_content.h"
 
 intptr_t ThreadChannel(void* pData)
 {

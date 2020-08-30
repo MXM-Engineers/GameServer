@@ -1,6 +1,6 @@
 #include "coordinator.h"
 #include "channel.h"
-#include "core.h"
+#include "game_content.h"
 #include <zlib.h>
 #include <EAThread/eathread_thread.h>
 

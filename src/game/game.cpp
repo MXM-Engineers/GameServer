@@ -1,6 +1,6 @@
 #include "game.h"
 #include "coordinator.h" // account data
-#include "core.h"
+#include "game_content.h"
 
 
 void Game::Init(Replication* replication_)

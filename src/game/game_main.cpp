@@ -1,5 +1,6 @@
 #include "game.h"
 #include "coordinator.h"
+#include "game_content.h"
 
 #define LISTEN_PORT "11900"
 Server* g_Server = nullptr;

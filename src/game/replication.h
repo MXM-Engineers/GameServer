@@ -134,6 +134,7 @@ struct Replication
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
+	void JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec);
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
 

@@ -161,6 +161,37 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
+
+		if(wcsncmp(msg, L"upsidedown", 10) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770015, playerActor->name.data(), 0);
+			return true;
+		}
+		
+		if(wcsncmp(msg, L"scml", 4) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770002, playerActor->name.data(), 0);
+			return true;
+		}
+
+		if(wcsncmp(msg, L"poharan", 7) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770010, playerActor->name.data(), 0);
+			return true;
+		}
+
+		if(wcsncmp(msg, L"triangle", 8) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770030, playerActor->name.data(), 0);
+			return true;
+		}
+		
+		if(wcsncmp(msg, L"arami", 5) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770012, playerActor->name.data(), 0);
+			return true;
+		}
+
 	}
 
 	return false;

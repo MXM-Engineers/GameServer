@@ -366,7 +366,7 @@ void Replication::EventPlayerGameEnter(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 docID, ClassType classType, i32 health, i32 healthMax)
+void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
 	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 

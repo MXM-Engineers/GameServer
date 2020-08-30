@@ -31,7 +31,7 @@ enum class LocalActorID: u32
 enum class CreatureIndex: i32
 {
 	Invalid = 0,
-	SpawnPoint = 100000001
+	MasterStriker = 100000001 // taejin?
 };
 
 enum class SkinIndex: i32
@@ -769,7 +769,7 @@ struct SA_GetCharacterInfo
 	enum { NET_ID = 62113 };
 
 	LocalActorID characterID;
-	i32 docIndex;
+	CreatureIndex docIndex;
 	ClassType classType;
 	i32 hp;
 	i32 maxHp;

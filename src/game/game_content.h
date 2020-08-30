@@ -199,10 +199,18 @@ struct GameXmlContent
 
 	struct Spawn
 	{
+		enum class Type: i32 {
+			NPC_SPAWN=0,
+			SPAWN_POINT
+		};
+
 		CreatureIndex docID;
 		i32 localID;
+		Type type;
 		Vec3 pos;
 		Vec3 rot;
+
+		inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
 	};
 
 	struct Map

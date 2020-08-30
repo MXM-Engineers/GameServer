@@ -123,7 +123,7 @@ struct Replication
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
 	void EventPlayerGameEnter(i32 clientID);
-	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 docID, ClassType classType, i32 health, i32 healthMax);
+	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
 	void EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 

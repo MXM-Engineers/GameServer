@@ -179,6 +179,7 @@ bool GameXmlContent::LoadLobbyNormal()
 		return false;
 	}
 
+	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
 	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
 		Spawn spawn;
@@ -190,6 +191,12 @@ bool GameXmlContent::LoadLobbyNormal()
 		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		spawn.type = Spawn::Type::NPC_SPAWN;
+		bool returnPoint;
+		if(pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
+			spawn.type = Spawn::Type::SPAWN_POINT;
+		}
 
 		mapLobbyNormal.spawns.push_back(spawn);
 

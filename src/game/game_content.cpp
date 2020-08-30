@@ -158,6 +158,47 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
+bool GameXmlContent::LoadLobbyNormal()
+{
+	Path xmlPath = gameDataDir;
+	PathAppend(xmlPath, L"/Lobby_Normal/Spawn.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if(!fileData) {
+		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%S'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if(error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
+	do {
+		Spawn spawn;
+		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
+		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
+		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
+		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
+		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
+		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
+		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
+		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		mapLobbyNormal.spawns.push_back(spawn);
+
+		pSpawnElt = pSpawnElt->NextSiblingElement();
+	} while(pSpawnElt);
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	bool r = LoadMasterDefinitions();
@@ -169,6 +210,10 @@ bool GameXmlContent::Load()
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
 
+	r = LoadLobbyNormal();
+	if(!r) return false;
+
+	LOG("Masters:");
 	eastl::fixed_string<char,1024> buff;
 	foreach(it, masters) {
 		LOG("%s: ID=%d", it->className.data(), it->ID);
@@ -190,6 +235,11 @@ bool GameXmlContent::Load()
 			buff.append(FMT("%d, ", *s));
 		}
 		LOG("	weapons=[%s]", buff.data());
+	}
+
+	LOG("Lobby_Normal:");
+	foreach(it, mapLobbyNormal.spawns) {
+		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
 
 	return true;

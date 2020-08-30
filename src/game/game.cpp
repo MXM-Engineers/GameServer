@@ -20,27 +20,19 @@ void Game::Update(f64 delta)
 
 bool Game::LoadMap()
 {
-	// TODO: pull this info from the game's xml files
-	SpawnNPC(100036952, Vec3(12437, 4859.2, 2701.5), Vec3(0, 0, 1.02137));
-	SpawnNPC(100036896, Vec3(11556.2, 13308.7, 3328.29), Vec3(-1.61652, -1.14546, -0.893085));
-	SpawnNPC(100036891, Vec3(14819.3, 9705.18, 2604.1), Vec3(0, 0, 0.783478));
-	SpawnNPC(100036895, Vec3(13522, 12980, 3313.52), Vec3(0, 0, 0.703193));
-	SpawnNPC(100036897, Vec3(12263.3, 13262.3, 3328.29), Vec3(0, 0, 0.426558));
-	SpawnNPC(100036894, Vec3(12005.8, 13952.3, 3529.39), Vec3(0, 0, 0));
-	SpawnNPC(100036909, Vec3(11551.5, 5382.32, 2701.5), Vec3(-3.08504, -0.897274, 0.665145));
-	SpawnNPC(100036842, Vec3(8511.02, 8348.46, 2604.1), Vec3(0, 0, -1.63747));
-	SpawnNPC(100036902, Vec3(9042.14, 9732.58, 2604.1), Vec3(3.06654, 1.39138, -0.873886));
-	SpawnNPC(100036843, Vec3(14809.8, 7021.74, 2604.1), Vec3(0, 0, 2.46842));
-	SpawnNPC(100036899, Vec3(10309, 13149, 3313.52), Vec3(0.914029, 0.112225, -0.642456));
-	SpawnNPC(100036904, Vec3(7922.89, 6310.55, 3016.64), Vec3(0, 0, -1.33937));
-	SpawnNPC(100036905, Vec3(8617, 5617, 3016.64), Vec3(0, 0, 3.08347));
-	SpawnNPC(100036903, Vec3(12949.5, 8886.19, 2604.1), Vec3(0.0986111, 0.642107, -1.29835));
-	SpawnNPC(100036954, Vec3(9094, 7048, 2604.1), Vec3(0, 0, -2.31972));
-	SpawnNPC(100036951, Vec3(11301, 12115, 3313.52), Vec3(0, 0, -1.01316));
-	SpawnNPC(100036906, Vec3(10931, 7739, 2605.23), Vec3(0, 0, 1.83539));
-	SpawnNPC(100036833, Vec3(15335.5, 8370.4, 2604.1), Vec3(0, 0, 1.53903));
-	SpawnNPC(100036777, Vec3(11925, 6784, 3013), Vec3(0, 0, 0));
-	SpawnNPC(110041382, Vec3(3667.41, 2759.76, 2601), Vec3(0, 0, -0.598997));
+	const GameXmlContent& content = GetGameXmlContent();
+
+	foreach(it, content.mapLobbyNormal.spawns) {
+		// don't spawn "spawn points"
+		if(it->docID == CreatureIndex::SpawnPoint) {
+			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
+			continue;
+		}
+
+		// spawn npc
+		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+	}
+
 	return true;
 }
 
@@ -65,7 +57,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	// TODO: health
 	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor->clientID == clientID);
-	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, (i32)actor->modelID, actor->classType, 100, 100);
+	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, (i32)actor->docID, actor->classType, 100, 100);
 }
 
 void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
@@ -93,8 +85,10 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 {
 	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
 
-	Vec3 pos(11959.4f, 6451.76f, 3012);
-	Vec3 dir(0, 0, 2.68874f);
+	// select a spawn point at random
+	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
+	Vec3 pos = spawnPoint.pos;
+	Vec3 dir = spawnPoint.dir;
 	Vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
@@ -171,9 +165,9 @@ void Game::SendDbgMsg(i32 clientID, const wchar* msg)
 	replication->EventChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-void Game::SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir)
+void Game::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
 {
-	World::ActorCore& actor = world.SpawnNpcActor((ActorModelID)modelID);
+	World::ActorCore& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;
 	actor.dir = dir;
 }

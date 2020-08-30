@@ -366,7 +366,7 @@ void Replication::EventPlayerGameEnter(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 modelID, ClassType classType, i32 health, i32 healthMax)
+void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, i32 docID, ClassType classType, i32 health, i32 healthMax)
 {
 	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 
@@ -378,7 +378,7 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUI
 	// SA_GetCharacterInfo
 	Sv::SA_GetCharacterInfo info;
 	info.characterID = GetLocalActorID(clientID, actorUID);
-	info.docIndex = modelID;
+	info.docIndex = docID;
 	info.classType = classType;
 	info.hp = health;
 	info.maxHp = healthMax;
@@ -657,7 +657,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write<i32>(actor.type); // nType
-		packet.Write<i32>(actor.modelID); // nIDX
+		packet.Write<CreatureIndex>(actor.docID); // nIDX
 		packet.Write<i32>(localID); // dwLocalID
 		// TODO: localID?
 

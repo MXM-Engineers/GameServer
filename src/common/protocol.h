@@ -30,7 +30,8 @@ enum class LocalActorID: u32
 // TODO: populate those everywhere
 enum class CreatureIndex: i32
 {
-	INVALID = 0,
+	Invalid = 0,
+	SpawnPoint = 100000001
 };
 
 enum class SkinIndex: i32

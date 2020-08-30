@@ -8,13 +8,14 @@ void World::Init(Replication* replication_)
 
 void World::Update(f64 delta)
 {
+	// players
 	foreach(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;
 
 		Replication::Actor rfl;
 		rfl.UID = actor.UID;
 		rfl.type = actor.type;
-		rfl.modelID = (i32)actor.modelID;
+		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
 		rfl.spawnType = 0;
@@ -23,6 +24,7 @@ void World::Update(f64 delta)
 		rfl.faction = 0;
 		rfl.classType = actor.classType;
 		rfl.skinIndex = actor.skinIndex;
+		rfl.localID = -1;
 
 		Replication::ActorNameplate plate;
 		plate.name = actor.name;
@@ -46,13 +48,14 @@ void World::Update(f64 delta)
 		replication->FramePushActor(rfl, tf, &plate, &stats, &playerInfo);
 	}
 
+	// npcs
 	foreach(it, actorNpcList) {
 		const ActorNpc& actor = *it;
 
 		Replication::Actor rfl;
 		rfl.UID = actor.UID;
 		rfl.type = actor.type;
-		rfl.modelID = (i32)actor.modelID;
+		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
 		rfl.spawnType = 0;
@@ -61,6 +64,7 @@ void World::Update(f64 delta)
 		rfl.faction = -1;
 		rfl.classType = ClassType::NONE; // -1 for NPCs
 		rfl.skinIndex = SkinIndex::DEFAULT;
+		rfl.localID = actor.localID;
 
 		Replication::Transform tf;
 		tf.pos = actor.pos;
@@ -88,7 +92,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	ActorPlayer& actor = actorPlayerList.push_back();
 	actor.UID = actorUID;
 	actor.type = 1;
-	actor.modelID = (ActorModelID)(100000000 + (i32)classType);
+	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;
 	actor.speed = 0;
 	actor.state = 0;
@@ -102,7 +106,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	return actor;
 }
 
-World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
+World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 {
 	ActorUID actorUID = NewActorUID();
 	ASSERT(FindNpcActor(actorUID) == nullptr);
@@ -110,12 +114,13 @@ World::ActorNpc& World::SpawnNpcActor(ActorModelID modelID)
 	ActorNpc& actor = actorNpcList.push_back();
 	actor.UID = actorUID;
 	actor.type = 1;
-	actor.modelID = (ActorModelID)modelID;
+	actor.docID = (CreatureIndex)docID;
 	actor.eye = Vec3(0, 0, 0);
 	actor.rotate = 0;
 	actor.speed = 0;
 	actor.state = -1;
 	actor.actionID = -1;
+	actor.localID = localID;
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;

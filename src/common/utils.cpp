@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <time.h>
 
 void PathSet(Path& path, const wchar* str)
 {
@@ -69,4 +70,17 @@ u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize)
 	}
 
 	return nullptr;
+}
+
+static u32 g_XorShiftState = time(0);
+
+u32 RandUint()
+{
+	/* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
+	uint32_t x = g_XorShiftState;
+	x ^= x << 13;
+	x ^= x >> 17;
+	x ^= x << 5;
+	g_XorShiftState = x;
+	return x;
 }

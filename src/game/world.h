@@ -8,9 +8,6 @@
 #include "replication.h"
 #include "core.h"
 
-enum class ActorModelID: i32 {
-	INVALID = 0
-};
 
 struct World
 {
@@ -25,7 +22,7 @@ struct World
 	{
 		ActorUID UID;
 		i32 type;
-		ActorModelID modelID;
+		CreatureIndex docID;
 		Vec3 pos;
 		Vec3 dir;
 		Vec3 eye;
@@ -46,7 +43,7 @@ struct World
 
 	struct ActorNpc: ActorCore
 	{
-
+		i32 localID;
 	};
 
 	struct ActorMonster: ActorCore
@@ -72,7 +69,7 @@ struct World
 	ActorUID NewActorUID();
 
 	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
-	ActorNpc& SpawnNpcActor(ActorModelID modelID);
+	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 

@@ -13,12 +13,21 @@ struct Game
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
 
+	struct SpawnPoint
+	{
+		Vec3 pos, dir;
+	};
+
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
 	World world;
 	Replication* replication;
 
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
+
+	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
+
+
 
 	void Init(Replication* replication_);
 	void Update(f64 delta);
@@ -35,5 +44,5 @@ struct Game
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);
 
-	void SpawnNPC(i32 modelID, const Vec3& pos, const Vec3& dir);
+	void SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
 };

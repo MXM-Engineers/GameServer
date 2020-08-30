@@ -11,3 +11,5 @@ void PathSet(Path& path, const wchar* str);
 void PathAppend(Path& path, const wchar* app);
 
 u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize);
+
+u32 RandUint();

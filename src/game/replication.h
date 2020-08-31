@@ -122,12 +122,12 @@ struct Replication
 
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
-	void EventPlayerGameEnter(i32 clientID);
+	void SetPlayerAsInGame(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
-	void EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
+	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
 	void EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 
-	void EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
+	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
 
 	void EventClientDisconnect(i32 clientID);
@@ -136,6 +136,10 @@ struct Replication
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
 	void JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec);
+	void SendJukeboxStatus(i32 clientID);
+
+	bool IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const;
+
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
 

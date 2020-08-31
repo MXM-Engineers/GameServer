@@ -9,6 +9,8 @@ struct AccountData;
 
 struct Game
 {
+	typedef World::List<World::ActorNpc>::iterator NpcHandle;
+
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
@@ -18,16 +20,29 @@ struct Game
 		Vec3 pos, dir;
 	};
 
+	struct Player
+	{
+		const i32 clientID;
+		bool isJukeboxActorReplicated = false;
+
+		Player(): clientID(-1) {}
+
+		Player(i32 clientID_):
+			clientID(clientID_) {}
+	};
+
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
 	World world;
 	Replication* replication;
 
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
+	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
+	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerClientIDMap;
 
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 
-
+	NpcHandle npcJukeBox;
 
 	void Init(Replication* replication_);
 	void Update(f64 delta);

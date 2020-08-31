@@ -159,8 +159,7 @@ void Channel::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, 
 void Channel::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
-
-	replication.EventPlayerGameEnter(clientID);
+	replication.SetPlayerAsInGame(clientID);
 }
 
 void Channel::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

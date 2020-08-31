@@ -73,8 +73,10 @@ struct World
 
 	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 
-	ActorPlayer* FindPlayerActor(ActorUID actorUID);
-	ActorNpc* FindNpcActor(ActorUID actorUID);
+	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
+	ActorNpc* FindNpcActor(ActorUID actorUID) const;
+	List<ActorNpc>::iterator FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
+	List<ActorNpc>::const_iterator InvalidNpcHandle() const;
 
 	bool DestroyPlayerActor(ActorUID actorUID);
 };

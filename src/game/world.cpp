@@ -141,18 +141,33 @@ void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3&
 	actor->actionID = actionID;
 }
 
-World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID)
+World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID) const
 {
 	auto it = actorPlayerMap.find(actorUID);
 	if(it == actorPlayerMap.end()) return nullptr;
 	return &(*it->second);
 }
 
-World::ActorNpc* World::FindNpcActor(ActorUID actorUID)
+World::ActorNpc* World::FindNpcActor(ActorUID actorUID) const
 {
 	auto it = actorNpcMap.find(actorUID);
 	if(it == actorNpcMap.end()) return nullptr;
 	return &(*it->second);
+}
+
+World::List<World::ActorNpc>::iterator World::FindNpcActorByCreatureID(CreatureIndex docID)
+{
+	foreach(it, actorNpcList) {
+		if(it->docID == docID) {
+			return it;
+		}
+	}
+	return actorNpcList.end();
+}
+
+World::List<World::ActorNpc>::const_iterator World::InvalidNpcHandle() const
+{
+	return actorNpcList.end();
 }
 
 bool World::DestroyPlayerActor(ActorUID actorUID)

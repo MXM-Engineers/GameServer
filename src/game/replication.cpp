@@ -57,8 +57,6 @@ void Replication::FrameEnd()
 			LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
 			SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 
-			// TODO: proper jukebox replication
-
 			// SN_TownHudStatistics
 			{
 				u8 sendData[1024];
@@ -75,42 +73,6 @@ void Replication::FrameEnd()
 
 				LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
 				SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_JukeboxEnqueuedList
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u16>(0); // trackList_count
-
-				LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_JukeboxHotTrackList
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<u16>(0); // trackList_count
-
-				LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
-			}
-
-			// SN_JukeboxPlay
-			{
-				u8 sendData[256];
-				PacketWriter packet(sendData, sizeof(sendData));
-
-				packet.Write<i32>(0); // result
-				packet.Write<i32>(7770015); // trackID
-				packet.WriteStringObj(L"Flashback"); // nickname
-				packet.Write<u16>(0); // playPositionSec
-
-				LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
-				SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 			}
 		}
 	}
@@ -361,7 +323,7 @@ void Replication::EventPlayerLoad(i32 clientID)
 	}
 }
 
-void Replication::EventPlayerGameEnter(i32 clientID)
+void Replication::SetPlayerAsInGame(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
 }
@@ -386,7 +348,7 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUI
 	SendPacket(clientID, info);
 }
 
-void Replication::EventPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex)
+void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderMasterID);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
@@ -436,14 +398,10 @@ void Replication::EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePla
 	}
 }
 
-void Replication::EventChatMessage(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
-
-	// TODO: chat types
-	// TODO: senderStaffType
-	// TODO: Actual chat system
 
 	packet.Write<i32>(chatType); // chatType
 	packet.WriteStringObj(senderName);
@@ -480,6 +438,70 @@ void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderNa
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::DISCONNECTED;
+}
+
+
+void Replication::JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec)
+{
+	u8 sendData[256];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(result); // result
+	packet.Write<i32>(trackID); // trackID
+	packet.WriteStringObj(nickname); // nickname
+	packet.Write<u16>(playPositionSec); // playPositionSec
+
+	for (int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if (playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+	}
+}
+
+void Replication::SendJukeboxStatus(i32 clientID)
+{
+	// SN_JukeboxEnqueuedList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(0); // trackList_count
+
+		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_JukeboxHotTrackList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(0); // trackList_count
+
+		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_JukeboxPlay
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(0); // result
+		packet.Write<i32>(7770015); // trackID
+		packet.WriteStringObj(L"Flashback"); // nickname
+		packet.Write<u16>(0); // playPositionSec
+
+		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+	}
+}
+
+bool Replication::IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const
+{
+	const auto& set = playerLocalInfo[clientID].actorUIDSet;
+	return set.find(actorUID) != set.end();
 }
 
 void Replication::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID)
@@ -869,22 +891,4 @@ bool Replication::Transform::IsEqual(const Transform& other) const
 	if(state != other.state) return false;
 	if(actionID != other.actionID) return false;
 	return true;
-}
-
-void Replication::JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec)
-{
-	u8 sendData[256];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<i32>(result); // result
-	packet.Write<i32>(trackID); // trackID
-	packet.WriteStringObj(nickname); // nickname
-	packet.Write<u16>(playPositionSec); // playPositionSec
-
-	for (int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if (playerState[clientID] != PlayerState::IN_GAME) continue;
-
-		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-	}
 }

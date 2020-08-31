@@ -15,7 +15,20 @@ void Game::Init(Replication* replication_)
 
 void Game::Update(f64 delta)
 {
-	world.Update(delta); // TODO: update delta
+	world.Update(delta);
+
+	// when the jukebox is replicated, we send its status
+	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
+	foreach(it, playerList) {
+		if(!it->isJukeboxActorReplicated) {
+			if(replication->IsActorReplicatedForClient(it->clientID, npcJukeBox->UID)) {
+				it->isJukeboxActorReplicated = true;
+
+				// TODO: split this
+				replication->SendJukeboxStatus(it->clientID);
+			}
+		}
+	}
 }
 
 bool Game::LoadMap()
@@ -33,12 +46,17 @@ bool Game::LoadMap()
 		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
 	}
 
+	npcJukeBox = world.FindNpcActorByCreatureID(CreatureIndex::Jukebox);
+	ASSERT(npcJukeBox != world.InvalidNpcHandle());
 	return true;
 }
 
 void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 {
 	playerAccountData[clientID] = accountData;
+
+	playerList.push_back(Player(clientID));
+	playerClientIDMap[clientID] = --playerList.end();
 }
 
 void Game::OnPlayerDisconnect(i32 clientID)
@@ -50,6 +68,10 @@ void Game::OnPlayerDisconnect(i32 clientID)
 		world.DestroyPlayerActor(playerActorUID[clientID]);
 	}
 	playerActorUID[clientID] = ActorUID::INVALID;
+
+	ASSERT(playerClientIDMap[clientID] != playerList.end());
+	playerList.erase(playerClientIDMap[clientID]);
+	playerClientIDMap[clientID] = playerList.end();
 }
 
 void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
@@ -78,7 +100,11 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 		return; // we're done here
 	}
 
-	replication->EventChatMessage(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+	// TODO: chat types
+	// TODO: senderStaffType
+	// TODO: Actual chat system
+
+	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
 void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
@@ -116,7 +142,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
-	replication->EventPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
+	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
 }
 
 void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync)

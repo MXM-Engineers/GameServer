@@ -31,7 +31,8 @@ enum class LocalActorID: u32
 enum class CreatureIndex: i32
 {
 	Invalid = 0,
-	MasterStriker = 100000001 // taejin?
+	MasterStriker = 100000001, // taejin?
+	Jukebox = 100036777
 };
 
 enum class SkinIndex: i32

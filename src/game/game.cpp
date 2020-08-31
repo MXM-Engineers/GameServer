@@ -200,6 +200,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 		if(wcsncmp(msg, L"smoke", 5) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 
 			SendDbgMsg(clientID, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
 			return true;
@@ -207,30 +208,35 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 		if(wcsncmp(msg, L"upsidedown", 10) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 			replication->JukeboxPlaySong(0, 7770015, playerActor->name.data(), 0);
 			return true;
 		}
 		
 		if(wcsncmp(msg, L"scml", 4) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 			replication->JukeboxPlaySong(0, 7770002, playerActor->name.data(), 0);
 			return true;
 		}
 
 		if(wcsncmp(msg, L"poharan", 7) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 			replication->JukeboxPlaySong(0, 7770010, playerActor->name.data(), 0);
 			return true;
 		}
 
 		if(wcsncmp(msg, L"triangle", 8) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 			replication->JukeboxPlaySong(0, 7770030, playerActor->name.data(), 0);
 			return true;
 		}
 		
 		if(wcsncmp(msg, L"arami", 5) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
 			replication->JukeboxPlaySong(0, 7770012, playerActor->name.data(), 0);
 			return true;
 		}

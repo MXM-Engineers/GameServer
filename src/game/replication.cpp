@@ -870,3 +870,21 @@ bool Replication::Transform::IsEqual(const Transform& other) const
 	if(actionID != other.actionID) return false;
 	return true;
 }
+
+void Replication::JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec)
+{
+	u8 sendData[256];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(result); // result
+	packet.Write<i32>(trackID); // trackID
+	packet.WriteStringObj(nickname); // nickname
+	packet.Write<u16>(playPositionSec); // playPositionSec
+
+	for (int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if (playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+	}
+}

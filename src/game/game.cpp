@@ -155,6 +155,86 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
+
+		if(wcsncmp(msg, L"rozark", 6) == 0) {
+			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
+
+			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			actor.pos = playerActor->pos;
+			actor.dir = playerActor->dir;
+			actor.eye = playerActor->eye;
+			lastLegoActorUID = actor.UID;
+
+			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
+		}
+
+		if(wcsncmp(msg, L"tanian", 6) == 0) {
+			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
+
+			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			actor.pos = playerActor->pos;
+			actor.dir = playerActor->dir;
+			actor.eye = playerActor->eye;
+			lastLegoActorUID = actor.UID;
+
+			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
+		}
+
+		if(wcsncmp(msg, L"fish", 4) == 0) {
+			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			ASSERT(playerActor);
+
+			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			actor.pos = playerActor->pos;
+			actor.dir = playerActor->dir;
+			actor.eye = playerActor->eye;
+			lastLegoActorUID = actor.UID;
+
+			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
+		}
+
+		if(wcsncmp(msg, L"smoke", 5) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+
+			SendDbgMsg(clientID, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
+			return true;
+		}
+
+		if(wcsncmp(msg, L"upsidedown", 10) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770015, playerActor->name.data(), 0);
+			return true;
+		}
+		
+		if(wcsncmp(msg, L"scml", 4) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770002, playerActor->name.data(), 0);
+			return true;
+		}
+
+		if(wcsncmp(msg, L"poharan", 7) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770010, playerActor->name.data(), 0);
+			return true;
+		}
+
+		if(wcsncmp(msg, L"triangle", 8) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770030, playerActor->name.data(), 0);
+			return true;
+		}
+		
+		if(wcsncmp(msg, L"arami", 5) == 0) {
+			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			replication->JukeboxPlaySong(0, 7770012, playerActor->name.data(), 0);
+			return true;
+		}
+
 	}
 
 	return false;

@@ -166,7 +166,7 @@ bool GameXmlContent::LoadLobbyNormal()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%S'", xmlPath.data());
+		LOG("ERROR(LoadLobbyNormal): failed to open '%S'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -175,7 +175,7 @@ bool GameXmlContent::LoadLobbyNormal()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadLobbyNormal): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -206,6 +206,44 @@ bool GameXmlContent::LoadLobbyNormal()
 	return true;
 }
 
+bool GameXmlContent::LoadJukeboxSongs()
+{
+	Path xmlPath = gameDataDir;
+	PathAppend(xmlPath, L"/JUKEBOX.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if(!fileData) {
+		LOG("ERROR(LoadJukeboxSongs): failed to open '%S'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if(error != XML_SUCCESS) {
+		LOG("ERROR(LoadJukeboxSongs): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
+	XMLElement* pSongElt = doc.FirstChildElement()->FirstChildElement();
+	do {
+		Song song;
+		pSongElt->QueryAttribute("ID", (i32*)&song.ID);
+
+		XMLElement* pJukeboxElt = pSongElt->FirstChildElement();
+		pJukeboxElt->QueryAttribute("_Time", &song.length);
+
+		jukeboxSongs.push_back(song);
+
+		pSongElt = pSongElt->NextSiblingElement();
+	} while(pSongElt);
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	bool r = LoadMasterDefinitions();
@@ -218,6 +256,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadLobbyNormal();
+	if(!r) return false;
+
+	r = LoadJukeboxSongs();
 	if(!r) return false;
 
 	LOG("Masters:");
@@ -247,6 +288,11 @@ bool GameXmlContent::Load()
 	LOG("Lobby_Normal:");
 	foreach(it, mapLobbyNormal.spawns) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
+	}
+
+	LOG("Jukebox songs:");
+	foreach(it, jukeboxSongs) {
+		LOG("ID=%d length=%d", it->ID, it->length);
 	}
 
 	return true;

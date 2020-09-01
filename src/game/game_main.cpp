@@ -73,6 +73,8 @@ int main(int argc, char** argv)
 		server.AddClient(clientSocket, clientAddr);
 	}
 
+	coordinator.Cleanup();
+
 	LOG("Done.");
 	return 0;
 }

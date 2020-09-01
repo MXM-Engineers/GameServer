@@ -1,5 +1,6 @@
 #pragma once
 #include "game.h"
+#include <EAThread/eathread_thread.h>
 
 struct Channel
 {
@@ -13,6 +14,8 @@ struct Channel
 	Game game;
 	Replication replication;
 
+	EA::Thread::Thread thread;
+
 	GrowableBuffer packetDataQueue;
 	GrowableBuffer processPacketQueue;
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
@@ -22,6 +25,8 @@ struct Channel
 	Mutex mutexNewPlayerQueue;
 
 	bool Init(Server* server_);
+	void Cleanup();
+
 	void Update(f64 delta);
 
 	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);

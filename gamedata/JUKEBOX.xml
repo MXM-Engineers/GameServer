@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="7770001">
+    <ST_JUKEBOX _Number="1" _Time="152" _ReleaseDate="20160401" _IconAlias="song_illust_001" _FileName="JukeBox_BGM_01" _Sample="JukeBox_Pre_BGM_01">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_1" _Composer="STR_SONG_COMPOSER_1" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770002">
+    <ST_JUKEBOX _Number="2" _Time="78" _ReleaseDate="20160401" _IconAlias="song_illust_002" _FileName="JukeBox_BGM_02" _Sample="JukeBox_Pre_BGM_02">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_2" _Composer="STR_SONG_COMPOSER_2" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770003">
+    <ST_JUKEBOX _Number="3" _Time="66" _ReleaseDate="20160401" _IconAlias="song_illust_003" _FileName="JukeBox_BGM_03" _Sample="JukeBox_Pre_BGM_03">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_3" _Composer="STR_SONG_COMPOSER_3" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770004">
+    <ST_JUKEBOX _Number="4" _Time="270" _ReleaseDate="20160401" _IconAlias="song_illust_004" _FileName="JukeBox_BGM_04" _Sample="JukeBox_Pre_BGM_04">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_4" _Composer="STR_SONG_COMPOSER_4" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770005">
+    <ST_JUKEBOX _Number="5" _Time="200" _ReleaseDate="20160401" _IconAlias="song_illust_005" _FileName="JukeBox_BGM_05" _Sample="JukeBox_Pre_BGM_05">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_5" _Composer="STR_SONG_COMPOSER_5" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770006">
+    <ST_JUKEBOX _Number="6" _Time="154" _ReleaseDate="20160401" _IconAlias="song_illust_006" _FileName="JukeBox_BGM_06" _Sample="JukeBox_Pre_BGM_06">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_6" _Composer="STR_SONG_COMPOSER_6" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770007">
+    <ST_JUKEBOX _Number="7" _Time="209" _ReleaseDate="20160401" _IconAlias="song_illust_007" _FileName="JukeBox_BGM_07" _Sample="JukeBox_Pre_BGM_07">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_7" _Composer="STR_SONG_COMPOSER_7" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770008">
+    <ST_JUKEBOX _Number="8" _Time="194" _ReleaseDate="20160401" _IconAlias="song_illust_008" _FileName="JukeBox_BGM_08" _Sample="JukeBox_Pre_BGM_08">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_8" _Composer="STR_SONG_COMPOSER_8" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770009">
+    <ST_JUKEBOX _Number="9" _Time="87" _ReleaseDate="20160401" _IconAlias="song_illust_009" _FileName="JukeBox_BGM_09" _Sample="JukeBox_Pre_BGM_09">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_9" _Composer="STR_SONG_COMPOSER_9" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770010">
+    <ST_JUKEBOX _Number="10" _Time="99" _ReleaseDate="20160401" _IconAlias="song_illust_010" _FileName="JukeBox_BGM_10" _Sample="JukeBox_Pre_BGM_10">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_10" _Composer="STR_SONG_COMPOSER_10" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770011">
+    <ST_JUKEBOX _Number="11" _Time="81" _ReleaseDate="20160401" _IconAlias="song_illust_011" _FileName="JukeBox_BGM_11" _Sample="JukeBox_Pre_BGM_11">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_11" _Composer="STR_SONG_COMPOSER_11" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770012">
+    <ST_JUKEBOX _Number="12" _Time="98" _ReleaseDate="20160401" _IconAlias="song_illust_012" _FileName="JukeBox_BGM_12" _Sample="JukeBox_Pre_BGM_12">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_12" _Composer="STR_SONG_COMPOSER_12" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770013">
+    <ST_JUKEBOX _Number="13" _Time="136" _ReleaseDate="20160401" _IconAlias="song_illust_013" _FileName="JukeBox_BGM_13" _Sample="JukeBox_Pre_BGM_13">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_13" _Composer="STR_SONG_COMPOSER_13" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770014">
+    <ST_JUKEBOX _Number="14" _Time="87" _ReleaseDate="20160401" _IconAlias="song_illust_014" _FileName="JukeBox_BGM_14" _Sample="JukeBox_Pre_BGM_14">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_14" _Composer="STR_SONG_COMPOSER_14" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770015">
+    <ST_JUKEBOX _Number="15" _Time="134" _ReleaseDate="20161015" _IconAlias="song_illust_015" _FileName="JukeBox_BGM_15" _Sample="JukeBox_Pre_BGM_15">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_15" _Composer="STR_SONG_COMPOSER_15" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770016">
+    <ST_JUKEBOX _Number="16" _Time="198" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_16" _Sample="JukeBox_Pre_BGM_16">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_16" _Composer="STR_SONG_COMPOSER_16" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770017">
+    <ST_JUKEBOX _Number="17" _Time="162" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_17" _Sample="JukeBox_Pre_BGM_17">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_17" _Composer="STR_SONG_COMPOSER_17" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770018">
+    <ST_JUKEBOX _Number="18" _Time="152" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_18" _Sample="JukeBox_Pre_BGM_18">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_18" _Composer="STR_SONG_COMPOSER_18" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770019">
+    <ST_JUKEBOX _Number="19" _Time="181" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_19" _Sample="JukeBox_Pre_BGM_19">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_19" _Composer="STR_SONG_COMPOSER_19" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770020">
+    <ST_JUKEBOX _Number="20" _Time="206" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_20" _Sample="JukeBox_Pre_BGM_20">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_20" _Composer="STR_SONG_COMPOSER_20" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770021">
+    <ST_JUKEBOX _Number="21" _Time="122" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_21" _Sample="JukeBox_Pre_BGM_21">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_21" _Composer="STR_SONG_COMPOSER_21" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770022">
+    <ST_JUKEBOX _Number="22" _Time="125" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_22" _Sample="JukeBox_Pre_BGM_22">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_22" _Composer="STR_SONG_COMPOSER_22" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770023">
+    <ST_JUKEBOX _Number="23" _Time="102" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_23" _Sample="JukeBox_Pre_BGM_23">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_23" _Composer="STR_SONG_COMPOSER_23" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770024">
+    <ST_JUKEBOX _Number="24" _Time="140" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_24" _Sample="JukeBox_Pre_BGM_24">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_24" _Composer="STR_SONG_COMPOSER_24" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770025">
+    <ST_JUKEBOX _Number="25" _Time="112" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_25" _Sample="JukeBox_Pre_BGM_25">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_25" _Composer="STR_SONG_COMPOSER_25" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770026">
+    <ST_JUKEBOX _Number="26" _Time="136" _ReleaseDate="20161015" _IconAlias="song_illust_bns" _FileName="JukeBox_BGM_26" _Sample="JukeBox_Pre_BGM_26">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_26" _Composer="STR_SONG_COMPOSER_26" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770027">
+    <ST_JUKEBOX _Number="27" _Time="141" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_27" _Sample="JukeBox_Pre_BGM_27">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_27" _Composer="STR_SONG_COMPOSER_27" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770028">
+    <ST_JUKEBOX _Number="28" _Time="162" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_28" _Sample="JukeBox_Pre_BGM_28">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_28" _Composer="STR_SONG_COMPOSER_28" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770029">
+    <ST_JUKEBOX _Number="29" _Time="169" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_29" _Sample="JukeBox_Pre_BGM_29">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_29" _Composer="STR_SONG_COMPOSER_29" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770030">
+    <ST_JUKEBOX _Number="30" _Time="149" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_30" _Sample="JukeBox_Pre_BGM_30">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_30" _Composer="STR_SONG_COMPOSER_30" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770031">
+    <ST_JUKEBOX _Number="31" _Time="211" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_31" _Sample="JukeBox_Pre_BGM_31">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_31" _Composer="STR_SONG_COMPOSER_31" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770032">
+    <ST_JUKEBOX _Number="32" _Time="55" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_32" _Sample="JukeBox_Pre_BGM_32">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_32" _Composer="STR_SONG_COMPOSER_32" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770033">
+    <ST_JUKEBOX _Number="33" _Time="121" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_33" _Sample="JukeBox_Pre_BGM_33">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_33" _Composer="STR_SONG_COMPOSER_33" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770034">
+    <ST_JUKEBOX _Number="34" _Time="177" _ReleaseDate="20161015" _IconAlias="song_illust_aion" _FileName="JukeBox_BGM_34" _Sample="JukeBox_Pre_BGM_34">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_34" _Composer="STR_SONG_COMPOSER_34" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770035">
+    <ST_JUKEBOX _Number="35" _Time="157" _ReleaseDate="20170621" _IconAlias="song_illust_L2" _FileName="JukeBox_BGM_35" _Sample="JukeBox_Pre_BGM_35">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_35" _Composer="STR_SONG_COMPOSER_35" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770036">
+    <ST_JUKEBOX _Number="36" _Time="126" _ReleaseDate="20170621" _IconAlias="song_illust_L2" _FileName="JukeBox_BGM_36" _Sample="JukeBox_Pre_BGM_36">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_36" _Composer="STR_SONG_COMPOSER_36" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770037">
+    <ST_JUKEBOX _Number="37" _Time="124" _ReleaseDate="20170621" _IconAlias="song_illust_L2" _FileName="JukeBox_BGM_37" _Sample="JukeBox_Pre_BGM_37">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_37" _Composer="STR_SONG_COMPOSER_37" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770038">
+    <ST_JUKEBOX _Number="38" _Time="121" _ReleaseDate="20170621" _IconAlias="song_illust_L2" _FileName="JukeBox_BGM_38" _Sample="JukeBox_Pre_BGM_38">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_38" _Composer="STR_SONG_COMPOSER_38" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770039">
+    <ST_JUKEBOX _Number="39" _Time="126" _ReleaseDate="20170621" _IconAlias="song_illust_L2" _FileName="JukeBox_BGM_39" _Sample="JukeBox_Pre_BGM_39">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_39" _Composer="STR_SONG_COMPOSER_39" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770040">
+    <ST_JUKEBOX _Number="40" _Time="132" _ReleaseDate="20170621" _IconAlias="song_illust_mondozax" _FileName="JukeBox_BGM_40" _Sample="JukeBox_Pre_BGM_40">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_40" _Composer="STR_SONG_COMPOSER_40" />
+    </ST_JUKEBOX>
+  </INFO>
+  <INFO ID="7770041">
+    <ST_JUKEBOX _Number="41" _Time="179" _ReleaseDate="20170621" _IconAlias="song_illust_wildstar" _FileName="JukeBox_BGM_41" _Sample="JukeBox_Pre_BGM_41">
+      <_Cost _Type="BUY_TYPE_JUKEBOX" _Amount="1" />
+      <_StringData _Name="STR_SONG_NAME_41" _Composer="STR_SONG_COMPOSER_41" />
+    </ST_JUKEBOX>
+  </INFO>
+</ENTITY_FILE>

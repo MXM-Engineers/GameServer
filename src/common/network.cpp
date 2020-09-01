@@ -1,6 +1,5 @@
 #include "network.h"
 #include "protocol.h"
-#include <EAThread/eathread_thread.h>
 
 const char* IpToString(const u8* ip)
 {
@@ -87,8 +86,8 @@ bool Server::Init(const char* listenPort)
 		client.hEventSend = WSA_INVALID_EVENT;
 	}
 
-	EA::Thread::Thread Thread;
-	Thread.Begin(ThreadNetwork, this);
+
+	thread.Begin(ThreadNetwork, this);
 	running = true;
 	return true;
 }

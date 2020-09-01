@@ -2,6 +2,7 @@
 #include "base.h"
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
+#include <EAThread/eathread_thread.h>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -62,6 +63,8 @@ struct Server
 
 	eastl::fixed_vector<i32,MAX_CLIENTS> clientDisconnectedList;
 	Mutex mutexClientDisconnectedList;
+
+	EA::Thread::Thread thread;
 
 #ifdef CONF_DEBUG
 	i32 packetCounter = 0;

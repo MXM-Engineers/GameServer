@@ -2,6 +2,7 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
+#include <EAThread/eathread_thread.h>
 
 // TODO: move this
 struct AccountData
@@ -22,8 +23,10 @@ struct Coordinator
 	Channel* channel;
 	AccountData accountData[Server::MAX_CLIENTS];
 	GrowableBuffer recvDataBuff;
+	EA::Thread::Thread thread;
 
 	void Init(Server* server_);
+	void Cleanup();
 
 	void Update(f64 delta);
 

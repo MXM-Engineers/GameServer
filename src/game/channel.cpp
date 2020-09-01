@@ -1,6 +1,5 @@
 #include "channel.h"
 
-#include <EAThread/eathread_thread.h>
 #include "coordinator.h"
 #include "game_content.h"
 
@@ -50,9 +49,13 @@ bool Channel::Init(Server* server_)
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
 
-	EA::Thread::Thread Thread;
-	Thread.Begin(ThreadChannel, this);
+	thread.Begin(ThreadChannel, this);
 	return true;
+}
+
+void Channel::Cleanup()
+{
+	thread.WaitForEnd();
 }
 
 void Channel::Update(f64 delta)

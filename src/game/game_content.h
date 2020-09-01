@@ -218,19 +218,28 @@ struct GameXmlContent
 		eastl::fixed_vector<Spawn,512> spawns;
 	};
 
+	struct Song
+	{
+		SongID ID;
+		i32 length;
+	};
+
 	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
 	// intead of comparing the hash generated from the string? I must be missing something here. LordSk (29/08/2020)
 	eastl::hash<const char*> strHash;
 
-	eastl::fixed_vector<Master,100> masters;
+	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
 
 	Map mapLobbyNormal;
+
+	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadLobbyNormal();
+	bool LoadJukeboxSongs();
 	bool Load();
 };
 

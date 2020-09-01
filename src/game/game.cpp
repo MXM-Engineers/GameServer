@@ -19,6 +19,7 @@ void Game::Update(f64 delta)
 
 	// when the jukebox is replicated, we send its status
 	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
+	// TODO: find a better way to represent this dependency
 	foreach(it, playerList) {
 		if(!it->isJukeboxActorReplicated) {
 			if(replication->IsActorReplicatedForClient(it->clientID, npcJukeBox->UID)) {

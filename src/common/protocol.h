@@ -55,6 +55,11 @@ enum class SkillID: i32
 	INVALID = 0,
 };
 
+enum class SongID: i32
+{
+	INVALID = 0,
+};
+
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 struct NetHeader

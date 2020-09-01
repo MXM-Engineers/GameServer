@@ -2,7 +2,6 @@
 #include "channel.h"
 #include "game_content.h"
 #include <zlib.h>
-#include <EAThread/eathread_thread.h>
 
 intptr_t ThreadCoordinator(void* pData)
 {
@@ -49,8 +48,13 @@ void Coordinator::Init(Server* server_)
 	channel = &channelBridge;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	EA::Thread::Thread Thread;
-	Thread.Begin(ThreadCoordinator, this);
+	thread.Begin(ThreadCoordinator, this);
+}
+
+void Coordinator::Cleanup()
+{
+	channel->Cleanup();
+	thread.WaitForEnd();
 }
 
 void Coordinator::Update(f64 delta)

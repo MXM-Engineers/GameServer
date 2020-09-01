@@ -235,6 +235,14 @@ struct CN_ChannelChatMessage
 	wchar msg[1];
 };
 
+struct CQ_JukeboxQueueSong
+{
+	enum { NET_ID = 60130 };
+
+	SongID songID;
+};
+ASSERT_SIZE(CQ_JukeboxQueueSong, 4);
+
 struct CQ_GetGuildProfile
 {
 	enum { NET_ID = 60145 };

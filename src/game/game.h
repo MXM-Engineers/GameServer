@@ -55,6 +55,7 @@ struct Game
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
+	void OnPlayerJukeboxQueueSong(i32 clientId, SongID songID);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

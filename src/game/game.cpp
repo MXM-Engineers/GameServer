@@ -155,6 +155,11 @@ void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActi
 	replication->EventPlayerActionState(playerActorUID[clientID], sync); // TODO: temporarily directly pass the packet
 }
 
+void Game::OnPlayerJukeboxQueueSong(i32 clientId, SongID songID)
+{
+
+}
+
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;

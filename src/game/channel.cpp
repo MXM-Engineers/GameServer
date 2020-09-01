@@ -138,6 +138,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CN_ChannelChatMessage);
 		HANDLE_CASE(CQ_SetLeaderCharacter);
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
+		HANDLE_CASE(CQ_JukeboxQueueSong);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -222,4 +223,13 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 	LOG("}");
 
 	game.OnPlayerSyncActionState(clientID, sync);
+}
+
+void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
+
+	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, queue.songID);
+
+	game.OnPlayerJukeboxQueueSong(clientID, queue.songID);
 }

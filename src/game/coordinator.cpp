@@ -594,8 +594,19 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		u8 sendData[128];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(1); // packetNum
-		packet.Write<u16>(0); // items_count
+		packet.Write<u8>(1); // packetNum
+		packet.Write<u16>(1); // items_count
+
+		// jukebox coins
+		packet.Write<i32>(1073741864); // itemID
+		packet.Write<u8>(0); // invenType
+		packet.Write<i32>(200); // slot
+		packet.Write<i32>(137120001); // itemIndex -> actual jukebox coin identifier
+		packet.Write<i32>(1337); // count
+		packet.Write<i32>(-1); // propertyGroupIndex
+		packet.Write<u8>(0); // isLifeTimeAbsolute
+		packet.Write<i64>(0); // lifeEndTimeUTC
+		packet.Write<u16>(0); // properties_count
 
 		LOG("[client%03d] Server :: SN_ProfileItems :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileItems::NET_ID, packet.size, packet.data);

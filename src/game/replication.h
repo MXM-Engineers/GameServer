@@ -142,7 +142,7 @@ struct Replication
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
 	void JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec);
-	void SendJukeboxStatus(i32 clientID);
+	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
 	void SendJukeboxQueue(i32 clientID, const JukeboxTrack* tracks, const i32 trackCount);
 
 	bool IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const;

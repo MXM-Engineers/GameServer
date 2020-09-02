@@ -459,19 +459,9 @@ void Replication::JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 
 	}
 }
 
-void Replication::SendJukeboxStatus(i32 clientID)
+void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
 {
-	// SN_JukeboxEnqueuedList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(0); // trackList_count
-
-		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
-	}
-
+	/*
 	// SN_JukeboxHotTrackList
 	{
 		u8 sendData[256];
@@ -482,6 +472,7 @@ void Replication::SendJukeboxStatus(i32 clientID)
 		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
 		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
 	}
+	*/
 
 	// SN_JukeboxPlay
 	{
@@ -489,31 +480,28 @@ void Replication::SendJukeboxStatus(i32 clientID)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<i32>(0); // result
-		packet.Write<i32>(7770015); // trackID
-		packet.WriteStringObj(L"Flashback"); // nickname
-		packet.Write<u16>(0); // playPositionSec
+		packet.Write<SongID>(songID); // trackID
+		packet.WriteStringObj(requesterNick); // nickname
+		packet.Write<u16>(playPosInSec); // playPositionSec
 
-		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
+		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%S'", clientID, songID, requesterNick);
 		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 	}
 }
 
 void Replication::SendJukeboxQueue(i32 clientID, const Replication::JukeboxTrack* tracks, const i32 trackCount)
 {
-	// SN_JukeboxEnqueuedList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
+	u8 sendData[256];
+	PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(trackCount); // trackList_count
-		for(int i = 0; i < trackCount; i++) {
-			packet.Write<SongID>(tracks[i].songID);
-			packet.WriteStringObj(tracks[i].requesterNickname.data(), tracks[i].requesterNickname.size());
-		}
-
-		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+	packet.Write<u16>(trackCount); // trackList_count
+	for(int i = 0; i < trackCount; i++) {
+		packet.Write<SongID>(tracks[i].songID);
+		packet.WriteStringObj(tracks[i].requesterNickname.data(), tracks[i].requesterNickname.size());
 	}
+
+	LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+	SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
 }
 
 bool Replication::IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const

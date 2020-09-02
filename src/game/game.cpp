@@ -18,12 +18,30 @@ void Game::Update(f64 delta, Time localTime_)
 	localTime = localTime_;
 	world.Update(delta);
 
-	// Update jukebox
+	UpdateJukebox();
+}
 
-	// when the jukebox is replicated, we send its status
-	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
-	// TODO: find a better way to represent this dependency
+void Game::UpdateJukebox()
+{
+	// if the song playing ended, make the current song null
+	bool doSendNewSong = false;
+	if(jukebox.currentSong.songID != SongID::INVALID) {
+		if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
+			jukebox.currentSong.songID = {};
+			doSendNewSong = true;
+		}
+	}
 
+	if(jukebox.currentSong.songID == SongID::INVALID) {
+		if(!jukebox.queue.empty()) {
+			jukebox.currentSong = jukebox.queue.front();
+			jukebox.queue.pop_front();
+			jukebox.playStartTime = localTime;
+			doSendNewSong = true;
+		}
+	}
+
+	// build new replication song queue
 	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
 	foreach(it, jukebox.queue) {
 		Replication::JukeboxTrack track;
@@ -32,11 +50,38 @@ void Game::Update(f64 delta, Time localTime_)
 		tracks.push_back(track);
 	}
 
+	// when the jukebox is replicated, we send its status
+	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
+	// TODO: find a better way to represent this dependency
+	const wchar* requesterNick = L"";
+	i32 playPos;
+	if(jukebox.currentSong.songID != SongID::INVALID) {
+		requesterNick = playerAccountData[jukebox.currentSong.requesterClientID]->nickname.data();
+		playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
+	}
+
 	foreach(it, playerList) {
 		if(!it->isJukeboxActorReplicated) {
 			if(replication->IsActorReplicatedForClient(it->clientID, jukebox.npcActorUID)) {
 				it->isJukeboxActorReplicated = true;
 
+				if(jukebox.currentSong.songID != SongID::INVALID) {
+					replication->SendJukeboxPlay(it->clientID, jukebox.currentSong.songID, requesterNick, playPos);
+				}
+
+				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
+			}
+		}
+	}
+
+	// replicate new sound playing
+	if(doSendNewSong) {
+		const wchar* requesterNick = playerAccountData[jukebox.currentSong.requesterClientID]->nickname.data();
+		const i32 playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
+
+		foreach(it, playerList) {
+			if(it->isJukeboxActorReplicated) {
+				replication->SendJukeboxPlay(it->clientID, jukebox.currentSong.songID, requesterNick, playPos);
 				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
 			}
 		}
@@ -171,7 +216,7 @@ void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActi
 void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
 	if(jukebox.queue.full()) {
-		// TODO: send error message
+		// TODO: send *actual* packet answer
 		SendDbgMsg(clientID, L"Jukebox queue is full");
 		return;
 	}
@@ -199,7 +244,7 @@ void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 	// TODO: find a better way to represent this dependency
 	// send jukebox queue to players
 	foreach(it, playerList) {
-		if(replication->IsActorReplicatedForClient(it->clientID, jukebox.npcActorUID)) {
+		if(it->isJukeboxActorReplicated) {
 			replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
 		}
 	}

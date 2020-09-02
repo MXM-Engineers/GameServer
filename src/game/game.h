@@ -35,15 +35,15 @@ struct Game
 		enum { MAX_TRACKS = 8 };
 		struct Song
 		{
-			i32 requesterClientID;
-			SongID songID;
-			i32 lengthInSec;
+			SongID songID = SongID::INVALID;
+			i32 lengthInSec = 0;
+			i32 requesterClientID = -1;
 		};
 
 		ActorUID npcActorUID;
-		SongID currentSongID = SongID::INVALID;
-		Time playTime = Time::ZERO;
-		eastl::fixed_list<Song,8,false> queue;
+		Song currentSong = { SongID::INVALID };
+		Time playStartTime = Time::ZERO;
+		eastl::fixed_list<Song,MAX_TRACKS,false> queue;
 	};
 
 	const AccountData* playerAccountData[MAX_PLAYERS];
@@ -63,6 +63,7 @@ struct Game
 
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);
+	void UpdateJukebox();
 	bool LoadMap();
 
 	void OnPlayerConnect(i32 clientID, const AccountData* accountData);

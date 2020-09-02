@@ -205,7 +205,7 @@ struct Client
 
 				LOG("Server :: SN_TgchatServerInfo");
 				{
-					u8 sendData[256];
+					u8 sendData[1024];
 					PacketWriter packet(sendData, sizeof(sendData));
 
 					// host
@@ -248,7 +248,7 @@ struct Client
 				LOG("Client :: Cl::ConfirmGatewayInfo :: var=%d", confirm.var);
 
 				LOG("Server :: Sv::SendStationList");
-				u8 sendData[256];
+				u8 sendData[1024];
 				PacketWriter packet(sendData, sizeof(sendData));
 
 				packet.Write<u16>(1); // count
@@ -285,7 +285,7 @@ struct Client
 				SendPacket(status);
 
 				LOG("Server :: Sv::Finish");
-				u8 sendData[256];
+				u8 sendData[1024];
 				PacketWriter packet(sendData, sizeof(sendData));
 
 				packet.Write<u16>(1); // count

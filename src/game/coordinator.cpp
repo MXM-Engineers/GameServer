@@ -7,13 +7,13 @@ intptr_t ThreadCoordinator(void* pData)
 {
 	Coordinator& coordinator = *(Coordinator*)pData;
 
-	thread_local timept t0 = TimeNow();
+	thread_local Time t0 = TimeNow();
 	thread_local f64 accumulatorMs = 0.0;
 	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
 
 	while(coordinator.server->running)
 	{
-		timept t1 = TimeNow();
+		Time t1 = TimeNow();
 		accumulatorMs += TimeDurationMs(t0, t1);
 		t0 = t1;
 

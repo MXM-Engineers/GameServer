@@ -241,6 +241,8 @@ struct GameXmlContent
 	bool LoadLobbyNormal();
 	bool LoadJukeboxSongs();
 	bool Load();
+
+	const Song* FindJukeboxSongByID(SongID songID) const;
 };
 
 bool GameXmlContentLoad();

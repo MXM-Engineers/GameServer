@@ -7,31 +7,22 @@ intptr_t ThreadChannel(void* pData)
 {
 	Channel& channel = *(Channel*)pData;
 
-	thread_local timept t0 = TimeNow();
-	thread_local f64 accumulatorMs = 0.0;
 	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+	const Time startTime = TimeNow();
+	Time t0 = startTime;
 
 	while(channel.server->running)
 	{
-		timept t1 = TimeNow();
-		accumulatorMs += TimeDurationMs(t0, t1);
-		t0 = t1;
+		Time t1 = TimeNow();
+		channel.localTime = TimeDiff(startTime, t1);
+		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
-		// limit accumulation to max 2 frames
-		if(accumulatorMs > (UPDATE_RATE_MS * 2)) {
-			accumulatorMs = UPDATE_RATE_MS * 2;
-		}
-
-		if(accumulatorMs > UPDATE_RATE_MS) {
-			do
-			{
-				channel.Update(UPDATE_RATE_MS);
-				accumulatorMs -= UPDATE_RATE_MS;
-			}
-			while(accumulatorMs > UPDATE_RATE_MS);
+		if(delta > UPDATE_RATE_MS) {
+			channel.Update(delta);
+			t0 = t1;
 		}
 		else {
-			EA::Thread::ThreadSleep(UPDATE_RATE_MS - accumulatorMs); // yield
+			EA::Thread::ThreadSleep(UPDATE_RATE_MS - delta); // yield
 			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
 		}
@@ -97,7 +88,7 @@ void Channel::Update(f64 delta)
 		ClientHandlePacket(clientID, header, packetData);
 	}
 
-	game.Update(delta);
+	game.Update(delta, localTime);
 	replication.FrameEnd();
 }
 

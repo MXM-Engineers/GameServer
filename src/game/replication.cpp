@@ -498,6 +498,24 @@ void Replication::SendJukeboxStatus(i32 clientID)
 	}
 }
 
+void Replication::SendJukeboxQueue(i32 clientID, const Replication::JukeboxTrack* tracks, const i32 trackCount)
+{
+	// SN_JukeboxEnqueuedList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(trackCount); // trackList_count
+		for(int i = 0; i < trackCount; i++) {
+			packet.Write<SongID>(tracks[i].songID);
+			packet.WriteStringObj(tracks[i].requesterNickname.data(), tracks[i].requesterNickname.size());
+		}
+
+		LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
+	}
+}
+
 bool Replication::IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const
 {
 	const auto& set = playerLocalInfo[clientID].actorUIDSet;

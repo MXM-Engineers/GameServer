@@ -99,7 +99,7 @@ const wchar* _TempWideStrFormat(const wchar* fmt, ...)
 #define SOKOL_IMPL
 #include "sokol_time.h"
 
-static timept g_StartTime;
+static Time g_StartTime;
 
 void TimeInit()
 {
@@ -107,44 +107,49 @@ void TimeInit()
 	g_StartTime = TimeNow();
 }
 
-timept TimeNow()
+Time TimeNow()
 {
-	return stm_now();
+	return (Time)stm_now();
 }
 
-timept TimeRelNow()
+Time TimeRelNow()
 {
-	return stm_since(g_StartTime);
+	return (Time)stm_since((u64)g_StartTime);
 }
 
-f64 TimeDiffSec(timept t0, timept t1)
+Time TimeDiff(Time start, Time end)
 {
-	return stm_sec(stm_diff(t1, t0));
+	return (Time)(stm_diff((u64)end, (u64)start));
 }
 
-f64 TimeDurationMs(timept t0, timept t1)
+f64 TimeDiffSec(Time t0, Time t1)
 {
-	return stm_ms(stm_diff(t1, t0));
+	return stm_sec(stm_diff((u64)t1, (u64)t0));
 }
 
-f64 TimeDiffSec(timept diff)
+f64 TimeDurationMs(Time t0, Time t1)
 {
-	return stm_sec(diff);
+	return stm_ms(stm_diff((u64)t1, (u64)t0));
 }
 
-f64 TimeDiffMs(timept diff)
+f64 TimeDiffSec(Time diff)
 {
-	return stm_ms(diff);
+	return stm_sec((u64)diff);
 }
 
-f64 TimeDurationSinceSec(timept t0)
+f64 TimeDiffMs(Time diff)
 {
-	return stm_sec(stm_since(t0));
+	return stm_ms((u64)diff);
 }
 
-f64 TimeDurationSinceMs(timept t0)
+f64 TimeDurationSinceSec(Time t0)
 {
-	return stm_ms(stm_since(t0));
+	return stm_sec(stm_since((u64)t0));
+}
+
+f64 TimeDurationSinceMs(Time t0)
+{
+	return stm_ms(stm_since((u64)t0));
 }
 
 static void EASTL_AssertionFailed(const char* expression, void* pContext)
@@ -160,4 +165,4 @@ struct EASTLInit
 	}
 };
 
-static EASTLInit;
+static EASTLInit eastlInit;

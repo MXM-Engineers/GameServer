@@ -104,6 +104,12 @@ struct Replication
 		void Reset();
 	};
 
+	struct JukeboxTrack
+	{
+		SongID songID;
+		WideString requesterNickname;
+	};
+
 	Server* server;
 	Frame frames[2];
 	Frame* frameCur;
@@ -137,6 +143,7 @@ struct Replication
 
 	void JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec);
 	void SendJukeboxStatus(i32 clientID);
+	void SendJukeboxQueue(i32 clientID, const JukeboxTrack* tracks, const i32 trackCount);
 
 	bool IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const;
 

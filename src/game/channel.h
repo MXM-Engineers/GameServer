@@ -13,6 +13,7 @@ struct Channel
 	Server* server;
 	Game game;
 	Replication replication;
+	Time localTime;
 
 	EA::Thread::Thread thread;
 

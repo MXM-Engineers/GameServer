@@ -298,6 +298,16 @@ bool GameXmlContent::Load()
 	return true;
 }
 
+const GameXmlContent::Song* GameXmlContent::FindJukeboxSongByID(SongID songID) const
+{
+	foreach(it, jukeboxSongs) {
+		if(it->ID == songID) {
+			return &(*it);
+		}
+	}
+	return nullptr;
+}
+
 bool GameXmlContentLoad()
 {
 	static GameXmlContent content;

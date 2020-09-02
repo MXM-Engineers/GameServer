@@ -13,20 +13,31 @@ void Game::Init(Replication* replication_)
 	LoadMap();
 }
 
-void Game::Update(f64 delta)
+void Game::Update(f64 delta, Time localTime_)
 {
+	localTime = localTime_;
 	world.Update(delta);
+
+	// Update jukebox
 
 	// when the jukebox is replicated, we send its status
 	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
 	// TODO: find a better way to represent this dependency
+
+	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
+	foreach(it, jukebox.queue) {
+		Replication::JukeboxTrack track;
+		track.songID = it->songID;
+		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
+		tracks.push_back(track);
+	}
+
 	foreach(it, playerList) {
 		if(!it->isJukeboxActorReplicated) {
-			if(replication->IsActorReplicatedForClient(it->clientID, npcJukeBox->UID)) {
+			if(replication->IsActorReplicatedForClient(it->clientID, jukebox.npcActorUID)) {
 				it->isJukeboxActorReplicated = true;
 
-				// TODO: split this
-				replication->SendJukeboxStatus(it->clientID);
+				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
 			}
 		}
 	}
@@ -47,8 +58,10 @@ bool Game::LoadMap()
 		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
 	}
 
-	npcJukeBox = world.FindNpcActorByCreatureID(CreatureIndex::Jukebox);
+	auto npcJukeBox  = world.FindNpcActorByCreatureID(CreatureIndex::Jukebox);
 	ASSERT(npcJukeBox != world.InvalidNpcHandle());
+	jukebox.npcActorUID = npcJukeBox->UID;
+
 	return true;
 }
 
@@ -155,9 +168,41 @@ void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActi
 	replication->EventPlayerActionState(playerActorUID[clientID], sync); // TODO: temporarily directly pass the packet
 }
 
-void Game::OnPlayerJukeboxQueueSong(i32 clientId, SongID songID)
+void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
+	if(jukebox.queue.full()) {
+		// TODO: send error message
+		SendDbgMsg(clientID, L"Jukebox queue is full");
+		return;
+	}
 
+	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
+	if(!xmlSong) {
+		SendDbgMsg(clientID, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
+		return;
+	}
+
+	Jukebox::Song song;
+	song.requesterClientID = clientID;
+	song.songID = songID;
+	song.lengthInSec = xmlSong->length;
+	jukebox.queue.push_back(song);
+
+	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
+	foreach(it, jukebox.queue) {
+		Replication::JukeboxTrack track;
+		track.songID = it->songID;
+		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
+		tracks.push_back(track);
+	}
+
+	// TODO: find a better way to represent this dependency
+	// send jukebox queue to players
+	foreach(it, playerList) {
+		if(replication->IsActorReplicatedForClient(it->clientID, jukebox.npcActorUID)) {
+			replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
+		}
+	}
 }
 
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)

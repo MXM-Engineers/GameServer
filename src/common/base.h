@@ -334,14 +334,18 @@ typedef EA::Thread::AutoFutex LockGuard;
 #define foreach_mut(IT,CONTAINER) for(auto IT = CONTAINER.begin(); IT != CONTAINER.end(); ++IT)
 
 // time API
-typedef u64 timept;
+enum class Time: u64
+{
+	ZERO = 0
+};
 
 void TimeInit();
-timept TimeNow();
-timept TimeRelNow(); // time ticks since start
-f64 TimeDurationSec(timept t0, timept t1);
-f64 TimeDurationMs(timept t0, timept t1);
-f64 TimeDiffSec(timept diff);
-f64 TimeDiffMs(timept diff);
-f64 TimeDurationSinceSec(timept t0);
-f64 TimeDurationSinceMs(timept t0);
+Time TimeNow();
+Time TimeRelNow(); // time ticks since start
+f64 TimeDurationSec(Time t0, Time t1);
+f64 TimeDurationMs(Time t0, Time t1);
+Time TimeDiff(Time start, Time end);
+f64 TimeDiffSec(Time diff);
+f64 TimeDiffMs(Time diff);
+f64 TimeDurationSinceSec(Time t0);
+f64 TimeDurationSinceMs(Time t0);

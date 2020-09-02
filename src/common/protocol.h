@@ -1062,7 +1062,7 @@ struct SN_JukeboxEnqueuedList
 
 	struct Track
 	{
-		i32 trackID;
+		SongID trackID;
 		u16 nickname_len;
 		wchar nickname[1];
 	};
@@ -1077,7 +1077,7 @@ struct SN_JukeboxPlay
 
 	struct Track
 	{
-		i32 trackID;
+		SongID trackID;
 		u16 nickname_len;
 		wchar nickname[1];
 	};

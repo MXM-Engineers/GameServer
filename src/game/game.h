@@ -3,14 +3,13 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
+#include <EASTL/fixed_list.h>
 #include "world.h"
 
 struct AccountData;
 
 struct Game
 {
-	typedef World::List<World::ActorNpc>::iterator NpcHandle;
-
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
@@ -31,6 +30,22 @@ struct Game
 			clientID(clientID_) {}
 	};
 
+	struct Jukebox
+	{
+		enum { MAX_TRACKS = 8 };
+		struct Song
+		{
+			i32 requesterClientID;
+			SongID songID;
+			i32 lengthInSec;
+		};
+
+		ActorUID npcActorUID;
+		SongID currentSongID = SongID::INVALID;
+		Time playTime = Time::ZERO;
+		eastl::fixed_list<Song,8,false> queue;
+	};
+
 	const AccountData* playerAccountData[MAX_PLAYERS];
 
 	World world;
@@ -42,10 +57,12 @@ struct Game
 
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 
-	NpcHandle npcJukeBox;
+	Time localTime;
+
+	Jukebox jukebox;
 
 	void Init(Replication* replication_);
-	void Update(f64 delta);
+	void Update(f64 delta, Time localTime_);
 	bool LoadMap();
 
 	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
@@ -55,7 +72,7 @@ struct Game
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
-	void OnPlayerJukeboxQueueSong(i32 clientId, SongID songID);
+	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

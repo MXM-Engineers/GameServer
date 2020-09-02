@@ -58,6 +58,11 @@ enum class SkillID: i32
 enum class SongID: i32
 {
 	INVALID = 0,
+	UpsideDown = 7770015,
+	Scml = 7770002,
+	Poharan = 7770010,
+	Triangle = 7770030,
+	Arami = 7770012,
 };
 
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)

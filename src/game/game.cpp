@@ -88,6 +88,45 @@ void Game::UpdateJukebox()
 	}
 }
 
+bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
+{
+	if(jukebox.queue.full()) {
+		// TODO: send *actual* packet answer
+		SendDbgMsg(clientID, L"Jukebox queue is full");
+		return false;
+	}
+
+	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
+	if(!xmlSong) {
+		SendDbgMsg(clientID, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
+		return false;
+	}
+
+	Jukebox::Song song;
+	song.requesterClientID = clientID;
+	song.songID = songID;
+	song.lengthInSec = xmlSong->length;
+	jukebox.queue.push_back(song);
+
+	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
+	foreach(it, jukebox.queue) {
+		Replication::JukeboxTrack track;
+		track.songID = it->songID;
+		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
+		tracks.push_back(track);
+	}
+
+	// TODO: find a better way to represent this dependency
+	// send jukebox queue to players
+	foreach(it, playerList) {
+		if(it->isJukeboxActorReplicated) {
+			replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
+		}
+	}
+
+	return true;
+}
+
 bool Game::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
@@ -215,39 +254,7 @@ void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActi
 
 void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
-	if(jukebox.queue.full()) {
-		// TODO: send *actual* packet answer
-		SendDbgMsg(clientID, L"Jukebox queue is full");
-		return;
-	}
-
-	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
-	if(!xmlSong) {
-		SendDbgMsg(clientID, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
-		return;
-	}
-
-	Jukebox::Song song;
-	song.requesterClientID = clientID;
-	song.songID = songID;
-	song.lengthInSec = xmlSong->length;
-	jukebox.queue.push_back(song);
-
-	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
-	foreach(it, jukebox.queue) {
-		Replication::JukeboxTrack track;
-		track.songID = it->songID;
-		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
-		tracks.push_back(track);
-	}
-
-	// TODO: find a better way to represent this dependency
-	// send jukebox queue to players
-	foreach(it, playerList) {
-		if(it->isJukeboxActorReplicated) {
-			replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
-		}
-	}
+	JukeboxQueueSong(clientID, songID);
 }
 
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
@@ -329,37 +336,27 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		}
 
 		if(wcsncmp(msg, L"upsidedown", 10) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-			replication->JukeboxPlaySong(0, 7770015, playerActor->name.data(), 0);
+			JukeboxQueueSong(clientID, SongID::UpsideDown);
 			return true;
 		}
 		
 		if(wcsncmp(msg, L"scml", 4) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-			replication->JukeboxPlaySong(0, 7770002, playerActor->name.data(), 0);
+			JukeboxQueueSong(clientID, SongID::Scml);
 			return true;
 		}
 
 		if(wcsncmp(msg, L"poharan", 7) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-			replication->JukeboxPlaySong(0, 7770010, playerActor->name.data(), 0);
+			JukeboxQueueSong(clientID, SongID::Poharan);
 			return true;
 		}
 
 		if(wcsncmp(msg, L"triangle", 8) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-			replication->JukeboxPlaySong(0, 7770030, playerActor->name.data(), 0);
+			JukeboxQueueSong(clientID, SongID::Triangle);
 			return true;
 		}
 		
 		if(wcsncmp(msg, L"arami", 5) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-			replication->JukeboxPlaySong(0, 7770012, playerActor->name.data(), 0);
+			JukeboxQueueSong(clientID, SongID::Arami);
 			return true;
 		}
 

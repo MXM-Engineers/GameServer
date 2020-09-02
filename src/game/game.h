@@ -63,7 +63,10 @@ struct Game
 
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);
+
 	void UpdateJukebox();
+	bool JukeboxQueueSong(i32 clientID, SongID songID);
+
 	bool LoadMap();
 
 	void OnPlayerConnect(i32 clientID, const AccountData* accountData);

@@ -400,6 +400,8 @@ void Replication::EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePla
 
 void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
+	// TODO: restrict message length
+
 	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
 
@@ -491,7 +493,7 @@ void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requ
 
 void Replication::SendJukeboxQueue(i32 clientID, const Replication::JukeboxTrack* tracks, const i32 trackCount)
 {
-	u8 sendData[256];
+	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
 
 	packet.Write<u16>(trackCount); // trackList_count
@@ -798,7 +800,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 		// SN_GamePlayerStock
 		{
-			u8 sendData[1024];
+			u8 sendData[2048];
 			PacketWriter packet(sendData, sizeof(sendData));
 
 			packet.Write<LocalActorID>(localActorID); // playerID

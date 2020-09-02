@@ -665,7 +665,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 	// SN_AccountInfo
 	{
-		u8 sendData[128];
+		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.WriteStringObj(account.nickname.data()); // nick
@@ -720,7 +720,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 	// SN_GuildChannelEnter
 	{
-		u8 sendData[256];
+		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.WriteStringObj(L"Alpha"); // guildName

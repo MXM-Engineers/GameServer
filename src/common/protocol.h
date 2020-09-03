@@ -57,6 +57,7 @@ enum class SkillID: i32
 
 enum class SongID: i32
 {
+	Default = -1,
 	INVALID = 0,
 	UpsideDown = 7770015,
 	Scml = 7770002,

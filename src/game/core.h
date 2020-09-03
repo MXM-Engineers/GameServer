@@ -5,4 +5,3 @@ enum class ActorUID: u32
 {
 	INVALID = 0,
 };
-

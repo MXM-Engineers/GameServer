@@ -28,7 +28,6 @@ void Game::UpdateJukebox()
 	if(jukebox.currentSong.songID != SongID::INVALID) {
 		if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
 			jukebox.currentSong.songID = {};
-			doSendNewSong = true;
 		}
 	}
 
@@ -67,6 +66,9 @@ void Game::UpdateJukebox()
 
 				if(jukebox.currentSong.songID != SongID::INVALID) {
 					replication->SendJukeboxPlay(it->clientID, jukebox.currentSong.songID, requesterNick, playPos);
+				}
+				else { // send the Lobby music if no song is playing
+					replication->SendJukeboxPlay(it->clientID, SongID::Default, L"", 0);
 				}
 
 				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());

@@ -837,6 +837,13 @@ class ServerSerializer:
         print('    characterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_62214(netid, data):
+        p = common.PacketReader(data)
+        print('SN_ReadySortieRoom {')
+        print('    userId=%d' % p.read_i32())
+        print('    ready=%d' % p.read_u8())
+        print('}')
+
     def serialize_62217(netid, data):
         p = common.PacketReader(data)
         print('SN_StartCountdownSortieRoom {')

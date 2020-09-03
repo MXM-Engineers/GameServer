@@ -832,8 +832,13 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 			packet.Write<LocalActorID>(localActorID); // playerID
 			packet.WriteStringObj(plate.name.data()); // name
 			packet.Write<ClassType>(actor.classType); // class_
+#if 0
 			packet.Write<i32>(320080005); // displayTitleIDX
 			packet.Write<i32>(320080005); // statTitleIDX
+#else // disable titles
+			packet.Write<i32>(0); // displayTitleIDX
+			packet.Write<i32>(0); // statTitleIDX
+#endif
 			packet.Write<u8>(0); // badgeType
 			packet.Write<u8>(0); // badgeTierLevel
 			packet.WriteStringObj(plate.guildTag.data()); // guildTag

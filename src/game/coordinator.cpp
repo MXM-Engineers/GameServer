@@ -672,8 +672,13 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<i32>(4); // inventoryLineCountTab0
 		packet.Write<i32>(4); // inventoryLineCountTab1
 		packet.Write<i32>(4); // inventoryLineCountTab2
+#if 0
 		packet.Write<i32>(320080005); // displayTitlteIndex
 		packet.Write<i32>(320080005); // statTitleIndex
+#else // disable title
+		packet.Write<i32>(0); // displayTitlteIndex
+		packet.Write<i32>(0); // statTitleIndex
+#endif
 		packet.Write<i32>(1); // warehouseLineCount
 		packet.Write<i32>(-1); // tutorialState
 		packet.Write<i32>(3600); // masterGearDurability

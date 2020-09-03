@@ -232,6 +232,15 @@ struct CQ_SetLeaderCharacter
 	SkinIndex skinIndex;
 };
 
+struct CQ_PartyCreate
+{
+	enum { NET_ID = 60074 };
+
+	i32 someID;
+	i32 stageType;
+};
+ASSERT_SIZE(CQ_PartyCreate, 8);
+
 struct CN_ChannelChatMessage
 {
 	enum { NET_ID = 60114 };
@@ -973,6 +982,15 @@ struct SN_ProfileMasterGears
 
 	u16 masterGears_count;
 	Gear masterGears;
+};
+
+struct SA_PartyCreate
+{
+	enum { NET_ID = 62175 };
+
+	i32 retval;
+	i32 ownerUserID;
+	i32 stageType;
 };
 
 struct SN_SummaryInfoLatest

@@ -131,6 +131,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
 		HANDLE_CASE(CQ_JukeboxQueueSong);
 		HANDLE_CASE(CQ_WhisperSend);
+		HANDLE_CASE(CQ_PartyCreate);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -241,4 +242,23 @@ void Channel::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header,
 	msg.assign(msg_str, msg_len);
 
 	game.OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
+}
+
+void Channel::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
+
+	LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.someID, create.stageType);
+
+	// we don't support creating parties right now, send back an error
+
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
+	packet.Write<i32>(0); // ownerUserID
+	packet.Write<i32>(create.stageType); // stageType
+
+	LOG("[client%03d] Server :: SA_PartyCreate :: NO", clientID);
+	server->SendPacketData(clientID, Sv::SA_PartyCreate::NET_ID, packet.size, packet.data);
 }

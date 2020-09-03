@@ -277,6 +277,16 @@ struct CQ_GetGuildRankingSeasonList
 };
 ASSERT_SIZE(CQ_GetGuildRankingSeasonList, 1);
 
+struct CQ_WhisperSend
+{
+	enum { NET_ID = 60210 };
+
+	u16 destNick_len;
+	wchar destNick[1];
+	u16 msg_len;
+	wchar msg[1];
+};
+
 } // Cl
 
 
@@ -1366,6 +1376,28 @@ struct SN_WarehouseItems
 
 	u16 items_count;
 	PST_ProfileItem items[1];
+};
+
+struct SA_WhisperSend
+{
+	enum { NET_ID = 62406 };
+
+	i32 result;
+	u16 destNick_len;
+	wchar destNick[1];
+	u16 msg_len;
+	wchar msg[1];
+};
+
+struct SN_WhisperReceive
+{
+	enum { NET_ID = 62407 };
+
+	u16 senderNick_len;
+	wchar senderNick[1];
+	u8 staffType;
+	u16 msg_len;
+	wchar msg[1];
 };
 
 struct SN_MailUnreadNotice

@@ -418,7 +418,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	}
 }
 
-void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void Replication::SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	ASSERT(toClientID >= 0 && toClientID < Server::MAX_CLIENTS);
 	if(playerState[toClientID] != PlayerState::IN_GAME) return;
@@ -435,6 +435,32 @@ void Replication::EventChatMessageToClient(i32 toClientID, const wchar* senderNa
 
 	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%S' msg='%.*S'", toClientID, senderName, msgLen, msg);
 	SendPacketData(toClientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
+}
+
+void Replication::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg)
+{
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(0); // result
+	packet.WriteStringObj(destNick);
+	packet.WriteStringObj(msg);
+
+	LOG("[client%03d] Server :: SA_WhisperSend :: destNick='%S' msg='%S'", senderClientID, destNick, msg);
+	SendPacketData(senderClientID, Sv::SA_WhisperSend::NET_ID, packet.size, packet.data);
+}
+
+void Replication::SendChatWhisperToClient(i32 destClientID, const wchar* senderName, const wchar* msg)
+{
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.WriteStringObj(senderName); // senderNick
+	packet.Write<u8>(0); // staffType
+	packet.WriteStringObj(msg); // msg
+
+	LOG("[client%03d] Server :: SN_WhisperReceive :: senderName='%S' msg='%S'", destClientID, senderName, msg);
+	SendPacketData(destClientID, Sv::SN_WhisperReceive::NET_ID, packet.size, packet.data);
 }
 
 void Replication::EventClientDisconnect(i32 clientID)

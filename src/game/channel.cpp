@@ -130,6 +130,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CQ_SetLeaderCharacter);
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
 		HANDLE_CASE(CQ_JukeboxQueueSong);
+		HANDLE_CASE(CQ_WhisperSend);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -223,4 +224,21 @@ void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& he
 	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, queue.songID);
 
 	game.OnPlayerJukeboxQueueSong(clientID, queue.songID);
+}
+
+void Channel::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	WideString destNick;
+	eastl::fixed_string<wchar,256,true> msg;
+
+	const u16 destNick_len = buff.Read<u16>();
+	const wchar* destNick_str = (wchar*)buff.ReadRaw(destNick_len * sizeof(wchar));
+	const u16 msg_len = buff.Read<u16>();
+	const wchar* msg_str = (wchar*)buff.ReadRaw(msg_len * sizeof(wchar));
+
+	destNick.assign(destNick_str, destNick_len);
+	msg.assign(msg_str, msg_len);
+
+	game.OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
 }

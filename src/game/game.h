@@ -46,7 +46,7 @@ struct Game
 		eastl::fixed_list<Song,MAX_TRACKS,false> queue;
 	};
 
-	const AccountData* playerAccountData[MAX_PLAYERS];
+	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	World world;
 	Replication* replication;
@@ -74,6 +74,7 @@ struct Game
 	void OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID);
 	void OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
+	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);

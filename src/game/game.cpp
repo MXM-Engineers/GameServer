@@ -235,6 +235,29 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
+void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+{
+	ASSERT(playerAccountData[clientID]);
+	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
+
+	i32 destClientID = -1;
+	for(int i = 0; i < playerAccountData.size(); i++) {
+		if(playerAccountData[i]) {
+			if(playerAccountData[i]->nickname.compare(destNick) == 0) {
+				destClientID = i;
+				break;
+			}
+		}
+	}
+
+	if(destClientID == -1) {
+		SendDbgMsg(clientID, LFMT(L"Player '%s' not found", destNick));
+		return;
+	}
+
+	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
+}
+
 void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
@@ -397,7 +420,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 void Game::SendDbgMsg(i32 clientID, const wchar* msg)
 {
-	replication->EventChatMessageToClient(clientID, L"System", 1, msg);
+	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
 void Game::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)

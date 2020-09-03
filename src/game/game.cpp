@@ -27,7 +27,7 @@ void Game::UpdateJukebox()
 	bool doSendNewSong = false;
 	if(jukebox.currentSong.songID != SongID::INVALID) {
 		if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
-			jukebox.currentSong.songID = {};
+			jukebox.currentSong = {};
 		}
 	}
 

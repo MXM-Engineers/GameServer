@@ -499,7 +499,7 @@ void Replication::SendJukeboxQueue(i32 clientID, const Replication::JukeboxTrack
 	packet.Write<u16>(trackCount); // trackList_count
 	for(int i = 0; i < trackCount; i++) {
 		packet.Write<SongID>(tracks[i].songID);
-		packet.WriteStringObj(tracks[i].requesterNickname.data(), tracks[i].requesterNickname.size());
+		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
 	}
 
 	LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);

@@ -107,7 +107,7 @@ struct Replication
 	struct JukeboxTrack
 	{
 		SongID songID;
-		WideString requesterNickname;
+		WideString requesterNick;
 	};
 
 	Server* server;

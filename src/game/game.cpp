@@ -45,7 +45,7 @@ void Game::UpdateJukebox()
 	foreach(it, jukebox.queue) {
 		Replication::JukeboxTrack track;
 		track.songID = it->songID;
-		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
+		track.requesterNick = it->requesterNick;
 		tracks.push_back(track);
 	}
 
@@ -55,7 +55,7 @@ void Game::UpdateJukebox()
 	const wchar* requesterNick = L"";
 	i32 playPos;
 	if(jukebox.currentSong.songID != SongID::INVALID) {
-		requesterNick = playerAccountData[jukebox.currentSong.requesterClientID]->nickname.data();
+		requesterNick = jukebox.currentSong.requesterNick.data();
 		playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
 	}
 
@@ -78,7 +78,7 @@ void Game::UpdateJukebox()
 
 	// replicate new sound playing
 	if(doSendNewSong) {
-		const wchar* requesterNick = playerAccountData[jukebox.currentSong.requesterClientID]->nickname.data();
+		const wchar* requesterNick = jukebox.currentSong.requesterNick.data();
 		const i32 playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
 
 		foreach(it, playerList) {
@@ -92,9 +92,34 @@ void Game::UpdateJukebox()
 
 bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 {
+	ASSERT(playerAccountData[clientID]);
+
 	if(jukebox.queue.full()) {
 		// TODO: send *actual* packet answer
 		SendDbgMsg(clientID, L"Jukebox queue is full");
+		return false;
+	}
+
+	// limit reservation to 1 per player
+	// @Speed
+	// TODO: store the accountID (when we have it)
+	const WideString& nick = playerAccountData[clientID]->nickname;
+	bool found = false;
+	if(jukebox.currentSong.requesterNick.compare(nick) == 0) {
+		found = true;
+	}
+
+	if(!found) {
+		foreach(it, jukebox.queue) {
+			if(it->requesterNick.compare(nick) == 0) {
+				found = true;
+				break;
+			}
+		}
+	}
+
+	if(found) {
+		SendDbgMsg(clientID, L"Song reservation is limited to 1 per player");
 		return false;
 	}
 
@@ -105,7 +130,7 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 	}
 
 	Jukebox::Song song;
-	song.requesterClientID = clientID;
+	song.requesterNick = playerAccountData[clientID]->nickname;
 	song.songID = songID;
 	song.lengthInSec = xmlSong->length;
 	jukebox.queue.push_back(song);
@@ -114,7 +139,7 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 	foreach(it, jukebox.queue) {
 		Replication::JukeboxTrack track;
 		track.songID = it->songID;
-		track.requesterNickname = playerAccountData[it->requesterClientID]->nickname;
+		track.requesterNick = it->requesterNick;
 		tracks.push_back(track);
 	}
 
@@ -172,6 +197,8 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	ASSERT(playerClientIDMap[clientID] != playerList.end());
 	playerList.erase(playerClientIDMap[clientID]);
 	playerClientIDMap[clientID] = playerList.end();
+
+	playerAccountData[clientID] = nullptr;
 }
 
 void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
@@ -204,6 +231,7 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
+	ASSERT(playerAccountData[clientID]);
 	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 

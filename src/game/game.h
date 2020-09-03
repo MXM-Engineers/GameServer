@@ -37,7 +37,7 @@ struct Game
 		{
 			SongID songID = SongID::INVALID;
 			i32 lengthInSec = 0;
-			i32 requesterClientID = -1;
+			WideString requesterNick;
 		};
 
 		ActorUID npcActorUID;

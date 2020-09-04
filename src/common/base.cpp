@@ -3,7 +3,7 @@
 #include <EAThread/eathread.h>
 #include <EASTL/array.h>
 
-#ifdef _WIN32
+#ifdef CONF_WINDOWS
 	#include <windows.h> // OutputDebugStringA
 #endif
 
@@ -52,7 +52,7 @@ void __Logf(const char* fmt, ...)
 	fwrite(final, 1, len, stdout);
 	fwrite(final, 1, len, g_LogFile);
 
-#ifdef _WIN32
+#ifdef CONF_WINDOWS
 #ifdef CONF_DEBUG
 	if(IsDebuggerPresent()) {
 		OutputDebugStringA(final);

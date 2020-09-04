@@ -24,6 +24,7 @@ inline void __assertion_failed(const char* cond, const char* file, int line)
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);
 	fflush(stdout);
 	fflush(g_LogFile);
+	fclose(g_LogFile);
 	DbgBreak();
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -14,7 +15,7 @@ void __Logf(const char* fmt, ...);
 #define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, ##__VA_ARGS__))
 #define LOG(fmt, ...) do { __Logf(fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
 #define LOG_NNL(fmt, ...) do { __Logf(fmt, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
-#define WARN(fmt, ...) do { __Logf("WARNING(" __FUNCTION__ "): " fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+#define WARN(fmt, ...) do { __Logf("WARNING(" FUNCTION_STR "): " fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
@@ -23,7 +24,7 @@ inline void __assertion_failed(const char* cond, const char* file, int line)
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);
 	fflush(stdout);
 	fflush(g_LogFile);
-	__debugbreak();
+	DbgBreak();
 }
 
 #define ASSERT(cond) do { if(!(cond)) { __assertion_failed(#cond, __FILE__, __LINE__); } } while(0)
@@ -35,8 +36,6 @@ inline void __assertion_failed(const char* cond, const char* file, int line)
 #endif
 
 #define ARRAY_COUNT(A) (sizeof(A)/sizeof(A[0]))
-#define PUSH_PACKED __pragma(pack(push, 1))
-#define POP_PACKED __pragma(pack(pop))
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))

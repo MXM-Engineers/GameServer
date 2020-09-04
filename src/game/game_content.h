@@ -68,7 +68,7 @@ struct GameXmlContent
 bool GameXmlContentLoad();
 const GameXmlContent& GetGameXmlContent();
 
-constexpr char* g_ActionStateString[] = {
+constexpr const char* g_ActionStateString[] = {
 	"ACTION_STATE_TYPE_IDLE",
 	"NORMAL_STAND_MOVESTATE",
 	"BATTLE_STAND_MOVESTATE",
@@ -246,9 +246,9 @@ constexpr char* g_ActionStateString[] = {
 	"UNKNOWN_ACTION_STATE_TYPE",
 };
 
-constexpr char* g_ActionStateInvalidString = "ACTION_STATE_TYPE_INVALID";
+constexpr const char* g_ActionStateInvalidString = "ACTION_STATE_TYPE_INVALID";
 
-constexpr char* g_ResultErrorString[] = {
+constexpr const char* g_ResultErrorString[] = {
 	"ERROR_TYPE_SUCCESS",
 	"ERROR_TYPE_REQ_CLASS",
 	"ERROR_TYPE_REQ_MINLEVEL",
@@ -887,4 +887,4 @@ constexpr char* g_ResultErrorString[] = {
 	"UNKNOWN_ERROR_TYPE",
 };
 
-constexpr char* g_ResultErrorInvalidString = "UNKNOWN_ERROR_TYPE";
+constexpr const char* g_ResultErrorInvalidString = "UNKNOWN_ERROR_TYPE";

@@ -11,6 +11,10 @@ void Game::Init(Replication* replication_)
 
 	world.Init(replication);
 
+	foreach(it, playerClientIDMap) {
+		*it = playerList.end();
+	}
+
 	LoadMap();
 }
 
@@ -187,7 +191,7 @@ void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 
 void Game::OnPlayerDisconnect(i32 clientID)
 {
-	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, playerActorUID[clientID]);
+	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
 
 	// we can disconnect before spawning, so test if we have an actor associated
 	if(playerActorUID[clientID] != ActorUID::INVALID) {
@@ -195,8 +199,9 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	}
 	playerActorUID[clientID] = ActorUID::INVALID;
 
-	ASSERT(playerClientIDMap[clientID] != playerList.end());
-	playerList.erase(playerClientIDMap[clientID]);
+	if(playerClientIDMap[clientID] != playerList.end()) {
+		playerList.erase(playerClientIDMap[clientID]);
+	}
 	playerClientIDMap[clientID] = playerList.end();
 
 	playerAccountData[clientID] = nullptr;
@@ -215,7 +220,7 @@ void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const 
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(playerActorUID[clientID] != replication->GetActorUID(clientID, characterID)) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, characterID);
+		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
 		return;
 	}
 	world.PlayerUpdatePosition(playerActorUID[clientID], pos, dir, eye, rotate, speed, state, actionID);

@@ -1,8 +1,10 @@
 --
 BUILD_DIR = path.getabsolute("build")
+BUILD_LINUX_DIR = path.getabsolute("build_linux")
 
 solution "Servers"
 	location(BUILD_DIR)
+	targetdir(BUILD_DIR)
 
 	configurations {
 		"Debug",
@@ -10,7 +12,6 @@ solution "Servers"
 	}
 
 	platforms {
-		"x32",
 		"x64"
 	}
 
@@ -39,26 +40,33 @@ solution "Servers"
 		}
 
 	configuration "windows"
+
 		defines {
 			"_CRT_SECURE_NO_DEPRECATE",
 			"_CRT_NONSTDC_NO_DEPRECATE",
 			"WIN32_LEAN_AND_MEAN",
 			"NOMINMAX",
+			"CONF_WINDOWS",
 		}
 
 		-- disable exception related warnings
 		buildoptions{ "/wd4577", "/wd4530" }
 
+	configuration "linux"
+		targetdir(BUILD_LINUX_DIR)
+
+		defines {
+			"CONF_LINUX",
+		}
+
+
+	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
+		targetdir("../build")
+
 	configuration {}
 		flags {
 			"Cpp14"
 		}
-
-	targetdir(BUILD_DIR)
-
-	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
-		targetdir("../build")
-	configuration {}
 
 	flags {
 		"NoExceptions",
@@ -109,6 +117,10 @@ project "Login"
 		links {
 			"ws2_32",
 		}
+	configuration "linux"
+		links {
+			"pthread",
+		}
 
 project "Game"
 	kind "ConsoleApp"
@@ -145,4 +157,9 @@ project "Game"
 
 		links {
 			"ws2_32",
+		}
+
+	configuration "linux"
+		links {
+			"pthread",
 		}

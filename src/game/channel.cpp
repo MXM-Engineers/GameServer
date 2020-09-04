@@ -162,14 +162,14 @@ void Channel::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header,
 void Channel::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, req.characterID);
+	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
 	game.OnPlayerGetCharacterInfo(clientID, req.characterID);
 }
 
 void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 
 	game.OnPlayerUpdatePosition(clientID, update.characterID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
@@ -189,7 +189,7 @@ void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& 
 void Channel::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, leader.characterID, leader.skinIndex);
+	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game.OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
 }
@@ -205,7 +205,7 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 	}
 
 	LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
-	LOG("	characterID=%d", sync.characterID);
+	LOG("	characterID=%d", (u32)sync.characterID);
 	LOG("	nState=%d (%s)", sync.state, stateStr);
 	LOG("	bApply=%d", sync.bApply);
 	LOG("	param1=%d", sync.param1);
@@ -222,7 +222,7 @@ void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& he
 {
 	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
 
-	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, queue.songID);
+	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
 
 	game.OnPlayerJukeboxQueueSong(clientID, queue.songID);
 }

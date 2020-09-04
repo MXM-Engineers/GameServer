@@ -2,7 +2,6 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
-#include <direct.h>
 
 struct Config
 {
@@ -122,7 +121,7 @@ struct Client
 				Disconnect();
 			}
 			else {
-				LOG("ERROR(recv): failed: %d", WSAGetLastError());
+				LOG("ERROR(recv): failed: %d", NetworkGetLastError());
 				Disconnect();
 			}
 		} while (len > 0);
@@ -331,7 +330,7 @@ struct Client
 	}
 };
 
-DWORD ThreadClient(void* pData)
+intptr_t ThreadClient(void* pData)
 {
 	Client client = *(Client*)pData;
 	LOG("Client_%d thread :: init", client.clientID);
@@ -350,27 +349,23 @@ int main(int argc, char** argv)
 	g_Config.LoadConfigFile();
 	g_Config.Print();
 
-	_mkdir("trace");
+	MakeDirectory("trace");
 
-	// Initialize Winsock
-	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-	if(iResult != 0) {
-		LOG("ERROR: WSAStartup failed: %d", iResult);
+	if(!NetworkInit()) {
 		return 1;
 	}
-	defer(WSACleanup());
+	defer(NetworkCleanup());
 
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
-	ZeroMemory(&hints, sizeof (hints));
+	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the local address and port to be used by the server
-	iResult = getaddrinfo(NULL, FMT("%d", g_Config.listenPort), &hints, &result);
+	i32 iResult = getaddrinfo(NULL, FMT("%d", g_Config.listenPort), &hints, &result);
 	if (iResult != 0) {
 		LOG("ERROR: getaddrinfo failed: %d", iResult);
 		return 1;
@@ -379,7 +374,7 @@ int main(int argc, char** argv)
 
 	SOCKET serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %ld", WSAGetLastError());
+		LOG("ERROR(socket): %d", NetworkGetLastError());
 		return 1;
 	}
 	defer(closesocket(serverSocket));
@@ -387,13 +382,13 @@ int main(int argc, char** argv)
 	// Setup the TCP listening socket
 	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
 	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
+		LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
 		return 1;
 	}
 
 	// listen
 	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+		LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
 		return 1;
 	}
 
@@ -401,10 +396,10 @@ int main(int argc, char** argv)
 		// Accept a client socket
 		LOG("Waiting for a connection...");
 		struct sockaddr clientAddr;
-		int addrLen = sizeof(sockaddr);
+		AddrLen addrLen = sizeof(sockaddr);
 		SOCKET clientSocket = accept(serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
-			LOG("ERROR(accept): failed: %d", WSAGetLastError());
+			LOG("ERROR(accept): failed: %d", NetworkGetLastError());
 			return 1;
 		}
 
@@ -415,8 +410,8 @@ int main(int argc, char** argv)
 		client.addr = clientAddr;
 
 		LOG("New connection (%s)", GetIpString(clientAddr));
-		HANDLE hThread = CreateThread(NULL, 0, ThreadClient, &client, 0, NULL);
-		ASSERT(hThread != NULL);
+		EA::Thread::Thread thread;
+		thread.Begin(ThreadClient, &client);
 	}
 
 	return 0;

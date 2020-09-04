@@ -14,16 +14,6 @@ Server* g_Server = nullptr;
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
-BOOL WINAPI ConsoleHandler(DWORD signal)
-{
-	if(signal == CTRL_C_EVENT || signal == CTRL_CLOSE_EVENT) {
-		LOG(">> Exit signal");
-		g_Server->running = false;
-	}
-
-	return TRUE;
-}
-
 int main(int argc, char** argv)
 {
 	LogInit("game_server.log");
@@ -34,12 +24,16 @@ int main(int argc, char** argv)
 
 	LOG(".: Game server :.");
 
-	if(!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
+	bool r = SetCloseSignalHandler([](){
+		g_Server->running = false;
+	});
+
+	if(!r) {
 		LOG("ERROR: Could not set control handler");
 		return 1;
 	}
 
-	bool r = GameXmlContentLoad();
+	r = GameXmlContentLoad();
 	if(!r) {
 		LOG("ERROR: failed to load game xml content");
 		return 1;
@@ -61,11 +55,11 @@ int main(int argc, char** argv)
 		// Accept a client socket
 		LOG("Waiting for a connection...");
 		struct sockaddr clientAddr;
-		int addrLen = sizeof(sockaddr);
+		AddrLen addrLen = sizeof(sockaddr);
 		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
 			if(server.running) {
-				LOG("ERROR(accept): failed: %d", WSAGetLastError());
+				LOG("ERROR(accept): failed: %d", NetworkGetLastError());
 				return 1;
 			}
 			else {

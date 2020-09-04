@@ -264,7 +264,7 @@ bool GameXmlContent::Load()
 	LOG("Masters:");
 	eastl::fixed_string<char,1024> buff;
 	foreach(it, masters) {
-		LOG("%s: ID=%d", it->className.data(), it->ID);
+		LOG("%s: ID=%d", it->className.data(), (i32)it->ID);
 
 		buff.clear();
 		foreach(s, it->skillIDs) {
@@ -287,12 +287,12 @@ bool GameXmlContent::Load()
 
 	LOG("Lobby_Normal:");
 	foreach(it, mapLobbyNormal.spawns) {
-		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
+		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
 
 	LOG("Jukebox songs:");
 	foreach(it, jukeboxSongs) {
-		LOG("ID=%d length=%d", it->ID, it->length);
+		LOG("ID=%d length=%d", (i32)it->ID, it->length);
 	}
 
 	return true;

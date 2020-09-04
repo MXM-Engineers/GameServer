@@ -31,7 +31,7 @@ void LogInit(const char* name)
 void __Logf(const char* fmt, ...)
 {
 	char buff[4096];
-	char final[4096];
+	char final[4096+100];
 
 	va_list list;
 	va_start(list, fmt);
@@ -46,10 +46,11 @@ void __Logf(const char* fmt, ...)
 	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
 
 	snprintf(final, sizeof(final), "[%x] %s", (i32)(intptr_t)threadID, buff);
+	const i32 len = strlen(final);
 
 	const LockGuard lock(g_Logger.mutex);
-	printf(final);
-	fprintf(g_LogFile, final);
+	fwrite(final, 1, len, stdout);
+	fwrite(final, 1, len, g_LogFile);
 
 #ifdef _WIN32
 #ifdef CONF_DEBUG

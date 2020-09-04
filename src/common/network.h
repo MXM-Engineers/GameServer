@@ -4,42 +4,109 @@
 #include <EASTL/fixed_vector.h>
 #include <EAThread/eathread_thread.h>
 
-#ifdef _WIN32
+enum class NetPollResult: int
+{
+	SUCCESS=0,
+	PENDING=1,
+	POLL_ERROR=2
+};
+
+enum {
+	RECV_BUFF_LEN=8192,
+	SEND_BUFF_LEN=8192,
+};
+
+#ifdef CONF_LINUX
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netinet/ip.h>
+	#include <arpa/inet.h>
+	#include <unistd.h>
+	#include <netdb.h>
+
+	typedef struct sockaddr sockaddr;
+	typedef struct sockaddr_in sockaddr_in;
+	typedef int SOCKET;
+	#define INVALID_SOCKET (-1)
+	#define SOCKET_ERROR (-1)
+
+	typedef u32 AddrLen;
+
+	struct AsyncConnection
+	{
+		SOCKET sock;
+
+		void Init();
+		void Reset();
+		void PrepareForNewConnection(SOCKET s);
+
+		bool StartReceiving();
+		bool StartSending();
+		void PushSendData(const void* data, const int dataSize);
+		const char* GetReceivedData();
+		NetPollResult PollReceive(int* outRecvLen);
+		NetPollResult PollSend();
+	};
+
+	inline void closesocket(SOCKET s) { close(s); }
+#endif
+
+#ifdef CONF_WINDOWS
 	#include <windows.h>
 	#include <winsock2.h>
 	#include <ws2tcpip.h>
 	#include <iphlpapi.h>
-# endif
 
-const char* IpToString(const u8* ip);
-const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3);
-const char* GetIpString(const sockaddr& addr);
+	typedef i32 AddrLen;
 
-struct Server
-{
-	enum {
-		MAX_CLIENTS=256,
-		RECV_BUFF_LEN=8192,
-		SEND_BUFF_LEN=8192,
-	};
-
-	struct ClientNet
+	struct AsyncConnection
 	{
-		sockaddr addr;
-		GrowableBuffer recvPendingProcessingBuff;
-		GrowableBuffer pendingSendBuff;
-		GrowableBuffer sendingBuff;
-		u8 recvBuffID;
-		u8 sendBuffID;
-		Mutex mutexRecv;
-		Mutex mutexSend;
-		Mutex mutexConnect;
+		SOCKET sock;
 		OVERLAPPED recvOverlapped;
 		OVERLAPPED sendOverlapped;
 		HANDLE hEventRecv;
 		HANDLE hEventSend;
 		char recvBuff[RECV_BUFF_LEN];
-		char sendBuff[SEND_BUFF_LEN];
+		GrowableBuffer sendingBuff;
+
+		void Init();
+		void Reset();
+		void PrepareForNewConnection(SOCKET s);
+
+		bool StartReceiving();
+		bool StartSending();
+		void PushSendData(const void* data, const int dataSize);
+		const char* GetReceivedData();
+		NetPollResult PollReceive(int* outRecvLen);
+		NetPollResult PollSend();
+	};
+#endif
+
+const char* IpToString(const u8* ip);
+const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3);
+const char* GetIpString(const sockaddr& addr);
+
+bool NetworkInit();
+void NetworkCleanup();
+i32 NetworkGetLastError();
+bool SocketSetNonBlocking(SOCKET s);
+
+struct Server
+{
+	enum {
+		MAX_CLIENTS=256,
+	};
+
+	struct ClientNet
+	{
+		AsyncConnection async;
+		sockaddr addr;
+		GrowableBuffer recvPendingProcessingBuff;
+		GrowableBuffer pendingSendBuff;
+		Mutex mutexRecv;
+		Mutex mutexSend;
+		Mutex mutexConnect;
 	};
 
 	struct ClientInfo

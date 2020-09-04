@@ -862,7 +862,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
 		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
 	}
 
@@ -960,7 +960,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
 		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
 	}
 
@@ -1092,7 +1092,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%d", clientID, destLen);
+		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
 		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
 	}
 

@@ -34,24 +34,18 @@ intptr_t ThreadNetwork(void* pData)
 
 bool Server::Init(const char* listenPort)
 {
-	// Initialize Winsock
-	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-	if(iResult != 0) {
-		LOG("ERROR: WSAStartup failed: %d", iResult);
-		return false;
-	}
+	if(!NetworkInit()) return false;
 
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
-	ZeroMemory(&hints, sizeof (hints));
+	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the local address and port to be used by the server
-	iResult = getaddrinfo(NULL, listenPort, &hints, &result);
+	int iResult = getaddrinfo(NULL, listenPort, &hints, &result);
 	if (iResult != 0) {
 		LOG("ERROR: getaddrinfo failed: %d", iResult);
 		return false;
@@ -60,20 +54,20 @@ bool Server::Init(const char* listenPort)
 
 	serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %ld", WSAGetLastError());
+		LOG("ERROR(socket): %d", NetworkGetLastError());
 		return false;
 	}
 
 	// Setup the TCP listening socket
 	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
 	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", WSAGetLastError());
+		LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
 		return false;
 	}
 
 	// listen
 	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %ld", WSAGetLastError());
+		LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
 		return false;
 	}
 
@@ -82,10 +76,8 @@ bool Server::Init(const char* listenPort)
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
 		ClientNet& client = clientNet[i];
-		client.hEventRecv = WSA_INVALID_EVENT;
-		client.hEventSend = WSA_INVALID_EVENT;
+		client.async.Init();
 	}
-
 
 	thread.Begin(ThreadNetwork, this);
 	running = true;
@@ -97,7 +89,7 @@ void Server::Cleanup()
 	LOG("Server shutting down...");
 
 	closesocket(serverSocket);
-	WSACleanup();
+	NetworkCleanup();
 }
 
 // NOTE: this is called from the Main thread (listen thread)
@@ -110,14 +102,8 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 
 			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
 
-			// set non blocking
-			u_long NonBlocking = true;
-			int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
-			if(ior != NO_ERROR) {
-				LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, WSAGetLastError());
-				closesocket(s);
+			if(!SocketSetNonBlocking(s)) {
 				ASSERT(0); // we want to catch that error
-				return -1;
 			}
 
 			clientSocket[clientID] = s;
@@ -134,26 +120,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			}
 			client.pendingSendBuff.Clear();
 
-			if(client.sendingBuff.data == nullptr) {
-				client.sendingBuff.Init(SEND_BUFF_LEN);
-			}
-			client.sendingBuff.Clear();
-
-			client.recvBuffID = 0;
-			client.sendBuffID = 0;
-
-			if(client.hEventRecv != WSA_INVALID_EVENT) {
-				client.hEventRecv = WSACreateEvent();
-			}
-			if(client.hEventSend != WSA_INVALID_EVENT) {
-				client.hEventSend = WSACreateEvent();
-			}
-
-			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
-			client.sendOverlapped.hEvent = client.hEventSend;
-
-			 // register the socket at the end, when everything is initialized
-			// TODO: add a variable clientIsInitialized?
+			client.async.PrepareForNewConnection(s);
 
 			// start receiving
 			bool r = ClientStartReceiving(clientID);
@@ -167,7 +134,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
 			info.port = htons(sin.sin_port);
 
-			clientIsConnected[clientID] = 1;
+			clientIsConnected[clientID] = 1; // register the socket at the end, when everything is initialized
 			return clientID;
 		}
 	}
@@ -191,8 +158,7 @@ void Server::DisconnectClient(i32 clientID)
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
 
-	WSAResetEvent(client.hEventRecv);
-	WSAResetEvent(client.hEventSend);
+	client.async.Reset();
 
 	clientIsConnected[clientID] = 0;
 	LOG("[client%03d] disconnected", clientID);
@@ -219,17 +185,13 @@ void Server::Update()
 
 		ClientNet& client = clientNet[clientID];
 
-		DWORD len;
-		DWORD flags = 0;
-		i32 r = WSAGetOverlappedResult(sock, &client.recvOverlapped, &len, FALSE, &flags);
-		if(r == FALSE) {
-			if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-				LOG("[client%03d] Recv WSAGetOverlappedResult failed (%d)", clientID, WSAGetLastError());
-				DisconnectClient(clientID);
-				continue;
-			}
+		i32 len = 0;
+		NetPollResult r = client.async.PollReceive(&len);
+		if(r == NetPollResult::POLL_ERROR) {
+			DisconnectClient(clientID);
+			continue;
 		}
-		else {
+		else if(r == NetPollResult::SUCCESS) {
 			bool r = ClientHandleReceivedData(clientID, len);
 			if(!r) {
 				continue;
@@ -242,44 +204,22 @@ void Server::Update()
 			}
 		}
 
-		len = 0;
-		flags = 0;
-		r = WSAGetOverlappedResult(sock, &client.sendOverlapped, &len, FALSE, &flags);
-		if(r == FALSE) {
-			if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-				LOG("[client%03d] Send WSAGetOverlappedResult failed (%d)", clientID, WSAGetLastError());
-				DisconnectClient(clientID);
-			}
+		r = client.async.PollSend();
+		if(r == NetPollResult::POLL_ERROR) {
+			DisconnectClient(clientID);
+			continue;
 		}
-		else {
-			if(len > 0) {
-#ifdef CONF_LOG_TRAFFIC_BYTELEN
-				LOG("[client%03d] Sent %d bytes", clientID, len);
-#endif
-				ASSERT(len == client.sendingBuff.size);
-				client.sendingBuff.Clear();
-			}
-
-			memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
-			client.sendOverlapped.hEvent = client.hEventSend;
-
+		else if(r == NetPollResult::SUCCESS) {
 			if(client.pendingSendBuff.size > 0) {
 				{
 					LockGuard lock(client.mutexSend);
-					client.sendingBuff.Append(client.pendingSendBuff.data, client.pendingSendBuff.size);
+					client.async.PushSendData(client.pendingSendBuff.data, client.pendingSendBuff.size);
 					client.pendingSendBuff.Clear();
 				}
 
-				WSABUF buff;
-				buff.len = client.sendingBuff.size;
-				buff.buf = (char*)client.sendingBuff.data;
-
-				DWORD len;
-				DWORD flags = 0;
-				int err;
-				int r = WSASend(sock, &buff, 1, &len, flags, &client.sendOverlapped, NULL);
-				if(r == SOCKET_ERROR && (err = WSAGetLastError()) != WSA_IO_PENDING) {
-					LOG("[client%03d] ERROR: send failed (%d)", clientID, err);
+				bool r = client.async.StartSending();
+				if(!r) {
+					LOG("[client%03d] ERROR: send failed", clientID);
 					DisconnectClient(clientID);
 				}
 			}
@@ -316,29 +256,12 @@ bool Server::ClientStartReceiving(i32 clientID)
 	SOCKET sock = clientSocket[clientID];
 	ClientNet& client = clientNet[clientID];
 
-	memset(&client.recvOverlapped, 0, sizeof(client.recvOverlapped));
-	WSAResetEvent(client.hEventRecv);
-	client.recvOverlapped.hEvent = client.hEventRecv;
-
-	WSABUF buff;
-	buff.len = RECV_BUFF_LEN;
-	buff.buf = client.recvBuff;
-
-	DWORD len;
-	DWORD flags = 0;
-	int r = WSARecv(sock, &buff, 1, &len, &flags, &client.recvOverlapped, NULL);
-	if(r == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-		LOG("ERROR(ClientStartReceiving): receive failed (%d)", WSAGetLastError());
+	bool r = client.async.StartReceiving();
+	if(!r) {
+		LOG("[client%03d]  ERROR(ClientStartReceiving): receive failed", clientID);
 		DisconnectClient(clientID);
 		return false;
 	}
-	/*else if(r == 0) { // instant reception, handle it
-		bool hr = ClientHandleReceivedData(clientID, len);
-		if(!hr) return false;
-
-		// start receiving again
-		return ClientStartReceiving(clientID);
-	}*/
 
 	return true;
 }
@@ -358,7 +281,7 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 
 	// append to pending processing buffer
 	const LockGuard lock(client.mutexRecv);
-	client.recvPendingProcessingBuff.Append(client.recvBuff, dataLen);
+	client.recvPendingProcessingBuff.Append(client.async.GetReceivedData(), dataLen);
 	return true;
 }
 

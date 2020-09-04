@@ -333,7 +333,7 @@ void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUI
 	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 
 	if(playerState[clientID] != PlayerState::IN_GAME) {
-		LOG("WARNING(EventPlayerRequestCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, playerState[clientID]);
+		LOG("WARNING(EventPlayerRequestCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, (i32)playerState[clientID]);
 		return;
 	}
 
@@ -360,7 +360,7 @@ void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUI
 		Sv::SN_LeaderCharacter leader;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
+		LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d localActorID=%d", clientID, (u32)masterActorUID, (u32)laiLeader);
 		SendPacket(clientID, leader);
 	}
 	else {
@@ -370,7 +370,7 @@ void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUI
 		leader.result = 0;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		LOG("[client%03d] Server :: SA_SetLeader :: actorUID=%d localActorID=%d", clientID, masterActorUID, laiLeader);
+		LOG("[client%03d] Server :: SA_SetLeader :: actorUID=%d localActorID=%d", clientID, (u32)masterActorUID, (u32)laiLeader);
 		SendPacket(clientID, leader);
 	}
 }
@@ -512,7 +512,7 @@ void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requ
 		packet.WriteStringObj(requesterNick); // nickname
 		packet.Write<u16>(playPosInSec); // playPositionSec
 
-		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%S'", clientID, songID, requesterNick);
+		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%S'", clientID, (i32)songID, requesterNick);
 		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 	}
 }
@@ -684,7 +684,7 @@ void Replication::DoFrameDifference()
 			if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
 			sync.characterID = GetLocalActorID(clientID, e.actorUID);
-			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, e.actorUID);
+			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)e.actorUID);
 			SendPacket(clientID, sync);
 		}
 	}
@@ -698,7 +698,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 	const LocalActorID localActorID = found->second;
 
-	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, actor.UID, localActorID);
+	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.UID, (u32)localActorID);
 
 	// SN_GameCreateActor
 	{
@@ -805,7 +805,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, actor.UID);
+		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, (u32)actor.UID);
 		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
 	}
 
@@ -817,7 +817,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, actor.UID);
+		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.UID);
 		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 	}
 
@@ -890,7 +890,7 @@ void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 
 	Sv::SN_DestroyEntity packet;
 	packet.characterID = localActorID;
-	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, actorUID);
+	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, (u32)actorUID);
 	SendPacket(clientID, packet);
 }
 

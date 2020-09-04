@@ -1,6 +1,7 @@
 #include "game.h"
 #include "coordinator.h"
 #include "game_content.h"
+#include "config.h"
 
 #define LISTEN_PORT "11900"
 Server* g_Server = nullptr;
@@ -28,6 +29,9 @@ int main(int argc, char** argv)
 	LogInit("game_server.log");
 	TimeInit();
 
+	LoadConfig();
+	Config().Print();
+
 	LOG(".: Game server :.");
 
 	if(!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
@@ -42,7 +46,7 @@ int main(int argc, char** argv)
 	}
 
 	static Server server;
-	r = server.Init(LISTEN_PORT);
+	r = server.Init(FMT("%d", Config().listenPort));
 	if(!r) {
 		LOG("ERROR: failed to initialize server");
 		return 1;

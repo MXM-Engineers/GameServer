@@ -1,6 +1,7 @@
 #include "game.h"
 #include "coordinator.h" // account data
 #include "game_content.h"
+#include "config.h"
 
 
 void Game::Init(Replication* replication_)
@@ -312,6 +313,8 @@ void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
+	if(!Config().devMode) return false; // don't allow command when dev mode is not enabled
+
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 
 	if(msg[0] == L'!') {

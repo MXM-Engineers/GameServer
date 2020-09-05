@@ -23,20 +23,6 @@ int NetworkGetLastError()
 	return WSAGetLastError();
 }
 
-bool SocketSetNonBlocking(SOCKET s)
-{
-	// set non blocking
-	u_long NonBlocking = true;
-	int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
-	if(ior != NO_ERROR) {
-		LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, WSAGetLastError());
-		closesocket(s);
-		return false;
-	}
-
-	return true;
-}
-
 void AsyncConnection::Init()
 {
 	sock = INVALID_SOCKET;
@@ -54,6 +40,15 @@ void AsyncConnection::Reset()
 void AsyncConnection::PrepareForNewConnection(SOCKET s)
 {
 	sock = s;
+
+	// set non blocking
+	u_long NonBlocking = true;
+	int ior = ioctlsocket(s, FIONBIO, &NonBlocking);
+	if(ior != NO_ERROR) {
+		LOG("ERROR(socket=%x): failed to change io mode (%d)", (u32)s, WSAGetLastError());
+		closesocket(s);
+		return;
+	}
 
 	if(hEventRecv != WSA_INVALID_EVENT) {
 		hEventRecv = WSACreateEvent();

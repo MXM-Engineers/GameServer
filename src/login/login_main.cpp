@@ -218,7 +218,7 @@ struct Client
 					packet.Write<u32>(424242); // userID
 
 					packet.WriteStringObj(L"Alpha"); // gamename
-					packet.WriteStringObj(LFMT(L"%S@0.XMX", nickname.data())); // chatname
+					packet.WriteStringObj(LFMT(L"%ls@0.XMX", nickname.data())); // chatname
 					packet.WriteStringObj(nickname.data(), nickname.size()); // playncname
 
 					u8 signature[128]; // garbage here. TODO: actually fill that in?

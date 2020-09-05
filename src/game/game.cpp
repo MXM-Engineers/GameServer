@@ -2,6 +2,7 @@
 #include "coordinator.h" // account data
 #include "game_content.h"
 #include "config.h"
+#include <EAStdC/EAString.h>
 
 
 void Game::Init(Replication* replication_)
@@ -325,7 +326,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	if(msg[0] == L'!') {
 		msg++;
 
-		if(wcsncmp(msg, L"lego", 4) == 0) {
+		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
 			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
@@ -339,14 +340,14 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 		}
 
-		if(wcsncmp(msg, L"delete", 6) == 0) {
+		if(EA::StdC::Strncmp(msg, L"delete", 6) == 0) {
 			world.DestroyPlayerActor(lastLegoActorUID);
 
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
 
-		if(wcsncmp(msg, L"rozark", 6) == 0) {
+		if(EA::StdC::Strncmp(msg, L"rozark", 6) == 0) {
 			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
@@ -360,7 +361,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 		}
 
-		if(wcsncmp(msg, L"tanian", 6) == 0) {
+		if(EA::StdC::Strncmp(msg, L"tanian", 6) == 0) {
 			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
@@ -374,7 +375,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 		}
 
-		if(wcsncmp(msg, L"fish", 4) == 0) {
+		if(EA::StdC::Strncmp(msg, L"fish", 4) == 0) {
 			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
@@ -388,7 +389,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 		}
 
-		if(wcsncmp(msg, L"smoke", 5) == 0) {
+		if(EA::StdC::Strncmp(msg, L"smoke", 5) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
@@ -396,27 +397,27 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 		}
 
-		if(wcsncmp(msg, L"upsidedown", 10) == 0) {
+		if(EA::StdC::Strncmp(msg, L"upsidedown", 10) == 0) {
 			JukeboxQueueSong(clientID, SongID::UpsideDown);
 			return true;
 		}
 		
-		if(wcsncmp(msg, L"scml", 4) == 0) {
+		if(EA::StdC::Strncmp(msg, L"scml", 4) == 0) {
 			JukeboxQueueSong(clientID, SongID::Scml);
 			return true;
 		}
 
-		if(wcsncmp(msg, L"poharan", 7) == 0) {
+		if(EA::StdC::Strncmp(msg, L"poharan", 7) == 0) {
 			JukeboxQueueSong(clientID, SongID::Poharan);
 			return true;
 		}
 
-		if(wcsncmp(msg, L"triangle", 8) == 0) {
+		if(EA::StdC::Strncmp(msg, L"triangle", 8) == 0) {
 			JukeboxQueueSong(clientID, SongID::Triangle);
 			return true;
 		}
 		
-		if(wcsncmp(msg, L"arami", 5) == 0) {
+		if(EA::StdC::Strncmp(msg, L"arami", 5) == 0) {
 			JukeboxQueueSong(clientID, SongID::Arami);
 			return true;
 		}

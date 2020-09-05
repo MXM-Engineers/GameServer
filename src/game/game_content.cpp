@@ -19,7 +19,7 @@ bool GameXmlContent::LoadMasterDefinitions()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%S'", creatureCharacterXml.data());
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -28,7 +28,7 @@ bool GameXmlContent::LoadMasterDefinitions()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%S' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -76,7 +76,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): failed to open '%S'", xmlPath.data());
+		LOG("ERROR(LoadMasterSkinsDefinitions): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -85,7 +85,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadMasterSkinsDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -120,7 +120,7 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%S'", xmlPath.data());
+		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -129,7 +129,7 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -166,7 +166,7 @@ bool GameXmlContent::LoadLobbyNormal()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadLobbyNormal): failed to open '%S'", xmlPath.data());
+		LOG("ERROR(LoadLobbyNormal): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -175,7 +175,7 @@ bool GameXmlContent::LoadLobbyNormal()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadLobbyNormal): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadLobbyNormal): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -214,7 +214,7 @@ bool GameXmlContent::LoadJukeboxSongs()
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadJukeboxSongs): failed to open '%S'", xmlPath.data());
+		LOG("ERROR(LoadJukeboxSongs): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -223,7 +223,7 @@ bool GameXmlContent::LoadJukeboxSongs()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadJukeboxSongs): error parsing '%S' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadJukeboxSongs): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 

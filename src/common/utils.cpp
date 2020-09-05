@@ -52,7 +52,7 @@ u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize)
 {
 	char utf8Path[512] = {0};
 	char* dest = utf8Path;
-	eastl::DecodePart(filename, filename + wcslen(filename), dest, utf8Path + sizeof(utf8Path));
+	eastl::DecodePart(filename, filename + EA::StdC::Strlen(filename), dest, utf8Path + sizeof(utf8Path));
 
 	FILE* f = fopen(utf8Path, "rb");
 	if(f) {

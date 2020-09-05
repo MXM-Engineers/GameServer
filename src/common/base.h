@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdarg.h>
-#include <string.h> // memmove
 #include <EAThread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
+#include <EAStdC/EAString.h>
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -53,7 +53,7 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-typedef wchar_t wchar;
+STATIC_ASSERT(sizeof(wchar) == 2);
 
 inline void* memAlloc(size_t size)
 {
@@ -261,7 +261,7 @@ struct PacketWriter
 
 	inline i32 WriteStringObj(const wchar* str, i32 len = -1)
 	{
-		if(len == -1) len = wcslen(str);
+		if(len == -1) len = EA::StdC::Strlen(str);
 		Write<u16>(len);
 		WriteRaw(str, len * sizeof(wchar));
 		return size;

@@ -2,6 +2,8 @@
 #include <time.h>
 #include <EAThread/eathread.h>
 #include <EASTL/array.h>
+#include <EAStdC/EASprintf.h>
+#include <EAStdC/EAString.h>
 
 #ifdef CONF_WINDOWS
 	#include <windows.h> // OutputDebugStringA
@@ -35,7 +37,7 @@ void __Logf(const char* fmt, ...)
 
 	va_list list;
 	va_start(list, fmt);
-	vsnprintf(buff, sizeof(buff), fmt, list);
+	EA::StdC::Vsnprintf(buff, sizeof(buff), fmt, list);
 	va_end(list);
 
 	// this one is faster but gives a big number
@@ -45,8 +47,8 @@ void __Logf(const char* fmt, ...)
 	*/
 	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
 
-	snprintf(final, sizeof(final), "[%x] %s", (i32)(intptr_t)threadID, buff);
-	const i32 len = strlen(final);
+	EA::StdC::Snprintf(final, sizeof(final), "[%x] %s", (i32)(intptr_t)threadID, buff);
+	const i32 len = EA::StdC::Strlen(final);
 
 	const LockGuard lock(g_Logger.mutex);
 	fwrite(final, 1, len, stdout);
@@ -78,7 +80,7 @@ const char* _TempStrFormat(const char* fmt, ...)
 
 	va_list list;
 	va_start(list, fmt);
-	vsnprintf(buff, sizeof(buff), fmt, list);
+	EA::StdC::Vsnprintf(buff, sizeof(buff), fmt, list);
 	va_end(list);
 
 	return buff;
@@ -90,7 +92,7 @@ const wchar* _TempWideStrFormat(const wchar* fmt, ...)
 
 	va_list list;
 	va_start(list, fmt);
-	vswprintf(buff, ARRAY_COUNT(buff), fmt, list);
+	EA::StdC::Vsnprintf(buff, ARRAY_COUNT(buff), fmt, list);
 	va_end(list);
 
 	return buff;

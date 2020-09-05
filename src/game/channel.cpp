@@ -95,7 +95,7 @@ void Channel::Update(f64 delta)
 
 void Channel::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
 {
-	LOG("[client%03d] Channel:: New player :: '%S'", clientID, accountData->nickname.data());
+	LOG("[client%03d] Channel:: New player :: '%ls'", clientID, accountData->nickname.data());
 
 	const LockGuard lock(mutexNewPlayerQueue);
 	newPlayerQueue.push_back(EventOnClientConnect{ clientID, accountData });

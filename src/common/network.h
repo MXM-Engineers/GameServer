@@ -36,6 +36,10 @@ enum {
 	struct AsyncConnection
 	{
 		SOCKET sock;
+		char recvTempBuff[RECV_BUFF_LEN];
+		GrowableBuffer sendingBuff;
+		GrowableBuffer recvBuff; // TODO: make this a flat buffer (no malloc)?
+		i32 sendCursor;
 
 		void Init();
 		void Reset();
@@ -90,7 +94,6 @@ const char* GetIpString(const sockaddr& addr);
 bool NetworkInit();
 void NetworkCleanup();
 i32 NetworkGetLastError();
-bool SocketSetNonBlocking(SOCKET s);
 
 struct Server
 {

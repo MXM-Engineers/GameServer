@@ -34,6 +34,5 @@ void MakeDirectory(const char* path)
 {
 	_mkdir(path);
 }
-
 #endif
 

@@ -1,19 +1,75 @@
 -- eastl
 
-SRC_DIR = "EASTL-3.16.07/source"
 eastl_includedir = path.getabsolute("EASTL-3.16.07/include")
+eathread_includedir = path.getabsolute("EAThread/include")
 eabase_includedir = path.getabsolute("EABase-2.09.05/include/Common")
+eaassert_includedir = path.getabsolute("EAAssert/include")
+eastdc_includedir = path.getabsolute("EAStdC-1.26.03/include")
+
+project "eaassert"
+	kind "StaticLib"
+	
+	includedirs {
+		eabase_includedir,
+		eaassert_includedir
+	}
+
+    files {
+		"EAAssert/source/*.cpp",
+	}
+
+	defines {
+		"_CHAR16T",
+	}
+
+project "eathread"
+	kind "StaticLib"
+	
+	includedirs {
+		eathread_includedir,
+		eabase_includedir
+	}
+
+    files {
+		"EAThread/source/*.cpp",
+	}
+
+	defines {
+		"_CHAR16T",
+		"_CRT_SECURE_NO_WARNINGS",
+	}
+
+project "eastdc"
+	kind "StaticLib"
+	
+	includedirs {
+		eastdc_includedir,
+		eabase_includedir,
+		eathread_includedir,
+		eaassert_includedir
+	}
+
+    files {
+		"EAStdC-1.26.03/source/*.cpp",
+	}
+
+	defines {
+		"_CHAR16T",
+		"_CRT_SECURE_NO_WARNINGS",
+		"_SCL_SECURE_NO_WARNINGS",
+	}
 
 project "eastl"
 	kind "StaticLib"
 	
 	includedirs {
 		eastl_includedir,
-		eabase_includedir
+		eabase_includedir,
+		eastdc_includedir
 	}
 
     files {
-		SRC_DIR .. "/*.cpp",
+		"EASTL-3.16.07/source/*.cpp",
 	}
 
 	defines {

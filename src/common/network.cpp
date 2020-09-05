@@ -98,10 +98,6 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 
 			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
 
-			if(!SocketSetNonBlocking(s)) {
-				ASSERT(0); // we want to catch that error
-			}
-
 			clientSocket[clientID] = s;
 
 			client.addr = addr_;

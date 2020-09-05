@@ -413,7 +413,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%S' msg='%.*S'", clientID, senderName, msgLen, msg);
+		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%ls' msg='%.*S'", clientID, senderName, msgLen, msg);
 		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 	}
 }
@@ -423,7 +423,7 @@ void Replication::SendChatMessageToClient(i32 toClientID, const wchar* senderNam
 	ASSERT(toClientID >= 0 && toClientID < Server::MAX_CLIENTS);
 	if(playerState[toClientID] != PlayerState::IN_GAME) return;
 
-	if(msgLen == -1) msgLen = wcslen(msg);
+	if(msgLen == -1) msgLen = EA::StdC::Strlen(msg);
 
 	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
@@ -433,7 +433,7 @@ void Replication::SendChatMessageToClient(i32 toClientID, const wchar* senderNam
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%S' msg='%.*S'", toClientID, senderName, msgLen, msg);
+	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%ls' msg='%.*S'", toClientID, senderName, msgLen, msg);
 	SendPacketData(toClientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
 }
 
@@ -446,7 +446,7 @@ void Replication::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
-	LOG("[client%03d] Server :: SA_WhisperSend :: destNick='%S' msg='%S'", senderClientID, destNick, msg);
+	LOG("[client%03d] Server :: SA_WhisperSend :: destNick='%ls' msg='%ls'", senderClientID, destNick, msg);
 	SendPacketData(senderClientID, Sv::SA_WhisperSend::NET_ID, packet.size, packet.data);
 }
 
@@ -459,7 +459,7 @@ void Replication::SendChatWhisperToClient(i32 destClientID, const wchar* senderN
 	packet.Write<u8>(0); // staffType
 	packet.WriteStringObj(msg); // msg
 
-	LOG("[client%03d] Server :: SN_WhisperReceive :: senderName='%S' msg='%S'", destClientID, senderName, msg);
+	LOG("[client%03d] Server :: SN_WhisperReceive :: senderName='%ls' msg='%ls'", destClientID, senderName, msg);
 	SendPacketData(destClientID, Sv::SN_WhisperReceive::NET_ID, packet.size, packet.data);
 }
 
@@ -512,7 +512,7 @@ void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requ
 		packet.WriteStringObj(requesterNick); // nickname
 		packet.Write<u16>(playPosInSec); // playPositionSec
 
-		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%S'", clientID, (i32)songID, requesterNick);
+		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%ls'", clientID, (i32)songID, requesterNick);
 		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 	}
 }

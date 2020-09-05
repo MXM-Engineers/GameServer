@@ -55,6 +55,7 @@ solution "Servers"
 		defines {
 			"CONF_LINUX",
 		}
+		buildoptions{ "-fshort-wchar" }
 
 
 	configuration { "qbs" } -- TODO: fix target dir handling for genie qbs and PR it
@@ -79,7 +80,6 @@ solution "Servers"
 	-- erternal dependencies
 	dofile("external/genie_zlib.lua");
 	dofile("external/genie_eastl.lua");
-	dofile("external/genie_eathread.lua");
 	dofile("external/genie_tinyxml2.lua");
 	
 
@@ -90,13 +90,15 @@ project "Login"
 
 	links {
 		"eastl",
-		"eathread"
+		"eathread",
+		"eastdc",
 	}
 
 	includedirs {
 		"src",
 		eastl_includedir,
 		eabase_includedir,
+		eastdc_includedir,
 		eathread_includedir
 	}
 	
@@ -130,6 +132,7 @@ project "Game"
 		eastl_includedir,
 		eathread_includedir,
 		eabase_includedir,
+		eastdc_includedir,
 		tinyxml2_includedir
 	}
 
@@ -137,6 +140,7 @@ project "Game"
 		"zlib",
 		"eastl",
 		"eathread",
+		"eastdc",
 	}
 	
 	files {

@@ -154,7 +154,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
 	i32 var = request.Read<i32>();
-	LOG("[client%03d] Client :: RequestConnectGame :: %.*S var=%d", clientID, nickLen, nick, var);
+	LOG("[client%03d] Client :: RequestConnectGame :: %.*ls var=%d", clientID, nickLen, nick, var);
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 

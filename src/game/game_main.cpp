@@ -3,14 +3,10 @@
 #include "game_content.h"
 #include "config.h"
 
-#define LISTEN_PORT "11900"
 Server* g_Server = nullptr;
 
 //#error
 // TODO:
-// - Replicate movement
-// - Manage client local actorUID (map)
-// - Reserve a local actorUID for each ProfileCharacter and wpan it on that UID when switching to it (leader)
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
@@ -26,6 +22,8 @@ int main(int argc, char** argv)
 
 	bool r = SetCloseSignalHandler([](){
 		g_Server->running = false;
+		closesocket(g_Server->serverSocket);
+		g_Server->serverSocket = INVALID_SOCKET;
 	});
 
 	if(!r) {
@@ -71,7 +69,10 @@ int main(int argc, char** argv)
 		server.AddClient(clientSocket, clientAddr);
 	}
 
+	LOG("Cleaning up...");
+
 	coordinator.Cleanup();
+	server.Cleanup();
 
 	LOG("Done.");
 	return 0;

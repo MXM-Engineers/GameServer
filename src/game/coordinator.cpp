@@ -53,6 +53,7 @@ void Coordinator::Init(Server* server_)
 
 void Coordinator::Cleanup()
 {
+	LOG("Coordinator cleanup...");
 	channel->Cleanup();
 	thread.WaitForEnd();
 }

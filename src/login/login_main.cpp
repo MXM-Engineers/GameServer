@@ -341,6 +341,64 @@ intptr_t ThreadClient(void* pData)
 	return 0;
 }
 
+struct LoginServer
+{
+	SOCKET sock;
+	bool running = true;
+
+	bool Init()
+	{
+		if(!NetworkInit()) {
+			return false;
+		}
+
+		struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags = AI_PASSIVE;
+
+		// Resolve the local address and port to be used by the server
+		i32 iResult = getaddrinfo(NULL, FMT("%d", g_Config.listenPort), &hints, &result);
+		if (iResult != 0) {
+			LOG("ERROR: getaddrinfo failed: %d", iResult);
+			return 1;
+		}
+		defer(freeaddrinfo(result));
+
+		sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if(sock == INVALID_SOCKET) {
+			LOG("ERROR(socket): %d", NetworkGetLastError());
+			return false;
+		}
+
+		// Setup the TCP listening socket
+		iResult = bind(sock, result->ai_addr, (int)result->ai_addrlen);
+		if(iResult == SOCKET_ERROR) {
+			LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
+			return false;
+		}
+
+		// listen
+		if(listen(sock, SOMAXCONN) == SOCKET_ERROR) {
+			LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
+			return false;
+		}
+
+		return true;
+	}
+
+	void Cleanup()
+	{
+		closesocket(sock);
+		NetworkCleanup();
+	}
+};
+
+static LoginServer* g_LoginServer = nullptr;
+
 int main(int argc, char** argv)
 {
 	LogInit("login_server.log");
@@ -349,58 +407,42 @@ int main(int argc, char** argv)
 	g_Config.LoadConfigFile();
 	g_Config.Print();
 
+	bool r = SetCloseSignalHandler([]()
+	{
+		g_LoginServer->running = false;
+		closesocket(g_LoginServer->sock);
+		g_LoginServer->sock = INVALID_SOCKET;
+	});
+
+	if(!r) {
+		LOG("ERROR: failed to set close signal handler");
+		return 1;
+	}
+
 	MakeDirectory("trace");
 
-	if(!NetworkInit()) {
-		return 1;
-	}
-	defer(NetworkCleanup());
+	static LoginServer server;
+	g_LoginServer = &server;
 
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
-
-	// Resolve the local address and port to be used by the server
-	i32 iResult = getaddrinfo(NULL, FMT("%d", g_Config.listenPort), &hints, &result);
-	if (iResult != 0) {
-		LOG("ERROR: getaddrinfo failed: %d", iResult);
-		return 1;
-	}
-	defer(freeaddrinfo(result));
-
-	SOCKET serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %d", NetworkGetLastError());
-		return 1;
-	}
-	defer(closesocket(serverSocket));
-
-	// Setup the TCP listening socket
-	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
-	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
+	if(!server.Init()) {
+		LOG("ERROR: failed to init server");
 		return 1;
 	}
 
-	// listen
-	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
-		return 1;
-	}
-
-	while(true) {
+	while(server.running) {
 		// Accept a client socket
 		LOG("Waiting for a connection...");
 		struct sockaddr clientAddr;
 		AddrLen addrLen = sizeof(sockaddr);
-		SOCKET clientSocket = accept(serverSocket, &clientAddr, &addrLen);
+		SOCKET clientSocket = accept(server.sock, &clientAddr, &addrLen);
 		if(clientSocket == INVALID_SOCKET) {
-			LOG("ERROR(accept): failed: %d", NetworkGetLastError());
-			return 1;
+			if(server.running) {
+				LOG("ERROR(accept): failed: %d", NetworkGetLastError());
+				return 1;
+			}
+			else {
+				break;
+			}
 		}
 
 		// TODO: handle multiple clients
@@ -414,5 +456,7 @@ int main(int argc, char** argv)
 		thread.Begin(ThreadClient, &client);
 	}
 
+	server.Cleanup();
+	LOG("Done.");
 	return 0;
 }

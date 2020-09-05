@@ -1,6 +1,5 @@
 --
 BUILD_DIR = path.getabsolute("build")
-BUILD_LINUX_DIR = path.getabsolute("build_linux")
 
 solution "Servers"
 	location(BUILD_DIR)
@@ -53,8 +52,6 @@ solution "Servers"
 		buildoptions{ "/wd4577", "/wd4530" }
 
 	configuration "linux"
-		targetdir(BUILD_LINUX_DIR)
-
 		defines {
 			"CONF_LINUX",
 		}

@@ -46,6 +46,7 @@ bool Channel::Init(Server* server_)
 
 void Channel::Cleanup()
 {
+	LOG("Channel cleanup...");
 	thread.WaitForEnd();
 }
 

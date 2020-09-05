@@ -28,7 +28,6 @@ intptr_t ThreadNetwork(void* pData)
 		server.Update();
 	}
 
-	server.Cleanup();
 	return 0;
 }
 
@@ -86,9 +85,6 @@ bool Server::Init(const char* listenPort)
 
 void Server::Cleanup()
 {
-	LOG("Server shutting down...");
-
-	closesocket(serverSocket);
 	NetworkCleanup();
 }
 

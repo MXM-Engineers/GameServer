@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <time.h>
+#include <EAStdC/EAString.h>
 
 void PathSet(Path& path, const wchar* str)
 {

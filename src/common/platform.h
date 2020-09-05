@@ -1,7 +1,6 @@
 #pragma once
 
 #ifdef CONF_LINUX
-	#include <EASTL/fixed_string.h>
 	#define PUSH_PACKED _Pragma("pack(push, 1)")
 	#define POP_PACKED _Pragma("pack(pop)")
 	#define STRINGIFY(a) #a

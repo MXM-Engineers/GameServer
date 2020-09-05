@@ -2,6 +2,7 @@
 #include <common/protocol.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
+#include <EAStdC/EAString.h>
 
 template<typename T>
 inline bool IsListIteratorValid(const T& it)

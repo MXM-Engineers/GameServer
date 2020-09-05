@@ -6,7 +6,6 @@
 #include <stdarg.h>
 #include <EAThread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
-#include <EAStdC/EAString.h>
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -259,13 +258,7 @@ struct PacketWriter
 		return size;
 	}
 
-	inline i32 WriteStringObj(const wchar* str, i32 len = -1)
-	{
-		if(len == -1) len = EA::StdC::Strlen(str);
-		Write<u16>(len);
-		WriteRaw(str, len * sizeof(wchar));
-		return size;
-	}
+	i32 WriteStringObj(const wchar* str, i32 len = -1);
 };
 
 template<typename T>

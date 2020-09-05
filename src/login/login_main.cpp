@@ -2,6 +2,7 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
+#include <EAStdC/EASprintf.h>
 
 struct Config
 {
@@ -11,16 +12,16 @@ struct Config
 
 	bool ParseLine(const char* line)
 	{
-		if(sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
+		if(EA::StdC::Sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
 		i32 ip[4];
-		if(sscanf(line, "GameServerIP=%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) == 4) {
+		if(EA::StdC::Sscanf(line, "GameServerIP=%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) == 4) {
 			gameServerIP[0] = ip[0];
 			gameServerIP[1] = ip[1];
 			gameServerIP[2] = ip[2];
 			gameServerIP[3] = ip[3];
 			return true;
 		}
-		if(sscanf(line, "GameServerPort=%d", &gameServerPort) == 1) return true;
+		if(EA::StdC::Sscanf(line, "GameServerPort=%d", &gameServerPort) == 1) return true;
 		return false;
 	}
 

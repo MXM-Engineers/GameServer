@@ -98,6 +98,14 @@ const wchar* _TempWideStrFormat(const wchar* fmt, ...)
 	return buff;
 }
 
+i32 PacketWriter::WriteStringObj(const wchar* str, i32 len)
+{
+	if(len == -1) len = EA::StdC::Strlen(str);
+	Write<u16>(len);
+	WriteRaw(str, len * sizeof(wchar));
+	return size;
+}
+
 
 #define SOKOL_IMPL
 #include "sokol_time.h"

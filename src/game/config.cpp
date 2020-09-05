@@ -1,10 +1,11 @@
 #include "config.h"
 #include <EASTL/fixed_string.h>
+#include <EAStdC/EASprintf.h>
 
 bool CConfig::ParseLine(const char* line)
 {
-	if(sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
-	if(sscanf(line, "DevMode=%d", &devMode) == 1) return true;
+	if(EA::StdC::Sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevMode=%d", &devMode) == 1) return true;
 	return false;
 }
 

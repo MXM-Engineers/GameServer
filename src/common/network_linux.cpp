@@ -68,7 +68,7 @@ bool AsyncConnection::StartReceiving()
 	if(len > 0) {
 		recvBuff.Append(recvTempBuff, len);
 	}
-	else if(len == 0) {
+	else if(len == 0) { // disconnect
 		return false;
 	}
 	return true;
@@ -127,6 +127,9 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 		if(len > 0) {
 			recvBuff.Append(recvTempBuff, len);
 		}
+		else if(len == 0) { // disconnect
+			return NetPollResult::POLL_ERROR;
+		}
 	}
 
 	if(recvBuff.size > 0) {
@@ -178,9 +181,6 @@ NetPollResult AsyncConnection::PollSend()
 				sendCursor = 0;
 				return NetPollResult::SUCCESS;
 			}
-		}
-		else if(len == 0) {
-			return NetPollResult::POLL_ERROR;
 		}
 	}
 

@@ -117,7 +117,7 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			// start receiving
 			bool r = ClientStartReceiving(clientID);
 			if(!r) {
-				continue;
+				return -1;
 			}
 
 			ClientInfo& info = clientInfo[clientID];

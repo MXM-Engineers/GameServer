@@ -3,6 +3,7 @@
 #include "base.h"
 #include <signal.h>
 #include <sys/stat.h>
+#include <sys/prctl.h>
 #include <unistd.h>
 
 void DbgBreak()

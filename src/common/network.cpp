@@ -294,7 +294,7 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 #ifdef CONF_DEBUG
 	static Mutex mutexFile;
 	mutexFile.Lock();
-	fileSaveBuff(FMT("trace\\game_%d_sv_%d.raw", packetCounter, header.netID), sendBuff, header.size);
+	fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d.raw", packetCounter, header.netID)), sendBuff, header.size);
 	packetCounter++;
 	mutexFile.Unlock();
 #endif

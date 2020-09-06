@@ -33,4 +33,9 @@ void MakeDirectory(const char* path)
 {
 	mkdir(path, 0755);
 }
+
+const char* FormatPath(const char* path)
+{
+	return path;
+}
 #endif

@@ -25,3 +25,5 @@ typedef void(*Func_CloseSignalHandler)();
 bool SetCloseSignalHandler(Func_CloseSignalHandler func);
 
 void MakeDirectory(const char* path);
+
+const char* FormatPath(const char* path); // replace / with \ on windows

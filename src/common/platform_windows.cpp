@@ -2,6 +2,7 @@
 #include "platform.h"
 #include "base.h"
 #include <direct.h>
+#include <EASTL/fixed_string.h>
 
 void DbgBreak()
 {
@@ -33,6 +34,14 @@ bool SetCloseSignalHandler(Func_CloseSignalHandler func)
 void MakeDirectory(const char* path)
 {
 	_mkdir(path);
+}
+
+const char* FormatPath(const char* path)
+{
+	thread_local eastl::fixed_string<char,512,false> buff;
+	buff = path;
+	buff.replace(buff.begin(), buff.end(), '/', '\\');
+	return buff.data();
 }
 #endif
 

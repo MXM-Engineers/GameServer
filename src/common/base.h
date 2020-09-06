@@ -275,6 +275,12 @@ struct GrowableBuffer
 	i32 size = 0;
 	i32 capacity = 0;
 
+	GrowableBuffer() = default;
+	explicit GrowableBuffer(i32 capacity_)
+	{
+		Init(capacity_);
+	}
+
 	void Init(i32 capacity_)
 	{
 		ASSERT(data == nullptr);

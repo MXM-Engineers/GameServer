@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <poll.h>
+#include <common/protocol.h>
 
 bool NetworkInit()
 {
@@ -44,6 +45,11 @@ void AsyncConnection::PrepareForNewConnection(SOCKET s)
 	}
 	recvBuff.Clear();
 
+	if(recvBuffProcessing.data == nullptr) {
+		recvBuffProcessing.Init(RECV_BUFF_LEN * 4);
+	}
+	recvBuffProcessing.Clear();
+
 	if(sendingBuff.data == nullptr) {
 		sendingBuff.Init(SEND_BUFF_LEN);
 	}
@@ -54,9 +60,8 @@ void AsyncConnection::PrepareForNewConnection(SOCKET s)
 
 bool AsyncConnection::StartReceiving()
 {
-	recvBuff.Clear();
-
-	ssize_t len = recv(sock, recvTempBuff, RECV_BUFF_LEN, 0);
+	char recvTempBuff[RECV_BUFF_LEN];
+	ssize_t len = recv(sock, recvTempBuff, sizeof(recvTempBuff), 0);
 	if(len == -1) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			return true;
@@ -98,7 +103,7 @@ void AsyncConnection::PushSendData(const void* data, const int dataSize)
 
 const char* AsyncConnection::GetReceivedData()
 {
-	return (char*)recvBuff.data;
+	return (char*)recvBuffProcessing.data;
 }
 
 NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
@@ -115,7 +120,8 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 	}
 
 	if(pollInfo.revents & POLLIN) {
-		ssize_t len = recv(sock, recvTempBuff, RECV_BUFF_LEN, 0);
+		char recvTempBuff[RECV_BUFF_LEN];
+		ssize_t len = recv(sock, recvTempBuff, sizeof(recvTempBuff), 0);
 		if(len == -1) {
 			if(errno == EAGAIN || errno == EWOULDBLOCK) {
 				return NetPollResult::PENDING;
@@ -133,8 +139,15 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 	}
 
 	if(recvBuff.size > 0) {
-		*outRecvLen = recvBuff.size;
-		LOG("Received %d bytes", recvBuff.size);
+		// only give whole packets, crop partial ones
+		CropPartialPackets();
+
+		if(recvBuffProcessing.size == 0) {
+			return NetPollResult::PENDING;
+		}
+
+		*outRecvLen = recvBuffProcessing.size;
+		LOG("Received %d bytes", recvBuffProcessing.size);
 		return NetPollResult::SUCCESS;
 	}
 
@@ -185,6 +198,50 @@ NetPollResult AsyncConnection::PollSend()
 	}
 
 	return NetPollResult::PENDING;
+}
+
+void AsyncConnection::CropPartialPackets()
+{
+	// TODO: Warning, this is easily exploitable, put a limit on packet sizes
+
+	recvBuffProcessing.Clear();
+	ConstBuffer buff(recvBuff.data, recvBuff.size);
+	while(buff.CanRead(sizeof(NetHeader))) {
+		const u8* wholePacket = buff.cursor;
+		const NetHeader& header = buff.Read<NetHeader>();
+		const i32 packetDataSize = header.size - sizeof(NetHeader);
+		if(buff.CanRead(packetDataSize)) {
+			buff.ReadRaw(packetDataSize);
+			recvBuffProcessing.Append(wholePacket, header.size);
+		}
+		else {
+			break; // partial packet
+		}
+	}
+
+	ASSERT(recvBuffProcessing.size <= recvBuff.size);
+
+	const i32 partialAt = recvBuffProcessing.size;
+	const i32 partialSize = recvBuff.size - partialAt;
+
+	if(partialSize > 0) {
+		u8 tempBuff[8192];
+		if(partialSize > sizeof(tempBuff)) {
+			thread_local GrowableBuffer tempGrowBuff(sizeof(tempBuff) * 2);
+			tempGrowBuff.Clear();
+			tempGrowBuff.Append(recvBuff.data + partialAt, partialSize);
+			recvBuff.Clear();
+			recvBuff.Append(tempGrowBuff.data, tempGrowBuff.size);
+		}
+		else {
+			memmove(tempBuff, recvBuff.data + partialAt, partialSize);
+			recvBuff.Clear();
+			recvBuff.Append(tempBuff, partialSize);
+		}
+	}
+	else {
+		recvBuff.Clear();
+	}
 }
 
 #endif

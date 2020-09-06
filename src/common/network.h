@@ -36,9 +36,9 @@ enum {
 	struct AsyncConnection
 	{
 		SOCKET sock;
-		char recvTempBuff[RECV_BUFF_LEN];
 		GrowableBuffer sendingBuff;
 		GrowableBuffer recvBuff; // TODO: make this a flat buffer (no malloc)?
+		GrowableBuffer recvBuffProcessing; // TODO: make this a flat buffer (no malloc)?
 		i32 sendCursor;
 
 		void Init();
@@ -51,6 +51,7 @@ enum {
 		const char* GetReceivedData();
 		NetPollResult PollReceive(int* outRecvLen);
 		NetPollResult PollSend();
+		void CropPartialPackets();
 	};
 
 	inline void closesocket(SOCKET s) { close(s); }

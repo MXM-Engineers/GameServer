@@ -115,7 +115,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 bool GameXmlContent::LoadMasterWeaponDefinitions()
 {
 	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/WEAPON.XML");
+	PathAppend(xmlPath, L"/WEAPON.xml");
 
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);

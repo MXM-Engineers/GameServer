@@ -20,6 +20,7 @@
 #endif
 
 void DbgBreak();
+void PlatformInit();
 
 typedef void(*Func_CloseSignalHandler)();
 bool SetCloseSignalHandler(Func_CloseSignalHandler func);

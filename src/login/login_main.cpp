@@ -2,6 +2,7 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
+#include <common/platform.h>
 #include <EAStdC/EASprintf.h>
 
 struct Config
@@ -404,6 +405,7 @@ static LoginServer* g_LoginServer = nullptr;
 
 int main(int argc, char** argv)
 {
+	PlatformInit();
 	LogInit("login_server.log");
 	LOG(".: Login server :.");
 

@@ -47,5 +47,10 @@ const char* FormatPath(const char* path)
 	}
 	return buff.data();
 }
+
+void PlatformInit()
+{
+
+}
 #endif
 

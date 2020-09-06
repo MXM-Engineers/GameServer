@@ -2,6 +2,7 @@
 #include "coordinator.h"
 #include "game_content.h"
 #include "config.h"
+#include <common/platform.h>
 
 Server* g_Server = nullptr;
 
@@ -12,6 +13,7 @@ Server* g_Server = nullptr;
 
 int main(int argc, char** argv)
 {
+	PlatformInit();
 	LogInit("game_server.log");
 	TimeInit();
 

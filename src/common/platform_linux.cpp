@@ -38,4 +38,9 @@ const char* FormatPath(const char* path)
 {
 	return path;
 }
+
+void PlatformInit()
+{
+	prctl(PR_SET_DUMPABLE, 1); // enable generating dump when program crashes.
+}
 #endif

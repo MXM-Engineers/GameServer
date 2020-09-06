@@ -1,6 +1,6 @@
 #include "base.h"
 #include <time.h>
-#include <EAThread/eathread.h>
+#include <eathread/eathread.h>
 #include <EASTL/array.h>
 #include <EAStdC/EASprintf.h>
 #include <EAStdC/EAString.h>

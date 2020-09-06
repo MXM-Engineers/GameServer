@@ -2,7 +2,7 @@
 #include "base.h"
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
-#include <EAThread/eathread_thread.h>
+#include <eathread/eathread_thread.h>
 
 enum class NetPollResult: int
 {

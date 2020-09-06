@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdarg.h>
-#include <EAThread/eathread_futex.h> // mutex
+#include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
 
 extern FILE* g_LogFile;

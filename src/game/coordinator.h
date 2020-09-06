@@ -2,7 +2,7 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
-#include <EAThread/eathread_thread.h>
+#include <eathread/eathread_thread.h>
 
 // TODO: move this
 struct AccountData

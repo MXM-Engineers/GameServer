@@ -1,6 +1,6 @@
 #pragma once
 #include "game.h"
-#include <EAThread/eathread_thread.h>
+#include <eathread/eathread_thread.h>
 
 struct Channel
 {

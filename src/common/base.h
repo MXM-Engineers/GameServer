@@ -146,6 +146,7 @@ inline bool fileSaveBuff(const char* filename, const void* buff, i32 size)
 		return true;
 	}
 
+	WARN("Failed to save '%s'", filename);
 	return false;
 }
 

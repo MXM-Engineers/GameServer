@@ -291,11 +291,11 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 
 	ClientSend(clientID, sendBuff, packetTotalSize);
 
-#ifdef CONF_DEBUG
-	static Mutex mutexFile;
-	mutexFile.Lock();
-	fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d.raw", packetCounter, header.netID)), sendBuff, header.size);
-	packetCounter++;
-	mutexFile.Unlock();
-#endif
+	if(doTraceNetwork) {
+		static Mutex mutexFile;
+		mutexFile.Lock();
+		fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d.raw", packetCounter, header.netID)), sendBuff, header.size);
+		packetCounter++;
+		mutexFile.Unlock();
+	}
 }

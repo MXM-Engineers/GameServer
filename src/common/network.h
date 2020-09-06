@@ -136,9 +136,8 @@ struct Server
 
 	EA::Thread::Thread thread;
 
-#ifdef CONF_DEBUG
 	i32 packetCounter = 0;
-#endif
+	bool doTraceNetwork = false;
 
 	bool Init(const char* listenPort);
 	void Cleanup();

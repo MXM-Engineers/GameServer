@@ -9,6 +9,7 @@ struct Config
 	i32 listenPort = 10900;
 	u8 gameServerIP[4] = { 127, 0, 0, 1 };
 	i32 gameServerPort = 11900;
+	i32 traceNetwork = 0;
 
 	bool ParseLine(const char* line)
 	{
@@ -22,6 +23,7 @@ struct Config
 			return true;
 		}
 		if(EA::StdC::Sscanf(line, "GameServerPort=%d", &gameServerPort) == 1) return true;
+		if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &traceNetwork) == 1) return true;
 		return false;
 	}
 
@@ -78,6 +80,7 @@ struct Config
 		LOG("	ListenPort=%d", listenPort);
 		LOG("	GameServerIP=%d.%d.%d.%d", gameServerIP[0], gameServerIP[1], gameServerIP[2], gameServerIP[3]);
 		LOG("	GameServerPort=%d", gameServerPort);
+		LOG("	TraceNetwork=%d", traceNetwork);
 		LOG("}");
 	}
 };
@@ -144,17 +147,16 @@ struct Client
 
 		ConstBuffer buff(recvBuff, recvLen);
 		while(buff.CanRead(sizeof(NetHeader))) {
-#ifdef CONF_DEBUG
 			const u8* data = buff.cursor;
-#endif
 			const NetHeader& header = buff.Read<NetHeader>();
 			const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 
-#ifdef CONF_DEBUG
-			static i32 counter = 0;
-			fileSaveBuff(FormatPath(FMT("trace/login_%d_cl_%d.raw", counter, header.netID)), data, header.size);
-			counter++;
-#endif
+			if(g_Config.traceNetwork) {
+				static i32 counter = 0;
+				fileSaveBuff(FormatPath(FMT("trace/login_%d_cl_%d.raw", counter, header.netID)), data, header.size);
+				counter++;
+			}
+
 			HandlePacket(header, packetData);
 		}
 	}

@@ -44,6 +44,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	g_Server = &server;
+	server.doTraceNetwork = Config().traceNetwork;
 
 	static Coordinator coordinator;
 	coordinator.Init(&server);

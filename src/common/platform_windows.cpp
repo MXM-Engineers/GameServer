@@ -40,7 +40,11 @@ const char* FormatPath(const char* path)
 {
 	thread_local eastl::fixed_string<char,512,false> buff;
 	buff = path;
-	buff.replace(buff.begin(), buff.end(), '/', '\\');
+	foreach(it, buff) {
+		if(*it == '/') {
+			*it = '\\';
+		}
+	}
 	return buff.data();
 }
 #endif

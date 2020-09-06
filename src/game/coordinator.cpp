@@ -1,6 +1,7 @@
 #include "coordinator.h"
 #include "channel.h"
 #include "game_content.h"
+#include "config.h"
 #include <zlib.h>
 
 intptr_t ThreadCoordinator(void* pData)
@@ -114,16 +115,15 @@ void Coordinator::ClientHandleReceivedChunk(i32 clientID, const u8* data, const 
 
 	ConstBuffer buff(data, dataSize);
 	while(buff.CanRead(sizeof(NetHeader))) {
-#ifdef CONF_DEBUG
 		const u8* data = buff.cursor;
-#endif
 		const NetHeader& header = buff.Read<NetHeader>();
 		const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 
-#ifdef CONF_DEBUG
-		fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, header.netID)), data, header.size);
-		server->packetCounter++;
-#endif
+		if(Config().traceNetwork) {
+			fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, header.netID)), data, header.size);
+			server->packetCounter++;
+		}
+
 		ClientHandlePacket(clientID, header, packetData);
 	}
 }

@@ -21,6 +21,8 @@ void Game::Init(Replication* replication_)
 
 void Game::Update(f64 delta, Time localTime_)
 {
+	ProfileFunction();
+
 	localTime = localTime_;
 	world.Update(delta);
 

@@ -43,6 +43,8 @@ void Replication::Init(Server* server_)
 
 void Replication::FrameEnd()
 {
+	ProfileFunction();
+
 	UpdatePlayersLocalState();
 
 	DoFrameDifference();

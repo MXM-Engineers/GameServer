@@ -50,7 +50,17 @@ const char* FormatPath(const char* path)
 
 void PlatformInit()
 {
+#ifdef TRACY_ENABLE
+	MakeDirectory("./captures");
+	time_t t = time(0);
+	struct tm* tt = localtime(&t);
+	char cmdLine[512];
+	sprintf(cmdLine, "@start cmd /c \"..\\profiler\\capture.exe -a localhost -o captures\\capture_%d-%d-%d_%d-%d-%d.tracy\"", tt->tm_mday, tt->tm_mon+1, tt->tm_year+1900, tt->tm_hour, tt->tm_min, tt->tm_sec);
 
+	system(cmdLine);
+
+	ProfileSetThreadName("Main");
+#endif
 }
 #endif
 

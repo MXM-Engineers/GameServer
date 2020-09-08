@@ -8,6 +8,8 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
+// - make emotes go through the world (+replication differential = fixes dependencies)
+// - make jukebox go through the world (+replication differential = fixes dependencies)
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
@@ -16,6 +18,9 @@ int main(int argc, char** argv)
 	PlatformInit();
 	LogInit("game_server.log");
 	TimeInit();
+
+	// TODO: linux thread affinity (sched_setaffinity)
+	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << (i32)CoreAffinity::MAIN);
 
 	LoadConfig();
 	Config().Print();

@@ -6,34 +6,30 @@
 
 intptr_t ThreadCoordinator(void* pData)
 {
+	ProfileSetThreadName("Coordinator");
+	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+
 	Coordinator& coordinator = *(Coordinator*)pData;
 
-	thread_local Time t0 = TimeNow();
-	thread_local f64 accumulatorMs = 0.0;
 	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+	const Time startTime = TimeNow();
+	Time t0 = startTime;
 
 	while(coordinator.server->running)
 	{
 		Time t1 = TimeNow();
-		accumulatorMs += TimeDurationMs(t0, t1);
-		t0 = t1;
+		coordinator.localTime = TimeDiff(startTime, t1);
+		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
-		// limit accumulation to max 2 frames
-		if(accumulatorMs > (UPDATE_RATE_MS * 2)) {
-			accumulatorMs = UPDATE_RATE_MS * 2;
-		}
-
-		if(accumulatorMs > UPDATE_RATE_MS) {
-			do
-			{
-				coordinator.Update(UPDATE_RATE_MS);
-				accumulatorMs -= UPDATE_RATE_MS;
-			}
-			while(accumulatorMs > UPDATE_RATE_MS);
+		if(delta > UPDATE_RATE_MS) {
+			ProfileNewFrame();
+			coordinator.Update(delta);
+			t0 = t1;
 		}
 		else {
-			EA::Thread::ThreadSleep(UPDATE_RATE_MS - accumulatorMs); // yield
+			EA::Thread::ThreadSleep(UPDATE_RATE_MS - delta); // yield
 			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
+			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
 		}
 	}
 	return 0;
@@ -61,6 +57,8 @@ void Coordinator::Cleanup()
 
 void Coordinator::Update(f64 delta)
 {
+	ProfileFunction();
+
 	// handle client disconnections
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);

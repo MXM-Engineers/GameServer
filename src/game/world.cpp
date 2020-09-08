@@ -8,6 +8,8 @@ void World::Init(Replication* replication_)
 
 void World::Update(f64 delta)
 {
+	ProfileFunction();
+
 	// players
 	foreach(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;

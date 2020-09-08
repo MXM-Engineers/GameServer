@@ -7,6 +7,10 @@ intptr_t ThreadChannel(void* pData)
 {
 	Channel& channel = *(Channel*)pData;
 
+	ProfileSetThreadName(FMT("Channel_%d", 0)); // TODO: channel ID / name
+	const i32 cpuID = (i32)CoreAffinity::CHANNELS + 0; // TODO: increase this for each channel
+	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
+
 	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
 	const Time startTime = TimeNow();
 	Time t0 = startTime;
@@ -22,7 +26,7 @@ intptr_t ThreadChannel(void* pData)
 			t0 = t1;
 		}
 		else {
-			EA::Thread::ThreadSleep(UPDATE_RATE_MS - delta); // yield
+			EA::Thread::ThreadSleep(UPDATE_RATE_MS - delta);
 			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
 		}
@@ -52,6 +56,8 @@ void Channel::Cleanup()
 
 void Channel::Update(f64 delta)
 {
+	ProfileFunction();
+
 	// clients disconnected
 	{
 		const LockGuard lock(mutexClientDisconnectedList);

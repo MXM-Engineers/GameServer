@@ -14,7 +14,7 @@ const char* g_LogFileName;
 
 struct Logger
 {
-	Mutex mutex;
+	ProfileMutex(Mutex, mutex);
 
 	~Logger() {
 		fclose(g_LogFile);

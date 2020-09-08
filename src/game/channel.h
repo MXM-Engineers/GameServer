@@ -20,10 +20,10 @@ struct Channel
 	GrowableBuffer packetDataQueue;
 	GrowableBuffer processPacketQueue;
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
-	Mutex mutexPacketDataQueue;
-	Mutex mutexClientDisconnectedList;
+	ProfileMutex(Mutex, mutexPacketDataQueue);
+	ProfileMutex(Mutex, mutexClientDisconnectedList);
 	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
-	Mutex mutexNewPlayerQueue;
+	ProfileMutex(Mutex, mutexNewPlayerQueue);
 
 	bool Init(Server* server_);
 	void Cleanup();

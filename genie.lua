@@ -1,6 +1,17 @@
 --
 BUILD_DIR = path.getabsolute("build")
 
+newoption {
+	trigger     = "profile",
+	description = "Enable profiling",
+}
+
+local PROFILE_DEFINE = {}
+if _OPTIONS["profile"] then
+	print("Profiling enabled")
+	PROFILE_DEFINE = "TRACY_ENABLE"
+end
+
 solution "Servers"
 	location(BUILD_DIR)
 	targetdir(BUILD_DIR)
@@ -81,6 +92,7 @@ solution "Servers"
 	dofile("external/genie_zlib.lua");
 	dofile("external/genie_eastl.lua");
 	dofile("external/genie_tinyxml2.lua");
+	dofile("external/genie_tracy.lua");
 	
 
 project "Login"
@@ -133,7 +145,8 @@ project "Game"
 		eathread_includedir,
 		eabase_includedir,
 		eastdc_includedir,
-		tinyxml2_includedir
+		tinyxml2_includedir,
+		tracy_includedir
 	}
 
 	links {
@@ -150,17 +163,28 @@ project "Game"
 		"src/game/**.h",
 		"src/game/**.c",
 		"src/game/**.cpp",
-		tinyxml2_files
+		tinyxml2_files,
+		tracy_files
 	}
+
+	configuration "Release"
+		defines {
+			PROFILE_DEFINE
+		}
+
+	configuration {}
 
 	configuration "windows"
 		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
 
 		links {
 			"ws2_32",
+			"user32",
+			"advapi32"
 		}
 
 	configuration "linux"
 		links {
 			"pthread",
+			"dl",
 		}

@@ -326,8 +326,66 @@ struct GrowableBuffer
 	}
 };
 
+
+
+#ifdef TRACY_ENABLE
+#include <Tracy.hpp>
+struct Mutex: EA::Thread::Futex
+{
+	tracy_force_inline void lock() { Lock(); }
+	tracy_force_inline void unlock() { Unlock(); }
+};
+
+class LockGuard
+{
+	typedef tracy::Lockable<Mutex> TracyMutex;
+public:
+	LockGuard(TracyMutex& futex):
+		mFutex(futex)
+	{
+		mFutex.lock();
+	}
+   ~LockGuard()
+	{
+		mFutex.unlock();
+	}
+
+protected:
+	TracyMutex& mFutex;
+
+	// Prevent copying by default, as copying is dangerous.
+	LockGuard(const TracyMutex&);
+	const LockGuard& operator=(const TracyMutex&);
+};
+
+#define ProfileFunction() ZoneScopedN(FUNCTION_STR)
+#define ProfileBlock(name) ZoneScopedN(FUNCTION_STR ">>" name)
+#define ProfileMutex(TYPE, NAME) TracyLockable(TYPE, NAME)
+#define ProfileNewFrame() FrameMark
+#define ProfilePlotVar(V) TracyPlot(#V, V)
+#define ProfilePlotVarN(N, V) TracyPlot(N, V)
+#define ProfileMemAlloc(PTR, SIZE) TracyAlloc(PTR, SIZE)
+#define ProfileMemFree(PTR) TracyFree(PTR)
+#define ProfileAttachStringf(STRF, ...) char __buff##__LINE__[64];\
+	snprintf(__buff##__LINE__, sizeof(__buff##__LINE__), STRF, __VA_ARGS__);\
+	ZoneName(__buff##__LINE__, sizeof(__buff##__LINE__))
+#define ProfileSetThreadName(NAME) tracy::SetThreadName(NAME)
+
+#else
+#define ProfileFunction()
+#define ProfileBlock(name)
+#define ProfileMutex(TYPE, NAME) TYPE NAME;
+#define ProfileNewFrame()
+#define ProfilePlotVar(V)
+#define ProfilePlotVarN(N,V)
+#define ProfileMemAlloc(PTR, SIZE)
+#define ProfileMemFree(PTR)
+#define ProfileAttachStringf(STRF, ...)
+#define ProfileSetThreadName(NAME)
+
 typedef EA::Thread::Futex Mutex;
 typedef EA::Thread::AutoFutex LockGuard;
+#endif
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
 #define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)

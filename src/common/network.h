@@ -108,9 +108,9 @@ struct Server
 		sockaddr addr;
 		GrowableBuffer recvPendingProcessingBuff;
 		GrowableBuffer pendingSendBuff;
-		Mutex mutexRecv;
-		Mutex mutexSend;
-		Mutex mutexConnect;
+		ProfileMutex(Mutex, mutexRecv);
+		ProfileMutex(Mutex, mutexSend);
+		ProfileMutex(Mutex, mutexConnect);
 	};
 
 	struct ClientInfo
@@ -133,7 +133,7 @@ struct Server
 	eastl::array<ClientInfo,MAX_CLIENTS> clientInfo;
 
 	eastl::fixed_vector<i32,MAX_CLIENTS> clientDisconnectedList;
-	Mutex mutexClientDisconnectedList;
+	ProfileMutex(Mutex, mutexClientDisconnectedList);
 
 	EA::Thread::Thread thread;
 

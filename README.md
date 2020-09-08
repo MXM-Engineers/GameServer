@@ -22,5 +22,11 @@ https://www.youtube.com/watch?v=qmJoTYWCL5I
 
 **Requires python 3.7.X, 3.8.X is broken at the moment.**
 
+## Profiling
+
+Build using the `--profile` option (example: `genie --profile vs2019`)
+
+Run `Game.exe` as administrator. After a session, open the capture file in the `capture` folder using `profiler/Tracy.exe`
+
 
 

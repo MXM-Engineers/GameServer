@@ -24,6 +24,7 @@ struct Coordinator
 	AccountData accountData[Server::MAX_CLIENTS];
 	GrowableBuffer recvDataBuff;
 	EA::Thread::Thread thread;
+	Time localTime;
 
 	void Init(Server* server_);
 	void Cleanup();

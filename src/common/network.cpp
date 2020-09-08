@@ -22,6 +22,10 @@ const char* GetIpString(const sockaddr& addr)
 
 intptr_t ThreadNetwork(void* pData)
 {
+	ProfileSetThreadName("NetworkPoller");
+	const i32 cpuID = 1;
+	EA::Thread::SetThreadAffinityMask(1 << cpuID);
+
 	Server& server = *(Server*)pData;
 
 	while(server.running) {
@@ -140,9 +144,10 @@ void Server::DisconnectClient(i32 clientID)
 	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	if(clientIsConnected[clientID] == 0) return;
 
-	mutexClientDisconnectedList.Lock();
-	clientDisconnectedList.push_back(clientID);
-	mutexClientDisconnectedList.Unlock();
+	{
+		const LockGuard lock(mutexClientDisconnectedList);
+		clientDisconnectedList.push_back(clientID);
+	}
 
 	ClientNet& client = clientNet[clientID];
 	const LockGuard lock(client.mutexConnect);

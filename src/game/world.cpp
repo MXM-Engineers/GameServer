@@ -69,9 +69,10 @@ void World::Update(f64 delta)
 		rfl.upperRotate = actor.upperRotate;
 		rfl.speed = actor.speed;
 		rfl.spawnType = 0;
-		rfl.actionState = (ActionStateID)99; // TODO: what's this?
-		rfl.actionParam1 = 0;
-		rfl.actionParam2 = 0;
+		//rfl.actionState = (ActionStateID)99; // TODO: what's this?
+		rfl.actionState = ActionStateID::INVALID; // TODO: what's this?
+		rfl.actionParam1 = -1;
+		rfl.actionParam2 = -1;
 		rfl.ownerID = 0;
 		rfl.faction = -1;
 		rfl.classType = ClassType::NONE; // -1 for NPCs

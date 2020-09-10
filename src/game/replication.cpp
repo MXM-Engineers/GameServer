@@ -666,7 +666,7 @@ void Replication::DoFrameDifference()
 				ASSERT(cf != frameCur->actionStateMap.end());
 				const Frame::ActionState& cur = cf->second;
 
-				if(!prev.HasNotChanged(cur)) {
+				if(cur.actionState != ActionStateID::INVALID) {
 					atToSendList.emplace_back(actorUID, cur);
 				}
 			}
@@ -725,7 +725,7 @@ void Replication::DoFrameDifference()
 			if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
 			packet.characterID = GetLocalActorID(clientID, e.first);
-			LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d", clientID, packet.state, packet.param1);
+			LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d param2=%d", clientID, (i32)packet.state, packet.param1, packet.param2);
 			SendPacket(clientID, packet);
 		}
 	}
@@ -954,7 +954,7 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 
 bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
 {
-	const f32 posEpsilon = 0.05f;
+	const f32 posEpsilon = 0.1f;
 	if(fabs(pos.x - other.pos.x) > posEpsilon) return false;
 	if(fabs(pos.y - other.pos.y) > posEpsilon) return false;
 	if(fabs(pos.z - other.pos.z) > posEpsilon) return false;
@@ -964,10 +964,10 @@ bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other)
 	if(fabs(eye.x - other.eye.x) > posEpsilon) return false;
 	if(fabs(eye.y - other.eye.y) > posEpsilon) return false;
 	if(fabs(eye.z - other.eye.z) > posEpsilon) return false;
-	const f32 rotEpsilon = 0.01f;
-	if(fabs(rotate - other.rotate) > rotEpsilon) return false;
-	const f32 rotSpeed = 0.1f;
-	if(fabs(speed - other.speed) > rotSpeed) return false;
+	/*const f32 rotEpsilon = 0.01f;
+	if(fabs(rotate - other.rotate) > rotEpsilon) return false;*/
+	const f32 speedEpsilon = 0.1f;
+	if(fabs(speed - other.speed) > speedEpsilon) return false;
 	return true;
 }
 

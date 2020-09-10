@@ -8,6 +8,10 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
+// - Fix how action states are checked for change. Currently if not invalid we send, then clear to invalid.
+// However some action states seem to be more permanent, like NPC ones (99?). We could add a frameChangedID to designate the frame the state changed, and compare based on it.
+// Also from a gameplay perspective, we want to know how long we jump for example. Simulate action states?
+
 // - split different kind of actors in Replication?
 // - make jukebox go through the world (+replication differential = fixes dependencies)
 

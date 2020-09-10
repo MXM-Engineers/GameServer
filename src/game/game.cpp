@@ -236,8 +236,6 @@ void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const 
 	actor->eye = eye;
 	actor->rotate = rotate;
 	actor->speed = speed;
-	actor->actionState = state;
-	actor->actionParam1 = actionID;
 }
 
 void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)

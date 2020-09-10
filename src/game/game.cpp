@@ -218,7 +218,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -316,7 +316,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, i32 state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (10/09/2020)
@@ -359,7 +359,8 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;
 
-			actor.actionState = 149;
+			// trigger second emote
+			actor.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;
 			actor.actionParam1 = 2;
 
 			lastLegoActorUID = actor.UID;

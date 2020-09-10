@@ -53,7 +53,7 @@ struct Replication
 		SkinIndex skinIndex;
 		i32 localID;
 
-		i32 actionState;
+		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
 
@@ -81,7 +81,7 @@ struct Replication
 
 		struct ActionState
 		{
-			i32 actionState;
+			ActionStateID actionState;
 			i32 actionParam1;
 			i32 actionParam2;
 			f32 rotate;

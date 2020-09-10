@@ -49,7 +49,7 @@ void World::Update(f64 delta)
 
 	// clear action state
 	foreach(it, actorPlayerList) {
-		it->actionState = -1;
+		it->actionState = ActionStateID::INVALID;
 		it->actionParam1 = -1;
 		it->actionParam2 = -1;
 	}
@@ -69,7 +69,7 @@ void World::Update(f64 delta)
 		rfl.upperRotate = actor.upperRotate;
 		rfl.speed = actor.speed;
 		rfl.spawnType = 0;
-		rfl.actionState = 99;
+		rfl.actionState = (ActionStateID)99; // TODO: what's this?
 		rfl.actionParam1 = 0;
 		rfl.actionParam2 = 0;
 		rfl.ownerID = 0;
@@ -98,7 +98,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;
 	actor.speed = 0;
-	actor.actionState = -1;
+	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
 	actor.actionParam2 = -1;
 	actor.classType = classType;
@@ -122,7 +122,7 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	actor.eye = Vec3(0, 0, 0);
 	actor.rotate = 0;
 	actor.speed = 0;
-	actor.actionState = -1;
+	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
 	actor.actionParam2 = -1;
 	actor.localID = localID;

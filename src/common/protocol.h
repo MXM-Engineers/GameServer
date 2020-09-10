@@ -66,6 +66,13 @@ enum class SongID: i32
 	Arami = 7770012,
 };
 
+enum class ActionStateID: i32
+{
+	INVALID = -1,
+	EMOTION_BEHAVIORSTATE = 149,
+	JUMP_START_MOVESTATE = 152
+};
+
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 struct NetHeader
@@ -164,7 +171,7 @@ struct CN_UpdatePosition
 	Vec3 p3nEye;
 	f32 nRotate;
 	f32 nSpeed;
-	i32 nState;
+	ActionStateID nState;
 	i32 nActionIDX;
 };
 ASSERT_SIZE(CN_UpdatePosition, 56);
@@ -175,7 +182,7 @@ struct CN_GamePlayerSyncActionStateOnly
 	enum { NET_ID = 60023 };
 
 	LocalActorID characterID;
-	i32 state;
+	ActionStateID state;
 	u8 bApply;
 	i32 param1;
 	i32 param2;
@@ -1352,7 +1359,7 @@ struct SN_PlayerSyncActionStateOnly
 	enum { NET_ID = 62364 };
 
 	LocalActorID characterID;
-	i32 state;
+	ActionStateID state;
 	i32 param1;
 	i32 param2;
 	f32 rotate;

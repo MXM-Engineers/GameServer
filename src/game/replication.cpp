@@ -679,7 +679,7 @@ void Replication::DoFrameDifference()
 				ASSERT(cf != frameCur->actionStateMap.end());
 				const Frame::ActionState& cur = cf->second;
 
-				if(cur.actionState != -1) {
+				if(cur.actionState != ActionStateID::INVALID) {
 					atToSendList.emplace_back(actorUID, cur);
 				}
 			}
@@ -761,7 +761,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		packet.Write(actor.pos); // p3nPos
 		packet.Write(actor.dir); // p3nDir
 		packet.Write<i32>(actor.spawnType); // spawnType
-		packet.Write<i32>(actor.actionState); // actionState
+		packet.Write<ActionStateID>(actor.actionState); // actionState
 		packet.Write<i32>(actor.ownerID); // ownerID
 		packet.Write<u8>(0); // bDirectionToNearPC
 		packet.Write<i32>(-1); // AiWanderDistOverride
@@ -973,7 +973,7 @@ bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other)
 
 bool Replication::Frame::ActionState::HasNotChanged(const Replication::Frame::ActionState& other) const
 {
-	if(other.actionState == -1) return true;
+	if(other.actionState == ActionStateID::INVALID) return true;
 	if(actionState != other.actionState) return false;
 	if(actionParam1 != other.actionParam1) return false;
 	if(actionParam2 != other.actionParam2) return false;

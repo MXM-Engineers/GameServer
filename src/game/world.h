@@ -29,7 +29,7 @@ struct World
 		f32 rotate;
 		f32 upperRotate;
 		f32 speed;
-		i32 actionState;
+		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
 	};

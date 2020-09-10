@@ -205,7 +205,7 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 {
 	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
-	i32 state = sync.state;
+	i32 state = (i32)sync.state;
 	const char* stateStr = g_ActionStateInvalidString;
 	if(state >= 0 && state < ARRAY_COUNT(g_ActionStateString)) {
 		stateStr = g_ActionStateString[state];

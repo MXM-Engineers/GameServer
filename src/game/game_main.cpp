@@ -8,7 +8,7 @@ Server* g_Server = nullptr;
 
 //#error
 // TODO:
-// - make emotes go through the world (+replication differential = fixes dependencies)
+// - split different kind of actors in Replication?
 // - make jukebox go through the world (+replication differential = fixes dependencies)
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse

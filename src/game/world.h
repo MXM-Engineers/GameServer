@@ -27,9 +27,11 @@ struct World
 		Vec3 dir;
 		Vec3 eye;
 		f32 rotate;
+		f32 upperRotate;
 		f32 speed;
-		i32 state;
-		i32 actionID;
+		i32 actionState;
+		i32 actionParam1;
+		i32 actionParam2;
 	};
 
 	struct ActorPlayer: ActorCore
@@ -70,8 +72,6 @@ struct World
 
 	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
-
-	void PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID);
 
 	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;

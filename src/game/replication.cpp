@@ -20,6 +20,7 @@ void Replication::Frame::Clear()
 	actorUIDMap.clear();
 	actorUIDSet.clear();
 	transformMap.clear();
+	actionStateMap.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -84,7 +85,7 @@ void Replication::FrameEnd()
 	frameCur->Clear(); // clear frame
 }
 
-void Replication::FramePushActor(const Actor& actor, const Transform& tf, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
+void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
 {
 	ASSERT(frameCur->actorUIDMap.find(actor.UID) == frameCur->actorUIDMap.end());
 	ASSERT(frameCur->actorUIDSet.find(actor.UID) == frameCur->actorUIDSet.end());
@@ -111,7 +112,21 @@ void Replication::FramePushActor(const Actor& actor, const Transform& tf, const 
 		a.playerInfo = --frameCur->actorPlayerInfoList.end();
 	}
 
+	Frame::Transform tf;
+	tf.pos = actor.pos;
+	tf.dir = actor.dir;
+	tf.eye = actor.eye;
+	tf.rotate = actor.rotate;
+	tf.speed = actor.speed;
 	frameCur->transformMap.emplace(actor.UID, tf);
+
+	Frame::ActionState at;
+	at.actionState = actor.actionState;
+	at.actionParam1 = actor.actionParam1;
+	at.actionParam2 = actor.actionParam2;
+	at.rotate = actor.rotate;
+	at.upperRotate = actor.upperRotate;
+	frameCur->actionStateMap.emplace(actor.UID, at);
 }
 
 void Replication::EventPlayerConnect(i32 clientID)
@@ -378,29 +393,6 @@ void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUI
 	}
 }
 
-void Replication::EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync)
-{
-	// Instant replicate
-	// TODO: find out how to use the graph move (decrypt captures, or randomly input values)
-
-	Sv::SN_PlayerSyncActionStateOnly packet;
-	memset(&packet, 0, sizeof(packet));
-	packet.state = sync.state;
-	packet.param1 = sync.param1;
-	packet.param2 = sync.param2;
-	packet.rotate = sync.rotate;
-	packet.upperRotate = sync.upperRotate;
-
-	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-		packet.characterID = GetLocalActorID(clientID, actorUID);
-
-		LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d", clientID, packet.state, packet.param1);
-		SendPacket(clientID, packet);
-	}
-}
-
 void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// TODO: restrict message length
@@ -640,39 +632,64 @@ void Replication::DoFrameDifference()
 {
 	// send position update
 
-	struct Entry
-	{
-		ActorUID actorUID;
-		Transform tf;
-	};
-
-	eastl::fixed_vector<Entry,2048> tfToSendList;
+	eastl::fixed_vector<eastl::pair<ActorUID,Frame::Transform>, 2048> tfToSendList;
+	eastl::fixed_vector<eastl::pair<ActorUID,Frame::ActionState>, 2048> atToSendList;
 
 	// find if the position has changed since last frame
 	foreach(it, frameCur->actorUIDSet) {
 		const ActorUID actorUID = *it;
+
+		// was present in last frame
 		if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
-			auto pf = framePrev->transformMap.find(actorUID);
-			ASSERT(pf != framePrev->transformMap.end());
-			const Transform& prevTf = pf->second;
+			// transform
+			{
+				auto pf = framePrev->transformMap.find(actorUID);
+				ASSERT(pf != framePrev->transformMap.end());
+				const Frame::Transform& prev = pf->second;
 
-			auto cf = frameCur->transformMap.find(actorUID);
-			ASSERT(cf != frameCur->transformMap.end());
-			const Transform& curTf = cf->second;
+				auto cf = frameCur->transformMap.find(actorUID);
+				ASSERT(cf != frameCur->transformMap.end());
+				const Frame::Transform& cur = cf->second;
 
-			if(!prevTf.IsEqual(curTf)) {
-				Entry e;
-				e.actorUID = actorUID;
-				e.tf = curTf;
-				tfToSendList.push_back(e);
+				if(!prev.HasNotChanged(cur)) {
+					tfToSendList.emplace_back(actorUID, cur);
+				}
+			}
+
+			// action state
+			{
+				auto pf = framePrev->actionStateMap.find(actorUID);
+				ASSERT(pf != framePrev->actionStateMap.end());
+				const Frame::ActionState& prev = pf->second;
+
+				auto cf = frameCur->actionStateMap.find(actorUID);
+				ASSERT(cf != frameCur->actionStateMap.end());
+				const Frame::ActionState& cur = cf->second;
+
+				if(!prev.HasNotChanged(cur)) {
+					atToSendList.emplace_back(actorUID, cur);
+				}
+			}
+		}
+		// was not present in last frame
+		else {
+			// action state
+			{
+				auto cf = frameCur->actionStateMap.find(actorUID);
+				ASSERT(cf != frameCur->actionStateMap.end());
+				const Frame::ActionState& cur = cf->second;
+
+				if(cur.actionState != -1) {
+					atToSendList.emplace_back(actorUID, cur);
+				}
 			}
 		}
 	}
 
 	// send updates
 	foreach(it, tfToSendList) {
-		const Entry& e = *it;
-		const Transform& tf = e.tf;
+		const auto& e = *it;
+		const Frame::Transform& tf = e.second;
 
 		Sv::SN_GamePlayerSyncByInt sync;
 		sync.p3nPos = tf.pos;
@@ -680,15 +697,36 @@ void Replication::DoFrameDifference()
 		sync.p3nEye = tf.eye;
 		sync.nRotate = tf.rotate;
 		sync.nSpeed = tf.speed;
-		sync.nState = tf.state;
-		sync.nActionIDX = tf.actionID;
+		sync.nState = -1;
+		sync.nActionIDX = -1;
 
 		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 			if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-			sync.characterID = GetLocalActorID(clientID, e.actorUID);
-			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)e.actorUID);
+			sync.characterID = GetLocalActorID(clientID, e.first);
+			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)e.first);
 			SendPacket(clientID, sync);
+		}
+	}
+
+	foreach(it, atToSendList) {
+		const auto& e = *it;
+		const Frame::ActionState& at = e.second;
+
+		Sv::SN_PlayerSyncActionStateOnly packet;
+		memset(&packet, 0, sizeof(packet));
+		packet.state = at.actionState;
+		packet.param1 = at.actionParam1;
+		packet.param2 = at.actionParam2;
+		packet.rotate = at.rotate;
+		packet.upperRotate = at.upperRotate;
+
+		for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+			packet.characterID = GetLocalActorID(clientID, e.first);
+			LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d", clientID, packet.state, packet.param1);
+			SendPacket(clientID, packet);
 		}
 	}
 }
@@ -914,9 +952,9 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }
 
-bool Replication::Transform::IsEqual(const Transform& other) const
+bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
 {
-	const f32 posEpsilon = 0.1f;
+	const f32 posEpsilon = 0.05f;
 	if(fabs(pos.x - other.pos.x) > posEpsilon) return false;
 	if(fabs(pos.y - other.pos.y) > posEpsilon) return false;
 	if(fabs(pos.z - other.pos.z) > posEpsilon) return false;
@@ -930,7 +968,14 @@ bool Replication::Transform::IsEqual(const Transform& other) const
 	if(fabs(rotate - other.rotate) > rotEpsilon) return false;
 	const f32 rotSpeed = 0.1f;
 	if(fabs(speed - other.speed) > rotSpeed) return false;
-	if(state != other.state) return false;
-	if(actionID != other.actionID) return false;
+	return true;
+}
+
+bool Replication::Frame::ActionState::HasNotChanged(const Replication::Frame::ActionState& other) const
+{
+	if(other.actionState == -1) return true;
+	if(actionState != other.actionState) return false;
+	if(actionParam1 != other.actionParam1) return false;
+	if(actionParam2 != other.actionParam2) return false;
 	return true;
 }

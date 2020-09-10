@@ -42,13 +42,20 @@ struct Replication
 		CreatureIndex docID;
 		Vec3 pos;
 		Vec3 dir;
+		Vec3 eye;
+		f32 rotate;
+		f32 upperRotate;
+		f32 speed;
 		i32 spawnType;
-		i32 actionState;
 		i32 ownerID;
 		i32 faction;
 		ClassType classType;
 		SkinIndex skinIndex;
 		i32 localID;
+
+		i32 actionState;
+		i32 actionParam1;
+		i32 actionParam2;
 
 	private:
 
@@ -59,21 +66,30 @@ struct Replication
 		friend struct Replication;
 	};
 
-	struct Transform
-	{
-		Vec3 pos;
-		Vec3 dir;
-		Vec3 eye;
-		f32 rotate;
-		f32 speed;
-		i32 state;
-		i32 actionID;
-
-		bool IsEqual(const Transform& other) const;
-	};
-
 	struct Frame
 	{
+		struct Transform
+		{
+			Vec3 pos;
+			Vec3 dir;
+			Vec3 eye;
+			f32 rotate;
+			f32 speed;
+
+			bool HasNotChanged(const Transform& other) const;
+		};
+
+		struct ActionState
+		{
+			i32 actionState;
+			i32 actionParam1;
+			i32 actionParam2;
+			f32 rotate;
+			f32 upperRotate;
+
+			bool HasNotChanged(const ActionState& other) const;
+		};
+
 		List<Actor> actorList;
 		List<ActorNameplate> actorNameplateList;
 		List<ActorStats> actorStatsList;
@@ -82,6 +98,7 @@ struct Replication
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 
 		eastl::fixed_map<ActorUID,Transform,2048> transformMap;
+		eastl::fixed_map<ActorUID,ActionState,2048> actionStateMap;
 
 		void Clear();
 	};
@@ -124,14 +141,13 @@ struct Replication
 	void Init(Server* server_);
 
 	void FrameEnd();
-	void FramePushActor(const Actor& actor, const Transform& tf, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
+	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
 
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
 	void SetPlayerAsInGame(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
-	void EventPlayerActionState(ActorUID actorUID, const Cl::CN_GamePlayerSyncActionStateOnly& sync);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);

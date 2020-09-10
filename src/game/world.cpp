@@ -20,8 +20,14 @@ void World::Update(f64 delta)
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
+		rfl.eye = actor.eye;
+		rfl.rotate = actor.rotate;
+		rfl.upperRotate = actor.upperRotate;
+		rfl.speed = actor.speed;
 		rfl.spawnType = 0;
-		rfl.actionState = -1;
+		rfl.actionState = actor.actionState;
+		rfl.actionParam1 = actor.actionParam1;
+		rfl.actionParam2 = actor.actionParam2;
 		rfl.ownerID = 0;
 		rfl.faction = 0;
 		rfl.classType = actor.classType;
@@ -38,16 +44,14 @@ void World::Update(f64 delta)
 		Replication::ActorPlayerInfo playerInfo;
 		// TODO: fill those
 
-		Replication::Transform tf;
-		tf.pos = actor.pos;
-		tf.dir = actor.dir;
-		tf.eye = actor.eye;
-		tf.rotate = actor.rotate;
-		tf.speed = actor.speed;
-		tf.state = actor.state;
-		tf.actionID = actor.actionID;
+		replication->FramePushActor(rfl, &plate, &stats, &playerInfo);
+	}
 
-		replication->FramePushActor(rfl, tf, &plate, &stats, &playerInfo);
+	// clear action state
+	foreach(it, actorPlayerList) {
+		it->actionState = -1;
+		it->actionParam1 = -1;
+		it->actionParam2 = -1;
 	}
 
 	// npcs
@@ -60,24 +64,21 @@ void World::Update(f64 delta)
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
+		rfl.eye = actor.eye;
+		rfl.rotate = actor.rotate;
+		rfl.upperRotate = actor.upperRotate;
+		rfl.speed = actor.speed;
 		rfl.spawnType = 0;
 		rfl.actionState = 99;
+		rfl.actionParam1 = 0;
+		rfl.actionParam2 = 0;
 		rfl.ownerID = 0;
 		rfl.faction = -1;
 		rfl.classType = ClassType::NONE; // -1 for NPCs
 		rfl.skinIndex = SkinIndex::DEFAULT;
 		rfl.localID = actor.localID;
 
-		Replication::Transform tf;
-		tf.pos = actor.pos;
-		tf.dir = actor.dir;
-		tf.eye = actor.eye;
-		tf.rotate = actor.rotate;
-		tf.speed = actor.speed;
-		tf.state = actor.state;
-		tf.actionID = actor.actionID;
-
-		replication->FramePushActor(rfl, tf, nullptr, nullptr, nullptr);
+		replication->FramePushActor(rfl, nullptr, nullptr, nullptr);
 	}
 }
 
@@ -97,8 +98,9 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;
 	actor.speed = 0;
-	actor.state = 0;
-	actor.actionID = 0;
+	actor.actionState = -1;
+	actor.actionParam1 = -1;
+	actor.actionParam2 = -1;
 	actor.classType = classType;
 	actor.skinIndex = skinIndex;
 	actor.name = name;
@@ -120,27 +122,13 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	actor.eye = Vec3(0, 0, 0);
 	actor.rotate = 0;
 	actor.speed = 0;
-	actor.state = -1;
-	actor.actionID = -1;
+	actor.actionState = -1;
+	actor.actionParam1 = -1;
+	actor.actionParam2 = -1;
 	actor.localID = localID;
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;
-}
-
-void World::PlayerUpdatePosition(ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, i32 state, i32 actionID)
-{
-	ActorPlayer* actor = FindPlayerActor(actorUID);
-	ASSERT(actor);
-
-	// TODO: check for movement hacking
-	actor->pos = pos;
-	actor->dir = dir;
-	actor->eye = eye;
-	actor->rotate = rotate;
-	actor->speed = speed;
-	actor->state = state;
-	actor->actionID = actionID;
 }
 
 World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID) const

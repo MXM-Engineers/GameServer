@@ -222,7 +222,7 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 	LOG("	upperRotate=%g", sync.upperRotate);
 	LOG("}");
 
-	game.OnPlayerSyncActionState(clientID, sync);
+	game.OnPlayerSyncActionState(clientID, sync.characterID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 
 void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

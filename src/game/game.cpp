@@ -226,7 +226,18 @@ void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const 
 		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
 		return;
 	}
-	world.PlayerUpdatePosition(playerActorUID[clientID], pos, dir, eye, rotate, speed, state, actionID);
+
+	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	ASSERT(actor);
+
+	// TODO: check for movement hacking
+	actor->pos = pos;
+	actor->dir = dir;
+	actor->eye = eye;
+	actor->rotate = rotate;
+	actor->speed = speed;
+	actor->actionState = state;
+	actor->actionParam1 = actionID;
 }
 
 void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
@@ -305,13 +316,24 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, const Cl::CN_GamePlayerSyncActionStateOnly& sync)
+void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, i32 state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
-	DBG_ASSERT(replication->GetLocalActorID(clientID, playerActorUID[clientID]) == sync.characterID);
+	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
+	// LordSk (10/09/2020)
+	if(replication->GetLocalActorID(clientID, playerActorUID[clientID]) != characterID) {
+		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
+		return;
+	}
 
-	// TODO: this should probably pass by the world in a form or another?
-	// So we have actors that change action state
-	replication->EventPlayerActionState(playerActorUID[clientID], sync); // TODO: temporarily directly pass the packet
+	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	ASSERT(actor);
+
+	// TODO: check hacking
+	actor->rotate = rotate;
+	actor->upperRotate = upperRotate;
+	actor->actionState = state;
+	actor->actionParam1 = param1;
+	actor->actionParam2 = param2;
 }
 
 void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
@@ -336,6 +358,10 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
 			actor.eye = playerActor->eye;
+
+			actor.actionState = 149;
+			actor.actionParam1 = 2;
+
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));

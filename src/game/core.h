@@ -13,3 +13,5 @@ enum class CoreAffinity: i32
 	COORDINATOR = 2,
 	CHANNELS = 3,
 };
+
+constexpr i32 JUKEBOX_MAX_TRACKS = 8;

@@ -6,9 +6,53 @@ void World::Init(Replication* replication_)
 	nextActorUID = 1;
 }
 
-void World::Update(f64 delta)
+void World::Update(f64 delta, Time localTime_)
 {
 	ProfileFunction();
+
+	localTime = localTime_;
+
+	// update jukebox
+	if(jukebox.UID != ActorUID::INVALID) {
+		if(jukebox.currentSong.songID != SongID::INVALID) {
+			if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
+				jukebox.currentSong = {};
+			}
+		}
+
+		if(jukebox.currentSong.songID == SongID::INVALID) {
+			if(!jukebox.queue.empty()) {
+				jukebox.currentSong = jukebox.queue.front();
+				jukebox.queue.pop_front();
+				jukebox.playStartTime = localTime;
+			}
+		}
+
+		// replicate
+		Replication::ActorJukebox rjb;
+		rjb.actorUID = jukebox.UID;
+		rjb.docID = jukebox.docID;
+		rjb.pos = jukebox.pos;
+		rjb.dir = jukebox.dir;
+		rjb.localID = jukebox.localID;
+
+		if(jukebox.currentSong.songID != SongID::INVALID) {
+			rjb.playPosition = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
+			rjb.playStartTime = jukebox.playStartTime;
+			rjb.currentSong = { jukebox.currentSong.songID, jukebox.currentSong.requesterNick };
+		}
+		else {
+			rjb.playPosition = 0;
+			rjb.playStartTime = Time::ZERO;
+			rjb.currentSong = { SongID::INVALID };
+		}
+
+		foreach(it, jukebox.queue) {
+			rjb.tracks.push_back({ it->songID, it->requesterNick });
+		}
+
+		replication->FramePushJukebox(rjb);
+	}
 
 	// players
 	foreach(it, actorPlayerList) {
@@ -91,10 +135,9 @@ ActorUID World::NewActorUID()
 World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag)
 {
 	ActorUID actorUID = NewActorUID();
-	ASSERT(FindPlayerActor(actorUID) == nullptr);
 
-	ActorPlayer& actor = actorPlayerList.push_back();
-	actor.UID = actorUID;
+	actorPlayerList.emplace_back(actorUID);
+	ActorPlayer& actor = actorPlayerList.back();
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;
@@ -114,10 +157,9 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 {
 	ActorUID actorUID = NewActorUID();
-	ASSERT(FindNpcActor(actorUID) == nullptr);
 
-	ActorNpc& actor = actorNpcList.push_back();
-	actor.UID = actorUID;
+	actorNpcList.emplace_back(actorUID);
+	ActorNpc& actor = actorNpcList.back();
 	actor.type = 1;
 	actor.docID = (CreatureIndex)docID;
 	actor.eye = Vec3(0, 0, 0);
@@ -130,6 +172,25 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;
+}
+
+World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+{
+	ASSERT(jukebox.UID == ActorUID::INVALID);
+
+	new(&jukebox) ActorJukebox(NewActorUID());
+	jukebox.type = 1;
+	jukebox.docID = (CreatureIndex)docID;
+	jukebox.pos = pos;
+	jukebox.dir = dir;
+	jukebox.eye = Vec3(0, 0, 0);
+	jukebox.rotate = 0;
+	jukebox.speed = 0;
+	jukebox.actionState = ActionStateID::INVALID;
+	jukebox.actionParam1 = -1;
+	jukebox.actionParam2 = -1;
+	jukebox.localID = localID;
+	return jukebox;
 }
 
 World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID) const
@@ -146,20 +207,16 @@ World::ActorNpc* World::FindNpcActor(ActorUID actorUID) const
 	return &(*it->second);
 }
 
-World::List<World::ActorNpc>::iterator World::FindNpcActorByCreatureID(CreatureIndex docID)
+World::ActorNpc* World::FindNpcActorByCreatureID(CreatureIndex docID)
 {
 	foreach(it, actorNpcList) {
 		if(it->docID == docID) {
-			return it;
+			return &(*it);
 		}
 	}
-	return actorNpcList.end();
+	return nullptr;
 }
 
-World::List<World::ActorNpc>::const_iterator World::InvalidNpcHandle() const
-{
-	return actorNpcList.end();
-}
 
 bool World::DestroyPlayerActor(ActorUID actorUID)
 {

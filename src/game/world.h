@@ -11,27 +11,26 @@
 
 struct World
 {
-	template<class T>
-	using List = eastl::fixed_list<T,2048>;
-
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
 	};
 
 	struct ActorCore
 	{
-		ActorUID UID;
+		const ActorUID UID;
 		i32 type;
 		CreatureIndex docID;
 		Vec3 pos;
 		Vec3 dir;
 		Vec3 eye;
-		f32 rotate;
-		f32 upperRotate;
+		f32 rotate; // whole body rotate
+		f32 upperRotate; // upper body rotate
 		f32 speed;
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
+
+		explicit ActorCore(ActorUID UID_): UID(UID_) {}
 	};
 
 	struct ActorPlayer: ActorCore
@@ -41,42 +40,69 @@ struct World
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
+
+		explicit ActorPlayer(ActorUID UID_): ActorCore(UID_) {}
 	};
 
 	struct ActorNpc: ActorCore
 	{
 		i32 localID;
+
+		explicit ActorNpc(ActorUID UID_): ActorCore(UID_) {}
 	};
 
 	struct ActorMonster: ActorCore
 	{
+		explicit ActorMonster(ActorUID UID_): ActorCore(UID_) {}
+	};
 
+	struct ActorJukebox: ActorNpc
+	{
+		struct Song
+		{
+			SongID songID = SongID::INVALID;
+			i32 lengthInSec = 0;
+			WideString requesterNick;
+		};
+
+		Song currentSong = { SongID::INVALID };
+		Time playStartTime = Time::ZERO;
+		eastl::fixed_list<Song,JUKEBOX_MAX_TRACKS,false> queue;
+
+		explicit ActorJukebox(ActorUID UID_): ActorNpc(UID_) {}
 	};
 
 	Replication* replication;
 
-	// TODO: enable overflow for those
-	List<ActorPlayer> actorPlayerList;
-	List<ActorNpc> actorNpcList;
-	List<ActorMonster> actorMonsterList;
-	eastl::fixed_map<ActorUID,List<ActorPlayer>::iterator,2048> actorPlayerMap;
-	eastl::fixed_map<ActorUID,List<ActorNpc>::iterator,2048> actorNpcMap;
-	eastl::fixed_map<ActorUID,List<ActorMonster>::iterator,2048> actorMonsterMap;
+	eastl::fixed_list<ActorPlayer,512,true> actorPlayerList;
+	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
+	eastl::fixed_list<ActorMonster,2048,true> actorMonsterList;
+
+	typedef decltype(actorPlayerList)::iterator ActorPlayerHandle;
+	typedef decltype(actorNpcList)::iterator ActorNpcHandle;
+	typedef decltype(actorMonsterList)::iterator ActorMonsterHandle;
+
+	// TODO: make those fixed_hash_maps
+	eastl::fixed_map<ActorUID, ActorPlayerHandle, 2048, true> actorPlayerMap;
+	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
+	eastl::fixed_map<ActorUID, ActorMonsterHandle, 2048, true> actorMonsterMap;
+	ActorJukebox jukebox = ActorJukebox(ActorUID::INVALID);
 
 	u32 nextActorUID;
+	Time localTime;
 
 	void Init(Replication* replication_);
-	void Update(f64 delta);
+	void Update(f64 delta, Time localTime_);
 
 	ActorUID NewActorUID();
 
 	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
+	ActorJukebox& SpawnJukeboxActor(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
 
 	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
-	List<ActorNpc>::iterator FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
-	List<ActorNpc>::const_iterator InvalidNpcHandle() const;
+	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 
 	bool DestroyPlayerActor(ActorUID actorUID);
 };

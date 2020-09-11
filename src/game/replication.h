@@ -66,6 +66,26 @@ struct Replication
 		friend struct Replication;
 	};
 
+	struct ActorJukebox
+	{
+		struct Track
+		{
+			SongID songID;
+			WideString requesterNick;
+		};
+
+		ActorUID actorUID = ActorUID::INVALID;
+		CreatureIndex docID;
+		Vec3 pos;
+		Vec3 dir;
+		i32 localID;
+
+		i32 playPosition;
+		Time playStartTime; // identifier
+		Track currentSong;
+		eastl::fixed_vector<Track,JUKEBOX_MAX_TRACKS,false> tracks;
+	};
+
 	struct Frame
 	{
 		struct Transform
@@ -100,6 +120,8 @@ struct Replication
 		eastl::fixed_map<ActorUID,Transform,2048> transformMap;
 		eastl::fixed_map<ActorUID,ActionState,2048> actionStateMap;
 
+		ActorJukebox jukebox;
+
 		void Clear();
 	};
 
@@ -121,12 +143,6 @@ struct Replication
 		void Reset();
 	};
 
-	struct JukeboxTrack
-	{
-		SongID songID;
-		WideString requesterNick;
-	};
-
 	Server* server;
 	Frame frames[2];
 	Frame* frameCur;
@@ -142,6 +158,7 @@ struct Replication
 
 	void FrameEnd();
 	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
+	void FramePushJukebox(const ActorJukebox& actor);
 
 	void EventPlayerConnect(i32 clientID);
 	void EventPlayerLoad(i32 clientID);
@@ -159,20 +176,19 @@ struct Replication
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
-	void JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec);
-	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
-	void SendJukeboxQueue(i32 clientID, const JukeboxTrack* tracks, const i32 trackCount);
-
 	bool IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const;
 
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
 
 	void UpdatePlayersLocalState();
-	void DoFrameDifference();
+	void FrameDifference();
 
 	void SendActorSpawn(i32 clientID, const Actor& actor);
+	void SendJukeboxSpawn(i32 clientID, const ActorJukebox& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
+	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
+	void SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount);
 
 	void CreateLocalActorID(i32 clientID, ActorUID actorUID);
 	void DeleteLocalActorID(i32 clientID, ActorUID actorUID);

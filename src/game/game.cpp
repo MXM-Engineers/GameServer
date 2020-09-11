@@ -24,83 +24,15 @@ void Game::Update(f64 delta, Time localTime_)
 	ProfileFunction();
 
 	localTime = localTime_;
-	world.Update(delta);
-
-	UpdateJukebox();
-}
-
-void Game::UpdateJukebox()
-{
-	// if the song playing ended, make the current song null
-	bool doSendNewSong = false;
-	if(jukebox.currentSong.songID != SongID::INVALID) {
-		if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
-			jukebox.currentSong = {};
-		}
-	}
-
-	if(jukebox.currentSong.songID == SongID::INVALID) {
-		if(!jukebox.queue.empty()) {
-			jukebox.currentSong = jukebox.queue.front();
-			jukebox.queue.pop_front();
-			jukebox.playStartTime = localTime;
-			doSendNewSong = true;
-		}
-	}
-
-	// build new replication song queue
-	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
-	foreach(it, jukebox.queue) {
-		Replication::JukeboxTrack track;
-		track.songID = it->songID;
-		track.requesterNick = it->requesterNick;
-		tracks.push_back(track);
-	}
-
-	// when the jukebox is replicated, we send its status
-	// TODO: there is probably a better way to do this, we *know* when it is replicated since we send SN_ScanEnd
-	// TODO: find a better way to represent this dependency
-	const wchar* requesterNick = L"";
-	i32 playPos;
-	if(jukebox.currentSong.songID != SongID::INVALID) {
-		requesterNick = jukebox.currentSong.requesterNick.data();
-		playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
-	}
-
-	foreach(it, playerList) {
-		if(!it->isJukeboxActorReplicated) {
-			if(replication->IsActorReplicatedForClient(it->clientID, jukebox.npcActorUID)) {
-				it->isJukeboxActorReplicated = true;
-
-				if(jukebox.currentSong.songID != SongID::INVALID) {
-					replication->SendJukeboxPlay(it->clientID, jukebox.currentSong.songID, requesterNick, playPos);
-				}
-				else { // send the Lobby music if no song is playing
-					replication->SendJukeboxPlay(it->clientID, SongID::Default, L"", 0);
-				}
-
-				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
-			}
-		}
-	}
-
-	// replicate new sound playing
-	if(doSendNewSong) {
-		const wchar* requesterNick = jukebox.currentSong.requesterNick.data();
-		const i32 playPos = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
-
-		foreach(it, playerList) {
-			if(it->isJukeboxActorReplicated) {
-				replication->SendJukeboxPlay(it->clientID, jukebox.currentSong.songID, requesterNick, playPos);
-				replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
-			}
-		}
-	}
+	world.Update(delta, localTime);
 }
 
 bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 {
 	ASSERT(playerAccountData[clientID]);
+
+	World::ActorJukebox& jukebox = world.jukebox;
+	ASSERT(jukebox.UID != ActorUID::INVALID);
 
 	if(jukebox.queue.full()) {
 		// TODO: send *actual* packet answer
@@ -137,28 +69,11 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 		return false;
 	}
 
-	Jukebox::Song song;
+	World::ActorJukebox::Song song;
 	song.requesterNick = playerAccountData[clientID]->nickname;
 	song.songID = songID;
 	song.lengthInSec = xmlSong->length;
 	jukebox.queue.push_back(song);
-
-	eastl::fixed_vector<Replication::JukeboxTrack,Jukebox::MAX_TRACKS,false> tracks;
-	foreach(it, jukebox.queue) {
-		Replication::JukeboxTrack track;
-		track.songID = it->songID;
-		track.requesterNick = it->requesterNick;
-		tracks.push_back(track);
-	}
-
-	// TODO: find a better way to represent this dependency
-	// send jukebox queue to players
-	foreach(it, playerList) {
-		if(it->isJukeboxActorReplicated) {
-			replication->SendJukeboxQueue(it->clientID, tracks.data(), tracks.size());
-		}
-	}
-
 	return true;
 }
 
@@ -173,13 +88,14 @@ bool Game::LoadMap()
 			continue;
 		}
 
-		// spawn npc
-		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+		if(it->docID == CreatureIndex::Jukebox) {
+			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
+		}
+		else {
+			// spawn npc
+			SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+		}
 	}
-
-	auto npcJukeBox  = world.FindNpcActorByCreatureID(CreatureIndex::Jukebox);
-	ASSERT(npcJukeBox != world.InvalidNpcHandle());
-	jukebox.npcActorUID = npcJukeBox->UID;
 
 	return true;
 }

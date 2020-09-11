@@ -22,7 +22,7 @@ intptr_t ThreadChannel(void* pData)
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
 		if(delta > UPDATE_RATE_MS) {
-			channel.Update(delta);
+			channel.Update(delta / 1000.0);
 			t0 = t1;
 		}
 		else {

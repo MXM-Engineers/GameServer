@@ -23,7 +23,7 @@ intptr_t ThreadCoordinator(void* pData)
 
 		if(delta > UPDATE_RATE_MS) {
 			ProfileNewFrame();
-			coordinator.Update(delta);
+			coordinator.Update(delta / 1000.0);
 			t0 = t1;
 		}
 		else {

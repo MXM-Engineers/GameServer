@@ -48,7 +48,7 @@ void Replication::FrameEnd()
 
 	UpdatePlayersLocalState();
 
-	DoFrameDifference();
+	FrameDifference();
 
 	// send SN_ScanEnd if requested
 	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
@@ -127,6 +127,15 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 	at.rotate = actor.rotate;
 	at.upperRotate = actor.upperRotate;
 	frameCur->actionStateMap.emplace(actor.UID, at);
+}
+
+void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
+{
+	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
+
+	frameCur->jukebox = actor;
+
+	frameCur->actorUIDSet.insert(actor.actorUID);
 }
 
 void Replication::EventPlayerConnect(i32 clientID)
@@ -463,70 +472,6 @@ void Replication::EventClientDisconnect(i32 clientID)
 	playerState[clientID] = PlayerState::DISCONNECTED;
 }
 
-
-void Replication::JukeboxPlaySong(i32 result, i32 trackID, wchar* nickname, u16 playPositionSec)
-{
-	u8 sendData[256];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<i32>(result); // result
-	packet.Write<i32>(trackID); // trackID
-	packet.WriteStringObj(nickname); // nickname
-	packet.Write<u16>(playPositionSec); // playPositionSec
-
-	for (int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if (playerState[clientID] != PlayerState::IN_GAME) continue;
-
-		LOG("[client%03d] Server :: SN_JukeboxPlay ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-	}
-}
-
-void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
-{
-	/*
-	// SN_JukeboxHotTrackList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(0); // trackList_count
-
-		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
-	}
-	*/
-
-	// SN_JukeboxPlay
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(0); // result
-		packet.Write<SongID>(songID); // trackID
-		packet.WriteStringObj(requesterNick); // nickname
-		packet.Write<u16>(playPosInSec); // playPositionSec
-
-		LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%ls'", clientID, (i32)songID, requesterNick);
-		SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-	}
-}
-
-void Replication::SendJukeboxQueue(i32 clientID, const Replication::JukeboxTrack* tracks, const i32 trackCount)
-{
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<u16>(trackCount); // trackList_count
-	for(int i = 0; i < trackCount; i++) {
-		packet.Write<SongID>(tracks[i].songID);
-		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
-	}
-
-	LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-	SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
-}
-
 bool Replication::IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const
 {
 	const auto& set = playerLocalInfo[clientID].actorUIDSet;
@@ -595,9 +540,6 @@ void Replication::UpdatePlayersLocalState()
 		// send new spawns
 		foreach(setIt, curMinusPlayer) {
 			const ActorUID actorUID = *setIt;
-			const auto actorIt = frameCur->actorUIDMap.find(actorUID);
-			ASSERT(actorIt != frameCur->actorUIDMap.end());
-			const Actor& actor = *actorIt->second;
 
 			// Create a LocalActorID link if none exists already
 			// If one exists already, we have pre-allocated it (like with leader master)
@@ -605,7 +547,17 @@ void Replication::UpdatePlayersLocalState()
 				CreateLocalActorID(clientID, actorUID);
 			}
 
-			SendActorSpawn(clientID, actor);
+			// TODO: actor types
+			if(actorUID == frameCur->jukebox.actorUID) {
+				SendJukeboxSpawn(clientID, frameCur->jukebox);
+			}
+			else {
+				const auto actorIt = frameCur->actorUIDMap.find(actorUID);
+				ASSERT(actorIt != frameCur->actorUIDMap.end());
+				const Actor& actor = *actorIt->second;
+
+				SendActorSpawn(clientID, actor);
+			}
 		}
 
 		playerActorUIDSet = frameCur->actorUIDSet;
@@ -628,7 +580,7 @@ void Replication::UpdatePlayersLocalState()
 	}
 }
 
-void Replication::DoFrameDifference()
+void Replication::FrameDifference()
 {
 	// send position update
 
@@ -638,6 +590,8 @@ void Replication::DoFrameDifference()
 	// find if the position has changed since last frame
 	foreach(it, frameCur->actorUIDSet) {
 		const ActorUID actorUID = *it;
+
+		if(frameCur->jukebox.actorUID == actorUID) continue; // TODO: actor types
 
 		// was present in last frame
 		if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
@@ -674,14 +628,12 @@ void Replication::DoFrameDifference()
 		// was not present in last frame
 		else {
 			// action state
-			{
-				auto cf = frameCur->actionStateMap.find(actorUID);
-				ASSERT(cf != frameCur->actionStateMap.end());
-				const Frame::ActionState& cur = cf->second;
+			auto cf = frameCur->actionStateMap.find(actorUID);
+			ASSERT(cf != frameCur->actionStateMap.end());
+			const Frame::ActionState& cur = cf->second;
 
-				if(cur.actionState != ActionStateID::INVALID) {
-					atToSendList.emplace_back(actorUID, cur);
-				}
+			if(cur.actionState != ActionStateID::INVALID) {
+				atToSendList.emplace_back(actorUID, cur);
 			}
 		}
 	}
@@ -727,6 +679,47 @@ void Replication::DoFrameDifference()
 			packet.characterID = GetLocalActorID(clientID, e.first);
 			LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d param2=%d", clientID, (i32)packet.state, packet.param1, packet.param2);
 			SendPacket(clientID, packet);
+		}
+	}
+
+	// jukebox
+	if(framePrev->jukebox.actorUID != ActorUID::INVALID && frameCur->jukebox.actorUID != ActorUID::INVALID) {
+		const ActorJukebox& prev = framePrev->jukebox;
+		const ActorJukebox& cur = frameCur->jukebox;
+
+		ASSERT(prev.actorUID == cur.actorUID); // actually the same jukebox
+
+		if(cur.currentSong.songID != SongID::INVALID) {
+			if(prev.currentSong.songID != cur.currentSong.songID || prev.playStartTime != cur.playStartTime) {
+
+				for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+					if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+					SendJukeboxPlay(clientID, cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
+				}
+			}
+		}
+
+		bool doSendTracks = false;
+		if(prev.tracks.size() == cur.tracks.size()) {
+			for(int t = 0; t < cur.tracks.size(); t++) {
+				if(prev.tracks[t].songID != cur.tracks[t].songID ||
+				   prev.tracks[t].requesterNick.compare(cur.tracks[t].requesterNick)) {
+					doSendTracks = true;
+					break;
+				}
+			}
+		}
+		else {
+			doSendTracks = true;
+		}
+
+		if(doSendTracks) {
+			for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+				if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+				SendJukeboxQueue(clientID, cur.tracks.data(), cur.tracks.size());
+			}
 		}
 	}
 }
@@ -923,6 +916,74 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 	}
 }
 
+void Replication::SendJukeboxSpawn(i32 clientID, const Replication::ActorJukebox& actor)
+{
+	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
+	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
+
+	const LocalActorID localActorID = found->second;
+
+	LOG("[client%03d] Replication :: SendJukeboxSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
+
+	// SN_GameCreateActor
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write<i32>(1); // nType
+		packet.Write<CreatureIndex>(actor.docID); // nIDX
+		packet.Write<i32>(actor.localID); // dwLocalID
+
+		packet.Write(actor.pos); // p3nPos
+		packet.Write(actor.dir); // p3nDir
+		packet.Write<i32>(0); // spawnType
+		packet.Write<ActionStateID>(ActionStateID::INVALID); // actionState
+		packet.Write<i32>(0); // ownerID
+		packet.Write<u8>(0); // bDirectionToNearPC
+		packet.Write<i32>(-1); // AiWanderDistOverride
+		packet.Write<i32>(-1); // tagID
+		packet.Write<i32>(-1); // faction
+		packet.Write<ClassType>(ClassType::NONE); // classType
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
+		packet.Write<i32>(0); // seed
+
+		packet.Write<u16>(0); // maxStats_count
+		packet.Write<u16>(0); // curStats_count
+
+		packet.Write<u8>(1); // isInSight
+		packet.Write<u8>(0); // isDead
+		packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, (u32)actor.actorUID);
+		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+	}
+
+	/*
+	// SN_JukeboxHotTrackList
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(0); // trackList_count
+
+		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
+		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
+	}
+	*/
+
+	SongID songID = actor.currentSong.songID;
+	if(songID == SongID::INVALID) {
+		songID = SongID::Default; // send lobby song by default
+	}
+
+	SendJukeboxPlay(clientID, songID, actor.currentSong.requesterNick.data(), actor.playPosition);
+	SendJukeboxQueue(clientID, actor.tracks.data(), actor.tracks.size());
+}
+
 void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 {
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
@@ -933,6 +994,35 @@ void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 	packet.characterID = localActorID;
 	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, (u32)actorUID);
 	SendPacket(clientID, packet);
+}
+
+void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
+{
+	u8 sendData[256];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<i32>(0); // result
+	packet.Write<SongID>(songID); // trackID
+	packet.WriteStringObj(requesterNick); // nickname
+	packet.Write<u16>(playPosInSec); // playPositionSec
+
+	LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%ls'", clientID, (i32)songID, requesterNick);
+	SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
+}
+
+void Replication::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount)
+{
+	u8 sendData[2048];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<u16>(trackCount); // trackList_count
+	for(int i = 0; i < trackCount; i++) {
+		packet.Write<SongID>(tracks[i].songID);
+		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
+	}
+
+	LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
+	SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
 }
 
 void Replication::CreateLocalActorID(i32 clientID, ActorUID actorUID)

@@ -30,22 +30,6 @@ struct Game
 			clientID(clientID_) {}
 	};
 
-	struct Jukebox
-	{
-		enum { MAX_TRACKS = 8 };
-		struct Song
-		{
-			SongID songID = SongID::INVALID;
-			i32 lengthInSec = 0;
-			WideString requesterNick;
-		};
-
-		ActorUID npcActorUID;
-		Song currentSong = { SongID::INVALID };
-		Time playStartTime = Time::ZERO;
-		eastl::fixed_list<Song,MAX_TRACKS,false> queue;
-	};
-
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	World world;
@@ -59,12 +43,9 @@ struct Game
 
 	Time localTime;
 
-	Jukebox jukebox;
-
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);
 
-	void UpdateJukebox();
 	bool JukeboxQueueSong(i32 clientID, SongID songID);
 
 	bool LoadMap();

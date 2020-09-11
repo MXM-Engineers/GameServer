@@ -1,4 +1,5 @@
 #include "replication.h"
+#include "config.h"
 #include <common/protocol.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
@@ -333,7 +334,7 @@ void Replication::EventPlayerLoad(i32 clientID)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = 160000042;
+	cityMapInfo.cityMapID = Config().lobbyMap;
 	SendPacket(clientID, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity

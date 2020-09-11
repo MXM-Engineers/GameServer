@@ -1,5 +1,6 @@
 #pragma once
 #include <common/protocol.h>
+#include <common/utils.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -51,7 +52,7 @@ struct GameXmlContent
 	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
 
-	Map mapLobbyNormal;
+	Map mapLobby;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
@@ -59,6 +60,8 @@ struct GameXmlContent
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadLobbyNormal();
+	bool LoadLobbyHalloween();
+	bool LoadLobby(WideString levelPath);
 	bool LoadJukeboxSongs();
 	bool Load();
 

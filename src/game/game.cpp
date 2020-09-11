@@ -81,7 +81,7 @@ bool Game::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	foreach(it, content.mapLobbyNormal.spawns) {
+	foreach(it, content.mapLobby.spawns) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
 			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
@@ -90,6 +90,9 @@ bool Game::LoadMap()
 
 		if(it->docID == CreatureIndex::Jukebox) {
 			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
+		}
+		if (it->docID == CreatureIndex::HalloweenJukebox) {
+			world.SpawnJukeboxActor(CreatureIndex::HalloweenJukebox, it->localID, it->pos, it->rot);
 		}
 		else {
 			// spawn npc

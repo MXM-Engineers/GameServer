@@ -1,5 +1,5 @@
 #include "game_content.h"
-
+#include "config.h"
 #include <common/utils.h>
 #include <tinyxml2.h>
 
@@ -160,13 +160,25 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 bool GameXmlContent::LoadLobbyNormal()
 {
+	LOG("Info(LoadLobbyNormal)");
+	return LoadLobby(L"/Lobby_Normal/Spawn.xml");
+}
+
+bool GameXmlContent::LoadLobbyHalloween()
+{
+	LOG("Info(LoadLobbyHalloween)");
+	return LoadLobby(L"/Lobby_Halloween/Spawn.xml");
+}
+
+bool GameXmlContent::LoadLobby(WideString levelPath)
+{
 	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/Lobby_Normal/Spawn.xml");
+	PathAppend(xmlPath, levelPath.data());
 
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
 	if(!fileData) {
-		LOG("ERROR(LoadLobbyNormal): failed to open '%ls'", xmlPath.data());
+		LOG("ERROR(LoadLobby): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -175,7 +187,7 @@ bool GameXmlContent::LoadLobbyNormal()
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
 	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadLobbyNormal): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+		LOG("ERROR(LoadLobby): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -198,7 +210,7 @@ bool GameXmlContent::LoadLobbyNormal()
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
-		mapLobbyNormal.spawns.push_back(spawn);
+		mapLobby.spawns.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
 	} while(pSpawnElt);
@@ -255,8 +267,18 @@ bool GameXmlContent::Load()
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
 
-	r = LoadLobbyNormal();
-	if(!r) return false;
+	if (Config().lobbyMap == 160000042)
+	{
+		r = LoadLobbyNormal();
+		if (!r) return false;
+	}
+	else if (Config().lobbyMap == 160000043)
+	{
+		r = LoadLobbyHalloween();
+		if (!r) return false;
+	}
+	else
+		return false;
 
 	r = LoadJukeboxSongs();
 	if(!r) return false;
@@ -286,7 +308,7 @@ bool GameXmlContent::Load()
 	}
 
 	LOG("Lobby_Normal:");
-	foreach(it, mapLobbyNormal.spawns) {
+	foreach(it, mapLobby.spawns) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
 

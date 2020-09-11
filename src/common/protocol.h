@@ -32,7 +32,8 @@ enum class CreatureIndex: i32
 {
 	Invalid = 0,
 	MasterStriker = 100000001, // taejin?
-	Jukebox = 100036777
+	Jukebox = 100036777,
+	HalloweenJukebox = 100036778
 };
 
 enum class SkinIndex: i32

@@ -65,6 +65,10 @@ class PacketSpitter:
             self.extract_packet(packet_size, packet_netid)
             if len(self.buff) >= 4:
                 packet_size, packet_netid = struct.unpack("HH", self.buff[:4])
+            else:
+                if len(self.buff) > 0:
+                    print("ERROR: buff is too small to contain a NetHeader (%d)" % len(self.buff))
+                break
 
 client_spitter = PacketSpitter('cl')
 server_spitter = PacketSpitter('sv')

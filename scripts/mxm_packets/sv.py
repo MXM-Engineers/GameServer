@@ -1521,10 +1521,11 @@ class ServerSerializer:
         print('SN_ClientSettings {')
         print('    settingType=%d' % p.read_u8())
         data_len = p.read_u16()
+        print('    dataLen=%d' % data_len)
         data = p.read_raw(data_len)
-        extracted = zlib.decompress(data)
-        print('    decompressed=[%s]' % extracted.decode('utf-8'))
-        print('    data="{}"'.format(p.read_raw(data_len)))
+        if data_len > 4:
+            data = zlib.decompress(data)
+        print('    decompressed=[%s]' % data.decode('utf-8'))
         print('}')
 
     def serialize_62525(netid, data):

@@ -12,61 +12,53 @@
 
 struct Replication
 {
-	template<class T>
-	using List = eastl::fixed_list<T,2048>;
-
-	struct ActorNameplate
+	enum class ActorType: i32
 	{
+		INVALID = 0,
+		PLAYER = 1,
+		NPC = 2,
+		JUKEBOX = 3,
+	};
+
+	template<ActorType TYPE_>
+	struct Actor
+	{
+		static const ActorType TYPE = TYPE_;
+		ActorUID actorUID;
+		CreatureIndex docID;
+		Vec3 pos;
+		Vec3 dir;
+	};
+
+	struct ActorPlayer: Actor<ActorType::PLAYER>
+	{
+		Vec3 eye;
+		f32 rotate;
+		f32 upperRotate;
+		f32 speed;
+		ClassType classType;
+		SkinIndex skinIndex;
+
 		WideString name;
 		WideString guildTag;
-	};
-
-	struct ActorStats
-	{
-
-	};
-
-	struct ActorPlayerInfo
-	{
 		i32 weaponID;
 		i32 additionnalOverHeatGauge;
 		i32 additionnalOverHeatGaugeRatio;
 		u8 playerStateInTown;
 		eastl::fixed_vector<u8,16> matchingGameModes;
-	};
-
-	struct Actor
-	{
-		ActorUID UID;
-		i32 type;
-		CreatureIndex docID;
-		Vec3 pos;
-		Vec3 dir;
-		Vec3 eye;
-		f32 rotate;
-		f32 upperRotate;
-		f32 speed;
-		i32 spawnType;
-		i32 ownerID;
-		i32 faction;
-		ClassType classType;
-		SkinIndex skinIndex;
-		i32 localID;
 
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
-
-	private:
-
-		List<ActorNameplate>::iterator nameplate = nullptr;
-		List<ActorStats>::iterator stats = nullptr;
-		List<ActorPlayerInfo>::iterator playerInfo = nullptr;
-
-		friend struct Replication;
 	};
 
-	struct ActorJukebox
+	struct ActorNpc: Actor<ActorType::NPC>
+	{
+		i32 type;
+		i32 localID;
+	};
+
+	struct ActorJukebox: Actor<ActorType::JUKEBOX>
 	{
 		struct Track
 		{
@@ -74,16 +66,16 @@ struct Replication
 			WideString requesterNick;
 		};
 
-		ActorUID actorUID = ActorUID::INVALID;
-		CreatureIndex docID;
-		Vec3 pos;
-		Vec3 dir;
 		i32 localID;
 
 		i32 playPosition;
 		Time playStartTime; // identifier
 		Track currentSong;
 		eastl::fixed_vector<Track,JUKEBOX_MAX_TRACKS,false> tracks;
+
+		ActorJukebox() {
+			actorUID = ActorUID::INVALID;
+		}
 	};
 
 	struct Frame
@@ -110,12 +102,14 @@ struct Replication
 			bool HasNotChanged(const ActionState& other) const;
 		};
 
-		List<Actor> actorList;
-		List<ActorNameplate> actorNameplateList;
-		List<ActorStats> actorStatsList;
-		List<ActorPlayerInfo> actorPlayerInfoList;
-		eastl::fixed_map<ActorUID,List<Actor>::iterator,2048> actorUIDMap;
+		// TODO: replace fixed_map with fixed_hash_map
+		eastl::fixed_list<ActorPlayer,2048,true> playerList;
+		eastl::fixed_list<ActorNpc,2048,true> npcList;
+		eastl::fixed_map<ActorUID,decltype(playerList)::iterator,2048,true> playerMap;
+		eastl::fixed_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
+
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
+		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
 
 		eastl::fixed_map<ActorUID,Transform,2048> transformMap;
 		eastl::fixed_map<ActorUID,ActionState,2048> actionStateMap;
@@ -157,7 +151,8 @@ struct Replication
 	void Init(Server* server_);
 
 	void FrameEnd();
-	void FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo);
+	void FramePushPlayerActor(const ActorPlayer& actor);
+	void FramePushNpcActor(const ActorNpc& actor);
 	void FramePushJukebox(const ActorJukebox& actor);
 
 	void EventPlayerConnect(i32 clientID);
@@ -184,7 +179,8 @@ private:
 	void UpdatePlayersLocalState();
 	void FrameDifference();
 
-	void SendActorSpawn(i32 clientID, const Actor& actor);
+	void SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor);
+	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
 	void SendJukeboxSpawn(i32 clientID, const ActorJukebox& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);

@@ -58,9 +58,8 @@ void World::Update(f64 delta, Time localTime_)
 	foreach(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;
 
-		Replication::Actor rfl;
-		rfl.UID = actor.UID;
-		rfl.type = actor.type;
+		Replication::ActorPlayer rfl;
+		rfl.actorUID = actor.UID;
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
@@ -68,27 +67,16 @@ void World::Update(f64 delta, Time localTime_)
 		rfl.rotate = actor.rotate;
 		rfl.upperRotate = actor.upperRotate;
 		rfl.speed = actor.speed;
-		rfl.spawnType = 0;
 		rfl.actionState = actor.actionState;
 		rfl.actionParam1 = actor.actionParam1;
 		rfl.actionParam2 = actor.actionParam2;
-		rfl.ownerID = 0;
-		rfl.faction = 0;
 		rfl.classType = actor.classType;
 		rfl.skinIndex = actor.skinIndex;
-		rfl.localID = -1;
 
-		Replication::ActorNameplate plate;
-		plate.name = actor.name;
-		plate.guildTag = actor.guildTag;
+		rfl.name = actor.name;
+		rfl.guildTag = actor.guildTag;
 
-		Replication::ActorStats stats;
-		// TODO: fill those
-
-		Replication::ActorPlayerInfo playerInfo;
-		// TODO: fill those
-
-		replication->FramePushActor(rfl, &plate, &stats, &playerInfo);
+		replication->FramePushPlayerActor(rfl);
 	}
 
 	// clear action state
@@ -98,32 +86,20 @@ void World::Update(f64 delta, Time localTime_)
 		it->actionParam2 = -1;
 	}
 
+
 	// npcs
 	foreach(it, actorNpcList) {
 		const ActorNpc& actor = *it;
 
-		Replication::Actor rfl;
-		rfl.UID = actor.UID;
+		Replication::ActorNpc rfl;
+		rfl.actorUID = actor.UID;
 		rfl.type = actor.type;
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
-		rfl.eye = actor.eye;
-		rfl.rotate = actor.rotate;
-		rfl.upperRotate = actor.upperRotate;
-		rfl.speed = actor.speed;
-		rfl.spawnType = 0;
-		//rfl.actionState = (ActionStateID)99; // TODO: what's this?
-		rfl.actionState = ActionStateID::INVALID; // TODO: what's this?
-		rfl.actionParam1 = -1;
-		rfl.actionParam2 = -1;
-		rfl.ownerID = 0;
-		rfl.faction = -1;
-		rfl.classType = ClassType::NONE; // -1 for NPCs
-		rfl.skinIndex = SkinIndex::DEFAULT;
 		rfl.localID = actor.localID;
 
-		replication->FramePushActor(rfl, nullptr, nullptr, nullptr);
+		replication->FramePushNpcActor(rfl);
 	}
 }
 

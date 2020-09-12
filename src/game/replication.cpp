@@ -13,12 +13,12 @@ inline bool IsListIteratorValid(const T& it)
 
 void Replication::Frame::Clear()
 {
-	actorList.clear();
-	actorNameplateList.clear();
-	actorStatsList.clear();
-	actorPlayerInfoList.clear();
-	actorUIDMap.clear();
+	playerList.clear();
+	npcList.clear();
+	playerMap.clear();
+	npcMap.clear();
 	actorUIDSet.clear();
+	actorType.clear();
 	transformMap.clear();
 	actionStateMap.clear();
 }
@@ -85,32 +85,15 @@ void Replication::FrameEnd()
 	frameCur->Clear(); // clear frame
 }
 
-void Replication::FramePushActor(const Actor& actor, const ActorNameplate* nameplate, const ActorStats* stats, const ActorPlayerInfo* playerInfo)
+void Replication::FramePushPlayerActor(const ActorPlayer& actor)
 {
-	ASSERT(frameCur->actorUIDMap.find(actor.UID) == frameCur->actorUIDMap.end());
-	ASSERT(frameCur->actorUIDSet.find(actor.UID) == frameCur->actorUIDSet.end());
+	ASSERT(frameCur->playerMap.find(actor.actorUID) == frameCur->playerMap.end());
+	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
 
-	Actor& a = frameCur->actorList.push_back();
-	a = actor;
-	frameCur->actorUIDMap.emplace(actor.UID, --frameCur->actorList.end());
-	DBG_ASSERT((*frameCur->actorUIDMap.find(actor.UID)->second).UID == actor.UID); // TODO: remove
-	frameCur->actorUIDSet.insert(actor.UID);
-
-	if(nameplate) {
-		ActorNameplate& np = frameCur->actorNameplateList.push_back();
-		np = *nameplate;
-		a.nameplate = --frameCur->actorNameplateList.end();
-	}
-	if(stats) {
-		ActorStats& s = frameCur->actorStatsList.push_back();
-		s = *stats;
-		a.stats = --frameCur->actorStatsList.end();
-	}
-	if(playerInfo) {
-		ActorPlayerInfo& p = frameCur->actorPlayerInfoList.push_back();
-		p = *playerInfo;
-		a.playerInfo = --frameCur->actorPlayerInfoList.end();
-	}
+	frameCur->playerList.emplace_back(actor);
+	frameCur->playerMap.emplace(actor.actorUID, --frameCur->playerList.end());
+	frameCur->actorUIDSet.insert(actor.actorUID);
+	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
 
 	Frame::Transform tf;
 	tf.pos = actor.pos;
@@ -118,7 +101,7 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 	tf.eye = actor.eye;
 	tf.rotate = actor.rotate;
 	tf.speed = actor.speed;
-	frameCur->transformMap.emplace(actor.UID, tf);
+	frameCur->transformMap.emplace(actor.actorUID, tf);
 
 	Frame::ActionState at;
 	at.actionState = actor.actionState;
@@ -126,7 +109,36 @@ void Replication::FramePushActor(const Actor& actor, const ActorNameplate* namep
 	at.actionParam2 = actor.actionParam2;
 	at.rotate = actor.rotate;
 	at.upperRotate = actor.upperRotate;
-	frameCur->actionStateMap.emplace(actor.UID, at);
+	frameCur->actionStateMap.emplace(actor.actorUID, at);
+}
+
+void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
+{
+	ASSERT(frameCur->playerMap.find(actor.actorUID) == frameCur->playerMap.end());
+	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
+
+	frameCur->npcList.emplace_back(actor);
+	frameCur->npcMap.emplace(actor.actorUID, --frameCur->npcList.end());
+	frameCur->actorUIDSet.insert(actor.actorUID);
+	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
+
+	Frame::Transform tf;
+	tf.pos = actor.pos;
+	tf.dir = actor.dir;
+	tf.eye = Vec3(0, 0, 0);
+	tf.rotate = 0;
+	tf.speed = 0;
+	frameCur->transformMap.emplace(actor.actorUID, tf);
+
+	/*
+	Frame::ActionState at;
+	at.actionState = actor.actionState;
+	at.actionParam1 = actor.actionParam1;
+	at.actionParam2 = actor.actionParam2;
+	at.rotate = actor.rotate;
+	at.upperRotate = actor.upperRotate;
+	frameCur->actionStateMap.emplace(actor.actorUID, at);
+	*/
 }
 
 void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
@@ -136,6 +148,7 @@ void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
 	frameCur->jukebox = actor;
 
 	frameCur->actorUIDSet.insert(actor.actorUID);
+	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
 }
 
 void Replication::EventPlayerConnect(i32 clientID)
@@ -516,19 +529,37 @@ void Replication::UpdatePlayersLocalState()
 		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
 		auto& playerActorUIDSet = localInfo.actorUIDSet; // replicated actors UID set
 
-		eastl::fixed_set<ActorUID,2048> playerMinusCur;
-		eastl::fixed_set<ActorUID,2048> curMinusPlayer;
-		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::inserter(playerMinusCur, playerMinusCur.begin()));
-		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::inserter(curMinusPlayer, curMinusPlayer.begin()));
+		eastl::fixed_vector<ActorUID,2048,true> removedList;
+		eastl::fixed_vector<ActorUID,2048,true> addedList;
+		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::back_inserter(removedList));
+		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::back_inserter(addedList));
 
 		// send destroy entity for deleted actors
-		foreach(setIt, playerMinusCur) {
+		foreach(setIt, removedList) {
 			const ActorUID actorUID = *setIt;
+
 #ifdef CONF_DEBUG // we don't actually need to verify the actor was in the previous frame, but do it in debug mode anyway
-			const auto actorIt = framePrev->actorUIDMap.find(actorUID);
-			ASSERT(actorIt != framePrev->actorUIDMap.end());
-			const Actor& actor = *actorIt->second;
-			ASSERT(actor.UID == actorUID);
+			const auto actorIt = framePrev->actorUIDSet.find(actorUID);
+			ASSERT(actorIt != framePrev->actorUIDSet.end());
+			auto type = framePrev->actorType.find(actorUID);
+			ASSERT(type != framePrev->actorType.end());
+			switch(type->second) {
+				case ActorType::PLAYER: {
+					auto pm = framePrev->playerMap.find(actorUID);
+					ASSERT(pm != framePrev->playerMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+				} break;
+
+				case ActorType::NPC: {
+					auto pm = framePrev->npcMap.find(actorUID);
+					ASSERT(pm != framePrev->npcMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+				} break;
+
+				default: {
+					ASSERT_MSG(0, "case not handled");
+				} break;
+			}
 #endif
 
 			SendActorDestroy(clientID, actorUID);
@@ -538,7 +569,7 @@ void Replication::UpdatePlayersLocalState()
 		}
 
 		// send new spawns
-		foreach(setIt, curMinusPlayer) {
+		foreach(setIt, addedList) {
 			const ActorUID actorUID = *setIt;
 
 			// Create a LocalActorID link if none exists already
@@ -547,16 +578,32 @@ void Replication::UpdatePlayersLocalState()
 				CreateLocalActorID(clientID, actorUID);
 			}
 
-			// TODO: actor types
-			if(actorUID == frameCur->jukebox.actorUID) {
-				SendJukeboxSpawn(clientID, frameCur->jukebox);
-			}
-			else {
-				const auto actorIt = frameCur->actorUIDMap.find(actorUID);
-				ASSERT(actorIt != frameCur->actorUIDMap.end());
-				const Actor& actor = *actorIt->second;
+			auto type = frameCur->actorType.find(actorUID);
+			ASSERT(type != frameCur->actorType.end());
 
-				SendActorSpawn(clientID, actor);
+			switch(type->second) {
+				case ActorType::PLAYER: {
+					const auto pm = frameCur->playerMap.find(actorUID);
+					ASSERT(pm != frameCur->playerMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+					SendActorPlayerSpawn(clientID, *pm->second);
+				} break;
+
+				case ActorType::NPC: {
+					const auto pm = frameCur->npcMap.find(actorUID);
+					ASSERT(pm != frameCur->npcMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+					SendActorNpcSpawn(clientID, *pm->second);
+				} break;
+
+				case ActorType::JUKEBOX: {
+					ASSERT(actorUID == frameCur->jukebox.actorUID);
+					SendJukeboxSpawn(clientID, frameCur->jukebox);
+				} break;
+
+				default: {
+					ASSERT_MSG(0, "case not handled");
+				} break;
 			}
 		}
 
@@ -590,51 +637,89 @@ void Replication::FrameDifference()
 	// find if the position has changed since last frame
 	foreach(it, frameCur->actorUIDSet) {
 		const ActorUID actorUID = *it;
+		auto type = frameCur->actorType.find(actorUID);
+		ASSERT(type != frameCur->actorType.end());
 
-		if(frameCur->jukebox.actorUID == actorUID) continue; // TODO: actor types
+		switch(type->second) {
+			case ActorType::PLAYER: {
+				// was present in last frame
+				if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
+					// transform
+					{
+						auto pf = framePrev->transformMap.find(actorUID);
+						ASSERT(pf != framePrev->transformMap.end());
+						const Frame::Transform& prev = pf->second;
 
-		// was present in last frame
-		if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
-			// transform
-			{
-				auto pf = framePrev->transformMap.find(actorUID);
-				ASSERT(pf != framePrev->transformMap.end());
-				const Frame::Transform& prev = pf->second;
+						auto cf = frameCur->transformMap.find(actorUID);
+						ASSERT(cf != frameCur->transformMap.end());
+						const Frame::Transform& cur = cf->second;
 
-				auto cf = frameCur->transformMap.find(actorUID);
-				ASSERT(cf != frameCur->transformMap.end());
-				const Frame::Transform& cur = cf->second;
-
-				if(!prev.HasNotChanged(cur)) {
-					tfToSendList.emplace_back(actorUID, cur);
+						if(!prev.HasNotChanged(cur)) {
+							tfToSendList.emplace_back(actorUID, cur);
+						}
+					}
 				}
-			}
 
-			// action state
-			{
-				auto pf = framePrev->actionStateMap.find(actorUID);
-				ASSERT(pf != framePrev->actionStateMap.end());
-				const Frame::ActionState& prev = pf->second;
+				// action state
+				{
+					auto cf = frameCur->actionStateMap.find(actorUID);
+					ASSERT(cf != frameCur->actionStateMap.end());
+					const Frame::ActionState& cur = cf->second;
 
-				auto cf = frameCur->actionStateMap.find(actorUID);
-				ASSERT(cf != frameCur->actionStateMap.end());
-				const Frame::ActionState& cur = cf->second;
-
-				if(cur.actionState != ActionStateID::INVALID) {
-					atToSendList.emplace_back(actorUID, cur);
+					if(cur.actionState != ActionStateID::INVALID) {
+						atToSendList.emplace_back(actorUID, cur);
+					}
 				}
-			}
-		}
-		// was not present in last frame
-		else {
-			// action state
-			auto cf = frameCur->actionStateMap.find(actorUID);
-			ASSERT(cf != frameCur->actionStateMap.end());
-			const Frame::ActionState& cur = cf->second;
+			} break;
 
-			if(cur.actionState != ActionStateID::INVALID) {
-				atToSendList.emplace_back(actorUID, cur);
-			}
+			case ActorType::NPC: {
+				// nothing for now, NPCs don't change
+			} break;
+
+			case ActorType::JUKEBOX: {
+				// was present in last frame
+				if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
+					const ActorJukebox& prev = framePrev->jukebox;
+					const ActorJukebox& cur = frameCur->jukebox;
+
+					ASSERT(prev.actorUID == cur.actorUID); // actually the same jukebox
+
+					if(cur.currentSong.songID != SongID::INVALID) {
+						if(prev.currentSong.songID != cur.currentSong.songID || prev.playStartTime != cur.playStartTime) {
+
+							for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+								if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+								SendJukeboxPlay(clientID, cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
+							}
+						}
+					}
+
+					bool doSendTracks = false;
+					if(prev.tracks.size() == cur.tracks.size()) {
+						for(int t = 0; t < cur.tracks.size(); t++) {
+							if(prev.tracks[t].songID != cur.tracks[t].songID ||
+							   prev.tracks[t].requesterNick.compare(cur.tracks[t].requesterNick)) {
+								doSendTracks = true;
+								break;
+							}
+						}
+					}
+					else {
+						doSendTracks = true;
+					}
+
+					if(doSendTracks) {
+						for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+							if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+							SendJukeboxQueue(clientID, cur.tracks.data(), cur.tracks.size());
+						}
+					}
+				}
+			} break;
+
+			default: ASSERT_MSG(0, "case not handled"); break;
 		}
 	}
 
@@ -681,157 +766,104 @@ void Replication::FrameDifference()
 			SendPacket(clientID, packet);
 		}
 	}
-
-	// jukebox
-	if(framePrev->jukebox.actorUID != ActorUID::INVALID && frameCur->jukebox.actorUID != ActorUID::INVALID) {
-		const ActorJukebox& prev = framePrev->jukebox;
-		const ActorJukebox& cur = frameCur->jukebox;
-
-		ASSERT(prev.actorUID == cur.actorUID); // actually the same jukebox
-
-		if(cur.currentSong.songID != SongID::INVALID) {
-			if(prev.currentSong.songID != cur.currentSong.songID || prev.playStartTime != cur.playStartTime) {
-
-				for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-					if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-					SendJukeboxPlay(clientID, cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
-				}
-			}
-		}
-
-		bool doSendTracks = false;
-		if(prev.tracks.size() == cur.tracks.size()) {
-			for(int t = 0; t < cur.tracks.size(); t++) {
-				if(prev.tracks[t].songID != cur.tracks[t].songID ||
-				   prev.tracks[t].requesterNick.compare(cur.tracks[t].requesterNick)) {
-					doSendTracks = true;
-					break;
-				}
-			}
-		}
-		else {
-			doSendTracks = true;
-		}
-
-		if(doSendTracks) {
-			for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-				if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-				SendJukeboxQueue(clientID, cur.tracks.data(), cur.tracks.size());
-			}
-		}
-	}
 }
 
-void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
+void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 {
-	DBG_ASSERT(actor.UID != ActorUID::INVALID);
-	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.UID);
+	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
 
 	const LocalActorID localActorID = found->second;
 
-	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.UID, (u32)localActorID);
+	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
 
 	// SN_GameCreateActor
 	{
-		i32 localID = -1;
-		if(!IsListIteratorValid(actor.playerInfo)) {
-			static i32 nextLocalID = 1;
-			localID = nextLocalID++;
-		}
-
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(actor.type); // nType
+		packet.Write<i32>(1); // nType
 		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(localID); // dwLocalID
+		packet.Write<i32>(-1); // dwLocalID
 		// TODO: localID?
 
 		packet.Write(actor.pos); // p3nPos
 		packet.Write(actor.dir); // p3nDir
-		packet.Write<i32>(actor.spawnType); // spawnType
+		packet.Write<i32>(0); // spawnType
 		packet.Write<ActionStateID>(actor.actionState); // actionState
-		packet.Write<i32>(actor.ownerID); // ownerID
+		packet.Write<i32>(0); // ownerID
 		packet.Write<u8>(0); // bDirectionToNearPC
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(actor.faction); // faction
+		packet.Write<i32>(0); // faction
 		packet.Write<ClassType>(actor.classType); // classType
 		packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
 		packet.Write<i32>(0); // seed
 
-		if(!IsListIteratorValid(actor.stats)) {
-			packet.Write<u16>(0); // maxStats_count
-			packet.Write<u16>(0); // curStats_count
-		}
-		else {
-			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-			// initStat ------------------------
-			packet.Write<u16>(53); // maxStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 17, 0 });
-			packet.Write(Stat{ 36, 0 });
-			packet.Write(Stat{ 56, 0 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 3, 0 });
-			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 41, 0 });
-			packet.Write(Stat{ 40, 0 });
-			packet.Write(Stat{ 57, 0 });
-			packet.Write(Stat{ 50, 0 });
-			packet.Write(Stat{ 51, 0 });
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 6, 0 });
-			packet.Write(Stat{ 7, 93.75f });
-			packet.Write(Stat{ 8, 0 });
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 12, 0 });
-			packet.Write(Stat{ 20, 0 });
-			packet.Write(Stat{ 21, 0 });
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 98 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 27, 0 });
-			packet.Write(Stat{ 47, 0 });
-			packet.Write(Stat{ 49, 0 });
-			packet.Write(Stat{ 48, 0 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 44, 15 });
-			packet.Write(Stat{ 46, 0 });
-			packet.Write(Stat{ 45, 0 });
-			packet.Write(Stat{ 26, 0 });
-			packet.Write(Stat{ 25, 0 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 60, 0 });
-			packet.Write(Stat{ 61, 0 });
-			packet.Write(Stat{ 62, 0 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 150 });
-			packet.Write(Stat{ 53, 0 });
-			packet.Write(Stat{ 58, 0 });
-			packet.Write(Stat{ 65, 0 });
-			packet.Write(Stat{ 55, 15 });
+		// initStat ------------------------
+		packet.Write<u16>(53); // maxStats_count
+		packet.Write(Stat{ 0, 2400 });
+		packet.Write(Stat{ 35, 1000 });
+		packet.Write(Stat{ 17, 0 });
+		packet.Write(Stat{ 36, 0 });
+		packet.Write(Stat{ 56, 0 });
+		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 37, 120 });
+		packet.Write(Stat{ 3, 0 });
+		packet.Write(Stat{ 39, 5 });
+		packet.Write(Stat{ 41, 0 });
+		packet.Write(Stat{ 40, 0 });
+		packet.Write(Stat{ 57, 0 });
+		packet.Write(Stat{ 50, 0 });
+		packet.Write(Stat{ 51, 0 });
+		packet.Write(Stat{ 5, 5 });
+		packet.Write(Stat{ 42, 0.6f });
+		packet.Write(Stat{ 6, 0 });
+		packet.Write(Stat{ 7, 93.75f });
+		packet.Write(Stat{ 8, 0 });
+		packet.Write(Stat{ 9, 3 });
+		packet.Write(Stat{ 10, 150 });
+		packet.Write(Stat{ 12, 0 });
+		packet.Write(Stat{ 20, 0 });
+		packet.Write(Stat{ 21, 0 });
+		packet.Write(Stat{ 18, 100 });
+		packet.Write(Stat{ 13, 100 });
+		packet.Write(Stat{ 14, 98 });
+		packet.Write(Stat{ 15, 100 });
+		packet.Write(Stat{ 52, 100 });
+		packet.Write(Stat{ 16, 1 });
+		packet.Write(Stat{ 27, 0 });
+		packet.Write(Stat{ 47, 0 });
+		packet.Write(Stat{ 49, 0 });
+		packet.Write(Stat{ 48, 0 });
+		packet.Write(Stat{ 29, 20 });
+		packet.Write(Stat{ 23, 9 });
+		packet.Write(Stat{ 44, 15 });
+		packet.Write(Stat{ 46, 0 });
+		packet.Write(Stat{ 45, 0 });
+		packet.Write(Stat{ 26, 0 });
+		packet.Write(Stat{ 25, 0 });
+		packet.Write(Stat{ 31, 14 });
+		packet.Write(Stat{ 22, 2 });
+		packet.Write(Stat{ 54, 15 });
+		packet.Write(Stat{ 60, 0 });
+		packet.Write(Stat{ 61, 0 });
+		packet.Write(Stat{ 62, 0 });
+		packet.Write(Stat{ 63, 3 });
+		packet.Write(Stat{ 64, 150 });
+		packet.Write(Stat{ 53, 0 });
+		packet.Write(Stat{ 58, 0 });
+		packet.Write(Stat{ 65, 0 });
+		packet.Write(Stat{ 55, 15 });
 
-			packet.Write<u16>(2); // curStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			// ------------------------------------
-		}
+		packet.Write<u16>(2); // curStats_count
+		packet.Write(Stat{ 0, 2400 });
+		packet.Write(Stat{ 2, 200 });
+		// ------------------------------------
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -839,7 +871,7 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, (u32)actor.UID);
+		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, (u32)actor.actorUID);
 		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
 	}
 
@@ -851,68 +883,125 @@ void Replication::SendActorSpawn(i32 clientID, const Actor& actor)
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.UID);
+		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.actorUID);
 		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 	}
 
-	if(IsListIteratorValid(actor.nameplate)) {
-		const ActorNameplate& plate = *actor.nameplate;
 
-		// SN_GamePlayerStock
-		{
-			u8 sendData[2048];
-			PacketWriter packet(sendData, sizeof(sendData));
+	// SN_GamePlayerStock
+	{
+		u8 sendData[2048];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<LocalActorID>(localActorID); // playerID
-			packet.WriteStringObj(plate.name.data()); // name
-			packet.Write<ClassType>(actor.classType); // class_
+		packet.Write<LocalActorID>(localActorID); // playerID
+		packet.WriteStringObj(actor.name.data()); // name
+		packet.Write<ClassType>(actor.classType); // class_
 #if 0
-			packet.Write<i32>(320080005); // displayTitleIDX
-			packet.Write<i32>(320080005); // statTitleIDX
+		packet.Write<i32>(320080005); // displayTitleIDX
+		packet.Write<i32>(320080005); // statTitleIDX
 #else // disable titles
-			packet.Write<i32>(0); // displayTitleIDX
-			packet.Write<i32>(0); // statTitleIDX
+		packet.Write<i32>(0); // displayTitleIDX
+		packet.Write<i32>(0); // statTitleIDX
 #endif
-			packet.Write<u8>(0); // badgeType
-			packet.Write<u8>(0); // badgeTierLevel
-			packet.WriteStringObj(plate.guildTag.data()); // guildTag
-			packet.Write<u8>(0); // vipLevel
-			packet.Write<u8>(0); // staffType
-			packet.Write<u8>(0); // isSubstituted
+		packet.Write<u8>(0); // badgeType
+		packet.Write<u8>(0); // badgeTierLevel
+		packet.WriteStringObj(actor.guildTag.data()); // guildTag
+		packet.Write<u8>(0); // vipLevel
+		packet.Write<u8>(0); // staffType
+		packet.Write<u8>(0); // isSubstituted
 
-			LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
-			SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
-		}
+		LOG("[client%03d] Server :: SN_GamePlayerStock :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
 	}
 
-	if(IsListIteratorValid(actor.playerInfo)) {
+	// SN_GamePlayerEquipWeapon
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-		// SN_GamePlayerEquipWeapon
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+		packet.Write<LocalActorID>(localActorID); // characterID
+		packet.Write<i32>(131135012); // weaponDocIndex
+		packet.Write<i32>(0); // additionnalOverHeatGauge
+		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
-			packet.Write<LocalActorID>(localActorID); // characterID
-			packet.Write<i32>(131135012); // weaponDocIndex
-			packet.Write<i32>(0); // additionnalOverHeatGauge
-			packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+		LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+	}
 
-			LOG("[client%03d] Server :: SN_GamePlayerEquipWeapon :: ", clientID);
-			SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
-		}
+	// SN_PlayerStateInTown
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-		// SN_PlayerStateInTown
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+		packet.Write<LocalActorID>(localActorID); // playerID
+		packet.Write<u8>(0); // playerStateInTown
+		packet.Write<u16>(0); // matchingGameModes_count
 
-			packet.Write<LocalActorID>(localActorID); // playerID
-			packet.Write<u8>(0); // playerStateInTown
-			packet.Write<u16>(0); // matchingGameModes_count
+		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
+		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
+	}
+}
 
-			LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-			SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-		}
+void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
+{
+	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
+	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
+
+	const LocalActorID localActorID = found->second;
+
+	LOG("[client%03d] Replication :: SendActorNpcSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
+
+	// SN_GameCreateActor
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write<i32>(1); // nType
+		packet.Write<CreatureIndex>(actor.docID); // nIDX
+		packet.Write<i32>(actor.localID); // dwLocalID
+
+		packet.Write(actor.pos); // p3nPos
+		packet.Write(actor.dir); // p3nDir
+		packet.Write<i32>(0); // spawnType
+		packet.Write<ActionStateID>((ActionStateID)99); // actionState
+		packet.Write<i32>(0); // ownerID
+		packet.Write<u8>(0); // bDirectionToNearPC
+		packet.Write<i32>(-1); // AiWanderDistOverride
+		packet.Write<i32>(-1); // tagID
+		packet.Write<i32>(0); // faction
+		packet.Write<ClassType>(ClassType::NONE); // classType
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
+		packet.Write<i32>(0); // seed
+
+		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+
+		// initStat ------------------------
+		packet.Write<u16>(0); // maxStats_count
+		packet.Write<u16>(0); // curStats_count
+		// ------------------------------------
+
+		packet.Write<u8>(1); // isInSight
+		packet.Write<u8>(0); // isDead
+		packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		LOG("[client%03d] Server :: SN_GameCreateActor :: actorUID=%d", clientID, (u32)actor.actorUID);
+		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_SpawnPosForMinimap
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write(actor.pos); // p3nPos
+
+		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.actorUID);
+		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
 	}
 }
 

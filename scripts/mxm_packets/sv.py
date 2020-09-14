@@ -118,6 +118,18 @@ class ServerSerializer:
 
         print('}')
 
+    def serialize_62010(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_DoConnectGameServer {')
+        print('    dwPort=%d' % p.read_u16())
+        print('    ip=[%d.%d.%d.%d]' % (p.read_u8(), p.read_u8(), p.read_u8(), p.read_u8()))
+        print('    gameID=%d' % p.read_i32())
+        print('    idcHash=%u' % p.read_u32())
+        print('    nickname="%s"' % p.read_wstr())
+        print('    instantKey=%d' % p.read_i32())
+        print('}')
+
     def serialize_62018(netid, data):
         p = common.PacketReader(data)
 

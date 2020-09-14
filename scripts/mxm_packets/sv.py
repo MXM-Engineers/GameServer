@@ -276,6 +276,13 @@ class ServerSerializer:
         print('    virtualTime=%d' % p.read_i32())
         print('}')
 
+    def serialize_62061(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_LobbyStartGame {')
+        print('    stageType=%d' % p.read_i32())
+        print('}')
+
     def serialize_62064(netid, data):
         p = common.PacketReader(data)
 
@@ -287,6 +294,69 @@ class ServerSerializer:
             count -= 1
 
         print('    clearedStageList=[%s]' % s)
+        print('}')
+
+    def serialize_62072(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_GameFieldReady {')
+        print('    InGameID=%d' % p.read_i32())
+        print('    GameType=%d' % p.read_i32())
+        print('    AreaIndex=%d' % p.read_i32())
+        print('    StageIndex=%d' % p.read_i32())
+        print('    GameDefinitionType=%d' % p.read_i32())
+        print('    initPlayerCount=%d' % p.read_u8())
+        print('    CanEscape=%d' % p.read_u8())
+        print('    IsTrespass=%d' % p.read_u8())
+        print('    IsSpectator=%d' % p.read_u8())
+        print('    InGameUsers=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      userID=%d' % p.read_i32())
+            print('      nickname="%s"' % p.read_wstr())
+            print('      team=%d' % p.read_u8())
+            print('      isBot=%d' % p.read_u8())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    IngamePlayers=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      userID=%d' % p.read_i32())
+            print('      mainCreatureIndex=%d' % p.read_i32())
+            print('      mainSkinIndex=%d' % p.read_i32())
+            print('      mainSkillindex1=%d' % p.read_i32())
+            print('      mainSkillIndex2=%d' % p.read_i32())
+            print('      subCreatureIndex=%d' % p.read_i32())
+            print('      subSkinIndex=%d' % p.read_i32())
+            print('      subSkillIndex1=%d' % p.read_i32())
+            print('      subSkillIndex2=%d' % p.read_i32())
+            print('      stageSkillIndex1=%d' % p.read_i32())
+            print('      stageSkillIndex2=%d' % p.read_i32())
+            print('      supportKitIndex=%d' % p.read_i32())
+            print('      isBot=%d' % p.read_u8())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    IngameGuilds=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      teamType=%d' % p.read_u8())
+            print('      guildName="%s"' % p.read_wstr())
+            print('      guildTag="%s"' % p.read_wstr())
+            print('      guildEmblemIndex=%d' % p.read_i32())
+            print('      guildPvpRankNo=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+        print('    ]')
+
+        print('    surrenderAbleTime=%d' % p.read_i32())
         print('}')
 
     def serialize_62084(netid, data):
@@ -863,6 +933,13 @@ class ServerSerializer:
         print('    timeToWaitSec=%d' % p.read_i32())
         print('}')
 
+    def serialize_62224(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_UpdateGameOwner {')
+        print('    userID=%d' % p.read_i32())
+        print('}')
+
     def serialize_62227(netid, data):
         p = common.PacketReader(data)
 
@@ -1423,6 +1500,17 @@ class ServerSerializer:
 
         print('SQ_Heartbeat {}')
 
+    def serialize_62450(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_LoadingProgressData {')
+        print('    usn=%d' % p.read_i32())
+        print('    nickname="%s"' % p.read_wstr())
+        print('    progressData=%d' % p.read_u8())
+        print('    activeCreatureIndex=%d' % p.read_i32())
+        print('    inactiveCreatureIndex=%d' % p.read_i32())
+        print('    isSpectator=%d' % p.read_u8())
+
     def serialize_62455(netid, data):
         p = common.PacketReader(data)
 
@@ -1708,6 +1796,44 @@ class ServerSerializer:
             count -= 1
         
         print('    stageList=[%s]' % s)
+        print('}')
+
+    def serialize_62576(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_InitIngameModeInfo {')
+        print('    transformationVotingPlayerCoolTimeByVotingFail=%d' % p.read_i32())
+        print('    transformationVotingTeamCoolTimeByTransformationEnd=%d' % p.read_i32())
+        print('    playerCoolTimeByTransformationEnd=%d' % p.read_i32())
+        print('    currentTransformationVotingPlayerCoolTimeByVotingFail=%d' % p.read_i32())
+        print('    currentTransformationVotingTeamCoolTimeByTransformationEnd=%d' % p.read_i32())
+        print('    currentPlayerCoolTimeByTransformationEnd=%d' % p.read_i32())
+        print('    chPropertyResetCoolTime=%d' % p.read_i32())
+        print('    transformationPieceCount=%d' % p.read_u8())
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % (p.read_i32())
+            count -= 1
+
+        print('    titanDocIndexes=[%s]' % s)
+        print('    nextTitanIndex=%d' % p.read_u8())
+        print('    listExceptionStat=[')
+
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      statType=%d' % p.read_i32())
+            print('      min=%g' % p.read_f32())
+            print('      max=%g' % p.read_f32())
+            print('      incRatioMin=%g' % p.read_f32())
+            print('      incRatioMax=%g' % p.read_f32())
+            print('    },')
+            count -= 1
+
+        print('    ]')
+
         print('}')
 
     def serialize_62591(netid, data):

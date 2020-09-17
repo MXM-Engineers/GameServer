@@ -1,4 +1,5 @@
 #pragma once
+#include "core.h"
 #include <common/protocol.h>
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
@@ -39,6 +40,14 @@ struct GameXmlContent
 		eastl::fixed_vector<Spawn,512> spawns;
 	};
 
+	struct MapList
+	{
+		i32 index;
+		MapType mapType;
+		GameSubModeType gameSubModeType;
+		WideString levelFile;
+	};
+
 	struct Song
 	{
 		SongID ID;
@@ -59,6 +68,7 @@ struct GameXmlContent
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
+	bool LoadMapList();
 	bool LoadLobbyNormal();
 	bool LoadLobbyHalloween();
 	bool LoadLobby(WideString levelPath);

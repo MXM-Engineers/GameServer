@@ -1,5 +1,6 @@
 #include "game_content.h"
 #include "config.h"
+#include "core.h"
 #include <common/utils.h>
 #include <tinyxml2.h>
 
@@ -158,6 +159,118 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
+bool GameXmlContent::LoadMapList()
+{
+	Path xmlPath = gameDataDir;
+	PathAppend(xmlPath, L"/MAPLIST.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMapList): failed to open '%ls'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMapList): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
+	do {
+		i32 index;
+		pMapElt->QueryAttribute("_Index", &index);
+
+		const char* mapTypeXml;
+		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
+
+		MapList mapList;
+		
+		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
+		if (strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
+		{
+			mapList.mapType = MAP_CITY;
+		}
+		else if (strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
+		{
+			const char* gameSubModeTypeXml;
+
+			mapList.mapType = MAP_INGAME;
+		
+			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) != XML_SUCCESS)
+			{
+				// training room doesn't have a gamesubmode
+			}
+			else if (strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_DEATH_MATCH_NORMAL;
+			}
+			else if (strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_CORE;
+			}
+			else if (strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_BUSH;
+			}
+			else if (strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_AUTHENTIC;
+			}
+			else if (strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
+			}
+			else if (strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
+			}
+			else if (strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_FIRE_POWER;
+			}
+			else if (strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
+			}
+			else if (strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_RUN;
+			}
+			else if (strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_SURVIVAL;
+			}
+			else if (strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_TUTORIAL;
+			}
+			else if (strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_NORMAL;
+			}
+			else
+			{
+				LOG("ERROR(LOADMAPLIST): Unsupported subGameMode %s", gameSubModeTypeXml);
+			}
+		}
+		else
+		{
+			LOG("ERROR(LOADMAPLIST): Unsupported map type");
+			return false;
+		}
+		
+
+		pMapElt = pMapElt->NextSiblingElement();
+	} while (pMapElt);
+	
+	return true;
+}
+
 bool GameXmlContent::LoadLobbyNormal()
 {
 	LOG("Info(LoadLobbyNormal)");
@@ -266,6 +379,9 @@ bool GameXmlContent::Load()
 
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
+
+	r = LoadMapList();
+	if (!r) return false;
 
 	if (Config().lobbyMap == 160000042)
 	{

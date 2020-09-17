@@ -56,6 +56,10 @@ class PacketSpitter:
 
         print('(o=%d netid=%d size=%d)' % (self.order, netid, size))
 
+        if size > 10240 or netid < 60000 or netid > 63000:
+            print("ERROR: invalid packet (netid=%d size=%d)" % (netid, size))
+            exit(1)
+
         if self.prefix == 'cl':
             packet_serialize_cl(netid, self.buff[:size])
         elif self.prefix == 'sv':
@@ -72,10 +76,6 @@ class PacketSpitter:
         self.buff += data
 
         packet_size, packet_netid = struct.unpack("HH", self.buff[:4])
-
-        if packet_size > 10240 or packet_netid < 60000 or packet_netid > 63000:
-            print("ERROR: invalid packet (netid=%d size=%d)" % (packet_size, packet_netid))
-            exit(1)
 
         while packet_size <= len(self.buff):
             self.extract_packet(packet_size, packet_netid)

@@ -39,14 +39,12 @@ struct Game3v3
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
 	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerClientIDMap;
 
-	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
+	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
 
 	Time localTime;
 
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);
-
-	bool JukeboxQueueSong(i32 clientID, SongID songID);
 
 	bool LoadMap();
 

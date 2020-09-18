@@ -28,75 +28,21 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	world.Update(delta, localTime);
 }
 
-bool Game3v3::JukeboxQueueSong(i32 clientID, SongID songID)
-{
-	ASSERT(playerAccountData[clientID]);
-
-	World::ActorJukebox& jukebox = world.jukebox;
-	ASSERT(jukebox.UID != ActorUID::INVALID);
-
-	if(jukebox.queue.full()) {
-		// TODO: send *actual* packet answer
-		SendDbgMsg(clientID, L"Jukebox queue is full");
-		return false;
-	}
-
-	// limit reservation to 1 per player
-	// @Speed
-	// TODO: store the accountID (when we have it)
-	const WideString& nick = playerAccountData[clientID]->nickname;
-	bool found = false;
-	if(jukebox.currentSong.requesterNick.compare(nick) == 0) {
-		found = true;
-	}
-
-	if(!found) {
-		foreach(it, jukebox.queue) {
-			if(it->requesterNick.compare(nick) == 0) {
-				found = true;
-				break;
-			}
-		}
-	}
-
-	if(found) {
-		SendDbgMsg(clientID, L"Song reservation is limited to 1 per player");
-		return false;
-	}
-
-	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
-	if(!xmlSong) {
-		SendDbgMsg(clientID, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
-		return false;
-	}
-
-	World::ActorJukebox::Song song;
-	song.requesterNick = playerAccountData[clientID]->nickname;
-	song.songID = songID;
-	song.lengthInSec = xmlSong->length;
-	jukebox.queue.push_back(song);
-	return true;
-}
-
 bool Game3v3::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	//foreach(it, content.mapLobbyNormal.spawns) {
 	foreach(it, content.mapPvpDeathMatch.spawns) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
-			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
+			if(it->team != TeamID::INVALID) {
+				mapSpawnPoints[(i32)it->team].push_back(SpawnPoint{ it->pos, it->rot });
+			}
 			continue;
 		}
 
-		if(it->docID == CreatureIndex::Jukebox) {
-			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
-		}
-		else {
-			// spawn npc
-			SpawnNPC(it->docID, it->localID, it->pos, it->rot);
-		}
+		// spawn npc
+		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
 	}
 
 	return true;
@@ -108,6 +54,8 @@ void Game3v3::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 
 	playerList.push_back(Player(clientID));
 	playerClientIDMap[clientID] = --playerList.end();
+
+	replication->SendAccountDataPvp(clientID, *accountData);
 }
 
 void Game3v3::OnPlayerDisconnect(i32 clientID)
@@ -203,8 +151,10 @@ void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 {
 	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
 
+	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
+
 	// select a spawn point at random
-	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
+	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
 	Vec3 pos = spawnPoint.pos;
 	Vec3 dir = spawnPoint.dir;
 	Vec3 eye(0, 0, 0);
@@ -259,7 +209,7 @@ void Game3v3::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, Ac
 
 void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
-	JukeboxQueueSong(clientID, songID);
+
 }
 
 bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
@@ -296,82 +246,6 @@ bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
-
-		if(EA::StdC::Strncmp(msg, L"rozark", 6) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
-			actor.pos = playerActor->pos;
-			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
-			lastLegoActorUID = actor.UID;
-
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"tanian", 6) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
-			actor.pos = playerActor->pos;
-			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
-			lastLegoActorUID = actor.UID;
-
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"fish", 4) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
-			actor.pos = playerActor->pos;
-			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
-			lastLegoActorUID = actor.UID;
-
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"smoke", 5) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
-			ASSERT(playerActor);
-
-			SendDbgMsg(clientID, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"upsidedown", 10) == 0) {
-			JukeboxQueueSong(clientID, SongID::UpsideDown);
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"scml", 4) == 0) {
-			JukeboxQueueSong(clientID, SongID::Scml);
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"poharan", 7) == 0) {
-			JukeboxQueueSong(clientID, SongID::Poharan);
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"triangle", 8) == 0) {
-			JukeboxQueueSong(clientID, SongID::Triangle);
-			return true;
-		}
-
-		if(EA::StdC::Strncmp(msg, L"arami", 5) == 0) {
-			JukeboxQueueSong(clientID, SongID::Arami);
-			return true;
-		}
-
 	}
 
 	return false;

@@ -2,6 +2,7 @@
 
 #include <common/utils.h>
 #include <tinyxml2.h>
+#include <EAStdC/EAString.h>
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
@@ -246,6 +247,13 @@ bool GameXmlContent::LoadPvpDeathmatch()
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
+		spawn.team = TeamID::INVALID;
+		const char* teamString;
+		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.team = TeamID::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
+		}
+
 		mapPvpDeathMatch.spawns.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
@@ -336,20 +344,24 @@ bool GameXmlContent::Load()
 		LOG("	weapons=[%s]", buff.data());
 	}
 
+	/*
 	LOG("Lobby_Normal:");
 	foreach(it, mapLobbyNormal.spawns) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
+	*/
 
 	LOG("PVP_DeathMatch:");
 	foreach(it, mapPvpDeathMatch.spawns) {
-		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
+		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
 	}
 
+	/*
 	LOG("Jukebox songs:");
 	foreach(it, jukeboxSongs) {
 		LOG("ID=%d length=%d", (i32)it->ID, it->length);
 	}
+	*/
 
 	return true;
 }

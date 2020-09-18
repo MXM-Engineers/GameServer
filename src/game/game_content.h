@@ -4,6 +4,7 @@
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
+#include "core.h"
 
 struct GameXmlContent
 {
@@ -27,6 +28,7 @@ struct GameXmlContent
 		CreatureIndex docID;
 		i32 localID;
 		Type type;
+		TeamID team;
 		Vec3 pos;
 		Vec3 rot;
 

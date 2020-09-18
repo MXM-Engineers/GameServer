@@ -10,6 +10,8 @@
 #include <EASTL/fixed_list.h>
 #include "core.h"
 
+struct AccountData;
+
 struct Replication
 {
 	enum class ActorType: i32
@@ -169,12 +171,13 @@ struct Replication
 	void SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg);
 	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
 
+	void SendAccountDataCity(i32 clientID, const AccountData& account);
+	void SendAccountDataPvp(i32 clientID, const AccountData& account);
+
 	void EventClientDisconnect(i32 clientID);
 
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
-
-	bool IsActorReplicatedForClient(i32 clientID, ActorUID actorUID) const;
 
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);

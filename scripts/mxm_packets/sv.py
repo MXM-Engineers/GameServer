@@ -359,6 +359,15 @@ class ServerSerializer:
         print('    surrenderAbleTime=%d' % p.read_i32())
         print('}')
 
+    def serialize_62075(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_GameReady {')
+        print('    waitingTimeMS=%d' % p.read_i32())
+        print('    serverTimestamp=%d' % p.read_i64())
+        print('    readyElapsedMs=%d' % p.read_i32())
+        print('}')
+
     def serialize_62084(netid, data):
         p = common.PacketReader(data)
 

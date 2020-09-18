@@ -1,5 +1,6 @@
 #pragma once
 #include "game.h"
+#include "gm_3v3.h"
 #include <eathread/eathread_thread.h>
 
 struct Channel
@@ -11,7 +12,11 @@ struct Channel
 	};
 
 	Server* server;
+#if 0
 	Game game;
+#else
+	Game3v3 game;
+#endif
 	Replication replication;
 	Time localTime;
 

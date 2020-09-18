@@ -1,15 +1,14 @@
-#include "game.h"
+#include "gm_3v3.h"
 #include "coordinator.h" // account data
 #include "game_content.h"
 #include "config.h"
 #include <EAStdC/EAString.h>
 
 
-void Game::Init(Replication* replication_)
+void Game3v3::Init(Replication* replication_)
 {
 	replication = replication_;
-	replication->stageType = StageType::CITY;
-
+	replication->stageType = StageType::GAME_INSTANCE;
 	memset(&playerActorUID, 0, sizeof(playerActorUID));
 
 	world.Init(replication);
@@ -21,7 +20,7 @@ void Game::Init(Replication* replication_)
 	LoadMap();
 }
 
-void Game::Update(f64 delta, Time localTime_)
+void Game3v3::Update(f64 delta, Time localTime_)
 {
 	ProfileFunction();
 
@@ -29,7 +28,7 @@ void Game::Update(f64 delta, Time localTime_)
 	world.Update(delta, localTime);
 }
 
-bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
+bool Game3v3::JukeboxQueueSong(i32 clientID, SongID songID)
 {
 	ASSERT(playerAccountData[clientID]);
 
@@ -79,11 +78,12 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 	return true;
 }
 
-bool Game::LoadMap()
+bool Game3v3::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	foreach(it, content.mapLobbyNormal.spawns) {
+	//foreach(it, content.mapLobbyNormal.spawns) {
+	foreach(it, content.mapPvpDeathMatch.spawns) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
 			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
@@ -102,7 +102,7 @@ bool Game::LoadMap()
 	return true;
 }
 
-void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
+void Game3v3::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 {
 	playerAccountData[clientID] = accountData;
 
@@ -110,7 +110,7 @@ void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 	playerClientIDMap[clientID] = --playerList.end();
 }
 
-void Game::OnPlayerDisconnect(i32 clientID)
+void Game3v3::OnPlayerDisconnect(i32 clientID)
 {
 	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
 
@@ -128,7 +128,12 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	playerAccountData[clientID] = nullptr;
 }
 
-void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
+void Game3v3::OnPlayerReadyToLoad(i32 clientID)
+{
+	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
+}
+
+void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 {
 	// TODO: health
 	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
@@ -136,7 +141,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game3v3::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -156,7 +161,7 @@ void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const 
 	actor->speed = speed;
 }
 
-void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
+void Game3v3::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
 	if(ParseChatCommand(clientID, msg, msgLen)) {
@@ -171,7 +176,7 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+void Game3v3::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
 {
 	ASSERT(playerAccountData[clientID]);
 	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
@@ -194,7 +199,7 @@ void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar*
 	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
 }
 
-void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
+void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
 
@@ -232,7 +237,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game3v3::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (10/09/2020)
@@ -252,17 +257,12 @@ void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, Actio
 	actor->actionParam2 = param2;
 }
 
-void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
+void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
 	JukeboxQueueSong(clientID, songID);
 }
 
-void Game::OnPlayerReadyToLoad(i32 clientID)
-{
-	replication->SendLoadLobby(clientID, StageIndex::LOBBY_NORMAL);
-}
-
-bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	if(!Config().devMode) return false; // don't allow command when dev mode is not enabled
 
@@ -351,7 +351,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			JukeboxQueueSong(clientID, SongID::UpsideDown);
 			return true;
 		}
-		
+
 		if(EA::StdC::Strncmp(msg, L"scml", 4) == 0) {
 			JukeboxQueueSong(clientID, SongID::Scml);
 			return true;
@@ -366,7 +366,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			JukeboxQueueSong(clientID, SongID::Triangle);
 			return true;
 		}
-		
+
 		if(EA::StdC::Strncmp(msg, L"arami", 5) == 0) {
 			JukeboxQueueSong(clientID, SongID::Arami);
 			return true;
@@ -377,12 +377,12 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	return false;
 }
 
-void Game::SendDbgMsg(i32 clientID, const wchar* msg)
+void Game3v3::SendDbgMsg(i32 clientID, const wchar* msg)
 {
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-void Game::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+void Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
 {
 	World::ActorCore& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;

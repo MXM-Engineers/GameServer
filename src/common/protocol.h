@@ -73,6 +73,19 @@ enum class ActionStateID: i32
 	JUMP_START_MOVESTATE = 152
 };
 
+enum class StageIndex: i32
+{
+	LOBBY_NORMAL = 160000042,
+	PVP_DEATHMATCH = 160000094,
+};
+
+enum StageType: i32
+{
+	INVALID = 0,
+	CITY = 1, // LOBBY
+	GAME_INSTANCE = 2
+};
+
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 struct NetHeader
@@ -615,6 +628,37 @@ struct SN_SetGameGvt
 
 ASSERT_SIZE(SN_SetGameGvt, 8);
 
+struct SN_LobbyStartGame
+{
+	enum { NET_ID = 62061 };
+
+	StageType stageType;
+};
+
+ASSERT_SIZE(SN_LobbyStartGame, 4);
+
+struct SN_GameFieldReady
+{
+	enum { NET_ID = 62072 };
+};
+
+struct SA_LoadingComplete
+{
+	enum { NET_ID = 62073 };
+};
+
+PUSH_PACKED
+struct SA_GameReady
+{
+	enum { NET_ID = 62075 };
+
+	i32 waitingTimeMs;
+	i64 serverTimestamp; // TODO: find out what this represents and how
+	i32 readyElapsedMs;
+};
+POP_PACKED
+ASSERT_SIZE(SA_GameReady, 16);
+
 struct SN_GamePlayerEquipWeapon
 {
 	enum { NET_ID = 62084 };
@@ -662,7 +706,7 @@ struct SN_CityMapInfo
 {
 	enum { NET_ID = 62091 };
 
-	i32 cityMapID;
+	StageIndex cityMapID;
 };
 ASSERT_SIZE(SN_CityMapInfo, 4);
 
@@ -1517,5 +1561,24 @@ struct SN_AccountEquipmentList
 	i32 supportKitDocIndex;
 };
 ASSERT_SIZE(SN_AccountEquipmentList, 4);
+
+struct SN_InitIngameModeInfo
+{
+	enum { NET_ID = 62576 };
+
+	i32 transformationVotingPlayerCoolTimeByVotingFail;
+	i32 transformationVotingTeamCoolTimeByTransformationEnd;
+	i32 playerCoolTimeByTransformationEnd;
+	i32 currentTransformationVotingPlayerCoolTimeByVotingFail;
+	i32 currentTransformationVotingTeamCoolTimeByTransformationEnd;
+	i32 currentPlayerCoolTimeByTransformationEnd;
+	i32 chPropertyResetCoolTime;
+	u8 transformationPieceCount;
+	u16 titanDocIndexes_count;
+	i32 titanDocIndexes[1];
+	u8 nextTitanIndex;
+	u16 listExceptionStat_count;
+	i32 listExceptionStat[1]; // TODO: not actually int
+};
 
 } // Sv

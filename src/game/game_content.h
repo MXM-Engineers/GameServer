@@ -52,6 +52,7 @@ struct GameXmlContent
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
 
 	Map mapLobbyNormal;
+	Map mapPvpDeathMatch;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
@@ -59,6 +60,7 @@ struct GameXmlContent
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadLobbyNormal();
+	bool LoadPvpDeathmatch();
 	bool LoadJukeboxSongs();
 	bool Load();
 

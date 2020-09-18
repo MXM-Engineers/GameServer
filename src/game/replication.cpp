@@ -61,22 +61,36 @@ void Replication::FrameEnd()
 			LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
 			SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 
-			// SN_TownHudStatistics
-			{
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+			if(stageType == StageType::CITY) {
+				// SN_TownHudStatistics
+				{
+					u8 sendData[1024];
+					PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<u8>(0); // gameModeType
-				packet.Write<u8>(0); // gameType
-				packet.Write<u16>(3); // argList_count
+					packet.Write<u8>(0); // gameModeType
+					packet.Write<u8>(0); // gameType
+					packet.Write<u16>(3); // argList_count
 
-				// arglist
-				packet.Write<i32>(479);
-				packet.Write<i32>(0);
-				packet.Write<i32>(16);
+					// arglist
+					packet.Write<i32>(479);
+					packet.Write<i32>(0);
+					packet.Write<i32>(16);
 
-				LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
-				SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
+					LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
+					SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
+				}
+			}
+			else if(stageType == StageType::GAME_INSTANCE) {
+				// SA_LoadingComplete
+				LOG("[client%03d] Server :: SA_LoadingComplete ::", clientID);
+				SendPacketData(clientID, Sv::SA_LoadingComplete::NET_ID, 0, nullptr);
+
+				Sv::SA_GameReady ready;
+				ready.waitingTimeMs = 3000;
+				ready.serverTimestamp = 0;
+				ready.readyElapsedMs = 0;
+				LOG("[client%03d] Server :: SA_GameReady ::", clientID);
+				SendPacket(clientID, ready);
 			}
 		}
 	}
@@ -157,7 +171,7 @@ void Replication::EventPlayerConnect(i32 clientID)
 	playerLocalInfo[clientID].Reset();
 }
 
-void Replication::EventPlayerLoad(i32 clientID)
+void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 {
 	// SN_LoadCharacterStart
 	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
@@ -346,7 +360,8 @@ void Replication::EventPlayerLoad(i32 clientID)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = 160000042;
+	cityMapInfo.cityMapID = stageIndex;
+	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
@@ -361,6 +376,94 @@ void Replication::EventPlayerLoad(i32 clientID)
 		LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
 		SendPacket(clientID, gameGvt);
 	}
+}
+
+void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
+{
+	// SN_GameFieldReady
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(449); // InGameID=449
+		packet.Write<i32>(6); // GameType=6
+		packet.Write<i32>(190002202); // AreaIndex=190002202
+		packet.Write<i32>(200020104); // StageIndex=200020104
+		packet.Write<i32>(1); // GameDefinitionType=1
+		packet.Write<u8>(6); // initPlayerCount=6
+		packet.Write<u8>(1); // CanEscape=1
+		packet.Write<u8>(0); // IsTrespass=0
+		packet.Write<u8>(0); // IsSpectator=0
+
+		// InGameUsers
+		packet.Write<u16>(6);
+		for(int i = 0; i < 6; i++) {
+			packet.Write<i32>(i); //userID
+			packet.WriteStringObj(LFMT(L"Player_%d", i)); // nickname
+			packet.Write<u8>(3 + i/3); // team
+			packet.Write<u8>(0); // isBot
+		}
+
+		// IngamePlayers
+		packet.Write<u16>(6);
+		for(int i = 0; i < 6; i++) {
+			packet.Write<i32>(i); //userID
+			packet.Write<i32>(100000035); //mainCreatureIndex
+			packet.Write<i32>(0); //mainSkinIndex
+			packet.Write<i32>(180350010); //mainSkillindex1
+			packet.Write<i32>(180350030); //mainSkillIndex2
+			packet.Write<i32>(100000003); //subCreatureIndex
+			packet.Write<i32>(0); //subSkinIndex
+			packet.Write<i32>(180030020); //subSkillIndex1
+			packet.Write<i32>(180030030); //subSkillIndex2
+			packet.Write<i32>(-1); //stageSkillIndex1
+			packet.Write<i32>(-1); //stageSkillIndex2
+			packet.Write<i32>(-1); //supportKitIndex
+			packet.Write<u8>(0); //isBot
+		}
+
+		// IngameGuilds
+		packet.Write<u16>(0);
+		packet.Write<u32>(180000); // surrenderAbleTime
+
+		LOG("[client%03d] Server :: SN_GameFieldReady :: ", clientID);
+		SendPacketData(clientID, Sv::SN_GameFieldReady::NET_ID, packet.size, packet.data);
+	}
+
+	Sv::SN_LobbyStartGame lobby;
+	lobby.stageType = StageType::GAME_INSTANCE;
+	LOG("[client%03d] Server :: SN_LobbyStartGame :: stageType=GAME_INSTANCE", clientID);
+	SendPacket(clientID, lobby);
+
+	// SN_CityMapInfo
+	Sv::SN_CityMapInfo cityMapInfo;
+	cityMapInfo.cityMapID = stageIndex;
+	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
+	SendPacket(clientID, cityMapInfo);
+
+	/*
+	if(stageType == StageType::INGAME) {
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
+		packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
+		packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
+		packet.Write<i32>(20); // chPropertyResetCoolTime
+		packet.Write<u8>(0); // transformationPieceCount
+		packet.Write<u16>(0); // titanDocIndexes_count
+		packet.Write<u8>(0); // nextTitanIndex
+		packet.Write<u16>(0); // listExceptionStat_count
+
+		LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
+		SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
+	}
+	*/
+
+	playerState[clientID] = PlayerState::IN_GAME;
 }
 
 void Replication::SetPlayerAsInGame(i32 clientID)

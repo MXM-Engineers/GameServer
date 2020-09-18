@@ -206,6 +206,54 @@ bool GameXmlContent::LoadLobbyNormal()
 	return true;
 }
 
+bool GameXmlContent::LoadPvpDeathmatch()
+{
+	Path xmlPath = gameDataDir;
+	PathAppend(xmlPath, L"/PVP_DeathMatch/Spawn.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if(!fileData) {
+		LOG("ERROR(LoadPvpDeathmatch): failed to open '%ls'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if(error != XML_SUCCESS) {
+		LOG("ERROR(LoadPvpDeathmatch): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
+	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
+	do {
+		Spawn spawn;
+		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
+		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
+		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
+		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
+		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
+		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
+		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
+		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		spawn.type = Spawn::Type::NPC_SPAWN;
+		bool returnPoint;
+		if(pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
+			spawn.type = Spawn::Type::SPAWN_POINT;
+		}
+
+		mapPvpDeathMatch.spawns.push_back(spawn);
+
+		pSpawnElt = pSpawnElt->NextSiblingElement();
+	} while(pSpawnElt);
+
+	return true;
+}
+
 bool GameXmlContent::LoadJukeboxSongs()
 {
 	Path xmlPath = gameDataDir;
@@ -258,6 +306,9 @@ bool GameXmlContent::Load()
 	r = LoadLobbyNormal();
 	if(!r) return false;
 
+	r = LoadPvpDeathmatch();
+	if(!r) return false;
+
 	r = LoadJukeboxSongs();
 	if(!r) return false;
 
@@ -287,6 +338,11 @@ bool GameXmlContent::Load()
 
 	LOG("Lobby_Normal:");
 	foreach(it, mapLobbyNormal.spawns) {
+		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
+	}
+
+	LOG("PVP_DeathMatch:");
+	foreach(it, mapPvpDeathMatch.spawns) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
 

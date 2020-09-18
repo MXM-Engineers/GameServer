@@ -148,6 +148,8 @@ struct Replication
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
 
+	StageType stageType;
+
 	void Init(Server* server_);
 
 	void FrameEnd();
@@ -156,7 +158,8 @@ struct Replication
 	void FramePushJukebox(const ActorJukebox& actor);
 
 	void EventPlayerConnect(i32 clientID);
-	void EventPlayerLoad(i32 clientID);
+	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
+	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
 	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);

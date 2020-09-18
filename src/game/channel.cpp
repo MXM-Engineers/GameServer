@@ -151,7 +151,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 void Channel::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
-	replication.EventPlayerLoad(clientID);
+	game.OnPlayerReadyToLoad(clientID);
 }
 
 void Channel::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

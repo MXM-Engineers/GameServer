@@ -63,7 +63,7 @@ enum MapType: i32
 	MAP_INGAME = 2
 };
 
-// When the maptype is INGAME it has a GameSubModeType
+// When the maptype is INGAME it has a GameSubModeType except the training room
 enum GameSubModeType : i32
 {
 	GAME_SUB_MODE_INVALID = 0,

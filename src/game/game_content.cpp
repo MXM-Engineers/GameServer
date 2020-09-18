@@ -182,13 +182,13 @@ bool GameXmlContent::LoadMapList()
 
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
-		i32 index;
-		pMapElt->QueryAttribute("_Index", &index);
+		MapList mapList;
+		pMapElt->QueryAttribute("_Index", &mapList.index);
+
+		pMapElt->QueryStringAttribute("_LevelFile", &mapList.levelFile);
 
 		const char* mapTypeXml;
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
-
-		MapList mapList;
 		
 		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
 		if (strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
@@ -264,7 +264,7 @@ bool GameXmlContent::LoadMapList()
 			return false;
 		}
 		
-
+		maplists.push_back(mapList);
 		pMapElt = pMapElt->NextSiblingElement();
 	} while (pMapElt);
 	

@@ -45,7 +45,7 @@ struct GameXmlContent
 		i32 index;
 		MapType mapType;
 		GameSubModeType gameSubModeType;
-		WideString levelFile;
+		const char* levelFile;
 	};
 
 	struct Song
@@ -60,6 +60,7 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
+	eastl::fixed_vector<MapList, 500, false> maplists;
 
 	Map mapLobby;
 

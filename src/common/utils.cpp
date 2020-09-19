@@ -33,9 +33,9 @@ void PathAppend(Path& path, const wchar* app)
 #endif
 
 	// remove double '/'
-	foreach_mut(it, path) {
+	foreach(it, path) {
 		if(*it == L'/' && (it+1) != path.end() && *(it+1) == L'/') {
-			path.erase(it);
+			it = path.erase(it);
 		}
 	}
 

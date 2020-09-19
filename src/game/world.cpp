@@ -98,6 +98,7 @@ void World::Update(f64 delta, Time localTime_)
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
 		rfl.localID = actor.localID;
+		rfl.faction = actor.faction;
 
 		replication->FramePushNpcActor(rfl);
 	}
@@ -145,6 +146,7 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	actor.actionParam1 = -1;
 	actor.actionParam2 = -1;
 	actor.localID = localID;
+	actor.faction = 0;
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;

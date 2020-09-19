@@ -62,5 +62,5 @@ struct Game3v3
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);
 
-	void SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
+	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
 };

@@ -32,7 +32,7 @@ bool Game3v3::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	foreach(it, content.mapPvpDeathMatch.spawns) {
+	foreach(it, content.mapPvpDeathMatch.creatures) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
 			if(it->team != TeamID::INVALID) {
@@ -43,6 +43,13 @@ bool Game3v3::LoadMap()
 
 		// spawn npc
 		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+	}
+
+	foreach(it, content.mapPvpDeathMatch.dynamic) {
+		// spawn npc
+		World::ActorNpc& npc = SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+		npc.type = 3;
+		npc.faction = 2;
 	}
 
 	return true;
@@ -86,7 +93,7 @@ void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	// TODO: health
 	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor->clientID == clientID);
-	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
+	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
 }
 
 void Game3v3::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
@@ -256,9 +263,10 @@ void Game3v3::SendDbgMsg(i32 clientID, const wchar* msg)
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-void Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+World::ActorNpc& Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
 {
-	World::ActorCore& actor = world.SpawnNpcActor(docID, localID);
+	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;
 	actor.dir = dir;
+	return actor;
 }

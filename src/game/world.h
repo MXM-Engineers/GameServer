@@ -29,6 +29,7 @@ struct World
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
+		i32 faction;
 
 		explicit ActorCore(ActorUID UID_): UID(UID_) {}
 	};

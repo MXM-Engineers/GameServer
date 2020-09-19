@@ -37,7 +37,8 @@ struct GameXmlContent
 
 	struct Map
 	{
-		eastl::fixed_vector<Spawn,512> spawns;
+		eastl::fixed_vector<Spawn,512> creatures;
+		eastl::fixed_vector<Spawn,512> dynamic;
 	};
 
 	struct Song

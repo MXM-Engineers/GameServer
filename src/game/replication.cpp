@@ -82,7 +82,7 @@ void Replication::FrameEnd()
 
 				Sv::SA_GameReady ready;
 				ready.waitingTimeMs = 3000;
-				ready.serverTimestamp = 0;
+				ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
 				ready.readyElapsedMs = 0;
 				LOG("[client%03d] Server :: SA_GameReady ::", clientID);
 				SendPacket(clientID, ready);
@@ -416,7 +416,7 @@ void Replication::SetPlayerAsInGame(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void Replication::EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
+void Replication::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
 	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 
@@ -991,6 +991,16 @@ void Replication::SendAccountDataCity(i32 clientID, const AccountData& account)
 
 void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 {
+	// SN_Money
+	// SN_ProfileCharacters
+	// SN_ProfileItems
+	// SN_ProfileWeapons
+	// SN_ProfileSkills
+	// SN_ProfileMasterGears
+	// SN_PlayerSkillSlot x2
+	// SN_AccountEquipmentList
+	// SN_GameFieldReady
+
 	const GameXmlContent& content = GetGameXmlContent();
 
 	// SN_ProfileCharacters
@@ -1063,6 +1073,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 	}
 	*/
 
+
 	// SN_ProfileMasterGears
 	{
 		u8 sendData[128];
@@ -1107,33 +1118,6 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 
 		LOG("[client%03d] Server :: SN_ProfileSkills :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileSkills::NET_ID, packet.size, packet.data);
-	}
-
-	// SN_ProfileCharacterSkinList
-	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		i32 skinCount = 0;
-		foreach(it, content.masters) {
-			skinCount += it->skinIDs.size();
-		}
-
-		packet.Write<u16>(skinCount); // skins_count
-
-		foreach(it, content.masters) {
-			const ClassType classType = it->classType;
-
-			foreach(s, it->skinIDs) {
-				packet.Write<ClassType>(classType); // classType
-				packet.Write<SkinIndex>(*s); // skinIndex
-				packet.Write<i32>(0); // bufCount
-				packet.Write<i64>(0); // expireDateTime
-			}
-		}
-
-		LOG("[client%03d] Server :: SN_ProfileCharacterSkinList :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileCharacterSkinList::NET_ID, packet.size, packet.data);
 	}
 
 	// SN_AccountInfo
@@ -1185,23 +1169,74 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		SendPacketData(clientID, Sv::SN_AccountEquipmentList::NET_ID, packet.size, packet.data);
 	}
 
-	// SN_Unknown_62472
-	{
-		u8 sendData[32];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u8>(1);
-
-		LOG("[client%03d] Server :: SN_Unknown_62472 :: ", clientID);
-		SendPacketData(clientID, 62472, packet.size, packet.data);
-	}
-
 	// SN_Money
 	Sv::SN_Money money;
-	money.nMoney = 116472;
+	money.nMoney = 666;
 	money.nReason = 1;
 	LOG("[client%03d] Server :: SN_Money :: ", clientID);
 	SendPacket(clientID, money);
+
+	// SN_PlayerSkillSlot
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 35)); // characterID
+
+		auto luaIt = content.masterClassMap.find(content.strHash("CLASS_TYPE_LAUNCHER"));
+		ASSERT(luaIt != content.masterClassMap.end());
+		GameXmlContent::Master& masterLua = *luaIt->second;
+
+		packet.Write<u16>(masterLua.skillIDs.size()); // slotList_count
+		foreach(it, masterLua.skillIDs) {
+			packet.Write<SkillID>(*it); // skillIndex
+			packet.Write<i32>(0); // coolTime
+			packet.Write<u8>(1); // unlocked
+			packet.Write<u16>(0); // propList_count
+			packet.Write<u8>(1); // isUnlocked
+			packet.Write<u8>(1); // isActivated
+		}
+
+		packet.Write<i32>(-1); // stageSkillIndex1
+		packet.Write<i32>(-1); // stageSkillIndex2
+		packet.Write<i32>(180350010); // currentSkillSlot1
+		packet.Write<i32>(180350030); // currentSkillSlot2
+		packet.Write<i32>(180350002); // shirkSkillSlot
+
+		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_PlayerSkillSlot
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 35)); // characterID
+
+		auto sizuIt = content.masterClassMap.find(content.strHash("CLASS_TYPE_ASSASSIN"));
+		ASSERT(sizuIt != content.masterClassMap.end());
+		GameXmlContent::Master& masterLua = *sizuIt->second;
+
+		packet.Write<u16>(masterLua.skillIDs.size()); // slotList_count
+		foreach(it, masterLua.skillIDs) {
+			packet.Write<SkillID>(*it); // skillIndex
+			packet.Write<i32>(0); // coolTime
+			packet.Write<u8>(1); // unlocked
+			packet.Write<u16>(0); // propList_count
+			packet.Write<u8>(1); // isUnlocked
+			packet.Write<u8>(1); // isActivated
+		}
+
+		packet.Write<i32>(-1); // stageSkillIndex1
+		packet.Write<i32>(-1); // stageSkillIndex2
+		packet.Write<i32>(180030020); // currentSkillSlot1
+		packet.Write<i32>(180030030); // currentSkillSlot2
+		packet.Write<i32>(180030002); // shirkSkillSlot
+
+		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+	}
 
 	// SN_GameFieldReady
 	{
@@ -1221,7 +1256,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		// InGameUsers
 		packet.Write<u16>(6);
 		for(int i = 0; i < 6; i++) {
-			packet.Write<i32>(i); //userID
+			packet.Write<i32>(i+1); //userID
 			packet.WriteStringObj(LFMT(L"Player_%d", i)); // nickname
 			packet.Write<u8>(3 + i/3); // team
 			packet.Write<u8>(0); // isBot
@@ -1230,12 +1265,12 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		// IngamePlayers
 		packet.Write<u16>(6);
 		for(int i = 0; i < 6; i++) {
-			packet.Write<i32>(i); //userID
-			packet.Write<i32>(100000035); //mainCreatureIndex
+			packet.Write<i32>(i+1); //userID
+			packet.Write<CreatureIndex>((CreatureIndex)100000035); //mainCreatureIndex
 			packet.Write<i32>(0); //mainSkinIndex
 			packet.Write<i32>(180350010); //mainSkillindex1
 			packet.Write<i32>(180350030); //mainSkillIndex2
-			packet.Write<i32>(100000003); //subCreatureIndex
+			packet.Write<CreatureIndex>((CreatureIndex)100000003); //subCreatureIndex
 			packet.Write<i32>(0); //subSkinIndex
 			packet.Write<i32>(180030020); //subSkillIndex1
 			packet.Write<i32>(180030030); //subSkillIndex2
@@ -1565,7 +1600,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		packet.Write<u8>(0); // bDirectionToNearPC
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(0); // faction
+		packet.Write<i32>(3); // faction
 		packet.Write<ClassType>(actor.classType); // classType
 		packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
 		packet.Write<i32>(0); // seed
@@ -1575,62 +1610,71 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		// initStat ------------------------
 		packet.Write<u16>(53); // maxStats_count
 		packet.Write(Stat{ 0, 2400 });
-		packet.Write(Stat{ 35, 1000 });
-		packet.Write(Stat{ 17, 0 });
-		packet.Write(Stat{ 36, 0 });
-		packet.Write(Stat{ 56, 0 });
 		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 3, 0 }); //
+		packet.Write(Stat{ 5, 5 });
+		packet.Write(Stat{ 6, 124 });
+		packet.Write(Stat{ 7, 93.75f });
+		packet.Write(Stat{ 8, 0 }); //
+		packet.Write(Stat{ 9, 3 });
+		packet.Write(Stat{ 10, 150 });
+		packet.Write(Stat{ 12, 0 }); //
+		packet.Write(Stat{ 13, 100 });
+		packet.Write(Stat{ 14, 100.5 });
+		packet.Write(Stat{ 15, 100 });
+		packet.Write(Stat{ 16, 1 });
+		packet.Write(Stat{ 17, 0 }); //
+		packet.Write(Stat{ 18, 100 });
+		packet.Write(Stat{ 20, 0 }); //
+		packet.Write(Stat{ 21, 0 }); //
+		packet.Write(Stat{ 22, 2 });
+		packet.Write(Stat{ 23, 9 });
+		packet.Write(Stat{ 29, 20 });
+		packet.Write(Stat{ 31, 14 });
+		packet.Write(Stat{ 35, 1000 });
+		packet.Write(Stat{ 36, 0 }); //
 		packet.Write(Stat{ 37, 120 });
-		packet.Write(Stat{ 3, 0 });
 		packet.Write(Stat{ 39, 5 });
-		packet.Write(Stat{ 41, 0 });
-		packet.Write(Stat{ 40, 0 });
+		packet.Write(Stat{ 40, 0 }); //
+		packet.Write(Stat{ 41, 0 }); //
+		packet.Write(Stat{ 42, 0.6f });
+		packet.Write(Stat{ 44, 15 });
+		packet.Write(Stat{ 52, 100 });
+		packet.Write(Stat{ 54, 15 });
+		packet.Write(Stat{ 55, 15 });
+		packet.Write(Stat{ 56, 0 }); //
 		packet.Write(Stat{ 57, 0 });
 		packet.Write(Stat{ 50, 0 });
 		packet.Write(Stat{ 51, 0 });
-		packet.Write(Stat{ 5, 5 });
-		packet.Write(Stat{ 42, 0.6f });
-		packet.Write(Stat{ 6, 0 });
-		packet.Write(Stat{ 7, 93.75f });
-		packet.Write(Stat{ 8, 0 });
-		packet.Write(Stat{ 9, 3 });
-		packet.Write(Stat{ 10, 150 });
-		packet.Write(Stat{ 12, 0 });
-		packet.Write(Stat{ 20, 0 });
-		packet.Write(Stat{ 21, 0 });
-		packet.Write(Stat{ 18, 100 });
-		packet.Write(Stat{ 13, 100 });
-		packet.Write(Stat{ 14, 98 });
-		packet.Write(Stat{ 15, 100 });
-		packet.Write(Stat{ 52, 100 });
-		packet.Write(Stat{ 16, 1 });
+		packet.Write(Stat{ 63, 3 });
+		packet.Write(Stat{ 64, 150 });
+
+
+
 		packet.Write(Stat{ 27, 0 });
 		packet.Write(Stat{ 47, 0 });
 		packet.Write(Stat{ 49, 0 });
 		packet.Write(Stat{ 48, 0 });
-		packet.Write(Stat{ 29, 20 });
-		packet.Write(Stat{ 23, 9 });
-		packet.Write(Stat{ 44, 15 });
+
 		packet.Write(Stat{ 46, 0 });
 		packet.Write(Stat{ 45, 0 });
 		packet.Write(Stat{ 26, 0 });
 		packet.Write(Stat{ 25, 0 });
-		packet.Write(Stat{ 31, 14 });
-		packet.Write(Stat{ 22, 2 });
-		packet.Write(Stat{ 54, 15 });
+
 		packet.Write(Stat{ 60, 0 });
 		packet.Write(Stat{ 61, 0 });
 		packet.Write(Stat{ 62, 0 });
-		packet.Write(Stat{ 63, 3 });
-		packet.Write(Stat{ 64, 150 });
+
 		packet.Write(Stat{ 53, 0 });
 		packet.Write(Stat{ 58, 0 });
 		packet.Write(Stat{ 65, 0 });
-		packet.Write(Stat{ 55, 15 });
 
-		packet.Write<u16>(2); // curStats_count
+
+		packet.Write<u16>(4); // curStats_count
 		packet.Write(Stat{ 0, 2400 });
 		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 35, 1000 });
+		packet.Write(Stat{ 37, 0 });
 		// ------------------------------------
 
 		packet.Write<u8>(1); // isInSight
@@ -1688,7 +1732,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<LocalActorID>(localActorID); // characterID
-		packet.Write<i32>(131135012); // weaponDocIndex
+		packet.Write<i32>(131135011); // weaponDocIndex
 		packet.Write<i32>(0); // additionnalOverHeatGauge
 		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
@@ -1708,6 +1752,167 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
 		SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
 	}
+
+	// SN_StatusSnapshot
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write<u16>(1); // statusArray_count
+
+		packet.Write<i32>(1230350000); // statusIndex
+		packet.Write<u8>(1); // bEnabled
+		packet.Write<i32>(0); // caster
+		packet.Write<u8>(1); // overlapCount
+		packet.Write<u8>(0); // customValue
+		packet.Write<i32>(0); // durationTimeMs
+		packet.Write<i32>(0); // remainTimeMs
+
+		LOG("[client%03d] Server :: SN_StatusSnapshot :: state=%d", clientID, -1);
+		SendPacketData(clientID, Sv::SN_StatusSnapshot::NET_ID, packet.size, packet.data);
+	}
+
+	const GameXmlContent& content = GetGameXmlContent();
+
+	// SN_PlayerSkillSlot
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // characterID
+
+		auto luaIt = content.masterClassMap.find(content.strHash("CLASS_TYPE_LAUNCHER"));
+		ASSERT(luaIt != content.masterClassMap.end());
+		GameXmlContent::Master& masterLua = *luaIt->second;
+
+		packet.Write<u16>(masterLua.skillIDs.size()); // slotList_count
+		foreach(it, masterLua.skillIDs) {
+			packet.Write<SkillID>(*it); // skillIndex
+			packet.Write<i32>(0); // coolTime
+			packet.Write<u8>(1); // unlocked
+			packet.Write<u16>(0); // propList_count
+			packet.Write<u8>(1); // isUnlocked
+			packet.Write<u8>(1); // isActivated
+		}
+
+		packet.Write<i32>(-1); // stageSkillIndex1
+		packet.Write<i32>(-1); // stageSkillIndex2
+		packet.Write<i32>(180350010); // currentSkillSlot1
+		packet.Write<i32>(180350030); // currentSkillSlot2
+		packet.Write<i32>(180350002); // shirkSkillSlot
+
+		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: actorUID=%d(%d)", clientID, actor.actorUID, localActorID);
+		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_GameCreateSubActor
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 3)); // objectID
+		packet.Write<LocalActorID>(localActorID); // mainEntityID
+		packet.Write<i32>(1); // nType
+		packet.Write<CreatureIndex>((CreatureIndex)100000003); // nIDX
+		packet.Write<i32>(-1); // dwLocalID
+
+		packet.Write(actor.pos); // p3nPos
+		packet.Write(actor.dir); // p3nDir
+		packet.Write<i32>(-1); // spawnType
+		packet.Write<ActionStateID>(ActionStateID::INVALID); // actionState
+		packet.Write<i32>(0); // ownerID
+		packet.Write<i32>(-1); // tagID
+		packet.Write<i32>(3); // faction
+		packet.Write<ClassType>((ClassType)3); // classType
+		packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
+		packet.Write<i32>(0); // seed
+
+		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+
+		// initStat ------------------------
+		packet.Write<u16>(26); // maxStats_count
+		packet.Write(Stat{ 0, 1764 });
+		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 5, 5 });
+		packet.Write(Stat{ 6, 192 });
+		packet.Write(Stat{ 7, 85.05 });
+		packet.Write(Stat{ 9, 3 });
+		packet.Write(Stat{ 10, 150 });
+		packet.Write(Stat{ 13, 100 });
+		packet.Write(Stat{ 14, 104.5 });
+		packet.Write(Stat{ 15, 100 });
+		packet.Write(Stat{ 16, 1 });
+		packet.Write(Stat{ 17, 100 });
+		packet.Write(Stat{ 18, 100 });
+		packet.Write(Stat{ 22, 2 });
+		packet.Write(Stat{ 23, 9 });
+		packet.Write(Stat{ 29, 20 });
+		packet.Write(Stat{ 31, 14 });
+		packet.Write(Stat{ 37, 120 });
+		packet.Write(Stat{ 41, 6 });
+		packet.Write(Stat{ 42, 0.6 });
+		packet.Write(Stat{ 46, 5 });
+		packet.Write(Stat{ 52, 100 });
+		packet.Write(Stat{ 54, 15 });
+		packet.Write(Stat{ 55, 15 });
+		packet.Write(Stat{ 63, 3 });
+		packet.Write(Stat{ 64, 15 });
+
+		packet.Write<u16>(4); // curStats_count
+		packet.Write(Stat{ 0, 1764 });
+		packet.Write(Stat{ 37, 0 });
+		packet.Write(Stat{ 2, 200 });
+		packet.Write(Stat{ 17, 100 });
+		// ------------------------------------
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		LOG("[client%03d] Server :: SN_GameCreateSubActor :: actorUID=%d", clientID, (u32)actor.actorUID);
+		SendPacketData(clientID, Sv::SN_GameCreateSubActor::NET_ID, packet.size, packet.data);
+	}
+
+	// SN_NotifyPcDetailInfos
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(1); // pcList_count
+
+		packet.Write<i32>(1); // userID
+		// mainPC
+		packet.Write<LocalActorID>(localActorID); // characterID
+		packet.Write<CreatureIndex>((CreatureIndex)100000035); // docID
+		packet.Write<ClassType>((ClassType)35); // classType
+		packet.Write<i32>(2400); // hp
+		packet.Write<i32>(2400); // maxHp
+		// subPC
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 3)); // characterID
+		packet.Write<CreatureIndex>((CreatureIndex)100000003); // docID
+		packet.Write<ClassType>((ClassType)3); // classType
+		packet.Write<i32>(2400); // hp
+		packet.Write<i32>(2400); // maxHp
+
+		packet.Write<i32>(0); // remainTagCooltimeMS
+		packet.Write<u8>(0); // canCastSkillSlotUG
+
+		LOG("[client%03d] Server :: SN_NotifyPcDetailInfos :: actorUID=%d", clientID, (u32)actor.actorUID);
+		SendPacketData(clientID, Sv::SN_NotifyPcDetailInfos::NET_ID, packet.size, packet.data);
+	}
+
+	Sv::SN_UpdateMasterGroupingEffect grouping;
+	grouping.instanceID = localActorID;
+	grouping.index = 260000016;
+	grouping.classType = (ClassType)35;
+	grouping.activate = 1;
+	LOG("[client%03d] Server :: SN_UpdateMasterGroupingEffect :: actorUID=%d", clientID, (u32)actor.actorUID);
+	SendPacket(clientID, grouping);
+
+	Sv::SN_NotifyIngameSkillPoint notify;
+	notify.userID = 1;
+	notify.skillPoint = 1;
+	LOG("[client%03d] Server :: SN_NotifyIngameSkillPoint :: actorUID=%d", clientID, (u32)actor.actorUID);
+	SendPacket(clientID, notify);
 }
 
 void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
@@ -1726,7 +1931,7 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(1); // nType
+		packet.Write<i32>(actor.type); // nType
 		packet.Write<CreatureIndex>(actor.docID); // nIDX
 		packet.Write<i32>(actor.localID); // dwLocalID
 
@@ -1738,7 +1943,7 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 		packet.Write<u8>(0); // bDirectionToNearPC
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(0); // faction
+		packet.Write<i32>(actor.faction); // faction
 		packet.Write<ClassType>(ClassType::NONE); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
@@ -1746,9 +1951,24 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
 		// initStat ------------------------
+		/*packet.Write<u16>(11); // maxStats_count
+		packet.Write(Stat{ 0, 24953 });
+		packet.Write(Stat{ 6, 96 });
+		packet.Write(Stat{ 7, 113.333 });
+		packet.Write(Stat{ 8, 10 });
+		packet.Write(Stat{ 9, 5 });
+		packet.Write(Stat{ 10, 150 });
+		packet.Write(Stat{ 13, 100 });
+		packet.Write(Stat{ 14, 80 });
+		packet.Write(Stat{ 15, 100 });
+		packet.Write(Stat{ 52, 100 });
+		packet.Write(Stat{ 64, 150 });
+		packet.Write<u16>(1); // curStats_count
+		packet.Write(Stat{ 0, 24953 });*/
+		// ------------------------------------
+
 		packet.Write<u16>(0); // maxStats_count
 		packet.Write<u16>(0); // curStats_count
-		// ------------------------------------
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead

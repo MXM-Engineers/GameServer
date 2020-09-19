@@ -199,7 +199,7 @@ bool GameXmlContent::LoadLobbyNormal()
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
-		mapLobbyNormal.spawns.push_back(spawn);
+		mapLobbyNormal.creatures.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
 	} while(pSpawnElt);
@@ -228,8 +228,11 @@ bool GameXmlContent::LoadPvpDeathmatch()
 		return false;
 	}
 
+	XMLElement* pMapInfo = doc.FirstChildElement();
+	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
+
 	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
-	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
+	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
 	do {
 		Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
@@ -254,7 +257,27 @@ bool GameXmlContent::LoadPvpDeathmatch()
 			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
 		}
 
-		mapPvpDeathMatch.spawns.push_back(spawn);
+		mapPvpDeathMatch.creatures.push_back(spawn);
+
+		pSpawnElt = pSpawnElt->NextSiblingElement();
+	} while(pSpawnElt);
+
+	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
+	pSpawnElt = pMapEntityDynamic->FirstChildElement();
+	do {
+		Spawn spawn;
+		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
+		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
+		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
+		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
+		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
+		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
+		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
+		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		spawn.type = Spawn::Type::NPC_SPAWN;
+
+		mapPvpDeathMatch.dynamic.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
 	} while(pSpawnElt);
@@ -352,8 +375,11 @@ bool GameXmlContent::Load()
 	*/
 
 	LOG("PVP_DeathMatch:");
-	foreach(it, mapPvpDeathMatch.spawns) {
-		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
+	foreach(it, mapPvpDeathMatch.creatures) {
+		LOG("Creature :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
+	}
+	foreach(it, mapPvpDeathMatch.dynamic) {
+		LOG("Dynamic :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
 	}
 
 	/*

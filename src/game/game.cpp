@@ -83,7 +83,7 @@ bool Game::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	foreach(it, content.mapLobbyNormal.spawns) {
+	foreach(it, content.mapLobbyNormal.creatures) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
 			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
@@ -133,7 +133,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
 	// TODO: health
 	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor->clientID == clientID);
-	replication->EventPlayerRequestCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
+	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
 void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)

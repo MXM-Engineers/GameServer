@@ -58,6 +58,7 @@ struct Replication
 	{
 		i32 type;
 		i32 localID;
+		i32 faction;
 	};
 
 	struct ActorJukebox: Actor<ActorType::JUKEBOX>
@@ -163,7 +164,7 @@ struct Replication
 	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
 	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
-	void EventPlayerRequestCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
+	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);

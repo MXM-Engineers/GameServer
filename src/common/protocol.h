@@ -8,7 +8,7 @@ enum class LocalActorID: u32
 
 	FIRST_NPC = 5000,
 
-	FIRST_SELF_MASTER = 21000, // First master, Lua
+	FIRST_SELF_MASTER = 21001, // First master
 	// Every master, in order
 	LAST_SELF_MASTER = 21500, // Last master possible. 500 should be enough :)
 	FIRST_OTHER_PLAYER = 21501
@@ -527,6 +527,72 @@ struct SN_SpawnPosForMinimap
 	Vec3 p3nPos;
 };
 
+struct SN_GameCreateSubActor
+{
+	enum { NET_ID = 62028 };
+
+	struct BaseStat
+	{
+		PUSH_PACKED
+		struct Stat
+		{
+			u8 type;
+			f32 value;
+		};
+		POP_PACKED
+
+		u16 maxStats_count;
+		Stat maxStats[1];
+		u16 curStats_count;
+		Stat curStats[1];
+	};
+
+	struct ST_ActionChangeTime
+	{
+		i32 actionState;
+		i64 serverTime;
+	};
+
+	LocalActorID objectID;
+	LocalActorID mainEntityID;
+	i32 nType;
+	i32 nIDX;
+	i32 dwLocalID;
+	Vec3 p3nPos;
+	Vec3 p3nDir;
+	i32 spawnType;
+	i32 actionState;
+	i32 ownerID;
+	i32 tagID;
+	i32 faction;
+	i32 classType;
+	i32 skinIndex;
+	i32 seed;
+	BaseStat initStat;
+	u16 meshChangeActionHistory_count;
+	ST_ActionChangeTime meshChangeActionHistory[1];
+};
+
+struct SN_StatusSnapshot
+{
+	enum { NET_ID = 62031 };
+
+	struct Status
+	{
+		i32 statusIndex;
+		bool bEnabled;
+		i32 caster;
+		u8 overlapCount;
+		u8 customValue;
+		i32 durationTimeMs;
+		i32 remainTimeMs;
+	};
+
+	LocalActorID objectID;
+	u16 statusArray_count;
+	Status statusArray[1];
+};
+
 struct SQ_CityLobbyJoinCity
 {
 	enum { NET_ID = 62033 };
@@ -552,7 +618,7 @@ struct SN_PlayerSkillSlot
 
 	struct Slot
 	{
-		i32 skillIndex;
+		SkillID skillIndex;
 		i32 coolTime;
 		u8 unlocked;
 
@@ -563,7 +629,7 @@ struct SN_PlayerSkillSlot
 		u8 isActivated;
 	};
 
-	i32 characterID;
+	LocalActorID characterID;
 
 	u16 slotList_count;
 	Slot slotList[1];
@@ -1064,6 +1130,32 @@ struct SN_SummaryInfoLatest
 	Info infoList[1];
 };
 
+struct SN_NotifyPcDetailInfos
+{
+	enum { NET_ID = 62229 };
+
+	struct ST_PcInfo
+	{
+		LocalActorID characterID;
+		CreatureIndex docID;
+		ClassType classType;
+		i32 hp;
+		i32 maxHp;
+	};
+
+	struct ST_PcDetailInfo
+	{
+		i32 userID;
+		ST_PcInfo mainPc;
+		ST_PcInfo subPc;
+		i32 remainTagCooltimeMS;
+		u8 canCastSkillSlotUG;
+	};
+
+	u16 pcList_count;
+	ST_PcDetailInfo pcList[1];
+};
+
 struct SN_FriendList
 {
 	enum { NET_ID = 62257 };
@@ -1523,6 +1615,15 @@ struct SA_TierRecord
 	PST_TierStageRecord stageRecordList[1];
 };
 
+struct SN_NotifyIngameSkillPoint
+{
+	enum { NET_ID = 62474 };
+
+	i32 userID;
+	i32 skillPoint;
+};
+ASSERT_SIZE(SN_NotifyIngameSkillPoint, 8);
+
 struct SN_PveComradeInfo
 {
 	enum { NET_ID = 62485 };
@@ -1580,5 +1681,18 @@ struct SN_InitIngameModeInfo
 	u16 listExceptionStat_count;
 	i32 listExceptionStat[1]; // TODO: not actually int
 };
+
+PUSH_PACKED
+struct SN_UpdateMasterGroupingEffect
+{
+	enum { NET_ID = 62601 };
+
+	LocalActorID instanceID;
+	i32 index;
+	ClassType classType;
+	u8 activate;
+};
+POP_PACKED
+ASSERT_SIZE(SN_UpdateMasterGroupingEffect, 13);
 
 } // Sv

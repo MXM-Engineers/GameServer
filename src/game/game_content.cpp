@@ -3,6 +3,7 @@
 #include "core.h"
 #include <common/utils.h>
 #include <tinyxml2.h>
+#include <EAStdC/EAString.h>
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
@@ -185,7 +186,9 @@ bool GameXmlContent::LoadMapList()
 		MapList mapList;
 		pMapElt->QueryAttribute("_Index", &mapList.index);
 
-		pMapElt->QueryStringAttribute("_LevelFile", &mapList.levelFile);
+		const char* levelFileTemp;
+		pMapElt->QueryStringAttribute("_LevelFile", &levelFileTemp);
+		mapList.levelFile = levelFileTemp;
 
 		const char* mapTypeXml;
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
@@ -271,6 +274,68 @@ bool GameXmlContent::LoadMapList()
 	return true;
 }
 
+bool GameXmlContent::LoadMapByID(i32 index)
+{
+	const MapList* map = FindMapListByID(index);
+	if (!map){
+		LOG("ERROR(LoadMapByID): Map not found %d", index);
+		return false;
+	}
+
+	Path xmlPath = gameDataDir;
+	//ToDo: free allocated memory
+	wchar *tempPath = (wchar_t *)malloc(sizeof(map->levelFile)*2);
+
+	size_t max = sizeof(map->levelFile);
+
+	mbstowcs(tempPath, map->levelFile.c_str(), max);
+	PathAppend(xmlPath, L"/");
+	PathAppend(xmlPath, tempPath);
+	PathAppend(xmlPath, L"/Spawn.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMapByID): failed to open '%ls'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMapByID): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
+	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
+	do {
+		Spawn spawn;
+		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
+		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
+		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
+		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
+		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
+		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
+		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
+		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		spawn.type = Spawn::Type::NPC_SPAWN;
+		bool returnPoint;
+		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
+			spawn.type = Spawn::Type::SPAWN_POINT;
+		}
+
+		mapLobby.spawns.push_back(spawn);
+
+		pSpawnElt = pSpawnElt->NextSiblingElement();
+	} while (pSpawnElt);
+
+	return true;
+}
+
 bool GameXmlContent::LoadLobbyNormal()
 {
 	LOG("Info(LoadLobbyNormal)");
@@ -280,7 +345,8 @@ bool GameXmlContent::LoadLobbyNormal()
 bool GameXmlContent::LoadLobbyHalloween()
 {
 	LOG("Info(LoadLobbyHalloween)");
-	return LoadLobby(L"/Lobby_Halloween/Spawn.xml");
+	return LoadMapByID(160000043);
+	//return LoadLobby(L"/Lobby_Halloween/Spawn.xml");
 }
 
 bool GameXmlContent::LoadLobby(WideString levelPath)
@@ -434,6 +500,16 @@ bool GameXmlContent::Load()
 	}
 
 	return true;
+}
+
+const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const
+{
+	foreach(it, maplists) {
+		if (it->index == index) {
+			return &(*it);
+		}
+	}
+	return nullptr;
 }
 
 const GameXmlContent::Song* GameXmlContent::FindJukeboxSongByID(SongID songID) const

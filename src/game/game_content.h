@@ -6,7 +6,6 @@
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
-#include <string>
 
 struct GameXmlContent
 {
@@ -46,7 +45,7 @@ struct GameXmlContent
 		i32 index;
 		MapType mapType;
 		GameSubModeType gameSubModeType;
-		std::string levelFile;
+		eastl::fixed_string<char, 256> levelFile;
 	};
 
 	struct Song

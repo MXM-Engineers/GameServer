@@ -283,12 +283,12 @@ bool GameXmlContent::LoadMapByID(i32 index)
 	}
 
 	Path xmlPath = gameDataDir;
-	//ToDo: free allocated memory
-	wchar *tempPath = (wchar_t *)malloc(sizeof(map->levelFile)*2);
 
-	size_t max = sizeof(map->levelFile);
+	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
+	wchar_t* tempPath = tempPathData;
+	const char* levelFileString = map->levelFile.data();
 
-	mbstowcs(tempPath, map->levelFile.c_str(), max);
+	eastl::DecodePart(levelFileString, map->levelFile.data() + EA::StdC::Strlen(map->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
 	PathAppend(xmlPath, L"/");
 	PathAppend(xmlPath, tempPath);
 	PathAppend(xmlPath, L"/Spawn.xml");

@@ -336,65 +336,22 @@ bool GameXmlContent::LoadMapByID(i32 index)
 	return true;
 }
 
-bool GameXmlContent::LoadLobbyNormal()
-{
-	LOG("Info(LoadLobbyNormal)");
-	return LoadLobby(L"/Lobby_Normal/Spawn.xml");
-}
 
-bool GameXmlContent::LoadLobbyHalloween()
+bool GameXmlContent::LoadLobby(i32 index)
 {
-	LOG("Info(LoadLobbyHalloween)");
-	return LoadMapByID(160000043);
-	//return LoadLobby(L"/Lobby_Halloween/Spawn.xml");
-}
-
-bool GameXmlContent::LoadLobby(WideString levelPath)
-{
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, levelPath.data());
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadLobby): failed to open '%ls'", xmlPath.data());
+	const MapList* map = FindMapListByID(index);
+	if (!map) {
+		LOG("ERROR(LoadLobby): Map not found %d", index);
 		return false;
-	}
-	defer(memFree(fileData));
+	};
 
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadLobby): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+	if (map->mapType != MAP_CITY)
+	{
+		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
 		return false;
 	}
 
-	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
-	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
-	do {
-		Spawn spawn;
-		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
-		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
-		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
-		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
-		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
-		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
-		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
-		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
-
-		spawn.type = Spawn::Type::NPC_SPAWN;
-		bool returnPoint;
-		if(pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
-			spawn.type = Spawn::Type::SPAWN_POINT;
-		}
-
-		mapLobby.spawns.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
-
-	return true;
+	return LoadMapByID(index);
 }
 
 bool GameXmlContent::LoadJukeboxSongs()
@@ -449,18 +406,8 @@ bool GameXmlContent::Load()
 	r = LoadMapList();
 	if (!r) return false;
 
-	if (Config().lobbyMap == 160000042)
-	{
-		r = LoadLobbyNormal();
-		if (!r) return false;
-	}
-	else if (Config().lobbyMap == 160000043)
-	{
-		r = LoadLobbyHalloween();
-		if (!r) return false;
-	}
-	else
-		return false;
+	r = LoadLobby(Config().lobbyMap);
+	if (!r) return false;
 
 	r = LoadJukeboxSongs();
 	if(!r) return false;

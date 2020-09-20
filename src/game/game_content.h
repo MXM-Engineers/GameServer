@@ -71,9 +71,7 @@ struct GameXmlContent
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMapList();
 	bool LoadMapByID(i32 index);
-	bool LoadLobbyNormal();
-	bool LoadLobbyHalloween();
-	bool LoadLobby(WideString levelPath);
+	bool LoadLobby(i32 index);
 	bool LoadJukeboxSongs();
 	bool Load();
 

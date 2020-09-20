@@ -290,7 +290,7 @@ bool GameXmlContent::LoadMapByID(i32 index)
 
 	eastl::DecodePart(levelFileString, map->levelFile.data() + EA::StdC::Strlen(map->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
 	PathAppend(xmlPath, L"/");
-	PathAppend(xmlPath, tempPath);
+	PathAppend(xmlPath, tempPathData);
 	PathAppend(xmlPath, L"/Spawn.xml");
 
 	i32 fileSize;

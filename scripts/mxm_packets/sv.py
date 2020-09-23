@@ -253,6 +253,17 @@ class ServerSerializer:
         print('    nActionIDX=%d' % p.read_i32())
         print('}')
 
+    def serialize_62056(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_UpdateStat {')
+        print('    characterID=%d' % p.read_i32())
+        print('    statType=%d' % p.read_i32())
+        print('    cur=%d' % p.read_i32())
+        print('    max=%d' % p.read_i32())
+        print('    ReasonCode=%d' % p.read_i32())
+        print('}')
+
     def serialize_62057(netid, data):
         p = common.PacketReader(data)
 
@@ -614,6 +625,14 @@ class ServerSerializer:
         print('    max=%d' % p.read_i32())
         print('}')
 
+    def serialize_62110(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_StageRank {')
+        print('    rank=%d' % p.read_i32())
+        print('    timeScoreRank=%d' % p.read_i32())
+        print('}')
+
     def serialize_62113(netid, data):
         p = common.PacketReader(data)
 
@@ -774,6 +793,13 @@ class ServerSerializer:
             print('    },')
             count -= 1
         print('    ]')
+        print('}')
+
+    def serialize_62135(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_TitleAdd {')
+        print('    NewTitleAdd=%d' % p.read_i32())
         print('}')
 
     def serialize_62158(netid, data):
@@ -1589,6 +1615,14 @@ class ServerSerializer:
 
         print('SN_Unknown_62472 {')
         print('    var=%d' % p.read_u8())
+        print('}')
+
+    def serialize_62482(netid, data):
+        p = common.PacketReader(data)
+
+        print('SA_RttTime {')
+        print('    clientTimestamp=%d' % p.read_i32())
+        print('    serverTimestamp=%d' % p.read_u16())
         print('}')
 
     def serialize_62483(netid, data):

@@ -9,13 +9,10 @@ void Game3v3::Init(Replication* replication_)
 {
 	replication = replication_;
 	replication->stageType = StageType::GAME_INSTANCE;
-	memset(&playerActorUID, 0, sizeof(playerActorUID));
 
 	world.Init(replication);
 
-	foreach(it, playerClientIDMap) {
-		*it = playerList.end();
-	}
+	playerMap.fill(playerList.end());
 
 	LoadMap();
 }
@@ -60,26 +57,26 @@ void Game3v3::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 	playerAccountData[clientID] = accountData;
 
 	playerList.push_back(Player(clientID));
-	playerClientIDMap[clientID] = --playerList.end();
+	playerMap[clientID] = --playerList.end();
 
 	replication->SendAccountDataPvp(clientID, *accountData);
 }
 
 void Game3v3::OnPlayerDisconnect(i32 clientID)
 {
-	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
+	if(playerMap[clientID] != playerList.end()) {
+		const Player& player = *playerMap[clientID];
 
-	// we can disconnect before spawning, so test if we have an actor associated
-	if(playerActorUID[clientID] != ActorUID::INVALID) {
-		world.DestroyPlayerActor(playerActorUID[clientID]);
+		LOG("[client%03d] Game :: OnClientDisconnect :: mainActorUID=%u subActorUID=%u", clientID, (u32)player.mainActorUID, (u32)player.subActorUID);
+
+		// we can disconnect before spawning, so test if we have an actor associated
+		if(player.mainActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.mainActorUID);
+		if(player.subActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.subActorUID);
+
+		playerList.erase(playerMap[clientID]);
 	}
-	playerActorUID[clientID] = ActorUID::INVALID;
 
-	if(playerClientIDMap[clientID] != playerList.end()) {
-		playerList.erase(playerClientIDMap[clientID]);
-	}
-	playerClientIDMap[clientID] = playerList.end();
-
+	playerMap[clientID] = playerList.end();
 	playerAccountData[clientID] = nullptr;
 }
 
@@ -88,24 +85,35 @@ void Game3v3::OnPlayerReadyToLoad(i32 clientID)
 	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
 }
 
-void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
+void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
+	ASSERT(playerMap[clientID] != playerList.end());
+	const Player& player = *playerMap[clientID];
+
+	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+		return;
+	}
+
 	// TODO: health
-	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	const World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientID == clientID);
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
 }
 
-void Game3v3::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
+	ASSERT(playerMap[clientID] != playerList.end());
+	const Player& player = *playerMap[clientID];
+
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(playerActorUID[clientID] != replication->GetActorUID(clientID, characterID)) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
+	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor);
 
 	// TODO: check for movement hacking
@@ -156,7 +164,10 @@ void Game3v3::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wch
 
 void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
-	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
+	ASSERT(playerMap[clientID] != playerList.end());
+	Player& player = *playerMap[clientID];
+
+	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
 	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
 
@@ -167,43 +178,47 @@ void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 	Vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
-	if((playerActorUID[clientID] != ActorUID::INVALID)) {
-		World::ActorCore* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	if((player.mainActorUID != ActorUID::INVALID)) {
+		World::ActorCore* actor = world.FindPlayerActor(player.mainActorUID);
 		ASSERT(actor);
 
 		pos = actor->pos;
 		dir = actor->dir;
 		eye = actor->eye;
 
-		world.DestroyPlayerActor(playerActorUID[clientID]);
+		world.DestroyPlayerActor(player.mainActorUID);
 	}
 
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
 	const AccountData* account = playerAccountData[clientID];
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const ClassType classType = GetGameXmlContent().masters[leaderMasterID].classType;
+	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
+	ASSERT((i32)classType == leaderMasterContentID+1);
 
 	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
 	actor.eye = eye;
 	actor.clientID = clientID; // TODO: this is not useful right now
-	playerActorUID[clientID] = actor.UID;
+	player.mainActorUID = actor.UID;
 
-	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
+	replication->SendPlayerSetLeaderMaster(clientID, player.mainActorUID, classType, skinIndex);
 }
 
-void Game3v3::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
+	ASSERT(playerMap[clientID] != playerList.end());
+	const Player& player = *playerMap[clientID];
+
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (10/09/2020)
-	if(replication->GetLocalActorID(clientID, playerActorUID[clientID]) != characterID) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
+	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor);
 
 	// TODO: check hacking
@@ -223,13 +238,16 @@ bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	if(!Config().devMode) return false; // don't allow command when dev mode is not enabled
 
+	ASSERT(playerMap[clientID] != playerList.end());
+	const Player& player = *playerMap[clientID];
+
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 
 	if(msg[0] == L'!') {
 		msg++;
 
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			World::ActorCore* playerActor = world.FindPlayerActor(player.mainActorUID); // TODO: find currently active actor
 			ASSERT(playerActor);
 
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");

@@ -190,6 +190,13 @@ struct ConstBuffer
 	{
 		return ((cursor - data) + len <= size);
 	}
+
+	inline wchar* ReadWideStringObj(u16* outLen = nullptr)
+	{
+		u16 len = Read<u16>();
+		if(outLen) *outLen = len;
+		return (wchar*)ReadRaw(len * sizeof(wchar));
+	}
 };
 
 inline bool StringEquals(const char* str1, const char* str2)

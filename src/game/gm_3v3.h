@@ -22,7 +22,8 @@ struct Game3v3
 	struct Player
 	{
 		const i32 clientID;
-		bool isJukeboxActorReplicated = false;
+		ActorUID mainActorUID = ActorUID::INVALID;
+		ActorUID subActorUID = ActorUID::INVALID;
 
 		Player(): clientID(-1) {}
 
@@ -35,9 +36,9 @@ struct Game3v3
 	World world;
 	Replication* replication;
 
-	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
-	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerClientIDMap;
+	typedef decltype(playerList) TypePlayerList; // just so it plays well with my tools...
+	eastl::array<TypePlayerList::iterator,MAX_PLAYERS> playerMap;
 
 	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
 
@@ -51,12 +52,12 @@ struct Game3v3
 	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
 	void OnPlayerDisconnect(i32 clientID);
 	void OnPlayerReadyToLoad(i32 clientID);
-	void OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID);
-	void OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
+	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
-	void OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
+	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);

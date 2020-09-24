@@ -165,7 +165,7 @@ struct Replication
 	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
 	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
-	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex);
+	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
@@ -178,7 +178,7 @@ struct Replication
 	void EventClientDisconnect(i32 clientID);
 
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
-	ActorUID GetActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
+	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);

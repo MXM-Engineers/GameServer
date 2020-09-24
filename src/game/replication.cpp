@@ -1,5 +1,6 @@
 #include "replication.h"
 #include <common/protocol.h>
+#include <common/packet_serialize.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EAStdC/EAString.h>
@@ -387,7 +388,8 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 	SendPacket(clientID, cityMapInfo);
 
 	/*
-	if(stageType == StageType::INGAME) {
+	// SN_InitIngameModeInfo
+	{
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
@@ -407,6 +409,22 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 		SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
 	}
 	*/
+
+	// SN_WeaponState
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>((LocalActorID)21035); // ownerID
+		packet.Write<i32>(131135011); // weaponID
+		packet.Write<i32>(7); // state
+		packet.Write<u8>(100); // chargeLevel
+		packet.Write<u8>(0); // firingCombo
+		packet.Write<i32>(0); // result
+
+		LOG("[client%03d] Server :: SN_WeaponState :: ", clientID);
+		SendPacketData(clientID, Sv::SN_WeaponState::NET_ID, packet.size, packet.data);
+	}
 
 	playerState[clientID] = PlayerState::IN_GAME;
 }
@@ -436,9 +454,9 @@ void Replication::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureInd
 	SendPacket(clientID, info);
 }
 
-void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, i32 leaderMasterID, SkinIndex skinIndex)
+void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex)
 {
-	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + leaderMasterID);
+	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
 
 	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
@@ -1013,7 +1031,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		i32 masterProfileID = 0;
 		foreach(it, content.masters) {
 			Sv::SN_ProfileCharacters::Character chara;
-			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + masterProfileID);
+			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
 			chara.creatureIndex = it->ID;
 			chara.skillShot1 = it->skillIDs[0];
 			chara.skillShot2 = it->skillIDs[1];
@@ -1034,36 +1052,26 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
 	}
 
-	// TODO: send weapons
-	/*
 	// SN_ProfileWeapons
 	{
 		u8 sendData[2048];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(3); // weaponList_count
+		packet.Write<u16>(2); // weaponList_count
 
 		Sv::SN_ProfileWeapons::Weapon weap;
-		weap.characterID = LocalActorID::FIRST_SELF_MASTER;
+		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 35);
 		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
+		weap.weaponIndex = 131135011;
+		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
 		packet.Write(weap);
 
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 1);
+		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 3);
 		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
-
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 2);
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
+		weap.weaponIndex = 131103011;
+		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
 		packet.Write(weap);
@@ -1071,8 +1079,6 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
 	}
-	*/
-
 
 	// SN_ProfileMasterGears
 	{
@@ -1110,15 +1116,65 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 
 	// SN_ProfileSkills
 	{
-		u8 sendData[128];
+		u8 sendData[8192];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(1); // packetNum
-		packet.Write<u16>(0); // skills_count
+		packet.Write<u8>(1); // packetNum
 
-		LOG("[client%03d] Server :: SN_ProfileSkills :: ", clientID);
+		i32 skillCount = 0;
+		foreach(it, content.masters) {
+			if(it->classType != (ClassType)3 && it->classType != (ClassType)35) continue;
+
+			foreach(skill, it->skillIDs) {
+				skillCount++;
+			}
+		}
+
+		packet.Write<u16>(skillCount); // skills_count
+
+		foreach(it, content.masters) {
+			if(it->classType != (ClassType)3 && it->classType != (ClassType)35) continue;
+
+			foreach(skill, it->skillIDs) {
+				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
+				packet.Write<SkillID>(*skill);
+				packet.Write<u8>(1); // isUnlocked
+				packet.Write<u8>(1); // isActivated
+				packet.Write<u16>(0); // properties_count
+			}
+		}
+
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ProfileSkills>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_ProfileSkills::NET_ID, packet.size, packet.data);
 	}
+
+	// SN_ProfileMasterGears
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(1); // masterGears_count
+
+		packet.Write<u8>(1); // masterGearNo
+		packet.WriteStringObj(L""); // name
+		packet.Write<u16>(6); // slots_count
+		packet.Write<i32>(-1); // gearType
+		packet.Write<i32>(0); // gearItemID
+		packet.Write<i32>(-1); // gearType
+		packet.Write<i32>(0); // gearItemID
+		packet.Write<i32>(-1); // gearType
+		packet.Write<i32>(0); // gearItemID
+		packet.Write<i32>(-1); // gearType
+		packet.Write<i32>(0); // gearItemID
+		packet.Write<i32>(-1); // gearType
+		packet.Write<i32>(0); // gearItemID
+		packet.Write<i32>(80); // gearType
+		packet.Write<i32>(1073741825); // gearItemID
+
+		LOG("[client%03d] Server :: SN_ProfileMasterGears :: ", clientID);
+		SendPacketData(clientID, Sv::SN_ProfileMasterGears::NET_ID, packet.size, packet.data);
+	}
+
 
 	// SN_AccountInfo
 	{
@@ -1133,8 +1189,8 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		packet.Write<i32>(320080005); // displayTitlteIndex
 		packet.Write<i32>(320080005); // statTitleIndex
 #else // disable title
-		packet.Write<i32>(0); // displayTitlteIndex
-		packet.Write<i32>(0); // statTitleIndex
+		packet.Write<i32>(-1); // displayTitlteIndex
+		packet.Write<i32>(-1); // statTitleIndex
 #endif
 		packet.Write<i32>(1); // warehouseLineCount
 		packet.Write<i32>(-1); // tutorialState
@@ -1145,6 +1201,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		SendPacketData(clientID, Sv::SN_AccountInfo::NET_ID, packet.size, packet.data);
 	}
 
+	/*
 	// SN_AccountExtraInfo
 	{
 		u8 sendData[128];
@@ -1157,6 +1214,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		LOG("[client%03d] Server :: SN_AccountExtraInfo :: ", clientID);
 		SendPacketData(clientID, Sv::SN_AccountExtraInfo::NET_ID, packet.size, packet.data);
 	}
+	*/
 
 	// SN_AccountEquipmentList
 	{
@@ -1203,7 +1261,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		packet.Write<i32>(180350030); // currentSkillSlot2
 		packet.Write<i32>(180350002); // shirkSkillSlot
 
-		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSkillSlot>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
 	}
 
@@ -1212,14 +1270,14 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		u8 sendData[1024];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 35)); // characterID
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 3)); // characterID
 
 		auto sizuIt = content.masterClassMap.find(content.strHash("CLASS_TYPE_ASSASSIN"));
 		ASSERT(sizuIt != content.masterClassMap.end());
-		GameXmlContent::Master& masterLua = *sizuIt->second;
+		GameXmlContent::Master& masterSizu = *sizuIt->second;
 
-		packet.Write<u16>(masterLua.skillIDs.size()); // slotList_count
-		foreach(it, masterLua.skillIDs) {
+		packet.Write<u16>(masterSizu.skillIDs.size()); // slotList_count
+		foreach(it, masterSizu.skillIDs) {
 			packet.Write<SkillID>(*it); // skillIndex
 			packet.Write<i32>(0); // coolTime
 			packet.Write<u8>(1); // unlocked
@@ -1234,7 +1292,7 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		packet.Write<i32>(180030030); // currentSkillSlot2
 		packet.Write<i32>(180030002); // shirkSkillSlot
 
-		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSkillSlot>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
 	}
 
@@ -1311,7 +1369,7 @@ LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID)
 	return LocalActorID::INVALID;
 }
 
-ActorUID Replication::GetActorUID(i32 clientID, LocalActorID localActorID)
+ActorUID Replication::GetWorldActorUID(i32 clientID, LocalActorID localActorID)
 {
 	// TODO: second map, for this reverse lookup
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
@@ -1775,6 +1833,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 
 	const GameXmlContent& content = GetGameXmlContent();
 
+
 	// SN_PlayerSkillSlot
 	{
 		u8 sendData[1024];
@@ -1805,6 +1864,38 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: actorUID=%d(%d)", clientID, actor.actorUID, localActorID);
 		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
 	}
+
+	// SN_PlayerSkillSlot
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 3)); // characterID
+
+		auto sizuIt = content.masterClassMap.find(content.strHash("CLASS_TYPE_ASSASSIN"));
+		ASSERT(sizuIt != content.masterClassMap.end());
+		GameXmlContent::Master& masterSizu = *sizuIt->second;
+
+		packet.Write<u16>(masterSizu.skillIDs.size()); // slotList_count
+		foreach(it, masterSizu.skillIDs) {
+			packet.Write<SkillID>(*it); // skillIndex
+			packet.Write<i32>(0); // coolTime
+			packet.Write<u8>(1); // unlocked
+			packet.Write<u16>(0); // propList_count
+			packet.Write<u8>(1); // isUnlocked
+			packet.Write<u8>(1); // isActivated
+		}
+
+		packet.Write<i32>(-1); // stageSkillIndex1
+		packet.Write<i32>(-1); // stageSkillIndex2
+		packet.Write<i32>(180030020); // currentSkillSlot1
+		packet.Write<i32>(180030030); // currentSkillSlot2
+		packet.Write<i32>(180030002); // shirkSkillSlot
+
+		LOG("[client%03d] Server :: SN_PlayerSkillSlot :: ", clientID);
+		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+	}
+
 
 	// SN_GameCreateSubActor
 	{

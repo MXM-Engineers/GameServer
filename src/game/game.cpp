@@ -140,7 +140,7 @@ void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const 
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(playerActorUID[clientID] != replication->GetActorUID(clientID, characterID)) {
+	if(playerActorUID[clientID] != replication->GetWorldActorUID(clientID, characterID)) {
 		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
 		return;
 	}
@@ -196,7 +196,7 @@ void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar*
 
 void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
-	const i32 leaderMasterID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER;
+	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
 	// select a spawn point at random
 	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
@@ -220,7 +220,8 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	const AccountData* account = playerAccountData[clientID];
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const ClassType classType = GetGameXmlContent().masters[leaderMasterID].classType;
+	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
+	ASSERT((i32)classType == leaderMasterContentID+1);
 
 	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
@@ -229,7 +230,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
-	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], leaderMasterID, skinIndex);
+	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
 }
 
 void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)

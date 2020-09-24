@@ -1464,6 +1464,18 @@ class ServerSerializer:
         print('    }')
         print('}')
 
+    def serialize_62365(netid, data):
+        p = common.PacketReader(data)
+
+        print('SN_WeaponState {')
+        print('    ownerID=%d' % p.read_i32())
+        print('    weaponID=%d' % p.read_i32())
+        print('    state=%d' % p.read_i32())
+        print('    chargeLevel=%d' % p.read_u8())
+        print('    firingCombo=%g' % p.read_u8())
+        print('    result=%g' % p.read_i32())
+        print('}')
+
     def serialize_62390(netid, data):
         p = common.PacketReader(data)
 
@@ -1617,6 +1629,7 @@ class ServerSerializer:
         print('    activeCreatureIndex=%d' % p.read_i32())
         print('    inactiveCreatureIndex=%d' % p.read_i32())
         print('    isSpectator=%d' % p.read_u8())
+        print('}')
 
     def serialize_62455(netid, data):
         p = common.PacketReader(data)

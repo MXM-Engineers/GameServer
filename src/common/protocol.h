@@ -8,7 +8,7 @@ enum class LocalActorID: u32
 
 	FIRST_NPC = 5000,
 
-	FIRST_SELF_MASTER = 21001, // First master
+	FIRST_SELF_MASTER = 21000, // First master
 	// Every master, in order
 	LAST_SELF_MASTER = 21500, // Last master possible. 500 should be enough :)
 	FIRST_OTHER_PLAYER = 21501
@@ -1055,7 +1055,7 @@ struct SN_ProfileSkills
 
 	struct Skill
 	{
-		i32 characterID;
+		LocalActorID characterID;
 		i32 skillIndex;
 		u8 isUnlocked;
 		u8 isActivated;
@@ -1514,6 +1514,21 @@ struct SN_PlayerSyncActionStateOnly
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerSyncActionStateOnly, 57);
+
+PUSH_PACKED
+struct SN_WeaponState
+{
+	enum { NET_ID = 62365 };
+
+	LocalActorID ownerID;
+	i32 weaponID;
+	i32 state;
+	u8 chargeLevel;
+	u8 firingCombo;
+	i32 result;
+};
+POP_PACKED
+ASSERT_SIZE(SN_WeaponState, 18);
 
 struct SN_ProfileCharacterSkinList
 {

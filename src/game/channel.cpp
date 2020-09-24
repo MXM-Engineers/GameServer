@@ -170,7 +170,14 @@ void Channel::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& he
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
 	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
-	game.OnPlayerGetCharacterInfo(clientID, req.characterID);
+
+	ActorUID actorUID = replication.GetWorldActorUID(clientID, req.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%d)", req.characterID);
+		return;
+	}
+
+	game.OnPlayerGetCharacterInfo(clientID, actorUID);
 }
 
 void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -178,7 +185,13 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
 	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
-	game.OnPlayerUpdatePosition(clientID, update.characterID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%d)", update.characterID);
+		return;
+	}
+
+	game.OnPlayerUpdatePosition(clientID, actorUID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
 
 void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -222,7 +235,13 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 	LOG("	upperRotate=%g", sync.upperRotate);
 	LOG("}");
 
-	game.OnPlayerSyncActionState(clientID, sync.characterID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
+	ActorUID actorUID = replication.GetWorldActorUID(clientID, sync.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%d)", sync.characterID);
+		return;
+	}
+
+	game.OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 
 void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

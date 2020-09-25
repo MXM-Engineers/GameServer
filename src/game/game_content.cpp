@@ -194,11 +194,11 @@ bool GameXmlContent::LoadMapList()
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
 		
 		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
-		if (strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
+		if (EA::StdC::Strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
 		{
 			mapList.mapType = MAP_CITY;
 		}
-		else if (strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
+		else if (EA::StdC::Strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
 		{
 			const char* gameSubModeTypeXml;
 

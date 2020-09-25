@@ -57,6 +57,140 @@ const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetData, cons
 }
 
 template<>
+const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GameFieldReady(%d, %d) :: {", Sv::SN_GameFieldReady::NET_ID, packetSize);
+	SER("	gameID=%d", buff.Read<i32>());
+	SER("	gameType=%d", buff.Read<i32>());
+	SER("	areaIndex=%d", buff.Read<i32>());
+	SER("	stageIndex=%d", buff.Read<i32>());
+	SER("	gameDefinitionType=%d", buff.Read<i32>());
+	SER("	initPlayerCount=%d", buff.Read<u8>());
+	SER("	canEscape=%d", buff.Read<u8>());
+	SER("	isTrespass=%d", buff.Read<u8>());
+	SER("	isSpectator=%d", buff.Read<u8>());
+
+	const u16 ingameUsers_len = buff.Read<u16>();
+	SER("	IngameUsers(%d)=[", ingameUsers_len);
+
+	for(int i = 0; i < ingameUsers_len; i++) {
+		SER("	{");
+		SER("		userID=%d", buff.Read<i32>());
+		SER("		nick='%S'", buff.ReadWideStringObj().data());
+		SER("		team=%d", buff.Read<u8>());
+		SER("		isBot=%d", buff.Read<u8>());
+		SER("	},");
+	}
+
+	const u16 ingamePlayers_len = buff.Read<u16>();
+	SER("	IngamePlayers(%d)=[", ingamePlayers_len);
+
+	for(int i = 0; i < ingamePlayers_len; i++) {
+		SER("	{");
+		SER("		userID=%d", buff.Read<i32>());
+		SER("		mainCreatureIndex=%d", buff.Read<CreatureIndex>());
+		SER("		mainSkinIndex=%d", buff.Read<SkinIndex>());
+		SER("		mainSkillIndex1=%d", buff.Read<SkillID>());
+		SER("		mainSkillIndex2=%d", buff.Read<SkillID>());
+		SER("		subCreatureIndex=%d", buff.Read<CreatureIndex>());
+		SER("		subSkinIndex1=%d", buff.Read<SkinIndex>());
+		SER("		subSkillIndex1=%d", buff.Read<SkillID>());
+		SER("		subSkillIndex2=%d", buff.Read<SkillID>());
+		SER("		stageSkillIndex1=%d", buff.Read<SkillID>());
+		SER("		stageSkillIndex2=%d", buff.Read<SkillID>());
+		SER("		supportKitIndex=%d", buff.Read<i32>());
+		SER("		isBot=%d", buff.Read<u8>());
+		SER("	},");
+	}
+
+	const u16 ingameGuilds_len = buff.Read<u16>();
+	SER("	IngameGuilds(%d)=[", ingameGuilds_len);
+
+	for(int i = 0; i < ingameGuilds_len; i++) {
+		SER("	{");
+		SER("		teamType=%d", buff.Read<u8>());
+		SER("		guildName='%S'", buff.ReadWideStringObj().data());
+		SER("		guildTag='%S'", buff.ReadWideStringObj().data());
+		SER("		guildEmblemIndex=%d", buff.Read<i32>());
+		SER("		guildPvpRankNo=%d", buff.Read<i32>());
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("	surrenderAbleTime=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ProfileCharacters(%d, %d) :: {", Sv::SN_ProfileCharacters::NET_ID, packetSize);
+
+	const u16 count = buff.Read<u16>();
+	SER("	characters(%d)=[", count);
+
+	for(int i = 0; i < count; i++) {
+		const Sv::SN_ProfileCharacters::Character chara = buff.Read<Sv::SN_ProfileCharacters::Character>();
+		SER("	{");
+		SER("		characterID=%d", chara.characterID);
+		SER("		creatureIndex=%d", chara.creatureIndex);
+		SER("		skillShot1=%d", chara.skillShot1);
+		SER("		skillShot2=%d", chara.skillShot2);
+		SER("		classType=%d", chara.classType);
+		SER("		x=%d", chara.x);
+		SER("		y=%d", chara.y);
+		SER("		z=%d", chara.z);
+		SER("		characterType=%d", chara.characterType);
+		SER("		skinIndex=%d", chara.skinIndex);
+		SER("		weaponIndex=%d", chara.weaponIndex);
+		SER("		masterGearNo=%d", chara.masterGearNo);
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+const char* PacketSerialize<Sv::SN_ProfileWeapons>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ProfileWeapons(%d, %d) :: {", Sv::SN_ProfileWeapons::NET_ID, packetSize);
+
+	const u16 count = buff.Read<u16>();
+	SER("	weapons(%d)=[", count);
+
+	for(int i = 0; i < count; i++) {
+		const Sv::SN_ProfileWeapons::Weapon weap = buff.Read<Sv::SN_ProfileWeapons::Weapon>();
+		SER("	{");
+		SER("		characterID=%d", weap.characterID);
+		SER("		weaponType=%d", weap.weaponType);
+		SER("		weaponIndex=%d", weap.weaponIndex);
+		SER("		grade=%d", weap.grade);
+		SER("		isUnlocked=%d", weap.isUnlocked);
+		SER("		isActivated=%d", weap.isActivated);
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

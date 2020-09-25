@@ -48,6 +48,8 @@ enum class WeaponIndex: i32
 enum class ClassType: i32
 {
 	NONE = -1,
+	SIZUKA = 3,
+	LUA = 35,
 };
 
 enum class SkillID: i32
@@ -706,6 +708,64 @@ ASSERT_SIZE(SN_LobbyStartGame, 4);
 struct SN_GameFieldReady
 {
 	enum { NET_ID = 62072 };
+
+	struct User
+	{
+		i32 userID;
+		u16 nick_len;
+		wchar nick[1];
+		u8 team;
+		u8 isBot;
+	};
+
+	PUSH_PACKED
+	struct Player
+	{
+		i32 userID;
+		CreatureIndex mainCreatureIndex;
+		SkinIndex mainSkinIndex;
+		SkillID mainSkillIndex1;
+		SkillID mainSkillIndex2;
+		CreatureIndex subCreatureIndex;
+		SkinIndex subSkinIndex1;
+		SkillID subSkillIndex1;
+		SkillID subSkillIndex2;
+		SkillID stageSkillIndex1;
+		SkillID stageSkillIndex2;
+		i32 supportKitIndex;
+		u8 isBot;
+	};
+	POP_PACKED
+
+	struct Guild
+	{
+		u8 teamType;
+		u16 guildName_len;
+		wchar guildName[1];
+		u16 guildTag_len;
+		wchar guildTag[1];
+		i32 guildEmblemIndex;
+		i32 guildPvpRankNo;
+	};
+
+	i32 gameID;
+	i32 gameType;
+	i32 areaIndex;
+	i32 stageIndex;
+	i32 gameDefinitionType;
+	u8 initPlayerCount;
+	u8 canEscape;
+	u8 isTrespass;
+	u8 isSpectator;
+
+	u16 ingameUsers_len;
+	User IngameUsers[1];
+	u16 ingamePlayers_len;
+	User ingamePlayers[1];
+	u16 ingameGuilds_len;
+	User IngameGuilds[1];
+
+	i32 surrenderAbleTime;
 };
 
 struct SA_LoadingComplete

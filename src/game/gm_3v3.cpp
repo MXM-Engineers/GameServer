@@ -187,6 +187,7 @@ void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 		eye = actor->eye;
 
 		world.DestroyPlayerActor(player.mainActorUID);
+		world.DestroyPlayerActor(player.subActorUID);
 	}
 
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
@@ -196,14 +197,26 @@ void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
 	ASSERT((i32)classType == leaderMasterContentID+1);
 
-	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
-	actor.pos = pos;
-	actor.dir = dir;
-	actor.eye = eye;
-	actor.clientID = clientID; // TODO: this is not useful right now
-	player.mainActorUID = actor.UID;
+	World::ActorPlayer& main = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
+	main.pos = pos;
+	main.dir = dir;
+	main.eye = eye;
+	main.clientID = clientID; // TODO: this is not useful right now
+	player.mainActorUID = main.UID;
+
+	// spawn sub actor as well
+	ClassType subClassType = ClassType::SIZUKA;
+	World::ActorPlayer& sub = world.SpawnPlayerActor(clientID, subClassType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
+	sub.pos = pos;
+	sub.dir = dir;
+	sub.eye = eye;
+	sub.clientID = clientID; // TODO: this is not useful right now
+	player.subActorUID = sub.UID;
 
 	replication->SendPlayerSetLeaderMaster(clientID, player.mainActorUID, classType, skinIndex);
+
+	// force LocalActorID for sub actor as well
+	replication->PlayerSetSubActorUID(clientID, player.subActorUID, subClassType);
 }
 
 void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)

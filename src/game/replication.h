@@ -177,6 +177,8 @@ struct Replication
 
 	void EventClientDisconnect(i32 clientID);
 
+	void PlayerSetSubActorUID(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
+
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
 

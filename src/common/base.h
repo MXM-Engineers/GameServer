@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
+#include <EASTL/fixed_string.h>
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
@@ -191,11 +192,11 @@ struct ConstBuffer
 		return ((cursor - data) + len <= size);
 	}
 
-	inline wchar* ReadWideStringObj(u16* outLen = nullptr)
+	inline eastl::fixed_string<wchar,256> ReadWideStringObj(u16* outLen = nullptr)
 	{
 		u16 len = Read<u16>();
 		if(outLen) *outLen = len;
-		return (wchar*)ReadRaw(len * sizeof(wchar));
+		return eastl::fixed_string<wchar,256>((wchar*)ReadRaw(len * sizeof(wchar)), len);
 	}
 };
 

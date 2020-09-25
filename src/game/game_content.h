@@ -1,5 +1,7 @@
 #pragma once
+#include "core.h"
 #include <common/protocol.h>
+#include <common/utils.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -38,6 +40,14 @@ struct GameXmlContent
 		eastl::fixed_vector<Spawn,512> spawns;
 	};
 
+	struct MapList
+	{
+		i32 index;
+		MapType mapType;
+		GameSubModeType gameSubModeType;
+		eastl::fixed_string<char, 256> levelFile;
+	};
+
 	struct Song
 	{
 		SongID ID;
@@ -50,18 +60,22 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
+	eastl::fixed_vector<MapList, 500, false> maplists;
 
-	Map mapLobbyNormal;
+	Map mapLobby;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
-	bool LoadLobbyNormal();
+	bool LoadMapList();
+	bool LoadMapByID(i32 index);
+	bool LoadLobby(i32 index);
 	bool LoadJukeboxSongs();
 	bool Load();
 
+	const MapList* FindMapListByID(i32 index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
 };
 

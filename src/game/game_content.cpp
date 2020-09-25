@@ -208,51 +208,51 @@ bool GameXmlContent::LoadMapList()
 			{
 				// training room doesn't have a gamesubmode
 			}
-			else if (strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_DEATH_MATCH_NORMAL;
 			}
-			else if (strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_CORE;
 			}
-			else if (strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_BUSH;
 			}
-			else if (strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_GOT_AUTHENTIC;
 			}
-			else if (strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
 			}
-			else if (strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
 			}
-			else if (strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_GOT_FIRE_POWER;
 			}
-			else if (strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
 			}
-			else if (strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_RUN;
 			}
-			else if (strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_SURVIVAL;
 			}
-			else if (strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_TUTORIAL;
 			}
-			else if (strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
 			{
 				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_NORMAL;
 			}

@@ -420,7 +420,7 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 		packet.Write<i32>(7); // state
 		packet.Write<u8>(100); // chargeLevel
 		packet.Write<u8>(0); // firingCombo
-		packet.Write<i32>(0); // result
+		packet.Write<i32>(-1); // result
 
 		LOG("[client%03d] Server :: SN_WeaponState :: ", clientID);
 		SendPacketData(clientID, Sv::SN_WeaponState::NET_ID, packet.size, packet.data);

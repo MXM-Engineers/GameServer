@@ -1,6 +1,7 @@
 #include "config.h"
 #include <EASTL/fixed_string.h>
 #include <EAStdC/EASprintf.h>
+#include <EAStdC/EAString.h>
 
 bool CConfig::ParseLine(const char* line)
 {

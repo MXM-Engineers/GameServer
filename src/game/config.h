@@ -1,5 +1,7 @@
 #pragma once
 #include <common/base.h>
+#include <EAStdC/EAString.h>
+#include <common/utils.h>
 
 struct CConfig
 {

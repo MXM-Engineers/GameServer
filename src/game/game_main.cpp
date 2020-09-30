@@ -3,6 +3,7 @@
 #include "game_content.h"
 #include "config.h"
 #include <common/platform.h>
+#include <common/utils.h>
 
 Server* g_Server = nullptr;
 
@@ -25,6 +26,31 @@ int main(int argc, char** argv)
 	// TODO: linux thread affinity (sched_setaffinity)
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << (i32)CoreAffinity::MAIN);
 
+	// Todo: improve this
+	// Parse command line arguments
+	bool argumentC = false;
+	Path gameConfigFile;
+	for (int i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '-')
+		{
+			if (argv[i][1] == 'c')
+			{
+				if (i + 1 <= argc)
+				{
+					argumentC = true;
+					eastl::DecodePart(&argv[i+1], argv[i + 1] + EA::StdC::Strlen(argv[i + 1]), gameConfigFile.data(), gameConfigFile.data() + sizeof(gameConfigFile));
+				}
+				else
+				{
+					LOG("[ERROR(ArgumentParser): No path specified");
+				}
+			}
+		}
+	}
+	if (!argumentC)
+
+	
 	LoadConfig();
 	Config().Print();
 

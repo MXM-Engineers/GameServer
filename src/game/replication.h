@@ -23,11 +23,12 @@ struct Replication
 	template<ActorType TYPE_>
 	struct Actor
 	{
-		static const ActorType TYPE = TYPE_;
 		ActorUID actorUID;
 		CreatureIndex docID;
 		Vec3 pos;
 		Vec3 dir;
+
+		inline ActorType Type() const { return TYPE_; }
 	};
 
 	struct ActorPlayer: Actor<ActorType::PLAYER>

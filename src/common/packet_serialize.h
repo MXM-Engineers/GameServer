@@ -23,7 +23,23 @@ const char* PacketSerialize(const void* packetData, const i32 packetSize)
 }
 
 template<>
-const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_FirstHello(%d, %d) :: {", Cl::CQ_FirstHello::NET_ID, packetSize);
+	SER("	dwProtocolCRC=%x", buff.Read<u32>());
+	SER("	dwErrorCRC=%x", buff.Read<u32>());
+	SER("	version=%x", buff.Read<u32>());
+	SER("	unknown=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
@@ -57,7 +73,7 @@ const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetData, cons
 }
 
 template<>
-const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
@@ -127,7 +143,7 @@ const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData, const
 }
 
 template<>
-const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
@@ -162,7 +178,7 @@ const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetData, co
 }
 
 template<>
-const char* PacketSerialize<Sv::SN_ProfileWeapons>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<Sv::SN_ProfileWeapons>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
@@ -191,7 +207,7 @@ const char* PacketSerialize<Sv::SN_ProfileWeapons>(const void* packetData, const
 }
 
 template<>
-const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);

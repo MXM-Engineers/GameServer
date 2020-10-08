@@ -13,7 +13,7 @@ class ClientSerializer:
         print('CQ_FirstHello {')
         print('    dwProtocolCRC=%#x' % p.read_u32())
         print('    dwErrorCRC=%#x' % p.read_u32())
-        print('    version=%d' % p.read_u32())
+        print('    version=%#x' % p.read_u32())
         print('    unknown=%d' % p.read_u8())
         print('}')
         

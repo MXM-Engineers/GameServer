@@ -6,6 +6,8 @@ from mxm_packets.cl import *
 from mxm_packets.sv import *
 from mxm_packets.sv_name import *
 
+ServerEncryptedIDs = [ 0xf398, 0xf399, 0xf39C, 0xf39D, 0xf422, 0xf3B0, 0xf3AE, 0xf3AF, 0xf3AC, 0xf3A7, 0xf3A3, 0xf3A4, 0xf3A6, 0xf3A0, 0xf3A1, 0xf3A5, 0xf3AB, 0xf3A9, 0xf3E4, 0xf3B1, 0xf3B2, 0xf3B5, 0xf3B4, 0xf31B, 0xf31C, 0xf316, 0xf317, 0xf318, 0xf434,  ]
+
 if len(sys.argv) < 3:
     print('Usage: wireshark_to_raw.py capture_file "output/dir"')
     exit(1)
@@ -63,6 +65,8 @@ class PacketSpitter:
         if self.prefix == 'cl':
             packet_serialize_cl(netid, self.buff[:size])
         elif self.prefix == 'sv':
+            if netid in ServerEncryptedIDs:
+                print("!Encrypted")
             packet_serialize_sv(netid, self.buff[:size])
 
         f = open(os.path.join(output_dir, '%d_%s_%d.raw' % (self.order, self.prefix, netid)), 'wb')

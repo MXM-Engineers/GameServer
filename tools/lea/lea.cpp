@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <string.h>
 
-#error
+//#error
 // TODO:
 // - Make this a dll
 // - Generate the key, and pass it for each decryption (as the drcryption will alter it so we have to keep the state in Python)
@@ -139,6 +139,53 @@ union Filter
 		printf("\n");
 	}
 
+	void Decrypt(u32* data, i32 dataSize)
+	{
+		u32 xor4[4];
+
+		if(dataSize >= 16) {
+			const i32 d16 = dataSize/16;
+
+			for(i32 i = 0; i < d16; i++) {
+				MakeXor4(xor4);
+
+				data[0] ^= xor4[0];
+				data[1] ^= xor4[1];
+				data[2] ^= xor4[2];
+				data[3] ^= xor4[3];
+				data += 4;
+
+				UpdateKey();
+			}
+
+			dataSize -= d16 * 16;
+		}
+
+		if(dataSize > 0) {
+			MakeXor4(xor4);
+
+			i32 i = 0;
+			if(dataSize > 4) {
+				const i32 d4 = dataSize/4;
+
+				for(; i < d4; i++) {
+					data[0] ^= xor4[i % 4];
+					data++;
+				}
+
+				dataSize -= d4 * 4;
+			}
+
+			if(dataSize > 0) {
+				u32 d = 0;
+				memmove(&d, data, dataSize);
+				d ^= xor4[i % 4];
+				memmove(data, &d, dataSize);
+			}
+		}
+	}
+
+private:
 	void UpdateKey()
 	{
 		i32 i = 16;
@@ -365,7 +412,6 @@ union Filter
 		out[2] = out3;
 	}
 
-private:
 	void GenerateBlock(u32 *out, const Key16 *key, u32 keySize)
 	{
 		i32 iVar1;
@@ -687,11 +733,9 @@ private:
 
 int main(int argc, char** argv)
 {
-	ASSERT(argc == 3);
+	ASSERT(argc == 2);
 
-	const char* filePath = argv[1];
-	const char* ipPortString = argv[2];
-	DBG("file = '%s'", filePath);
+	const char* ipPortString = argv[1];
 	DBG("ip:port = '%s'", ipPortString);
 
 	i32 ip[4];
@@ -709,61 +753,36 @@ int main(int argc, char** argv)
 	Filter filter(key16);
 	filter.Print();
 
-	i32 fileSize;
-	u8* fileData = fileOpenAndReadAll(filePath, &fileSize);
-	ASSERT(fileData);
+	{
+		i32 fileSize;
+		u8* fileData = fileOpenAndReadAll("test.raw", &fileSize);
+		ASSERT(fileData);
 
-	const NetHeader& header = *(NetHeader*)fileData;
-	ASSERT(fileSize == header.size);
+		const NetHeader& header = *(NetHeader*)fileData;
+		ASSERT(fileSize == header.size);
 
-	i32 dataSize = fileSize - sizeof(NetHeader);
-	u32* data = (u32*)(fileData + sizeof(NetHeader));
+		i32 dataSize = fileSize - sizeof(NetHeader);
+		u32* data = (u32*)(fileData + sizeof(NetHeader));
 
-	u32 xor4[4];
+		filter.Decrypt(data, dataSize);
 
-	if(dataSize >= 16) {
-		const i32 d16 = dataSize/16;
-
-		for(i32 i = 0; i < d16; i++) {
-			filter.MakeXor4(xor4);
-
-			data[0] ^= xor4[0];
-			data[1] ^= xor4[1];
-			data[2] ^= xor4[2];
-			data[3] ^= xor4[3];
-			data += 4;
-
-			filter.UpdateKey();
-		}
-
-		dataSize -= d16 * 16;
+		fileSaveBuff("test.decrypted", fileData, fileSize);
 	}
 
-	if(dataSize > 0) {
-		filter.MakeXor4(xor4);
+	{
+		i32 fileSize;
+		u8* fileData = fileOpenAndReadAll("test2.raw", &fileSize);
+		ASSERT(fileData);
 
-		i32 i = 0;
-		if(dataSize > 4) {
-			const i32 d4 = dataSize/4;
+		const NetHeader& header = *(NetHeader*)fileData;
+		ASSERT(fileSize == header.size);
 
-			for(; i < d4; i++) {
-				data[0] ^= xor4[i % 4];
-				data++;
-			}
+		i32 dataSize = fileSize - sizeof(NetHeader);
+		u32* data = (u32*)(fileData + sizeof(NetHeader));
 
-			dataSize -= d4 * 4;
-		}
+		filter.Decrypt(data, dataSize);
 
-		if(dataSize > 0) {
-			u32 d = 0;
-			memmove(&d, data, dataSize);
-			d ^= xor4[i % 4];
-			memmove(data, &d, dataSize);
-		}
+		fileSaveBuff("test2.decrypted", fileData, fileSize);
 	}
-
-	char writePath[256];
-	snprintf(writePath, sizeof(writePath), "%s.decrypted", filePath);
-	fileSaveBuff(writePath, fileData, fileSize);
 	return 0;
 }

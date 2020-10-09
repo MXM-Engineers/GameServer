@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
+#include <string.h>
+
+#error
+// TODO:
+// - Make this a dll
+// - Generate the key, and pass it for each decryption (as the drcryption will alter it so we have to keep the state in Python)
 
 #define LOG(fmt, ...) printf(fmt "\n", __VA_ARGS__);
 #define ASSERT(cond) assert(cond)
@@ -35,6 +41,20 @@ static u8* fileOpenAndReadAll(const char* filename, i32* pOutSize)
 	}
 
 	return nullptr;
+}
+
+
+static bool fileSaveBuff(const char* filename, const void* buff, i32 size)
+{
+	FILE* f = fopen(filename, "wb");
+	if(f) {
+		fwrite(buff, 1, size, f);
+		fclose(f);
+		return true;
+	}
+
+	LOG("Failed to save '%s'", filename);
+	return false;
 }
 
 struct NetHeader
@@ -117,6 +137,232 @@ union Filter
 			if(i % 16 == 15) printf("\n");
 		}
 		printf("\n");
+	}
+
+	void UpdateKey()
+	{
+		i32 i = 16;
+		do {
+			i--;
+			u8* keyCur = (u8*)(&s.key1) + i;
+			(*keyCur)++;
+			if(*keyCur != 0) break;
+		} while(i != 0);
+	}
+
+	void MakeXor4(u32 *out)
+	{
+		const u32* key = (u32*)&s.key1;
+		const u32* blocks = (u32*)&s.block1;
+
+		u32 out3;
+		u32 out1;
+		u32 out2;
+		u32 out4;
+		u32 uVar1;
+		u32 uVar2;
+		out1 = (key[3] ^ blocks[5]) + (blocks[4] ^ key[2]);
+		out2 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[3] ^ key[2]) + (blocks[2] ^ key[1]);
+		out3 = out1 >> 5 | out1 * 0x8000000;
+		out1 = (blocks[1] ^ key[1]) + (*blocks ^ *key);
+		out4 = out1 * 0x200 | out1 >> 0x17;
+		out1 = (blocks[10] ^ out2) + (blocks[0xb] ^ *key);
+		uVar1 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[9] ^ out2) + (blocks[8] ^ out3);
+		out2 = (blocks[7] ^ out3) + (blocks[6] ^ out4);
+		out1 = out1 >> 5 | out1 * 0x8000000;
+		out3 = (blocks[0x11] ^ out4) + (blocks[0x10] ^ uVar1);
+		uVar2 = out2 * 0x200 | out2 >> 0x17;
+		out3 = out3 >> 3 | out3 * 0x20000000;
+		out2 = (blocks[0xe] ^ out1) + (blocks[0xf] ^ uVar1);
+		out2 = out2 >> 5 | out2 * 0x8000000;
+		out1 = (blocks[0xd] ^ out1) + (blocks[0xc] ^ uVar2);
+		out4 = out1 * 0x200 | out1 >> 0x17;
+		out1 = (blocks[0x17] ^ uVar2) + (blocks[0x16] ^ out3);
+		out1 = out1 >> 3 | out1 * 0x20000000;
+		out3 = (blocks[0x15] ^ out3) + (blocks[0x14] ^ out2);
+		uVar1 = out3 >> 5 | out3 * 0x8000000;
+		out3 = (blocks[0x12] ^ out4) + (blocks[0x13] ^ out2);
+		out3 = out3 * 0x200 | out3 >> 0x17;
+		out2 = (blocks[0x1d] ^ out4) + (blocks[0x1c] ^ out1);
+		out4 = (blocks[0x1b] ^ out1) + (blocks[0x1a] ^ uVar1);
+		out2 = out2 >> 3 | out2 * 0x20000000;
+		out1 = (blocks[0x19] ^ uVar1) + (blocks[0x18] ^ out3);
+		uVar1 = out4 >> 5 | out4 * 0x8000000;
+		out1 = out1 * 0x200 | out1 >> 0x17;
+		out3 = (blocks[0x22] ^ out2) + (blocks[0x23] ^ out3);
+		out4 = out3 >> 3 | out3 * 0x20000000;
+		out3 = (blocks[0x21] ^ out2) + (blocks[0x20] ^ uVar1);
+		uVar2 = out3 >> 5 | out3 * 0x8000000;
+		out3 = (blocks[0x1f] ^ uVar1) + (blocks[0x1e] ^ out1);
+		out2 = out3 * 0x200 | out3 >> 0x17;
+		out1 = (blocks[0x29] ^ out1) + (blocks[0x28] ^ out4);
+		uVar1 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[0x26] ^ uVar2) + (blocks[0x27] ^ out4);
+		out1 = out1 >> 5 | out1 * 0x8000000;
+		out3 = (blocks[0x25] ^ uVar2) + (blocks[0x24] ^ out2);
+		out2 = (blocks[0x2f] ^ out2) + (blocks[0x2e] ^ uVar1);
+		out3 = out3 * 0x200 | out3 >> 0x17;
+		uVar2 = out2 >> 3 | out2 * 0x20000000;
+		out2 = (blocks[0x2d] ^ uVar1) + (blocks[0x2c] ^ out1);
+		out2 = out2 >> 5 | out2 * 0x8000000;
+		out1 = (blocks[0x2a] ^ out3) + (blocks[0x2b] ^ out1);
+		out4 = out1 * 0x200 | out1 >> 0x17;
+		out1 = (blocks[0x35] ^ out3) + (blocks[0x34] ^ uVar2);
+		uVar1 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[0x33] ^ uVar2) + (blocks[0x32] ^ out2);
+		out1 = out1 >> 5 | out1 * 0x8000000;
+		out3 = (blocks[0x31] ^ out2) + (blocks[0x30] ^ out4);
+		uVar2 = out3 * 0x200 | out3 >> 0x17;
+		out3 = (blocks[0x3a] ^ uVar1) + (blocks[0x3b] ^ out4);
+		out3 = out3 >> 3 | out3 * 0x20000000;
+		out2 = (blocks[0x39] ^ uVar1) + (blocks[0x38] ^ out1);
+		out4 = (blocks[0x37] ^ out1) + (blocks[0x36] ^ uVar2);
+		out2 = out2 >> 5 | out2 * 0x8000000;
+		out1 = (blocks[0x41] ^ uVar2) + (blocks[0x40] ^ out3);
+		uVar1 = out4 * 0x200 | out4 >> 0x17;
+		out1 = out1 >> 3 | out1 * 0x20000000;
+		out3 = (blocks[0x3e] ^ out2) + (blocks[0x3f] ^ out3);
+		out4 = out3 >> 5 | out3 * 0x8000000;
+		out3 = (blocks[0x3d] ^ out2) + (blocks[0x3c] ^ uVar1);
+		uVar2 = out3 * 0x200 | out3 >> 0x17;
+		out3 = (blocks[0x47] ^ uVar1) + (blocks[0x46] ^ out1);
+		out2 = out3 >> 3 | out3 * 0x20000000;
+		out1 = (blocks[0x45] ^ out1) + (blocks[0x44] ^ out4);
+		uVar1 = out1 >> 5 | out1 * 0x8000000;
+		out1 = (blocks[0x42] ^ uVar2) + (blocks[0x43] ^ out4);
+		out1 = out1 * 0x200 | out1 >> 0x17;
+		out3 = (blocks[0x4d] ^ uVar2) + (blocks[0x4c] ^ out2);
+		out4 = (blocks[0x4b] ^ out2) + (blocks[0x4a] ^ uVar1);
+		out3 = out3 >> 3 | out3 * 0x20000000;
+		out2 = (blocks[0x49] ^ uVar1) + (blocks[0x48] ^ out1);
+		uVar2 = out4 >> 5 | out4 * 0x8000000;
+		out2 = out2 * 0x200 | out2 >> 0x17;
+		out1 = (blocks[0x52] ^ out3) + (blocks[0x53] ^ out1);
+		out4 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[0x51] ^ out3) + (blocks[0x50] ^ uVar2);
+		uVar1 = out1 >> 5 | out1 * 0x8000000;
+		out1 = (blocks[0x4f] ^ uVar2) + (blocks[0x4e] ^ out2);
+		out1 = out1 * 0x200 | out1 >> 0x17;
+		out3 = (blocks[0x59] ^ out2) + (blocks[0x58] ^ out4);
+		uVar2 = out3 >> 3 | out3 * 0x20000000;
+		out3 = (blocks[0x56] ^ uVar1) + (blocks[0x57] ^ out4);
+		out3 = out3 >> 5 | out3 * 0x8000000;
+		out2 = (blocks[0x55] ^ uVar1) + (blocks[0x54] ^ out1);
+		out2 = out2 * 0x200 | out2 >> 0x17;
+		out4 = (blocks[0x5f] ^ out1) + (blocks[0x5e] ^ uVar2);
+		out1 = (blocks[0x5d] ^ uVar2) + (blocks[0x5c] ^ out3);
+		uVar1 = out4 >> 3 | out4 * 0x20000000;
+		out1 = out1 >> 5 | out1 * 0x8000000;
+		out3 = (blocks[0x5a] ^ out2) + (blocks[0x5b] ^ out3);
+		out4 = out3 * 0x200 | out3 >> 0x17;
+		out3 = (blocks[0x65] ^ out2) + (blocks[100] ^ uVar1);
+		uVar2 = out3 >> 3 | out3 * 0x20000000;
+		out3 = (blocks[99] ^ uVar1) + (blocks[0x62] ^ out1);
+		out2 = out3 >> 5 | out3 * 0x8000000;
+		out1 = (blocks[0x61] ^ out1) + (blocks[0x60] ^ out4);
+		uVar1 = out1 * 0x200 | out1 >> 0x17;
+		out1 = (blocks[0x6a] ^ uVar2) + (blocks[0x6b] ^ out4);
+		out1 = out1 >> 3 | out1 * 0x20000000;
+		out3 = (blocks[0x69] ^ uVar2) + (blocks[0x68] ^ out2);
+		out4 = (blocks[0x67] ^ out2) + (blocks[0x66] ^ uVar1);
+		out3 = out3 >> 5 | out3 * 0x8000000;
+		out2 = (blocks[0x71] ^ uVar1) + (blocks[0x70] ^ out1);
+		uVar2 = out4 * 0x200 | out4 >> 0x17;
+		out2 = out2 >> 3 | out2 * 0x20000000;
+		out1 = (blocks[0x6e] ^ out3) + (blocks[0x6f] ^ out1);
+		out4 = out1 >> 5 | out1 * 0x8000000;
+		out1 = (blocks[0x6d] ^ out3) + (blocks[0x6c] ^ uVar2);
+		uVar1 = out1 * 0x200 | out1 >> 0x17;
+		out1 = (blocks[0x77] ^ uVar2) + (blocks[0x76] ^ out2);
+		out1 = out1 >> 3 | out1 * 0x20000000;
+		out3 = (blocks[0x75] ^ out2) + (blocks[0x74] ^ out4);
+		uVar2 = out3 >> 5 | out3 * 0x8000000;
+		out3 = (blocks[0x72] ^ uVar1) + (blocks[0x73] ^ out4);
+		out3 = out3 * 0x200 | out3 >> 0x17;
+		out2 = (blocks[0x7d] ^ uVar1) + (blocks[0x7c] ^ out1);
+		out4 = (blocks[0x7b] ^ out1) + (blocks[0x7a] ^ uVar2);
+		out2 = out2 >> 3 | out2 * 0x20000000;
+		out1 = (blocks[0x79] ^ uVar2) + (blocks[0x78] ^ out3);
+		uVar1 = out4 >> 5 | out4 * 0x8000000;
+		out1 = out1 * 0x200 | out1 >> 0x17;
+		out3 = (blocks[0x82] ^ out2) + (blocks[0x83] ^ out3);
+		out4 = out3 >> 3 | out3 * 0x20000000;
+		out3 = (blocks[0x81] ^ out2) + (blocks[0x80] ^ uVar1);
+		out2 = out3 >> 5 | out3 * 0x8000000;
+		out3 = (blocks[0x7f] ^ uVar1) + (blocks[0x7e] ^ out1);
+		out3 = out3 * 0x200 | out3 >> 0x17;
+		out1 = (blocks[0x89] ^ out1) + (blocks[0x88] ^ out4);
+		uVar1 = out1 >> 3 | out1 * 0x20000000;
+		out1 = (blocks[0x86] ^ out2) + (blocks[0x87] ^ out4);
+		out1 = out1 >> 5 | out1 * 0x8000000;
+		out2 = (blocks[0x85] ^ out2) + (blocks[0x84] ^ out3);
+		out4 = out2 * 0x200 | out2 >> 0x17;
+		out3 = (blocks[0x8f] ^ out3) + (blocks[0x8e] ^ uVar1);
+		out3 = out3 >> 3 | out3 * 0x20000000;
+		out2 = (blocks[0x8d] ^ uVar1) + (blocks[0x8c] ^ out1);
+		out2 = out2 >> 5 | out2 * 0x8000000;
+		uVar1 = (blocks[0x8a] ^ out4) + (blocks[0x8b] ^ out1);
+		out1 = blocks[0xc0];
+		uVar1 = uVar1 * 0x200 | uVar1 >> 0x17;
+		if (0x18 < out1) {
+			out1 = (blocks[0x95] ^ out4) + (blocks[0x94] ^ out3);
+			out3 = (blocks[0x93] ^ out3) + (blocks[0x92] ^ out2);
+			out4 = (blocks[0x91] ^ out2) + (blocks[0x90] ^ uVar1);
+			out1 = out1 >> 3 | out1 * 0x20000000;
+			out3 = out3 >> 5 | out3 * 0x8000000;
+			out2 = (blocks[0x9a] ^ out1) + (blocks[0x9b] ^ uVar1);
+			uVar1 = out4 * 0x200 | out4 >> 0x17;
+			out4 = out2 >> 3 | out2 * 0x20000000;
+			out1 = (blocks[0x99] ^ out1) + (blocks[0x98] ^ out3);
+			uVar2 = out1 >> 5 | out1 * 0x8000000;
+			out1 = (blocks[0x97] ^ out3) + (blocks[0x96] ^ uVar1);
+			out1 = out1 * 0x200 | out1 >> 0x17;
+			out3 = (blocks[0xa1] ^ uVar1) + (blocks[0xa0] ^ out4);
+			out2 = out3 >> 3 | out3 * 0x20000000;
+			out3 = (blocks[0x9e] ^ uVar2) + (blocks[0x9f] ^ out4);
+			uVar1 = out3 >> 5 | out3 * 0x8000000;
+			out3 = (blocks[0x9d] ^ uVar2) + (blocks[0x9c] ^ out1);
+			out4 = out3 * 0x200 | out3 >> 0x17;
+			out1 = (blocks[0xa7] ^ out1) + (blocks[0xa6] ^ out2);
+			out3 = out1 >> 3 | out1 * 0x20000000;
+			out1 = (blocks[0xa5] ^ out2) + (blocks[0xa4] ^ uVar1);
+			out2 = out1 >> 5 | out1 * 0x8000000;
+			uVar1 = (blocks[0xa2] ^ out4) + (blocks[0xa3] ^ uVar1);
+			out1 = blocks[0xc0];
+			uVar1 = uVar1 * 0x200 | uVar1 >> 0x17;
+		}
+		if (0x1c < out1) {
+			out1 = (blocks[0xad] ^ out4) + (blocks[0xac] ^ out3);
+			out3 = (blocks[0xab] ^ out3) + (blocks[0xaa] ^ out2);
+			out4 = (blocks[0xa9] ^ out2) + (blocks[0xa8] ^ uVar1);
+			out1 = out1 >> 3 | out1 * 0x20000000;
+			out3 = out3 >> 5 | out3 * 0x8000000;
+			out2 = (blocks[0xb2] ^ out1) + (blocks[0xb3] ^ uVar1);
+			uVar1 = out4 * 0x200 | out4 >> 0x17;
+			out4 = out2 >> 3 | out2 * 0x20000000;
+			out1 = (blocks[0xb1] ^ out1) + (blocks[0xb0] ^ out3);
+			uVar2 = out1 >> 5 | out1 * 0x8000000;
+			out1 = (blocks[0xaf] ^ out3) + (blocks[0xae] ^ uVar1);
+			out1 = out1 * 0x200 | out1 >> 0x17;
+			out3 = (blocks[0xb9] ^ uVar1) + (blocks[0xb8] ^ out4);
+			out2 = out3 >> 3 | out3 * 0x20000000;
+			out3 = (blocks[0xb6] ^ uVar2) + (blocks[0xb7] ^ out4);
+			uVar1 = out3 >> 5 | out3 * 0x8000000;
+			out3 = (blocks[0xb5] ^ uVar2) + (blocks[0xb4] ^ out1);
+			out4 = out3 * 0x200 | out3 >> 0x17;
+			out1 = (blocks[0xbf] ^ out1) + (blocks[0xbe] ^ out2);
+			out3 = out1 >> 3 | out1 * 0x20000000;
+			out1 = (blocks[0xbd] ^ out2) + (blocks[0xbc] ^ uVar1);
+			out2 = out1 >> 5 | out1 * 0x8000000;
+			out1 = (blocks[0xba] ^ out4) + (blocks[0xbb] ^ uVar1);
+			uVar1 = out1 * 0x200 | out1 >> 0x17;
+		}
+		out[3] = out4;
+		*out = uVar1;
+		out[1] = out2;
+		out[2] = out3;
 	}
 
 private:
@@ -470,5 +716,54 @@ int main(int argc, char** argv)
 	const NetHeader& header = *(NetHeader*)fileData;
 	ASSERT(fileSize == header.size);
 
+	i32 dataSize = fileSize - sizeof(NetHeader);
+	u32* data = (u32*)(fileData + sizeof(NetHeader));
+
+	u32 xor4[4];
+
+	if(dataSize >= 16) {
+		const i32 d16 = dataSize/16;
+
+		for(i32 i = 0; i < d16; i++) {
+			filter.MakeXor4(xor4);
+
+			data[0] ^= xor4[0];
+			data[1] ^= xor4[1];
+			data[2] ^= xor4[2];
+			data[3] ^= xor4[3];
+			data += 4;
+
+			filter.UpdateKey();
+		}
+
+		dataSize -= d16 * 16;
+	}
+
+	if(dataSize > 0) {
+		filter.MakeXor4(xor4);
+
+		i32 i = 0;
+		if(dataSize > 4) {
+			const i32 d4 = dataSize/4;
+
+			for(; i < d4; i++) {
+				data[0] ^= xor4[i % 4];
+				data++;
+			}
+
+			dataSize -= d4 * 4;
+		}
+
+		if(dataSize > 0) {
+			u32 d = 0;
+			memmove(&d, data, dataSize);
+			d ^= xor4[i % 4];
+			memmove(data, &d, dataSize);
+		}
+	}
+
+	char writePath[256];
+	snprintf(writePath, sizeof(writePath), "%s.decrypted", filePath);
+	fileSaveBuff(writePath, fileData, fileSize);
 	return 0;
 }

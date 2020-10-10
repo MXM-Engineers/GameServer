@@ -8,11 +8,7 @@ def read_Vec3(p):
 
 class ServerSerializer:
 
-    
-
-    def serialize_62002(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62002(netid, p: common.PacketReader):
         print('SA_FirstHello {')
         print('    dwProtocolCRC=%#x' % p.read_u32())
         print('    dwErrorCRC=%#x' % p.read_u32())
@@ -22,16 +18,12 @@ class ServerSerializer:
         print('    tqosWorldId=%d' % p.read_u8())
         print('}')
 
-    def serialize_62005(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62005(netid, p: common.PacketReader):
         print('SA_AuthResult {')
         print('    result=%d' % p.read_i32())
         print('}')
 
-    def serialize_62006(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62006(netid, p: common.PacketReader):
         print('SN_RegionServicePolicy {')
 
         count = p.read_u16()
@@ -96,9 +88,7 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62007(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62007(netid, p: common.PacketReader):
         print('SN_StationList {')
 
         count = p.read_u16()
@@ -118,9 +108,7 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62010(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62010(netid, p: common.PacketReader):
         print('SN_DoConnectGameServer {')
         print('    dwPort=%d' % p.read_u16())
         print('    ip=[%d.%d.%d.%d]' % (p.read_u8(), p.read_u8(), p.read_u8(), p.read_u8()))
@@ -130,16 +118,12 @@ class ServerSerializer:
         print('    instantKey=%d' % p.read_i32())
         print('}')
 
-    def serialize_62018(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62018(netid, p: common.PacketReader):
         print('SA_returnToCity {')
         print('    errCode=%d' % p.read_i32())
         print('}')
 
-    def serialize_62025(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62025(netid, p: common.PacketReader):
         print('SN_GameCreateActor {')
         print('    objectID=%d' % p.read_i32())
         print('    nType=%d' % p.read_i32())
@@ -183,17 +167,13 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62026(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62026(netid, p: common.PacketReader):
         print('SN_SpawnPosForMinimap {')
         print('    objectID=%d' % p.read_i32())
         print('    p3nPos=%s' % read_Vec3(p))
         print('}')
 
-    def serialize_62028(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62028(netid, p: common.PacketReader):
         print('SN_GameCreateSubActor {')
         print('    objectID=%d' % p.read_i32())
         print('    mainEntityID=%d' % p.read_i32())
@@ -232,9 +212,7 @@ class ServerSerializer:
         print('    meshChangeActionHistory_count=%d' % p.read_u16())
         print('}')
 
-    def serialize_62031(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62031(netid, p: common.PacketReader):
         print('SN_StatusSnapshot {')
         print('    objectID=%d' % p.read_i32())
         print('    statusArray=[')
@@ -255,14 +233,10 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62033(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62033(netid, p: common.PacketReader):
         print('SQ_CityLobbyJoinCity {}')
 
-    def serialize_62048(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62048(netid, p: common.PacketReader):
         print('SN_PlayerSkillSlot {')
         print('    characterID=%d' % p.read_i32())
         print('    slots=[')
@@ -293,19 +267,13 @@ class ServerSerializer:
         print('    shirkSkillSlot=%d' % p.read_i32())
         print('}')
 
-    def serialize_62050(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62050(netid, p: common.PacketReader):
         print('SN_LoadCharacterStart {}')
 
-    def serialize_62051(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62051(netid, p: common.PacketReader):
         print('SN_ScanEnd {}')
 
-    def serialize_62052(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62052(netid, p: common.PacketReader):
         print('SN_GamePlayerSyncByInt {')
         print('    playerID=%d' % p.read_i32())
         print('    p3nPos=%s' % read_Vec3(p))
@@ -317,9 +285,7 @@ class ServerSerializer:
         print('    nActionIDX=%d' % p.read_i32())
         print('}')
 
-    def serialize_62056(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62056(netid, p: common.PacketReader):
         print('SN_UpdateStat {')
         print('    characterID=%d' % p.read_i32())
         print('    statType=%d' % p.read_i32())
@@ -328,39 +294,29 @@ class ServerSerializer:
         print('    reasonCode=%d' % p.read_i32())
         print('}')
 
-    def serialize_62057(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62057(netid, p: common.PacketReader):
         print('SN_Money {')
         print('    money=%d' % p.read_i64())
         print('    nReason=%d' % p.read_i32())
         print('}')
 
-    def serialize_62059(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62059(netid, p: common.PacketReader):
         print('SN_DestroyEntity {')
         print('    objectID=%d' % p.read_i32())
         print('}')
 
-    def serialize_62060(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62060(netid, p: common.PacketReader):
         print('SN_SetGameGvt {')
         print('    sendTime=%d' % p.read_i32())
         print('    virtualTime=%d' % p.read_i32())
         print('}')
 
-    def serialize_62061(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62061(netid, p: common.PacketReader):
         print('SN_LobbyStartGame {')
         print('    stageType=%d' % p.read_i32())
         print('}')
 
-    def serialize_62064(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62064(netid, p: common.PacketReader):
         print('SN_LoadClearedStages {')
         count = p.read_u16()
         s = ''
@@ -371,9 +327,7 @@ class ServerSerializer:
         print('    clearedStageList=[%s]' % s)
         print('}')
 
-    def serialize_62072(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62072(netid, p: common.PacketReader):
         print('SN_GameFieldReady {')
         print('    InGameID=%d' % p.read_i32())
         print('    GameType=%d' % p.read_i32())
@@ -434,18 +388,14 @@ class ServerSerializer:
         print('    surrenderAbleTime=%d' % p.read_i32())
         print('}')
 
-    def serialize_62075(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62075(netid, p: common.PacketReader):
         print('SA_GameReady {')
         print('    waitingTimeMS=%d' % p.read_i32())
         print('    serverTimestamp=%d' % p.read_i64())
         print('    readyElapsedMs=%d' % p.read_i32())
         print('}')
 
-    def serialize_62084(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62084(netid, p: common.PacketReader):
         print('SN_GamePlayerEquipWeapon {')
         print('    characterID=%d' % p.read_i32())
         print('    weaponDocIndex=%d' % p.read_i32())
@@ -453,9 +403,7 @@ class ServerSerializer:
         print('    additionnalOverHeatGaugeRatio=%d' % p.read_i32())
         print('}')
 
-    def serialize_62089(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62089(netid, p: common.PacketReader):
         print('SN_GamePlayerStock {')
         print('    playerID=%d' % p.read_i32())
         print('    name="%s"' % p.read_wstr())
@@ -470,9 +418,7 @@ class ServerSerializer:
         print('    isSubstituted=%d' % p.read_u8())
         print('}')
 
-    def serialize_62090(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62090(netid, p: common.PacketReader):
         print('SN_PlayerStateInTown {')
         print('    playerID=%d' % p.read_i32())
         print('    playerStateInTown=%d' % p.read_i8())
@@ -487,16 +433,12 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62091(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62091(netid, p: common.PacketReader):
         print('SN_CityMapInfo {')
         print('    cityMapID=%d' % p.read_i32())
         print('}')
 
-    def serialize_62097(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62097(netid, p: common.PacketReader):
         print('SN_SummaryInfoAll {')
 
         count = p.read_u16()
@@ -508,9 +450,7 @@ class ServerSerializer:
         print('    listOfFinishedSummary=[%s]' % s)
         print('}')
 
-    def serialize_62098(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62098(netid, p: common.PacketReader):
         print('SN_AvailableSullaryRewardCountList {')
 
         count = p.read_u16()
@@ -522,9 +462,7 @@ class ServerSerializer:
         print('    rewardCountList=[%s]' % s)
         print('}')
 
-    def serialize_62100(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62100(netid, p: common.PacketReader):
         print('SN_AchieveInfo {')
         print('    packetNum=%d' % p.read_u8())
         print('    achievementScore=%d' % p.read_i32())
@@ -552,9 +490,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62101(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62101(netid, p: common.PacketReader):
         print('SN_AchieveLatest {')
         print('    achieveList=[')
 
@@ -581,9 +517,7 @@ class ServerSerializer:
         print('}')
         
 
-    def serialize_62102(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62102(netid, p: common.PacketReader):
         print('SN_AchieveUpdate {')
         print('    achievementScore=%d' % p.read_i32())
         print('    achieve={')
@@ -603,9 +537,7 @@ class ServerSerializer:
         print('    date=%d' % p.read_i64())
         print('}')
 
-    def serialize_62103(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62103(netid, p: common.PacketReader):
         print('SN_MissionList {')
         print('    missions=[')
 
@@ -625,9 +557,7 @@ class ServerSerializer:
         print('    monthlyMissionRemainTimeInMs=%d' % p.read_i32())
         print('}')
 
-    def serialize_62106(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62106(netid, p: common.PacketReader):
         print('SN_AccountInfo {')
         print('    nick="%s"' % p.read_wstr())
         print('    inventoryLineCountTab0=%d' % p.read_i32())
@@ -641,9 +571,7 @@ class ServerSerializer:
         print('    badgeType=%d' % p.read_u8())
         print('}')
 
-    def serialize_62107(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62107(netid, p: common.PacketReader):
         print('SN_AccountExtraInfo {')
         print('    userGradeList=[')
 
@@ -665,9 +593,7 @@ class ServerSerializer:
         print('    activityRewaredState=%d' % p.read_u8())
         print('}')
 
-    def serialize_62109(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62109(netid, p: common.PacketReader):
         print('SN_AllCharacterBaseData {')
         print('    characters=[')
 
@@ -698,9 +624,7 @@ class ServerSerializer:
         print('    max=%d' % p.read_i32())
         print('}')
 
-    def serialize_62113(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62113(netid, p: common.PacketReader):
         print('SA_GetCharacterInfo {')
         print('    characterID=%d' % p.read_i32())
         print('    docIndex=%d' % p.read_i32())
@@ -709,17 +633,13 @@ class ServerSerializer:
         print('    maxHp=%d' % p.read_i32())
         print('}')
 
-    def serialize_62123(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62123(netid, p: common.PacketReader):
         print('SN_LeaderCharacter {')
         print('    leaderID=%d' % p.read_i32())
         print('    skinIndex=%d' % p.read_i32())
         print('}')
 
-    def serialize_62124(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62124(netid, p: common.PacketReader):
         print('SN_ProfileCharacters {')
         print('    characters=[')
         
@@ -743,9 +663,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62125(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62125(netid, p: common.PacketReader):
         print('SN_ProfileItems {')
         print('    packetNum=%d' % p.read_u8())
         print('    items=[')
@@ -774,9 +692,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62126(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62126(netid, p: common.PacketReader):
         print('SN_ProfileWeapons {')
         print('    weapons=[')
         
@@ -794,9 +710,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62127(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62127(netid, p: common.PacketReader):
         print('SN_ProfileSkills {')
         print('    packetNum=%d' % p.read_u8())
         print('    skills=[')
@@ -822,9 +736,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62128(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62128(netid, p: common.PacketReader):
         print('SN_ProfileTitles {')
 
         count = p.read_u16()
@@ -836,9 +748,7 @@ class ServerSerializer:
         print('    titles=[%s]' % s)
         print('}')
 
-    def serialize_62129(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62129(netid, p: common.PacketReader):
         print('SN_ProfileMasterGears {')
         print('    masterGears=[')
         
@@ -860,23 +770,17 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62158(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62158(netid, p: common.PacketReader):
         print('SA_EnqueueGame {')
         print('    retval=%d' % p.read_i32())
         print('}')
 
-    def serialize_62173(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62173(netid, p: common.PacketReader):
         print('SA_AreaPopularity {')
         print('    errCode=%d' % p.read_i32())
         print('}')
 
-    def serialize_62174(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62174(netid, p: common.PacketReader):
         print('SN_AreaPopularity {')
         print('    areaIndex=%d' % p.read_i32())
         print('    popularityDatas=[')
@@ -892,41 +796,31 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62175(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62175(netid, p: common.PacketReader):
         print('SA_PartyCreate {')
         print('    retval=%d' % p.read_i32())
         print('    ownerUserId=%d' % p.read_i32())
         print('    stageType=%d' % p.read_i32())
         print('}')
 
-    def serialize_62176(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62176(netid, p: common.PacketReader):
         print('SA_PartyModify {')
         print('    retval=%d' % p.read_i32())
         print('}')
 
-    def serialize_62177(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62177(netid, p: common.PacketReader):
         print('SA_PartyOptionModify {')
         print('    retval=%d' % p.read_i32())
         print('    partyOptionType=%d' % p.read_u8())
         print('    enable=%d' % p.read_u8())
         print('}')
 
-    def serialize_62191(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62191(netid, p: common.PacketReader):
         print('SA_partyAddBot {')
         print('    retval=%d' % p.read_i32())
         print('}')
 
-    def serialize_62201(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62201(netid, p: common.PacketReader):
         print('SN_EnqueueMatchingQueue {')
         print('    stageIndex=%d' % p.read_i32())
         print('    currentMatchingTimeMS=%d' % p.read_i32())
@@ -935,9 +829,7 @@ class ServerSerializer:
         print('    isMatchingExpanded=%d' % p.read_u8())
         print('}')
 
-    def serialize_62204(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62204(netid, p: common.PacketReader):
         print('SQ_MatchingPartyFound {')
         print('    sortieID=%d' % p.read_i64())
         print('    stageIndex=%d' % p.read_i32())
@@ -995,38 +887,30 @@ class ServerSerializer:
         print('    elementSub=%d' % p.read_u8())
         print('}')
 
-    def serialize_62208(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62208(netid, p: common.PacketReader):
         print('SA_masterPick {')
         print('    retval=%d' % p.read_i32())
         print('    characterID=%d' % p.read_i32())
         print('}')
 
-    def serialize_62214(netid, data):
-        p = common.PacketReader(data)
-        print('SN_ReadySortieRoom {')
+    def serialize_62214(netid, p: common.PacketReader):
+        print('SN_ReadySortieRoom{')
         print('    userId=%d' % p.read_i32())
         print('    ready=%d' % p.read_u8())
         print('}')
 
-    def serialize_62217(netid, data):
-        p = common.PacketReader(data)
-        print('SN_StartCountdownSortieRoom {')
+    def serialize_62217(netid, p: common.PacketReader):
+        print('SN_StartCountdownSrtieRoom {')
         print('    stageType=%d' % p.read_i32())
         print('    timeToWaitSec=%d' % p.read_i32())
         print('}')
 
-    def serialize_62224(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62224(netid, p: common.PacketReader):
         print('SN_UpdateGameOwner {')
         print('    userID=%d' % p.read_i32())
         print('}')
 
-    def serialize_62227(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62227(netid, p: common.PacketReader):
         print('SN_SummaryInfoLatest {')
         print('    stateUpdatedTime=[')
           
@@ -1045,9 +929,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62229(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62229(netid, p: common.PacketReader):
         print('SN_NotifyPcDetailInfos {')
         print('    pcList=[')
           
@@ -1068,9 +950,14 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62242(netid, data):
-        p = common.PacketReader(data)
+    def serialize_62232(netid, p: common.PacketReader):
+        print('Sn_RemoveStatus {')
+        print('    status=%d' % p.read_i32())
+        print('    targetID=%d' % p.read_i32())
+        print('    casterID=%d' % p.read_i32())
+        print('}')
 
+    def serialize_62242(netid, p: common.PacketReader):
         print('SN_ChatChannelMessage {')
         print('    chatType=%d' % p.read_i32())
         print('    senderNickname="%s"' % p.read_wstr())
@@ -1078,9 +965,7 @@ class ServerSerializer:
         print('    chatMsg="%s"' % p.read_wstr())
         print('}')
 
-    def serialize_62251(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62251(netid, p: common.PacketReader):
         print('SN_FriendStateChanged {')
         print('    nickname="%s"' % p.read_wstr())
         print('    newState=%d' % p.read_u8())
@@ -1088,9 +973,7 @@ class ServerSerializer:
         print('    stateUpdatedTime=%d' % p.read_i64())
         print('}')
 
-    def serialize_62257(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62257(netid, p: common.PacketReader):
         print('SN_FriendList {')
         print('    friends=[')
         
@@ -1110,9 +993,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62258(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62258(netid, p: common.PacketReader):
         print('SN_FriendRequestList {')
         print('    friendRequestList=[')
         
@@ -1126,9 +1007,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62259(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62259(netid, p: common.PacketReader):
         print('SN_MutualFriendList {')
         print('    candidates=[')
         
@@ -1143,9 +1022,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62260(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62260(netid, p: common.PacketReader):
         print('SN_RecommendedFriendList {')
         print('    candidates=[')
         
@@ -1159,9 +1036,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62261(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62261(netid, p: common.PacketReader):
         print('SN_BlockList {')
         print('    blocks=[')
         
@@ -1174,25 +1049,19 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62274(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62274(netid, p: common.PacketReader):
         print('SN_PVPAvailableReportCount {')
         print('    isTroll=%d' % p.read_u8())
         print('    remainingCount=%d' % p.read_u8())
         print('}')
 
 
-    def serialize_62276(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62276(netid, p: common.PacketReader):
         print('SN_NotifyAasRestricted {')
         print('    isRestrictedByAAS=%d' % p.read_u8())
         print('}')
 
-    def serialize_62278(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62278(netid, p: common.PacketReader):
         print('SN_Exp {')
         print('    leaderCsn=%d' % p.read_i32())
         print('    nickname="%s"' % p.read_wstr())
@@ -1201,9 +1070,7 @@ class ServerSerializer:
         print('    currentLevelExp=%d' % p.read_i32())
         print('}')
 
-    def serialize_62282(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62282(netid, p: common.PacketReader):
         print('SN_JukeboxEnqueuedList {')
         print('    trackList=[')
 
@@ -1217,9 +1084,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62283(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62283(netid, p: common.PacketReader):
         print('SN_JukeboxPlay {')
         print('    result=%d' % p.read_i32())
         print('    track={')
@@ -1229,9 +1094,7 @@ class ServerSerializer:
         print('    playPositionSec=%d' % p.read_u16())
         print('}')
 
-    def serialize_62284(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62284(netid, p: common.PacketReader):
         print('SN_JukeboxHotTrackList {')
         count = p.read_u16()
         s = ''
@@ -1241,9 +1104,7 @@ class ServerSerializer:
         print('    trackList=[%s]' % s)
         print('}')
 
-    def serialize_62285(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62285(netid, p: common.PacketReader):
         print('SN_TownHudStatistics {')
         print('    gameModeType=%d' % p.read_u8())
         print('    gameType=%d' % p.read_u8())
@@ -1257,9 +1118,7 @@ class ServerSerializer:
         print('    argList=[%s]' % s)
         print('}')
         
-    def serialize_62299(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62299(netid, p: common.PacketReader):
         print('SA_GetGuildProfile {')
         print('    result=%d' % p.read_i32())
         print('    guildName="%s"' % p.read_wstr())
@@ -1338,9 +1197,7 @@ class ServerSerializer:
         print('    todayRollCallCount=%d' % p.read_u8())
         print('}')
     
-    def serialize_62300(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62300(netid, p: common.PacketReader):
         print('SA_GetGuildMemberList {')
         print('    result=%d' % p.read_i32())
         print('    guildMemberProfileList=[')
@@ -1367,9 +1224,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62302(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62302(netid, p: common.PacketReader):
         print('SA_GetGuildHistoryList {')
         print('    result=%d' % p.read_i32())
         print('    guildHistories=[')
@@ -1390,9 +1245,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62322(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62322(netid, p: common.PacketReader):
         print('SA_GetGuildRankingSeasonList {')
         print('    result=%d' % p.read_i32())
         print('    rankingType=%d' % p.read_u8())
@@ -1410,18 +1263,14 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62330(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62330(netid, p: common.PacketReader):
         print('SN_MyGuild {')
         print('    guildTag="%s"' % p.read_wstr())
         print('    dissolutionDate=%d' % p.read_i64())
         print('    isFirstTodayRollCall=%d' % p.read_u8())
         print('}')
 
-    def serialize_62338(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62338(netid, p: common.PacketReader):
         print('SN_GuildMemberStatus {')
         print('    guildMemberStatusList=[')
 
@@ -1436,18 +1285,14 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62358(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62358(netid, p: common.PacketReader):
         print('SN_GuildChannelEnter {')
         print('    guildName="%s"' % p.read_wstr())
         print('    nick="%s"' % p.read_wstr())
         print('    onlineStatus=%d' % p.read_u8())
         print('}')
 
-    def serialize_62364(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62364(netid, p: common.PacketReader):
         print('SN_PlayerSyncActionStateOnly {')
         print('    entityID=%d' % p.read_i32())
         print('    nState=%d' % p.read_i32())
@@ -1464,9 +1309,7 @@ class ServerSerializer:
         print('    }')
         print('}')
 
-    def serialize_62365(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62365(netid, p: common.PacketReader):
         print('SN_WeaponState {')
         print('    ownerID=%d' % p.read_i32())
         print('    weaponID=%d' % p.read_i32())
@@ -1476,9 +1319,7 @@ class ServerSerializer:
         print('    result=%g' % p.read_i32())
         print('}')
 
-    def serialize_62390(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62390(netid, p: common.PacketReader):
         print('SN_ProfileCharacterSkinList {')
         print('    skins=[')
 
@@ -1494,9 +1335,7 @@ class ServerSerializer:
 
         print('}')
         
-    def serialize_62404(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62404(netid, p: common.PacketReader):
         print('SN_WarehouseItems {')
         print('    items=[')
         
@@ -1524,9 +1363,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
     
-    def serialize_62425(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62425(netid, p: common.PacketReader):
         print('SN_MailUnreadNotice {')
         print('    unreadInboxMailCount=%d' % p.read_u16())
         print('    unreadArchivedMailCount=%d' % p.read_u16())
@@ -1545,9 +1382,7 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62426(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62426(netid, p: common.PacketReader):
         print('SN_UpdateEntrySystem {')
         print('    entrySystemList=[')
 
@@ -1586,9 +1421,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62427(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62427(netid, p: common.PacketReader):
         print('SN_GameEventActivated {')
 
         count = p.read_u16()
@@ -1600,9 +1433,7 @@ class ServerSerializer:
         print('    eventIndexList=[%s]' %s)
         print('}')
 
-    def serialize_62428(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62428(netid, p: common.PacketReader):
         print('SN_GameEventPending {')
 
         count = p.read_u16()
@@ -1614,14 +1445,10 @@ class ServerSerializer:
         print('    eventIndexList=[%s]' %s)
         print('}')
 
-    def serialize_62446(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62446(netid, p: common.PacketReader):
         print('SQ_Heartbeat {}')
 
-    def serialize_62450(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62450(netid, p: common.PacketReader):
         print('SN_LoadingProgressData {')
         print('    usn=%d' % p.read_i32())
         print('    nickname="%s"' % p.read_wstr())
@@ -1631,9 +1458,7 @@ class ServerSerializer:
         print('    isSpectator=%d' % p.read_u8())
         print('}')
 
-    def serialize_62455(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62455(netid, p: common.PacketReader):
         print('SN_MasterRotationInfo {')
         print('    refreshCount=%d' % p.read_i32())
 
@@ -1662,22 +1487,18 @@ class ServerSerializer:
         print('    vipRotation=[%s]' %s)
         print('}')
 
-    def serialize_62466(netid, data):
+    def serialize_62466(netid, p: common.PacketReader):
         print('SN_SortieMasterPickPhaseEnd {')
         print('}')
 
 
 
-    def serialize_62468(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62468(netid, p: common.PacketReader):
         print('SN_SortieMasterPickPhaseStep {')
         print('    isRandomPick=%d' % p.read_u8())
         print('}')
 
-    def serialize_62469(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62469(netid, p: common.PacketReader):
         print('SA_TierRecord {')
         print('    seasonId=%d' % p.read_u8())
         print('    allTierWin=%d' % p.read_i32())
@@ -1704,48 +1525,36 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62472(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62472(netid, p: common.PacketReader):
         print('SN_Unknown_62472 {')
         print('    var=%d' % p.read_u8())
         print('}')
 
-    def serialize_62474(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62474(netid, p: common.PacketReader):
         print('SN_NotifyIngameSkillPoint {')
         print('    userID=%d' % p.read_i32())
         print('    skillPoint=%d' % p.read_i32())
         print('}')
 
-    def serialize_62483(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62483(netid, p: common.PacketReader):
         print('SN_PveTodayStageInfo {')
         print('    availablePlayCount=%d' % p.read_u16())
         print('    maxPlayCount=%d' % p.read_u16())
         print('}')
 
-    def serialize_62484(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62484(netid, p: common.PacketReader):
         print('SN_FatiguePointInfo {')
         print('    todayFatiguePoint=%d' % p.read_u16())
         print('    maxFatiguePoint=%d' % p.read_u16())
         print('}')
 
-    def serialize_62485(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62485(netid, p: common.PacketReader):
         print('SN_PveComradeInfo {')
         print('    availableComradeCount=%d' % p.read_i32())
         print('    maxComradeCount=%d' % p.read_i32())
         print('}')
 
-    def serialize_62500(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62500(netid, p: common.PacketReader):
         print('SN_ClientSettings {')
         print('    settingType=%d' % p.read_u8())
         data_len = p.read_u16()
@@ -1756,30 +1565,22 @@ class ServerSerializer:
         print('    decompressed=[%s]' % data.decode('utf-8'))
         print('}')
 
-    def serialize_62525(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62525(netid, p: common.PacketReader):
         print('SN_AccountEquipmentList {')
         print('    supportKitDocIndex=%d' % p.read_i32())
         print('}')
 
-    def serialize_62526(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62526(netid, p: common.PacketReader):
         print('SN_AddictionWarning {')
         print('    addictionLevel=%d' % p.read_u8())
         print('}')
 
-    def serialize_62542(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62542(netid, p: common.PacketReader):
         print('SN_DateChanged {')
         print('}')
 
 
-    def serialize_62544(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62544(netid, p: common.PacketReader):
         print('SN_Calendar {')
         print('    calendar=[')
 
@@ -1806,9 +1607,7 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62545(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62545(netid, p: common.PacketReader):
         print('SA_CalendarDetail {')
         print('    todayUTCDateTime=%d' % p.read_i64())
         print('    eventList=[')
@@ -1825,16 +1624,12 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62550(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62550(netid, p: common.PacketReader):
         print('SN_SortieMasterPickPhaseStep {')
         print('    isRandomPick=%d' % p.read_u8())
         print('}')
 
-    def serialize_62551(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62551(netid, p: common.PacketReader):
         print('SN_ItemLifetimeExpired {')
         count = p.read_u16()
         s = ''
@@ -1844,9 +1639,7 @@ class ServerSerializer:
         print('    itemDocIndexList=[%s]' % s)
         print('}')
 
-    def serialize_62552(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62552(netid, p: common.PacketReader):
         print('SN_EffectLifetimeExpired {')
         count = p.read_u16()
         s = ''
@@ -1856,9 +1649,7 @@ class ServerSerializer:
         print('    effectItemDocIndexList=[%s]' % s)
         print('}')
 
-    def serialize_62554(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62554(netid, p: common.PacketReader):
         print('SN_EffectLifetime {')
         count = p.read_u16()
         s = ''
@@ -1868,26 +1659,20 @@ class ServerSerializer:
         print('    effectItemDocIndexList=[%s]' % s)
         print('}')
 
-    def serialize_62556(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62556(netid, p: common.PacketReader):
         print('SA_guideMissionAccept {')
         print('    result=%d' % p.read_i32())
         print('    step=%d' % p.read_u8())
         print('}')
 
-    def serialize_62559(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62559(netid, p: common.PacketReader):
         print('SN_CurrentGuideMission {')
         print('    step=%d' % p.read_i8())
         print('    stage=%d' % p.read_u8())
         print('    isRewarded=%d' % p.read_u8())
         print('}')
 
-    def serialize_62572(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62572(netid, p: common.PacketReader):
         print('SN_GMDisabledMasters {')
         count = p.read_u16()
         s = ''
@@ -1897,9 +1682,7 @@ class ServerSerializer:
         print('    masterList=[%s]' % s)
         print('}')
 
-    def serialize_62573(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62573(netid, p: common.PacketReader):
         print('SN_GMDisabledSkins {')
         
         
@@ -1912,9 +1695,7 @@ class ServerSerializer:
         print('    skinKeyList=[%s]' % s)
         print('}')
 
-    def serialize_62574(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62574(netid, p: common.PacketReader):
         print('SN_GMDisabledStage {')
         
         count = p.read_u16()
@@ -1926,9 +1707,7 @@ class ServerSerializer:
         print('    stageList=[%s]' % s)
         print('}')
 
-    def serialize_62576(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62576(netid, p: common.PacketReader):
         print('SN_InitIngameModeInfo {')
         print('    transformationVotingPlayerCoolTimeByVotingFail=%d' % p.read_i32())
         print('    transformationVotingTeamCoolTimeByTransformationEnd=%d' % p.read_i32())
@@ -1964,9 +1743,7 @@ class ServerSerializer:
 
         print('}')
 
-    def serialize_62591(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62591(netid, p: common.PacketReader):
         print('SN_HudEventList {')
         print('    eventList=[')
 
@@ -1982,9 +1759,7 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62592(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62592(netid, p: common.PacketReader):
         print('SN_CShopEventList {')
         print('    eventList=[')
 
@@ -2001,16 +1776,12 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
-    def serialize_62595(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62595(netid, p: common.PacketReader):
         print('SN_ServerUtcTime {')
         print('    effectItemDocIndexList=%d' % p.read_i64())
         print('}')
 
-    def serialize_62601(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_62601(netid, p: common.PacketReader):
         print('SN_UpdateMasterGroupingEffect {')
         print('    instanceId=%d' % p.read_i32())
         print('    index=%d' % p.read_i32())

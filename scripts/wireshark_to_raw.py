@@ -20,8 +20,6 @@ def GenerateKey(ipPortStr):
 
 def Decrypt(data):
     c_data = (c_ubyte * len(data))(*data)
-    print(c_data)
-    print(leaCurrentKey)
     leaDll.Decrypt(leaCurrentKey, c_data, c_int32(len(data)))
     return list(c_data)
 # -----------
@@ -33,7 +31,9 @@ def packet_serialize_cl(netid, data):
     if f == None:
         print('Unknown {}')
     else:
-        f(netid, data)
+        p = common.PacketReader(data)
+        p.read_header() # skip header
+        f(netid, p)
     print('')
 
 def packet_serialize_sv(netid, data):
@@ -45,7 +45,9 @@ def packet_serialize_sv(netid, data):
         else:
             print('Unknown {}')
     else:
-        f(netid, data)
+        p = common.PacketReader(data)
+        p.read_header() # skip header
+        f(netid, p)
     print('')
 
     # SN_DoConnectGameServer
@@ -53,11 +55,13 @@ def packet_serialize_sv(netid, data):
     # TODO: remove it on disconnect
     if netid == 62010: 
         p = common.PacketReader(data)
+        p.read_header() # skip header
         scan_list.append(str(p.read_u16()))
 
 def packet_handle_sv(netid, data):
     if netid == 62002:
         p = common.PacketReader(data)
+        p.read_header() # skip header
         p.read_u32() # dwProtocolCRC
         p.read_u32() # dwErrorCRC
         p.read_u8() # sverType
@@ -67,13 +71,7 @@ def packet_handle_sv(netid, data):
 
     elif netid in ServerEncryptedIDs:
         print("!Encrypted")
-        p = common.PacketReader(data)
-        print(p.read_u32())
-
         data[4:] = Decrypt(data[4:])
-
-        p = common.PacketReader(data)
-        print(p.read_u32())
 
 class PacketSpitter:
     def __init__(self, prefix):
@@ -93,15 +91,16 @@ class PacketSpitter:
             print("ERROR: invalid packet (netid=%d size=%d)" % (netid, size))
             exit(1)
 
+        data = bytearray(self.buff[:size])
+
         if self.prefix == 'cl':
-            packet_serialize_cl(netid, self.buff[:size])
+            packet_serialize_cl(netid, data)
         elif self.prefix == 'sv':
-            data = bytearray(self.buff[:size])
             packet_handle_sv(netid, data)
             packet_serialize_sv(netid, data)
 
         f = open(os.path.join(output_dir, '%d_%s_%d.raw' % (self.order, self.prefix, netid)), 'wb')
-        f.write(self.buff[:size])
+        f.write(data)
         f.close()
 
         self.buff = self.buff[size:]

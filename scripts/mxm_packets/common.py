@@ -3,10 +3,12 @@ import struct
 class PacketReader:
     def __init__(self, data):
         self.buff = data
-        self.adv(4) # skip header
 
     def adv(self, am):
         self.buff = self.buff[am:]
+
+    def read_header(self):
+        return (self.read_u16(), self.read_u16())
 
     def read_i8(self):
         r = struct.unpack("b", self.buff[:1])[0]

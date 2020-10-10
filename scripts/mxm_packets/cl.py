@@ -7,9 +7,7 @@ def read_Vec3(p):
     
 class ClientSerializer:
 
-    def serialize_60002(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_60002(netid, p: common.PacketReader):
         print('CQ_FirstHello {')
         print('    dwProtocolCRC=%#x' % p.read_u32())
         print('    dwErrorCRC=%#x' % p.read_u32())
@@ -17,21 +15,17 @@ class ClientSerializer:
         print('    unknown=%d' % p.read_u8())
         print('}')
         
-    def serialize_60008(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_60008(netid, p: common.PacketReader):
         print('CQ_Authenticate {')
         print('    name="%s"' % p.read_wstr())
         print('}')
 
         # TODO reverse the rest
 
-    def serialize_60014(netid, data):
+    def serialize_60014(netid, p: common.PacketReader):
         print('ReadyToLoadCharacter {}')
 
-    def serialize_60022(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_60022(netid, p: common.PacketReader):
         print('CN_UpdatePosition {')
         print('    playerID=%d' % p.read_i32())
         print('    p3nPos=%s' % read_Vec3(p))
@@ -43,31 +37,27 @@ class ClientSerializer:
         print('    nActionIDX=%d' % p.read_i32())
         print('}')
 
-    def serialize_60034(netid, data):
+    def serialize_60034(netid, p: common.PacketReader):
         print('CN_MapIsLoaded {}')
 
-    def serialize_60051(netid, data):
-        p = common.PacketReader(data)
-
+    def serialize_60051(netid, p: common.PacketReader):
         print('CQ_GetCharacterInfo {')
         print('    characterID=%d' % p.read_i32())
         print('}')
 
-    def serialize_60145(netid, data):
+    def serialize_60145(netid, p: common.PacketReader):
         print('CQ_GetGuildProfile {}')
 
-    def serialize_60146(netid, data):
+    def serialize_60146(netid, p: common.PacketReader):
         print('CQ_GetGuildMemberList {}')
 
-    def serialize_60148(netid, data):
+    def serialize_60148(netid, p: common.PacketReader):
         print('CQ_GetGuildHistoryList {}')
 
-    def serialize_60151(netid, data):
+    def serialize_60151(netid, p: common.PacketReader):
         print('CQ_TierRecord {}')
 
-    def serialize_60167(netid, data):
-        p = common.PacketReader(data)
-        
+    def serialize_60167(netid, p: common.PacketReader):
         print('CQ_GetGuildRankingSeasonList {')
         print('    rankingType=%d' % p.read_u8())
         print('}')

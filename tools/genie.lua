@@ -17,7 +17,6 @@ solution "Tools"
 	language "C++"
 
 	configuration {"Debug"}
-		targetsuffix "_debug"
 		flags {
 			"Symbols",
 			"FullSymbols"
@@ -80,6 +79,7 @@ solution "Tools"
 
 project "Lea"
 	kind "ConsoleApp"
+	targetname "test"
 
 	configuration {}
 
@@ -91,4 +91,24 @@ project "Lea"
 		"lea/**.h",
 		"lea/**.c",
 		"lea/**.cpp",
+	}
+
+project "LeaDll"
+	kind "SharedLib"
+	targetname "lea"
+
+	configuration {}
+
+	includedirs {
+		"lea",
+	}
+	
+	files {
+		"lea/**.h",
+		"lea/**.c",
+		"lea/**.cpp",
+	}
+
+	defines {
+		"CONF_DLL"
 	}

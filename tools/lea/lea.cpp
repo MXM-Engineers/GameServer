@@ -7,7 +7,7 @@
 //#error
 // TODO:
 // - Make this a dll
-// - Generate the key, and pass it for each decryption (as the drcryption will alter it so we have to keep the state in Python)
+// - Generate the key, and pass it for each decryption (as the decryption will alter it so we have to keep the state in Python)
 
 #define LOG(fmt, ...) printf(fmt "\n", __VA_ARGS__);
 #define ASSERT(cond) assert(cond)
@@ -117,7 +117,9 @@ union Filter
 
 	static_assert(sizeof(s) == sizeof(data), "");
 
-	Filter(Key16 key)
+	Filter() {}
+
+	explicit Filter(Key16 key)
 	{
 		s.key1 = key;
 		s.key2 = key;
@@ -731,11 +733,14 @@ private:
 	}
 };
 
-int main(int argc, char** argv)
-{
-	ASSERT(argc == 2);
+// C api
+extern "C" {
+__declspec(dllexport) Filter* GenerateKey(const char* ipPortString);
+__declspec(dllexport) void Decrypt(Filter* filter, void* data, const i32 dataSize);
+}
 
-	const char* ipPortString = argv[1];
+Filter* GenerateKey(const char* ipPortString)
+{
 	DBG("ip:port = '%s'", ipPortString);
 
 	i32 ip[4];
@@ -746,12 +751,36 @@ int main(int argc, char** argv)
 
 	DBG("ip:port = %d.%d.%d.%d:%d", ip[0], ip[1], ip[2], ip[3], port);
 
-	// create 16B key
 	Key16 key16(ip, port);
-	key16.Print();
+	static Filter filter;
+	filter = Filter(key16);
 
-	Filter filter(key16);
-	filter.Print();
+	return &filter;
+}
+
+void Decrypt(Filter* filter, void* data, const i32 dataSize)
+{
+#ifdef CONF_DEBUG
+	filter->s.key1.Print();
+
+	LOG("Data:");
+	const u8* cur = (u8*)data;
+	for(int i = 0; i < dataSize; i++) {
+		printf("%02X ", cur[i]);
+	}
+	printf("\n");
+#endif
+	filter->Decrypt((u32*)data, dataSize);
+}
+
+#ifndef CONF_DLL
+int main(int argc, char** argv)
+{
+	ASSERT(argc == 2);
+
+	const char* ipPortString = argv[1];
+
+	Filter* filter = GenerateKey(ipPortString);
 
 	{
 		i32 fileSize;
@@ -764,7 +793,7 @@ int main(int argc, char** argv)
 		i32 dataSize = fileSize - sizeof(NetHeader);
 		u32* data = (u32*)(fileData + sizeof(NetHeader));
 
-		filter.Decrypt(data, dataSize);
+		Decrypt(filter, data, dataSize);
 
 		fileSaveBuff("test.decrypted", fileData, fileSize);
 	}
@@ -780,9 +809,10 @@ int main(int argc, char** argv)
 		i32 dataSize = fileSize - sizeof(NetHeader);
 		u32* data = (u32*)(fileData + sizeof(NetHeader));
 
-		filter.Decrypt(data, dataSize);
+		Decrypt(filter, data, dataSize);
 
 		fileSaveBuff("test2.decrypted", fileData, fileSize);
 	}
 	return 0;
 }
+#endif

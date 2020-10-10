@@ -416,9 +416,9 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<LocalActorID>((LocalActorID)21035); // ownerID
-		packet.Write<i32>(131135011); // weaponID
-		packet.Write<i32>(7); // state
-		packet.Write<u8>(100); // chargeLevel
+		packet.Write<i32>(90); // weaponID
+		packet.Write<i32>(0); // state
+		packet.Write<u8>(0); // chargeLevel
 		packet.Write<u8>(0); // firingCombo
 		packet.Write<i32>(-1); // result
 

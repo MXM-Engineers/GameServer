@@ -135,7 +135,6 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	// TODO: verify version, protocol, etc
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
-#if 0
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
@@ -147,22 +146,6 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 
 	LOG("[client%03d] Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", clientID, hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
 	SendPacket(clientID, hello);
-#else
-	// fake messages to check encryption
-	Sv::SA_FirstHello hello;
-	hello.dwProtocolCRC = 0x28845199;
-	hello.dwErrorCRC    = 0x93899e2c;
-	hello.serverType    = 1;
-	hello.clientIp[0] = 215;
-	hello.clientIp[1] = 233;
-	hello.clientIp[2] = 65;
-	hello.clientIp[3] = 87;
-	hello.clientPort = 50460;
-	hello.tqosWorldId = 1;
-
-	LOG("[client%03d] Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", clientID, hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
-	SendPacket(clientID, hello);
-#endif
 }
 
 void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -182,16 +165,6 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	auth.result = 91;
 	LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
 	SendPacket(clientID, auth);
-
-#if 1 // FIXME: remove
-	// encrypted packet test
-	i32 fileSize;
-	u8* fileBuff = fileOpenAndReadAll("encrypted_test.raw", &fileSize);
-	ASSERT(fileBuff);
-	defer(memFree(fileBuff));
-	NetHeader* hd = (NetHeader*)fileBuff;
-	SendPacketData(clientID, hd->netID, hd->size - sizeof(NetHeader), fileBuff + sizeof(NetHeader));
-#endif
 
 
 	// TODO: fetch account data

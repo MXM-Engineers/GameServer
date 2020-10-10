@@ -950,8 +950,30 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62230(netid, p: common.PacketReader):
+        print('SN_AddStatus {')
+        b = p.read_u8()
+        if b == 0:
+            print('    totalRatio=%g' % p.read_f32())
+            print('    defeatFrom=%s' % read_Vec3(p))
+            print('    defeatTo=%s' % read_Vec3(p))
+            print('    defeatDist=%g' % p.read_f32())
+            print('    defeatOriginDist=%g' % p.read_f32())
+            print('    defeatDurationTime=%g' % p.read_f32())
+
+        print('    statusID=%d' % p.read_i32())
+        print('    bEnabled=%d' % p.read_u8())
+        print('    targetID=%d' % p.read_i32())
+        print('    casterID=%d' % p.read_i32())
+        print('    isOverlap=%d' % p.read_u8())
+        print('    overlapCount=%d' % p.read_u8())
+        print('    customValue=%d' % p.read_u8())
+        print('    durationTime=%g' % p.read_f32())
+        print('    elapsedTime=%d' % p.read_i32())
+        print('}')
+
     def serialize_62232(netid, p: common.PacketReader):
-        print('Sn_RemoveStatus {')
+        print('SN_RemoveStatus {')
         print('    status=%d' % p.read_i32())
         print('    targetID=%d' % p.read_i32())
         print('    casterID=%d' % p.read_i32())
@@ -1292,6 +1314,14 @@ class ServerSerializer:
         print('    onlineStatus=%d' % p.read_u8())
         print('}')
 
+    def serialize_62361(netid, p: common.PacketReader):
+        print('SN_PlayerSyncTurn {')
+        print('    entityID=%d' % p.read_i32())
+        print('    upperDir_x=%g' % p.read_f32())
+        print('    upperDir_y=%g' % p.read_f32())
+        print('    nRotate=%g' % p.read_f32())
+        print('}')
+
     def serialize_62364(netid, p: common.PacketReader):
         print('SN_PlayerSyncActionStateOnly {')
         print('    entityID=%d' % p.read_i32())
@@ -1317,6 +1347,21 @@ class ServerSerializer:
         print('    chargeLevel=%d' % p.read_u8())
         print('    firingCombo=%g' % p.read_u8())
         print('    result=%g' % p.read_i32())
+        print('}')
+
+    def serialize_62382(netid, p: common.PacketReader):
+        print('SN_AiSetActionState {')
+        b = p.read_u8()
+        print('    excludedFieldBits=%d' % b)
+        print('    entityID=%d' % p.read_i32())
+        if (b & 2) == 0:
+            print('    motionType=%d' % p.read_u16())
+        if (b & 4) == 0:
+            print('    lowerBodyYaw=%d' % p.read_u16())
+        if (b & 8) == 0:
+            print('    movementSpeed=%d' % p.read_u16())
+
+        print('    pos=%s' % read_Vec3(p))
         print('}')
 
     def serialize_62390(netid, p: common.PacketReader):

@@ -953,7 +953,9 @@ class ServerSerializer:
     def serialize_62230(netid, p: common.PacketReader):
         print('SN_AddStatus {')
         b = p.read_u8()
-        if b == 0:
+        print('    excludedFieldBits=%d' % b)
+
+        if (b & 1) == 0:
             print('    totalRatio=%g' % p.read_f32())
             print('    defeatFrom=%s' % read_Vec3(p))
             print('    defeatTo=%s' % read_Vec3(p))
@@ -1379,6 +1381,14 @@ class ServerSerializer:
             count -= 1
 
         print('}')
+
+    def serialize_62400(netid, p: common.PacketReader):
+        print('SN_NotifyUserLifeInfo {')
+        print('    usn=%d' % p.read_i32())
+        print('    lifeCount=%d' % p.read_i32())
+        print('    maxLifeCount=%d' % p.read_i32())
+        print('    remainLifeCount=%d' % p.read_i32())
+        print('}')
         
     def serialize_62404(netid, p: common.PacketReader):
         print('SN_WarehouseItems {')
@@ -1597,6 +1607,15 @@ class ServerSerializer:
         print('SN_PveComradeInfo {')
         print('    availableComradeCount=%d' % p.read_i32())
         print('    maxComradeCount=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62493(netid, p: common.PacketReader):
+        print('SN_InteractionStatus {')
+        print('    state=%d' % p.read_i32())
+        print('    objectID=%d' % p.read_i32())
+        print('    interactionID=%d' % p.read_i32())
+        print('    occupiedTeam=%d' % p.read_i32())
+        print('    coolTime=%d' % p.read_f32())
         print('}')
 
     def serialize_62500(netid, p: common.PacketReader):

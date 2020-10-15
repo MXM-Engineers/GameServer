@@ -139,6 +139,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CQ_JukeboxQueueSong);
 		HANDLE_CASE(CQ_WhisperSend);
 		HANDLE_CASE(CQ_PartyCreate);
+		HANDLE_CASE(CQ_RTT_Time);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -287,4 +288,16 @@ void Channel::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header,
 
 	LOG("[client%03d] Server :: SA_PartyCreate :: NO", clientID);
 	server->SendPacketData(clientID, Sv::SA_PartyCreate::NET_ID, packet.size, packet.data);
+}
+
+void Channel::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
+	LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
+
+	Sv::SA_RTT_Time answer;
+	answer.clientTimestamp = rtt.time;
+	answer.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
+	LOG("[client%03d] Server :: SA_RTT_Time ::", clientID);
+	server->SendPacket(clientID, answer);
 }

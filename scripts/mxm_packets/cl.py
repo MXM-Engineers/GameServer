@@ -62,3 +62,8 @@ class ClientSerializer:
         print('    rankingType=%d' % p.read_u8())
         print('}')
 
+    def serialize_60245(netid, p: common.PacketReader):
+        print('CQ_RTT_Time {')
+        print('    time=%d' % p.read_i32())
+        print('}')
+

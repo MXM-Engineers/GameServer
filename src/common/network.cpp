@@ -128,7 +128,8 @@ i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
 			struct sockaddr_in& sin = *(struct sockaddr_in*)&client.addr;
 			const u8* clIp = (u8*)&sin.sin_addr;
 			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
-			info.port = htons(sin.sin_port);
+			//info.port = htons(sin.sin_port);
+			info.port = sin.sin_port;
 
 			clientIsConnected[clientID] = 1; // register the socket at the end, when everything is initialized
 			return clientID;

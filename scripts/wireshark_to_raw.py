@@ -156,7 +156,7 @@ for p in cap:
             time = p.frame_info.time_relative
             last_time = time
 
-        info = '%s > %s ' % (p.ip.src, p.ip.dst) + ' (' + time + ')'
+        info = '%s:%s > %s:%s ' % (p.ip.src, p.tcp.srcport, p.ip.dst, p.tcp.dstport) + ' (' + time + ')'
 
         if len(p.tcp.payload.binary_value) >= 4:
             if is_client: # client to server

@@ -1591,6 +1591,12 @@ class ServerSerializer:
         print('    skillPoint=%d' % p.read_i32())
         print('}')
 
+    def serialize_62482(netid, p: common.PacketReader):
+        print('SA_RTT_Time {')
+        print('    clientTimeStamp=%u' % p.read_u32())
+        print('    serverTimeStamp=%d' % p.read_i64())
+        print('}')
+
     def serialize_62483(netid, p: common.PacketReader):
         print('SN_PveTodayStageInfo {')
         print('    availablePlayCount=%d' % p.read_u16())
@@ -1628,6 +1634,9 @@ class ServerSerializer:
             data = zlib.decompress(data)
         print('    decompressed=[%s]' % data.decode('utf-8'))
         print('}')
+
+    def serialize_62505(netid, p: common.PacketReader):
+        print('SN_AIMONSTER_SYNC_MOVE {} @98ba71')
 
     def serialize_62525(netid, p: common.PacketReader):
         print('SN_AccountEquipmentList {')

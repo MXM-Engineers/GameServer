@@ -318,6 +318,13 @@ struct CQ_WhisperSend
 	wchar msg[1];
 };
 
+struct CQ_RTT_Time
+{
+	enum { NET_ID = 60245 };
+
+	u32 time;
+};
+
 } // Cl
 
 
@@ -1216,6 +1223,18 @@ struct SN_NotifyPcDetailInfos
 	ST_PcDetailInfo pcList[1];
 };
 
+struct SN_ChatChannelMessage
+{
+	enum { NET_ID = 62242 };
+
+	i32 chatType;
+	u16 senderNickname_len;
+	wchar senderNickname[1];
+	u8 senderStaffType;
+	u16 chatMsg_len;
+	wchar chatMsg[1];
+};
+
 struct SN_FriendList
 {
 	enum { NET_ID = 62257 };
@@ -1606,6 +1625,17 @@ struct SN_ProfileCharacterSkinList
 	Skin skins[1];
 };
 
+struct SN_NotifyUserLifeInfo
+{
+	enum { NET_ID = 62400 };
+
+	i32 usn;
+	i32 lifeCount;
+	i32 maxLifeCount;
+	i32 remainLifeCount;
+};
+ASSERT_SIZE(SN_NotifyUserLifeInfo, 16);
+
 struct SN_WarehouseItems
 {
 	enum { NET_ID = 62404 };
@@ -1650,16 +1680,9 @@ struct SN_MailUnreadNotice
 	i32 newAttachmentsPending[1];
 };
 
-struct SN_ChatChannelMessage
+struct SQ_Heartbeat
 {
-	enum { NET_ID = 62242 };
-
-	i32 chatType;
-	u16 senderNickname_len;
-	wchar senderNickname[1];
-	u8 senderStaffType;
-	u16 chatMsg_len;
-	wchar chatMsg[1];
+	enum { NET_ID = 62446 };
 };
 
 struct SA_TierRecord
@@ -1698,6 +1721,17 @@ struct SN_NotifyIngameSkillPoint
 	i32 skillPoint;
 };
 ASSERT_SIZE(SN_NotifyIngameSkillPoint, 8);
+
+PUSH_PACKED
+struct SA_RTT_Time
+{
+	enum { NET_ID = 62482 };
+
+	u32 clientTimestamp;
+	i64 serverTimestamp;
+};
+POP_PACKED
+ASSERT_SIZE(SA_RTT_Time, 12);
 
 struct SN_PveComradeInfo
 {

@@ -87,6 +87,14 @@ void Replication::FrameEnd()
 				ready.readyElapsedMs = 0;
 				LOG("[client%03d] Server :: SA_GameReady ::", clientID);
 				SendPacket(clientID, ready);
+
+				Sv::SN_NotifyUserLifeInfo lifeInfo;
+				lifeInfo.usn = 1;
+				lifeInfo.lifeCount = 3;
+				lifeInfo.maxLifeCount = 3;
+				lifeInfo.remainLifeCount = 0;
+				LOG("[client%03d] Server :: SN_NotifyUserLifeInfo ::", clientID);
+				SendPacket(clientID, lifeInfo);
 			}
 		}
 	}

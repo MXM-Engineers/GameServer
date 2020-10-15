@@ -139,7 +139,10 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
 	hello.serverType    = 1;
-	memmove(hello.clientIp, info.ip, sizeof(hello.clientIp));
+	hello.clientIp[0] = info.ip[3];
+	hello.clientIp[1] = info.ip[2];
+	hello.clientIp[2] = info.ip[1];
+	hello.clientIp[3] = info.ip[0];
 	STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(info.ip));
 	hello.clientPort = info.port;
 	hello.tqosWorldId = 1;

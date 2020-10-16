@@ -274,10 +274,10 @@ bool GameXmlContent::LoadMapList()
 	return true;
 }
 
-bool GameXmlContent::LoadMapByID(i32 index)
+bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 {
-	const MapList* map = FindMapListByID(index);
-	if (!map){
+	const MapList* mapList = FindMapListByID(index);
+	if (!mapList){
 		LOG("ERROR(LoadMapByID): Map not found %d", index);
 		return false;
 	}
@@ -286,9 +286,9 @@ bool GameXmlContent::LoadMapByID(i32 index)
 
 	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
 	wchar_t* tempPath = tempPathData;
-	const char* levelFileString = map->levelFile.data();
+	const char* levelFileString = mapList->levelFile.data();
 
-	eastl::DecodePart(levelFileString, map->levelFile.data() + EA::StdC::Strlen(map->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
+	eastl::DecodePart(levelFileString, mapList->levelFile.data() + EA::StdC::Strlen(mapList->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
 	PathAppend(xmlPath, L"/");
 	PathAppend(xmlPath, tempPathData);
 	PathAppend(xmlPath, L"/Spawn.xml");
@@ -309,8 +309,9 @@ bool GameXmlContent::LoadMapByID(i32 index)
 		return false;
 	}
 
-	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
-	XMLElement* pSpawnElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
+	XMLElement* pMapInfo = doc.FirstChildElement();
+	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
+	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
 	do {
 		Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
@@ -328,10 +329,37 @@ bool GameXmlContent::LoadMapByID(i32 index)
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
-		mapLobby.spawns.push_back(spawn);
+		spawn.team = TeamID::INVALID;
+		const char* teamString;
+		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.team = TeamID::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
+		}
+
+		map->creatures.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
 	} while (pSpawnElt);
+
+	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
+	pSpawnElt = pMapEntityDynamic->FirstChildElement();
+	do {
+		Spawn spawn;
+		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
+		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
+		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
+		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
+		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
+		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
+		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
+		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
+
+		spawn.type = Spawn::Type::NPC_SPAWN;
+
+		map->dynamic.push_back(spawn);
+
+		pSpawnElt = pSpawnElt->NextSiblingElement();
+	} while(pSpawnElt);
 
 	return true;
 }
@@ -351,7 +379,18 @@ bool GameXmlContent::LoadLobby(i32 index)
 		return false;
 	}
 
-	return LoadMapByID(index);
+	return LoadMapByID(&mapLobby, index);
+}
+
+bool GameXmlContent::LoadPvpDeathmach()
+{
+	const MapList* map = FindMapListByID(160000094);
+	if (!map) {
+		LOG("ERROR(LoadPvpDeathmach): Map not found %d", 160000094);
+		return false;
+	};
+
+	return LoadMapByID(&mapPvpDeathMatch, 160000094);
 }
 
 bool GameXmlContent::LoadJukeboxSongs()
@@ -394,6 +433,8 @@ bool GameXmlContent::LoadJukeboxSongs()
 
 bool GameXmlContent::Load()
 {
+	LOG("Loading GameContent...");
+
 	bool r = LoadMasterDefinitions();
 	if(!r) return false;
 
@@ -409,9 +450,13 @@ bool GameXmlContent::Load()
 	r = LoadLobby(Config().lobbyMap);
 	if (!r) return false;
 
+	r = LoadPvpDeathmach();
+	if (!r) return false;
+
 	r = LoadJukeboxSongs();
 	if(!r) return false;
 
+	/*
 	LOG("Masters:");
 	eastl::fixed_string<char,1024> buff;
 	foreach(it, masters) {
@@ -437,7 +482,7 @@ bool GameXmlContent::Load()
 	}
 
 	LOG("Lobby_Normal:");
-	foreach(it, mapLobby.spawns) {
+	foreach(it, mapLobby.creatures) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
 
@@ -445,7 +490,9 @@ bool GameXmlContent::Load()
 	foreach(it, jukeboxSongs) {
 		LOG("ID=%d length=%d", (i32)it->ID, it->length);
 	}
+	*/
 
+	LOG("GameContent successfully loaded.");
 	return true;
 }
 

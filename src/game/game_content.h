@@ -29,6 +29,7 @@ struct GameXmlContent
 		CreatureIndex docID;
 		i32 localID;
 		Type type;
+		TeamID team;
 		Vec3 pos;
 		Vec3 rot;
 
@@ -37,7 +38,8 @@ struct GameXmlContent
 
 	struct Map
 	{
-		eastl::fixed_vector<Spawn,512> spawns;
+		eastl::fixed_vector<Spawn,512> creatures;
+		eastl::fixed_vector<Spawn,512> dynamic;
 	};
 
 	struct MapList
@@ -63,6 +65,7 @@ struct GameXmlContent
 	eastl::fixed_vector<MapList, 500, false> maplists;
 
 	Map mapLobby;
+	Map mapPvpDeathMatch;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
@@ -70,8 +73,9 @@ struct GameXmlContent
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMapList();
-	bool LoadMapByID(i32 index);
+	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);
+	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
 	bool Load();
 

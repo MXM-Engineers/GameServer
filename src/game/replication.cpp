@@ -365,7 +365,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = Config().lobbyMap;
+	cityMapInfo.cityMapID = (StageIndex)Config().lobbyMap;
 	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 

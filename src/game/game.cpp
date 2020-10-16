@@ -83,7 +83,7 @@ bool Game::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
-	foreach(it, content.mapLobby.spawns) {
+	foreach(it, content.mapLobby.creatures) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
 			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });

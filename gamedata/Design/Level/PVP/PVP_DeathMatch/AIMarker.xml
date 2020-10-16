@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <AI_MARKER_INFO>
+    <_MarkerGroup id="1">
+      <_MarkerList DATAKEY="151" id="151" x="4542.61" y="3508.37" z="745.94" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="152" id="152" x="6131.08" y="3689.43" z="740.55" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="153" id="153" x="6527.33" y="3500.59" z="741" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="154" id="154" x="6980.75" y="3349.75" z="741" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="123" id="123" x="8623.17" y="3520" z="745" aiMarkerGroup="1" />
+    </_MarkerGroup>
+    <_MarkerGroup id="3">
+      <_MarkerList DATAKEY="122" id="122" x="6004.49" y="5062.87" z="549" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="124" id="124" x="5866.14" y="2826.84" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="125" id="125" x="6435.59" y="1943.08" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="126" id="126" x="7507.64" y="5116.95" z="549" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="127" id="127" x="7260.9" y="4008.3" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="128" id="128" x="7626.12" y="2564.54" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="97" id="97" x="4884.69" y="4495.39" z="549" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="159" id="159" x="4925.97" y="2406.68" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="160" id="160" x="8191.42" y="4510.34" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="161" id="161" x="5346.79" y="3511.58" z="545" aiMarkerGroup="3" />
+      <_MarkerList DATAKEY="162" id="162" x="6322.26" y="4382.69" z="545" aiMarkerGroup="3" />
+    </_MarkerGroup>
+    <_MarkerGroup id="34">
+      <_MarkerList DATAKEY="34" id="34" x="2877.98" y="3644.05" z="536" aiMarkerGroup="34" />
+    </_MarkerGroup>
+    <_MarkerGroup id="54">
+      <_MarkerList DATAKEY="54" id="54" x="10364.89" y="3602.65" z="536.47" aiMarkerGroup="54" />
+    </_MarkerGroup>
+    <_MarkerGroup id="9999">
+      <_MarkerList DATAKEY="13" id="13" x="6633.66" y="4859.6" z="551.28" aiMarkerGroup="9999" />
+      <_MarkerList DATAKEY="14" id="14" x="6656.96" y="2246.12" z="551.39" aiMarkerGroup="9999" />
+    </_MarkerGroup>
+  </AI_MARKER_INFO>
+</MAP_INFO>

@@ -26,9 +26,10 @@ int main(int argc, char** argv)
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << (i32)CoreAffinity::MAIN);
 
 	LoadConfig();
-	Config().Print();
 
 	LOG(".: Game server :.");
+
+	Config().Print();
 
 	bool r = SetCloseSignalHandler([](){
 		g_Server->running = false;

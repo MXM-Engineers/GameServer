@@ -1,4 +1,5 @@
 #include "replication.h"
+#include "config.h"
 #include <common/protocol.h>
 #include <common/packet_serialize.h>
 #include <EASTL/algorithm.h>
@@ -111,7 +112,7 @@ void Replication::FramePushPlayerActor(const ActorPlayer& actor)
 	frameCur->playerList.emplace_back(actor);
 	frameCur->playerMap.emplace(actor.actorUID, --frameCur->playerList.end());
 	frameCur->actorUIDSet.insert(actor.actorUID);
-	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
+	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 
 	Frame::Transform tf;
 	tf.pos = actor.pos;
@@ -138,7 +139,7 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->npcList.emplace_back(actor);
 	frameCur->npcMap.emplace(actor.actorUID, --frameCur->npcList.end());
 	frameCur->actorUIDSet.insert(actor.actorUID);
-	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
+	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 
 	Frame::Transform tf;
 	tf.pos = actor.pos;
@@ -166,7 +167,7 @@ void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
 	frameCur->jukebox = actor;
 
 	frameCur->actorUIDSet.insert(actor.actorUID);
-	frameCur->actorType.emplace(actor.actorUID, actor.TYPE);
+	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
 void Replication::EventPlayerConnect(i32 clientID)
@@ -364,7 +365,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = stageIndex;
+	cityMapInfo.cityMapID = Config().lobbyMap;
 	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 

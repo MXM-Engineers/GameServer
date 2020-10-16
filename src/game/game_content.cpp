@@ -1,5 +1,6 @@
 #include "game_content.h"
-
+#include "config.h"
+#include "core.h"
 #include <common/utils.h>
 #include <tinyxml2.h>
 #include <EAStdC/EAString.h>
@@ -159,15 +160,15 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
-bool GameXmlContent::LoadLobbyNormal()
+bool GameXmlContent::LoadMapList()
 {
 	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/Lobby_Normal/Spawn.xml");
+	PathAppend(xmlPath, L"/MAPLIST.xml");
 
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadLobbyNormal): failed to open '%ls'", xmlPath.data());
+	if (!fileData) {
+		LOG("ERROR(LoadMapList): failed to open '%ls'", xmlPath.data());
 		return false;
 	}
 	defer(memFree(fileData));
@@ -175,8 +176,136 @@ bool GameXmlContent::LoadLobbyNormal()
 	using namespace tinyxml2;
 	XMLDocument doc;
 	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadLobbyNormal): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMapList): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
+	do {
+		MapList mapList;
+		pMapElt->QueryAttribute("_Index", &mapList.index);
+
+		const char* levelFileTemp;
+		pMapElt->QueryStringAttribute("_LevelFile", &levelFileTemp);
+		mapList.levelFile = levelFileTemp;
+
+		const char* mapTypeXml;
+		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
+		
+		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
+		if (EA::StdC::Strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
+		{
+			mapList.mapType = MAP_CITY;
+		}
+		else if (EA::StdC::Strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
+		{
+			const char* gameSubModeTypeXml;
+
+			mapList.mapType = MAP_INGAME;
+		
+			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) != XML_SUCCESS)
+			{
+				// training room doesn't have a gamesubmode
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_DEATH_MATCH_NORMAL;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_CORE;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_BUSH;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_AUTHENTIC;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_FIRE_POWER;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_RUN;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_SURVIVAL;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_TUTORIAL;
+			}
+			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
+			{
+				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_NORMAL;
+			}
+			else
+			{
+				LOG("ERROR(LOADMAPLIST): Unsupported subGameMode %s", gameSubModeTypeXml);
+			}
+		}
+		else
+		{
+			LOG("ERROR(LOADMAPLIST): Unsupported map type");
+			return false;
+		}
+		
+		maplists.push_back(mapList);
+		pMapElt = pMapElt->NextSiblingElement();
+	} while (pMapElt);
+	
+	return true;
+}
+
+bool GameXmlContent::LoadMapByID(i32 index)
+{
+	const MapList* map = FindMapListByID(index);
+	if (!map){
+		LOG("ERROR(LoadMapByID): Map not found %d", index);
+		return false;
+	}
+
+	Path xmlPath = gameDataDir;
+
+	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
+	wchar_t* tempPath = tempPathData;
+	const char* levelFileString = map->levelFile.data();
+
+	eastl::DecodePart(levelFileString, map->levelFile.data() + EA::StdC::Strlen(map->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
+	PathAppend(xmlPath, L"/");
+	PathAppend(xmlPath, tempPathData);
+	PathAppend(xmlPath, L"/Spawn.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMapByID): failed to open '%ls'", xmlPath.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMapByID): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
 		return false;
 	}
 
@@ -195,94 +324,34 @@ bool GameXmlContent::LoadLobbyNormal()
 
 		spawn.type = Spawn::Type::NPC_SPAWN;
 		bool returnPoint;
-		if(pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
+		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
-		mapLobbyNormal.creatures.push_back(spawn);
+		mapLobby.spawns.push_back(spawn);
 
 		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
+	} while (pSpawnElt);
 
 	return true;
 }
 
-bool GameXmlContent::LoadPvpDeathmatch()
+
+bool GameXmlContent::LoadLobby(i32 index)
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/PVP_DeathMatch/Spawn.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadPvpDeathmatch): failed to open '%ls'", xmlPath.data());
+	const MapList* map = FindMapListByID(index);
+	if (!map) {
+		LOG("ERROR(LoadLobby): Map not found %d", index);
 		return false;
-	}
-	defer(memFree(fileData));
+	};
 
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadPvpDeathmatch): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
+	if (map->mapType != MAP_CITY)
+	{
+		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
 		return false;
 	}
 
-	XMLElement* pMapInfo = doc.FirstChildElement();
-	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
-
-	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
-	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
-	do {
-		Spawn spawn;
-		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
-		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
-		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
-		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
-		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
-		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
-		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
-		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
-
-		spawn.type = Spawn::Type::NPC_SPAWN;
-		bool returnPoint;
-		if(pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
-			spawn.type = Spawn::Type::SPAWN_POINT;
-		}
-
-		spawn.team = TeamID::INVALID;
-		const char* teamString;
-		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
-			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.team = TeamID::RED;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
-		}
-
-		mapPvpDeathMatch.creatures.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
-
-	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
-	pSpawnElt = pMapEntityDynamic->FirstChildElement();
-	do {
-		Spawn spawn;
-		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
-		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
-		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
-		pSpawnElt->QueryAttribute("kTranslate_y", &spawn.pos.y);
-		pSpawnElt->QueryAttribute("kTranslate_z", &spawn.pos.z);
-		pSpawnElt->QueryAttribute("kRotation_x", &spawn.rot.x);
-		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
-		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
-
-		spawn.type = Spawn::Type::NPC_SPAWN;
-
-		mapPvpDeathMatch.dynamic.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
-
-	return true;
+	return LoadMapByID(index);
 }
 
 bool GameXmlContent::LoadJukeboxSongs()
@@ -334,11 +403,11 @@ bool GameXmlContent::Load()
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
 
-	r = LoadLobbyNormal();
-	if(!r) return false;
+	r = LoadMapList();
+	if (!r) return false;
 
-	r = LoadPvpDeathmatch();
-	if(!r) return false;
+	r = LoadLobby(Config().lobbyMap);
+	if (!r) return false;
 
 	r = LoadJukeboxSongs();
 	if(!r) return false;
@@ -367,29 +436,27 @@ bool GameXmlContent::Load()
 		LOG("	weapons=[%s]", buff.data());
 	}
 
-	/*
 	LOG("Lobby_Normal:");
-	foreach(it, mapLobbyNormal.spawns) {
+	foreach(it, mapLobby.spawns) {
 		LOG("Spawn :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g)", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z);
 	}
-	*/
 
-	LOG("PVP_DeathMatch:");
-	foreach(it, mapPvpDeathMatch.creatures) {
-		LOG("Creature :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
-	}
-	foreach(it, mapPvpDeathMatch.dynamic) {
-		LOG("Dynamic :: docID=%d localID=%d pos=(%g, %g, %g) rot=(%g, %g, %g) team=%d", (i32)it->docID, it->localID, it->pos.x, it->pos.y, it->pos.z, it->rot.x, it->rot.y, it->rot.z, (i32)it->team);
-	}
-
-	/*
 	LOG("Jukebox songs:");
 	foreach(it, jukeboxSongs) {
 		LOG("ID=%d length=%d", (i32)it->ID, it->length);
 	}
-	*/
 
 	return true;
+}
+
+const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const
+{
+	foreach(it, maplists) {
+		if (it->index == index) {
+			return &(*it);
+		}
+	}
+	return nullptr;
 }
 
 const GameXmlContent::Song* GameXmlContent::FindJukeboxSongByID(SongID songID) const

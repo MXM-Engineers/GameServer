@@ -7,6 +7,7 @@ bool CConfig::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &devMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &traceNetwork) == 1) return true;
+	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &lobbyMap) == 1) return true;
 	return false;
 }
 
@@ -63,6 +64,7 @@ void CConfig::Print() const
 	LOG("	ListenPort=%d", listenPort);
 	LOG("	DevMode=%d", devMode);
 	LOG("	TraceNetwork=%d", traceNetwork);
+	LOG("	LobbyMap=%d", lobbyMap);
 	LOG("}");
 }
 

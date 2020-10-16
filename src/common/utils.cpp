@@ -24,13 +24,14 @@ void PathSet(Path& path, const wchar* str)
 
 void PathAppend(Path& path, const wchar* app)
 {
-	path.append(app);
-
 #ifdef CONF_DEBUG
-	foreach(it, path) {
-		ASSERT(*it != L'\\'); // path must be in linux form (path/to/thing)
+	const i32 len = EA::StdC::Strlen(app);
+	for(i32 i = 0; i < len; i++) {
+		ASSERT(app[i] != L'\\'); // path must be in linux form (path/to/thing)
 	}
 #endif
+
+	path.append(app);
 
 	// remove double '/'
 	foreach(it, path) {

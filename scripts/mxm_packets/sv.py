@@ -624,6 +624,12 @@ class ServerSerializer:
         print('    max=%d' % p.read_i32())
         print('}')
 
+    def serialize_62110(netid, p: common.PacketReader):
+        print('SN_StageRank {')
+        print('    rank=%d' % p.read_i32())
+        print('    timeScoreRank=%d' % p.read_i32())
+        print('}')
+
     def serialize_62113(netid, p: common.PacketReader):
         print('SA_GetCharacterInfo {')
         print('    characterID=%d' % p.read_i32())
@@ -768,6 +774,11 @@ class ServerSerializer:
             print('    },')
             count -= 1
         print('    ]')
+        print('}')
+
+    def serialize_62135(netid, p: common.PacketReader):
+        print('SN_TitleAdd {')
+        print('    NewTitleAdd=%d' % p.read_i32())
         print('}')
 
     def serialize_62158(netid, p: common.PacketReader):

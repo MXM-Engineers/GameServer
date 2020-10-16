@@ -12,7 +12,7 @@ struct Channel
 	};
 
 	Server* server;
-#if 0
+#if 1
 	Game game;
 #else
 	Game3v3 game;

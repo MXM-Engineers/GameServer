@@ -111,6 +111,8 @@ void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 
 	playerList.push_back(Player(clientID));
 	playerClientIDMap[clientID] = --playerList.end();
+
+	replication->SendAccountDataLobby(clientID, *accountData);
 }
 
 void Game::OnPlayerDisconnect(i32 clientID)
@@ -131,20 +133,20 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	playerAccountData[clientID] = nullptr;
 }
 
-void Game::OnPlayerGetCharacterInfo(i32 clientID, LocalActorID characterID)
+void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
 	// TODO: health
-	const World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	const World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientID == clientID);
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, LocalActorID characterID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(playerActorUID[clientID] != replication->GetWorldActorUID(clientID, characterID)) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
+	if(playerActorUID[clientID] != characterActorUID) {
+		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterActorUID);
 		return;
 	}
 
@@ -236,15 +238,8 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, LocalActorID characterID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
-	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
-	// LordSk (10/09/2020)
-	if(replication->GetLocalActorID(clientID, playerActorUID[clientID]) != characterID) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterID);
-		return;
-	}
-
 	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor);
 

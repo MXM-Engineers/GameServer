@@ -173,7 +173,7 @@ struct Replication
 	void SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg);
 	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
 
-	void SendAccountDataCity(i32 clientID, const AccountData& account);
+	void SendAccountDataLobby(i32 clientID, const AccountData& account);
 	void SendAccountDataPvp(i32 clientID, const AccountData& account);
 
 	void EventClientDisconnect(i32 clientID);

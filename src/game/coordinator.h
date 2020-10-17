@@ -19,9 +19,18 @@ struct Channel;
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
+	enum class ChannelID: i32 {
+		INVALID = -1,
+		FIRST = 0,
+		LOBBY = 0,
+		GAME = 1,
+		_COUNT,
+	};
+
 	Server* server;
-	Channel* channel;
-	AccountData accountData[Server::MAX_CLIENTS];
+	eastl::array<Channel*, (i32)ChannelID::_COUNT> channelList;
+	eastl::array<AccountData, Server::MAX_CLIENTS> accountData;
+	eastl::array<ChannelID, Server::MAX_CLIENTS> associatedChannel;
 	GrowableBuffer recvDataBuff;
 	EA::Thread::Thread thread;
 	Time localTime;

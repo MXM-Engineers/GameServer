@@ -16,11 +16,13 @@
 
 struct Listener
 {
+	Server& server;
+	const ListenerType type;
+
 	SOCKET listenSocket;
 	i32 listenPort;
-	Server& server;
 
-	Listener(Server* server_): server(*server_) {}
+	Listener(ListenerType type_, Server* server_): type(type_), server(*server_) {}
 
 	bool Init(i32 listenPort_)
 	{
@@ -89,7 +91,7 @@ struct Listener
 			}
 
 			LOG("New connection (%s)", GetIpString(clientAddr));
-			server.ListenerAddClient(clientSocket, clientAddr);
+			server.ListenerAddClient(clientSocket, clientAddr, type);
 		}
 	}
 };
@@ -150,8 +152,8 @@ int main(int argc, char** argv)
 	g_Server = &server;
 	server.doTraceNetwork = Config().TraceNetwork;
 
-	Listener listenLobby(&server);
-	static Listener listenGame(&server);
+	Listener listenLobby(ListenerType::LOBBY, &server);
+	static Listener listenGame(ListenerType::GAME, &server);
 	g_ListenerLobby = &listenLobby;
 	g_ListenerGame = &listenGame;
 

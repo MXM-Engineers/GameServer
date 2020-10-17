@@ -58,7 +58,7 @@ void Server::Cleanup()
 }
 
 // NOTE: this is called from listeners
-i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
+i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_, ListenerType listenerType)
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
@@ -95,6 +95,7 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
 			//info.port = htons(sin.sin_port);
 			info.port = sin.sin_port;
+			info.listenerType = listenerType;
 
 			clientIsConnected[clientID] = 1; // register the socket at the end, when everything is initialized
 			return clientID;

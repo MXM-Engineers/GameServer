@@ -16,6 +16,12 @@ enum {
 	SEND_BUFF_LEN=8192,
 };
 
+enum class ListenerType
+{
+	LOBBY = 0,
+	GAME = 1
+};
+
 #ifdef CONF_LINUX
 	#include <sys/types.h>
 	#include <sys/socket.h>
@@ -117,6 +123,7 @@ struct Server
 	{
 		u8 ip[4];
 		u16 port;
+		ListenerType listenerType;
 	};
 
 	struct ReceiveBufferHeader
@@ -142,7 +149,7 @@ struct Server
 	bool Init();
 	void Cleanup();
 
-	i32 ListenerAddClient(SOCKET s, const sockaddr& addr_);
+	i32 ListenerAddClient(SOCKET s, const sockaddr& addr_, ListenerType listenerType);
 	void DisconnectClient(i32 clientID);
 
 	void Update();

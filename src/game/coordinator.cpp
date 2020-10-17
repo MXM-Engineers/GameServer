@@ -39,12 +39,18 @@ intptr_t ThreadCoordinator(void* pData)
 void Coordinator::Init(Server* server_)
 {
 	// TODO: allocate channels dynamically
-	static Channel channelBridge;
-	channelBridge.Init(server_);
+	static Channel channelLobby_;
+	channelLobby_.Init(server_);
+
+	static Channel channelGame_;
+	channelGame_.Init(server_);
 
 	server = server_;
-	channel = &channelBridge;
+	channelList[(i32)ChannelID::LOBBY] = &channelLobby_;
+	channelList[(i32)ChannelID::GAME] = &channelLobby_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
+
+	associatedChannel.fill(ChannelID::INVALID);
 
 	thread.Begin(ThreadCoordinator, this);
 }
@@ -52,7 +58,10 @@ void Coordinator::Init(Server* server_)
 void Coordinator::Cleanup()
 {
 	LOG("Coordinator cleanup...");
-	channel->Cleanup();
+
+	foreach(it, channelList) {
+		(*it)->Cleanup();
+	}
 	thread.WaitForEnd();
 }
 
@@ -63,7 +72,23 @@ void Coordinator::Update(f64 delta)
 	// handle client disconnections
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
-	channel->CoordinatorHandleDisconnectedClients(clientDisconnectedList.data(), clientDisconnectedList.size());
+
+	for(i32 i = (i32)ChannelID::FIRST; i < (i32)ChannelID::_COUNT; i++) {
+		eastl::fixed_vector<i32,128> chanDiscList;
+
+		foreach(cl, clientDisconnectedList) {
+			if(associatedChannel[*cl] == (ChannelID)i) {
+				chanDiscList.push_back(*cl);
+			}
+		}
+
+		channelList[i]->CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
+	}
+
+	// clear client data
+	foreach(cl, clientDisconnectedList) {
+		associatedChannel[*cl] = ChannelID::INVALID;
+	}
 
 	// handle received data
 	server->TransferAllReceivedData(&recvDataBuff);
@@ -96,8 +121,8 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 		HANDLE_CASE(CQ_TierRecord);
 
 		default: {
-			// TODO: dispatch packets to games depending on clients playing on them
-			channel->CoordinatorClientHandlePacket(clientID, header, packetData);
+			ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
+			channelList[(i32)associatedChannel[clientID]]->CoordinatorClientHandlePacket(clientID, header, packetData);
 		} break;
 	}
 
@@ -135,10 +160,25 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	// TODO: verify version, protocol, etc
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
+	// assign to a channel
+	ASSERT(associatedChannel[clientID] == ChannelID::INVALID);
+	if(info.listenerType == ListenerType::LOBBY) {
+		associatedChannel[clientID] = ChannelID::LOBBY;
+	}
+	else if(info.listenerType == ListenerType::GAME) {
+		associatedChannel[clientID] = ChannelID::GAME;
+	}
+	else {
+		ASSERT(0); // case not handled
+	}
+
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
 	hello.serverType    = 1;
+	if(info.listenerType == ListenerType::GAME) {
+		hello.serverType = 2;
+	}
 	hello.clientIp[0] = info.ip[3];
 	hello.clientIp[1] = info.ip[2];
 	hello.clientIp[2] = info.ip[1];
@@ -187,7 +227,8 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	channel->CoordinatorRegisterNewPlayer(clientID, &account);
+	ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
+	channelList[(i32)associatedChannel[clientID]]->CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

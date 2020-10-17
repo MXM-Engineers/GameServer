@@ -2,6 +2,7 @@
 
 #include "coordinator.h"
 #include "game_content.h"
+#include "gm_3v3.h"
 
 intptr_t ThreadChannel(void* pData)
 {
@@ -35,11 +36,19 @@ intptr_t ThreadChannel(void* pData)
 	return 0;
 }
 
-bool Channel::Init(Server* server_)
+// TODO: replace listener type later on, this is just convenient for now
+bool Channel::Init(Server* server_, ListenerType type)
 {
 	server = server_;
 	replication.Init(server_);
-	game.Init(&replication);
+
+	switch(type) {
+		case ListenerType::LOBBY: game = new Game(); break;
+		case ListenerType::GAME: game = new Game3v3(); break;
+		default: ASSERT(0); //case not handled
+	}
+
+	game->Init(&replication);
 
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
@@ -63,7 +72,7 @@ void Channel::Update(f64 delta)
 		const LockGuard lock(mutexClientDisconnectedList);
 		foreach(it, clientDisconnectedList) {
 			const i32 clientID = *it;
-			game.OnPlayerDisconnect(clientID);
+			game->OnPlayerDisconnect(clientID);
 			replication.EventClientDisconnect(clientID);
 		}
 		clientDisconnectedList.clear();
@@ -73,7 +82,7 @@ void Channel::Update(f64 delta)
 	{
 		const LockGuard lock(mutexNewPlayerQueue);
 		foreach(it, newPlayerQueue) {
-			game.OnPlayerConnect(it->clientID, it->accountData);
+			game->OnPlayerConnect(it->clientID, it->accountData);
 			replication.EventPlayerConnect(it->clientID);
 		}
 		newPlayerQueue.clear();
@@ -95,7 +104,7 @@ void Channel::Update(f64 delta)
 		ClientHandlePacket(clientID, header, packetData);
 	}
 
-	game.Update(delta, localTime);
+	game->Update(delta, localTime);
 	replication.FrameEnd();
 }
 
@@ -152,7 +161,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 void Channel::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
-	game.OnPlayerReadyToLoad(clientID);
+	game->OnPlayerReadyToLoad(clientID);
 }
 
 void Channel::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -178,7 +187,7 @@ void Channel::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& he
 		return;
 	}
 
-	game.OnPlayerGetCharacterInfo(clientID, actorUID);
+	game->OnPlayerGetCharacterInfo(clientID, actorUID);
 }
 
 void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -192,7 +201,7 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 		return;
 	}
 
-	game.OnPlayerUpdatePosition(clientID, actorUID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+	game->OnPlayerUpdatePosition(clientID, actorUID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
 
 void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -204,7 +213,7 @@ void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& 
 
 	LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
 
-	game.OnPlayerChatMessage(clientID, chatType, msg, msgLen);
+	game->OnPlayerChatMessage(clientID, chatType, msg, msgLen);
 }
 
 void Channel::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -212,7 +221,7 @@ void Channel::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& 
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
 	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
 
-	game.OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
+	game->OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
 }
 
 void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -242,7 +251,7 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 		return;
 	}
 
-	game.OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
+	game->OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 
 void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -251,7 +260,7 @@ void Channel::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& he
 
 	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
 
-	game.OnPlayerJukeboxQueueSong(clientID, queue.songID);
+	game->OnPlayerJukeboxQueueSong(clientID, queue.songID);
 }
 
 void Channel::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -268,7 +277,7 @@ void Channel::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header,
 	destNick.assign(destNick_str, destNick_len);
 	msg.assign(msg_str, msg_len);
 
-	game.OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
+	game->OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
 }
 
 void Channel::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

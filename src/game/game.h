@@ -8,7 +8,24 @@
 
 struct AccountData;
 
-struct Game
+struct IGame
+{
+	virtual void Init(Replication* replication_) = 0;
+	virtual void Update(f64 delta, Time localTime_) = 0;
+
+	virtual void OnPlayerConnect(i32 clientID, const AccountData* accountData) = 0;
+	virtual void OnPlayerDisconnect(i32 clientID) = 0;
+	virtual void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) = 0;
+	virtual void OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) = 0;
+	virtual void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) = 0;
+	virtual void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) = 0;
+	virtual void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) = 0;
+	virtual void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate) = 0;
+	virtual void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID) = 0;
+	virtual void OnPlayerReadyToLoad(i32 clientID) = 0;
+};
+
+struct Game: IGame
 {
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
@@ -43,23 +60,23 @@ struct Game
 
 	Time localTime;
 
-	void Init(Replication* replication_);
-	void Update(f64 delta, Time localTime_);
+	void Init(Replication* replication_) override;
+	void Update(f64 delta, Time localTime_) override;
 
 	bool JukeboxQueueSong(i32 clientID, SongID songID);
 
 	bool LoadMap();
 
-	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
-	void OnPlayerDisconnect(i32 clientID);
-	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
-	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
-	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
-	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
-	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
-	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);
-	void OnPlayerReadyToLoad(i32 clientID);
+	void OnPlayerConnect(i32 clientID, const AccountData* accountData) override;
+	void OnPlayerDisconnect(i32 clientID) override;
+	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) override;
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) override;
+	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) override;
+	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) override;
+	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) override;
+	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate) override;
+	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID) override;
+	void OnPlayerReadyToLoad(i32 clientID) override;
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

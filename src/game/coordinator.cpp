@@ -40,14 +40,14 @@ void Coordinator::Init(Server* server_)
 {
 	// TODO: allocate channels dynamically
 	static Channel channelLobby_;
-	channelLobby_.Init(server_);
+	channelLobby_.Init(server_, ListenerType::LOBBY);
 
 	static Channel channelGame_;
-	channelGame_.Init(server_);
+	channelGame_.Init(server_, ListenerType::GAME);
 
 	server = server_;
 	channelList[(i32)ChannelID::LOBBY] = &channelLobby_;
-	channelList[(i32)ChannelID::GAME] = &channelLobby_;
+	channelList[(i32)ChannelID::GAME] = &channelGame_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
 	associatedChannel.fill(ChannelID::INVALID);

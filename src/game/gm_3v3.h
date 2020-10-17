@@ -5,10 +5,11 @@
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
 #include "world.h"
+#include "game.h"
 
 struct AccountData;
 
-struct Game3v3
+struct Game3v3: IGame
 {
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
@@ -44,21 +45,21 @@ struct Game3v3
 
 	Time localTime;
 
-	void Init(Replication* replication_);
-	void Update(f64 delta, Time localTime_);
+	void Init(Replication* replication_) override;
+	void Update(f64 delta, Time localTime_) override;
 
 	bool LoadMap();
 
-	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
-	void OnPlayerDisconnect(i32 clientID);
-	void OnPlayerReadyToLoad(i32 clientID);
-	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
-	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
-	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
-	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
-	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
-	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);
+	void OnPlayerConnect(i32 clientID, const AccountData* accountData) override;
+	void OnPlayerDisconnect(i32 clientID) override;
+	void OnPlayerReadyToLoad(i32 clientID) override;
+	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) override;
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) override;
+	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) override;
+	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) override;
+	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) override;
+	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate) override;
+	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID) override;
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

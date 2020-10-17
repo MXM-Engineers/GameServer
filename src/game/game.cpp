@@ -263,7 +263,7 @@ void Game::OnPlayerReadyToLoad(i32 clientID)
 
 bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
-	if(!Config().devMode) return false; // don't allow command when dev mode is not enabled
+	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 

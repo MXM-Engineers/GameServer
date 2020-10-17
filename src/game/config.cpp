@@ -4,10 +4,11 @@
 
 bool CConfig::ParseLine(const char* line)
 {
-	if(EA::StdC::Sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
-	if(EA::StdC::Sscanf(line, "DevMode=%d", &devMode) == 1) return true;
-	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &traceNetwork) == 1) return true;
-	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &lobbyMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "ListenLobbyPort=%d", &ListenLobbyPort) == 1) return true;
+	if(EA::StdC::Sscanf(line, "ListenGamePort=%d", &ListenGamePort) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
+	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
+	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
 	return false;
 }
 
@@ -61,10 +62,11 @@ bool CConfig::LoadConfigFile()
 void CConfig::Print() const
 {
 	LOG("Config = {");
-	LOG("	ListenPort=%d", listenPort);
-	LOG("	DevMode=%d", devMode);
-	LOG("	TraceNetwork=%d", traceNetwork);
-	LOG("	LobbyMap=%d", lobbyMap);
+	LOG("	ListenLobbyPort=%d", ListenLobbyPort);
+	LOG("	ListenGamePort=%d", ListenGamePort);
+	LOG("	DevMode=%d", DevMode);
+	LOG("	TraceNetwork=%d", TraceNetwork);
+	LOG("	LobbyMap=%d", LobbyMap);
 	LOG("}");
 }
 

@@ -35,44 +35,9 @@ intptr_t ThreadNetwork(void* pData)
 	return 0;
 }
 
-bool Server::Init(const char* listenPort)
+bool Server::Init()
 {
 	if(!NetworkInit()) return false;
-
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
-
-	// Resolve the local address and port to be used by the server
-	int iResult = getaddrinfo(NULL, listenPort, &hints, &result);
-	if (iResult != 0) {
-		LOG("ERROR: getaddrinfo failed: %d", iResult);
-		return false;
-	}
-	defer(freeaddrinfo(result));
-
-	serverSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if(serverSocket == INVALID_SOCKET) {
-		LOG("ERROR(socket): %d", NetworkGetLastError());
-		return false;
-	}
-
-	// Setup the TCP listening socket
-	iResult = bind(serverSocket, result->ai_addr, (int)result->ai_addrlen);
-	if(iResult == SOCKET_ERROR) {
-		LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
-		return false;
-	}
-
-	// listen
-	if(listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-		LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
-		return false;
-	}
 
 	memset(&clientIsConnected, 0, sizeof(clientIsConnected));
 
@@ -92,8 +57,8 @@ void Server::Cleanup()
 	NetworkCleanup();
 }
 
-// NOTE: this is called from the Main thread (listen thread)
-i32 Server::AddClient(SOCKET s, const sockaddr& addr_)
+// NOTE: this is called from listeners
+i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {

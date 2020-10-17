@@ -118,7 +118,7 @@ void Coordinator::ClientHandleReceivedChunk(i32 clientID, const u8* data, const 
 		const NetHeader& header = buff.Read<NetHeader>();
 		const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 
-		if(Config().traceNetwork) {
+		if(Config().TraceNetwork) {
 			fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, header.netID)), data, header.size);
 			server->packetCounter++;
 		}

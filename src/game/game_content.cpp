@@ -447,7 +447,7 @@ bool GameXmlContent::Load()
 	r = LoadMapList();
 	if (!r) return false;
 
-	r = LoadLobby(Config().lobbyMap);
+	r = LoadLobby(Config().LobbyMap);
 	if (!r) return false;
 
 	r = LoadPvpDeathmach();

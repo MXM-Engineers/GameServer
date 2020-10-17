@@ -126,7 +126,6 @@ struct Server
 	};
 
 	bool running;
-	SOCKET serverSocket;
 	eastl::array<u8,MAX_CLIENTS> clientIsConnected; // is guarded by ClientNet.mutexConnect
 	eastl::array<SOCKET,MAX_CLIENTS> clientSocket;
 	eastl::array<ClientNet,MAX_CLIENTS> clientNet;
@@ -140,10 +139,10 @@ struct Server
 	i32 packetCounter = 0;
 	bool doTraceNetwork = false;
 
-	bool Init(const char* listenPort);
+	bool Init();
 	void Cleanup();
 
-	i32 AddClient(SOCKET s, const sockaddr& addr_);
+	i32 ListenerAddClient(SOCKET s, const sockaddr& addr_);
 	void DisconnectClient(i32 clientID);
 
 	void Update();

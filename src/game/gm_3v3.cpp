@@ -249,7 +249,7 @@ void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 
 bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
-	if(!Config().devMode) return false; // don't allow command when dev mode is not enabled
+	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];

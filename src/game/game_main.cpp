@@ -4,8 +4,6 @@
 #include "config.h"
 #include <common/platform.h>
 
-Server* g_Server = nullptr;
-
 //#error
 // TODO:
 // - Fix how action states are checked for change. Currently if not invalid we send, then clear to invalid.
@@ -15,6 +13,101 @@ Server* g_Server = nullptr;
 // - split different kind of actors in Replication
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
+
+struct Listener
+{
+	SOCKET listenSocket;
+	i32 listenPort;
+	Server& server;
+
+	Listener(Server* server_): server(*server_) {}
+
+	bool Init(i32 listenPort_)
+	{
+		listenPort = listenPort_;
+		struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags = AI_PASSIVE;
+
+		// Resolve the local address and port to be used by the server
+		int iResult = getaddrinfo(NULL, FMT("%d", listenPort), &hints, &result);
+		if (iResult != 0) {
+			LOG("ERROR: getaddrinfo failed: %d", iResult);
+			return false;
+		}
+		defer(freeaddrinfo(result));
+
+		listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if(listenSocket == INVALID_SOCKET) {
+			LOG("ERROR(socket): %d", NetworkGetLastError());
+			return false;
+		}
+
+		// Setup the TCP listening socket
+		iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
+		if(iResult == SOCKET_ERROR) {
+			LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
+			return false;
+		}
+
+		// listen
+		if(listen(listenSocket, SOMAXCONN) == SOCKET_ERROR) {
+			LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
+			return false;
+		}
+		return true;
+	}
+
+	void Stop()
+	{
+		closesocket(listenSocket);
+		listenSocket = INVALID_SOCKET;
+	}
+
+	inline bool IsRunning() const { return listenSocket != INVALID_SOCKET; }
+
+	void Listen()
+	{
+		while(IsRunning()) {
+			// Accept a client socket
+			LOG("[%d] Waiting for a connection...", listenPort);
+			struct sockaddr clientAddr;
+			AddrLen addrLen = sizeof(sockaddr);
+			SOCKET clientSocket = accept(listenSocket, &clientAddr, &addrLen);
+			if(clientSocket == INVALID_SOCKET) {
+				if(IsRunning()) {
+					LOG("ERROR(accept): failed: %d", NetworkGetLastError());
+					return;
+				}
+				else {
+					break;
+				}
+			}
+
+			LOG("New connection (%s)", GetIpString(clientAddr));
+			server.ListenerAddClient(clientSocket, clientAddr);
+		}
+	}
+};
+
+Server* g_Server = nullptr;
+Listener* g_ListenerLobby = nullptr;
+Listener* g_ListenerGame = nullptr;
+
+intptr_t ThreadGameServerListen(void* pData)
+{
+	ProfileSetThreadName("GameServerListen");
+	const i32 cpuID = 0;
+	EA::Thread::SetThreadAffinityMask(1 << cpuID);
+
+	Listener& listener = *(Listener*)pData;
+	listener.Listen(); // blocking
+	return 0;
+}
 
 int main(int argc, char** argv)
 {
@@ -33,8 +126,8 @@ int main(int argc, char** argv)
 
 	bool r = SetCloseSignalHandler([](){
 		g_Server->running = false;
-		closesocket(g_Server->serverSocket);
-		g_Server->serverSocket = INVALID_SOCKET;
+		g_ListenerLobby->Stop();
+		g_ListenerGame->Stop();
 	});
 
 	if(!r) {
@@ -49,40 +142,43 @@ int main(int argc, char** argv)
 	}
 
 	static Server server;
-	r = server.Init(FMT("%d", Config().listenPort));
+	r = server.Init();
 	if(!r) {
 		LOG("ERROR: failed to initialize server");
 		return 1;
 	}
 	g_Server = &server;
-	server.doTraceNetwork = Config().traceNetwork;
+	server.doTraceNetwork = Config().TraceNetwork;
+
+	Listener listenLobby(&server);
+	static Listener listenGame(&server);
+	g_ListenerLobby = &listenLobby;
+	g_ListenerGame = &listenGame;
+
+	r = listenLobby.Init(Config().ListenLobbyPort);
+	if(!r) {
+		LOG("ERROR: Could not init lobby listener");
+		return 1;
+	}
+	r = listenGame.Init(Config().ListenGamePort);
+	if(!r) {
+		LOG("ERROR: Could not init game listener");
+		return 1;
+	}
 
 	static Coordinator coordinator;
 	coordinator.Init(&server);
 
-	// accept thread
-	while(server.running) {
-		// Accept a client socket
-		LOG("Waiting for a connection...");
-		struct sockaddr clientAddr;
-		AddrLen addrLen = sizeof(sockaddr);
-		SOCKET clientSocket = accept(server.serverSocket, &clientAddr, &addrLen);
-		if(clientSocket == INVALID_SOCKET) {
-			if(server.running) {
-				LOG("ERROR(accept): failed: %d", NetworkGetLastError());
-				return 1;
-			}
-			else {
-				break;
-			}
-		}
+	// listen on another thread
+	EA::Thread::Thread thread;
+	thread.Begin(ThreadGameServerListen, &listenGame);
 
-		LOG("New connection (%s)", GetIpString(clientAddr));
-		server.AddClient(clientSocket, clientAddr);
-	}
+	// listen on main thread
+	listenLobby.Listen();
 
 	LOG("Cleaning up...");
 
+	thread.WaitForEnd(); // wait for game listen thread to close
 	coordinator.Cleanup();
 	server.Cleanup();
 

@@ -22,6 +22,14 @@ class ClientSerializer:
 
         # TODO reverse the rest
 
+    def serialize_60009(netid, p: common.PacketReader):
+        print('CQ_AuthenticateGameServer {')
+        print('    name="%s"' % p.read_wstr())
+        print('    instantKey=%d' % p.read_i32())
+        print('    var=%d' % p.read_u32())
+        print('    b1=%d' % p.read_u8())
+        print('}')
+
     def serialize_60014(netid, p: common.PacketReader):
         print('ReadyToLoadCharacter {}')
 
@@ -60,6 +68,11 @@ class ClientSerializer:
     def serialize_60167(netid, p: common.PacketReader):
         print('CQ_GetGuildRankingSeasonList {')
         print('    rankingType=%d' % p.read_u8())
+        print('}')
+
+    def serialize_60167(netid, p: common.PacketReader):
+        print('CQ_180 {')
+        print('    charcterID=%d' % p.read_i32())
         print('}')
 
     def serialize_60245(netid, p: common.PacketReader):

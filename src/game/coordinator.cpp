@@ -114,6 +114,7 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 	switch(header.netID) {
 		HANDLE_CASE(CQ_FirstHello);
 		HANDLE_CASE(CQ_Authenticate);
+		HANDLE_CASE(CQ_AuthenticateGameServer);
 		HANDLE_CASE(CQ_GetGuildProfile);
 		HANDLE_CASE(CQ_GetGuildMemberList);
 		HANDLE_CASE(CQ_GetGuildHistoryList);
@@ -198,6 +199,48 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
 	i32 var = request.Read<i32>();
 	LOG("[client%03d] Client :: CQ_Authenticate :: %.*ls var=%d", clientID, nickLen, nick, var);
+
+	const Server::ClientInfo& info = server->clientInfo[clientID];
+
+	// TODO: check authentication
+
+	// send authentication result
+	Sv::SA_AuthResult auth;
+	auth.result = 91;
+	LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
+	SendPacket(clientID, auth);
+
+
+	// TODO: fetch account data
+	AccountData& account = accountData[clientID];
+	account = {};
+	account.nickname.assign(nick, nickLen);
+	account.guildTag = L"Alpha";
+	account.leaderMasterID = 0; // Lua
+
+	// remove the @plaync... part
+	i64 f = account.nickname.find(L'@');
+	if(f != -1) {
+		account.nickname = account.nickname.left(f);
+	}
+
+	// send account data
+	ClientSendAccountData(clientID);
+
+	// register new player to the game
+	ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
+	channelList[(i32)associatedChannel[clientID]]->CoordinatorRegisterNewPlayer(clientID, &account);
+}
+
+void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	ConstBuffer request(packetData, packetSize);
+	const u16 nickLen = request.Read<u16>();
+	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
+	i32 var = request.Read<i32>();
+	i32 var2 = request.Read<i32>();
+	u8 b1 = request.Read<u8>();
+	LOG("[client%03d] Client :: CQ_AuthenticateGameServer :: %.*ls var=%d var2=%d b1=%d", clientID, nickLen, nick, var, var2, b1);
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 

@@ -111,13 +111,13 @@ void Server::DisconnectClient(i32 clientID)
 	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	if(clientIsConnected[clientID] == 0) return;
 
+	ClientNet& client = clientNet[clientID];
+	const LockGuard lock(client.mutexConnect);
+
 	{
 		const LockGuard lock(mutexClientDisconnectedList);
 		clientDisconnectedList.push_back(clientID);
 	}
-
-	ClientNet& client = clientNet[clientID];
-	const LockGuard lock(client.mutexConnect);
 
 	closesocket(clientSocket[clientID]);
 	clientSocket[clientID] = INVALID_SOCKET;
@@ -142,12 +142,13 @@ void Server::ClientSend(i32 clientID, const void* data, i32 dataSize)
 void Server::Update()
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
+		ClientNet& client = clientNet[clientID];
+		const LockGuard lock(client.mutexConnect);
+
 		if(clientIsConnected[clientID] == 0) continue;
 
 		SOCKET sock = clientSocket[clientID];
 		ASSERT(sock != INVALID_SOCKET);
-
-		ClientNet& client = clientNet[clientID];
 
 		i32 len = 0;
 		NetPollResult r = client.async.PollReceive(&len);

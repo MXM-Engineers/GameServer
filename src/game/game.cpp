@@ -240,6 +240,13 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 
 void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
+	// FIXME: remove
+	// connect to gameserver when jumping
+	if(state == ActionStateID::JUMP_START_MOVESTATE) {
+		const u8 ip[4] = { 127, 0, 0, 1 };
+		replication->SendConnectToServer(clientID, *playerAccountData[clientID], ip, 12900);
+	}
+
 	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor);
 

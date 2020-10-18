@@ -719,9 +719,9 @@ class ServerSerializer:
     def serialize_62127(netid, p: common.PacketReader):
         print('SN_ProfileSkills {')
         print('    packetNum=%d' % p.read_u8())
-        print('    skills=[')
         
         count = p.read_u16()
+        print('    skills(%d)=[' % count)
         while count > 0:
             print('    {')
             print('      characterID=%d' % p.read_i32())
@@ -735,7 +735,7 @@ class ServerSerializer:
                 s += '(skillIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
                 prop_count -= 1
 
-            print('      properties=[%s]' % s)
+            print('      properties(%d)=[%s]' % (prop_count, s))
 
             print('    },')
             count -= 1

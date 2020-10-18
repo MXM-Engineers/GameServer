@@ -138,6 +138,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 
 	switch(header.netID) {
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
+		HANDLE_CASE(CN_ReadyToLoadGame);
 		HANDLE_CASE(CA_SetGameGvt);
 		HANDLE_CASE(CN_MapIsLoaded);
 		HANDLE_CASE(CQ_GetCharacterInfo);
@@ -161,6 +162,12 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 void Channel::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
+	game->OnPlayerReadyToLoad(clientID);
+}
+
+void Channel::HandlePacket_CN_ReadyToLoadGame(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 

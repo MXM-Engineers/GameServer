@@ -172,9 +172,25 @@ struct CQ_Authenticate
 	i32 var;
 };
 
+struct CQ_AuthenticateGameServer
+{
+	enum { NET_ID = 60009 };
+
+	u16 nickLen;
+	wchar nick[1]; // length is nickLen
+	i32 var;
+	i32 var2;
+	u8 b1;
+};
+
 struct CN_ReadyToLoadCharacter
 {
 	enum { NET_ID = 60014 };
+};
+
+struct CN_ReadyToLoadGame
+{
+	enum { NET_ID = 60021 };
 };
 
 struct CN_UpdatePosition
@@ -456,6 +472,22 @@ struct SN_TgchatServerInfo
 	u8 data[1]; // variable size
 
 	// TODO: proper ghidra reverse
+};
+
+struct SN_DoConnectGameServer
+{
+	enum { NET_ID = 62010 };
+
+	u16 port;
+	u8 ip[4];
+
+	i32 gameID;
+	u32 idcHash;
+
+	u16 nickLen;
+	wchar nick[1]; // length is nickLen
+
+	i32 instantKey;
 };
 
 struct SN_DoConnectChannelServer

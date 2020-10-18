@@ -771,11 +771,28 @@ void Replication::SendAccountDataLobby(i32 clientID, const AccountData& account)
 
 	// SN_ProfileSkills
 	{
-		u8 sendData[128];
+		u8 sendData[4096];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(1); // packetNum
-		packet.Write<u16>(0); // skills_count
+		packet.Write<u8>(1); // packetNum
+
+		i32 skillCount = 0;
+		foreach(it, content.masters) {
+			foreach(skill, it->skillIDs) {
+				skillCount++;
+			}
+		}
+		packet.Write<u16>(skillCount); // skills_count
+
+		foreach(it, content.masters) {
+			foreach(skill, it->skillIDs) {
+				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
+				packet.Write<SkillID>(*skill);
+				packet.Write<u8>(1); // isUnlocked
+				packet.Write<u8>(1); // isActivated
+				packet.Write<u16>(0); // properties_count
+			}
+		}
 
 		LOG("[client%03d] Server :: SN_ProfileSkills :: ", clientID);
 		SendPacketData(clientID, Sv::SN_ProfileSkills::NET_ID, packet.size, packet.data);
@@ -1399,6 +1416,24 @@ void Replication::SendAccountDataPvp(i32 clientID, const AccountData& account)
 		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameFieldReady>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_GameFieldReady::NET_ID, packet.size, packet.data);
 	}
+}
+
+void Replication::SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port)
+{
+	u8 sendData[1024];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<u16>(port);
+	packet.WriteRaw(ip, 4);
+	packet.Write<i32>(449); // gameID
+	packet.Write<u32>(3490298546); // idcHash
+	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
+	packet.Write<i32>(340); // instantKey
+
+	LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_DoConnectGameServer>(packet.data, packet.size));
+	SendPacketData(clientID, Sv::SN_DoConnectGameServer::NET_ID, packet.size, packet.data);
+
+	// NOTE: client will disconnect on reception
 }
 
 void Replication::EventClientDisconnect(i32 clientID)

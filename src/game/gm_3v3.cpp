@@ -83,6 +83,7 @@ void Game3v3::OnPlayerDisconnect(i32 clientID)
 void Game3v3::OnPlayerReadyToLoad(i32 clientID)
 {
 	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
+	OnPlayerSetLeaderCharacter(clientID, (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (u32)ClassType::LUA), SkinIndex::DEFAULT);
 }
 
 void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)

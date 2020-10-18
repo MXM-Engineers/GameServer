@@ -18,6 +18,8 @@ namespace PS
 template<typename Packet>
 const char* PacketSerialize(const void* packetData, const i32 packetSize)
 {
+	// implement
+	STATIC_ASSERT(0);
 	ASSERT(0);
 	return nullptr;
 }
@@ -33,6 +35,24 @@ inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, co
 	SER("	dwErrorCRC=%x", buff.Read<u32>());
 	SER("	version=%x", buff.Read<u32>());
 	SER("	unknown=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_DoConnectGameServer>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_DoConnectGameServer(%d, %d) :: {", Sv::SN_DoConnectGameServer::NET_ID, packetSize);
+	SER("	port=%x", buff.Read<u16>());
+	SER("	ip=(%d.%d.%d.%d)", buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>());
+	SER("	gameID=%d", buff.Read<i32>());
+	SER("	idcHash=%u", buff.Read<u32>());
+	SER("	nickname='%s'", buff.ReadWideStringObj().data());
+	SER("	instantKey=%d", buff.Read<i32>());
 	SER("}");
 
 	return str.data();

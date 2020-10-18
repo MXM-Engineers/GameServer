@@ -82,7 +82,7 @@ struct Listener
 			SOCKET clientSocket = accept(listenSocket, &clientAddr, &addrLen);
 			if(clientSocket == INVALID_SOCKET) {
 				if(IsRunning()) {
-					LOG("ERROR(accept): failed: %d", NetworkGetLastError());
+					LOG("[%d] ERROR(accept): failed: %d", listenPort, NetworkGetLastError());
 					return;
 				}
 				else {
@@ -90,7 +90,7 @@ struct Listener
 				}
 			}
 
-			LOG("New connection (%s)", GetIpString(clientAddr));
+			LOG("[%d] New connection (%s)", listenPort, GetIpString(clientAddr));
 			server.ListenerAddClient(clientSocket, clientAddr, type);
 		}
 	}

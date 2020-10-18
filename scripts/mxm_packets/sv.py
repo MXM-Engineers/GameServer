@@ -239,9 +239,9 @@ class ServerSerializer:
     def serialize_62048(netid, p: common.PacketReader):
         print('SN_PlayerSkillSlot {')
         print('    characterID=%d' % p.read_i32())
-        print('    slots=[')
 
         count = p.read_u16()
+        print('    slots(%d)=[' % count)
         while count > 0:
             print('    {')
             print('      skillIndex=%d' % p.read_i32())
@@ -254,7 +254,7 @@ class ServerSerializer:
                 s += '(skillPropertyIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
                 prop_count -= 1
 
-            print('      propList=[%s]' % s)
+            print('      propList(%d)=[%s]' % (prop_count, s))
             print('      isUnlocked=%d' % p.read_u8())
             print('      isActivated=%d' % p.read_u8())
             print('    },')

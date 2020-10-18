@@ -138,9 +138,10 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 
 	switch(header.netID) {
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
-		HANDLE_CASE(CN_ReadyToLoadGame);
+		HANDLE_CASE(CN_ReadyToLoadGameMap);
 		HANDLE_CASE(CA_SetGameGvt);
 		HANDLE_CASE(CN_MapIsLoaded);
+		HANDLE_CASE(CN_GameMapLoaded);
 		HANDLE_CASE(CQ_GetCharacterInfo);
 		HANDLE_CASE(CN_UpdatePosition);
 		HANDLE_CASE(CN_ChannelChatMessage);
@@ -165,7 +166,7 @@ void Channel::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader
 	game->OnPlayerReadyToLoad(clientID);
 }
 
-void Channel::HandlePacket_CN_ReadyToLoadGame(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void Channel::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
@@ -180,6 +181,12 @@ void Channel::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, 
 void Channel::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
+	replication.SetPlayerAsInGame(clientID);
+}
+
+void Channel::HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: CN_GameMapLoaded ::", clientID);
 	replication.SetPlayerAsInGame(clientID);
 }
 

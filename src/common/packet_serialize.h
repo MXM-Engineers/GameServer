@@ -254,6 +254,24 @@ inline const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData,
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SN_WeaponState>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_WeaponState(%d, %d) :: {", Sv::SN_WeaponState::NET_ID, packetSize);
+	SER("	ownerID=%d", buff.Read<LocalActorID>());
+	SER("	weaponID=%d", buff.Read<i32>());
+	SER("	state=%d", buff.Read<i32>());
+	SER("	chargeLevel=%d", buff.Read<u8>());
+	SER("	firingCombo=%d", buff.Read<u8>());
+	SER("	result=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
 
 #undef SER_BEGIN
 #undef SER

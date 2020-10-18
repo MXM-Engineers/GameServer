@@ -188,7 +188,12 @@ struct CN_ReadyToLoadCharacter
 	enum { NET_ID = 60014 };
 };
 
-struct CN_ReadyToLoadGame
+struct CN_GameMapLoaded
+{
+	enum { NET_ID = 60016 };
+};
+
+struct CN_ReadyToLoadGameMap
 {
 	enum { NET_ID = 60021 };
 };
@@ -1209,6 +1214,14 @@ struct SA_PartyCreate
 	i32 ownerUserID;
 	i32 stageType;
 };
+
+struct SN_UpdateGameOwner
+{
+	enum { NET_ID = 62224 };
+
+	i32 userID;
+};
+ASSERT_SIZE(SN_UpdateGameOwner, 4);
 
 struct SN_SummaryInfoLatest
 {

@@ -33,6 +33,9 @@ class ClientSerializer:
     def serialize_60014(netid, p: common.PacketReader):
         print('ReadyToLoadCharacter {}')
 
+    def serialize_60016(netid, p: common.PacketReader):
+        print('CN_GameMapLoaded {}')
+
     def serialize_60022(netid, p: common.PacketReader):
         print('CN_UpdatePosition {')
         print('    playerID=%d' % p.read_i32())
@@ -73,6 +76,11 @@ class ClientSerializer:
     def serialize_60167(netid, p: common.PacketReader):
         print('CQ_180 {')
         print('    charcterID=%d' % p.read_i32())
+        print('}')
+
+    def serialize_60235(netid, p: common.PacketReader):
+        print('CQ_LoadingProgressData {')
+        print('    progress=%d' % p.read_u8())
         print('}')
 
     def serialize_60245(netid, p: common.PacketReader):

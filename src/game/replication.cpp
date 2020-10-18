@@ -385,40 +385,23 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 {
+	Sv::SN_UpdateGameOwner owner;
+	owner.userID = 1;
+	LOG("[client%03d] Server :: SN_UpdateGameOwner :: { userID=%d }", clientID, owner.userID);
+	SendPacket(clientID, owner);
+
 	Sv::SN_LobbyStartGame lobby;
 	lobby.stageType = StageType::GAME_INSTANCE;
-	LOG("[client%03d] Server :: SN_LobbyStartGame :: stageType=GAME_INSTANCE", clientID);
+	LOG("[client%03d] Server :: SN_LobbyStartGame :: { stageType=GAME_INSTANCE }", clientID);
 	SendPacket(clientID, lobby);
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
 	cityMapInfo.cityMapID = stageIndex;
-	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
+	LOG("[client%03d] Server :: SN_CityMapInfo :: { cityMapID=%d }", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 
 	/*
-	// SN_InitIngameModeInfo
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
-		packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
-		packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
-		packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
-		packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
-		packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
-		packet.Write<i32>(20); // chPropertyResetCoolTime
-		packet.Write<u8>(0); // transformationPieceCount
-		packet.Write<u16>(0); // titanDocIndexes_count
-		packet.Write<u8>(0); // nextTitanIndex
-		packet.Write<u16>(0); // listExceptionStat_count
-
-		LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
-		SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
-	}
-	*/
-
 	// SN_WeaponState
 	{
 		u8 sendData[1024];
@@ -431,16 +414,40 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 		packet.Write<u8>(0); // firingCombo
 		packet.Write<i32>(-1); // result
 
-		LOG("[client%03d] Server :: SN_WeaponState :: ", clientID);
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_WeaponState>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_WeaponState::NET_ID, packet.size, packet.data);
 	}
 
-	playerState[clientID] = PlayerState::IN_GAME;
+	playerState[clientID] = PlayerState::IN_GAME;*/
 }
 
 void Replication::SetPlayerAsInGame(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
+
+	// FIXME: move this
+	if(stageType == StageType::GAME_INSTANCE) {
+		// SN_InitIngameModeInfo
+		{
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
+			packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
+			packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
+			packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
+			packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
+			packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
+			packet.Write<i32>(20); // chPropertyResetCoolTime
+			packet.Write<u8>(0); // transformationPieceCount
+			packet.Write<u16>(0); // titanDocIndexes_count
+			packet.Write<u8>(0); // nextTitanIndex
+			packet.Write<u16>(0); // listExceptionStat_count
+
+			LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
+			SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
+		}
+	}
 }
 
 void Replication::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)

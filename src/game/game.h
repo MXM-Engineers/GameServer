@@ -23,6 +23,8 @@ struct IGame
 	virtual void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate) = 0;
 	virtual void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID) = 0;
 	virtual void OnPlayerReadyToLoad(i32 clientID) = 0;
+	virtual void OnPlayerLoadingComplete(i32 clientID) {};
+	virtual void OnPlayerGameIsReady(i32 clientID) {};
 };
 
 struct Game: IGame

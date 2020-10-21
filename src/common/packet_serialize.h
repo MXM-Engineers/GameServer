@@ -6,9 +6,14 @@ namespace PS
 {
 	inline eastl::fixed_string<char,8192,false>& NewString()
 	{
-		static eastl::fixed_string<char,8192,false> buff;
+		thread_local eastl::fixed_string<char,8192,false> buff;
 		buff.clear();
 		return buff;
+	}
+
+	inline const char* Vec3ToStr(const Vec3& v)
+	{
+		return FMT("(%g, %g, %g)", v.x, v.y, v.z);
 	}
 }
 
@@ -59,6 +64,150 @@ inline const char* PacketSerialize<Sv::SN_DoConnectGameServer>(const void* packe
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_GameCreateActor>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GameCreateActor(%d, %d) :: {", Sv::SN_GameCreateActor::NET_ID, packetSize);
+	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("	nType=%d", buff.Read<i32>());
+	SER("	nIDX=%d", buff.Read<CreatureIndex>());
+	SER("	dwLocalID=%d", buff.Read<i32>());
+	SER("	p3nPos=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	p3nDir=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	spawnType=%d", buff.Read<i32>());
+	SER("	actionState=%d", buff.Read<i32>());
+	SER("	ownerID=%d", buff.Read<i32>());
+	SER("	bDirectionToNearPC=%d", buff.Read<u8>());
+	SER("	AiWanderDistOverride=%d", buff.Read<i32>());
+	SER("	tagID=%d", buff.Read<i32>());
+	SER("	faction=%d", buff.Read<i32>());
+	SER("	classType=%d", buff.Read<i32>());
+	SER("	skinIndex=%d", buff.Read<i32>());
+	SER("	seed=%d", buff.Read<i32>());
+	SER("	initStat={");
+
+	const u16 maxStats_count = buff.Read<u16>();
+	SER("		maxStats(%d)=[", maxStats_count);
+	for(int i = 0; i < maxStats_count; i++) {
+		u8 type = buff.Read<u8>();
+		f32 value = buff.Read<f32>();
+		SER("			(type=%d value=%g),", type, value);
+	}
+	SER("		]");
+
+	const u16 curStats_count = buff.Read<u16>();
+	SER("		curStats(%d)=[", curStats_count);
+	for(int i = 0; i < curStats_count; i++) {
+		u8 type = buff.Read<u8>();
+		f32 value = buff.Read<f32>();
+		SER("			(type=%d value=%g),", type, value);
+	}
+	SER("		]");
+	SER("	}");
+
+	SER("	isInSight=%d", buff.Read<u8>());
+	SER("	isDead=%d", buff.Read<u8>());
+	SER("	serverTime=%lld", buff.Read<i64>());
+
+	SER("	meshChangeActionHistory=[");
+	const u16 meshChangeActionHistory_count = buff.Read<u16>();
+	for(int i = 0; i < meshChangeActionHistory_count; i++) {
+		SER("		(actionState=%d serverTime=%lld),", buff.Read<i32>(), buff.Read<i64>());
+	}
+	SER("	]");
+
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GameCreateSubActor(%d, %d) :: {", Sv::SN_GameCreateSubActor::NET_ID, packetSize);
+	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("	mainEntityID=%d", buff.Read<LocalActorID>());
+	SER("	nType=%d", buff.Read<i32>());
+	SER("	nIDX=%d", buff.Read<CreatureIndex>());
+	SER("	dwLocalID=%d", buff.Read<i32>());
+	SER("	p3nPos=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	p3nDir=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	spawnType=%d", buff.Read<i32>());
+	SER("	actionState=%d", buff.Read<i32>());
+	SER("	ownerID=%d", buff.Read<i32>());
+	SER("	tagID=%d", buff.Read<i32>());
+	SER("	faction=%d", buff.Read<i32>());
+	SER("	classType=%d", buff.Read<i32>());
+	SER("	skinIndex=%d", buff.Read<i32>());
+	SER("	seed=%d", buff.Read<i32>());
+	SER("	initStat={");
+
+	const u16 maxStats_count = buff.Read<u16>();
+	SER("		maxStats(%d)=[", maxStats_count);
+	for(int i = 0; i < maxStats_count; i++) {
+		u8 type = buff.Read<u8>();
+		f32 value = buff.Read<f32>();
+		SER("			(type=%d value=%g),", type, value);
+	}
+	SER("		]");
+
+	const u16 curStats_count = buff.Read<u16>();
+	SER("		curStats(%d)=[", curStats_count);
+	for(int i = 0; i < curStats_count; i++) {
+		u8 type = buff.Read<u8>();
+		f32 value = buff.Read<f32>();
+		SER("			(type=%d value=%g),", type, value);
+	}
+	SER("		]");
+	SER("	}");
+
+	SER("	meshChangeActionHistory=[");
+	const u16 meshChangeActionHistory_count = buff.Read<u16>();
+	for(int i = 0; i < meshChangeActionHistory_count; i++) {
+		SER("		(actionState=%d serverTime=%lld),", buff.Read<i32>(), buff.Read<i64>());
+	}
+	SER("	]");
+
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_StatusSnapshot>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_StatusSnapshot(%d, %d) :: {", Sv::SN_PlayerSkillSlot::NET_ID, packetSize);
+	SER("	objectID=%d", buff.Read<LocalActorID>());
+
+	const u16 count = buff.Read<u16>();
+	SER("	statusArray(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		statusIndex=%d", buff.Read<SkillID>());
+		SER("		bEnabled=%d", buff.Read<u8>());
+		SER("		caster=%d", buff.Read<i32>());
+		SER("		overlapCount=%d", buff.Read<u8>());
+		SER("		customValue=%d", buff.Read<u8>());
+		SER("		durationTimeMs=%d", buff.Read<i32>());
+		SER("		remainTimeMs=%d", buff.Read<i32>());
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -87,6 +236,24 @@ inline const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetDat
 	SER("	currentSkillSlot1=%d", buff.Read<i32>());
 	SER("	currentSkillSlot2=%d", buff.Read<i32>());
 	SER("	shirkSkillSlot=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_LoadClearedStages>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_LoadClearedStages(%d, %d) :: {", Sv::SN_LoadClearedStages::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	clearedStageList(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("	%d,", buff.Read<i32>());
+	}
+	SER("	]");
 	SER("}");
 
 	return str.data();
@@ -157,6 +324,45 @@ inline const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData
 
 	SER("	]");
 	SER("	surrenderAbleTime=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GamePlayerEquipWeapon>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GamePlayerEquipWeapon(%d, %d) :: {", Sv::SN_GamePlayerEquipWeapon::NET_ID, packetSize);
+	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	weaponIndex=%d", buff.Read<WeaponIndex>());
+	SER("	additionnalOverHeatGauge=%d", buff.Read<i32>());
+	SER("	additionnalOverHeatGaugeRatio=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GamePlayerStock>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GamePlayerStock(%d, %d) :: {", Sv::SN_GamePlayerStock::NET_ID, packetSize);
+	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	name='%S'", buff.ReadWideStringObj().data());
+	SER("	classType=%d", buff.Read<ClassType>());
+	SER("	displayTitleIDX=%d", buff.Read<i32>());
+	SER("	statTitleIDX=%d", buff.Read<i32>());
+	SER("	badgeType=%d", buff.Read<u8>());
+	SER("	badgeTierLevel=%d", buff.Read<u8>());
+	SER("	guildTag='%S'", buff.ReadWideStringObj().data());
+	SER("	vipLevel=%d", buff.Read<u8>());
+	SER("	staffType=%d", buff.Read<u8>());
+	SER("	isSubstituted=%d", buff.Read<u8>());
 	SER("}");
 
 	return str.data();
@@ -255,6 +461,35 @@ inline const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData,
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_NotifyPcDetailInfos>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_NotifyPcDetailInfos(%d, %d) :: {", Sv::SN_NotifyPcDetailInfos::NET_ID, packetSize);
+
+	const u16 count = buff.Read<u16>();
+	SER("	pcList(%d)=[", count);
+
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		userID=%d", buff.Read<i32>());
+		Sv::SN_NotifyPcDetailInfos::ST_PcInfo mainPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
+		Sv::SN_NotifyPcDetailInfos::ST_PcInfo subPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
+		SER("		mainPc=(characterID=%d docID=%d classType=%d hp=%d maxHp=%d)", mainPc.characterID, mainPc.docID, mainPc.classType, mainPc.hp, mainPc.maxHp);
+		SER("		subPc=(characterID=%d docID=%d classType=%d hp=%d maxHp=%d)", subPc.characterID, subPc.docID, subPc.classType, subPc.hp, subPc.maxHp);
+		SER("		remainTagCooltimeMS=%d", buff.Read<i32>());
+		SER("		canCastSkillSlotUG=%d", buff.Read<u8>());
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_WeaponState>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -267,6 +502,33 @@ inline const char* PacketSerialize<Sv::SN_WeaponState>(const void* packetData, c
 	SER("	chargeLevel=%d", buff.Read<u8>());
 	SER("	firingCombo=%d", buff.Read<u8>());
 	SER("	result=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_InitScoreBoard>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_InitScoreBoard(%d, %d) :: {", Sv::SN_InitScoreBoard::NET_ID, packetSize);
+
+	const u16 count = buff.Read<u16>();
+	SER("	userInfos(%d)=[", count);
+
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		usn=%d", buff.Read<i32>());
+		SER("		name='%S'", buff.ReadWideStringObj().data());
+		SER("		teamType=%d", buff.Read<i32>());
+		SER("		mainCreatureIndex=%d", buff.Read<CreatureIndex>());
+		SER("		subCreatureIndex=%d", buff.Read<CreatureIndex>());
+		SER("	},");
+	}
+
+	SER("	]");
 	SER("}");
 
 	return str.data();

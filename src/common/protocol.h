@@ -240,6 +240,16 @@ struct CA_SetGameGvt
 };
 ASSERT_SIZE(CA_SetGameGvt, 12);
 
+struct CQ_GameIsReady
+{
+	enum { NET_ID = 60032 };
+};
+
+struct CQ_LoadingComplete
+{
+	enum { NET_ID = 60033 };
+};
+
 struct CN_MapIsLoaded
 {
 	enum { NET_ID = 60034 };
@@ -339,6 +349,13 @@ struct CQ_WhisperSend
 	u16 msg_len;
 	wchar msg[1];
 };
+
+struct CQ_LoadingProgressData
+{
+	enum { NET_ID = 60235 };
+	u8 progress;
+};
+ASSERT_SIZE(CQ_LoadingProgressData, 1);
 
 struct CQ_RTT_Time
 {
@@ -543,7 +560,7 @@ struct SN_GameCreateActor
 
 	LocalActorID objectID;
 	i32 nType;
-	i32 nIDX;
+	CreatureIndex nIDX;
 	i32 dwLocalID;
 	Vec3 p3nPos;
 	Vec3 p3nDir;
@@ -747,8 +764,15 @@ struct SN_LobbyStartGame
 
 	StageType stageType;
 };
-
 ASSERT_SIZE(SN_LobbyStartGame, 4);
+
+struct SN_LoadClearedStages
+{
+	enum { NET_ID = 62064 };
+
+	u16 count;
+	i32 clearedStageList[1];
+};
 
 struct SN_GameFieldReady
 {
@@ -846,10 +870,10 @@ struct SN_GamePlayerStock
 {
 	enum { NET_ID = 62089 };
 
-	i32 playerID;
+	LocalActorID playerID;
 	u16 name_len;
 	wchar name[1];
-	i32 class_;
+	ClassType classType;
 	i32 displayTitleIDX;
 	i32 statTitleIDX;
 	u8 badgeType;
@@ -1731,6 +1755,29 @@ struct SQ_Heartbeat
 	enum { NET_ID = 62446 };
 };
 
+struct SN_RunClientLevelEvent
+{
+	enum { NET_ID = 62448 };
+
+	i32 eventID;
+	i32 caller;
+	i64 serverTime;
+};
+ASSERT_SIZE(SN_RunClientLevelEvent, 16);
+
+PUSH_PACKED
+struct SN_RunClientLevelEventSeq
+{
+	enum { NET_ID = 62449 };
+
+	i32 needCompleteTriggerAckID;
+	i32 rootEventID;
+	i32 caller;
+	i64 serverTime;
+};
+POP_PACKED
+ASSERT_SIZE(SN_RunClientLevelEventSeq, 20);
+
 struct SA_TierRecord
 {
 	enum { NET_ID = 62469 };
@@ -1759,6 +1806,17 @@ struct SA_TierRecord
 	PST_TierStageRecord stageRecordList[1];
 };
 
+PUSH_PACKED
+struct SN_NotifyIsInSafeZone
+{
+	enum { NET_ID = 62473 };
+
+	i32 userID;
+	u8 inSafeZone;
+};
+POP_PACKED
+ASSERT_SIZE(SN_NotifyIsInSafeZone, 5);
+
 struct SN_NotifyIngameSkillPoint
 {
 	enum { NET_ID = 62474 };
@@ -1767,6 +1825,18 @@ struct SN_NotifyIngameSkillPoint
 	i32 skillPoint;
 };
 ASSERT_SIZE(SN_NotifyIngameSkillPoint, 8);
+
+PUSH_PACKED
+struct SN_NotifyTimestamp
+{
+	enum { NET_ID = 62481 };
+
+	i64 serverTimestamp;
+	i32 curCount;
+	i32 maxCount;
+};
+POP_PACKED
+ASSERT_SIZE(SN_NotifyTimestamp, 16);
 
 PUSH_PACKED
 struct SA_RTT_Time
@@ -1817,6 +1887,24 @@ struct SN_AccountEquipmentList
 	i32 supportKitDocIndex;
 };
 ASSERT_SIZE(SN_AccountEquipmentList, 4);
+
+struct SN_InitScoreBoard
+{
+	enum { NET_ID = 62575 };
+
+	struct PST_ScoreBoardUserInfo
+	{
+		i32 usn;
+		u16 nickname_len;
+		wchar nick[1];
+		i32 teamType;
+		CreatureIndex mainCreatureIndex;
+		CreatureIndex subCreatureIndex;
+	};
+
+	u16 userInfos_count;
+	PST_ScoreBoardUserInfo userInfos[1];
+};
 
 struct SN_InitIngameModeInfo
 {

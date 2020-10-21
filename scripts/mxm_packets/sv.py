@@ -143,22 +143,21 @@ class ServerSerializer:
         print('    seed=%d' % p.read_i32())
 
         print('    initStat={')
-        
-        count = p.read_u16()
-        s = ''
-        while count > 0:
-            s += '(type=%d value=%g), ' % (p.read_u8(), p.read_f32())
-            count -= 1
-
-        print('      maxStats=[%s]' % s)
 
         count = p.read_u16()
-        s = ''
+        print('        maxStats(%d)=[' % count)
         while count > 0:
-            s += '(type=%d value=%g), ' % (p.read_u8(), p.read_f32())
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
             count -= 1
+        print('      ]')
 
-        print('      curStats=[%s]' % s)
+        count = p.read_u16()
+        print('        curStats(%d)=[' % count)
+        while count > 0:
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
+            count -= 1
+        print('      ]')
+
         print('    }')
         print('    isInSight=%d' % p.read_u8())
         print('    isDead=%d' % p.read_u8())
@@ -194,20 +193,19 @@ class ServerSerializer:
         print('    initStat={')
         
         count = p.read_u16()
-        s = ''
+        print('        maxStats(%d)=[' % count)
         while count > 0:
-            s += '(type=%d value=%g), ' % (p.read_u8(), p.read_f32())
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
             count -= 1
-
-        print('      maxStats=[%s]' % s)
+        print('      ]')
 
         count = p.read_u16()
-        s = ''
+        print('        curStats(%d)=[' % count)
         while count > 0:
-            s += '(type=%d value=%g), ' % (p.read_u8(), p.read_f32())
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
             count -= 1
+        print('      ]')
 
-        print('      curStats=[%s]' % s)
         print('    }')
         print('    meshChangeActionHistory_count=%d' % p.read_u16())
         print('}')
@@ -1514,6 +1512,21 @@ class ServerSerializer:
     def serialize_62446(netid, p: common.PacketReader):
         print('SQ_Heartbeat {}')
 
+    def serialize_62448(netid, p: common.PacketReader):
+        print('SN_RunClientLevelEvent {')
+        print('    eventID=%d' % p.read_i32())
+        print('    caller=%d' % p.read_i32())
+        print('    serverTime=%d' % p.read_i64())
+        print('}')
+
+    def serialize_62449(netid, p: common.PacketReader):
+        print('SN_RunClientLevelEventSeq {')
+        print('    needCompleteTriggerAckID=%d' % p.read_i32())
+        print('    rootEventID=%d' % p.read_i32())
+        print('    caller=%d' % p.read_i32())
+        print('    serverTime=%d' % p.read_i64())
+        print('}')
+
     def serialize_62450(netid, p: common.PacketReader):
         print('SN_LoadingProgressData {')
         print('    usn=%d' % p.read_i32())
@@ -1600,6 +1613,13 @@ class ServerSerializer:
         print('SN_NotifyIngameSkillPoint {')
         print('    userID=%d' % p.read_i32())
         print('    skillPoint=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62481(netid, p: common.PacketReader):
+        print('SN_NotifyTimestamp {')
+        print('    serverTimeStamp=%d' % p.read_i64())
+        print('    curCount=%d' % p.read_i32())
+        print('    maxCount=%d' % p.read_i32())
         print('}')
 
     def serialize_62482(netid, p: common.PacketReader):
@@ -1789,6 +1809,22 @@ class ServerSerializer:
             count -= 1
         
         print('    stageList=[%s]' % s)
+        print('}')
+
+    def serialize_62575(netid, p: common.PacketReader):
+        print('SN_InitScoreBoard {')
+        
+        count = p.read_u16()
+        print('    userInfos(%d)=[' % count)
+        while count > 0:
+            print('    {')
+            print('      usn=%d' % p.read_i32())
+            print('      nickname="%s"' % p.read_wstr())
+            print('      teamType=%d' % p.read_i32())
+            print('      mainCreatureIndex=%d' % p.read_i32())
+            print('      subCreatureIndex=%d' % p.read_i32())
+            print('    },')
+            count -= 1
         print('}')
 
     def serialize_62576(netid, p: common.PacketReader):

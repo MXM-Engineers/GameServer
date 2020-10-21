@@ -48,6 +48,12 @@ class ClientSerializer:
         print('    nActionIDX=%d' % p.read_i32())
         print('}')
 
+    def serialize_60032(netid, p: common.PacketReader):
+        print('CQ_GameIsReady {}')
+        
+    def serialize_60033(netid, p: common.PacketReader):
+        print('CQ_LoadingComplete {}')
+
     def serialize_60034(netid, p: common.PacketReader):
         print('CN_MapIsLoaded {}')
 

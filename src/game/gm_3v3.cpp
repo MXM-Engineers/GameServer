@@ -248,6 +248,16 @@ void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 
 }
 
+void Game3v3::OnPlayerLoadingComplete(i32 clientID)
+{
+	replication->SendPvpLoadingComplete(clientID);
+}
+
+void Game3v3::OnPlayerGameIsReady(i32 clientID)
+{
+	replication->SendGameReady(clientID);
+}
+
 bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled

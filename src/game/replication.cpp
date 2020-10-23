@@ -1436,6 +1436,21 @@ void Replication::SendGameReady(i32 clientID)
 	SendPacket(clientID, safe);
 }
 
+void Replication::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID)
+{
+	Sv::SN_GamePlayerTag tag;
+	tag.result = 128;
+	tag.mainID = GetLocalActorID(clientID, mainActorUID);
+	tag.subID = GetLocalActorID(clientID, subActorUID);
+	tag.attackerID = LocalActorID::INVALID;
+
+	ASSERT(tag.mainID != LocalActorID::INVALID);
+	ASSERT(tag.subID != LocalActorID::INVALID);
+
+	LOG("[client%03d] Server :: SN_GamePlayerTag", clientID);
+	SendPacket(clientID, tag);
+}
+
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::DISCONNECTED;

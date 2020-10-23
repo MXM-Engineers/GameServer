@@ -256,6 +256,15 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	replication->PlayerRegisterMasterActor(clientID, player.subActorUID, subClassType);
 }
 
+void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
+{
+	ASSERT(playerMap[clientID] != playerList.end());
+	Player& player = *playerMap[clientID];
+
+	eastl::swap(player.mainActorUID, player.subActorUID);
+	replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
+}
+
 void Game3v3::OnPlayerGameIsReady(i32 clientID)
 {
 	replication->SendGameReady(clientID);

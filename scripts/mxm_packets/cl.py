@@ -62,6 +62,11 @@ class ClientSerializer:
         print('    characterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_60053(netid, p: common.PacketReader):
+        print('CQ_GamePlayerTag {')
+        print('    characterID=%d' % p.read_i32())
+        print('}')
+
     def serialize_60145(netid, p: common.PacketReader):
         print('CQ_GetGuildProfile {}')
 

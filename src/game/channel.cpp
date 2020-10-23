@@ -154,6 +154,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CQ_LoadingProgressData);
 		HANDLE_CASE(CQ_LoadingComplete);
 		HANDLE_CASE(CQ_GameIsReady);
+		HANDLE_CASE(CQ_GamePlayerTag);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -345,4 +346,12 @@ void Channel::HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header,
 {
 	LOG("[client%03d] Client :: CQ_GameIsReady", clientID);
 	game->OnPlayerGameIsReady(clientID);
+}
+
+void Channel::HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_GamePlayerTag& tag = SafeCast<Cl::CQ_GamePlayerTag>(packetData, packetSize);
+
+	LOG("[client%03d] Client :: CQ_GamePlayerTag :: localActorID=%d", clientID, tag.characterID);
+	game->OnPlayerTag(clientID, tag.characterID);
 }

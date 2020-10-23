@@ -286,6 +286,13 @@ struct CQ_SetLeaderCharacter
 	SkinIndex skinIndex;
 };
 
+struct CQ_GamePlayerTag
+{
+	enum { NET_ID = 60053 };
+
+	LocalActorID characterID;
+};
+
 struct CQ_PartyCreate
 {
 	enum { NET_ID = 60074 };
@@ -1048,6 +1055,17 @@ struct SN_AllCharacterBaseData
 	// the first packet is for example: cur:1 max:4
 	// and the last is cur:4 max:4
 };
+
+struct SN_GamePlayerTag
+{
+	enum { NET_ID = 62112 };
+
+	i32 result;
+	LocalActorID mainID;
+	LocalActorID subID;
+	LocalActorID attackerID;
+};
+ASSERT_SIZE(SN_GamePlayerTag, 16);
 
 struct SA_GetCharacterInfo
 {

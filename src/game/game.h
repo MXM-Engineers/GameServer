@@ -26,6 +26,7 @@ struct IGame
 	virtual void OnPlayerLoadingComplete(i32 clientID) {}
 	virtual void OnPlayerGameIsReady(i32 clientID) {}
 	virtual void OnPlayerGameMapLoaded(i32 clientID) {}
+	virtual void OnPlayerTag(i32 clientID, LocalActorID toLocalActorID) {}
 };
 
 struct Game: IGame

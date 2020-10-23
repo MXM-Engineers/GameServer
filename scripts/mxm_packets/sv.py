@@ -628,6 +628,14 @@ class ServerSerializer:
         print('    timeScoreRank=%d' % p.read_i32())
         print('}')
 
+    def serialize_62112(netid, p: common.PacketReader):
+        print('SN_GamePlayerTag {')
+        print('    result=%d' % p.read_i32())
+        print('    mainID=%d' % p.read_i32())
+        print('    subID=%d' % p.read_i32())
+        print('    attackerID=%d' % p.read_i32())
+        print('}')
+
     def serialize_62113(netid, p: common.PacketReader):
         print('SA_GetCharacterInfo {')
         print('    characterID=%d' % p.read_i32())

@@ -13,10 +13,10 @@ struct GameXmlContent
 	{
 		CreatureIndex ID;
 		ClassType classType;
-		eastl::fixed_string<char,64> className;
-		eastl::fixed_vector<SkillID,16> skillIDs;
-		eastl::fixed_vector<SkinIndex,20> skinIDs;
-		eastl::fixed_vector<WeaponIndex,32> weaponIDs;
+		eastl::fixed_string<char,64,false> className;
+		eastl::fixed_vector<SkillID,32,false> skillIDs;
+		eastl::fixed_vector<SkinIndex,20,false> skinIDs;
+		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
 	};
 
 	struct Spawn
@@ -61,7 +61,8 @@ struct GameXmlContent
 	eastl::hash<const char*> strHash;
 
 	eastl::fixed_vector<Master,100,false> masters;
-	eastl::fixed_hash_map<size_t,Master*,100> masterClassMap;
+	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
+	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
 
 	Map mapLobby;

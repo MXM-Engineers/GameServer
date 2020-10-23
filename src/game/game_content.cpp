@@ -61,8 +61,10 @@ bool GameXmlContent::LoadMasterDefinitions()
 		master.ID = (CreatureIndex)masterID;
 		master.classType = (ClassType)(masterID - 100000000);
 		master.className = className;
-		masterClassMap.emplace(strHash(master.className.data()), &master);
-		DBG_ASSERT(masterClassMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassMap.end());
+		masterClassStringMap.emplace(strHash(master.className.data()), &master);
+		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
+
+		masterClassTypeMap.emplace(master.classType, &master);
 
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 	} while(pNodeMaster);
@@ -99,8 +101,8 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 		const char* classType;
 		pSkinElt->QueryStringAttribute("_ClassType", &classType);
 
-		auto found = masterClassMap.find(strHash(classType));
-		if(found == masterClassMap.end()) {
+		auto found = masterClassStringMap.find(strHash(classType));
+		if(found == masterClassStringMap.end()) {
 			LOG("WARNING(LoadMasterSkinsDefinitions): class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
@@ -145,8 +147,8 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 		const char* classType;
 		pItemComData->QueryStringAttribute("_RequireClass", &classType);
 
-		auto found = masterClassMap.find(strHash(classType));
-		if(found == masterClassMap.end()) {
+		auto found = masterClassStringMap.find(strHash(classType));
+		if(found == masterClassStringMap.end()) {
 			LOG("WARNING(LoadMasterWeaponDefinitions): class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {

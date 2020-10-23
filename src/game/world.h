@@ -36,13 +36,19 @@ struct World
 
 	struct ActorPlayer: ActorCore
 	{
+		const ActorUID parentActorUID;
 		ClassType classType;
 		SkinIndex skinIndex;
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
 
-		explicit ActorPlayer(ActorUID UID_): ActorCore(UID_) {}
+		explicit ActorPlayer(ActorUID UID_, ActorUID parentActorUID_):
+			ActorCore(UID_),
+			parentActorUID(parentActorUID_)
+		{
+
+		}
 	};
 
 	struct ActorNpc: ActorCore
@@ -98,6 +104,7 @@ struct World
 	ActorUID NewActorUID();
 
 	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
+	ActorPlayer& SpawnPlayerSubActor(i32 clientID, ActorUID parentActorUID, ClassType classType, SkinIndex skinIndex);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 	ActorJukebox& SpawnJukeboxActor(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
 

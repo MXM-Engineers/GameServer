@@ -190,6 +190,7 @@ void Channel::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header,
 void Channel::HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_GameMapLoaded ::", clientID);
+	game->OnPlayerGameMapLoaded(clientID);
 	replication.SetPlayerAsInGame(clientID);
 }
 

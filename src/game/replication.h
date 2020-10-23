@@ -35,6 +35,7 @@ struct Replication
 
 	struct ActorPlayer: Actor<ActorType::PLAYER>
 	{
+		ActorUID parentActorUID;
 		Vec3 eye;
 		f32 rotate;
 		f32 upperRotate;
@@ -182,7 +183,7 @@ struct Replication
 
 	void EventClientDisconnect(i32 clientID);
 
-	void PlayerSetSubActorUID(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
+	void PlayerRegisterMasterActor(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
 
 	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
 	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
@@ -199,6 +200,10 @@ private:
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
 	void SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount);
+
+	void SendMasterSkillSlots(i32 clientID, const ActorPlayer& actor);
+
+	void SendInitialFrame(i32 clientID);
 
 	void CreateLocalActorID(i32 clientID, ActorUID actorUID);
 	void DeleteLocalActorID(i32 clientID, ActorUID actorUID);

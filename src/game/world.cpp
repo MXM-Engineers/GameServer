@@ -59,6 +59,7 @@ void World::Update(f64 delta, Time localTime_)
 		const ActorPlayer& actor = *it;
 
 		Replication::ActorPlayer rfl;
+		rfl.parentActorUID = actor.parentActorUID;
 		rfl.actorUID = actor.UID;
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
@@ -113,7 +114,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 {
 	ActorUID actorUID = NewActorUID();
 
-	actorPlayerList.emplace_back(actorUID);
+	actorPlayerList.emplace_back(actorUID, ActorUID::INVALID);
 	ActorPlayer& actor = actorPlayerList.back();
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
@@ -126,6 +127,32 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.skinIndex = skinIndex;
 	actor.name = name;
 	actor.guildTag = guildTag;
+
+	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
+	return actor;
+}
+
+World::ActorPlayer& World::SpawnPlayerSubActor(i32 clientID, ActorUID parentActorUID, ClassType classType, SkinIndex skinIndex)
+{
+	const ActorPlayer* parent = FindPlayerActor(parentActorUID);
+	ASSERT(parent);
+
+	// TODO: probably should deduplicate this code at some point
+	ActorUID actorUID = NewActorUID();
+
+	actorPlayerList.emplace_back(actorUID, parentActorUID);
+	ActorPlayer& actor = actorPlayerList.back();
+	actor.type = 1;
+	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
+	actor.rotate = 0;
+	actor.speed = 0;
+	actor.actionState = ActionStateID::INVALID;
+	actor.actionParam1 = -1;
+	actor.actionParam2 = -1;
+	actor.classType = classType;
+	actor.skinIndex = skinIndex;
+	actor.name = parent->name;
+	actor.guildTag = parent->guildTag;
 
 	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
 	return actor;

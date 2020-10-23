@@ -83,7 +83,6 @@ void Game3v3::OnPlayerDisconnect(i32 clientID)
 void Game3v3::OnPlayerReadyToLoad(i32 clientID)
 {
 	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
-	OnPlayerSetLeaderCharacter(clientID, (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (u32)ClassType::LUA), SkinIndex::DEFAULT);
 }
 
 void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
@@ -165,59 +164,7 @@ void Game3v3::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wch
 
 void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
-	ASSERT(playerMap[clientID] != playerList.end());
-	Player& player = *playerMap[clientID];
 
-	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
-
-	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
-
-	// select a spawn point at random
-	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
-	Vec3 pos = spawnPoint.pos;
-	Vec3 dir = spawnPoint.dir;
-	Vec3 eye(0, 0, 0);
-
-	// TODO: check if already leader character
-	if((player.mainActorUID != ActorUID::INVALID)) {
-		World::ActorCore* actor = world.FindPlayerActor(player.mainActorUID);
-		ASSERT(actor);
-
-		pos = actor->pos;
-		dir = actor->dir;
-		eye = actor->eye;
-
-		world.DestroyPlayerActor(player.mainActorUID);
-		world.DestroyPlayerActor(player.subActorUID);
-	}
-
-	ASSERT(playerAccountData[clientID]); // account data is not assigned
-	const AccountData* account = playerAccountData[clientID];
-
-	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
-	ASSERT((i32)classType == leaderMasterContentID+1);
-
-	World::ActorPlayer& main = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
-	main.pos = pos;
-	main.dir = dir;
-	main.eye = eye;
-	main.clientID = clientID; // TODO: this is not useful right now
-	player.mainActorUID = main.UID;
-
-	// spawn sub actor as well
-	ClassType subClassType = ClassType::SIZUKA;
-	World::ActorPlayer& sub = world.SpawnPlayerActor(clientID, subClassType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
-	sub.pos = pos;
-	sub.dir = dir;
-	sub.eye = eye;
-	sub.clientID = clientID; // TODO: this is not useful right now
-	player.subActorUID = sub.UID;
-
-	replication->SendPlayerSetLeaderMaster(clientID, player.mainActorUID, classType, skinIndex);
-
-	// force LocalActorID for sub actor as well
-	replication->PlayerSetSubActorUID(clientID, player.subActorUID, subClassType);
 }
 
 void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
@@ -251,6 +198,62 @@ void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 void Game3v3::OnPlayerLoadingComplete(i32 clientID)
 {
 	replication->SendPvpLoadingComplete(clientID);
+}
+
+void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
+{
+	// map is loaded, spawn
+	// TODO: team, masters
+
+	ASSERT(playerMap[clientID] != playerList.end());
+	Player& player = *playerMap[clientID];
+
+	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
+
+	// select a spawn point at random
+	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
+	Vec3 pos = spawnPoint.pos;
+	Vec3 dir = spawnPoint.dir;
+	Vec3 eye(0, 0, 0);
+
+	// TODO: check if already leader character
+	if((player.mainActorUID != ActorUID::INVALID)) {
+		World::ActorCore* actor = world.FindPlayerActor(player.mainActorUID);
+		ASSERT(actor);
+
+		pos = actor->pos;
+		dir = actor->dir;
+		eye = actor->eye;
+
+		world.DestroyPlayerActor(player.mainActorUID);
+		world.DestroyPlayerActor(player.subActorUID);
+	}
+
+	ASSERT(playerAccountData[clientID]); // account data is not assigned
+	const AccountData* account = playerAccountData[clientID];
+
+	// TODO: tie in account->leaderMasterID,skinIndex with class and model
+	const ClassType classType = ClassType::LUA;
+	World::ActorPlayer& main = world.SpawnPlayerActor(clientID, classType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
+	main.pos = pos;
+	main.dir = dir;
+	main.eye = eye;
+	main.clientID = clientID; // TODO: this is not useful right now
+	player.mainActorUID = main.UID;
+
+	// spawn sub actor as well
+	ClassType subClassType = ClassType::SIZUKA;
+	World::ActorPlayer& sub = world.SpawnPlayerSubActor(clientID, main.UID, subClassType, SkinIndex::DEFAULT);
+	sub.pos = pos;
+	sub.dir = dir;
+	sub.eye = eye;
+	sub.clientID = clientID; // TODO: this is not useful right now
+	player.subActorUID = sub.UID;
+
+	// force LocalActorID for both actors
+	// TODO: eventually get rid of this system
+	replication->PlayerRegisterMasterActor(clientID, player.mainActorUID, classType);
+	replication->PlayerRegisterMasterActor(clientID, player.subActorUID, subClassType);
 }
 
 void Game3v3::OnPlayerGameIsReady(i32 clientID)

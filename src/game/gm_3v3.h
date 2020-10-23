@@ -62,6 +62,7 @@ struct Game3v3: IGame
 	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID) override;
 	void OnPlayerLoadingComplete(i32 clientID) override;
 	void OnPlayerGameIsReady(i32 clientID) override;
+	void OnPlayerGameMapLoaded(i32 clientID) override;
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

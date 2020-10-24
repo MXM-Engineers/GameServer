@@ -122,3 +122,6 @@ class ClientSerializer:
         print('    time=%d' % p.read_i32())
         print('}')
 
+    def serialize_60265(netid, p: common.PacketReader):
+        print('CN_NCGuardMsg {}')
+

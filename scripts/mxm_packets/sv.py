@@ -123,6 +123,9 @@ class ServerSerializer:
         print('    errCode=%d' % p.read_i32())
         print('}')
 
+    def serialize_62024(netid, p: common.PacketReader):
+        print('SN_CreateGroundItem {} @9900ee')
+
     def serialize_62025(netid, p: common.PacketReader):
         print('SN_GameCreateActor {')
         print('    objectID=%d' % p.read_i32())

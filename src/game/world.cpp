@@ -37,7 +37,7 @@ void World::Update(f64 delta, Time localTime_)
 		rjb.localID = jukebox.localID;
 
 		if(jukebox.currentSong.songID != SongID::INVALID) {
-			rjb.playPosition = round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
+			rjb.playPosition = (i32)round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
 			rjb.playStartTime = jukebox.playStartTime;
 			rjb.currentSong = { jukebox.currentSong.songID, jukebox.currentSong.requesterNick };
 		}

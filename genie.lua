@@ -124,7 +124,7 @@ project "Login"
 	}
 
 	configuration "windows"
-		buildoptions{ "/W3" }
+		buildoptions{ "/W2" }
 		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
 		links {
 			"ws2_32",
@@ -176,7 +176,7 @@ project "Game"
 	configuration {}
 
 	configuration "windows"
-		buildoptions{ "/W3" }
+		buildoptions{ "/W2" }
 		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
 
 		links {

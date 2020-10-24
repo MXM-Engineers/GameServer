@@ -17,7 +17,9 @@ const void SetIp(u8* ip, u8 i0, u8 i1, u8 i2, u8 i3)
 const char* GetIpString(const sockaddr& addr)
 {
 	const sockaddr_in& in = *(sockaddr_in*)&addr;
-	return FMT("%s:%d", inet_ntoa(in.sin_addr), in.sin_port);
+	char buff[256];
+	inet_ntop(AF_INET, &in.sin_addr, buff, sizeof(buff));
+	return FMT("%s:%d", buff, in.sin_port);
 }
 
 intptr_t ThreadNetwork(void* pData)

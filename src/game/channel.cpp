@@ -27,7 +27,7 @@ intptr_t ThreadChannel(void* pData)
 			t0 = t1;
 		}
 		else {
-			EA::Thread::ThreadSleep(UPDATE_RATE_MS - delta);
+			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta));
 			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
 		}

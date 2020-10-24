@@ -1872,7 +1872,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write(Stat{ 35, 1000 });
 			packet.Write(Stat{ 37, 120 });
 			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 42, 0.6 });
+			packet.Write(Stat{ 42, 0.6f });
 			packet.Write(Stat{ 44, 15 });
 			packet.Write(Stat{ 52, 100 });
 			packet.Write(Stat{ 54, 15 });
@@ -1882,7 +1882,8 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 
 			packet.Write<u16>(4); // curStats_count
 			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 37, 0 });
+			//packet.Write(Stat{ 37, 0 });
+			packet.Write(Stat{ 37, 1 });
 			packet.Write(Stat{ 35, 1000 });
 			packet.Write(Stat{ 2, 200 });
 			// ------------------------------------
@@ -1932,7 +1933,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write(Stat{ 2, 200 });
 			packet.Write(Stat{ 5, 5 });
 			packet.Write(Stat{ 6, 192 });
-			packet.Write(Stat{ 7, 85.05 });
+			packet.Write(Stat{ 7, 85.05f });
 			packet.Write(Stat{ 9, 3 });
 			packet.Write(Stat{ 10, 150 });
 			packet.Write(Stat{ 13, 100 });
@@ -1947,7 +1948,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write(Stat{ 31, 14 });
 			packet.Write(Stat{ 37, 120 });
 			packet.Write(Stat{ 41, 6 });
-			packet.Write(Stat{ 42, 0.6 });
+			packet.Write(Stat{ 42, 0.6f });
 			packet.Write(Stat{ 46, 5 });
 			packet.Write(Stat{ 52, 100 });
 			packet.Write(Stat{ 54, 15 });

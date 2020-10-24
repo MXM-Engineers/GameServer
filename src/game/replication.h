@@ -180,6 +180,7 @@ struct Replication
 	void SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port);
 	void SendPvpLoadingComplete(i32 clientID);
 	void SendGameReady(i32 clientID);
+	void SendGameStart(i32 clientID);
 	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
 
 	void EventClientDisconnect(i32 clientID);

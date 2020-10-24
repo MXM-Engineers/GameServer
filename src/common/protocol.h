@@ -861,6 +861,11 @@ struct SA_GameReady
 POP_PACKED
 ASSERT_SIZE(SA_GameReady, 16);
 
+struct SN_GameStart
+{
+	enum { NET_ID = 62076 };
+};
+
 struct SN_GamePlayerEquipWeapon
 {
 	enum { NET_ID = 62084 };
@@ -1387,6 +1392,14 @@ struct SN_BlockList
 	u16 blocks_count;
 	Block blocks[1];
 };
+
+struct SN_NotifyAasRestricted
+{
+	enum { NET_ID = 62276 };
+
+	u8 isRestrictedByAAS;
+};
+ASSERT_SIZE(SN_NotifyAasRestricted, 1);
 
 struct SN_Exp
 {

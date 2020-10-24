@@ -42,12 +42,15 @@ bool Game3v3::LoadMap()
 		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
 	}
 
+	// TODO: restore this (spawn safe area walls)
+	/*
 	foreach(it, content.mapPvpDeathMatch.dynamic) {
 		// spawn npc
 		World::ActorNpc& npc = SpawnNPC(it->docID, it->localID, it->pos, it->rot);
 		npc.type = 3;
 		npc.faction = 2;
 	}
+	*/
 
 	return true;
 }
@@ -268,6 +271,9 @@ void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 void Game3v3::OnPlayerGameIsReady(i32 clientID)
 {
 	replication->SendGameReady(clientID);
+
+	// TODO: after 5s
+	replication->SendGameStart(clientID);
 }
 
 bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)

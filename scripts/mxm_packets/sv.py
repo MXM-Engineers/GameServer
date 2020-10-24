@@ -1908,6 +1908,19 @@ class ServerSerializer:
 
         print('}')
 
+    def serialize_62577(netid, p: common.PacketReader):
+        print('SN_ActionChangeLevelEvent {')
+
+        count = p.read_u16()
+        print('    targetIDs(%d)=[' % count)
+        while count > 0:
+            print('        %d' % p.read_i32())
+            count -= 1
+        print('    ]')
+        print('    actionID=%d' % p.read_i32())
+        print('    serverTime=%d' % p.read_i64())
+        print('}')
+
     def serialize_62591(netid, p: common.PacketReader):
         print('SN_HudEventList {')
         print('    eventList=[')

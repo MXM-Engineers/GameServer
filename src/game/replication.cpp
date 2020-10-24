@@ -1440,6 +1440,43 @@ void Replication::SendGameReady(i32 clientID)
 	*/
 }
 
+void Replication::SendGameStart(i32 clientID)
+{
+	LOG("[client%03d] Server :: SN_GameStart", clientID);
+	SendPacketData(clientID, Sv::SN_GameStart::NET_ID, 0, nullptr);
+
+	Sv::SN_NotifyAasRestricted notify;
+	notify.isRestrictedByAAS = 0;
+	LOG("[client%03d] Server :: SN_NotifyAasRestricted :: isRestrictedByAAS=%d", clientID, notify.isRestrictedByAAS);
+	SendPacket(clientID, notify);
+
+	// Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
+
+	// Sv::SN_RunClientLevelEventSeq
+	{
+		Sv::SN_RunClientLevelEventSeq seq;
+		seq.needCompleteTriggerAckID = -1;
+		seq.rootEventID = 163;
+		seq.caller = 0;
+		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
+		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
+		SendPacket(clientID, seq);
+	}
+
+	// Timer related event
+
+	// Sv::SN_RunClientLevelEventSeq
+	{
+		Sv::SN_RunClientLevelEventSeq seq;
+		seq.needCompleteTriggerAckID = -1;
+		seq.rootEventID = 270;
+		seq.caller = 0;
+		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
+		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
+		SendPacket(clientID, seq);
+	}
+}
+
 void Replication::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID)
 {
 	Sv::SN_GamePlayerTag tag;
@@ -1883,7 +1920,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write<u16>(4); // curStats_count
 			packet.Write(Stat{ 0, 2400 });
 			//packet.Write(Stat{ 37, 0 });
-			packet.Write(Stat{ 37, 1 });
+			packet.Write(Stat{ 37, 120 });
 			packet.Write(Stat{ 35, 1000 });
 			packet.Write(Stat{ 2, 200 });
 			// ------------------------------------

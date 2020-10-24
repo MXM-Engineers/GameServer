@@ -1370,6 +1370,7 @@ void Replication::SendGameReady(i32 clientID)
 	LOG("[client%03d] Server :: SN_NotifyTimestamp", clientID);
 	SendPacket(clientID, notifyTimestamp);
 
+	/*
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -1428,12 +1429,15 @@ void Replication::SendGameReady(i32 clientID)
 		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
 		SendPacket(clientID, event);
 	}
+	*/
 
+	/*
 	Sv::SN_NotifyIsInSafeZone safe;
 	safe.userID = 1;
 	safe.inSafeZone = 1;
 	LOG("[client%03d] Server :: SN_NotifyIsInSafeZone", clientID);
 	SendPacket(clientID, safe);
+	*/
 }
 
 void Replication::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID)

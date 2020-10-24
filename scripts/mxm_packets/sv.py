@@ -231,8 +231,42 @@ class ServerSerializer:
         print('    ]')
         print('}')
 
+    def serialize_62035(netid, p: common.PacketReader):
+        print('SN_CastSkill {')
+        print('	entityID=%d' % p.read_i32())
+        print('	ret=%d' % p.read_i32())
+        print('	skillIndex=%d' % p.read_i32())
+        print('	costLevel=%d' % p.read_u8())
+        print('	actionstate=%d' % p.read_i32())
+        print('	targetPos=%s' % read_Vec3(p))
+        
+        count = p.read_u16()
+        print('	targetIDs(%d)=[' % count)
+        while count > 0:
+            print('		%d,' % p.read_i32())
+            count -= 1
+        print('	]')
+
+        print('	bSyncMyPosition=%d' % p.read_u8())
+        print('	posStruct={')
+        print('		pos=%s' % read_Vec3(p))
+        print('		destPos=%s' % read_Vec3(p))
+        print('		moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
+        print('		rotateStruct=%s' % read_Vec3(p))
+        print('		speed=%g' % p.read_f32())
+        print('		clientTime=%d' % p.read_i32())
+        print('	}')
+        print('}')
+
     def serialize_62033(netid, p: common.PacketReader):
         print('SQ_CityLobbyJoinCity {}')
+
+    def serialize_62041(netid, p: common.PacketReader):
+        print('SA_CastSkill {')
+        print('	characterID=%d' % p.read_i32())
+        print('	ret=%d' % p.read_i32())
+        print('	skillIndex=%d' % p.read_i32())
+        print('}')
 
     def serialize_62048(netid, p: common.PacketReader):
         print('SN_PlayerSkillSlot {')

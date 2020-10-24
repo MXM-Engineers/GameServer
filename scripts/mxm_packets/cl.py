@@ -57,6 +57,29 @@ class ClientSerializer:
     def serialize_60034(netid, p: common.PacketReader):
         print('CN_MapIsLoaded {}')
 
+    def serialize_60040(netid, p: common.PacketReader):
+        print('CQ_PlayerCastSkill {')
+        print('	playerID=%d' % p.read_i32())
+        print('	skillID=%d' % p.read_i32())
+        print('	p3nPos=%s' % read_Vec3(p))
+
+        count = p.read_u16()
+        print('	targetList[%d]=[' % count)
+        while count > 0:
+            print('		%d,' % p.read_i32())
+            count -= 1
+        print('	]')
+
+        print('	posStruct={')
+        print('		pos=%s' % read_Vec3(p))
+        print('		destPos=%s' % read_Vec3(p))
+        print('		moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
+        print('		rotateStruct=%s' % read_Vec3(p))
+        print('		speed=%g' % p.read_f32())
+        print('		clientTime=%d' % p.read_i32())
+        print('	}')
+        print('}')
+
     def serialize_60051(netid, p: common.PacketReader):
         print('CQ_GetCharacterInfo {')
         print('    characterID=%d' % p.read_i32())

@@ -25,7 +25,7 @@ void PathSet(Path& path, const wchar* str)
 void PathAppend(Path& path, const wchar* app)
 {
 #ifdef CONF_DEBUG
-	const i32 len = EA::StdC::Strlen(app);
+	const i32 len = (i32)EA::StdC::Strlen(app);
 	for(i32 i = 0; i < len; i++) {
 		ASSERT(app[i] != L'\\'); // path must be in linux form (path/to/thing)
 	}
@@ -74,7 +74,7 @@ u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize)
 	return nullptr;
 }
 
-static u32 g_XorShiftState = time(0);
+static u32 g_XorShiftState = (u32)time(0);
 
 u32 RandUint()
 {

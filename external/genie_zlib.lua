@@ -10,6 +10,9 @@ project "zlib"
 		SRC_DIR .. "/*.h",
 		SRC_DIR .. "/*.c",
 	}
+	
+	configuration "windows"
+		buildoptions{ "/W0" }
 
 
     

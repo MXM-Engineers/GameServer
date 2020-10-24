@@ -111,7 +111,7 @@ struct Buffer
 
 	void AppendString(const char* str)
 	{
-		const i32 apSize = strlen(str);
+		const i32 apSize = (i32)strlen(str);
 		ASSERT(size + apSize <= capacity);
 		memmove(data + size, str, apSize);
 		size += apSize;
@@ -202,7 +202,7 @@ struct ConstBuffer
 
 inline bool StringEquals(const char* str1, const char* str2)
 {
-	const i32 len = strlen(str1);
+	const i32 len = (i32)strlen(str1);
 	if(len != strlen(str2)) {
 		return false;
 	}

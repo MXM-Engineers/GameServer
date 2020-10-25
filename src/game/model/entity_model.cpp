@@ -1,4 +1,4 @@
-#include "entityModel.h"
+#include "entity_model.h"
 
 EntityModel::EntityModel(i32 ID, EntityType entityType)
 {

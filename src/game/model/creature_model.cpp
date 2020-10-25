@@ -1,4 +1,4 @@
-#include "creatureModel.h"
+#include "creature_model.h"
 
 CreatureModel::CreatureModel(i32 ID, EntityType entityType, float NormalMoveSpeed, float MoveSpeed, float RotateSpeed, float Scale, CreatureType creatureType)
 	: EntityModel(ID, entityType)

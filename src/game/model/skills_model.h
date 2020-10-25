@@ -10,8 +10,5 @@ public:
 private:
 	//passive skill
 	//support skill
-	SkillNormalModel _skill1;
-	SkillNormalModel _skill2;
-	SkillNormalModel _skill3;
-	SkillNormalModel _skill4;
+	SkillNormalModel _skills[4];
 };

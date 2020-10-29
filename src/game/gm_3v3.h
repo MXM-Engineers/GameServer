@@ -64,6 +64,7 @@ struct Game3v3: IGame
 	void OnPlayerGameIsReady(i32 clientID) override;
 	void OnPlayerGameMapLoaded(i32 clientID) override;
 	void OnPlayerTag(i32 clientID, LocalActorID toLocalActorID) override;
+	void OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY) override;
 
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);

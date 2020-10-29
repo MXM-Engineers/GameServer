@@ -255,6 +255,15 @@ struct CN_MapIsLoaded
 	enum { NET_ID = 60034 };
 };
 
+struct CQ_PlayerCastDodge
+{
+	enum { NET_ID = 60038 };
+
+	LocalActorID playerID;
+	i32 unk;
+};
+ASSERT_SIZE(CQ_PlayerCastDodge, 8);
+
 struct SetNickname
 {
 	enum { NET_ID = 60049 };
@@ -301,6 +310,19 @@ struct CQ_PartyCreate
 	i32 stageType;
 };
 ASSERT_SIZE(CQ_PartyCreate, 8);
+
+struct CQ_PlayerJump
+{
+	enum { NET_ID = 60113 };
+
+	u8 excludedFieldBits;
+	i32 actionID;
+	LocalActorID actorID;
+	f32 rotate;
+	f32 moveDirX;
+	f32 moveDirY;
+	Vec3 startPos;
+};
 
 struct CN_ChannelChatMessage
 {
@@ -1314,6 +1336,20 @@ struct SN_NotifyPcDetailInfos
 
 	u16 pcList_count;
 	ST_PcDetailInfo pcList[1];
+};
+
+struct SA_ResultSpAction
+{
+	enum { NET_ID = 62238 };
+
+	u8 excludedFireldBits;
+	i32 actionID;
+	LocalActorID objectID;
+	f32 rotate;
+	f32 moveDirX;
+	f32 moveDirY;
+	i32 errorType;
+	Vec3 startPos;
 };
 
 struct SN_ChatChannelMessage

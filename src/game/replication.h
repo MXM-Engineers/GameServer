@@ -182,6 +182,7 @@ struct Replication
 	void SendGameReady(i32 clientID);
 	void SendGameStart(i32 clientID);
 	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
+	void SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
 
 	void EventClientDisconnect(i32 clientID);
 

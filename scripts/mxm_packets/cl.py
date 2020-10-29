@@ -57,6 +57,12 @@ class ClientSerializer:
     def serialize_60034(netid, p: common.PacketReader):
         print('CN_MapIsLoaded {}')
 
+    def serialize_60038(netid, p: common.PacketReader):
+        print('CN_TagCompleted {')
+        print('	playerID=%d' % p.read_i32())
+        print('	unkown=%d' % p.read_i32())
+        print('}')
+
     def serialize_60040(netid, p: common.PacketReader):
         print('CQ_PlayerCastSkill {')
         print('	playerID=%d' % p.read_i32())
@@ -90,6 +96,18 @@ class ClientSerializer:
         print('    characterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_60113(netid, p: common.PacketReader):
+        print('CQ_PlayerJump {')
+        excludedFieldBits = p.read_u8()
+        print('    excludedFieldBits=%u' % excludedFieldBits)
+        print('    actionID=%d' % p.read_i32())
+        print('    actorID=%d' % p.read_i32())
+        print('    rotate=%g' % p.read_f32())
+        print('    moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
+        if excludedFieldBits & 0x10 == 0:
+            print('    startPos=%s' % read_Vec3(p))
+        print('}')
+
     def serialize_60145(netid, p: common.PacketReader):
         print('CQ_GetGuildProfile {}')
 
@@ -107,7 +125,7 @@ class ClientSerializer:
         print('    rankingType=%d' % p.read_u8())
         print('}')
 
-    def serialize_60167(netid, p: common.PacketReader):
+    def serialize_60180(netid, p: common.PacketReader):
         print('CQ_180 {')
         print('    charcterID=%d' % p.read_i32())
         print('}')

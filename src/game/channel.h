@@ -55,4 +55,5 @@ private:
 	void HandlePacket_CQ_LoadingComplete(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 };

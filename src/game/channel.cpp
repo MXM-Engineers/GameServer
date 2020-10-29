@@ -155,6 +155,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CQ_LoadingComplete);
 		HANDLE_CASE(CQ_GameIsReady);
 		HANDLE_CASE(CQ_GamePlayerTag);
+		HANDLE_CASE(CQ_PlayerJump);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -354,4 +355,18 @@ void Channel::HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& heade
 
 	LOG("[client%03d] Client :: CQ_GamePlayerTag :: localActorID=%d", clientID, tag.characterID);
 	game->OnPlayerTag(clientID, tag.characterID);
+}
+
+void Channel::HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	const u8 excludedFieldBits = buff.Read<u8>();
+	const i32 actionID = buff.Read<i32>();
+	const LocalActorID actorID = buff.Read<LocalActorID>();
+	const f32 rotate = buff.Read<f32>();
+	const f32 moveDirX = buff.Read<f32>();
+	const f32 moveDirY = buff.Read<f32>();
+
+	LOG("[client%03d] Client :: CQ_PlayerJump :: localActorID", clientID, actorID);
+	game->OnPlayerJump(clientID, actorID, rotate, moveDirX, moveDirY);
 }

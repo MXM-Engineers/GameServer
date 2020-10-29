@@ -1492,6 +1492,26 @@ void Replication::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID su
 	SendPacket(clientID, tag);
 }
 
+void Replication::SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY)
+{
+	LocalActorID localActorID = GetLocalActorID(clientID, mainActorUID);
+	ASSERT(localActorID != LocalActorID::INVALID);
+
+	u8 sendData[1024];
+	PacketWriter packet(sendData, sizeof(sendData));
+
+	packet.Write<u8>(0x20); // excludedFieldBits
+	packet.Write<i32>(0); // actionID
+	packet.Write<LocalActorID>(GetLocalActorID(clientID, mainActorUID));
+	packet.Write<f32>(rotate);
+	packet.Write<f32>(moveDirX);
+	packet.Write<f32>(moveDirY);
+	packet.Write<i32>(0); // errorType
+
+	LOG("[client%03d] Server :: SA_ResultSpAction", clientID);
+	SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
+}
+
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::DISCONNECTED;

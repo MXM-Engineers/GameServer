@@ -268,6 +268,14 @@ void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 	replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
 }
 
+void Game3v3::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
+{
+	ASSERT(playerMap[clientID] != playerList.end());
+	Player& player = *playerMap[clientID];
+
+	replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
+}
+
 void Game3v3::OnPlayerGameIsReady(i32 clientID)
 {
 	replication->SendGameReady(clientID);

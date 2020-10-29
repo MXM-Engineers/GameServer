@@ -27,6 +27,7 @@ struct IGame
 	virtual void OnPlayerGameIsReady(i32 clientID) {}
 	virtual void OnPlayerGameMapLoaded(i32 clientID) {}
 	virtual void OnPlayerTag(i32 clientID, LocalActorID toLocalActorID) {}
+	virtual void OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY) {}
 };
 
 struct Game: IGame

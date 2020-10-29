@@ -1035,6 +1035,20 @@ class ServerSerializer:
         print('    casterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_62238(netid, p: common.PacketReader):
+        print('SA_ResultSpAction {')
+        excludedFieldBits = p.read_u8()
+        print('    excludedFieldBits=%u' % excludedFieldBits)
+        print('    actionID=%d' % p.read_i32())
+        print('    objectID=%d' % p.read_i32())
+        print('    rotate=%g' % p.read_f32())
+        print('    moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
+        print('    errorType=%d' % p.read_i32())
+
+        if excludedFieldBits & 0x20 == 0:
+            print('    startPos=%s' % read_Vec3(p))
+        print('}')
+
     def serialize_62242(netid, p: common.PacketReader):
         print('SN_ChatChannelMessage {')
         print('    chatType=%d' % p.read_i32())

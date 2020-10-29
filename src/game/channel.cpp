@@ -1,4 +1,5 @@
 #include "channel.h"
+#include <common/packet_serialize.h>
 
 #include "coordinator.h"
 #include "game_content.h"
@@ -156,6 +157,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CQ_GameIsReady);
 		HANDLE_CASE(CQ_GamePlayerTag);
 		HANDLE_CASE(CQ_PlayerJump);
+		HANDLE_CASE(CQ_PlayerCastSkill);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -369,4 +371,35 @@ void Channel::HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& header, 
 
 	LOG("[client%03d] Client :: CQ_PlayerJump :: localActorID", clientID, actorID);
 	game->OnPlayerJump(clientID, actorID, rotate, moveDirX, moveDirY);
+}
+
+void Channel::HandlePacket_CQ_PlayerCastSkill(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PlayerCastSkill>(packetData, packetSize));
+
+	PlayerCastSkill cast;
+	ReadPacket(&cast, clientID, packetData, packetSize);
+
+	game->OnPlayerCastSkill(clientID, cast);
+}
+
+void Channel::ReadPacket(PlayerCastSkill* cast, i32 clientID, const u8* packetData, const i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+
+	cast->playerActorUID = replication.GetWorldActorUID(clientID, buff.Read<LocalActorID>());
+	cast->skillID = buff.Read<SkillID>();
+	cast->p3nPos = buff.Read<Vec3>();
+
+	const u16 count = buff.Read<u16>();
+	for(int i = 0; i < count; i++) {
+		cast->targetList.push_back(replication.GetWorldActorUID(clientID, buff.Read<LocalActorID>()));
+	}
+
+	cast->posStruct.pos = buff.Read<Vec3>();
+	cast->posStruct.destPos = buff.Read<Vec3>();
+	cast->posStruct.moveDir = buff.Read<Vec2>();
+	cast->posStruct.rotateStruct= buff.Read<Vec3>();
+	cast->posStruct.speed = buff.Read<f32>();
+	cast->posStruct.clientTime = buff.Read<i32>();
 }

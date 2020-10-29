@@ -11,7 +11,12 @@ namespace PS
 		return buff;
 	}
 
-	inline const char* Vec3ToStr(const Vec3& v)
+	inline const char* ToStr(const Vec2& v)
+	{
+		return FMT("(%g, %g)", v.x, v.y);
+	}
+
+	inline const char* ToStr(const Vec3& v)
 	{
 		return FMT("(%g, %g, %g)", v.x, v.y, v.z);
 	}
@@ -46,6 +51,37 @@ inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, co
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_PlayerCastSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_PlayerCastSkill(%d, %d) :: {", Cl::CQ_PlayerCastSkill::NET_ID, packetSize);
+	SER("	playerID=%d", buff.Read<LocalActorID>());
+	SER("	skillID=%d", buff.Read<SkillID>());
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<Vec3>()));
+
+	const u16 count = buff.Read<u16>();
+	SER("	targetList(%u)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<LocalActorID>());
+	}
+	SER("	]");
+
+	SER("	posStruct={");
+	SER("		pos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<Vec2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		speed=%g",buff.Read<f32>());
+	SER("		clientTime=%d",buff.Read<i32>());
+	SER("	}");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_DoConnectGameServer>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -74,8 +110,8 @@ inline const char* PacketSerialize<Sv::SN_GameCreateActor>(const void* packetDat
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
-	SER("	p3nPos=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
-	SER("	p3nDir=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("	p3nDir=%s", PS::ToStr(buff.Read<Vec3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
 	SER("	ownerID=%d", buff.Read<i32>());
@@ -135,8 +171,8 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
-	SER("	p3nPos=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
-	SER("	p3nDir=%s", PS::Vec3ToStr(buff.Read<Vec3>()));
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("	p3nDir=%s", PS::ToStr(buff.Read<Vec3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
 	SER("	ownerID=%d", buff.Read<i32>());
@@ -202,6 +238,56 @@ inline const char* PacketSerialize<Sv::SN_StatusSnapshot>(const void* packetData
 	}
 
 	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_CastSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_CastSkill(%d, %d) :: {", Sv::SN_CastSkill::NET_ID, packetSize);
+	SER("	entityID=%d", buff.Read<LocalActorID>());
+	SER("	ret=%d", buff.Read<i32>());
+	SER("	skillID=%d", buff.Read<SkillID>());
+	SER("	costLevel=%u", buff.Read<u8>());
+	SER("	actionState=%d", buff.Read<ActionStateID>());
+	SER("	tartgetPos=%s", PS::ToStr(buff.Read<Vec3>()));
+
+	const u16 count = buff.Read<u16>();
+	SER("	targetList(%u)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<LocalActorID>());
+	}
+	SER("	]");
+
+	SER("	bSyncMyPosition=%u", buff.Read<u8>());
+	SER("	posStruct={");
+	SER("		pos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<Vec2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		speed=%g",buff.Read<f32>());
+	SER("		clientTime=%d",buff.Read<i32>());
+	SER("	}");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_CastSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	Sv::SA_CastSkill cast = SafeCast<Sv::SA_CastSkill>(packetData, packetSize);
+
+	SER("SA_CastSkill(%d, %d) :: {", Sv::SA_CastSkill::NET_ID, packetSize);
+	SER("	characterID=%d", cast.characterID);
+	SER("	ret=%d", cast.ret);
+	SER("	skillID=%d", cast.skillIndex);
 	SER("}");
 
 	return str.data();

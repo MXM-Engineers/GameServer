@@ -276,6 +276,14 @@ void Game3v3::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate
 	replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
 }
 
+void Game3v3::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
+{
+	ASSERT(playerMap[clientID] != playerList.end());
+	Player& player = *playerMap[clientID];
+
+	replication->SendPlayerAcceptCast(clientID, cast);
+}
+
 void Game3v3::OnPlayerGameIsReady(i32 clientID)
 {
 	replication->SendGameReady(clientID);

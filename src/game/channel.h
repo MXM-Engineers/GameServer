@@ -1,5 +1,6 @@
 #pragma once
 #include "game.h"
+#include <common/protocol.h>
 #include <eathread/eathread_thread.h>
 
 struct Channel
@@ -56,4 +57,7 @@ private:
 	void HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_PlayerCastSkill(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	void ReadPacket(PlayerCastSkill* cast, i32 clientID, const u8* packetData, const i32 packetSize);
 };

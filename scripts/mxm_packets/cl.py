@@ -58,7 +58,7 @@ class ClientSerializer:
         print('CN_MapIsLoaded {}')
 
     def serialize_60038(netid, p: common.PacketReader):
-        print('CN_TagCompleted {')
+        print('CN_PlayerTagCompleted {')
         print('	playerID=%d' % p.read_i32())
         print('	unkown=%d' % p.read_i32())
         print('}')

@@ -1,5 +1,6 @@
 #pragma once
 #include <common/base.h>
+#include <common/protocol.h>
 
 enum class ActorUID: u32
 {
@@ -151,4 +152,14 @@ enum class TeamID: i32
 	RED = 0,
 	BLUE = 1,
 	_COUNT = 2
+};
+
+// TODO: weird place for this
+struct PlayerCastSkill
+{
+	ActorUID playerActorUID;
+	SkillID skillID;
+	Vec3 p3nPos;
+	eastl::fixed_vector<ActorUID,32,false> targetList;
+	Cl::CQ_PlayerCastSkill::PosStruct posStruct;
 };

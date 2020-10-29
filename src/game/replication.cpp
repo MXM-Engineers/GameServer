@@ -1512,6 +1512,51 @@ void Replication::SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate
 	SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
 }
 
+void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast)
+{
+	LocalActorID localActorID = GetLocalActorID(clientID, cast.playerActorUID);
+	ASSERT(localActorID != LocalActorID::INVALID);
+
+	// SA_CastSkill
+	{
+		Sv::SA_CastSkill accept;
+		accept.characterID = localActorID;
+		accept.ret = 0;
+		accept.skillIndex = cast.skillID;
+
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_CastSkill>(&accept, sizeof(accept)));
+		SendPacket(clientID, accept);
+	}
+
+	// SN_CastSkill
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // entityID
+		packet.Write<i32>(0); // ret
+		packet.Write<SkillID>(cast.skillID);
+		packet.Write<u8>(0); // costLevel
+		packet.Write<ActionStateID>(ActionStateID::INVALID);
+		packet.Write<Vec3>(cast.p3nPos);
+
+		packet.Write<u16>(0); // targetList_count
+
+		packet.Write<u8>(1); // bSyncMyPosition
+		packet.Write<Vec3>(cast.posStruct.pos);
+		packet.Write<Vec3>(cast.posStruct.destPos);
+		packet.Write<Vec2>(cast.posStruct.moveDir);
+		packet.Write<Vec3>(cast.posStruct.rotateStruct);
+		packet.Write<f32>(cast.posStruct.speed);
+		packet.Write<i32>(cast.posStruct.clientTime);
+
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_CastSkill>(packet.data, packet.size));
+		SendPacketData(clientID, Sv::SN_CastSkill::NET_ID, packet.size, packet.data);
+	}
+
+#error TODO: SN_ExecuteSkill
+}
+
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::DISCONNECTED;
@@ -1532,7 +1577,7 @@ void Replication::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, Local
 	map.emplace(actorUID, localActorID);
 }
 
-LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID)
+LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID) const
 {
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	auto found = map.find(actorUID);
@@ -1542,7 +1587,7 @@ LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID)
 	return LocalActorID::INVALID;
 }
 
-ActorUID Replication::GetWorldActorUID(i32 clientID, LocalActorID localActorID)
+ActorUID Replication::GetWorldActorUID(i32 clientID, LocalActorID localActorID) const
 {
 	// TODO: second map, for this reverse lookup
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;

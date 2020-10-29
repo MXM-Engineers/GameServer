@@ -183,13 +183,14 @@ struct Replication
 	void SendGameStart(i32 clientID);
 	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast);
 
 	void EventClientDisconnect(i32 clientID);
 
 	void PlayerRegisterMasterActor(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
 
-	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
-	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
+	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID) const; // Can return INVALID
+	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID) const; // Can return INVALID
 
 private:
 	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);

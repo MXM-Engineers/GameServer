@@ -255,14 +255,38 @@ struct CN_MapIsLoaded
 	enum { NET_ID = 60034 };
 };
 
-struct CQ_PlayerCastDodge
+struct CN_PlayerTagCompleted
 {
 	enum { NET_ID = 60038 };
 
 	LocalActorID playerID;
 	i32 unk;
 };
-ASSERT_SIZE(CQ_PlayerCastDodge, 8);
+ASSERT_SIZE(CN_PlayerTagCompleted, 8);
+
+struct CQ_PlayerCastSkill
+{
+	enum { NET_ID = 60040 };
+
+	struct PosStruct
+	{
+		Vec3 pos;
+		Vec3 destPos;
+		Vec2 moveDir;
+		Vec3 rotateStruct;
+		f32 speed;
+		i32 clientTime;
+	};
+
+	LocalActorID playerID;
+	SkillID skillID;
+	Vec3 p3npos;
+
+	u16 targetList_count;
+	LocalActorID targetList[1];
+
+	PosStruct posStruct;
+};
 
 struct SetNickname
 {
@@ -690,6 +714,23 @@ struct SQ_CityLobbyJoinCity
 {
 	enum { NET_ID = 62033 };
 };
+
+struct SN_CastSkill
+{
+	enum { NET_ID = 62035 };
+
+	// TODO: fill
+};
+
+struct SA_CastSkill
+{
+	enum { NET_ID = 62041 };
+
+	LocalActorID characterID;
+	i32 ret;
+	SkillID skillIndex;
+};
+ASSERT_SIZE(SA_CastSkill, 12);
 
 struct SA_VersionInfo
 {

@@ -722,6 +722,13 @@ struct SN_CastSkill
 	// TODO: fill
 };
 
+struct SN_ExecuteSkill
+{
+	enum { NET_ID = 62036 };
+
+	// TODO: fill
+};
+
 struct SA_CastSkill
 {
 	enum { NET_ID = 62041 };

@@ -261,6 +261,42 @@ class ServerSerializer:
         print('	}')
         print('}')
 
+    def serialize_62036(netid, p: common.PacketReader):
+        print('SN_ExecuteSkill {')
+        print('	entityID=%d' % p.read_i32())
+        print('	ret=%d' % p.read_i32())
+        print('	skillIndex=%d' % p.read_i32())
+        print('	costLevel=%d' % p.read_u8())
+        print('	actionstate=%d' % p.read_i32())
+        print('	targetPos=%s' % read_Vec3(p))
+        
+        count = p.read_u16()
+        print('	targetIDs(%d)=[' % count)
+        while count > 0:
+            print('		%d,' % p.read_i32())
+            count -= 1
+        print('	]')
+
+        print('	bSyncMyPosition=%d' % p.read_u8())
+        print('	posStruct={')
+        print('		pos=%s' % read_Vec3(p))
+        print('		destPos=%s' % read_Vec3(p))
+        print('		moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
+        print('		rotateStruct=%s' % read_Vec3(p))
+        print('		speed=%g' % p.read_f32())
+        print('		clientTime=%d' % p.read_i32())
+        print('	}')
+        print('	fSkillChargeDamageMultiplier=%g' % p.read_f32())
+        print('	graphMove={')
+        print('		bApply=%d' % p.read_u8())
+        print('		startPos=%s' % read_Vec3(p))
+        print('		endPos=%s' % read_Vec3(p))
+        print('		durationTimeS=%g' % p.read_f32())
+        print('		originDistance=%g' % p.read_f32())
+        print('	}')
+
+        print('}')
+
     def serialize_62033(netid, p: common.PacketReader):
         print('SQ_CityLobbyJoinCity {}')
 
@@ -1035,6 +1071,38 @@ class ServerSerializer:
         print('    casterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_62235(netid, p: common.PacketReader):
+        print('SN_BroadcastDamage {')
+        print('	damageSeqNum=%d' % p.read_i32())
+        print('	remoteID=%d' % p.read_i32())
+        print('	defID=%d' % p.read_i32())
+        print('	attID=%d' % p.read_i32())
+        print('	remoteDocIndex=%d' % p.read_i32())
+        print('	remotePos=%s' % read_Vec3(p))
+        print('	remoteDir=%s' % read_Vec3(p))
+        print('	remoteForceDir=%s' % read_Vec3(p))
+        print('	hitPos=%s' % read_Vec3(p))
+        print('	hitDir=%s' % read_Vec3(p))
+        print('	damageType=%d' % p.read_i32())
+        print('	skillDocID=%d' % p.read_i32())
+        print('	nRagePoint=%d' % p.read_i32())
+        print('	nRelativeElement=%d' % p.read_i32())
+        print('	hitNodeName="%s"' % p.read_str())
+        print('	damage=%d' % p.read_i32())
+        print('	partName="%s"' % p.read_str())
+        print('	partDamage=%d' % p.read_i32())
+        print('	masterGroupingDamage=%d' % p.read_i32())
+        print('	optionalResultOfHit=%d' % p.read_i32())
+        print('}')
+
+    def serialize_62237(netid, p: common.PacketReader):
+        print('SN_RemoteActivated {')
+        print('	remoteID=%d' % p.read_i32())
+        print('	defID=%d' % p.read_i32())
+        print('	penetrationCount=%d' % p.read_i32())
+        print('	remotePos=%s' % read_Vec3(p))
+        print('}')
+
     def serialize_62238(netid, p: common.PacketReader):
         print('SA_ResultSpAction {')
         excludedFieldBits = p.read_u8()
@@ -1434,6 +1502,25 @@ class ServerSerializer:
         print('    pos=%s' % read_Vec3(p))
         print('}')
 
+    def serialize_62386(netid, p: common.PacketReader):
+        print('SN_RemoteSyncCreateFromRemoteDoc {')
+        print('	ParentEntity=%d' % p.read_i32())
+        print('	OwnerEntity=%d' % p.read_i32())
+        print('	RemoteSeedID=%d' % p.read_i32())
+        print('	FirePosition=%s' % read_Vec3(p))
+        print('	FireRotationX=%d' % p.read_u16())
+        print('	FireRotationY=%d' % p.read_u16())
+        print('	FireRotationZ=%d' % p.read_u16())
+        print('	TargetPosition=%s' % read_Vec3(p))
+        print('	FireObject="%s"' % p.read_wstr())
+        print('	Scale=%d' % p.read_u16())
+        print('	LifeTime=%d' % p.read_i32())
+        print('	HitInvalidTarget=%d' % p.read_i32())
+        print('	RemoteDocIndex=%d' % p.read_i32())
+        print('	TargetEntity=%d' % p.read_i32())
+        print('	RemoteCreateFlags=%d' % p.read_u8())
+        print('}')
+
     def serialize_62390(netid, p: common.PacketReader):
         print('SN_ProfileCharacterSkinList {')
         print('    skins=[')
@@ -1727,6 +1814,9 @@ class ServerSerializer:
 
     def serialize_62505(netid, p: common.PacketReader):
         print('SN_AIMONSTER_SYNC_MOVE {} @98ba71')
+
+    def serialize_62506(netid, p: common.PacketReader):
+        print('SN_AIMONSTER_SYNC_TURN {} @98bccb')
 
     def serialize_62525(netid, p: common.PacketReader):
         print('SN_AccountEquipmentList {')

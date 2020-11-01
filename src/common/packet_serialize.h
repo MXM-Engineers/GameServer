@@ -279,6 +279,49 @@ inline const char* PacketSerialize<Sv::SN_CastSkill>(const void* packetData, con
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_ExecuteSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ExecuteSkill(%d, %d) :: {", Sv::SN_ExecuteSkill::NET_ID, packetSize);
+	SER("	entityID=%d", buff.Read<LocalActorID>());
+	SER("	ret=%d", buff.Read<i32>());
+	SER("	skillID=%d", buff.Read<SkillID>());
+	SER("	costLevel=%u", buff.Read<u8>());
+	SER("	actionState=%d", buff.Read<ActionStateID>());
+	SER("	tartgetPos=%s", PS::ToStr(buff.Read<Vec3>()));
+
+	const u16 count = buff.Read<u16>();
+	SER("	targetList(%u)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<LocalActorID>());
+	}
+	SER("	]");
+
+	SER("	bSyncMyPosition=%u", buff.Read<u8>());
+	SER("	posStruct={");
+	SER("		pos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<Vec2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		speed=%g",buff.Read<f32>());
+	SER("		clientTime=%d",buff.Read<i32>());
+	SER("	}");
+	SER("	fSkillChargeDamageMultiplier=%g", buff.Read<f32>());
+	SER("	graphMove={");
+	SER("		bApply=%d", buff.Read<u8>());
+	SER("		startPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		endPos=%s", PS::ToStr(buff.Read<Vec3>()));
+	SER("		durationTimeS=%g", buff.Read<f32>());
+	SER("		originDistance=%g", buff.Read<f32>());
+	SER("	}");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SA_CastSkill>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

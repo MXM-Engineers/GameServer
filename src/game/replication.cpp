@@ -1554,7 +1554,50 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		SendPacketData(clientID, Sv::SN_CastSkill::NET_ID, packet.size, packet.data);
 	}
 
-#error TODO: SN_ExecuteSkill
+	// SN_ExecuteSkill
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<LocalActorID>(localActorID); // entityID
+		packet.Write<i32>(0); // ret
+		packet.Write<SkillID>(cast.skillID);
+		packet.Write<u8>(0); // costLevel
+
+		ActionStateID actionState = ActionStateID::INVALID;
+		switch(cast.skillID) {
+			case (SkillID)180350002: actionState = (ActionStateID)103; break;
+			case (SkillID)180350010: actionState = (ActionStateID)31; break;
+			case (SkillID)180350030: actionState = (ActionStateID)30; break;
+			case (SkillID)180030020: actionState = (ActionStateID)32; break;
+			case (SkillID)180030030: actionState = (ActionStateID)33; break;
+			case (SkillID)180030050: actionState = (ActionStateID)35; break;
+		}
+		packet.Write<ActionStateID>(actionState);
+		packet.Write<Vec3>(cast.p3nPos);
+
+		packet.Write<u16>(0); // targetList_count
+
+		packet.Write<u8>(0); // bSyncMyPosition
+		packet.Write<Vec3>(Vec3());
+		packet.Write<Vec3>(Vec3());
+		packet.Write<Vec2>(Vec2());
+		packet.Write<Vec3>(Vec3());
+		packet.Write<f32>(0);
+		packet.Write<i32>(0);
+
+		packet.Write<f32>(0); // fSkillChargeDamageMultiplier
+
+		// graphMove
+		packet.Write<u8>(0); // bApply
+		packet.Write<Vec3>(cast.posStruct.pos); // startPos
+		packet.Write<Vec3>(cast.posStruct.destPos); // endPos
+		packet.Write<f32>(0); // durationTimeS
+		packet.Write<f32>(0); // originDistance
+
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ExecuteSkill>(packet.data, packet.size));
+		SendPacketData(clientID, Sv::SN_ExecuteSkill::NET_ID, packet.size, packet.data);
+	}
 }
 
 void Replication::EventClientDisconnect(i32 clientID)

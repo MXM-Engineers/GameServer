@@ -2,8 +2,8 @@
 
 EntityModel::EntityModel(i32 ID, EntityType entityType)
 {
-	this->_ID = ID;
-	this->_entityType = entityType;
+	_ID = ID;
+	_entityType = entityType;
 }
 
 EntityModel::~EntityModel()
@@ -17,7 +17,7 @@ i32 EntityModel::getID()
 
 void EntityModel::setID(i32 ID)
 {
-	this->_ID = ID;
+	_ID = ID;
 }
 
 EntityType EntityModel::getEntityType()
@@ -27,5 +27,5 @@ EntityType EntityModel::getEntityType()
 
 void EntityModel::setEntityType(EntityType entityType)
 {
-	this->_entityType = entityType;
+	_entityType = entityType;
 }

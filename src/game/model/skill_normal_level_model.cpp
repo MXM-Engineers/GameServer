@@ -10,52 +10,52 @@ SkillNormalLevelModel::~SkillNormalLevelModel()
 
 i32 SkillNormalLevelModel::getSkillIndex()
 {
-	return this->_SkillIndex;
+	return _SkillIndex;
 }
 
 void SkillNormalLevelModel::setSkillIndex(i32 skillIndex)
 {
-	this->_SkillIndex = skillIndex;
+	_SkillIndex = skillIndex;
 }
 
 i8 SkillNormalLevelModel::getLevel()
 {
-	return this->_Level;
+	return _Level;
 }
 
 void SkillNormalLevelModel::setLevel(i8 level)
 {
-	this->_Level = level;
+	_Level = level;
 }
 
 float SkillNormalLevelModel::getBaseDamage()
 {
-	return this->_BaseDamage;
+	return _BaseDamage;
 }
 
 void SkillNormalLevelModel::setBaseDamage(float baseDamage)
 {
-	this->_BaseDamage = baseDamage;
+	_BaseDamage = baseDamage;
 }
 
 float SkillNormalLevelModel::getAttackMultiplier()
 {
-	return this->getAttackMultiplier;
+	return _AttackMultiplier;
 }
 
 void SkillNormalLevelModel::setAttackMultiplier(float attackMultiplier)
 {
-	this->_AttackMultiplier = attackMultiplier;
+	_AttackMultiplier = attackMultiplier;
 }
 
 float SkillNormalLevelModel::getCoolTime()
 {
-	return this->_CoolTime;
+	return _CoolTime;
 }
 
 void SkillNormalLevelModel::setCoolTime(float coolTime)
 {
-	this->_CoolTime = coolTime;
+	_CoolTime = coolTime;
 }
 
 float SkillNormalLevelModel::getTargetRangeLengthX()
@@ -65,17 +65,17 @@ float SkillNormalLevelModel::getTargetRangeLengthX()
 
 void SkillNormalLevelModel::setTargetRangeLengthX(float lenght)
 {
-	this->getTargetRangeLengthX = lenght;
+	_TargetRangeLengthX = lenght;
 }
 
 float SkillNormalLevelModel::getTargetRangeLengthY()
 {
-	return _TargetRangeLengthY;
+	_TargetRangeLengthY;
 }
 
 void SkillNormalLevelModel::setTargetRangeLengthY(float lenght)
 {
-	this->_TargetRangeLengthY = lenght;
+	_TargetRangeLengthY = lenght;
 }
 
 float SkillNormalLevelModel::getConsumeMP()
@@ -85,27 +85,27 @@ float SkillNormalLevelModel::getConsumeMP()
 
 void SkillNormalLevelModel::setConsumeMP(float mp)
 {
-	this->_ConsumeMP = mp;
+	_ConsumeMP = mp;
 }
 
 float SkillNormalLevelModel::getConsumeEP()
 {
-	return this->_ConsumeEP;
+	return _ConsumeEP;
 }
 
 void SkillNormalLevelModel::setConsumeEP(float ep)
 {
-	this->_ConsumeEP = ep;
+	_ConsumeEP = ep;
 }
 
 float SkillNormalLevelModel::getConsumeUG()
 {
-	return this->_ConsumeUG;
+	return _ConsumeUG;
 }
 
 void SkillNormalLevelModel::setConsumeUG(float ug)
 {
-	this->_ConsumeUG = ug;
+	_ConsumeUG = ug;
 }
 
 float SkillNormalLevelModel::getTargetMaxDistance()
@@ -115,15 +115,15 @@ float SkillNormalLevelModel::getTargetMaxDistance()
 
 void SkillNormalLevelModel::setTargetMaxDistance(float distance)
 {
-	this->_TargetMaxDistance = distance;
+	_TargetMaxDistance = distance;
 }
 
 float SkillNormalLevelModel::getAddGroggy()
 {
-	return this->_AddGroggy;
+	return _AddGroggy;
 }
 
 void SkillNormalLevelModel::setAddGroggy(float groggy)
 {
-	this->_AddGroggy = groggy;
+	_AddGroggy = groggy;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "../core.h"
-#include "entityModel.h"
+#include "entity_model.h"
 
 class CreatureModel :
 	public EntityModel {

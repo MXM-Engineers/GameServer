@@ -1,5 +1,6 @@
 --
 BUILD_DIR = path.getabsolute("build")
+SRC_DIR = path.getabsolute("./src")
 
 newoption {
 	trigger     = "profile",
@@ -12,7 +13,7 @@ if _OPTIONS["profile"] then
 	PROFILE_DEFINE = "TRACY_ENABLE"
 end
 
-solution "Servers"
+solution "GameServer"
 	location(BUILD_DIR)
 	targetdir(BUILD_DIR)
 
@@ -190,3 +191,6 @@ project "Game"
 			"pthread",
 			"dl",
 		}
+
+
+dofile("tools/genie_tools.lua");

@@ -3,59 +3,18 @@
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
+#include <common/base.h>
 
 //#error
 // TODO:
 // - Make this a dll
 // - Generate the key, and pass it for each decryption (as the decryption will alter it so we have to keep the state in Python)
 
-#define LOG(fmt, ...) printf(fmt "\n", __VA_ARGS__);
-#define ASSERT(cond) assert(cond)
-
 #ifdef CONF_DEBUG
 	#define DBG LOG
 #else
-	#define DBG
+	#define DBG(...)
 #endif
-
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef int32_t i32;
-typedef uint32_t u32;
-
-static u8* fileOpenAndReadAll(const char* filename, i32* pOutSize)
-{
-	FILE* f = fopen(filename, "rb");
-	if(f) {
-		fseek(f, 0, SEEK_END);
-		int size = ftell(f);
-		fseek(f, 0, SEEK_SET);
-
-		u8* buff = (u8*)malloc(size + 1);
-		fread(buff, size, 1, f);
-		buff[size] = 0;
-		*pOutSize = size;
-
-		fclose(f);
-		return buff;
-	}
-
-	return nullptr;
-}
-
-
-static bool fileSaveBuff(const char* filename, const void* buff, i32 size)
-{
-	FILE* f = fopen(filename, "wb");
-	if(f) {
-		fwrite(buff, 1, size, f);
-		fclose(f);
-		return true;
-	}
-
-	LOG("Failed to save '%s'", filename);
-	return false;
-}
 
 struct NetHeader
 {
@@ -63,9 +22,9 @@ struct NetHeader
 	u16 netID;
 };
 
-const u32 PROTOCOL_CRC = 0x28845199;
-const u32 ERROR_CRC = 0x93899e2c;
-const u32 VERSION = 0xb4381e;
+const u32 _PROTOCOL_CRC = 0x28845199;
+const u32 _ERROR_CRC = 0x93899e2c;
+const u32 _VERSION = 0xb4381e;
 
 struct Key16
 {
@@ -76,10 +35,9 @@ struct Key16
 
 	Key16(i32 ip[4], i32 port)
 	{
-		protocol = PROTOCOL_CRC;
-		error = ERROR_CRC;
-		version = VERSION;
-		protocol = PROTOCOL_CRC;
+		protocol = _PROTOCOL_CRC;
+		error = _ERROR_CRC;
+		version = _VERSION;
 
 		union FlatIP {
 			u8 b[4];

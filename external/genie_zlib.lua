@@ -1,6 +1,6 @@
 -- zlib
 
-SRC_DIR = "zlib-1.2.11"
+local SRC_DIR = "zlib-1.2.11"
 zlib_includedir = path.getabsolute(SRC_DIR)
 
 project "zlib"

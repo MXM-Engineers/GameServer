@@ -198,6 +198,11 @@ struct ConstBuffer
 		if(outLen) *outLen = len;
 		return eastl::fixed_string<wchar,256>((wchar*)ReadRaw(len * sizeof(wchar)), len);
 	}
+
+	inline i32 RemainingDataSize() const
+	{
+		return size - (cursor - data);
+	}
 };
 
 inline bool StringEquals(const char* str1, const char* str2)

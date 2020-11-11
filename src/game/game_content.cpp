@@ -162,6 +162,84 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
+bool GameXmlContent::LoadMasterDefinitionsModel()
+{
+	Path creatureCharacterXml = gameDataDir;
+	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		return false;
+	}
+
+	// get master IDs
+	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
+	do {
+		mastersModel.push_back();
+		CharacterModel character = mastersModel.back();
+
+		i32 masterID;
+		pNodeMaster->QueryAttribute("ID", &masterID);
+
+		// Entity data
+		XMLElement* pEntityComData = pNodeMaster->FirstChildElement("EntityComData");
+		const char* entityTypeTemp;
+		pEntityComData->QueryStringAttribute("_Type", &entityTypeTemp);
+
+		// Creature data
+		float moveSpeed;
+		float rotateSpeed;
+		float scale;
+
+		pEntityComData->QueryFloatAttribute("_MoveSpeed", &moveSpeed);
+		pEntityComData->QueryFloatAttribute("_RotateSpeed", &rotateSpeed);
+		pEntityComData->QueryFloatAttribute("_Scale", &scale);
+		//const char* className;
+		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
+
+		const char* creatureTypeTemp;
+		pStatsCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+
+		//pStatsCompData->QueryStringAttribute("_class", &className);
+
+		// Read character data: skills
+
+		// read skill ids
+		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
+		do {
+			i32 skillID;
+			pSkillElt->QueryAttribute("_Index", &skillID);
+			//master.skillIDs.push_back((SkillID)skillID);
+
+			pSkillElt = pSkillElt->NextSiblingElement();
+		} while (pSkillElt);
+
+		// save master data
+		/*master.ID = (CreatureIndex)masterID;
+		master.classType = (ClassType)(masterID - 100000000);
+		master.className = className;
+		masterClassStringMap.emplace(strHash(master.className.data()), &master);
+		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
+
+		masterClassTypeMap.emplace(master.classType, &master);
+
+		pNodeMaster = pNodeMaster->NextSiblingElement();*/
+	} while (pNodeMaster);
+
+	return true;
+}
+
 bool GameXmlContent::LoadMapList()
 {
 	Path xmlPath = gameDataDir;
@@ -445,6 +523,9 @@ bool GameXmlContent::Load()
 
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
+
+	r = LoadMasterDefinitionsModel();
+	if (!r) return false;
 
 	r = LoadMapList();
 	if (!r) return false;

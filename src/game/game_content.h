@@ -6,6 +6,7 @@
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
+#include "model/character_model.h"
 
 struct GameXmlContent
 {
@@ -61,6 +62,7 @@ struct GameXmlContent
 	eastl::hash<const char*> strHash;
 
 	eastl::fixed_vector<Master,100,false> masters;
+	eastl::fixed_vector<CharacterModel,100,false> mastersModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
@@ -73,6 +75,7 @@ struct GameXmlContent
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
+	bool LoadMasterDefinitionsModel();
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);

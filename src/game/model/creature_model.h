@@ -21,7 +21,7 @@ public:
 	void setCreatureType(CreatureType creatureType);
 
 private:
-	float _NormalMoveSpeed;
+	float _NormalMoveSpeed;		// Exclusive for Creature Monster
 	float _MoveSpeed;
 	float _RotateSpeed;
 	float _Scale;

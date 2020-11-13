@@ -2,6 +2,18 @@
 
 SkillNormalLevelModel::SkillNormalLevelModel()
 {
+	_AddGroggy = 0.0f;
+	_AttackMultiplier = 0.0f;
+	_BaseDamage = 0.0f;
+	_ConsumeEP = 0.0f;
+	_ConsumeMP = 0.0f;
+	_ConsumeUG = 0.0f;
+	_CoolTime = 0.0f;
+	_Level = 0;
+	_SkillIndex = 0;
+	_TargetMaxDistance = 0.0f;
+	_TargetRangeLengthX = 0.0f;
+	_TargetRangeLengthY = 0.0f;
 }
 
 SkillNormalLevelModel::~SkillNormalLevelModel()
@@ -70,7 +82,7 @@ void SkillNormalLevelModel::setTargetRangeLengthX(float lenght)
 
 float SkillNormalLevelModel::getTargetRangeLengthY()
 {
-	_TargetRangeLengthY;
+	return _TargetRangeLengthY;
 }
 
 void SkillNormalLevelModel::setTargetRangeLengthY(float lenght)

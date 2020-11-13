@@ -273,16 +273,16 @@ bool GameXmlContent::LoadMapList()
 		const char* mapTypeXml;
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
 		
-		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
+		mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_INVALID;
 		if (EA::StdC::Strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
 		{
-			mapList.mapType = MAP_CITY;
+			mapList.mapType = MapType::MAP_CITY;
 		}
 		else if (EA::StdC::Strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
 		{
 			const char* gameSubModeTypeXml;
 
-			mapList.mapType = MAP_INGAME;
+			mapList.mapType = MapType::MAP_INGAME;
 		
 			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) != XML_SUCCESS)
 			{
@@ -290,51 +290,51 @@ bool GameXmlContent::LoadMapList()
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_DEATH_MATCH_NORMAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_DEATH_MATCH_NORMAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_CORE;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_CORE;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_BUSH;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_BUSH;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_AUTHENTIC;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_AUTHENTIC;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_FIRE_POWER;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_FIRE_POWER;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_RUN;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_RUN;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_SURVIVAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_SURVIVAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_TUTORIAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_TUTORIAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_NORMAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_NORMAL;
 			}
 			else
 			{
@@ -453,7 +453,7 @@ bool GameXmlContent::LoadLobby(i32 index)
 		return false;
 	};
 
-	if (map->mapType != MAP_CITY)
+	if (map->mapType != MapType::MAP_CITY)
 	{
 		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
 		return false;
@@ -577,6 +577,64 @@ bool GameXmlContent::Load()
 
 	LOG("GameContent successfully loaded.");
 	return true;
+}
+
+// Returns CREATURE_INVALID when it doesn't recognises the creature type.
+CreatureType GameXmlContent::StringToCreatureType(const char* s)
+{
+	if (EA::StdC::Strcmp("CREATURE_TYPE_ALLY", s) == 0)
+	{
+		return CreatureType::CREATURE_ALLY;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_BOT", s) == 0)
+	{
+		return CreatureType::CREATURE_BOT;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_MONSTER", s) == 0)
+	{
+		return CreatureType::CREATURE_MONSTER;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_NPC", s) == 0)
+	{
+		return CreatureType::CREATURE_NPC;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_PC", s) == 0)
+	{
+		return CreatureType::CREATURE_PC;
+	}
+	else
+	{
+		return CreatureType::CREATURE_INVALID;
+	}
+}
+
+// Returns ENTITY_INVALID when it doesn't recognises the entity type.
+EntityType GameXmlContent::StringToEntityType(const char* s)
+{
+	if (EA::StdC::Strcmp("ENTITY_TYPE_CREATURE", s) == 0)
+	{
+		return EntityType::ENTITY_CREATURE;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_DYNAMIC", s) == 0)
+	{
+		return EntityType::ENTITY_DYNAMIC;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_ITEM", s) == 0)
+	{
+		return EntityType::ENTITY_ITEM;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_SFX", s) == 0)
+	{
+		return EntityType::ENTITY_SFX;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_TERRAIN", s) == 0)
+	{
+		return EntityType::ENTITY_TERRAIN;
+	}
+	else
+	{
+		return EntityType::ENTITY_INVALID;
+	}
 }
 
 const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const

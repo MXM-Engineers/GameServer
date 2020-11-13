@@ -85,6 +85,11 @@ struct GameXmlContent
 
 	const MapList* FindMapListByID(i32 index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
+
+	// helper functions
+	CreatureType StringToCreatureType(const char* s);
+	EntityType StringToEntityType(const char* s);
+
 };
 
 bool GameXmlContentLoad();

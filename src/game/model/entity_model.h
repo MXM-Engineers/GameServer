@@ -12,5 +12,5 @@ public:
 	void setEntityType(EntityType entityType);
 private:
 	i32 _ID;
-	EntityType _entityType = ENTITY_INVALID;
+	EntityType _entityType = EntityType::ENTITY_INVALID;
 };

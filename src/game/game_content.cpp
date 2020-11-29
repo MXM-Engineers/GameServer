@@ -187,7 +187,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
 	do {
 		mastersModel.push_back();
-		CharacterModel character = mastersModel.back();
+		CharacterModel &character = mastersModel.back();
 
 		i32 masterID;
 		pNodeMaster->QueryAttribute("ID", &masterID);
@@ -205,11 +205,15 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		pEntityComData->QueryFloatAttribute("_MoveSpeed", &moveSpeed);
 		pEntityComData->QueryFloatAttribute("_RotateSpeed", &rotateSpeed);
 		pEntityComData->QueryFloatAttribute("_Scale", &scale);
-		//const char* className;
-		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
+
+		
+		XMLElement* pCreatureCompData = pNodeMaster->FirstChildElement("CreatureComData");
 
 		const char* creatureTypeTemp;
-		pStatsCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+
+		//const char* className;
+		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
 
 		//pStatsCompData->QueryStringAttribute("_class", &className);
 
@@ -226,6 +230,15 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		} while (pSkillElt);
 
 		// save master data
+		character.setID(masterID);
+		// entity data
+		character.setEntityType(StringToEntityType(entityTypeTemp));
+		// creature data
+		character.setCreatureType(StringToCreatureType(creatureTypeTemp));
+		character.setMoveSpeed(moveSpeed);
+		character.setRotateSpeed(rotateSpeed);
+		character.setScale(scale);
+		
 		/*master.ID = (CreatureIndex)masterID;
 		master.classType = (ClassType)(masterID - 100000000);
 		master.className = className;
@@ -233,8 +246,8 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
 
 		masterClassTypeMap.emplace(master.classType, &master);
-
-		pNodeMaster = pNodeMaster->NextSiblingElement();*/
+		*/
+		pNodeMaster = pNodeMaster->NextSiblingElement();
 	} while (pNodeMaster);
 
 	return true;

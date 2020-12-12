@@ -89,6 +89,7 @@ struct GameXmlContent
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
 	EntityType StringToEntityType(const char* s);
+	SkillType StringToSkillType(const char* s);
 
 };
 

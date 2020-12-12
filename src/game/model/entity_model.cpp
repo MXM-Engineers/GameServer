@@ -1,9 +1,17 @@
 #include "entity_model.h"
 
-EntityModel::EntityModel(i32 ID, EntityType entityType)
+EntityModel::EntityModel()
+{
+}
+
+EntityModel::EntityModel(i32 ID, EntityType entityType, float NormalMoveSpeed, float MoveSpeed, float RotateSpeed, float Scale)
 {
 	_ID = ID;
 	_entityType = entityType;
+	_NormalMoveSpeed = NormalMoveSpeed;
+	_MoveSpeed = MoveSpeed;
+	_RotateSpeed = RotateSpeed;
+	_Scale = Scale;
 }
 
 EntityModel::~EntityModel()
@@ -18,6 +26,46 @@ i32 EntityModel::getID()
 void EntityModel::setID(i32 ID)
 {
 	_ID = ID;
+}
+
+float EntityModel::getNormalMoveSpeed()
+{
+	return _NormalMoveSpeed;
+}
+
+void EntityModel::setNormalMoveSpeed(float normalMoveSpeed)
+{
+	_NormalMoveSpeed = normalMoveSpeed;
+}
+
+float EntityModel::getMoveSpeed()
+{
+	return _MoveSpeed;
+}
+
+void EntityModel::setMoveSpeed(float moveSpeed)
+{
+	_MoveSpeed = moveSpeed;
+}
+
+float EntityModel::getRotateSpeed(void)
+{
+	return _RotateSpeed;
+}
+
+void EntityModel::setRotateSpeed(float rotateSpeed)
+{
+	_RotateSpeed = rotateSpeed;
+}
+
+float EntityModel::getScale()
+{
+	return _Scale;
+}
+
+void EntityModel::setScale(float scale)
+{
+	_Scale = scale;
 }
 
 EntityType EntityModel::getEntityType()

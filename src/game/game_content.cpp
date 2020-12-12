@@ -617,6 +617,7 @@ CreatureType GameXmlContent::StringToCreatureType(const char* s)
 	}
 	else
 	{
+		LOG("Unknown CreatureType: %s", s);
 		return CreatureType::CREATURE_INVALID;
 	}
 }
@@ -646,7 +647,45 @@ EntityType GameXmlContent::StringToEntityType(const char* s)
 	}
 	else
 	{
+		LOG("Unknown EntityType: %s", s);
 		return EntityType::ENTITY_INVALID;
+	}
+}
+
+SkillType GameXmlContent::StringToSkillType(const char* s)
+{
+	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
+	{
+		return SkillType::SKILL_COMBO;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
+	{
+		return SkillType::SKILL_NORMAL;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
+	{
+		return SkillType::SKILL_PASSIVE;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
+	{
+		return SkillType::SKILL_SHIRK;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
+	{
+		return SkillType::SKILL_STANCE;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
+	{
+		return SkillType::SKILL_SUMMON;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
+	{
+		return SkillType::SKILL_TOGGLE;
+	}
+	else
+	{
+		LOG("Unknown SkillType: %s", s);
+		return SkillType::SKILL_INVALID;
 	}
 }
 

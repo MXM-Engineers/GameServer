@@ -75,13 +75,22 @@ enum class EtcType : i32
 	ETC_NONE = 28
 };
 
-// Has EntityComData _Type ENTITY_TYPE_ITEM
-enum class ItemType : i32
+// When the maptype is INGAME it has a GameSubModeType except the training room
+enum class GameSubModeType : i32
 {
-	ITEM_INVALID = 0,
-	ITEM_WEAPON = 1,
-	ITEM_ETC = 2,
-	ITEM_GEAR = 3
+	GAME_SUB_MODE_INVALID = 0,
+	GAME_SUB_MODE_DEATH_MATCH_NORMAL = 1,
+	GAME_SUB_MODE_OCCUPY_CORE = 2,
+	GAME_SUB_MODE_OCCUPY_BUSH = 3,
+	GAME_SUB_MODE_GOT_AUTHENTIC = 4,
+	GAME_SUB_MODE_GOT_TUTORIAL_BASIC = 5,
+	GAME_SUB_MODE_GOT_TUTORIAL_EXPERT = 6,
+	GAME_SUB_MODE_GOT_FIRE_POWER = 7,
+	GAME_SUB_MODE_GOT_ULTIMATE_TITAN = 8,
+	GAME_SUB_MODE_SPORTS_RUN = 9,
+	GAME_SUB_MODE_SPORTS_SURVIVAL = 10,
+	GAME_SUB_MODE_STAGE_TUTORIAL = 11,
+	GAME_SUB_MODE_STAGE_NORMAL = 12
 };
 
 // Has ItemComData _Type ITEM_TYPE_GEAR
@@ -91,6 +100,22 @@ enum class GearType : i32
 	GEAR_ATT = 1,
 	GEAR_DEF = 2,
 	GEAR_UTIL = 3
+};
+
+// Has EntityComData _Type ENTITY_TYPE_ITEM
+enum class ItemType : i32
+{
+	ITEM_INVALID = 0,
+	ITEM_WEAPON = 1,
+	ITEM_ETC = 2,
+	ITEM_GEAR = 3
+};
+
+enum class MapType : i32
+{
+	MAP_INVALID = 0,
+	MAP_CITY = 1, //LOBBY
+	MAP_INGAME = 2
 };
 
 // NPC's that have shops or the jukebox have also _NPCType in CreatureComData
@@ -111,11 +136,17 @@ enum class NPCType: i32
 	NPC_EVENTSHOP = 10
 };
 
-enum class MapType: i32
+// _Type values for <ST_COMMONSKILL> in SKILL.xml
+enum class SkillType : i32
 {
-	MAP_INVALID = 0,
-	MAP_CITY = 1, //LOBBY
-	MAP_INGAME = 2
+	SKILL_INVALID = 0,
+	SKILL_PASSIVE,
+	SKILL_SHIRK,
+	SKILL_NORMAL,
+	SKILL_STANCE,
+	SKILL_SUMMON,
+	SKILL_COMBO,
+	SKILL_TOGGLE
 };
 
 // Has ETC_TYPE_SUPPORTKIT _Type in EtcItemComData
@@ -125,23 +156,6 @@ enum class SupportKitType : i32
 	SUPPORTKIT_HP = 1
 };
 
-// When the maptype is INGAME it has a GameSubModeType except the training room
-enum class GameSubModeType : i32
-{
-	GAME_SUB_MODE_INVALID = 0,
-	GAME_SUB_MODE_DEATH_MATCH_NORMAL = 1,
-	GAME_SUB_MODE_OCCUPY_CORE = 2,
-	GAME_SUB_MODE_OCCUPY_BUSH = 3,
-	GAME_SUB_MODE_GOT_AUTHENTIC = 4,
-	GAME_SUB_MODE_GOT_TUTORIAL_BASIC = 5,
-	GAME_SUB_MODE_GOT_TUTORIAL_EXPERT = 6,
-	GAME_SUB_MODE_GOT_FIRE_POWER = 7,
-	GAME_SUB_MODE_GOT_ULTIMATE_TITAN = 8,
-	GAME_SUB_MODE_SPORTS_RUN = 9,
-	GAME_SUB_MODE_SPORTS_SURVIVAL = 10,
-	GAME_SUB_MODE_STAGE_TUTORIAL = 11,
-	GAME_SUB_MODE_STAGE_NORMAL = 12
-};
 
 constexpr i32 JUKEBOX_MAX_TRACKS = 8;
 

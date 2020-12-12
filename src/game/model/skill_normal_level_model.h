@@ -32,16 +32,16 @@ public:
 	void setAddGroggy(float groggy);
 	//ToDo: check if for some of these float's we can use int
 private:
-	i32 _SkillIndex;
-	i8 _Level;
-	float _BaseDamage; //int?
-	float _AttackMultiplier;
-	float _CoolTime; //int?
-	float _TargetRangeLengthX; //int?
-	float _TargetRangeLengthY; //int?
-	float _ConsumeMP; //int?
-	float _ConsumeEP; //int?
-	float _ConsumeUG; //int?
-	float _TargetMaxDistance; //int?
-	float _AddGroggy; //int?
+	i32 _SkillIndex = 0;
+	i8 _Level = 0;
+	float _BaseDamage = 0.0f; //int?
+	float _AttackMultiplier = 0.0f;
+	float _CoolTime = 0.0f; //int?
+	float _TargetRangeLengthX = 0.0f; //int?
+	float _TargetRangeLengthY = 0.0f; //int?
+	float _ConsumeMP = 0.0f; //int?
+	float _ConsumeEP = 0.0f; //int?
+	float _ConsumeUG = 0.0f; //int?
+	float _TargetMaxDistance = 0.0f; //int?
+	float _AddGroggy = 0.0f; //int?
 };

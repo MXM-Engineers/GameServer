@@ -70,7 +70,7 @@ struct NavMeshReader
 
 	bool ProcessTag(const Tag& tag, ConstBuffer& buff)
 	{
-		LOG("[%.4s : %u] {", tag.name, tag.size);
+		LOG("[%.4s : %u (%d)] {", tag.name, tag.size, tag.type);
 
 		if(!buff.CanRead(tag.size - 8)) {
 			LOG("ERROR: tag size is too large (%u > %d)", tag.size, buff.RemainingDataSize());
@@ -94,8 +94,8 @@ struct NavMeshReader
 	{
 		Tag tag;
 		u32 typeSize = buff.Read<u32>();
-		tag.type = typeSize & 0xFF;
-		typeSize &= 0xFFFFFF00; // zero out type
+		tag.type = typeSize & ~(0x3FFFFFFF);
+		typeSize &= 0x3FFFFFFF; // zero out type
 		tag.size = littleToBigEndian(typeSize) - 8;
 
 		tag.ID = buff.Read<u32>();

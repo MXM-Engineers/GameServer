@@ -88,3 +88,25 @@ project "NavMesh"
 		"navmesh/**.c",
 		"navmesh/**.cpp",
 	}
+
+project "ToolCollision"
+	kind "ConsoleApp"
+	targetname "col"
+
+	configuration {}
+
+	includedirs {
+		common_includes,
+		"collision",
+	}
+
+	links {
+		common_links
+	}
+	
+	files {
+		common_files,
+		"collision/**.h",
+		"collision/**.c",
+		"collision/**.cpp",
+	}

@@ -76,6 +76,7 @@ struct GameXmlContent
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();
+	bool LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);

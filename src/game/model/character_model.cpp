@@ -8,3 +8,13 @@ CharacterModel::CharacterModel()
 CharacterModel::~CharacterModel()
 {
 }
+
+SkillsModel CharacterModel::getSkills()
+{
+	return _skills;
+}
+
+void CharacterModel::setSkills(SkillsModel skills)
+{
+	_skills = skills;
+}

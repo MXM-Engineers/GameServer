@@ -220,11 +220,15 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		// Read character data: skills
 
 		// read skill ids
+		u8 skillCounter = 0;
 		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
 		do {
 			i32 skillID;
+			
 			pSkillElt->QueryAttribute("_Index", &skillID);
-			//master.skillIDs.push_back((SkillID)skillID);
+			LOG("SkillID: %d", skillID);
+			LoadMasterSkillWithID(skillCounter, &character, skillID);
+			skillCounter++;
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while (pSkillElt);
@@ -250,6 +254,109 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 	} while (pNodeMaster);
 
+	return true;
+}
+
+bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID)
+{
+	Path SkillXml = gameDataDir;
+	PathAppend(SkillXml, L"/SKILL.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pNodeSkill = doc.FirstChildElement()->FirstChildElement();
+
+	do {
+		i32 _skillID;
+		pNodeSkill->QueryAttribute("ID", &_skillID);
+		if (_skillID == skillID)
+		{
+			XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
+			LOG("Skill Match");
+			const char* SkillTypeTemp;
+			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
+			if (EA::StdC::Strcmp(SkillTypeTemp, "SKILL_TYPE_NORMAL") == 0)
+			{
+				SkillNormalModel _skillNormal;
+				float _temp = 0.0f;
+
+				_skillNormal.setID(_skillID);
+
+				if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setAddGroggy(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setAttackMultiplier(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setBaseDamage(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setConsumeEP(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setConsumeMP(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setConsumeUG(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setCoolTime(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setSkillIndex(_temp); //fix me: float in int32
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setSkillRangeLengthX(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setSkillRangeLengthY(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setTargetMaxDistance(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setTargetRangeLengthX(_temp);
+				}
+				if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
+				{
+					_skillNormal.getSkillNormalLevelByIndex(0).setTargetRangeLengthY(_temp);
+				}
+
+				character->getSkills().setSkillByIndex(_skillNormal, id);
+			}
+			break;
+		}
+
+		pNodeSkill = pNodeSkill->NextSiblingElement();
+	} while (pNodeSkill);
+	
 	return true;
 }
 

@@ -70,6 +70,26 @@ void SkillNormalLevelModel::setCoolTime(float coolTime)
 	_CoolTime = coolTime;
 }
 
+void SkillNormalLevelModel::setSkillRangeLengthX(float lenght)
+{
+	_SkillRangeLengthX = lenght;
+}
+
+float SkillNormalLevelModel::getSkillRangeLengthX()
+{
+	return _SkillRangeLengthX;
+}
+
+void SkillNormalLevelModel::setSkillRangeLengthY(float lenght)
+{
+	_SkillRangeLengthY = lenght;
+}
+
+float SkillNormalLevelModel::getSkillRangeLengthY()
+{
+	return _SkillRangeLengthY;
+}
+
 float SkillNormalLevelModel::getTargetRangeLengthX()
 {
 	return _TargetRangeLengthX;

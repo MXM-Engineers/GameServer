@@ -16,6 +16,10 @@ public:
 	void setAttackMultiplier(float attackMultiplier);
 	float getCoolTime();
 	void setCoolTime(float coolTime);
+	void setSkillRangeLengthX(float lenght);
+	float getSkillRangeLengthX();
+	void setSkillRangeLengthY(float lenght);
+	float getSkillRangeLengthY();
 	float getTargetRangeLengthX();
 	void setTargetRangeLengthX(float lenght);
 	float getTargetRangeLengthY();
@@ -37,6 +41,8 @@ private:
 	float _BaseDamage = 0.0f; //int?
 	float _AttackMultiplier = 0.0f;
 	float _CoolTime = 0.0f; //int?
+	float _SkillRangeLengthX = 0.0f;
+	float _SkillRangeLengthY = 0.0f;
 	float _TargetRangeLengthX = 0.0f; //int?
 	float _TargetRangeLengthY = 0.0f; //int?
 	float _ConsumeMP = 0.0f; //int?

@@ -121,6 +121,150 @@ struct CollisionNifReader
 		return true;
 	}
 
+	bool ReadBlock_NiStringExtraData(ConstBuffer& buff, i32 blockID)
+	{
+		const u32 nameStrID = buff.Read<u32>();
+		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
+		const u32 strDataStrID = buff.Read<u32>();
+		const StringSlice& strData = (strDataStrID != 0xFFFFFFFF) ? stringList[strDataStrID] : StringSlice{"_", 1};
+
+		LOG("	name = '%.*s'", name.len, name.at);
+		LOG("	strData = '%.*s'", strData.len, strData.at);
+		return true;
+	}
+
+	bool ReadBlock_NiMesh(ConstBuffer& buff, i32 blockID)
+	{
+		const u32 nameStrID = buff.Read<u32>();
+		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
+
+		const u32 numExtraDataList = buff.Read<u32>();
+		eastl::fixed_vector<i32,128,true> refExtraDataList;
+		for(int i = 0; i < numExtraDataList; i++) {
+			refExtraDataList.push_back(buff.Read<i32>());
+		}
+
+		const i32 refController = buff.Read<i32>();
+		const u16 flags = buff.Read<u16>();
+		const Vector3 translation = buff.Read<Vector3>();
+		const Matrix3x3 rotation = buff.Read<Matrix3x3>();
+		const f32 scale = buff.Read<f32>();
+
+		const u32 numProperties = buff.Read<u32>();
+		eastl::fixed_vector<i32,128,true> refPropertyList;
+		for(int i = 0; i < numProperties; i++) {
+			refPropertyList.push_back(buff.Read<i32>());
+		}
+
+		const i32 refCollisionObject = buff.Read<i32>();
+
+		const u32 numMaterials = buff.Read<u32>();
+		const i32 activeMaterialID = buff.Read<i32>();
+		const u8 bMaterialNeedsUpdate = buff.Read<u8>();
+		const u32 meshPrimitiveType = buff.Read<u32>();
+
+		const u16 numSubMeshes = buff.Read<u16>();
+		const u8 bInstancingEnabled = buff.Read<u8>();
+
+		const Vector3 boundCenter = buff.Read<Vector3>();
+		const f32 boundRadius = buff.Read<f32>();
+
+		struct DataStream
+		{
+			struct Component
+			{
+				StringSlice name;
+				u32 index;
+			};
+
+			i32 refStream;
+			u8 bIsPerInstance;
+			eastl::fixed_vector<u16,16,true> subMeshToRegionMapList;
+			eastl::fixed_vector<Component,16,true> componentList;
+		};
+
+		const u32 numDataStreams = buff.Read<u32>();
+		eastl::fixed_vector<DataStream,16,true> dataStreamList;
+		for(int i = 0; i < numDataStreams; i++) {
+			DataStream datastream;
+			datastream.refStream = buff.Read<i32>();
+			datastream.bIsPerInstance = buff.Read<u8>();
+
+			const u16 numSubMeshes = buff.Read<u16>();
+			for(int si = 0; si < numSubMeshes; si++) {
+				datastream.subMeshToRegionMapList.push_back(buff.Read<u16>());
+			}
+
+			const u32 numComponents = buff.Read<u32>();
+			for(int ci = 0; ci < numComponents; ci++) {
+				DataStream::Component comp;
+				const u32 nameStrID = buff.Read<u32>();
+				comp.name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
+				comp.index = buff.Read<u32>();
+
+				datastream.componentList.push_back(comp);
+			}
+
+			dataStreamList.push_back(datastream);
+		}
+
+		const u32 numModifiers = buff.Read<u32>();
+		eastl::fixed_vector<i32,128,true> refModifierList;
+		for(int i = 0; i < numProperties; i++) {
+			refModifierList.push_back(buff.Read<i32>());
+		}
+
+		LOG("	name = '%.*s'", name.len, name.at);
+		LOG("	extraDataList(%d) = [", numExtraDataList);
+		foreach(it, refExtraDataList) {
+			LOG("		%d,", *it);
+		}
+		LOG("	]");
+		LOG("	refController = %d", refController);
+		LOG("	flags = %#x", flags);
+		LOG("	translation = (%g, %g, %g)", translation.x, translation.y, translation.z);
+		LOG("	rotation = (%.2f, %.2f, %.2f", rotation.data[0], rotation.data[1], rotation.data[2]);
+		LOG("	            %.2f, %.2f, %.2f", rotation.data[3], rotation.data[4], rotation.data[5]);
+		LOG("	            %.2f, %.2f, %.2f)", rotation.data[6], rotation.data[7], rotation.data[8]);
+		LOG("	scale = %g", scale);
+		LOG("	properties(%d) = [", numProperties);
+		foreach(it, refPropertyList) {
+			LOG("		%d,", *it);
+		}
+		LOG("	]");
+		LOG("	refCollisionObject = %d", refCollisionObject);
+		LOG("");
+		LOG("	numMaterials = %d", numMaterials);
+		LOG("	activeMaterialID = %d", activeMaterialID);
+		LOG("	bMaterialNeedsUpdate = %d", bMaterialNeedsUpdate);
+		LOG("	meshPrimitiveType = %d", meshPrimitiveType);
+		LOG("	numSubMeshes = %d", numSubMeshes);
+		LOG("	bInstancingEnabled = %d", bInstancingEnabled);
+		LOG("	dataStreams(%d) = [", numDataStreams);
+		foreach(it, dataStreamList) {
+			LOG("		{");
+			LOG("			refStream = %d", it->refStream);
+			LOG("			bIsPerInstance = %d", it->bIsPerInstance);
+			LOG("			subMeshToRegionMapList(%zd) = [", it->subMeshToRegionMapList.size());
+			foreach(sit, it->subMeshToRegionMapList) {
+				LOG("				%d,", *sit);
+			}
+			LOG("			]");
+			LOG("			components(%zd) = [", it->componentList.size());
+			foreach(comp, it->componentList) {
+				LOG("				(name='%.*s', index=%u),", comp->name.len, comp->name.at, comp->index);
+			}
+			LOG("			]");
+			LOG("		},");
+		}
+		LOG("	]");
+		LOG("	bound = {");
+		LOG("		center = (%g, %g, %g)", boundCenter.x, boundCenter.y, boundCenter.z);
+		LOG("		radius = %g", boundRadius);
+		LOG("	}");
+		return true;
+	}
+
 	bool ReadBlock(ConstBuffer& buff, i32 blockID, const u16 blockType, const StringSlice& blockTypeStr)
 	{
 		bool r = true;
@@ -130,6 +274,12 @@ struct CollisionNifReader
 
 		if(blockTypeStr.Equals("NiNode")) {
 			r = ReadBlock_NiNode(buff, blockID);
+		}
+		else if(blockTypeStr.Equals("NiStringExtraData")) {
+			r = ReadBlock_NiStringExtraData(buff, blockID);
+		}
+		else if(blockTypeStr.Equals("NiMesh")) {
+			r = ReadBlock_NiMesh(buff, blockID);
 		}
 		else {
 			buff.ReadRaw(blockSizeList[blockID]);

@@ -1,5 +1,6 @@
 #include <common/base.h>
 #include <EAStdC/EAString.h>
+#include <EASTL/fixed_map.h>
 
 #ifdef CONF_DEBUG
 	#define DBG LOG
@@ -29,6 +30,21 @@ inline u32 littleToBigEndian(u32 in)
 	return b0 | b1 | b2 | b3;
 }
 
+struct Vector3
+{
+	f32 x,y,z;
+};
+
+struct Vector4
+{
+	f32 x,y,z,w;
+};
+
+struct Matrix3x3
+{
+	f32 data[9];
+};
+
 struct CollisionNifReader
 {
 	const u8* fileData;
@@ -45,22 +61,57 @@ struct CollisionNifReader
 			if(otherLen != len) return false;
 			return strncmp(at, str, otherLen) == 0;
 		}
+
+		inline bool StartsWith(const char* str) const
+		{
+			const i32 otherLen = strlen(str);
+			if(otherLen > len) return false;
+			return strncmp(at, str, otherLen) == 0;
+		}
 	};
 
-	struct Vector3
+	struct Mesh
 	{
-		f32 x,y,z;
+		struct DataStream
+		{
+			struct Component
+			{
+				StringSlice name;
+				u32 index;
+			};
+
+			i32 refStream;
+			u8 bIsPerInstance;
+			eastl::fixed_vector<u16,16,true> subMeshToRegionMapList;
+			eastl::fixed_vector<Component,16,true> componentList;
+		};
+
+		/*
+			<option value="0" name="MESH_PRIMITIVE_TRIANGLES">Triangle primitive type.</option>
+			<option value="1" name="MESH_PRIMITIVE_TRISTRIPS">Triangle strip primitive type.</option>
+			<option value="2" name="MESH_PRIMITIVE_LINES">Lines primitive type.</option>
+			<option value="3" name="MESH_PRIMITIVE_LINESTRIPS">Line strip primitive type.</option>
+			<option value="4" name="MESH_PRIMITIVE_QUADS">Quadrilateral primitive type.</option>
+			<option value="5" name="MESH_PRIMITIVE_POINTS">Point primitive type.</option>
+		*/
+		u32 meshPrimitiveType;
+		eastl::fixed_vector<DataStream,16,true> dataStreamList;
 	};
 
-	struct Matrix3x3
+	struct DataStream
 	{
-		f32 data[9];
+		const void* at;
+		u32 size;
+		u32 numIndices;
 	};
 
 	eastl::fixed_vector<StringSlice,1024,true> stringList;
 	eastl::fixed_vector<u16,1024,true> blockSizeList;
+	eastl::fixed_map<i32,DataStream,16,true> dataStreamMap;
 
-	bool ReadBlock_NiNode(ConstBuffer& buff, i32 blockID)
+	eastl::fixed_vector<Mesh,8,true> meshList;
+
+	bool ReadBlock_NiNode(ConstBuffer buff, i32 blockID)
 	{
 		const u32 stringIndex = buff.Read<u32>();
 		const StringSlice& str = (stringIndex != 0xFFFFFFFF) ? stringList[stringIndex] : StringSlice{"_", 1};
@@ -121,7 +172,7 @@ struct CollisionNifReader
 		return true;
 	}
 
-	bool ReadBlock_NiStringExtraData(ConstBuffer& buff, i32 blockID)
+	bool ReadBlock_NiStringExtraData(ConstBuffer buff, i32 blockID)
 	{
 		const u32 nameStrID = buff.Read<u32>();
 		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
@@ -133,8 +184,9 @@ struct CollisionNifReader
 		return true;
 	}
 
-	bool ReadBlock_NiMesh(ConstBuffer& buff, i32 blockID)
+	bool ReadBlock_NiMesh(ConstBuffer buff, i32 blockID)
 	{
+		Mesh& mesh = meshList.push_back();
 		const u32 nameStrID = buff.Read<u32>();
 		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
 
@@ -161,7 +213,7 @@ struct CollisionNifReader
 		const u32 numMaterials = buff.Read<u32>();
 		const i32 activeMaterialID = buff.Read<i32>();
 		const u8 bMaterialNeedsUpdate = buff.Read<u8>();
-		const u32 meshPrimitiveType = buff.Read<u32>();
+		mesh.meshPrimitiveType = buff.Read<u32>();
 
 		const u16 numSubMeshes = buff.Read<u16>();
 		const u8 bInstancingEnabled = buff.Read<u8>();
@@ -169,24 +221,9 @@ struct CollisionNifReader
 		const Vector3 boundCenter = buff.Read<Vector3>();
 		const f32 boundRadius = buff.Read<f32>();
 
-		struct DataStream
-		{
-			struct Component
-			{
-				StringSlice name;
-				u32 index;
-			};
-
-			i32 refStream;
-			u8 bIsPerInstance;
-			eastl::fixed_vector<u16,16,true> subMeshToRegionMapList;
-			eastl::fixed_vector<Component,16,true> componentList;
-		};
-
 		const u32 numDataStreams = buff.Read<u32>();
-		eastl::fixed_vector<DataStream,16,true> dataStreamList;
 		for(int i = 0; i < numDataStreams; i++) {
-			DataStream datastream;
+			Mesh::DataStream datastream;
 			datastream.refStream = buff.Read<i32>();
 			datastream.bIsPerInstance = buff.Read<u8>();
 
@@ -197,7 +234,7 @@ struct CollisionNifReader
 
 			const u32 numComponents = buff.Read<u32>();
 			for(int ci = 0; ci < numComponents; ci++) {
-				DataStream::Component comp;
+				Mesh::DataStream::Component comp;
 				const u32 nameStrID = buff.Read<u32>();
 				comp.name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
 				comp.index = buff.Read<u32>();
@@ -205,12 +242,12 @@ struct CollisionNifReader
 				datastream.componentList.push_back(comp);
 			}
 
-			dataStreamList.push_back(datastream);
+			mesh.dataStreamList.push_back(datastream);
 		}
 
 		const u32 numModifiers = buff.Read<u32>();
 		eastl::fixed_vector<i32,128,true> refModifierList;
-		for(int i = 0; i < numProperties; i++) {
+		for(int i = 0; i < numModifiers; i++) {
 			refModifierList.push_back(buff.Read<i32>());
 		}
 
@@ -237,11 +274,11 @@ struct CollisionNifReader
 		LOG("	numMaterials = %d", numMaterials);
 		LOG("	activeMaterialID = %d", activeMaterialID);
 		LOG("	bMaterialNeedsUpdate = %d", bMaterialNeedsUpdate);
-		LOG("	meshPrimitiveType = %d", meshPrimitiveType);
+		LOG("	meshPrimitiveType = %d", mesh.meshPrimitiveType);
 		LOG("	numSubMeshes = %d", numSubMeshes);
 		LOG("	bInstancingEnabled = %d", bInstancingEnabled);
 		LOG("	dataStreams(%d) = [", numDataStreams);
-		foreach(it, dataStreamList) {
+		foreach(it, mesh.dataStreamList) {
 			LOG("		{");
 			LOG("			refStream = %d", it->refStream);
 			LOG("			bIsPerInstance = %d", it->bIsPerInstance);
@@ -265,24 +302,78 @@ struct CollisionNifReader
 		return true;
 	}
 
+	bool ReadBlock_NiDataStream(ConstBuffer buff, i32 blockID)
+	{
+		const u32 numBytes = buff.Read<u32>();
+		const u32 cloningBehaviour = buff.Read<u32>();
+
+		struct Region
+		{
+			u32 startIndex;
+			u32 numIndices;
+		};
+
+		const u32 numRegions = buff.Read<u32>();
+		eastl::fixed_vector<Region,128,true> regionList;
+		for(int i = 0; i < numRegions; i++) {
+			const u32 startIndex = buff.Read<u32>();
+			const u32 numIndices = buff.Read<u32>();
+			regionList.push_back({ startIndex, numIndices });
+		}
+
+		const u32 numComponents = buff.Read<u32>();
+		eastl::fixed_vector<u32,128,true> componentList;
+		for(int i = 0; i < numComponents; i++) {
+			const u32 format = buff.Read<u32>();
+			componentList.push_back(format);
+		}
+
+		const void* data = buff.ReadRaw(numBytes);
+		const u8 bStreamable = buff.Read<u8>();
+
+		LOG("	numBytes = %d", numBytes);
+		LOG("	cloningBehaviour = %d", cloningBehaviour);
+		LOG("	regions(%d) = [", numRegions);
+		foreach(it, regionList) {
+			LOG("		(startIndex=%d numIndices=%u),", it->startIndex, it->numIndices);
+		}
+		LOG("	]");
+		LOG("	components(%d) = [", numComponents);
+		foreach(it, componentList) {
+			LOG("		%d,", *it);
+		}
+		LOG("	]");
+		LOG("	bStreamable = %d", bStreamable);
+
+		ASSERT(regionList.size() == 1);
+		ASSERT(regionList[0].startIndex == 0);
+		dataStreamMap[blockID] = DataStream{ data, numBytes, regionList[0].numIndices };
+		return true;
+	}
+
 	bool ReadBlock(ConstBuffer& buff, i32 blockID, const u16 blockType, const StringSlice& blockTypeStr)
 	{
 		bool r = true;
 
-		LOG("Block (id=%d size=%d): {", blockID, blockSizeList[blockID]);
+		LOG("Block (id=%d size=%d at=%d): {", blockID, blockSizeList[blockID], buff.GetCursorPos());
 		LOG("	type = '%.*s' (%u)", blockTypeStr.len, blockTypeStr.at, blockType);
 
+		void* at = buff.ReadRaw(blockSizeList[blockID]);
+		ConstBuffer block(at, blockSizeList[blockID]);
+
 		if(blockTypeStr.Equals("NiNode")) {
-			r = ReadBlock_NiNode(buff, blockID);
+			r = ReadBlock_NiNode(block, blockID);
 		}
 		else if(blockTypeStr.Equals("NiStringExtraData")) {
-			r = ReadBlock_NiStringExtraData(buff, blockID);
+			r = ReadBlock_NiStringExtraData(block, blockID);
 		}
 		else if(blockTypeStr.Equals("NiMesh")) {
-			r = ReadBlock_NiMesh(buff, blockID);
+			r = ReadBlock_NiMesh(block, blockID);
+		}
+		else if(blockTypeStr.StartsWith("NiDataStream")) {
+			r = ReadBlock_NiDataStream(block, blockID);
 		}
 		else {
-			buff.ReadRaw(blockSizeList[blockID]);
 			LOG("	[Unknown block -- skipping]");
 		}
 
@@ -376,13 +467,137 @@ struct CollisionNifReader
 	}
 };
 
+bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
+{
+	eastl::fixed_string<char,8192,true> out;
+
+	if(nif.meshList.empty()) {
+		LOG("ERROR: no mesh found");
+		return false;
+	}
+
+	const CollisionNifReader::Mesh& mesh = nif.meshList.front();
+	if(mesh.meshPrimitiveType != 0) {
+		LOG("ERROR: mesh primitive type not handled");
+		return false;
+	}
+	if(mesh.dataStreamList.size() < 2) {
+		LOG("ERROR: mesh dataStream count < 2");
+		return false;
+	}
+
+	const CollisionNifReader::Mesh::DataStream& streamIndex = mesh.dataStreamList[0];
+	const CollisionNifReader::Mesh::DataStream& streamVertices = mesh.dataStreamList[1];
+
+	if(streamIndex.componentList.empty()) {
+		LOG("ERROR: streamIndex has no components");
+		return false;
+	}
+
+	// VERTICES
+	if(streamVertices.componentList.size() < 3) {
+		LOG("ERROR: streamVertices component count < 3");
+		return false;
+	}
+
+	const i32 refVerticesBlock = streamVertices.refStream;
+	if(refVerticesBlock == -1) {
+		LOG("ERROR: refVerticesBlock is null");
+		return false;
+	}
+
+	const CollisionNifReader::Mesh::DataStream::Component& compVertPosition = streamVertices.componentList[0];
+	const CollisionNifReader::Mesh::DataStream::Component& compVertNormal = streamVertices.componentList[1];
+	const CollisionNifReader::Mesh::DataStream::Component& compVertColor = streamVertices.componentList[2];
+	if(!compVertPosition.name.Equals("POSITION")) {
+		LOG("ERROR: compVertPosition is invalid");
+		return false;
+	}
+	if(!compVertNormal.name.Equals("NORMAL")) {
+		LOG("ERROR: compVertNormal is invalid");
+		return false;
+	}
+	if(!compVertColor.name.Equals("COLOR")) {
+		LOG("ERROR: compVertColor is invalid");
+		return false;
+	}
+
+	auto found = nif.dataStreamMap.find(refVerticesBlock);
+	if(found == nif.dataStreamMap.end()) {
+		LOG("ERROR: verticesBlock not found");
+		return false;
+	}
+
+	const CollisionNifReader::DataStream& verticesBlock = found->second;
+
+	PUSH_PACKED;
+	struct Vertex
+	{
+		Vector3 pos;
+		Vector3 normal;
+		u32 color;
+	};
+	POP_PACKED;
+	STATIC_ASSERT(sizeof(Vertex) == 28);
+
+	ASSERT(verticesBlock.size == sizeof(Vertex) * verticesBlock.numIndices);
+
+	const Vertex* vertices = (Vertex*)verticesBlock.at;
+	for(int i = 0; i < verticesBlock.numIndices; i++) {
+		const Vertex& v = vertices[i];
+		out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
+		out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
+	}
+
+
+	// INDICES
+	const i32 refIndexBlock = streamIndex.refStream;
+	if(refIndexBlock == -1) {
+		LOG("ERROR: refIndexBlock is null");
+		return false;
+	}
+
+	const CollisionNifReader::Mesh::DataStream::Component& compIndex = streamIndex.componentList[0];
+	if(!compIndex.name.Equals("INDEX")) {
+		LOG("ERROR: compIndex is invalid");
+		return false;
+	}
+
+	found = nif.dataStreamMap.find(refIndexBlock);
+	if(found == nif.dataStreamMap.end()) {
+		LOG("ERROR: indexBlock not found");
+		return false;
+	}
+
+	const CollisionNifReader::DataStream& indexBlock = found->second;
+
+	ASSERT(indexBlock.size == sizeof(u16) * indexBlock.numIndices);
+	ASSERT((indexBlock.numIndices/3) * 3 == indexBlock.numIndices);
+
+	const u16* indices = (u16*)indexBlock.at;
+	for(int i = 0; i < indexBlock.numIndices; i += 3) {
+		out.append(FMT("f %d//%d %d//%d %d//%d\n", indices[i]+1 , indices[i]+1, indices[i+1]+1, indices[i+1]+1, indices[i+2]+1, indices[i+2]+1));
+	}
+
+	bool r = fileSaveBuff(outPath, out.data(), out.size());
+	if(!r) {
+		LOG("ERROR: could not write '%s'", outPath);
+		return false;
+	}
+	return true;
+}
+
 int main(int argc, char** argv)
 {
-	ASSERT(argc == 2);
-
 	LogInit("col.log");
 
+	if(argc < 3) {
+		LOG("Usage: col 'input.nif' 'output/path'");
+		return 1;
+	}
+
 	const char* inputFilename = argv[1];
+	const char* outputFilePath = argv[2];
 
 	i32 fileSize;
 	const u8* fileData = fileOpenAndReadAll(inputFilename, &fileSize);
@@ -397,6 +612,12 @@ int main(int argc, char** argv)
 	CollisionNifReader reader = { fileData, fileSize };
 	if(!reader.ReadFile()) {
 		LOG("ERROR: failed to process '%s'", inputFilename);
+		return 1;
+	}
+
+	bool r = ExtractCollisionMesh(reader, outputFilePath);
+	if(!r) {
+		LOG("ERROR: failed to extract '%s'", inputFilename);
 		return 1;
 	}
 

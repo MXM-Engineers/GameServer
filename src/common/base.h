@@ -203,6 +203,11 @@ struct ConstBuffer
 	{
 		return size - (cursor - data);
 	}
+
+	inline i32 GetCursorPos() const
+	{
+		return (cursor - data);
+	}
 };
 
 inline bool StringEquals(const char* str1, const char* str2)

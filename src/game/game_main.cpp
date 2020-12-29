@@ -2,6 +2,7 @@
 #include "coordinator.h"
 #include "game_content.h"
 #include "config.h"
+#include "window.h"
 #include <common/platform.h>
 
 //#error
@@ -171,16 +172,21 @@ int main(int argc, char** argv)
 	static Coordinator coordinator;
 	coordinator.Init(&server);
 
+#ifdef CONF_WINDOWS
+	EA::Thread::Thread threadWindow;
+	threadWindow.Begin(ThreadWindow, nullptr);
+#endif
+
 	// listen on another thread
-	EA::Thread::Thread thread;
-	thread.Begin(ThreadGameServerListen, &listenGame);
+	EA::Thread::Thread threadListenGame;
+	threadListenGame.Begin(ThreadGameServerListen, &listenGame);
 
 	// listen on main thread
 	listenLobby.Listen();
 
 	LOG("Cleaning up...");
 
-	thread.WaitForEnd(); // wait for game listen thread to close
+	threadListenGame.WaitForEnd(); // wait for game listen thread to close
 	coordinator.Cleanup();
 	server.Cleanup();
 

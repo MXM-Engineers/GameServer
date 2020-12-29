@@ -186,6 +186,14 @@ project "Game"
 			"advapi32"
 		}
 
+		files {
+			"external/sokol/*.h"
+		}
+
+		includedirs {
+			"external/sokol"
+		}
+
 	configuration "linux"
 		links {
 			"pthread",

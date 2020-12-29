@@ -61,6 +61,11 @@ void PlatformInit()
 
 	ProfileSetThreadName("Main");
 #endif
+
+	AllocConsole();
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stderr);
+	freopen("CONOUT$", "w", stdout);
 }
 #endif
 

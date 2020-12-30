@@ -131,6 +131,9 @@ int main(int argc, char** argv)
 		g_Server->running = false;
 		g_ListenerLobby->Stop();
 		g_ListenerGame->Stop();
+#ifdef CONF_WINDOWS
+		WindowClose();
+#endif
 	});
 
 	if(!r) {
@@ -185,6 +188,10 @@ int main(int argc, char** argv)
 	listenLobby.Listen();
 
 	LOG("Cleaning up...");
+
+#ifdef CONF_WINDOWS
+	threadWindow.WaitForEnd();
+#endif
 
 	threadListenGame.WaitForEnd(); // wait for game listen thread to close
 	coordinator.Cleanup();

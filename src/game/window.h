@@ -4,5 +4,6 @@
 #include <common/base.h>
 
 intptr_t ThreadWindow(void* pData);
+void WindowClose();
 
 #endif

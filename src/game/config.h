@@ -8,6 +8,8 @@ struct CConfig
 	i32 DevMode = false;
 	i32 TraceNetwork = false;
 	i32 LobbyMap = 160000042;
+	i32 WindowWidth = 1280;
+	i32 WindowHeight = 720;
 
 	bool ParseLine(const char* line);
 	// returns false on failing to open the config file

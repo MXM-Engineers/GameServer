@@ -9,6 +9,8 @@ bool CConfig::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
+	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
 	return false;
 }
 
@@ -67,6 +69,8 @@ void CConfig::Print() const
 	LOG("	DevMode=%d", DevMode);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
+	LOG("	WindowWidth=%d", WindowWidth);
+	LOG("	WindowHeight=%d", WindowHeight);
 	LOG("}");
 }
 

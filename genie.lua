@@ -94,6 +94,7 @@ solution "GameServer"
 	dofile("external/genie_eastl.lua");
 	dofile("external/genie_tinyxml2.lua");
 	dofile("external/genie_tracy.lua");
+	dofile("external/genie_glm.lua");
 	
 
 project "Login"
@@ -148,7 +149,8 @@ project "Game"
 		eabase_includedir,
 		eastdc_includedir,
 		tinyxml2_includedir,
-		tracy_includedir
+		tracy_includedir,
+		glm_includedir
 	}
 
 	links {
@@ -166,7 +168,8 @@ project "Game"
 		"src/game/**.c",
 		"src/game/**.cpp",
 		tinyxml2_files,
-		tracy_files
+		tracy_files,
+		glm_files
 	}
 
 	configuration "Release"

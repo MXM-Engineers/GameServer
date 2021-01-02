@@ -30,15 +30,12 @@ void LogInit(const char* name)
 	ASSERT(g_LogFile);
 }
 
-void __Logf(const char* fmt, ...)
+void Logf(const char* fmt, va_list list)
 {
 	char buff[4096];
 	char final[4096+100];
 
-	va_list list;
-	va_start(list, fmt);
 	EA::StdC::Vsnprintf(buff, sizeof(buff), fmt, list);
-	va_end(list);
 
 	// this one is faster but gives a big number
 	/*
@@ -61,6 +58,36 @@ void __Logf(const char* fmt, ...)
 	}
 #endif
 #endif
+}
+
+void __Logf(const char* fmt, ...)
+{
+	va_list list;
+	va_start(list, fmt);
+	Logf(fmt, list);
+	va_end(list);
+}
+
+void __LogfLine(const char* fmt, ...)
+{
+	eastl::fixed_string<char,4096,false> fmtLn(fmt);
+	fmtLn.append("\n");
+
+	va_list list;
+	va_start(list, fmt);
+	Logf(fmtLn.data(), list);
+	va_end(list);
+}
+
+void __Warnf(const char* functionName, const char* fmt, ...)
+{
+	eastl::fixed_string<char,4096,false> fmtLn;
+	fmtLn.append_sprintf("WARNING(%s): %s\n", functionName, fmt);
+
+	va_list list;
+	va_start(list, fmt);
+	Logf(fmtLn.data(), list);
+	va_end(list);
 }
 
 // EASTL new operators

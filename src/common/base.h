@@ -10,12 +10,14 @@
 
 extern FILE* g_LogFile;
 void LogInit(const char* name);
+void __LogfLine(const char* fmt, ...);
 void __Logf(const char* fmt, ...);
+void __Warnf(const char* functionName, const char* fmt, ...);
 
-#define MSVC_VERIFY_FORMATTING(fmt, ...) (0 && snprintf(0, 0, fmt, ##__VA_ARGS__))
-#define LOG(fmt, ...) do { __Logf(fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
-#define LOG_NNL(fmt, ...) do { __Logf(fmt, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
-#define WARN(fmt, ...) do { __Logf("WARNING(" FUNCTION_STR "): " fmt "\n", ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(fmt, ##__VA_ARGS__); } while(0)
+#define MSVC_VERIFY_FORMATTING(...) (0 && snprintf(0, 0, ##__VA_ARGS__))
+#define LOG(...) do { __LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
+#define LOG_NNL(...) do { __Logf(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
+#define WARN(...) do { __Warnf(FUNCTION_STR, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 
@@ -407,6 +409,7 @@ typedef EA::Thread::AutoFutex LockGuard;
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
 #define foreach(IT,CONTAINER) for(auto IT = CONTAINER.begin(), IT##End = CONTAINER.end(); IT != IT##End; ++IT)
+#define foreach_const(IT,CONTAINER) for(auto IT = CONTAINER.cbegin(), IT##End = CONTAINER.cend(); IT != IT##End; ++IT)
 #define foreach_mut(IT,CONTAINER) for(auto IT = CONTAINER.begin(); IT != CONTAINER.end(); ++IT)
 
 // time API

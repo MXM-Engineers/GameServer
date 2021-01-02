@@ -5,6 +5,8 @@
 #include "render/shaders.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <EASTL/fixed_map.h>
 
 #define SOKOL_IMPL
 #define SOKOL_NO_ENTRY
@@ -13,6 +15,9 @@
 #define SG_DEFAULT_CLEAR_RED 0.2f
 #define SG_DEFAULT_CLEAR_GREEN 0.2f
 #define SG_DEFAULT_CLEAR_BLUE 0.2f
+
+#define SOKOL_ASSERT ASSERT
+#define SOKOL_LOG LOG
 
 #include "sokol_app.h"
 #include "sokol_gfx.h"
@@ -74,19 +79,112 @@ public:
 	}
 };
 
+typedef eastl::fixed_string<char,32,false> FixedStr32;
+
+struct MeshBuffer
+{
+	struct Vertex
+	{
+		f32 px, py, pz;
+		f32 nx, ny, nz;
+	};
+	STATIC_ASSERT(sizeof(Vertex) == 24);
+
+	struct MeshRef
+	{
+		u32 indexStart;
+		u32 indexCount;
+	};
+
+	eastl::fixed_vector<Vertex,8192,false> vertexBuffer;
+	eastl::fixed_vector<u16,8192,false> indexBuffer;
+	sg_buffer gpuVertexBuff = { 0xFFFFFFFF };
+	sg_buffer gpuIndexBuff = { 0xFFFFFFFF };
+	eastl::fixed_map<FixedStr32, MeshRef, 2048, false> meshRefMap;
+	bool needsUpdate = false;
+
+	void Push(const FixedStr32& name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount)
+	{
+		ASSERT(meshRefMap.find(name) == meshRefMap.end());
+
+		const u32 vertexStartIndex = vertexBuffer.size();
+
+		MeshRef ref;
+		ref.indexStart = indexBuffer.size();
+		ref.indexCount = indexCount;
+		vertexBuffer.insert(vertexBuffer.end(), vertices, vertices + vertexCount);
+
+		for(int i = 0; i < indexCount; i++) {
+			indexBuffer.push_back(vertexStartIndex + indices[i]);
+		}
+
+		meshRefMap[name] = ref;
+		needsUpdate = true;
+	}
+
+	void UpdateAndBind()
+	{
+		if(needsUpdate) {
+			if(gpuVertexBuff.id == 0xFFFFFFFF) {
+				{
+					sg_buffer_desc desc = {0};
+					desc.size = sizeof(Vertex) * vertexBuffer.capacity();
+					desc.content = vertexBuffer.data();
+					gpuVertexBuff = sg_make_buffer(&desc);
+				}
+
+				{
+					sg_buffer_desc desc = {0};
+					desc.type = SG_BUFFERTYPE_INDEXBUFFER;
+					desc.size = sizeof(u16) * indexBuffer.capacity();
+					desc.content = indexBuffer.data();
+					gpuIndexBuff = sg_make_buffer(&desc);
+				}
+			}
+			else {
+				sg_update_buffer(gpuVertexBuff, vertexBuffer.data(), vertexBuffer.capacity() * sizeof(Vertex));
+				sg_update_buffer(gpuIndexBuff, indexBuffer.data(), indexBuffer.capacity() * sizeof(u16));
+			}
+			needsUpdate = false;
+		}
+
+		sg_bindings binds = {0};
+		binds.vertex_buffers[0] = gpuVertexBuff;
+		binds.index_buffer = gpuIndexBuff;
+		sg_apply_bindings(&binds);
+	}
+
+	void DrawMesh(const FixedStr32& name)
+	{
+		const MeshRef& ref = meshRefMap.at(name);
+		sg_draw(ref.indexStart, ref.indexCount, 1);
+	}
+};
+
 struct Window
 {
 	const i32 winWidth;
 	const i32 winHeight;
-	sg_buffer vbuf;
-	sg_buffer ibuf;
-	sg_pipeline pip;
+	sg_pipeline pipeMesh;
 	sg_pipeline pipeLine;
 	sg_shader shaderBaseShaded;
+	sg_shader shaderLine;
 	Time startTime = Time::ZERO;
 	Time localTime = Time::ZERO;
 
 	LineBuffer lineBuffer;
+	MeshBuffer meshBuffer;
+
+	struct InstanceMesh
+	{
+		FixedStr32 meshName;
+		vec3 pos;
+		vec3 rot;
+		vec3 scale;
+		vec4 color;
+	};
+
+	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
 
 	void Init()
 	{
@@ -97,50 +195,69 @@ struct Window
 		gfxDesc.context = sapp_sgcontext();
 		sg_setup(&gfxDesc);
 
-		// a vertex buffer
-		struct Vertex
-		{
-			f32 x, y ,z;
-			u32 color;
-		};
-		STATIC_ASSERT(sizeof(Vertex) == 16);
+		const MeshBuffer::Vertex verticesCubeCentered[] = {
+			{ -0.5, -0.5, -0.5, 1, 0, 0 },
+			{  0.5, -0.5, -0.5, 1, 0, 0 },
+			{  0.5,  0.5, -0.5, 1, 0, 0 },
+			{ -0.5,  0.5, -0.5, 1, 0, 0 },
 
-		const Vertex vertices[] = {
-			{ -0.5, -0.5, -0.5, 0xFF0000FF },
-			{ 0.5, -0.5, -0.5,  0xFF0000FF },
-			{ 0.5,  0.5, -0.5,  0xFF0000FF },
-			{ -0.5,  0.5, -0.5, 0xFF0000FF },
+			{ -0.5, -0.5,  0.5, 0, 0, 1 },
+			{  0.5, -0.5,  0.5, 0, 0, 1 },
+			{  0.5,  0.5,  0.5, 0, 0, 1 },
+			{ -0.5,  0.5,  0.5, 0, 0, 1 },
 
-			{ -0.5, -0.5,  0.5, 0xFF00FF00 },
-			{ 0.5, -0.5,  0.5,  0xFF00FF00 },
-			{ 0.5,  0.5,  0.5,  0xFF00FF00 },
-			{ -0.5,  0.5,  0.5, 0xFF00FF00 },
+			{ -0.5, -0.5, -0.5, -1, 0, 0 },
+			{ -0.5,  0.5, -0.5, -1, 0, 0 },
+			{ -0.5,  0.5,  0.5, -1, 0, 0 },
+			{ -0.5, -0.5,  0.5, -1, 0, 0 },
 
-			{ -0.5, -0.5, -0.5, 0xFFFF0000 },
-			{ -0.5,  0.5, -0.5, 0xFFFF0000 },
-			{ -0.5,  0.5,  0.5, 0xFFFF0000 },
-			{ -0.5, -0.5,  0.5, 0xFFFF0000 },
+			{  0.5, -0.5, -0.5, 1, 0, 0 },
+			{  0.5,  0.5, -0.5, 1, 0, 0 },
+			{  0.5,  0.5,  0.5, 1, 0, 0 },
+			{  0.5, -0.5,  0.5, 1, 0, 0 },
 
-			{ 0.5, -0.5, -0.5,  0xFF007FFF },
-			{ 0.5,  0.5, -0.5,  0xFF007FFF },
-			{ 0.5,  0.5,  0.5,  0xFF007FFF },
-			{ 0.5, -0.5,  0.5,  0xFF007FFF },
+			{ -0.5, -0.5, -0.5, 0, -1, 0 },
+			{ -0.5, -0.5,  0.5, 0, -1, 0 },
+			{  0.5, -0.5,  0.5, 0, -1, 0 },
+			{  0.5, -0.5, -0.5, 0, -1, 0 },
 
-			{ -0.5, -0.5, -0.5, 0xFFFF7F00 },
-			{ -0.5, -0.5,  0.5, 0xFFFF7F00 },
-			{ 0.5, -0.5,  0.5,  0xFFFF7F00 },
-			{ 0.5, -0.5, -0.5,  0xFFFF7F00 },
-
-			{ -0.5,  0.5, -0.5, 0xFF7F00FF },
-			{ -0.5,  0.5,  0.5, 0xFF7F00FF },
-			{ 0.5,  0.5,  0.5,  0xFF7F00FF },
-			{ 0.5,  0.5, -0.5,  0xFF7F00FF },
+			{ -0.5,  0.5, -0.5, 0, 1, 0 },
+			{ -0.5,  0.5,  0.5, 0, 1, 0 },
+			{  0.5,  0.5,  0.5, 0, 1, 0 },
+			{  0.5,  0.5, -0.5, 0, 1, 0 },
 		};
 
-		sg_buffer_desc vertexBuffDesc = {0};
-		vertexBuffDesc.size = sizeof(vertices);
-		vertexBuffDesc.content = vertices;
-		vbuf = sg_make_buffer(&vertexBuffDesc);
+		const MeshBuffer::Vertex verticesCube[] = {
+			{ 0.0, 0.0, 0.0, 0, 0, -1 },
+			{ 1.0, 0.0, 0.0, 0, 0, -1 },
+			{ 1.0, 1.0, 0.0, 0, 0, -1 },
+			{ 0.0, 1.0, 0.0, 0, 0, -1 },
+
+			{ 0.0, 0.0, 1.0, 0, 0, 1 },
+			{ 1.0, 0.0, 1.0, 0, 0, 1 },
+			{ 1.0, 1.0, 1.0, 0, 0, 1 },
+			{ 0.0, 1.0, 1.0, 0, 0, 1 },
+
+			{ 0.0, 0.0, 0.0, -1, 0, 0 },
+			{ 0.0, 1.0, 0.0, -1, 0, 0 },
+			{ 0.0, 1.0, 1.0, -1, 0, 0 },
+			{ 0.0, 0.0, 1.0, -1, 0, 0 },
+
+			{ 1.0, 0.0, 0.0, 1, 0, 0 },
+			{ 1.0, 1.0, 0.0, 1, 0, 0 },
+			{ 1.0, 1.0, 1.0, 1, 0, 0 },
+			{ 1.0, 0.0, 1.0, 1, 0, 0 },
+
+			{ 0.0, 0.0, 0.0, 0, -1, 0 },
+			{ 0.0, 0.0, 1.0, 0, -1, 0 },
+			{ 1.0, 0.0, 1.0, 0, -1, 0 },
+			{ 1.0, 0.0, 0.0, 0, -1, 0 },
+
+			{ 0.0, 1.0, 0.0, 0, 1, 0 },
+			{ 0.0, 1.0, 1.0, 0, 1, 0 },
+			{ 1.0, 1.0, 1.0, 0, 1, 0 },
+			{ 1.0, 1.0, 0.0, 0, 1, 0 },
+		};
 
 		const u16 indices[] = {
 			0, 1, 2,  0, 2, 3,
@@ -151,31 +268,29 @@ struct Window
 			22, 21, 20, 23, 22, 20
 		};
 
-		sg_buffer_desc indiceBuffDesc = {0};
-		indiceBuffDesc.type = SG_BUFFERTYPE_INDEXBUFFER;
-		indiceBuffDesc.size = sizeof(indices);
-		indiceBuffDesc.content = indices;
-		ibuf = sg_make_buffer(&indiceBuffDesc);
+		meshBuffer.Push("Cube", verticesCube, ARRAY_COUNT(verticesCube), indices, ARRAY_COUNT(indices));
+		meshBuffer.Push("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
 
-		shaderBaseShaded = sg_make_shader(&ShaderBaseShaded());
+		shaderBaseShaded = sg_make_shader(&ShaderBaseMeshShaded());
+		shaderLine = sg_make_shader(&ShaderLine());
 
 		// basic mesh pipeline
 		sg_pipeline_desc pipeDesc = {0};
 		pipeDesc.shader = shaderBaseShaded;
-		pipeDesc.layout.buffers[0].stride = sizeof(Vertex);
+		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
 		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
-		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
+		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
 		pipeDesc.index_type = SG_INDEXTYPE_UINT16;
 		pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
 		pipeDesc.depth_stencil.depth_write_enabled = true;
 		pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
-		pip = sg_make_pipeline(&pipeDesc);
+		pipeMesh = sg_make_pipeline(&pipeDesc);
 
 		// line pipeline
 		sg_pipeline_desc linePipeDesc = {0};
-		linePipeDesc.shader = shaderBaseShaded;
+		linePipeDesc.shader = shaderLine;
 		linePipeDesc.primitive_type = SG_PRIMITIVETYPE_LINES;
-		linePipeDesc.layout.buffers[0].stride = sizeof(Vertex);
+		linePipeDesc.layout.buffers[0].stride = sizeof(Line)/2;
 		linePipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
 		linePipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
 		linePipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
@@ -185,6 +300,12 @@ struct Window
 		// push a simple grid
 		const u32 lineColor = 0xFF7F7F7F;
 		for(int i = -500; i < 500; i++) {
+			// color x, y axis
+			if(i == 0) {
+				lineBuffer.Push({vec3(10000, i * 5, 0), 0xFF0000FF, vec3(-10000, i * 5, 0), 0xFF0000FF});
+				lineBuffer.Push({vec3(i * 5, 10000, 0), 0xFF00FF00, vec3(i * 5, -10000, 0), 0xFF00FF00});
+				continue;
+			}
 			lineBuffer.Push({vec3(10000, i * 5, 0), lineColor, vec3(-10000, i * 5, 0), lineColor});
 			lineBuffer.Push({vec3(i * 5, 10000, 0), lineColor, vec3(i * 5, -10000, 0), lineColor});
 		}
@@ -195,42 +316,68 @@ struct Window
 		Time now = TimeNow();
 		localTime = TimeDiff(startTime, now);
 
-		// default pass action (clear to grey)
-		sg_pass_action pass_action = {0};
+		// origin
+		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(2.5, 0.05, 0.05), vec4(1, 0, 0, 1) });
+		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(0.05, 2.5, 0.05), vec4(0, 1, 0, 1) });
+		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(0.05, 0.05, 2.5), vec4(0, 0, 1, 1) });
 
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
+
+		// test cube
+		drawQueueMesh.push_back({ "CubeCentered", vec3(1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec4(1) });
+		drawQueueMesh.push_back({ "CubeCentered", vec3(-1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec4(1) });
+
+
 		const f32 viewDist = 5.0f;
-
-		mat4 model = glm::rotate(glm::translate(glm::identity<mat4>(), vec3(0, 0, 0.5)), a, glm::vec3(0, 0, 1));
 		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 0.01f, 500.0f);
-		mat4 view = glm::lookAt(vec3(viewDist, 0, sinf(a) * 2 + 2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
-		mat4 mvp = proj * view * model;
+		mat4 view = glm::lookAt(vec3(viewDist, 0, sinf(a) * 2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
 
-		// draw cube
-		sg_bindings binds = {0};
-		binds.vertex_buffers[0] = vbuf;
-		binds.index_buffer = ibuf;
+		// draw meshes
+		{
+			sg_pass_action pass_action = {0}; // default pass action (clear to grey)
+			sg_begin_default_pass(&pass_action, winWidth, winHeight);
+			sg_apply_pipeline(pipeMesh);
 
-		sg_begin_default_pass(&pass_action, winWidth, winHeight);
-		sg_apply_pipeline(pip);
-		sg_apply_bindings(&binds);
-		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &mvp, sizeof(mvp));
-		sg_draw(0, 36, 1);
+			meshBuffer.UpdateAndBind();
+
+			foreach_const(it, drawQueueMesh) {
+				mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
+				model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+				model = glm::scale(model, it->scale);
+
+				struct Uniform0
+				{
+					mat4 vp;
+					mat4 model;
+				};
+
+				Uniform0 uni0 = { proj * view, model };
+
+				sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &uni0, sizeof(uni0));
+				sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, &it->color, sizeof(it->color));
+
+				meshBuffer.DrawMesh(it->meshName);
+			}
+		}
 
 
 		// draw lines
-		mvp = proj * view;
+		{
+			mat4 mvp = proj * view;
 
-		sg_bindings bindsLine = {0};
-		bindsLine.vertex_buffers[0] = lineBuffer.GetUpdatedBuffer();
+			sg_bindings bindsLine = {0};
+			bindsLine.vertex_buffers[0] = lineBuffer.GetUpdatedBuffer();
 
-		sg_apply_pipeline(pipeLine);
-		sg_apply_bindings(&bindsLine);
-		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &mvp, sizeof(mvp));
-		sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
+			sg_apply_pipeline(pipeLine);
+			sg_apply_bindings(&bindsLine);
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &mvp, sizeof(mvp));
+			sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
+		}
 
 		sg_end_pass();
 		sg_commit();
+
+		drawQueueMesh.clear();
 	}
 
 	void OnEvent(const sapp_event& event)

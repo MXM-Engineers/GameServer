@@ -542,13 +542,6 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 
 	ASSERT(verticesBlock.size == sizeof(Vertex) * verticesBlock.numIndices);
 
-	const Vertex* vertices = (Vertex*)verticesBlock.at;
-	for(int i = 0; i < verticesBlock.numIndices; i++) {
-		const Vertex& v = vertices[i];
-		out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
-		out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
-	}
-
 
 	// INDICES
 	const i32 refIndexBlock = streamIndex.refStream;
@@ -574,16 +567,54 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	ASSERT(indexBlock.size == sizeof(u16) * indexBlock.numIndices);
 	ASSERT((indexBlock.numIndices/3) * 3 == indexBlock.numIndices);
 
+	// obj file
+	const Vertex* vertices = (Vertex*)verticesBlock.at;
+	for(int i = 0; i < verticesBlock.numIndices; i++) {
+		const Vertex& v = vertices[i];
+		out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
+		out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
+	}
+
 	const u16* indices = (u16*)indexBlock.at;
 	for(int i = 0; i < indexBlock.numIndices; i += 3) {
 		out.append(FMT("f %d//%d %d//%d %d//%d\n", indices[i]+1 , indices[i]+1, indices[i+1]+1, indices[i+1]+1, indices[i+2]+1, indices[i+2]+1));
 	}
 
-	bool r = fileSaveBuff(outPath, out.data(), out.size());
+	bool r = fileSaveBuff(FMT("%s.obj", outPath), out.data(), out.size());
 	if(!r) {
-		LOG("ERROR: could not write '%s'", outPath);
+		LOG("ERROR: could not write '%s.obj'", outPath);
 		return false;
 	}
+
+	// mesh file
+	GrowableBuffer outMesh(1024*1024);
+	outMesh.Append("MESH", 4);
+	outMesh.Append(&verticesBlock.numIndices, sizeof(verticesBlock.numIndices));
+	outMesh.Append(&indexBlock.numIndices, sizeof(indexBlock.numIndices));
+
+	for(int i = 0; i < verticesBlock.numIndices; i++) {
+		const Vertex& v = vertices[i];
+		Vector3 p = { v.pos.x, v.pos.y, v.pos.z };
+		outMesh.Append(&p, sizeof(p));
+		Vector3 n = { v.normal.x, v.normal.y, v.normal.z };
+		outMesh.Append(&n, sizeof(n));
+	}
+
+	// make it so back is culled
+	for(int i = 0; i < indexBlock.numIndices; i += 3) {
+		outMesh.Append(&indices[i], sizeof(u16));
+		outMesh.Append(&indices[i+2], sizeof(u16));
+		outMesh.Append(&indices[i+1], sizeof(u16));
+	}
+
+	outMesh.Append(indices, sizeof(u16) * indexBlock.numIndices);
+
+	r = fileSaveBuff(FMT("%s.msh", outPath), outMesh.data, outMesh.size);
+	if(!r) {
+		LOG("ERROR: could not write '%s.msh'", outPath);
+		return false;
+	}
+
 	return true;
 }
 

@@ -27,6 +27,8 @@ typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
 typedef glm::mat4 mat4;
 
+constexpr f64 PI = glm::pi<f64>();
+
 struct Line
 {
 	vec3 p0;
@@ -189,7 +191,9 @@ struct Window
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
 
-	void Init()
+	vec3 cameraEye = vec3(0, 0, 6000);
+
+	bool Init()
 	{
 		startTime = TimeNow();
 
@@ -273,6 +277,8 @@ struct Window
 
 		meshBuffer.Push("Cube", verticesCube, ARRAY_COUNT(verticesCube), indices, ARRAY_COUNT(indices));
 		meshBuffer.Push("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
+		bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
+		if(!r) return false;
 
 		shaderBaseShaded = sg_make_shader(&ShaderBaseMeshShaded());
 		shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
@@ -306,17 +312,47 @@ struct Window
 
 		// push a simple grid
 		const u32 lineColor = 0xFF7F7F7F;
+		const f32 lineSpacing = 100.0f;
+		const f32 lineLength = 100000.0f;
 		for(int i = -500; i < 500; i++) {
 			// color x, y axis
 			if(i == 0) {
-				lineBuffer.Push({vec3(10000, 0, 0), 0xFF0000FF, vec3(-10000, 0, 0), 0xFF0000FF});
-				lineBuffer.Push({vec3(0, 10000, 0), 0xFF00FF00, vec3(0, -10000, 0), 0xFF00FF00});
-				lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
+				lineBuffer.Push({vec3(lineLength, 0, 0), 0xFF0000FF, vec3(-lineLength, 0, 0), 0xFF0000FF});
+				lineBuffer.Push({vec3(0, lineLength, 0), 0xFF00FF00, vec3(0, -lineLength, 0), 0xFF00FF00});
+				lineBuffer.Push({vec3(0, 0, lineLength), 0xFFFF0000, vec3(0, 0, -lineLength), 0xFFFF0000});
 				continue;
 			}
-			lineBuffer.Push({vec3(10000, i * 5, 0), lineColor, vec3(-10000, i * 5, 0), lineColor});
-			lineBuffer.Push({vec3(i * 5, 10000, 0), lineColor, vec3(i * 5, -10000, 0), lineColor});
+			lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
+			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
 		}
+
+		return true;
+	}
+
+	bool OpenAndLoadMeshFile(const char* name, const char* path)
+	{
+		struct MeshFileHeader
+		{
+			u32 magic;
+			u32 vertexCount;
+			u32 indexCount;
+		};
+
+		i32 fileSize;
+		u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
+		if(!fileBuff) {
+			LOG("ERROR: faield to open '%s'", path);
+			return false;
+		}
+		defer(memFree(fileBuff));
+
+		ConstBuffer buff(fileBuff, fileSize);
+		const MeshFileHeader& header = buff.Read<MeshFileHeader>();
+		const MeshBuffer::Vertex* vertices = (MeshBuffer::Vertex*)buff.ReadRaw(sizeof(MeshBuffer::Vertex) * header.vertexCount);
+		const u16* indices = (u16*)buff.ReadRaw(sizeof(u16) * header.indexCount);
+
+		meshBuffer.Push(name, vertices, header.vertexCount, indices, header.indexCount);
+		return true;
 	}
 
 	void Frame()
@@ -325,10 +361,12 @@ struct Window
 		localTime = TimeDiff(startTime, now);
 
 		// origin
-		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(0.1f), vec3(1) });
-		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(1.25, 0, 0), vec3(0), vec3(2.5, 0.05, 0.05), vec3(1, 0, 0) });
-		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 1.25, 0), vec3(0), vec3(0.05, 2.5, 0.05), vec3(0, 1, 0) });
-		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, 1.25), vec3(0), vec3(0.05, 0.05, 2.5), vec3(0, 0, 1) });
+		const f32 orgnLen = 1000;
+		const f32 orgnThick = 50;
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(1, 0, 0) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(0, 0, 1) });
 
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
 
@@ -336,10 +374,14 @@ struct Window
 		drawQueueMesh.push_back({ "CubeCentered", vec3(1.2, 1.2, 0.5), vec3(0, 0, 0), vec3(1), vec3(1) });
 		drawQueueMesh.push_back({ "CubeCentered", vec3(-1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec3(1) });
 
+		// test map
+		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(1, 0, 1) });
 
 		const f32 viewDist = 5.0f;
-		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 0.01f, 500.0f);
-		mat4 view = glm::lookAt(vec3(1, -viewDist, sinf(a) * 5), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 0.01f, 50000.0f);
+		//mat4 view = glm::lookAt(vec3(1, -viewDist, sinf(a) * 5), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+		vec3 center = vec3(cameraEye.x, cameraEye.y + 0.001, 0);
+		mat4 view = glm::lookAt(cameraEye, center, vec3(0.0f, 0.0f, 1.0f));
 
 		sg_pass_action pass_action = {0}; // default pass action (clear to grey)
 		sg_begin_default_pass(&pass_action, winWidth, winHeight);
@@ -385,7 +427,6 @@ struct Window
 			}
 		}
 
-
 		// draw lines
 		{
 			mat4 mvp = proj * view;
@@ -409,9 +450,24 @@ struct Window
 	void OnEvent(const sapp_event& event)
 	{
 		// quit on escape
-		if(event.key_code == sapp_keycode::SAPP_KEYCODE_ESCAPE) {
-			sapp_request_quit();
+		if(event.type == SAPP_EVENTTYPE_KEY_DOWN) {
+			if(event.key_code == sapp_keycode::SAPP_KEYCODE_ESCAPE) {
+				sapp_request_quit();
+			}
+			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_W) {
+				cameraEye.y += 50.0f;
+			}
+			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_S) {
+				cameraEye.y -= 50.0f;
+			}
+			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_A) {
+				cameraEye.x -= 50.0f;
+			}
+			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_D) {
+				cameraEye.x += 50.0f;
+			}
 		}
+
 	}
 
 	void Cleanup()
@@ -424,7 +480,11 @@ static Window* g_pWindow = nullptr;
 
 void WindowInit()
 {
-	g_pWindow->Init();
+	bool r = g_pWindow->Init();
+	if(!r) {
+		LOG("ERROR: failed to init window");
+		sapp_request_quit();
+	}
 }
 
 void WindowFrame()

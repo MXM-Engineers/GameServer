@@ -7,11 +7,7 @@
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
-#ifdef CONF_DEBUG
-	static Path gameDataDir = L"../gamedata";
-#else
-	static Path gameDataDir = L"gamedata";
-#endif
+static Path gameDataDir = L"gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {

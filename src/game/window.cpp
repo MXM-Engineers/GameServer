@@ -165,9 +165,11 @@ struct Window
 {
 	const i32 winWidth;
 	const i32 winHeight;
-	sg_pipeline pipeMesh;
+	sg_pipeline pipeMeshShaded;
+	sg_pipeline pipeMeshUnlit;
 	sg_pipeline pipeLine;
 	sg_shader shaderBaseShaded;
+	sg_shader shaderMeshUnlit;
 	sg_shader shaderLine;
 	Time startTime = Time::ZERO;
 	Time localTime = Time::ZERO;
@@ -181,10 +183,11 @@ struct Window
 		vec3 pos;
 		vec3 rot;
 		vec3 scale;
-		vec4 color;
+		vec3 color;
 	};
 
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
+	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
 
 	void Init()
 	{
@@ -196,25 +199,25 @@ struct Window
 		sg_setup(&gfxDesc);
 
 		const MeshBuffer::Vertex verticesCubeCentered[] = {
-			{ -0.5, -0.5, -0.5, 1, 0, 0 },
-			{  0.5, -0.5, -0.5, 1, 0, 0 },
-			{  0.5,  0.5, -0.5, 1, 0, 0 },
-			{ -0.5,  0.5, -0.5, 1, 0, 0 },
+			{ -0.5, -0.5, -0.5, 0, 0, -1 },
+			{  0.5, -0.5, -0.5, 0, 0, -1 },
+			{  0.5,  0.5, -0.5, 0, 0, -1 },
+			{ -0.5,  0.5, -0.5, 0, 0, -1 },
 
 			{ -0.5, -0.5,  0.5, 0, 0, 1 },
 			{  0.5, -0.5,  0.5, 0, 0, 1 },
 			{  0.5,  0.5,  0.5, 0, 0, 1 },
 			{ -0.5,  0.5,  0.5, 0, 0, 1 },
 
-			{ -0.5, -0.5, -0.5, -1, 0, 0 },
-			{ -0.5,  0.5, -0.5, -1, 0, 0 },
-			{ -0.5,  0.5,  0.5, -1, 0, 0 },
-			{ -0.5, -0.5,  0.5, -1, 0, 0 },
+			{ -0.5, -0.5, -0.5, 1, 0, 0 },
+			{ -0.5,  0.5, -0.5, 1, 0, 0 },
+			{ -0.5,  0.5,  0.5, 1, 0, 0 },
+			{ -0.5, -0.5,  0.5, 1, 0, 0 },
 
-			{  0.5, -0.5, -0.5, 1, 0, 0 },
-			{  0.5,  0.5, -0.5, 1, 0, 0 },
-			{  0.5,  0.5,  0.5, 1, 0, 0 },
-			{  0.5, -0.5,  0.5, 1, 0, 0 },
+			{  0.5, -0.5, -0.5, -1, 0, 0 },
+			{  0.5,  0.5, -0.5, -1, 0, 0 },
+			{  0.5,  0.5,  0.5, -1, 0, 0 },
+			{  0.5, -0.5,  0.5, -1, 0, 0 },
 
 			{ -0.5, -0.5, -0.5, 0, -1, 0 },
 			{ -0.5, -0.5,  0.5, 0, -1, 0 },
@@ -238,15 +241,15 @@ struct Window
 			{ 1.0, 1.0, 1.0, 0, 0, 1 },
 			{ 0.0, 1.0, 1.0, 0, 0, 1 },
 
-			{ 0.0, 0.0, 0.0, -1, 0, 0 },
-			{ 0.0, 1.0, 0.0, -1, 0, 0 },
-			{ 0.0, 1.0, 1.0, -1, 0, 0 },
-			{ 0.0, 0.0, 1.0, -1, 0, 0 },
+			{ 0.0, 0.0, 0.0, 1, 0, 0 },
+			{ 0.0, 1.0, 0.0, 1, 0, 0 },
+			{ 0.0, 1.0, 1.0, 1, 0, 0 },
+			{ 0.0, 0.0, 1.0, 1, 0, 0 },
 
-			{ 1.0, 0.0, 0.0, 1, 0, 0 },
-			{ 1.0, 1.0, 0.0, 1, 0, 0 },
-			{ 1.0, 1.0, 1.0, 1, 0, 0 },
-			{ 1.0, 0.0, 1.0, 1, 0, 0 },
+			{ 1.0, 0.0, 0.0, -1, 0, 0 },
+			{ 1.0, 1.0, 0.0, -1, 0, 0 },
+			{ 1.0, 1.0, 1.0, -1, 0, 0 },
+			{ 1.0, 0.0, 1.0, -1, 0, 0 },
 
 			{ 0.0, 0.0, 0.0, 0, -1, 0 },
 			{ 0.0, 0.0, 1.0, 0, -1, 0 },
@@ -272,6 +275,7 @@ struct Window
 		meshBuffer.Push("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
 
 		shaderBaseShaded = sg_make_shader(&ShaderBaseMeshShaded());
+		shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
 		shaderLine = sg_make_shader(&ShaderLine());
 
 		// basic mesh pipeline
@@ -284,7 +288,10 @@ struct Window
 		pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
 		pipeDesc.depth_stencil.depth_write_enabled = true;
 		pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
-		pipeMesh = sg_make_pipeline(&pipeDesc);
+		pipeMeshShaded = sg_make_pipeline(&pipeDesc);
+
+		pipeDesc.shader = shaderMeshUnlit;
+		pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
 
 		// line pipeline
 		sg_pipeline_desc linePipeDesc = {0};
@@ -302,8 +309,9 @@ struct Window
 		for(int i = -500; i < 500; i++) {
 			// color x, y axis
 			if(i == 0) {
-				lineBuffer.Push({vec3(10000, i * 5, 0), 0xFF0000FF, vec3(-10000, i * 5, 0), 0xFF0000FF});
-				lineBuffer.Push({vec3(i * 5, 10000, 0), 0xFF00FF00, vec3(i * 5, -10000, 0), 0xFF00FF00});
+				lineBuffer.Push({vec3(10000, 0, 0), 0xFF0000FF, vec3(-10000, 0, 0), 0xFF0000FF});
+				lineBuffer.Push({vec3(0, 10000, 0), 0xFF00FF00, vec3(0, -10000, 0), 0xFF00FF00});
+				lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
 				continue;
 			}
 			lineBuffer.Push({vec3(10000, i * 5, 0), lineColor, vec3(-10000, i * 5, 0), lineColor});
@@ -317,27 +325,28 @@ struct Window
 		localTime = TimeDiff(startTime, now);
 
 		// origin
-		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(2.5, 0.05, 0.05), vec4(1, 0, 0, 1) });
-		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(0.05, 2.5, 0.05), vec4(0, 1, 0, 1) });
-		drawQueueMesh.push_back({ "Cube", vec3(0), vec3(0), vec3(0.05, 0.05, 2.5), vec4(0, 0, 1, 1) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(0.1f), vec3(1) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(1.25, 0, 0), vec3(0), vec3(2.5, 0.05, 0.05), vec3(1, 0, 0) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 1.25, 0), vec3(0), vec3(0.05, 2.5, 0.05), vec3(0, 1, 0) });
+		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, 1.25), vec3(0), vec3(0.05, 0.05, 2.5), vec3(0, 0, 1) });
 
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
 
 		// test cube
-		drawQueueMesh.push_back({ "CubeCentered", vec3(1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec4(1) });
-		drawQueueMesh.push_back({ "CubeCentered", vec3(-1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec4(1) });
+		drawQueueMesh.push_back({ "CubeCentered", vec3(1.2, 1.2, 0.5), vec3(0, 0, 0), vec3(1), vec3(1) });
+		drawQueueMesh.push_back({ "CubeCentered", vec3(-1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec3(1) });
 
 
 		const f32 viewDist = 5.0f;
 		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 0.01f, 500.0f);
-		mat4 view = glm::lookAt(vec3(viewDist, 0, sinf(a) * 2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+		mat4 view = glm::lookAt(vec3(1, -viewDist, sinf(a) * 5), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+
+		sg_pass_action pass_action = {0}; // default pass action (clear to grey)
+		sg_begin_default_pass(&pass_action, winWidth, winHeight);
 
 		// draw meshes
 		{
-			sg_pass_action pass_action = {0}; // default pass action (clear to grey)
-			sg_begin_default_pass(&pass_action, winWidth, winHeight);
-			sg_apply_pipeline(pipeMesh);
-
+			sg_apply_pipeline(pipeMeshShaded);
 			meshBuffer.UpdateAndBind();
 
 			foreach_const(it, drawQueueMesh) {
@@ -345,13 +354,29 @@ struct Window
 				model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
 				model = glm::scale(model, it->scale);
 
+				ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
+				ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
+
+				sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &vsUni0, sizeof(vsUni0));
+				sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, &fsUni0, sizeof(fsUni0));
+
+				meshBuffer.DrawMesh(it->meshName);
+			}
+
+			sg_apply_pipeline(pipeMeshUnlit);
+			meshBuffer.UpdateAndBind();
+
+			foreach_const(it, drawQueueMeshUnlit) {
+				mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
+				model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+				model = glm::scale(model, it->scale);
+
 				struct Uniform0
 				{
-					mat4 vp;
-					mat4 model;
+					mat4 mvp;
 				};
 
-				Uniform0 uni0 = { proj * view, model };
+				Uniform0 uni0 = { proj * view * model };
 
 				sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &uni0, sizeof(uni0));
 				sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, &it->color, sizeof(it->color));
@@ -378,6 +403,7 @@ struct Window
 		sg_commit();
 
 		drawQueueMesh.clear();
+		drawQueueMeshUnlit.clear();
 	}
 
 	void OnEvent(const sapp_event& event)

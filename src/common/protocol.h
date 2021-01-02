@@ -89,8 +89,6 @@ enum StageType: i32
 	GAME_INSTANCE = 2
 };
 
-#define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
-
 struct NetHeader
 {
 	u16 size;

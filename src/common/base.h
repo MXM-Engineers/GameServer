@@ -20,6 +20,7 @@ void __Warnf(const char* functionName, const char* fmt, ...);
 #define WARN(...) do { __Warnf(FUNCTION_STR, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
+#define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
 inline void __assertion_failed(const char* cond, const char* file, int line)
 {

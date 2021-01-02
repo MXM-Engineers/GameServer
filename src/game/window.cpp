@@ -170,7 +170,7 @@ struct Window
 	sg_pipeline pipeMeshShaded;
 	sg_pipeline pipeMeshUnlit;
 	sg_pipeline pipeLine;
-	sg_shader shaderBaseShaded;
+	sg_shader shaderMeshShaded;
 	sg_shader shaderMeshUnlit;
 	sg_shader shaderLine;
 	Time startTime = Time::ZERO;
@@ -280,13 +280,14 @@ struct Window
 		bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
 		if(!r) return false;
 
-		shaderBaseShaded = sg_make_shader(&ShaderBaseMeshShaded());
+		shaderMeshShaded = sg_make_shader(&ShaderBaseMeshShaded());
 		shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
 		shaderLine = sg_make_shader(&ShaderLine());
 
 		// basic mesh pipeline
-		sg_pipeline_desc pipeDesc = {0};
-		pipeDesc.shader = shaderBaseShaded;
+		sg_pipeline_desc pipeDesc;
+		memset(&pipeDesc, 0, sizeof(pipeDesc));
+		pipeDesc.shader = shaderMeshShaded;
 		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
 		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
 		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
@@ -296,7 +297,15 @@ struct Window
 		pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
 		pipeMeshShaded = sg_make_pipeline(&pipeDesc);
 
+		memset(&pipeDesc, 0, sizeof(pipeDesc));
 		pipeDesc.shader = shaderMeshUnlit;
+		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
+		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.index_type = SG_INDEXTYPE_UINT16;
+		pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
+		pipeDesc.depth_stencil.depth_write_enabled = true;
+		pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
 		pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
 
 		// line pipeline
@@ -319,7 +328,7 @@ struct Window
 			if(i == 0) {
 				lineBuffer.Push({vec3(lineLength, 0, 0), 0xFF0000FF, vec3(-lineLength, 0, 0), 0xFF0000FF});
 				lineBuffer.Push({vec3(0, lineLength, 0), 0xFF00FF00, vec3(0, -lineLength, 0), 0xFF00FF00});
-				lineBuffer.Push({vec3(0, 0, lineLength), 0xFFFF0000, vec3(0, 0, -lineLength), 0xFFFF0000});
+				lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
 				continue;
 			}
 			lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
@@ -362,7 +371,7 @@ struct Window
 
 		// origin
 		const f32 orgnLen = 1000;
-		const f32 orgnThick = 50;
+		const f32 orgnThick = 20;
 		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1) });
 		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(1, 0, 0) });
 		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
@@ -370,15 +379,11 @@ struct Window
 
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
 
-		// test cube
-		drawQueueMesh.push_back({ "CubeCentered", vec3(1.2, 1.2, 0.5), vec3(0, 0, 0), vec3(1), vec3(1) });
-		drawQueueMesh.push_back({ "CubeCentered", vec3(-1.2, 1.2, 0.5), vec3(0, 0, a), vec3(1), vec3(1) });
-
 		// test map
 		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(1, 0, 1) });
 
 		const f32 viewDist = 5.0f;
-		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 0.01f, 50000.0f);
+		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 1.0f, 10000.0f);
 		//mat4 view = glm::lookAt(vec3(1, -viewDist, sinf(a) * 5), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
 		vec3 center = vec3(cameraEye.x, cameraEye.y + 0.001, 0);
 		mat4 view = glm::lookAt(cameraEye, center, vec3(0.0f, 0.0f, 1.0f));
@@ -455,19 +460,21 @@ struct Window
 				sapp_request_quit();
 			}
 			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_W) {
-				cameraEye.y += 50.0f;
+				cameraEye.y += 100.0f;
 			}
 			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_S) {
-				cameraEye.y -= 50.0f;
+				cameraEye.y -= 100.0f;
 			}
 			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_A) {
-				cameraEye.x -= 50.0f;
+				cameraEye.x -= 100.0f;
 			}
 			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_D) {
-				cameraEye.x += 50.0f;
+				cameraEye.x += 100.0f;
 			}
 		}
-
+		else if(event.type == SAPP_EVENTTYPE_MOUSE_SCROLL) {
+			cameraEye.z += -event.scroll_y * 50;
+		}
 	}
 
 	void Cleanup()

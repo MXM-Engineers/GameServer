@@ -429,3 +429,18 @@ f64 TimeDiffSec(Time diff);
 f64 TimeDiffMs(Time diff);
 f64 TimeDurationSinceSec(Time t0);
 f64 TimeDurationSinceMs(Time t0);
+
+
+template<typename T>
+T clamp(T val, T min, T max)
+{
+	if(val < min) return min;
+	if(val > max) return max;
+	return val;
+}
+
+template<typename T>
+T sign(T val)
+{
+	return val < (T)0 ? (T)-1 : (T)1;
+}

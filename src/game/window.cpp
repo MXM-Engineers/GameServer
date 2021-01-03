@@ -163,6 +163,113 @@ struct MeshBuffer
 	}
 };
 
+struct Camera
+{
+	enum Controls
+	{
+		Forward = 0,
+		Backward,
+		Left,
+		Right,
+		Up,
+		Down,
+		_COUNT
+	};
+
+	vec3 eye;
+	vec3 dir;
+	vec3 vel;
+	f32 speed = 2000;
+	const vec3 up = vec3(0, 0, 1);
+	u8 keyState[Controls::_COUNT] = {0};
+	bool mouseLocked = false;
+	const f32 invSens = 200;
+
+	void Reset()
+	{
+		eye = vec3(0, 0, 6000);
+		dir = vec3(0, 0, -1);
+	}
+
+	bool HandleEvent(const sapp_event& event)
+	{
+		const vec3 right = glm::normalize(glm::cross(dir, up));
+
+		if(event.type == SAPP_EVENTTYPE_KEY_DOWN) {
+			switch(event.key_code) {
+				case sapp_keycode::SAPP_KEYCODE_W: keyState[Controls::Forward] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_S: keyState[Controls::Backward] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_D: keyState[Controls::Right] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_A: keyState[Controls::Left] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_SPACE: keyState[Controls::Up] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_LEFT_CONTROL: keyState[Controls::Down] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_F1: {
+					Reset();
+				} break;
+
+				case sapp_keycode::SAPP_KEYCODE_Z: {
+					mouseLocked = !mouseLocked;
+					sapp_lock_mouse(mouseLocked);
+				} break;
+			}
+		}
+		else if(event.type == SAPP_EVENTTYPE_KEY_UP) {
+			switch(event.key_code) {
+				case sapp_keycode::SAPP_KEYCODE_W: keyState[Controls::Forward] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_S: keyState[Controls::Backward] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_D: keyState[Controls::Right] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_A: keyState[Controls::Left] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_SPACE: keyState[Controls::Up] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_LEFT_CONTROL: keyState[Controls::Down] = 0; break;
+			}
+		}
+		else if(event.type == SAPP_EVENTTYPE_MOUSE_MOVE) {
+			if(mouseLocked) {
+				mat4 rot = glm::rotate(glm::identity<mat4>(), -event.mouse_dy / invSens, right); // pitch
+				rot = glm::rotate(rot, -event.mouse_dx / invSens, up); // yaw
+				dir = glm::normalize(rot * vec4(dir, 0));
+			}
+		}
+		else if(event.type == SAPP_EVENTTYPE_MOUSE_SCROLL) {
+			speed *= 1 + event.scroll_y * 0.05;
+			speed = clamp(speed, 100.f, 100000.f);
+		}
+
+		return false;
+	}
+
+	mat4 UpdateAndComputeMatrix(f32 delta)
+	{
+		if(fabs(dir.z) > 0.9999f) {
+			dir.y = 0.01f;
+			dir = glm::normalize(dir);
+		}
+
+		const vec3 right = glm::normalize(glm::cross(dir, up));
+
+		if(keyState[Controls::Forward]) {
+			eye += dir * speed * delta;
+		}
+		else if(keyState[Controls::Backward]) {
+			eye += dir * -speed * delta;
+		}
+		if(keyState[Controls::Left]) {
+			eye += right * -speed * delta;
+		}
+		else if(keyState[Controls::Right]) {
+			eye += right * speed * delta;
+		}
+		if(keyState[Controls::Up]) {
+			eye += up * speed * delta;
+		}
+		else if(keyState[Controls::Down]) {
+			eye += up * -speed * delta;
+		}
+
+		return glm::lookAt(eye, eye + dir, up);
+	}
+};
+
 struct Window
 {
 	const i32 winWidth;
@@ -191,7 +298,7 @@ struct Window
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
 
-	vec3 cameraEye = vec3(0, 0, 6000);
+	Camera camera;
 
 	bool Init()
 	{
@@ -335,6 +442,7 @@ struct Window
 			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
 		}
 
+		camera.Reset();
 		return true;
 	}
 
@@ -366,8 +474,11 @@ struct Window
 
 	void Frame()
 	{
+		Time lastLocalTime = localTime;
 		Time now = TimeNow();
 		localTime = TimeDiff(startTime, now);
+		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
+		lastLocalTime = localTime;
 
 		// origin
 		const f32 orgnLen = 1000;
@@ -384,9 +495,7 @@ struct Window
 
 		const f32 viewDist = 5.0f;
 		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 1.0f, 10000.0f);
-		//mat4 view = glm::lookAt(vec3(1, -viewDist, sinf(a) * 5), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
-		vec3 center = vec3(cameraEye.x, cameraEye.y + 0.001, 0);
-		mat4 view = glm::lookAt(cameraEye, center, vec3(0.0f, 0.0f, 1.0f));
+		mat4 view = camera.UpdateAndComputeMatrix(delta);
 
 		sg_pass_action pass_action = {0}; // default pass action (clear to grey)
 		sg_begin_default_pass(&pass_action, winWidth, winHeight);
@@ -458,23 +567,11 @@ struct Window
 		if(event.type == SAPP_EVENTTYPE_KEY_DOWN) {
 			if(event.key_code == sapp_keycode::SAPP_KEYCODE_ESCAPE) {
 				sapp_request_quit();
-			}
-			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_W) {
-				cameraEye.y += 100.0f;
-			}
-			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_S) {
-				cameraEye.y -= 100.0f;
-			}
-			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_A) {
-				cameraEye.x -= 100.0f;
-			}
-			else if(event.key_code == sapp_keycode::SAPP_KEYCODE_D) {
-				cameraEye.x += 100.0f;
+				return;
 			}
 		}
-		else if(event.type == SAPP_EVENTTYPE_MOUSE_SCROLL) {
-			cameraEye.z += -event.scroll_y * 50;
-		}
+
+		camera.HandleEvent(event);
 	}
 
 	void Cleanup()

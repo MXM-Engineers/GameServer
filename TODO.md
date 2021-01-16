@@ -1,8 +1,8 @@
 # Debug 3D viewer
-✅ Actual 3D mouse camera controls
-✅ Reset view
+* ✅ Actual 3D mouse camera controls
+* ✅ Reset view
 * TOP, BOTTOM, LEFT, RIGHT, etc, FREE VIEW modes
-* Capsule mesh
+* ✅ Capsule mesh
 * Public API to push game states (players, entities, map)
 * integrate imgui (sokol_imgui)
 * switch between active games with imgui

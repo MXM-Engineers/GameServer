@@ -374,8 +374,7 @@ struct Window
 
 	Camera camera;
 
-	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> capsuleVertices;
-	eastl::fixed_vector<u16,1024,true> capsuleIndices;
+
 
 	bool Init()
 	{
@@ -459,8 +458,8 @@ struct Window
 			22, 21, 20, 23, 22, 20
 		};
 
-		//eastl::fixed_vector<MeshBuffer::Vertex,1024,true> capsuleVertices;
-		//eastl::fixed_vector<u16,1024,true> capsuleIndices;
+		eastl::fixed_vector<MeshBuffer::Vertex,1024,true> capsuleVertices;
+		eastl::fixed_vector<u16,1024,true> capsuleIndices;
 
 		GenerateCapsuleMesh(1000, 200, 32, eastl::back_inserter(capsuleVertices),  eastl::back_inserter(capsuleIndices));
 
@@ -562,18 +561,6 @@ struct Window
 			}
 			lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
 			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
-		}
-
-		// capsule wireframe
-		const u32 capsuleWireColor = 0xFF007F7F;
-		for(int i = 0; i < capsuleIndices.size(); i += 3) {
-			const MeshBuffer::Vertex& v0 = capsuleVertices[capsuleIndices[i]];
-			const MeshBuffer::Vertex& v1 = capsuleVertices[capsuleIndices[i+1]];
-			const MeshBuffer::Vertex& v2 = capsuleVertices[capsuleIndices[i+2]];
-
-			lineBuffer.Push({vec3(v0.px, v0.py, v0.pz), capsuleWireColor, vec3(v1.px, v1.py, v1.pz), capsuleWireColor});
-			lineBuffer.Push({vec3(v0.px, v0.py, v0.pz), capsuleWireColor, vec3(v2.px, v2.py, v2.pz), capsuleWireColor});
-			lineBuffer.Push({vec3(v1.px, v1.py, v1.pz), capsuleWireColor, vec3(v2.px, v2.py, v2.pz), capsuleWireColor});
 		}
 
 		// test capsule

@@ -40,7 +40,7 @@ struct Line
 struct LineBuffer
 {
 private:
-	eastl::fixed_vector<Line,2048,false> ramBuffer;
+	eastl::fixed_vector<Line,8192*1024,false> ramBuffer;
 	sg_buffer vramBuffer = { 0xFFFFFFFF };
 	bool needsUpdate = false;
 
@@ -52,12 +52,12 @@ public:
 			if(vramBuffer.id == 0xFFFFFFFF) {
 				sg_buffer_desc desc = {0};
 				desc.size = sizeof(Line) * ramBuffer.capacity();
-				desc.content = ramBuffer.data();
+				desc.content = nullptr;
+				desc.usage = SG_USAGE_STREAM;
 				vramBuffer = sg_make_buffer(&desc);
 			}
-			else {
-				sg_update_buffer(vramBuffer, ramBuffer.data(), ramBuffer.capacity() * sizeof(Line));
-			}
+
+			sg_update_buffer(vramBuffer, ramBuffer.data(), ramBuffer.size() * sizeof(Line));
 			needsUpdate = false;
 		}
 		return vramBuffer;
@@ -98,8 +98,9 @@ struct MeshBuffer
 		u32 indexCount;
 	};
 
-	eastl::fixed_vector<Vertex,8192,false> vertexBuffer;
-	eastl::fixed_vector<u16,8192,false> indexBuffer;
+	// these need to be static
+	eastl::fixed_vector<Vertex,8192*1024,false> vertexBuffer;
+	eastl::fixed_vector<u16,8192*1024,false> indexBuffer;
 	sg_buffer gpuVertexBuff = { 0xFFFFFFFF };
 	sg_buffer gpuIndexBuff = { 0xFFFFFFFF };
 	eastl::fixed_map<FixedStr32, MeshRef, 2048, false> meshRefMap;
@@ -270,6 +271,79 @@ struct Camera
 	}
 };
 
+template<typename OutputIteratorVertices, typename OutputIteratorIndices>
+void GenerateCapsuleMesh(const f32 height, const f32 radius, const i32 subDivisions, OutputIteratorVertices outVert, OutputIteratorIndices outInd)
+{
+	// base is 0,0,0
+
+	typedef MeshBuffer::Vertex Vert;
+
+	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 };
+
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = 0;
+		*outInd++ = s+1;
+		*outInd++ = (s+1) % (subDivisions+1) + 1;
+	}
+
+	i32 vertCount = 1;
+	const f32 subHeight = height / subDivisions;
+	for(f32 z = subHeight; z < height; z += subHeight) {
+		for(i32 s = 0; s < subDivisions+1; s++) {
+			const f32 a = (2 * PI) / subDivisions * s;
+			f32 r = radius;
+			vec3 n;
+			if(radius - z > 0) {
+				f32 d = radius - z;
+				r = sqrtf(radius*radius - d*d);
+				n = glm::normalize(vec3(cosf(a) * r, sinf(a) * r, -d));
+			}
+			else if((height - z) < radius) {
+				f32 d = radius - (height - z);
+				r = sqrtf(radius*radius - d*d);
+				n = glm::normalize(vec3(cosf(a) * r, sinf(a) * r, d));
+			}
+			else {
+				n = vec3(cosf(a), sinf(a), 0);
+			}
+
+			*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, z, n.x, n.y, n.z };
+			vertCount++;
+		}
+
+		if(z > subHeight) {
+			for(i32 s = 0; s < subDivisions; s++) {
+				i32 b0 = vertCount - ((subDivisions+1) * 2) + s;
+				i32 b1 = vertCount - ((subDivisions+1) * 2) + s + 1;
+				i32 t0 = vertCount - subDivisions + s;
+				i32 t1 = vertCount - subDivisions + s + 1;
+
+				if(s+1 == subDivisions) {
+					b1 = vertCount - ((subDivisions+1) * 2);
+					t1 = vertCount - subDivisions;
+				}
+
+				*outInd++ = b0;
+				*outInd++ = t0;
+				*outInd++ = b1;
+
+				*outInd++ = b1;
+				*outInd++ = t0;
+				*outInd++ = t1;
+			}
+		}
+	}
+
+	const i32 last = vertCount;
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = last - 1 - subDivisions + s;
+		*outInd++ = last;
+		*outInd++ = last - 1 - subDivisions + (s+1) % (subDivisions+1);
+	}
+
+	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 };
+}
+
 struct Window
 {
 	const i32 winWidth;
@@ -299,6 +373,9 @@ struct Window
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
 
 	Camera camera;
+
+	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> capsuleVertices;
+	eastl::fixed_vector<u16,1024,true> capsuleIndices;
 
 	bool Init()
 	{
@@ -382,8 +459,14 @@ struct Window
 			22, 21, 20, 23, 22, 20
 		};
 
+		//eastl::fixed_vector<MeshBuffer::Vertex,1024,true> capsuleVertices;
+		//eastl::fixed_vector<u16,1024,true> capsuleIndices;
+
+		GenerateCapsuleMesh(1000, 200, 32, eastl::back_inserter(capsuleVertices),  eastl::back_inserter(capsuleIndices));
+
 		meshBuffer.Push("Cube", verticesCube, ARRAY_COUNT(verticesCube), indices, ARRAY_COUNT(indices));
 		meshBuffer.Push("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
+		meshBuffer.Push("Capsule", capsuleVertices.data(), capsuleVertices.size(), capsuleIndices.data(), capsuleIndices.size());
 		bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
 		if(!r) return false;
 
@@ -413,6 +496,7 @@ struct Window
 		pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
 		pipeDesc.depth_stencil.depth_write_enabled = true;
 		pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
+		//pipeDesc.rasterizer.cull_mode = SG_CULLMODE_NONE;
 		pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
 
 		// line pipeline
@@ -425,22 +509,6 @@ struct Window
 		linePipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
 		linePipeDesc.depth_stencil.depth_write_enabled = true;
 		pipeLine = sg_make_pipeline(&linePipeDesc);
-
-		// push a simple grid
-		const u32 lineColor = 0xFF7F7F7F;
-		const f32 lineSpacing = 100.0f;
-		const f32 lineLength = 100000.0f;
-		for(int i = -500; i < 500; i++) {
-			// color x, y axis
-			if(i == 0) {
-				lineBuffer.Push({vec3(lineLength, 0, 0), 0xFF0000FF, vec3(-lineLength, 0, 0), 0xFF0000FF});
-				lineBuffer.Push({vec3(0, lineLength, 0), 0xFF00FF00, vec3(0, -lineLength, 0), 0xFF00FF00});
-				lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
-				continue;
-			}
-			lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
-			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
-		}
 
 		camera.Reset();
 		return true;
@@ -458,7 +526,7 @@ struct Window
 		i32 fileSize;
 		u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
 		if(!fileBuff) {
-			LOG("ERROR: faield to open '%s'", path);
+			LOG("ERROR: failed to open '%s'", path);
 			return false;
 		}
 		defer(memFree(fileBuff));
@@ -479,6 +547,37 @@ struct Window
 		localTime = TimeDiff(startTime, now);
 		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
 		lastLocalTime = localTime;
+
+		// push a simple grid
+		const u32 lineColor = 0xFF7F7F7F;
+		const f32 lineSpacing = 100.0f;
+		const f32 lineLength = 100000.0f;
+		for(int i = -500; i < 500; i++) {
+			// color x, y axis
+			if(i == 0) {
+				lineBuffer.Push({vec3(lineLength, 0, 0), 0xFF0000FF, vec3(-lineLength, 0, 0), 0xFF0000FF});
+				lineBuffer.Push({vec3(0, lineLength, 0), 0xFF00FF00, vec3(0, -lineLength, 0), 0xFF00FF00});
+				lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
+				continue;
+			}
+			lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
+			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
+		}
+
+		// capsule wireframe
+		const u32 capsuleWireColor = 0xFF007F7F;
+		for(int i = 0; i < capsuleIndices.size(); i += 3) {
+			const MeshBuffer::Vertex& v0 = capsuleVertices[capsuleIndices[i]];
+			const MeshBuffer::Vertex& v1 = capsuleVertices[capsuleIndices[i+1]];
+			const MeshBuffer::Vertex& v2 = capsuleVertices[capsuleIndices[i+2]];
+
+			lineBuffer.Push({vec3(v0.px, v0.py, v0.pz), capsuleWireColor, vec3(v1.px, v1.py, v1.pz), capsuleWireColor});
+			lineBuffer.Push({vec3(v0.px, v0.py, v0.pz), capsuleWireColor, vec3(v2.px, v2.py, v2.pz), capsuleWireColor});
+			lineBuffer.Push({vec3(v1.px, v1.py, v1.pz), capsuleWireColor, vec3(v2.px, v2.py, v2.pz), capsuleWireColor});
+		}
+
+		// test capsule
+		drawQueueMesh.push_back({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 
 		// origin
 		const f32 orgnLen = 1000;
@@ -559,6 +658,7 @@ struct Window
 
 		drawQueueMesh.clear();
 		drawQueueMeshUnlit.clear();
+		lineBuffer.Clear();
 	}
 
 	void OnEvent(const sapp_event& event)

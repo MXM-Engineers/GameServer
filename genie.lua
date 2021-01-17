@@ -95,6 +95,8 @@ solution "GameServer"
 	dofile("external/genie_tinyxml2.lua");
 	dofile("external/genie_tracy.lua");
 	dofile("external/genie_glm.lua");
+	dofile("external/genie_sokol.lua");
+	dofile("external/genie_imgui.lua");
 	
 
 project "Login"
@@ -190,11 +192,13 @@ project "Game"
 		}
 
 		files {
-			"external/sokol/*.h"
+			sokol_files,
+			imgui_files
 		}
 
 		includedirs {
-			"external/sokol"
+			sokol_includedir,
+			imgui_includedir
 		}
 
 	configuration "linux"

@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <EASTL/fixed_map.h>
+#include <imgui.h>
 
 #define SOKOL_IMPL
 #define SOKOL_NO_ENTRY
@@ -22,6 +23,7 @@
 #include "sokol_app.h"
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
+#include "sokol_imgui.h"
 
 typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
@@ -510,6 +512,9 @@ struct Window
 		pipeLine = sg_make_pipeline(&linePipeDesc);
 
 		camera.Reset();
+
+		simgui_desc_t imguiDesc = {0};
+		simgui_setup(&imguiDesc);
 		return true;
 	}
 
@@ -539,6 +544,17 @@ struct Window
 		return true;
 	}
 
+	void Update(f64 delta)
+	{
+		ImGui::ShowDemoWindow();
+
+		// test capsule
+		drawQueueMesh.push_back({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
+
+		// test map
+		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(1, 0, 1) });
+	}
+
 	void Frame()
 	{
 		Time lastLocalTime = localTime;
@@ -547,6 +563,14 @@ struct Window
 		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
 		lastLocalTime = localTime;
 
+		simgui_new_frame(winWidth, winHeight, delta);
+
+		Update(delta);
+		Render(delta);
+	}
+
+	void Render(f64 delta)
+	{
 		// push a simple grid
 		const u32 lineColor = 0xFF7F7F7F;
 		const f32 lineSpacing = 100.0f;
@@ -563,9 +587,6 @@ struct Window
 			lineBuffer.Push({vec3(i * lineSpacing, lineLength, 0), lineColor, vec3(i * lineSpacing, -lineLength, 0), lineColor});
 		}
 
-		// test capsule
-		drawQueueMesh.push_back({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
-
 		// origin
 		const f32 orgnLen = 1000;
 		const f32 orgnThick = 20;
@@ -576,11 +597,8 @@ struct Window
 
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
 
-		// test map
-		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(1, 0, 1) });
-
 		const f32 viewDist = 5.0f;
-		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 1.0f, 10000.0f);
+		mat4 proj = glm::perspective(glm::radians(60.0f), (float)winWidth/(float)winHeight, 1.0f, 20000.0f);
 		mat4 view = camera.UpdateAndComputeMatrix(delta);
 
 		sg_pass_action pass_action = {0}; // default pass action (clear to grey)
@@ -640,6 +658,7 @@ struct Window
 			sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
 		}
 
+		simgui_render();
 		sg_end_pass();
 		sg_commit();
 
@@ -658,11 +677,14 @@ struct Window
 			}
 		}
 
+		simgui_handle_event(&event);
+
 		camera.HandleEvent(event);
 	}
 
 	void Cleanup()
 	{
+		simgui_shutdown();
 		sg_shutdown();
 	}
 };

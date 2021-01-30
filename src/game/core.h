@@ -1,6 +1,7 @@
 #pragma once
 #include <common/base.h>
 #include <common/protocol.h>
+#include <common/vector_math.h>
 
 enum class ActorUID: u32
 {
@@ -159,7 +160,7 @@ struct PlayerCastSkill
 {
 	ActorUID playerActorUID;
 	SkillID skillID;
-	Vec3 p3nPos;
+	vec3 p3nPos;
 	eastl::fixed_vector<ActorUID,32,false> targetList;
 	Cl::CQ_PlayerCastSkill::PosStruct posStruct;
 };

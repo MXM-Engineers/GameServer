@@ -15,14 +15,22 @@ void Game3v3::Init(Replication* replication_)
 	playerMap.fill(playerList.end());
 
 	LoadMap();
+
+	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
 
 void Game3v3::Update(f64 delta, Time localTime_)
 {
 	ProfileFunction();
 
+	Dbg::PushNewFrame(dbgGameUID);
+
 	localTime = localTime_;
 	world.Update(delta, localTime);
+
+	foreach_const(ent, world.actorPlayerList) {
+		Dbg::PushEntity(dbgGameUID, ent->pos, vec3(1, 0, 1));
+	}
 }
 
 bool Game3v3::LoadMap()
@@ -104,7 +112,7 @@ void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
 }
 
-void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -215,9 +223,9 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 
 	// select a spawn point at random
 	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
-	Vec3 pos = spawnPoint.pos;
-	Vec3 dir = spawnPoint.dir;
-	Vec3 eye(0, 0, 0);
+	vec3 pos = spawnPoint.pos;
+	vec3 dir = spawnPoint.dir;
+	vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
 	if((player.mainActorUID != ActorUID::INVALID)) {
@@ -339,7 +347,7 @@ void Game3v3::SendDbgMsg(i32 clientID, const wchar* msg)
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-World::ActorNpc& Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+World::ActorNpc& Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
 	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;

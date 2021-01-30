@@ -8,6 +8,16 @@
 #include "coordinator.h" // AccountData
 #include "game_content.h"
 
+inline float3 f2v(const vec3& v3)
+{
+	return { v3.x, v3.y, v3.z };
+}
+
+inline float2 f2v(const vec2& v2)
+{
+	return { v2.x, v2.y };
+}
+
 void Replication::Frame::Clear()
 {
 	playerList.clear();
@@ -102,7 +112,7 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	Frame::Transform tf;
 	tf.pos = actor.pos;
 	tf.dir = actor.dir;
-	tf.eye = Vec3(0, 0, 0);
+	tf.eye = vec3(0, 0, 0);
 	tf.rotate = 0;
 	tf.speed = 0;
 	frameCur->transformMap.emplace(actor.actorUID, tf);
@@ -1538,15 +1548,15 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		packet.Write<SkillID>(cast.skillID);
 		packet.Write<u8>(0); // costLevel
 		packet.Write<ActionStateID>(ActionStateID::INVALID);
-		packet.Write<Vec3>(cast.p3nPos);
+		packet.Write<float3>(f2v(cast.p3nPos));
 
 		packet.Write<u16>(0); // targetList_count
 
 		packet.Write<u8>(1); // bSyncMyPosition
-		packet.Write<Vec3>(cast.posStruct.pos);
-		packet.Write<Vec3>(cast.posStruct.destPos);
-		packet.Write<Vec2>(cast.posStruct.moveDir);
-		packet.Write<Vec3>(cast.posStruct.rotateStruct);
+		packet.Write<float3>(cast.posStruct.pos);
+		packet.Write<float3>(cast.posStruct.destPos);
+		packet.Write<float2>(cast.posStruct.moveDir);
+		packet.Write<float3>(cast.posStruct.rotateStruct);
 		packet.Write<f32>(cast.posStruct.speed);
 		packet.Write<i32>(cast.posStruct.clientTime);
 
@@ -1574,15 +1584,15 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 			case (SkillID)180030050: actionState = (ActionStateID)35; break;
 		}
 		packet.Write<ActionStateID>(actionState);
-		packet.Write<Vec3>(cast.p3nPos);
+		packet.Write<float3>(f2v(cast.p3nPos));
 
 		packet.Write<u16>(0); // targetList_count
 
 		packet.Write<u8>(0); // bSyncMyPosition
-		packet.Write<Vec3>(Vec3());
-		packet.Write<Vec3>(Vec3());
-		packet.Write<Vec2>(Vec2());
-		packet.Write<Vec3>(Vec3());
+		packet.Write<float3>(float3());
+		packet.Write<float3>(float3());
+		packet.Write<float2>(float2());
+		packet.Write<float3>(float3());
 		packet.Write<f32>(0);
 		packet.Write<i32>(0);
 
@@ -1590,8 +1600,8 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 
 		// graphMove
 		packet.Write<u8>(0); // bApply
-		packet.Write<Vec3>(cast.posStruct.pos); // startPos
-		packet.Write<Vec3>(cast.posStruct.destPos); // endPos
+		packet.Write<float3>(cast.posStruct.pos); // startPos
+		packet.Write<float3>(cast.posStruct.destPos); // endPos
 		packet.Write<f32>(0); // durationTimeS
 		packet.Write<f32>(0); // originDistance
 
@@ -1851,9 +1861,9 @@ void Replication::FrameDifference()
 		const Frame::Transform& tf = e.second;
 
 		Sv::SN_GamePlayerSyncByInt sync;
-		sync.p3nPos = tf.pos;
-		sync.p3nDir = tf.dir;
-		sync.p3nEye = tf.eye;
+		sync.p3nPos = f2v(tf.pos);
+		sync.p3nDir = f2v(tf.dir);
+		sync.p3nEye = f2v(tf.eye);
 		sync.nRotate = tf.rotate;
 		sync.nSpeed = tf.speed;
 		sync.nState = -1;

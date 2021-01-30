@@ -1,20 +1,8 @@
 #pragma once
 #include <common/base.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
-struct Vec2
-{
-	f32 x, y;
+typedef glm::vec2 vec2;
+typedef glm::vec3 vec3;
 
-	Vec2(){}
-	Vec2(f32 x_, f32 y_):
-		x(x_), y(y_) {}
-};
-
-struct Vec3
-{
-	f32 x, y, z;
-
-	Vec3(){}
-	Vec3(f32 x_, f32 y_, f32 z_):
-		x(x_), y(y_), z(z_) {}
-};

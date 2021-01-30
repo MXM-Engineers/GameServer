@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <EASTL/fixed_map.h>
+#include <eathread/eathread_thread.h>
 #include <imgui.h>
 
 #define SOKOL_IMPL
@@ -346,10 +347,38 @@ void GenerateCapsuleMesh(const f32 height, const f32 radius, const i32 subDivisi
 	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 };
 }
 
+struct GameState
+{
+	struct Entity
+	{
+		vec3 pos;
+		vec3 color;
+	};
+
+	eastl::fixed_vector<Entity,2048,true> entityList;
+	Mutex mutex;
+
+	void NewFrame()
+	{
+		const LockGuard lock(mutex);
+		entityList.clear();
+	}
+
+	void PushEntity(const vec3& pos, const vec3& color)
+	{
+		const LockGuard lock(mutex);
+		Entity e;
+		e.pos = pos;
+		e.color = color;
+		entityList.push_back(e);
+	}
+};
+
 struct Window
 {
 	const i32 winWidth;
 	const i32 winHeight;
+	EA::Thread::Thread thread;
 	sg_pipeline pipeMeshShaded;
 	sg_pipeline pipeMeshUnlit;
 	sg_pipeline pipeLine;
@@ -376,7 +405,8 @@ struct Window
 
 	Camera camera;
 
-
+	GameState game;
+	GameState lastGame;
 
 	bool Init()
 	{
@@ -514,6 +544,7 @@ struct Window
 		camera.Reset();
 
 		simgui_desc_t imguiDesc = {0};
+		imguiDesc.ini_filename = "gameserver_imgui.ini";
 		simgui_setup(&imguiDesc);
 		return true;
 	}
@@ -552,7 +583,29 @@ struct Window
 		drawQueueMesh.push_back({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 
 		// test map
-		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(1, 0, 1) });
+		drawQueueMesh.push_back({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.2, 0.2) });
+
+		// @Speed: very innefficient locking
+		// Also some blinking because sometimes the gamestate is empty when we render it (NewFrame before adding anything)
+		decltype(GameState::entityList) entityList;
+		{
+			const LockGuard lock(game.mutex);
+			entityList = game.entityList;
+		}
+
+		foreach_const(ent, entityList) {
+			drawQueueMesh.push_back({ "Capsule", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color });
+		}
+
+		ImGui::Begin("Entities");
+
+			int i = 0;
+			foreach_const(ent, entityList) {
+				ImGui::Text("#%d pos=(%f, %f, %f)", i, ent->pos.x, ent->pos.y, ent->pos.z);
+				i++;
+			}
+
+		ImGui::End();
 	}
 
 	void Frame()
@@ -595,6 +648,10 @@ struct Window
 		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
 		drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(0, 0, 1) });
 
+
+
+
+		// rendering
 		f32 a = fmod(TimeDiffSec(localTime)*0.2 * glm::pi<f32>() * 2.0f, 4.0f * glm::pi<f32>());
 
 		const f32 viewDist = 5.0f;
@@ -677,7 +734,9 @@ struct Window
 			}
 		}
 
-		simgui_handle_event(&event);
+		if(!camera.mouseLocked) {
+			simgui_handle_event(&event);
+		}
 
 		camera.HandleEvent(event);
 	}
@@ -721,16 +780,13 @@ intptr_t ThreadWindow(void* pData)
 	const i32 cpuID = 0;
 	EA::Thread::SetThreadAffinityMask(1 << cpuID);
 
-	static Window win = {Config().WindowWidth, Config().WindowHeight};
-	g_pWindow = &win;
-
 	sapp_desc desc;
 	memset(&desc, 0, sizeof(desc));
 	desc.window_title = "MxM server";
 	// MSAA
 	desc.sample_count = 8;
-	desc.width = win.winWidth;
-	desc.height = win.winHeight;
+	desc.width = g_pWindow->winWidth;
+	desc.height = g_pWindow->winHeight;
 	desc.init_cb = WindowInit;
 	desc.frame_cb = WindowFrame;
 	desc.event_cb = WindowEvent;
@@ -742,9 +798,47 @@ intptr_t ThreadWindow(void* pData)
 	return 0;
 }
 
-#endif
+void WindowCreate()
+{
+	static Window win = {Config().WindowWidth, Config().WindowHeight};
+	g_pWindow = &win;
 
-void WindowClose()
+	win.thread.Begin(ThreadWindow, nullptr);
+}
+
+void WindowRequestClose()
 {
 	sapp_request_quit();
 }
+
+void WindowWaitForCleanup()
+{
+	g_pWindow->thread.WaitForEnd();
+}
+
+namespace Dbg {
+
+GameUID PushNewGame(const FixedStr<32>& mapName)
+{
+	// ignore name for now, assume PVP map
+	return GameUID::INVALID;
+}
+
+void PushNewFrame(GameUID gameUID)
+{
+	g_pWindow->game.NewFrame();
+}
+
+void PushEntity(GameUID gameUID, const vec3& pos, const vec3& color)
+{
+	g_pWindow->game.PushEntity(pos, color);
+}
+
+void PopGame(GameUID gameUID)
+{
+	// does nothing for now
+}
+
+}
+
+#endif

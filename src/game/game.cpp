@@ -141,7 +141,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -205,9 +205,9 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 
 	// select a spawn point at random
 	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
-	Vec3 pos = spawnPoint.pos;
-	Vec3 dir = spawnPoint.dir;
-	Vec3 eye(0, 0, 0);
+	vec3 pos = spawnPoint.pos;
+	vec3 dir = spawnPoint.dir;
+	vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
 	if((playerActorUID[clientID] != ActorUID::INVALID)) {
@@ -388,7 +388,7 @@ void Game::SendDbgMsg(i32 clientID, const wchar* msg)
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-void Game::SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+void Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
 	World::ActorCore& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;

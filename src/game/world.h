@@ -20,9 +20,9 @@ struct World
 		const ActorUID UID;
 		i32 type;
 		CreatureIndex docID;
-		Vec3 pos;
-		Vec3 dir;
-		Vec3 eye;
+		vec3 pos;
+		vec3 dir;
+		vec3 eye;
 		f32 rotate; // whole body rotate
 		f32 upperRotate; // upper body rotate
 		f32 speed;
@@ -106,7 +106,7 @@ struct World
 	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
 	ActorPlayer& SpawnPlayerSubActor(i32 clientID, ActorUID parentActorUID, ClassType classType, SkinIndex skinIndex);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
-	ActorJukebox& SpawnJukeboxActor(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
+	ActorJukebox& SpawnJukeboxActor(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 
 	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;

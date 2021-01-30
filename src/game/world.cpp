@@ -166,7 +166,7 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	ActorNpc& actor = actorNpcList.back();
 	actor.type = 1;
 	actor.docID = (CreatureIndex)docID;
-	actor.eye = Vec3(0, 0, 0);
+	actor.eye = vec3(0, 0, 0);
 	actor.rotate = 0;
 	actor.speed = 0;
 	actor.actionState = ActionStateID::INVALID;
@@ -179,7 +179,7 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	return actor;
 }
 
-World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir)
+World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
 	ASSERT(jukebox.UID == ActorUID::INVALID);
 
@@ -188,7 +188,7 @@ World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, 
 	jukebox.docID = (CreatureIndex)docID;
 	jukebox.pos = pos;
 	jukebox.dir = dir;
-	jukebox.eye = Vec3(0, 0, 0);
+	jukebox.eye = vec3(0, 0, 0);
 	jukebox.rotate = 0;
 	jukebox.speed = 0;
 	jukebox.actionState = ActionStateID::INVALID;

@@ -444,3 +444,6 @@ T sign(T val)
 {
 	return val < (T)0 ? (T)-1 : (T)1;
 }
+
+template<size_t CAPACITY>
+using FixedStr = eastl::fixed_string<char,CAPACITY,false>;

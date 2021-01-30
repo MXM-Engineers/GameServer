@@ -30,8 +30,8 @@ struct GameXmlContent
 		i32 localID;
 		Type type;
 		TeamID team;
-		Vec3 pos;
-		Vec3 rot;
+		vec3 pos;
+		vec3 rot;
 
 		inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
 	};

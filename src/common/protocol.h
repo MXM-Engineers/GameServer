@@ -1,6 +1,15 @@
 #pragma once
 #include <common/base.h>
-#include <common/vector_math.h>
+
+struct float2
+{
+	f32 x = 0, y = 0;
+};
+
+struct float3
+{
+	f32 x = 0, y = 0, z = 0;
+};
 
 enum class LocalActorID: u32
 {
@@ -201,9 +210,9 @@ struct CN_UpdatePosition
 	enum { NET_ID = 60022 };
 
 	LocalActorID characterID;
-	Vec3 p3nPos;
-	Vec3 p3nDir;
-	Vec3 p3nEye;
+	float3 p3nPos;
+	float3 p3nDir;
+	float3 p3nEye;
 	f32 nRotate;
 	f32 nSpeed;
 	ActionStateID nState;
@@ -268,17 +277,17 @@ struct CQ_PlayerCastSkill
 
 	struct PosStruct
 	{
-		Vec3 pos;
-		Vec3 destPos;
-		Vec2 moveDir;
-		Vec3 rotateStruct;
+		float3 pos;
+		float3 destPos;
+		float2 moveDir;
+		float3 rotateStruct;
 		f32 speed;
 		i32 clientTime;
 	};
 
 	LocalActorID playerID;
 	SkillID skillID;
-	Vec3 p3npos;
+	float3 p3npos;
 
 	u16 targetList_count;
 	LocalActorID targetList[1];
@@ -343,7 +352,7 @@ struct CQ_PlayerJump
 	f32 rotate;
 	f32 moveDirX;
 	f32 moveDirY;
-	Vec3 startPos;
+	float3 startPos;
 };
 
 struct CN_ChannelChatMessage
@@ -390,6 +399,22 @@ struct CQ_GetGuildRankingSeasonList
 	u8 rankingType;
 };
 ASSERT_SIZE(CQ_GetGuildRankingSeasonList, 1);
+
+PUSH_PACKED
+struct CN_GameUpdatePosition
+{
+	enum { NET_ID = 60178 };
+
+	LocalActorID characterID;
+	float3 p3nPos;
+	float2 p3nDir;
+	float3 p3nEye;
+	f32 nSpeed;
+	i32 unk1;
+	u8 unk2[6];
+};
+POP_PACKED
+ASSERT_SIZE(CN_GameUpdatePosition, 50);
 
 struct CQ_WhisperSend
 {
@@ -613,8 +638,8 @@ struct SN_GameCreateActor
 	i32 nType;
 	CreatureIndex nIDX;
 	i32 dwLocalID;
-	Vec3 p3nPos;
-	Vec3 p3nDir;
+	float3 p3nPos;
+	float3 p3nDir;
 	i32 spawnType;
 	i32 actionState;
 	i32 ownerID;
@@ -639,7 +664,7 @@ struct SN_SpawnPosForMinimap
 	enum { NET_ID = 62026 };
 
 	i32 objectID;
-	Vec3 p3nPos;
+	float3 p3nPos;
 };
 
 struct SN_GameCreateSubActor
@@ -673,8 +698,8 @@ struct SN_GameCreateSubActor
 	i32 nType;
 	i32 nIDX;
 	i32 dwLocalID;
-	Vec3 p3nPos;
-	Vec3 p3nDir;
+	float3 p3nPos;
+	float3 p3nDir;
 	i32 spawnType;
 	i32 actionState;
 	i32 ownerID;
@@ -795,9 +820,9 @@ struct SN_GamePlayerSyncByInt
 	enum { NET_ID = 62052 };
 
 	LocalActorID characterID;
-	Vec3 p3nPos;
-	Vec3 p3nDir;
-	Vec3 p3nEye;
+	float3 p3nPos;
+	float3 p3nDir;
+	float3 p3nEye;
 	f32 nRotate;
 	f32 nSpeed;
 	i32 nState;
@@ -1395,7 +1420,7 @@ struct SA_ResultSpAction
 	f32 moveDirX;
 	f32 moveDirY;
 	i32 errorType;
-	Vec3 startPos;
+	float3 startPos;
 };
 
 struct SN_ChatChannelMessage
@@ -1766,8 +1791,8 @@ struct SN_PlayerSyncActionStateOnly
 	struct ST_GraphMoveData
 	{
 		u8 bApply;
-		Vec3 startPos;
-		Vec3 endPos;
+		float3 startPos;
+		float3 endPos;
 		f32 durationTimeS;
 		f32 originDistance;
 	};

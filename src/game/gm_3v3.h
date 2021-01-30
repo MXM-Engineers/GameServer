@@ -17,7 +17,7 @@ struct Game3v3: IGame
 
 	struct SpawnPoint
 	{
-		Vec3 pos, dir;
+		vec3 pos, dir;
 	};
 
 	struct Player
@@ -45,6 +45,8 @@ struct Game3v3: IGame
 
 	Time localTime;
 
+	Dbg::GameUID dbgGameUID;
+
 	void Init(Replication* replication_) override;
 	void Update(f64 delta, Time localTime_) override;
 
@@ -54,7 +56,7 @@ struct Game3v3: IGame
 	void OnPlayerDisconnect(i32 clientID) override;
 	void OnPlayerReadyToLoad(i32 clientID) override;
 	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) override;
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const Vec3& pos, const Vec3& dir, const Vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) override;
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) override;
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) override;
 	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) override;
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) override;
@@ -70,5 +72,5 @@ struct Game3v3: IGame
 	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
 	void SendDbgMsg(i32 clientID, const wchar* msg);
 
-	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const Vec3& pos, const Vec3& dir);
+	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };

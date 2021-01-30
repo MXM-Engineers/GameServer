@@ -5,6 +5,11 @@
 #include "game_content.h"
 #include "gm_3v3.h"
 
+inline vec3 f2v(const float3& f3)
+{
+	return vec3(f3.x, f3.y, f3.z);
+}
+
 intptr_t ThreadChannel(void* pData)
 {
 	Channel& channel = *(Channel*)pData;
@@ -145,6 +150,7 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 		HANDLE_CASE(CN_GameMapLoaded);
 		HANDLE_CASE(CQ_GetCharacterInfo);
 		HANDLE_CASE(CN_UpdatePosition);
+		HANDLE_CASE(CN_GameUpdatePosition);
 		HANDLE_CASE(CN_ChannelChatMessage);
 		HANDLE_CASE(CQ_SetLeaderCharacter);
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
@@ -223,7 +229,22 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 		return;
 	}
 
-	game->OnPlayerUpdatePosition(clientID, actorUID, update.p3nPos, update.p3nDir, update.p3nEye, update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), f2v(update.p3nEye), update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+}
+
+void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CN_GameUpdatePosition& update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
+	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) p3nEye=(%g, %g, %g) nSpeed=%g", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nSpeed);
+
+	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%d)", update.characterID);
+		return;
+	}
+
+	float3 dir = { update.p3nDir.x, update.p3nDir.y, 0 };
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), f2v(update.p3nEye), 0, update.nSpeed, ActionStateID::INVALID, 0);
 }
 
 void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -389,17 +410,17 @@ void Channel::ReadPacket(PlayerCastSkill* cast, i32 clientID, const u8* packetDa
 
 	cast->playerActorUID = replication.GetWorldActorUID(clientID, buff.Read<LocalActorID>());
 	cast->skillID = buff.Read<SkillID>();
-	cast->p3nPos = buff.Read<Vec3>();
+	cast->p3nPos = buff.Read<vec3>();
 
 	const u16 count = buff.Read<u16>();
 	for(int i = 0; i < count; i++) {
 		cast->targetList.push_back(replication.GetWorldActorUID(clientID, buff.Read<LocalActorID>()));
 	}
 
-	cast->posStruct.pos = buff.Read<Vec3>();
-	cast->posStruct.destPos = buff.Read<Vec3>();
-	cast->posStruct.moveDir = buff.Read<Vec2>();
-	cast->posStruct.rotateStruct= buff.Read<Vec3>();
+	cast->posStruct.pos = buff.Read<float3>();
+	cast->posStruct.destPos = buff.Read<float3>();
+	cast->posStruct.moveDir = buff.Read<float2>();
+	cast->posStruct.rotateStruct= buff.Read<float3>();
 	cast->posStruct.speed = buff.Read<f32>();
 	cast->posStruct.clientTime = buff.Read<i32>();
 }

@@ -27,8 +27,8 @@ struct Replication
 	{
 		ActorUID actorUID;
 		CreatureIndex docID;
-		Vec3 pos;
-		Vec3 dir;
+		vec3 pos;
+		vec3 dir;
 
 		inline ActorType Type() const { return TYPE_; }
 	};
@@ -36,7 +36,7 @@ struct Replication
 	struct ActorPlayer: Actor<ActorType::PLAYER>
 	{
 		ActorUID parentActorUID;
-		Vec3 eye;
+		vec3 eye;
 		f32 rotate;
 		f32 upperRotate;
 		f32 speed;
@@ -87,9 +87,9 @@ struct Replication
 	{
 		struct Transform
 		{
-			Vec3 pos;
-			Vec3 dir;
-			Vec3 eye;
+			vec3 pos;
+			vec3 dir;
+			vec3 eye;
 			f32 rotate;
 			f32 speed;
 

@@ -9,12 +9,20 @@ CharacterModel::~CharacterModel()
 {
 }
 
-SkillsModel CharacterModel::getSkills()
+SkillsModel* CharacterModel::getSkills()
 {
-	return _skills;
+	return &_skills;
 }
 
+//Fixme: this needs testing if it actually works correctly
 void CharacterModel::setSkills(SkillsModel skills)
 {
 	_skills = skills;
+}
+
+void CharacterModel::Print()
+{
+	LOG("[CharacterModel]");
+	CreatureModel::Print();
+	_skills.Print();
 }

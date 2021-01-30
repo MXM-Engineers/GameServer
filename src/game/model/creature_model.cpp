@@ -23,3 +23,9 @@ void CreatureModel::setCreatureType(CreatureType creatureType)
 {
 	_CreatureType = creatureType;
 }
+
+void CreatureModel::Print()
+{
+	LOG("[CreatureModel]: Creature Type %d", _CreatureType);
+	EntityModel::Print();
+}

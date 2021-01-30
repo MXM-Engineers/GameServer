@@ -35,6 +35,9 @@ public:
 	float getAddGroggy();
 	void setAddGroggy(float groggy);
 	//ToDo: check if for some of these float's we can use int
+
+	void Print();
+
 private:
 	i32 _SkillIndex = 0;
 	i8 _Level = 0;

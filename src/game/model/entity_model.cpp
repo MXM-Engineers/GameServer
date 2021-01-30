@@ -77,3 +77,8 @@ void EntityModel::setEntityType(EntityType entityType)
 {
 	_entityType = entityType;
 }
+
+void EntityModel::Print()
+{
+	LOG("[Entity]: ID: %d, Normal Move Speed: %f, Move Speed: %f, RotateSpeed: %f, Scale: %f, Entity Type: %d", _ID, _NormalMoveSpeed, _MoveSpeed, _RotateSpeed, _Scale, _entityType);
+}

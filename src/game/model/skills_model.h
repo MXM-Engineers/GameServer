@@ -7,10 +7,13 @@ public:
 	SkillsModel();
 	~SkillsModel();
 
-	SkillNormalModel getSkillByIndex(i32 index);
+	SkillNormalModel* getSkillByIndex(i32 index);
 	void setSkillByIndex(SkillNormalModel skill, i32 index);
 	SkillNormalModel getUltimate();
 	void setUltimate(SkillNormalModel skill);
+
+	void Print();
+
 private:
 	//passive skill
 	//support skill

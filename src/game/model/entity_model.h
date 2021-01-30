@@ -19,6 +19,8 @@ public:
 	void setScale(float scale);
 	EntityType getEntityType();
 	void setEntityType(EntityType entityType);
+	void Print();
+
 private:
 	i32 _ID = 0;
 	float _NormalMoveSpeed = 0.0f;		// Exclusive for Creature Monster

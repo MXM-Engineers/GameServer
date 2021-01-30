@@ -9,9 +9,11 @@ public:
 	CharacterModel();
 	~CharacterModel();
 
-	SkillsModel getSkills();
+	SkillsModel* getSkills();
 	void setSkills(SkillsModel skills);
 	SkillNormalModel getSkillByID(u8 id);
+
+	void Print();
 
 private:
 	SkillsModel _skills;

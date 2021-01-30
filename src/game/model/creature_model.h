@@ -13,6 +13,8 @@ public:
 	CreatureType getCreatureType();
 	void setCreatureType(CreatureType creatureType);
 
+	void Print();
+
 private:
 	CreatureType _CreatureType;
 };

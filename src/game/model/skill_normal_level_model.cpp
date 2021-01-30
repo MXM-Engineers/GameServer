@@ -159,3 +159,9 @@ void SkillNormalLevelModel::setAddGroggy(float groggy)
 {
 	_AddGroggy = groggy;
 }
+
+void SkillNormalLevelModel::Print()
+{
+	LOG("[SkillNormalLevelModel]: skillIndex: %d, level: %d, Base Damage: %f, Attack Multiplier: %f, Cool Time: %f, Skill Range Length X: %f, Skill Range Length Y: %f, Target Range Length X: %f, Target Range Lenght Y: %f, Consume MP: %f, Consume EP: %f, Consume UG: %f, Target Max Distance: %f, Add Groggy: %f",
+		_SkillIndex, _Level, _BaseDamage, _AttackMultiplier, _CoolTime, _SkillRangeLengthX, _SkillRangeLengthY, _TargetRangeLengthX, _TargetRangeLengthY, _ConsumeMP, _ConsumeEP, _ConsumeUG, _TargetMaxDistance, _AddGroggy);
+}

@@ -3,8 +3,8 @@
 * ✅ Reset view
 * TOP, BOTTOM, LEFT, RIGHT, etc, FREE VIEW modes
 * ✅ Capsule mesh
-* Public API to push game states (players, entities, map)
-* integrate imgui (sokol_imgui)
+* ✅ Public API to push game states (players, entities, map)
+* ✅ integrate imgui (sokol_imgui)
 * switch between active games with imgui
 
 # Physics

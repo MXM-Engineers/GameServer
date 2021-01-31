@@ -102,6 +102,7 @@ struct Renderer
 	const i32 winWidth;
 	const i32 winHeight;
 	sg_pipeline pipeMeshShaded;
+	sg_pipeline pipeMeshShadedDoubleSided;
 	sg_pipeline pipeMeshUnlit;
 	sg_pipeline pipeLine;
 	sg_shader shaderMeshShaded;
@@ -121,6 +122,7 @@ struct Renderer
 	};
 
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
+	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshDs;
 	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
 
 	Camera camera;
@@ -131,6 +133,11 @@ struct Renderer
 	inline void PushMesh(const InstanceMesh& mesh)
 	{
 		drawQueueMesh.push_back(mesh);
+	}
+
+	inline void PushMeshDs(const InstanceMesh& mesh)
+	{
+		drawQueueMeshDs.push_back(mesh);
 	}
 
 	inline void PushMeshUnlit(const InstanceMesh& mesh)

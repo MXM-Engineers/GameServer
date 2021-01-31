@@ -105,7 +105,7 @@ void Window::Update(f64 delta)
 	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 
 	// map
-	rdr.PushMesh({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3) });
+	rdr.PushMeshDs({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3) });
 
 	// @Speed: very innefficient locking
 	// Also some blinking because sometimes the gamestate is empty when we render it (NewFrame before adding anything)

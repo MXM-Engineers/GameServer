@@ -450,7 +450,10 @@ bool Renderer::Init()
 	pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
 	pipeDesc.depth_stencil.depth_write_enabled = true;
 	pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
+	sg_pipeline_desc pipeDescDs = pipeDesc;
+	pipeDescDs.rasterizer.cull_mode = SG_CULLMODE_NONE;
 	pipeMeshShaded = sg_make_pipeline(&pipeDesc);
+	pipeMeshShadedDoubleSided = sg_make_pipeline(&pipeDescDs);
 
 	memset(&pipeDesc, 0, sizeof(pipeDesc));
 	pipeDesc.shader = shaderMeshUnlit;
@@ -542,6 +545,7 @@ void Renderer::Render(f64 delta)
 
 	// draw meshes
 	{
+		// shaded
 		sg_apply_pipeline(pipeMeshShaded);
 		meshBuffer.UpdateAndBind();
 
@@ -559,6 +563,25 @@ void Renderer::Render(f64 delta)
 			meshBuffer.DrawMesh(it->meshName);
 		}
 
+		// double sided
+		sg_apply_pipeline(pipeMeshShadedDoubleSided);
+		meshBuffer.UpdateAndBind();
+
+		foreach_const(it, drawQueueMeshDs) {
+			mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
+			model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+			model = glm::scale(model, it->scale);
+
+			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
+			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
+
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &vsUni0, sizeof(vsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, &fsUni0, sizeof(fsUni0));
+
+			meshBuffer.DrawMesh(it->meshName);
+		}
+
+		// unlit
 		sg_apply_pipeline(pipeMeshUnlit);
 		meshBuffer.UpdateAndBind();
 
@@ -599,6 +622,7 @@ void Renderer::Render(f64 delta)
 	sg_commit();
 
 	drawQueueMesh.clear();
+	drawQueueMeshDs.clear();
 	drawQueueMeshUnlit.clear();
 	lineBuffer.Clear();
 }

@@ -11,12 +11,12 @@ namespace PS
 		return buff;
 	}
 
-	inline const char* ToStr(const vec2& v)
+	inline const char* ToStr(const float2& v)
 	{
 		return FMT("(%g, %g)", v.x, v.y);
 	}
 
-	inline const char* ToStr(const vec3& v)
+	inline const char* ToStr(const float3& v)
 	{
 		return FMT("(%g, %g, %g)", v.x, v.y, v.z);
 	}
@@ -59,7 +59,7 @@ inline const char* PacketSerialize<Cl::CQ_PlayerCastSkill>(const void* packetDat
 	SER("CQ_PlayerCastSkill(%d, %d) :: {", Cl::CQ_PlayerCastSkill::NET_ID, packetSize);
 	SER("	playerID=%d", buff.Read<LocalActorID>());
 	SER("	skillID=%d", buff.Read<SkillID>());
-	SER("	p3nPos=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<float3>()));
 
 	const u16 count = buff.Read<u16>();
 	SER("	targetList(%u)=[", count);
@@ -69,10 +69,10 @@ inline const char* PacketSerialize<Cl::CQ_PlayerCastSkill>(const void* packetDat
 	SER("	]");
 
 	SER("	posStruct={");
-	SER("		pos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		destPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		moveDir=%s", PS::ToStr(buff.Read<vec2>()));
-	SER("		rotateStruct=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("		pos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<float3>()));
 	SER("		speed=%g",buff.Read<f32>());
 	SER("		clientTime=%d",buff.Read<i32>());
 	SER("	}");
@@ -110,8 +110,8 @@ inline const char* PacketSerialize<Sv::SN_GameCreateActor>(const void* packetDat
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
-	SER("	p3nPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("	p3nDir=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("	p3nDir=%s", PS::ToStr(buff.Read<float3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
 	SER("	ownerID=%d", buff.Read<i32>());
@@ -171,8 +171,8 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
-	SER("	p3nPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("	p3nDir=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("	p3nDir=%s", PS::ToStr(buff.Read<float3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
 	SER("	ownerID=%d", buff.Read<i32>());
@@ -255,7 +255,7 @@ inline const char* PacketSerialize<Sv::SN_CastSkill>(const void* packetData, con
 	SER("	skillID=%d", buff.Read<SkillID>());
 	SER("	costLevel=%u", buff.Read<u8>());
 	SER("	actionState=%d", buff.Read<ActionStateID>());
-	SER("	tartgetPos=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("	tartgetPos=%s", PS::ToStr(buff.Read<float3>()));
 
 	const u16 count = buff.Read<u16>();
 	SER("	targetList(%u)=[", count);
@@ -266,10 +266,10 @@ inline const char* PacketSerialize<Sv::SN_CastSkill>(const void* packetData, con
 
 	SER("	bSyncMyPosition=%u", buff.Read<u8>());
 	SER("	posStruct={");
-	SER("		pos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		destPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		moveDir=%s", PS::ToStr(buff.Read<vec2>()));
-	SER("		rotateStruct=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("		pos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<float3>()));
 	SER("		speed=%g",buff.Read<f32>());
 	SER("		clientTime=%d",buff.Read<i32>());
 	SER("	}");
@@ -290,7 +290,7 @@ inline const char* PacketSerialize<Sv::SN_ExecuteSkill>(const void* packetData, 
 	SER("	skillID=%d", buff.Read<SkillID>());
 	SER("	costLevel=%u", buff.Read<u8>());
 	SER("	actionState=%d", buff.Read<ActionStateID>());
-	SER("	tartgetPos=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("	tartgetPos=%s", PS::ToStr(buff.Read<float3>()));
 
 	const u16 count = buff.Read<u16>();
 	SER("	targetList(%u)=[", count);
@@ -301,18 +301,18 @@ inline const char* PacketSerialize<Sv::SN_ExecuteSkill>(const void* packetData, 
 
 	SER("	bSyncMyPosition=%u", buff.Read<u8>());
 	SER("	posStruct={");
-	SER("		pos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		destPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		moveDir=%s", PS::ToStr(buff.Read<vec2>()));
-	SER("		rotateStruct=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("		pos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		destPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		moveDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("		rotateStruct=%s", PS::ToStr(buff.Read<float3>()));
 	SER("		speed=%g",buff.Read<f32>());
 	SER("		clientTime=%d",buff.Read<i32>());
 	SER("	}");
 	SER("	fSkillChargeDamageMultiplier=%g", buff.Read<f32>());
 	SER("	graphMove={");
 	SER("		bApply=%d", buff.Read<u8>());
-	SER("		startPos=%s", PS::ToStr(buff.Read<vec3>()));
-	SER("		endPos=%s", PS::ToStr(buff.Read<vec3>()));
+	SER("		startPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("		endPos=%s", PS::ToStr(buff.Read<float3>()));
 	SER("		durationTimeS=%g", buff.Read<f32>());
 	SER("		originDistance=%g", buff.Read<f32>());
 	SER("	}");

@@ -5,7 +5,6 @@
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
 #include "world.h"
-#include "window.h"
 
 struct AccountData;
 

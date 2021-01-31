@@ -60,6 +60,11 @@ bool Game3v3::LoadMap()
 	}
 	*/
 
+	// spawn test
+	World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
+	actor.pos = vec3(3243, 3532, 550.602905);
+	actor.dir = vec3(1, 0, 0);
+	actor.eye = vec3(0, 1, 0);
 	return true;
 }
 

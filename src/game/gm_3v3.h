@@ -6,6 +6,7 @@
 #include <EASTL/fixed_list.h>
 #include "world.h"
 #include "game.h"
+#include <game/debug/window.h>
 
 struct AccountData;
 

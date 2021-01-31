@@ -2,7 +2,7 @@
 #include "coordinator.h"
 #include "game_content.h"
 #include "config.h"
-#include "window.h"
+#include <game/debug/window.h>
 #include <common/platform.h>
 
 //#error

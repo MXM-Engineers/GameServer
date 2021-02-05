@@ -6,10 +6,13 @@
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
+#include <tinyxml2.h>
 #include "model/character_model.h"
 
+using namespace tinyxml2;
+
 struct GameXmlContent
-{
+{	
 	struct Master
 	{
 		CreatureIndex ID;
@@ -77,6 +80,7 @@ struct GameXmlContent
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID);
+	void SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);

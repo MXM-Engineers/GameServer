@@ -296,58 +296,11 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 
 				_skillNormal->setID(_skillID);
 
-				if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+				for (int i = 0; i < 6; i++)
 				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setAddGroggy(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setAttackMultiplier(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setBaseDamage(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setConsumeEP(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setConsumeMP(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setConsumeUG(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setCoolTime(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setSkillIndex(_temp); //fix me: float in int32
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setSkillRangeLengthX(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setSkillRangeLengthY(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setTargetMaxDistance(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setTargetRangeLengthX(_temp);
-				}
-				if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
-				{
-					_skillNormal->getSkillNormalLevelByIndex(0)->setTargetRangeLengthY(_temp);
-				}
+					SkillNormalLevelModel* _skillNormalLevelModel = _skillNormal->getSkillNormalLevelByIndex(i);
+					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
+				}	
 			}
 			break;
 		}
@@ -356,6 +309,62 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 	} while (pNodeSkill);
 	
 	return true;
+}
+
+void GameXmlContent::SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp)
+{
+	if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setAddGroggy(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setAttackMultiplier(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setBaseDamage(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeEP(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeMP(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeUG(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setCoolTime(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillIndex(_temp); //fix me: float in int32
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillRangeLengthX(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillRangeLengthY(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetMaxDistance(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetRangeLengthX(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetRangeLengthY(_temp);
+	}
 }
 
 bool GameXmlContent::LoadMapList()

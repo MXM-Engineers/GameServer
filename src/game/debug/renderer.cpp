@@ -8,12 +8,13 @@ sg_buffer LineBuffer::GetUpdatedBuffer()
 		if(vramBuffer.id == 0xFFFFFFFF) {
 			sg_buffer_desc desc = {0};
 			desc.size = sizeof(Line) * ramBuffer.capacity();
-			desc.content = nullptr;
+			desc.data.ptr = nullptr;
+			desc.data.size = 0;
 			desc.usage = SG_USAGE_STREAM;
 			vramBuffer = sg_make_buffer(&desc);
 		}
 
-		sg_update_buffer(vramBuffer, ramBuffer.data(), ramBuffer.size() * sizeof(Line));
+		sg_update_buffer(vramBuffer, { ramBuffer.data(), ramBuffer.size() * sizeof(Line) });
 		needsUpdate = false;
 	}
 	return vramBuffer;
@@ -57,7 +58,8 @@ void MeshBuffer::UpdateAndBind()
 			{
 				sg_buffer_desc desc = {0};
 				desc.size = sizeof(Vertex) * vertexBuffer.capacity();
-				desc.content = vertexBuffer.data();
+				desc.data.ptr = vertexBuffer.data();
+				desc.data.size = desc.size;
 				gpuVertexBuff = sg_make_buffer(&desc);
 			}
 
@@ -65,13 +67,14 @@ void MeshBuffer::UpdateAndBind()
 				sg_buffer_desc desc = {0};
 				desc.type = SG_BUFFERTYPE_INDEXBUFFER;
 				desc.size = sizeof(u16) * indexBuffer.capacity();
-				desc.content = indexBuffer.data();
+				desc.data.ptr = indexBuffer.data();
+				desc.data.size = desc.size;
 				gpuIndexBuff = sg_make_buffer(&desc);
 			}
 		}
 		else {
-			sg_update_buffer(gpuVertexBuff, vertexBuffer.data(), vertexBuffer.capacity() * sizeof(Vertex));
-			sg_update_buffer(gpuIndexBuff, indexBuffer.data(), indexBuffer.capacity() * sizeof(u16));
+			sg_update_buffer(gpuVertexBuff, { vertexBuffer.data(), vertexBuffer.capacity() * sizeof(Vertex) });
+			sg_update_buffer(gpuIndexBuff, { indexBuffer.data(), indexBuffer.capacity() * sizeof(u16) });
 		}
 		needsUpdate = false;
 	}
@@ -503,11 +506,11 @@ bool Renderer::Init()
 	pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
 	pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
 	pipeDesc.index_type = SG_INDEXTYPE_UINT16;
-	pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
-	pipeDesc.depth_stencil.depth_write_enabled = true;
-	pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
+	pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+	pipeDesc.depth.write_enabled = true;
+	pipeDesc.cull_mode = SG_CULLMODE_BACK;
 	sg_pipeline_desc pipeDescDs = pipeDesc;
-	pipeDescDs.rasterizer.cull_mode = SG_CULLMODE_NONE;
+	pipeDescDs.cull_mode = SG_CULLMODE_NONE;
 	pipeMeshShaded = sg_make_pipeline(&pipeDesc);
 	pipeMeshShadedDoubleSided = sg_make_pipeline(&pipeDescDs);
 
@@ -517,9 +520,9 @@ bool Renderer::Init()
 	pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
 	pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
 	pipeDesc.index_type = SG_INDEXTYPE_UINT16;
-	pipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
-	pipeDesc.depth_stencil.depth_write_enabled = true;
-	pipeDesc.rasterizer.cull_mode = SG_CULLMODE_BACK;
+	pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+	pipeDesc.depth.write_enabled = true;
+	pipeDesc.cull_mode = SG_CULLMODE_BACK;
 	//pipeDesc.rasterizer.cull_mode = SG_CULLMODE_NONE;
 	pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
 
@@ -530,8 +533,8 @@ bool Renderer::Init()
 	linePipeDesc.layout.buffers[0].stride = sizeof(Line)/2;
 	linePipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
 	linePipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
-	linePipeDesc.depth_stencil.depth_compare_func = SG_COMPAREFUNC_LESS_EQUAL;
-	linePipeDesc.depth_stencil.depth_write_enabled = true;
+	linePipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+	linePipeDesc.depth.write_enabled = true;
 	pipeLine = sg_make_pipeline(&linePipeDesc);
 
 	camera.Reset();
@@ -613,8 +616,8 @@ void Renderer::Render(f64 delta)
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
 			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &vsUni0, sizeof(vsUni0));
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, &fsUni0, sizeof(fsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -631,8 +634,8 @@ void Renderer::Render(f64 delta)
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
 			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &vsUni0, sizeof(vsUni0));
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, &fsUni0, sizeof(fsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -653,8 +656,8 @@ void Renderer::Render(f64 delta)
 
 			Uniform0 uni0 = { proj * view * model };
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &uni0, sizeof(uni0));
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, &it->color, sizeof(it->color));
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -669,7 +672,7 @@ void Renderer::Render(f64 delta)
 
 		sg_apply_pipeline(pipeLine);
 		sg_apply_bindings(&bindsLine);
-		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &mvp, sizeof(mvp));
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &mvp, sizeof(mvp) });
 		sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
 	}
 

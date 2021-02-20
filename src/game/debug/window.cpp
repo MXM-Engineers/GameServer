@@ -125,15 +125,39 @@ void Window::Update(f64 delta)
 		rdr.PushMeshUnlit({ "Ring", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color });
 	}
 
-	ImGui::Begin("Entities");
+	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
-	int i = 0;
-	foreach_const(ent, entityList) {
-		ImGui::Text("[%u : %s] pos=(%f, %f, %f)", ent->UID, ent->name.data(), ent->pos.x, ent->pos.y, ent->pos.z);
-		i++;
+
+	if(ImGui::Begin("Entities")) {
+		if(ImGui::BeginTable("EntityList", 5, flags))
+		{
+			ImGui::TableSetupColumn("UID");
+			ImGui::TableSetupColumn("Name");
+			ImGui::TableSetupColumn("PosX");
+			ImGui::TableSetupColumn("PosY");
+			ImGui::TableSetupColumn("PosZ");
+			ImGui::TableHeadersRow();
+
+			foreach_const(ent, entityList) {
+				ImGui::TableNextRow();
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%u", ent->UID);
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", ent->name.data());
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.x);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.y);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.z);
+			}
+
+			ImGui::EndTable();
+		}
+
+		ImGui::End();
 	}
-
-	ImGui::End();
 }
 
 void Window::Frame()
@@ -243,7 +267,7 @@ void WindowWaitForCleanup()
 
 namespace Dbg {
 
-GameUID PushNewGame(const FixedStr<32>& mapName)
+GameUID PushNewGame(const FixedStr32& mapName)
 {
 	// ignore name for now, assume PVP map
 	return GameUID::INVALID;

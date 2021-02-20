@@ -338,6 +338,57 @@ void GenerateFlatRingMesh(const f32 height, const f32 outerRadius, const f32 inn
 	}
 }
 
+template<typename OutputIteratorVertices, typename OutputIteratorIndices>
+void GenerateConeMesh(const f32 height, const f32 radius, const i32 subDivisions, OutputIteratorVertices outVert, OutputIteratorIndices outInd)
+{
+	typedef MeshBuffer::Vertex Vert;
+
+	int vertCount = 0;
+
+	enum VertID {
+		Base = 0,
+		Top = 1,
+	};
+
+	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 }; // base
+	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 }; // top
+	vertCount += 2;
+
+	for(int s = 0; s < subDivisions; s++) {
+		f32 a0 = (2*PI / subDivisions) * s;
+		f32 a1 = (2*PI / subDivisions) * (s + 1);
+		f32 ca0 = cosf(a0);
+		f32 ca1 = cosf(a1);
+		f32 sa0 = sinf(a0);
+		f32 sa1 = sinf(a1);
+
+		vec3 pi0 = vec3(ca0 * radius, sa0 * radius, 0);
+		vec3 pi1 = vec3(ca1 * radius, sa1 * radius, 0);
+		vec3 n0 = glm::normalize(-pi0);
+		vec3 n1 = glm::normalize(-pi1);
+
+		// base
+		*outVert++ = Vert{ pi0.x, pi0.y, pi0.z, 0, 0, -1 };
+		*outVert++ = Vert{ pi1.x, pi1.y, pi1.z, 0, 0, -1 };
+
+		*outInd++ = VertID::Base;
+		*outInd++ = vertCount + 0;
+		*outInd++ = vertCount + 1;
+
+		vertCount += 2;
+
+		// tip
+		*outVert++ = Vert{ pi0.x, pi0.y, pi0.z, n0.x, n0.y, n0.z };
+		*outVert++ = Vert{ pi1.x, pi1.y, pi1.z, n1.x, n1.y, n1.z };
+
+		*outInd++ = VertID::Top;
+		*outInd++ = vertCount + 1;
+		*outInd++ = vertCount + 0;
+
+		vertCount += 2;
+	}
+}
+
 bool Renderer::Init()
 {
 	// setup sokol_gfx
@@ -424,13 +475,18 @@ bool Renderer::Init()
 	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> genVertList;
 	eastl::fixed_vector<u16,1024,true> genIndList;
 
-	GenerateCapsuleMesh(1000, 200, 32, eastl::back_inserter(genVertList),  eastl::back_inserter(genIndList));
+	GenerateCapsuleMesh(1000, 200, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Capsule", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
-	GenerateFlatRingMesh(20, 200, 160, 32, eastl::back_inserter(genVertList),  eastl::back_inserter(genIndList));
+	GenerateFlatRingMesh(20, 200, 160, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Ring", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	genVertList.clear();
+	genIndList.clear();
+
+	GenerateConeMesh(100, 100, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	meshBuffer.Push("Cone", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 
 	bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
 	if(!r) return false;

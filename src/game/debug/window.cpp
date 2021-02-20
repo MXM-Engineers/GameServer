@@ -29,6 +29,8 @@ struct GameState
 {
 	struct Entity
 	{
+		u32 UID;
+		FixedStr32 name;
 		vec3 pos;
 		vec3 color;
 	};
@@ -42,10 +44,12 @@ struct GameState
 		entityList.clear();
 	}
 
-	void PushEntity(const vec3& pos, const vec3& color)
+	void PushEntity(u32 UID, const FixedStr32& name, const vec3& pos, const vec3& color)
 	{
 		const LockGuard lock(mutex);
 		Entity e;
+		e.UID = UID;
+		e.name = name;
 		e.pos = pos;
 		e.color = color;
 		entityList.push_back(e);
@@ -103,6 +107,7 @@ void Window::Update(f64 delta)
 	// test meshes
 	// rdr.PushMesh({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
+	rdr.PushMesh({ "Cone", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 
 	// map
 	rdr.PushMeshDs({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3) });
@@ -124,7 +129,7 @@ void Window::Update(f64 delta)
 
 	int i = 0;
 	foreach_const(ent, entityList) {
-		ImGui::Text("#%d pos=(%f, %f, %f)", i, ent->pos.x, ent->pos.y, ent->pos.z);
+		ImGui::Text("[%u : %s] pos=(%f, %f, %f)", ent->UID, ent->name.data(), ent->pos.x, ent->pos.y, ent->pos.z);
 		i++;
 	}
 
@@ -249,9 +254,16 @@ void PushNewFrame(GameUID gameUID)
 	g_pWindow->game.NewFrame();
 }
 
-void PushEntity(GameUID gameUID, const vec3& pos, const vec3& color)
+void PushEntity(GameUID gameUID, u32 UID, const FixedStr32& name, const vec3& pos, const vec3& color)
 {
-	g_pWindow->game.PushEntity(pos, color);
+	g_pWindow->game.PushEntity(UID, name, pos, color);
+}
+
+void PushEntity(GameUID gameUID, u32 UID, const WideString& name, const vec3& pos, const vec3& color)
+{
+	FixedStr32 nameUtf8;
+	StrConv(&nameUtf8, name);
+	g_pWindow->game.PushEntity(UID, nameUtf8, pos, color);
 }
 
 void PopGame(GameUID gameUID)

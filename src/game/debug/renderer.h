@@ -4,12 +4,11 @@
 #define SOKOL_D3D11
 
 #include <common/vector_math.h>
+#include <common/utils.h>
 #include <EASTL/fixed_map.h>
 #include "sokol_app.h"
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
-
-typedef eastl::fixed_string<char,32,false> FixedStr32;
 
 struct Line
 {

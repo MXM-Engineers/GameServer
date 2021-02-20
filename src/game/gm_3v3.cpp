@@ -1,9 +1,11 @@
 #include "gm_3v3.h"
+
+#include <EAStdC/EAString.h>
+#include <common/utils.h>
+
 #include "coordinator.h" // account data
 #include "game_content.h"
 #include "config.h"
-#include <EAStdC/EAString.h>
-
 
 void Game3v3::Init(Replication* replication_)
 {
@@ -28,8 +30,8 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	localTime = localTime_;
 	world.Update(delta, localTime);
 
-	foreach_const(ent, world.actorPlayerList) {
-		Dbg::PushEntity(dbgGameUID, ent->pos, vec3(1, 0, 1));
+	foreach_const(actor, world.actorPlayerList) {
+		Dbg::PushEntity(dbgGameUID, (u32)actor->UID, actor->name, actor->pos, vec3(1, 0, 1));
 	}
 }
 

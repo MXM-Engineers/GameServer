@@ -24,5 +24,6 @@ inline void StrConv(eastl::fixed_string<char,DEST_CAP,false>* dest, const eastl:
 	const wchar* srcStart = src.cbegin();
 	const wchar* srcEnd = src.end();
 	eastl::DecodePart(srcStart, srcEnd, destStart, destEnd);
+	buff[src.length()] = 0;
 	*dest = buff;
 }

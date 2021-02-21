@@ -350,12 +350,10 @@ void GenerateConeMesh(const f32 height, const f32 radius, const i32 subDivisions
 
 	enum VertID {
 		Base = 0,
-		Top = 1,
 	};
 
 	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 }; // base
-	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 }; // top
-	vertCount += 2;
+	vertCount += 1;
 
 	for(int s = 0; s < subDivisions; s++) {
 		f32 a0 = (2*PI / subDivisions) * s;
@@ -367,8 +365,6 @@ void GenerateConeMesh(const f32 height, const f32 radius, const i32 subDivisions
 
 		vec3 pi0 = vec3(ca0 * radius, sa0 * radius, 0);
 		vec3 pi1 = vec3(ca1 * radius, sa1 * radius, 0);
-		vec3 n0 = glm::normalize(-pi0);
-		vec3 n1 = glm::normalize(-pi1);
 
 		// base
 		*outVert++ = Vert{ pi0.x, pi0.y, pi0.z, 0, 0, -1 };
@@ -381,14 +377,20 @@ void GenerateConeMesh(const f32 height, const f32 radius, const i32 subDivisions
 		vertCount += 2;
 
 		// tip
+		// TODO: fix normals (cross product)
+		vec3 tn = glm::normalize(vec3(0, 0, height) + ((pi0 + pi1) * 0.5f));
+		vec3 n0 = glm::normalize(vec3(0, 0, height) + pi0);
+		vec3 n1 = glm::normalize(vec3(0, 0, height) + pi1);
+		*outVert++ = Vert{ 0    , 0   , height, tn.x, tn.y, tn.z };
 		*outVert++ = Vert{ pi0.x, pi0.y, pi0.z, n0.x, n0.y, n0.z };
 		*outVert++ = Vert{ pi1.x, pi1.y, pi1.z, n1.x, n1.y, n1.z };
 
-		*outInd++ = VertID::Top;
-		*outInd++ = vertCount + 1;
-		*outInd++ = vertCount + 0;
 
-		vertCount += 2;
+		*outInd++ = vertCount + 0;
+		*outInd++ = vertCount + 2;
+		*outInd++ = vertCount + 1;
+
+		vertCount += 3;
 	}
 }
 
@@ -410,15 +412,15 @@ bool Renderer::Init()
 		{  0.5,  0.5,  0.5, 0, 0, 1 },
 		{ -0.5,  0.5,  0.5, 0, 0, 1 },
 
-		{ -0.5, -0.5, -0.5, 1, 0, 0 },
-		{ -0.5,  0.5, -0.5, 1, 0, 0 },
-		{ -0.5,  0.5,  0.5, 1, 0, 0 },
-		{ -0.5, -0.5,  0.5, 1, 0, 0 },
+		{ -0.5, -0.5, -0.5, -1, 0, 0 },
+		{ -0.5,  0.5, -0.5, -1, 0, 0 },
+		{ -0.5,  0.5,  0.5, -1, 0, 0 },
+		{ -0.5, -0.5,  0.5, -1, 0, 0 },
 
-		{  0.5, -0.5, -0.5, -1, 0, 0 },
-		{  0.5,  0.5, -0.5, -1, 0, 0 },
-		{  0.5,  0.5,  0.5, -1, 0, 0 },
-		{  0.5, -0.5,  0.5, -1, 0, 0 },
+		{  0.5, -0.5, -0.5, 1, 0, 0 },
+		{  0.5,  0.5, -0.5, 1, 0, 0 },
+		{  0.5,  0.5,  0.5, 1, 0, 0 },
+		{  0.5, -0.5,  0.5, 1, 0, 0 },
 
 		{ -0.5, -0.5, -0.5, 0, -1, 0 },
 		{ -0.5, -0.5,  0.5, 0, -1, 0 },
@@ -442,15 +444,15 @@ bool Renderer::Init()
 		{ 1.0, 1.0, 1.0, 0, 0, 1 },
 		{ 0.0, 1.0, 1.0, 0, 0, 1 },
 
-		{ 0.0, 0.0, 0.0, 1, 0, 0 },
-		{ 0.0, 1.0, 0.0, 1, 0, 0 },
-		{ 0.0, 1.0, 1.0, 1, 0, 0 },
-		{ 0.0, 0.0, 1.0, 1, 0, 0 },
+		{ 0.0, 0.0, 0.0, -1, 0, 0 },
+		{ 0.0, 1.0, 0.0, -1, 0, 0 },
+		{ 0.0, 1.0, 1.0, -1, 0, 0 },
+		{ 0.0, 0.0, 1.0, -1, 0, 0 },
 
-		{ 1.0, 0.0, 0.0, -1, 0, 0 },
-		{ 1.0, 1.0, 0.0, -1, 0, 0 },
-		{ 1.0, 1.0, 1.0, -1, 0, 0 },
-		{ 1.0, 0.0, 1.0, -1, 0, 0 },
+		{ 1.0, 0.0, 0.0, 1, 0, 0 },
+		{ 1.0, 1.0, 0.0, 1, 0, 0 },
+		{ 1.0, 1.0, 1.0, 1, 0, 0 },
+		{ 1.0, 0.0, 1.0, 1, 0, 0 },
 
 		{ 0.0, 0.0, 0.0, 0, -1, 0 },
 		{ 0.0, 0.0, 1.0, 0, -1, 0 },
@@ -593,6 +595,11 @@ void Renderer::Render(f64 delta)
 	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
 	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(1, 0, 0) });
 
+	//static Time lastTime = TimeNow();
+	//Time curTime = TimeNow();
+	//f32 a = sin((u64)curTime / 1000000000.0);
+	const vec3 sunPos = vec3(5000, 5000, 2000);
+	drawQueueMeshUnlit.push_back({ "CubeCentered", sunPos, vec3(0), vec3(100), vec3(1) });
 
 	// rendering
 	const f32 viewDist = 5.0f;
@@ -614,8 +621,9 @@ void Renderer::Render(f64 delta)
 			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
 			model = glm::scale(model, it->scale);
 
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
+			mat4 normalMat = glm::transpose(glm::inverse(model));
+			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
+			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
 
 			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
 			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
@@ -633,8 +641,9 @@ void Renderer::Render(f64 delta)
 			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
 			model = glm::scale(model, it->scale);
 
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, vec3(5, 0, 0) };
+			mat4 normalMat = glm::transpose(glm::inverse(model));
+			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
+			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
 
 			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
 			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });

@@ -109,7 +109,7 @@ void Window::Update(f64 delta)
 	// test meshes
 	// rdr.PushMesh({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
-	// rdr.PushMesh({ "Cone", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });.
+	// rdr.PushMesh("Cone", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
 	DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
 
 	// map

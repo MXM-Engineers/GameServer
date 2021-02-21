@@ -488,7 +488,7 @@ bool Renderer::Init()
 	genVertList.clear();
 	genIndList.clear();
 
-	GenerateConeMesh(100, 100, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	GenerateConeMesh(1, 1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Cone", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 
 	bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
@@ -576,9 +576,9 @@ void Renderer::Render(f64 delta)
 	for(int i = -500; i < 500; i++) {
 		// color x, y axis
 		if(i == 0) {
-			lineBuffer.Push({vec3(lineLength, 0, 0), 0xFF0000FF, vec3(-lineLength, 0, 0), 0xFF0000FF});
+			lineBuffer.Push({vec3(lineLength, 0, 0), 0xFFFF0000, vec3(-lineLength, 0, 0), 0xFFFF0000});
 			lineBuffer.Push({vec3(0, lineLength, 0), 0xFF00FF00, vec3(0, -lineLength, 0), 0xFF00FF00});
-			lineBuffer.Push({vec3(0, 0, 10000), 0xFFFF0000, vec3(0, 0, -10000), 0xFFFF0000});
+			lineBuffer.Push({vec3(0, 0, lineLength), 0xFF0000FF, vec3(0, 0, -lineLength), 0xFF0000FF});
 			continue;
 		}
 		lineBuffer.Push({vec3(lineLength, i * lineSpacing, 0), lineColor, vec3(-lineLength, i * lineSpacing, 0), lineColor});
@@ -589,9 +589,9 @@ void Renderer::Render(f64 delta)
 	const f32 orgnLen = 1000;
 	const f32 orgnThick = 20;
 	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1) });
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(1, 0, 0) });
+	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(0, 0, 1) });
 	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(0, 0, 1) });
+	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(1, 0, 0) });
 
 
 	// rendering
@@ -609,8 +609,9 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueueMesh) {
-			mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
-			model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+			mat4 model = glm::identity<mat4>();
+			model = glm::translate(model, it->pos);
+			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
 			model = glm::scale(model, it->scale);
 
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
@@ -627,8 +628,9 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueueMeshDs) {
-			mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
-			model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+			mat4 model = glm::identity<mat4>();
+			model = glm::translate(model, it->pos);
+			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
 			model = glm::scale(model, it->scale);
 
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model };
@@ -645,8 +647,9 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueueMeshUnlit) {
-			mat4 model = glm::translate(glm::identity<mat4>(), it->pos);
-			model = model * glm::eulerAngleYXZ(it->rot.x, it->rot.y, it->rot.z);
+			mat4 model = glm::identity<mat4>();
+			model = glm::translate(model, it->pos);
+			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
 			model = glm::scale(model, it->scale);
 
 			struct Uniform0

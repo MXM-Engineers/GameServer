@@ -83,6 +83,8 @@ struct Window
 	void Frame();
 	void OnEvent(const sapp_event& event);
 	void Cleanup();
+
+	void DrawArrow(const vec3& start, const vec3& end, const vec3& color, f32 thickness);
 };
 
 bool Window::Init()
@@ -107,7 +109,8 @@ void Window::Update(f64 delta)
 	// test meshes
 	// rdr.PushMesh({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
-	rdr.PushMesh({ "Cone", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
+	// rdr.PushMesh({ "Cone", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });.
+	DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
 
 	// map
 	rdr.PushMeshDs({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3) });
@@ -121,7 +124,7 @@ void Window::Update(f64 delta)
 	}
 
 	foreach_const(ent, entityList) {
-		rdr.PushMesh({ "Capsule", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color });
+		rdr.PushMesh("Capsule", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color);
 		rdr.PushMeshUnlit({ "Ring", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color });
 	}
 
@@ -195,6 +198,22 @@ void Window::Cleanup()
 {
 	simgui_shutdown();
 	sg_shutdown();
+}
+
+void Window::DrawArrow(const vec3& start, const vec3& end, const vec3& color, f32 thickness)
+{
+	vec3 dir = glm::normalize(end - start);
+
+	f32 yaw = atan2(dir.y, dir.x);
+	f32 pitch = asinf(dir.z);
+	f32 len = glm::length(end - start);
+	f32 coneSize = thickness * 1.2f;
+	f32 coneHeight = coneSize * 2;
+	f32 armLen = len - coneHeight;
+	f32 sizeY = thickness;
+	rdr.PushMesh("CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
+	rdr.PushMesh("Cube", end + vec3(0, 0, 0), vec3(0), vec3(coneSize), color);
+	rdr.PushMesh("Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
 }
 
 static Window* g_pWindow = nullptr;

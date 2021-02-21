@@ -115,7 +115,7 @@ struct Renderer
 	{
 		FixedStr32 meshName;
 		vec3 pos;
-		vec3 rot = vec3(0);
+		vec3 rot = vec3(0); // yaw, pitch, roll
 		vec3 scale = vec3(1);
 		vec3 color = vec3(1);
 	};
@@ -129,9 +129,14 @@ struct Renderer
 	bool Init();
 	bool OpenAndLoadMeshFile(const char* name, const char* path);
 
-	inline void PushMesh(const InstanceMesh& mesh)
+	inline void PushMesh(
+		const FixedStr32& meshName,
+		const vec3& pos,
+		const vec3& rot = vec3(0),
+		const vec3& scale = vec3(1),
+		const vec3& color = vec3(1))
 	{
-		drawQueueMesh.push_back(mesh);
+		drawQueueMesh.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
 	}
 
 	inline void PushMeshDs(const InstanceMesh& mesh)

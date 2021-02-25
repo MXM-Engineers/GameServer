@@ -480,12 +480,12 @@ bool Renderer::Init()
 	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> genVertList;
 	eastl::fixed_vector<u16,1024,true> genIndList;
 
-	GenerateCapsuleMesh(1000, 200, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	GenerateCapsuleMesh(1, 0.2f, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Capsule", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
-	GenerateFlatRingMesh(20, 200, 160, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	GenerateFlatRingMesh(0.1f, 1, 0.8f, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Ring", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();

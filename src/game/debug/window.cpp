@@ -27,15 +27,7 @@
 
 struct GameState
 {
-	struct Entity
-	{
-		u32 UID;
-		FixedStr32 name;
-		vec3 pos;
-		vec3 color;
-	};
-
-	eastl::fixed_vector<Entity,2048,true> entityList;
+	eastl::fixed_vector<Dbg::Entity,2048,true> entityList;
 	Mutex mutex;
 
 	void NewFrame()
@@ -44,15 +36,10 @@ struct GameState
 		entityList.clear();
 	}
 
-	void PushEntity(u32 UID, const FixedStr32& name, const vec3& pos, const vec3& color)
+	void PushEntity(const Dbg::Entity& entity)
 	{
 		const LockGuard lock(mutex);
-		Entity e;
-		e.UID = UID;
-		e.name = name;
-		e.pos = pos;
-		e.color = color;
-		entityList.push_back(e);
+		entityList.push_back(entity);
 	}
 };
 
@@ -85,6 +72,7 @@ struct Window
 	void Cleanup();
 
 	void DrawArrow(const vec3& start, const vec3& end, const vec3& color, f32 thickness);
+	void DrawArrowUnlit(const vec3& start, const vec3& end, const vec3& color, f32 thickness);
 };
 
 bool Window::Init()
@@ -110,10 +98,10 @@ void Window::Update(f64 delta)
 	// rdr.PushMesh({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh("Cone", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
-	DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
+	// DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
 
 	// map
-	rdr.PushMeshDs({ "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3) });
+	rdr.PushMeshDs("PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
 
 	// @Speed: very innefficient locking
 	// Also some blinking because sometimes the gamestate is empty when we render it (NewFrame before adding anything)
@@ -124,8 +112,25 @@ void Window::Update(f64 delta)
 	}
 
 	foreach_const(ent, entityList) {
-		rdr.PushMesh("Capsule", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color);
-		rdr.PushMeshUnlit({ "Ring", ent->pos, vec3(0), vec3(0.25, 0.25, 0.25), ent->color });
+		const Dbg::Entity& e = *ent;
+		rdr.PushMesh("Capsule", e.pos, vec3(0), vec3(250), e.color);
+		rdr.PushMeshUnlit("Ring", e.pos, vec3(0), vec3(50), e.color);
+
+		// this is updated when the player moves
+		const vec3 eyeStart1 = e.pos + vec3(0, 0, 200);
+		const vec3 eyeStart2 = e.pos + vec3(0, 0, 180);
+		f32 eyeA1 = -e.eye.x - PI/2;
+		f32 eyeA2 = -e.eye.z - PI/2;
+		DrawArrowUnlit(eyeStart1, eyeStart1 +  vec3(cosf(eyeA1), sinf(eyeA1), 0) * 150.f, vec3(0.2, 1, 1), 8);
+		DrawArrowUnlit(eyeStart2, eyeStart2 +  vec3(cosf(eyeA2), sinf(eyeA2), 0) * 150.f, vec3(0.2, 1, 1), 8);
+		const vec3 dirStart = e.pos + vec3(0, 0, 80);
+		DrawArrowUnlit(dirStart, dirStart + glm::normalize(e.dir) * 100.0f, vec3(0.2, 1, 0.2), 10);
+
+		// this is updated when the player aims
+		const vec3 upperRotStart = e.pos + vec3(0, 0, 200);
+		DrawArrowUnlit(upperRotStart, upperRotStart + vec3(cosf(e.upperRotate), sinf(e.upperRotate), 0) * 200.f, vec3(1, 0.4, 0.1), 10);
+		const vec3 bodyRotStart = e.pos + vec3(0, 0, 80);
+		DrawArrowUnlit(bodyRotStart, bodyRotStart + vec3(cosf(e.bodyRotate), sinf(e.bodyRotate), 0) * 200.f, vec3(1, 0.4, 0.1), 10);
 	}
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
@@ -147,7 +152,7 @@ void Window::Update(f64 delta)
 				ImGui::TableNextColumn();
 				ImGui::Text("%u", ent->UID);
 				ImGui::TableNextColumn();
-				ImGui::Text("%s", ent->name.data());
+				ImGui::Text("%ls", ent->name.data());
 				ImGui::TableNextColumn();
 				ImGui::Text("%.2f", ent->pos.x);
 				ImGui::TableNextColumn();
@@ -212,8 +217,25 @@ void Window::DrawArrow(const vec3& start, const vec3& end, const vec3& color, f3
 	f32 armLen = len - coneHeight;
 	f32 sizeY = thickness;
 	rdr.PushMesh("CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
-	rdr.PushMesh("Cube", end + vec3(0, 0, 0), vec3(0), vec3(coneSize), color);
+	//rdr.PushMesh("Cube", end + vec3(0, 0, 0), vec3(0), vec3(coneSize), color);
 	rdr.PushMesh("Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
+}
+
+void Window::DrawArrowUnlit(const vec3& start, const vec3& end, const vec3& color, f32 thickness)
+{
+	// code duplication
+	vec3 dir = glm::normalize(end - start);
+
+	f32 yaw = atan2(dir.y, dir.x);
+	f32 pitch = asinf(dir.z);
+	f32 len = glm::length(end - start);
+	f32 coneSize = thickness * 1.2f;
+	f32 coneHeight = coneSize * 2;
+	f32 armLen = len - coneHeight;
+	f32 sizeY = thickness;
+
+	rdr.PushMeshUnlit("CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
+	rdr.PushMeshUnlit("Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
 }
 
 static Window* g_pWindow = nullptr;
@@ -223,7 +245,7 @@ void WindowInit()
 	bool r = g_pWindow->Init();
 	if(!r) {
 		LOG("ERROR: failed to init window");
-		sapp_request_quit();
+		sapp_quit();
 	}
 }
 
@@ -297,16 +319,9 @@ void PushNewFrame(GameUID gameUID)
 	g_pWindow->game.NewFrame();
 }
 
-void PushEntity(GameUID gameUID, u32 UID, const FixedStr32& name, const vec3& pos, const vec3& color)
+void PushEntity(GameUID gameUID, const Entity& entity)
 {
-	g_pWindow->game.PushEntity(UID, name, pos, color);
-}
-
-void PushEntity(GameUID gameUID, u32 UID, const WideString& name, const vec3& pos, const vec3& color)
-{
-	FixedStr32 nameUtf8;
-	StrConv(&nameUtf8, name);
-	g_pWindow->game.PushEntity(UID, nameUtf8, pos, color);
+	g_pWindow->game.PushEntity(entity);
 }
 
 void PopGame(GameUID gameUID)

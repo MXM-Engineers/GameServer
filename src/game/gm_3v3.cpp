@@ -31,7 +31,16 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	world.Update(delta, localTime);
 
 	foreach_const(actor, world.actorPlayerList) {
-		Dbg::PushEntity(dbgGameUID, (u32)actor->UID, actor->name, actor->pos, vec3(1, 0, 1));
+		Dbg::Entity e;
+		e.UID = (u32)actor->UID;
+		e.name = actor->name;
+		e.pos = actor->pos;
+		e.eye = actor->eye;
+		e.dir = actor->dir;
+		e.upperRotate = actor->upperRotate;
+		e.bodyRotate = actor->rotate;
+		e.color = vec3(1, 0, 1);
+		Dbg::PushEntity(dbgGameUID, e);
 	}
 }
 
@@ -137,9 +146,29 @@ void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3
 	// TODO: check for movement hacking
 	actor->pos = pos;
 	actor->dir = dir;
-	actor->eye = eye;
-	actor->rotate = rotate;
+	actor->eye = eye; // is eye ever used for anything? aiming abilities perhaps?
+	// actor->rotate = rotate; // FIXME: restore
 	actor->speed = speed;
+}
+
+void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, f32 upperRot, f32 bodyRot)
+{
+	ASSERT(playerMap[clientID] != playerList.end());
+	const Player& player = *playerMap[clientID];
+
+	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
+	// LordSk (30/08/2020)
+	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+		return;
+	}
+
+	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
+	ASSERT(actor);
+
+	// TODO: check for movement hacking
+	actor->rotate = bodyRot;
+	actor->upperRotate = bodyRot;
 }
 
 void Game3v3::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)

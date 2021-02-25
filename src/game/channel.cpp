@@ -140,30 +140,31 @@ void Channel::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8
 {
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
-#define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
+#define CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
 
 	switch(header.netID) {
-		HANDLE_CASE(CN_ReadyToLoadCharacter);
-		HANDLE_CASE(CN_ReadyToLoadGameMap);
-		HANDLE_CASE(CA_SetGameGvt);
-		HANDLE_CASE(CN_MapIsLoaded);
-		HANDLE_CASE(CN_GameMapLoaded);
-		HANDLE_CASE(CQ_GetCharacterInfo);
-		HANDLE_CASE(CN_UpdatePosition);
-		HANDLE_CASE(CN_GameUpdatePosition);
-		HANDLE_CASE(CN_ChannelChatMessage);
-		HANDLE_CASE(CQ_SetLeaderCharacter);
-		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
-		HANDLE_CASE(CQ_JukeboxQueueSong);
-		HANDLE_CASE(CQ_WhisperSend);
-		HANDLE_CASE(CQ_PartyCreate);
-		HANDLE_CASE(CQ_RTT_Time);
-		HANDLE_CASE(CQ_LoadingProgressData);
-		HANDLE_CASE(CQ_LoadingComplete);
-		HANDLE_CASE(CQ_GameIsReady);
-		HANDLE_CASE(CQ_GamePlayerTag);
-		HANDLE_CASE(CQ_PlayerJump);
-		HANDLE_CASE(CQ_PlayerCastSkill);
+		CASE(CN_ReadyToLoadCharacter);
+		CASE(CN_ReadyToLoadGameMap);
+		CASE(CA_SetGameGvt);
+		CASE(CN_MapIsLoaded);
+		CASE(CN_GameMapLoaded);
+		CASE(CQ_GetCharacterInfo);
+		CASE(CN_UpdatePosition);
+		CASE(CN_GameUpdatePosition);
+		CASE(CN_GameUpdateRotation);
+		CASE(CN_ChannelChatMessage);
+		CASE(CQ_SetLeaderCharacter);
+		CASE(CN_GamePlayerSyncActionStateOnly);
+		CASE(CQ_JukeboxQueueSong);
+		CASE(CQ_WhisperSend);
+		CASE(CQ_PartyCreate);
+		CASE(CQ_RTT_Time);
+		CASE(CQ_LoadingProgressData);
+		CASE(CQ_LoadingComplete);
+		CASE(CQ_GameIsReady);
+		CASE(CQ_GamePlayerTag);
+		CASE(CQ_PlayerJump);
+		CASE(CQ_PlayerCastSkill);
 
 		default: {
 			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -234,7 +235,7 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 
 void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CN_GameUpdatePosition& update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
+	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
 	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) p3nEye=(%g, %g, %g) nSpeed=%g", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nSpeed);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
@@ -245,6 +246,25 @@ void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& 
 
 	float3 dir = { update.p3nDir.x, update.p3nDir.y, 0 };
 	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), f2v(update.p3nEye), 0, update.nSpeed, ActionStateID::INVALID, 0);
+}
+
+void Channel::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
+	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u rot1=%f rot2=%f rot3=%f", clientID, (u32)update.characterID, update.rot1, update.rot2, update.rot3);
+
+	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%u)", update.characterID);
+		return;
+	}
+
+	// transform rotation for our coordinate system
+	update.rot1 = -update.rot1 - PI/2;
+	update.rot2 = -update.rot2 - PI/2;
+	update.rot3 = -update.rot3 - PI/2;
+
+	game->OnPlayerUpdateRotation(clientID, actorUID, update.rot1, update.rot3);
 }
 
 void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

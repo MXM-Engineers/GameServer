@@ -284,9 +284,15 @@ struct PacketWriter
 };
 
 template<typename T>
-inline T& SafeCast(const void* data, i32 size)
+inline T SafeCast(const void* data, i32 size)
 {
-	ASSERT(sizeof(T) == size);
+	DBG_ASSERT(sizeof(T) == size);
+	if(size < sizeof(T)) {
+		T out;
+		memset(&out, 0, sizeof(T));
+		memmove(&out, data, size);
+		return out;
+	}
 	return *(T*)data;
 }
 

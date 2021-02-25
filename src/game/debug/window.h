@@ -18,10 +18,23 @@ enum class GameUID: u64 {
 	INVALID = 0
 };
 
+struct Entity
+{
+	u32 UID;
+	WideString name;
+	vec3 pos;
+	vec3 eye;
+	vec3 dir; // body dir
+
+	f32 upperRotate = 0;
+	f32 bodyRotate = 0;
+
+	vec3 color;
+};
+
 GameUID PushNewGame(const FixedStr32& mapName);
 void PushNewFrame(GameUID gameUID);
-void PushEntity(GameUID gameUID, u32 UID, const FixedStr32& name, const vec3& pos, const vec3& color);
-void PushEntity(GameUID gameUID, u32 UID, const WideString& name, const vec3& pos, const vec3& color);
+void PushEntity(GameUID gameUID, const Entity& entity);
 void PopGame(GameUID gameUID);
 
 }

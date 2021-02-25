@@ -416,6 +416,19 @@ struct CN_GameUpdatePosition
 POP_PACKED
 ASSERT_SIZE(CN_GameUpdatePosition, 50);
 
+PUSH_PACKED
+struct CN_GameUpdateRotation
+{
+	enum { NET_ID = 60179 };
+
+	LocalActorID characterID;
+	f32 rot1;
+	f32 rot2;
+	f32 rot3;
+};
+POP_PACKED
+ASSERT_SIZE(CN_GameUpdateRotation, 16);
+
 struct CQ_WhisperSend
 {
 	enum { NET_ID = 60210 };

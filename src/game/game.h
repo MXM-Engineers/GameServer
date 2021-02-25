@@ -17,6 +17,7 @@ struct IGame
 	virtual void OnPlayerDisconnect(i32 clientID) = 0;
 	virtual void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) = 0;
 	virtual void OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) = 0;
+	virtual void OnPlayerUpdateRotation(i32 clientID, ActorUID characterActorUID, f32 upperRot, f32 bodyRot) {}
 	virtual void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) = 0;
 	virtual void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) = 0;
 	virtual void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) = 0;

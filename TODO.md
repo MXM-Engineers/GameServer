@@ -10,3 +10,8 @@
 # Physics
 * Capsule <-> Triangle collision
 * Try to make rolling work
+
+# Test
+* Interpolate (extrapolate) between player positions
+* ✅ Draw directions
+* Try to roll without testing for collision

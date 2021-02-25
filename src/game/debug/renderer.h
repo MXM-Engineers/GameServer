@@ -139,14 +139,24 @@ struct Renderer
 		drawQueueMesh.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
 	}
 
-	inline void PushMeshDs(const InstanceMesh& mesh)
+	inline void PushMeshDs(
+		const FixedStr32& meshName,
+		const vec3& pos,
+		const vec3& rot = vec3(0),
+		const vec3& scale = vec3(1),
+		const vec3& color = vec3(1))
 	{
-		drawQueueMeshDs.push_back(mesh);
+		drawQueueMeshDs.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
 	}
 
-	inline void PushMeshUnlit(const InstanceMesh& mesh)
+	inline void PushMeshUnlit(
+		const FixedStr32& meshName,
+		const vec3& pos,
+		const vec3& rot = vec3(0),
+		const vec3& scale = vec3(1),
+		const vec3& color = vec3(1))
 	{
-		drawQueueMeshUnlit.push_back(mesh);
+		drawQueueMeshUnlit.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
 	}
 
 	void Render(f64 delta);

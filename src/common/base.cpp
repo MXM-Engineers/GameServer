@@ -160,7 +160,7 @@ Time TimeDiff(Time start, Time end)
 	return (Time)(stm_diff((u64)end, (u64)start));
 }
 
-f64 TimeDiffSec(Time t0, Time t1)
+f64 TimeDurationSec(Time t0, Time t1)
 {
 	return stm_sec(stm_diff((u64)t1, (u64)t0));
 }

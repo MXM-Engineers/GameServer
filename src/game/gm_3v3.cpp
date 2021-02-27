@@ -24,10 +24,33 @@ void Game3v3::Init(Replication* replication_)
 void Game3v3::Update(f64 delta, Time localTime_)
 {
 	ProfileFunction();
-
+	localTime = localTime_;
 	Dbg::PushNewFrame(dbgGameUID);
 
-	localTime = localTime_;
+	enum Step {
+		Move = 0,
+		Stop = 1,
+	};
+
+	World::ActorPlayer* lego = world.FindPlayerActor(legoUID);
+	ASSERT(lego);
+	f64 localTimeSec = TimeDiffSec(localTime);
+	u32 step = ((u64)localTimeSec / 2) & 1;
+
+	if(legoLastStep == Step::Stop && step == Step::Move) {
+		legoDir = -legoDir;
+	}
+
+	if(step == Step::Move) { // move
+		lego->dir = vec3(legoDir, 0, 0);
+	}
+	else { // stop
+		lego->dir = vec3(0);
+	}
+
+	legoLastStep = step;
+
+
 	world.Update(delta, localTime);
 
 	foreach_const(actor, world.actorPlayerList) {
@@ -72,10 +95,14 @@ bool Game3v3::LoadMap()
 	*/
 
 	// spawn test
-	World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
-	actor.pos = vec3(3243, 3532, 550.602905);
-	actor.dir = vec3(1, 0, 0);
-	actor.eye = vec3(0, 1, 0);
+	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
+	lego.pos = vec3(2800, 3532, 550.602905);
+	lego.dir = vec3(0, 0, 0);
+	lego.eye = vec3(0, 0, 0);
+	lego.rotate = 0;
+	lego.upperRotate = 0;
+	lego.speed = 626.200012f;
+	legoUID = lego.UID;
 	return true;
 }
 

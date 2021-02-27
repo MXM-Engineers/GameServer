@@ -10,7 +10,16 @@ void World::Update(f64 delta, Time localTime_)
 {
 	ProfileFunction();
 
+	delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
+
+	// players
+	foreach(it, actorPlayerList) {
+		ActorPlayer& p = *it;
+		if(glm::length(p.dir) > 0) {
+			p.pos += p.dir * (f32)(p.speed * delta);
+		}
+	}
 
 	// update jukebox
 	if(jukebox.UID != ActorUID::INVALID) {
@@ -27,7 +36,14 @@ void World::Update(f64 delta, Time localTime_)
 				jukebox.playStartTime = localTime;
 			}
 		}
+	}
 
+	Replicate();
+}
+
+void World::Replicate()
+{
+	if(jukebox.UID != ActorUID::INVALID) {
 		// replicate
 		Replication::ActorJukebox rjb;
 		rjb.actorUID = jukebox.UID;
@@ -55,7 +71,7 @@ void World::Update(f64 delta, Time localTime_)
 	}
 
 	// players
-	foreach(it, actorPlayerList) {
+	foreach_const(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;
 
 		Replication::ActorPlayer rfl;
@@ -89,7 +105,7 @@ void World::Update(f64 delta, Time localTime_)
 
 
 	// npcs
-	foreach(it, actorNpcList) {
+	foreach_const(it, actorNpcList) {
 		const ActorNpc& actor = *it;
 
 		Replication::ActorNpc rfl;

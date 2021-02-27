@@ -119,8 +119,8 @@ void Window::Update(f64 delta)
 		// this is updated when the player moves
 		const vec3 eyeStart1 = e.pos + vec3(0, 0, 200);
 		const vec3 eyeStart2 = e.pos + vec3(0, 0, 180);
-		f32 eyeA1 = -e.eye.x - PI/2;
-		f32 eyeA2 = -e.eye.z - PI/2;
+		f32 eyeA1 = e.eye.x;
+		f32 eyeA2 = e.eye.z;
 		DrawArrowUnlit(eyeStart1, eyeStart1 +  vec3(cosf(eyeA1), sinf(eyeA1), 0) * 150.f, vec3(0.2, 1, 1), 8);
 		DrawArrowUnlit(eyeStart2, eyeStart2 +  vec3(cosf(eyeA2), sinf(eyeA2), 0) * 150.f, vec3(0.2, 1, 1), 8);
 		const vec3 dirStart = e.pos + vec3(0, 0, 80);

@@ -245,6 +245,13 @@ void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& 
 	}
 
 	float3 dir = { update.p3nDir.x, update.p3nDir.y, 0 };
+
+	// transform rotation for our coordinate system
+	// TODO: make a function
+	update.p3nEye.x = -update.p3nEye.x - PI/2;
+	update.p3nEye.y = -update.p3nEye.y - PI/2;
+	update.p3nEye.z = -update.p3nEye.z - PI/2;
+
 	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), f2v(update.p3nEye), 0, update.nSpeed, ActionStateID::INVALID, 0);
 }
 

@@ -48,6 +48,10 @@ struct Game3v3: IGame
 
 	Dbg::GameUID dbgGameUID;
 
+	ActorUID legoUID = ActorUID::INVALID;
+	i32 legoDir = 1;
+	u32 legoLastStep = 0;
+
 	void Init(Replication* replication_) override;
 	void Update(f64 delta, Time localTime_) override;
 

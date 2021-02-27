@@ -100,6 +100,7 @@ struct World
 
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);
+	void Replicate();
 
 	ActorUID NewActorUID();
 

@@ -1799,8 +1799,8 @@ void Replication::FrameDifference()
 			Sv::SN_PlayerSyncMove sync;
 			sync.destPos = f2v(up->pos);
 			sync.moveDir = { up->dir.x, up->dir.y };
-			sync.upperDir = { cosf(PI - up->upperRotate), sinf(PI - up->upperRotate) };
-			sync.nRotate = PI - up->rotate;
+			sync.upperDir = { (f32)-(up->upperRotate + PI/2), 0 };
+			sync.nRotate = -(up->rotate + PI/2);
 			sync.nSpeed = up->speed;
 			sync.flags = 0;
 			sync.state = ActionStateID::NONE_BEHAVIORSTATE;

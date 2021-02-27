@@ -39,10 +39,15 @@ void Game3v3::Update(f64 delta, Time localTime_)
 
 	if(legoLastStep == Step::Stop && step == Step::Move) {
 		legoDir = -legoDir;
+		legoAngle = (legoAngle+1) % 4;
 	}
 
 	if(step == Step::Move) { // move
 		lego->dir = vec3(legoDir, 0, 0);
+		f32 a = legoAngle * PI/2;
+		lego->eye = vec3(a, 0, a);
+		lego->rotate = a;
+		lego->upperRotate = a;
 	}
 	else { // stop
 		lego->dir = vec3(0);

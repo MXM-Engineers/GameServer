@@ -50,6 +50,7 @@ struct Game3v3: IGame
 
 	ActorUID legoUID = ActorUID::INVALID;
 	i32 legoDir = 1;
+	i32 legoAngle = 0;
 	u32 legoLastStep = 0;
 
 	void Init(Replication* replication_) override;

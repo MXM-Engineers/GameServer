@@ -11,6 +11,13 @@ bool CConfig::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
+
+	if(EA::StdC::Sscanf(line, "DbgCamPosX=%f", &DbgCamPosX) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DbgCamPosY=%f", &DbgCamPosY) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DbgCamPosZ=%f", &DbgCamPosZ) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DbgCamDirX=%f", &DbgCamDirX) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DbgCamDirY=%f", &DbgCamDirY) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DbgCamDirZ=%f", &DbgCamDirZ) == 1) return true;
 	return false;
 }
 
@@ -61,6 +68,31 @@ bool CConfig::LoadConfigFile()
 	return true;
 }
 
+bool CConfig::SaveConfigFile()
+{
+	eastl::fixed_string<char,4096,false> out;
+	out.append_sprintf("ListenLobbyPort=%d\n", ListenLobbyPort);
+	out.append_sprintf("ListenGamePort=%d\n", ListenGamePort);
+	out.append_sprintf("DevMode=%d\n", DevMode);
+	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
+	out.append_sprintf("LobbyMap=%d\n", LobbyMap);
+	out.append_sprintf("WindowWidth=%d\n", WindowWidth);
+	out.append_sprintf("WindowHeight=%d\n", WindowHeight);
+	out.append_sprintf("DbgCamPosX=%f\n", DbgCamPosX);
+	out.append_sprintf("DbgCamPosY=%f\n", DbgCamPosY);
+	out.append_sprintf("DbgCamPosZ=%f\n", DbgCamPosZ);
+	out.append_sprintf("DbgCamDirX=%f\n", DbgCamDirX);
+	out.append_sprintf("DbgCamDirY=%f\n", DbgCamDirY);
+	out.append_sprintf("DbgCamDirZ=%f\n", DbgCamDirZ);
+
+	bool r = fileSaveBuff("game.cfg", out.data(), out.size());
+	if(!r) {
+		LOG("WARNING(SaveConfigFile): failed to save 'game.cfg'");
+		return false;
+	}
+	return true;
+}
+
 void CConfig::Print() const
 {
 	LOG("Config = {");
@@ -71,6 +103,12 @@ void CConfig::Print() const
 	LOG("	LobbyMap=%d", LobbyMap);
 	LOG("	WindowWidth=%d", WindowWidth);
 	LOG("	WindowHeight=%d", WindowHeight);
+	LOG("	DbgCamPosX=%f", DbgCamPosX);
+	LOG("	DbgCamPosY=%f", DbgCamPosY);
+	LOG("	DbgCamPosZ=%f", DbgCamPosZ);
+	LOG("	DbgCamDirX=%f", DbgCamDirX);
+	LOG("	DbgCamDirY=%f", DbgCamDirY);
+	LOG("	DbgCamDirZ=%f", DbgCamDirZ);
 	LOG("}");
 }
 
@@ -81,9 +119,19 @@ const CConfig& Config()
 	return *g_Config;
 }
 
+CConfig& ConfigMutable()
+{
+	return *g_Config;
+}
+
 bool LoadConfig()
 {
 	static CConfig cfg;
 	g_Config = &cfg;
 	return g_Config->LoadConfigFile();
+}
+
+bool SaveConfig()
+{
+	return g_Config->SaveConfigFile();
 }

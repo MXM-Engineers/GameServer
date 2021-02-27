@@ -201,6 +201,7 @@ void Window::OnEvent(const sapp_event& event)
 
 void Window::Cleanup()
 {
+	rdr.Cleanup();
 	simgui_shutdown();
 	sg_shutdown();
 }

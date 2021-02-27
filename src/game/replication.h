@@ -35,6 +35,7 @@ struct Replication
 
 	struct ActorPlayer: Actor<ActorType::PLAYER>
 	{
+		i32 clientID;
 		ActorUID parentActorUID;
 		vec3 eye;
 		f32 rotate;
@@ -85,27 +86,6 @@ struct Replication
 
 	struct Frame
 	{
-		struct Transform
-		{
-			vec3 pos;
-			vec3 dir;
-			vec3 eye;
-			f32 rotate;
-			f32 speed;
-
-			bool HasNotChanged(const Transform& other) const;
-		};
-
-		struct ActionState
-		{
-			ActionStateID actionState;
-			i32 actionParam1;
-			i32 actionParam2;
-			f32 rotate;
-			f32 upperRotate;
-
-			bool HasNotChanged(const ActionState& other) const;
-		};
 
 		// TODO: replace fixed_map with fixed_hash_map
 		eastl::fixed_list<ActorPlayer,2048,true> playerList;
@@ -115,9 +95,6 @@ struct Replication
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
-
-		eastl::fixed_map<ActorUID,Transform,2048> transformMap;
-		eastl::fixed_map<ActorUID,ActionState,2048> actionStateMap;
 
 		ActorJukebox jukebox;
 

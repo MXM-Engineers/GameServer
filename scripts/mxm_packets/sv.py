@@ -1452,6 +1452,18 @@ class ServerSerializer:
         print('    onlineStatus=%d' % p.read_u8())
         print('}')
 
+    def serialize_62360(netid, p: common.PacketReader):
+        print('SN_PlayerSyncMove {')
+        print('    entityID=%d' % p.read_i32())
+        print('    destPos=%s' % read_Vec3(p))
+        print('    moveDir=(%f, %f)' % (p.read_f32(), p.read_f32()))
+        print('    upperDir=(%f, %f)' % (p.read_f32(), p.read_f32()))
+        print('    nRotate=%f' % p.read_f32())
+        print('    nSpeed=%f' % p.read_f32())
+        print('    flags=%x' % p.read_u8())
+        print('    acionStateID=%d' % p.read_i32())
+        print('}')
+
     def serialize_62361(netid, p: common.PacketReader):
         print('SN_PlayerSyncTurn {')
         print('    entityID=%d' % p.read_i32())

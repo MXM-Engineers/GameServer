@@ -26,8 +26,6 @@ void Replication::Frame::Clear()
 	npcMap.clear();
 	actorUIDSet.clear();
 	actorType.clear();
-	transformMap.clear();
-	actionStateMap.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -81,22 +79,6 @@ void Replication::FramePushPlayerActor(const ActorPlayer& actor)
 	frameCur->playerMap.emplace(actor.actorUID, --frameCur->playerList.end());
 	frameCur->actorUIDSet.insert(actor.actorUID);
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
-
-	Frame::Transform tf;
-	tf.pos = actor.pos;
-	tf.dir = actor.dir;
-	tf.eye = actor.eye;
-	tf.rotate = actor.rotate;
-	tf.speed = actor.speed;
-	frameCur->transformMap.emplace(actor.actorUID, tf);
-
-	Frame::ActionState at;
-	at.actionState = actor.actionState;
-	at.actionParam1 = actor.actionParam1;
-	at.actionParam2 = actor.actionParam2;
-	at.rotate = actor.rotate;
-	at.upperRotate = actor.upperRotate;
-	frameCur->actionStateMap.emplace(actor.actorUID, at);
 }
 
 void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
@@ -108,24 +90,6 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->npcMap.emplace(actor.actorUID, --frameCur->npcList.end());
 	frameCur->actorUIDSet.insert(actor.actorUID);
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
-
-	Frame::Transform tf;
-	tf.pos = actor.pos;
-	tf.dir = actor.dir;
-	tf.eye = vec3(0, 0, 0);
-	tf.rotate = 0;
-	tf.speed = 0;
-	frameCur->transformMap.emplace(actor.actorUID, tf);
-
-	/*
-	Frame::ActionState at;
-	at.actionState = actor.actionState;
-	at.actionParam1 = actor.actionParam1;
-	at.actionParam2 = actor.actionParam2;
-	at.rotate = actor.rotate;
-	at.upperRotate = actor.upperRotate;
-	frameCur->actionStateMap.emplace(actor.actorUID, at);
-	*/
 }
 
 void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
@@ -1762,12 +1726,100 @@ void Replication::UpdatePlayersLocalState()
 void Replication::FrameDifference()
 {
 	// send position update
+	struct UpdatePosition
+	{
+		i32 clientID;
+		ActorUID actorUID;
+		vec3 pos;
+		vec3 dir;
+		vec3 eye;
+		f32 rotate;
+		f32 upperRotate;
+		f32	speed;
+	};
 
-	eastl::fixed_vector<eastl::pair<ActorUID,Frame::Transform>, 2048> tfToSendList;
-	eastl::fixed_vector<eastl::pair<ActorUID,Frame::ActionState>, 2048> atToSendList;
+	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
 
 	// find if the position has changed since last frame
-	foreach(it, frameCur->actorUIDSet) {
+	foreach_const(it, frameCur->playerList) {
+		const ActorPlayer& cur = *it;
+		auto found = framePrev->playerMap.find(cur.actorUID);
+		if(found == framePrev->playerMap.end()) continue; // previous not found, can't diff
+		const ActorPlayer& prev = *found->second;
+
+		// position
+		const f32 posEpsilon = 0.1f;
+		const f32 dirEpsilon = 0.01f;
+		const f32 speedEpsilon = 0.1f;
+		if(fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
+		   fabs(cur.pos.y - prev.pos.y) > posEpsilon ||
+		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
+		   fabs(cur.dir.x - prev.dir.x) > dirEpsilon ||
+		   fabs(cur.dir.y - prev.dir.y) > dirEpsilon ||
+		   fabs(cur.dir.z - prev.dir.z) > dirEpsilon ||
+		   fabs(cur.speed - prev.speed) > speedEpsilon)
+		{
+			UpdatePosition update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.actorUID;
+			update.pos = cur.pos;
+			update.dir = cur.dir;
+			update.eye = cur.eye;
+			update.rotate = cur.rotate;
+			update.upperRotate = cur.upperRotate;
+			update.speed = cur.speed;
+			listUpdatePosition.push_back(update);
+		}
+	}
+
+	// send updates
+	if(stageType == StageType::CITY) {
+		foreach_const(up, listUpdatePosition) {
+			Sv::SN_GamePlayerSyncByInt sync;
+			sync.p3nPos = f2v(up->pos);
+			sync.p3nDir = f2v(up->dir);
+			sync.p3nEye = f2v(up->eye);
+			sync.nRotate = up->rotate;
+			sync.nSpeed = up->speed;
+			sync.nState = -1;
+			sync.nActionIDX = -1;
+
+			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+				if(playerState[clientID] != PlayerState::IN_GAME) continue;
+				if(clientID == up->clientID) continue; // ignore self
+
+				sync.characterID = GetLocalActorID(clientID, up->actorUID);
+				LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)up->actorUID);
+				SendPacket(clientID, sync);
+			}
+		}
+	}
+	else if(stageType == StageType::GAME_INSTANCE) {
+		foreach_const(up, listUpdatePosition) {
+			Sv::SN_PlayerSyncMove sync;
+			sync.destPos = f2v(up->pos);
+			sync.moveDir = { up->dir.x, up->dir.y };
+			sync.upperDir = { cosf(PI - up->upperRotate), sinf(PI - up->upperRotate) };
+			sync.nRotate = PI - up->rotate;
+			sync.nSpeed = up->speed;
+			sync.flags = 0;
+			sync.state = ActionStateID::NONE_BEHAVIORSTATE;
+
+			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+				if(playerState[clientID] != PlayerState::IN_GAME) continue;
+				if(clientID == up->clientID) continue; // ignore self
+
+				sync.characterID = GetLocalActorID(clientID, up->actorUID);
+				LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
+				SendPacket(clientID, sync);
+			}
+		}
+	}
+
+
+	// TODO: restore
+	/*
+	foreach(it, frameCur->playerList) {
 		const ActorUID actorUID = *it;
 		auto type = frameCur->actorType.find(actorUID);
 		ASSERT(type != frameCur->actorType.end());
@@ -1898,6 +1950,7 @@ void Replication::FrameDifference()
 			SendPacket(clientID, packet);
 		}
 	}
+	*/
 }
 
 void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
@@ -2532,6 +2585,8 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }
 
+// TODO: remove
+/*
 bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
 {
 	const f32 posEpsilon = 0.1f;
@@ -2544,8 +2599,8 @@ bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other)
 	if(fabs(eye.x - other.eye.x) > posEpsilon) return false;
 	if(fabs(eye.y - other.eye.y) > posEpsilon) return false;
 	if(fabs(eye.z - other.eye.z) > posEpsilon) return false;
-	/*const f32 rotEpsilon = 0.01f;
-	if(fabs(rotate - other.rotate) > rotEpsilon) return false;*/
+	const f32 rotEpsilon = 0.01f;
+	if(fabs(rotate - other.rotate) > rotEpsilon) return false;
 	const f32 speedEpsilon = 0.1f;
 	if(fabs(speed - other.speed) > speedEpsilon) return false;
 	return true;
@@ -2559,3 +2614,4 @@ bool Replication::Frame::ActionState::HasNotChanged(const Replication::Frame::Ac
 	if(actionParam2 != other.actionParam2) return false;
 	return true;
 }
+*/

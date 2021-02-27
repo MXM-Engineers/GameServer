@@ -81,6 +81,7 @@ enum class SongID: i32
 enum class ActionStateID: i32
 {
 	INVALID = -1,
+	NONE_BEHAVIORSTATE = 18,
 	EMOTION_BEHAVIORSTATE = 149,
 	JUMP_START_MOVESTATE = 152
 };
@@ -1788,6 +1789,35 @@ struct SN_GuildChannelEnter
 	wchar_t nick[1];
 	u8 onlineStatus;
 };
+
+PUSH_PACKED
+struct SN_PlayerSyncMove
+{
+	enum { NET_ID = 62360 };
+
+	LocalActorID characterID;
+	float3 destPos;
+	float2 moveDir;
+	float2 upperDir;
+	f32 nRotate;
+	f32 nSpeed;
+	u8 flags;
+	ActionStateID state;
+};
+POP_PACKED
+ASSERT_SIZE(SN_PlayerSyncMove, 45);
+
+PUSH_PACKED
+struct SN_PlayerSyncTurn
+{
+	enum { NET_ID = 62361 };
+
+	LocalActorID characterID;
+	float2 upperDir;
+	f32 nRotate;
+};
+POP_PACKED
+ASSERT_SIZE(SN_PlayerSyncTurn, 16);
 
 PUSH_PACKED
 struct SN_PlayerSyncActionStateOnly

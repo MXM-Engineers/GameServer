@@ -75,6 +75,7 @@ void World::Replicate()
 		const ActorPlayer& actor = *it;
 
 		Replication::ActorPlayer rfl;
+		rfl.clientID = actor.clientID;
 		rfl.parentActorUID = actor.parentActorUID;
 		rfl.actorUID = actor.UID;
 		rfl.docID = actor.docID;
@@ -132,6 +133,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 
 	actorPlayerList.emplace_back(actorUID, ActorUID::INVALID);
 	ActorPlayer& actor = actorPlayerList.back();
+	actor.clientID = clientID;
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;
@@ -158,6 +160,7 @@ World::ActorPlayer& World::SpawnPlayerSubActor(i32 clientID, ActorUID parentActo
 
 	actorPlayerList.emplace_back(actorUID, parentActorUID);
 	ActorPlayer& actor = actorPlayerList.back();
+	actor.clientID = clientID;
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
 	actor.rotate = 0;

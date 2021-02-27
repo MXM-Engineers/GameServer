@@ -87,6 +87,7 @@ struct Camera
 	bool mouseLocked = false;
 	const f32 invSens = 200;
 
+	void Save();
 	void Reset();
 
 	bool HandleEvent(const sapp_event& event);
@@ -127,6 +128,7 @@ struct Renderer
 	Camera camera;
 
 	bool Init();
+	void Cleanup();
 	bool OpenAndLoadMeshFile(const char* name, const char* path);
 
 	inline void PushMesh(

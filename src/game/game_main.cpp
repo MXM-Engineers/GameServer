@@ -196,6 +196,7 @@ int main(int argc, char** argv)
 	coordinator.Cleanup();
 	server.Cleanup();
 
+	SaveConfig();
 	LOG("Done.");
 	return 0;
 }

@@ -125,6 +125,22 @@ class ClientSerializer:
         print('    rankingType=%d' % p.read_u8())
         print('}')
 
+    def serialize_60178(netid, p: common.PacketReader):
+        print('CN_GameUpdatePosition {')
+        print('    characterID=%u' % p.read_u32())
+        print('    p3nPos=%s' % read_Vec3(p))
+        print('    p3nDir=(%f, %f)' % (p.read_f32(), p.read_f32()))
+        print('    p3nEye=%s' % read_Vec3(p))
+        print('    nSpeed=%f' % p.read_f32())
+        print('    unk1=%d' % p.read_i32())
+        print('}')
+    
+    def serialize_60179(netid, p: common.PacketReader):
+        print('CN_GameUpdateRotation {')
+        print('    characterID=%u' % p.read_u32())
+        print('    p3nEye=%s' % read_Vec3(p))
+        print('}')
+
     def serialize_60180(netid, p: common.PacketReader):
         print('CQ_180 {')
         print('    charcterID=%d' % p.read_i32())

@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include "shaders.h"
 #include "sokol_imgui.h"
+#include <game/config.h>
 
 sg_buffer LineBuffer::GetUpdatedBuffer()
 {
@@ -91,10 +92,22 @@ void MeshBuffer::DrawMesh(const FixedStr32& name)
 	sg_draw(ref.indexStart, ref.indexCount, 1);
 }
 
+void Camera::Save()
+{
+	CConfig& cfg = ConfigMutable();
+	cfg.DbgCamPosX = eye.x;
+	cfg.DbgCamPosY = eye.y;
+	cfg.DbgCamPosZ = eye.z;
+	cfg.DbgCamDirX = dir.x;
+	cfg.DbgCamDirY = dir.y;
+	cfg.DbgCamDirZ = dir.z;
+}
+
 void Camera::Reset()
 {
-	eye = vec3(0, 0, 6000);
-	dir = vec3(0, 0, -1);
+	const CConfig& cfg = Config();
+	eye = vec3(cfg.DbgCamPosX, cfg.DbgCamPosY, cfg.DbgCamPosZ);
+	dir = vec3(cfg.DbgCamDirX, cfg.DbgCamDirY, cfg.DbgCamDirZ);
 }
 
 bool Camera::HandleEvent(const sapp_event& event)
@@ -541,6 +554,11 @@ bool Renderer::Init()
 
 	camera.Reset();
 	return true;
+}
+
+void Renderer::Cleanup()
+{
+	camera.Save();
 }
 
 bool Renderer::OpenAndLoadMeshFile(const char* name, const char* path)

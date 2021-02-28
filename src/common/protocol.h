@@ -409,7 +409,9 @@ struct CN_GameUpdatePosition
 	LocalActorID characterID;
 	float3 p3nPos;
 	float2 p3nDir;
-	float3 p3nEye;
+	f32 upperYaw;
+	f32 upperPitch;
+	f32 bodyYaw;
 	f32 nSpeed;
 	i32 unk1;
 	u8 unk2[6];
@@ -423,9 +425,9 @@ struct CN_GameUpdateRotation
 	enum { NET_ID = 60179 };
 
 	LocalActorID characterID;
-	f32 rot1;
-	f32 rot2;
-	f32 rot3;
+	f32 upperYaw;
+	f32 upperPitch;
+	f32 bodyYaw;
 };
 POP_PACKED
 ASSERT_SIZE(CN_GameUpdateRotation, 16);

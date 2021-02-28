@@ -22,9 +22,7 @@ struct World
 		CreatureIndex docID;
 		vec3 pos;
 		vec3 dir;
-		vec3 eye;
-		f32 rotate; // whole body rotate
-		f32 upperRotate; // upper body rotate
+		RotationHumanoid rotation;
 		f32 speed;
 		ActionStateID actionState;
 		i32 actionParam1;

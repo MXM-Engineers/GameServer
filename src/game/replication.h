@@ -37,9 +37,7 @@ struct Replication
 	{
 		i32 clientID;
 		ActorUID parentActorUID;
-		vec3 eye;
-		f32 rotate;
-		f32 upperRotate;
+		RotationHumanoid rotation;
 		f32 speed;
 		ClassType classType;
 		SkinIndex skinIndex;

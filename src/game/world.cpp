@@ -81,9 +81,7 @@ void World::Replicate()
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
-		rfl.eye = actor.eye;
-		rfl.rotate = actor.rotate;
-		rfl.upperRotate = actor.upperRotate;
+		rfl.rotation = actor.rotation;
 		rfl.speed = actor.speed;
 		rfl.actionState = actor.actionState;
 		rfl.actionParam1 = actor.actionParam1;
@@ -136,7 +134,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.clientID = clientID;
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
-	actor.rotate = 0;
+	actor.rotation = {0};
 	actor.speed = 0;
 	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
@@ -163,7 +161,7 @@ World::ActorPlayer& World::SpawnPlayerSubActor(i32 clientID, ActorUID parentActo
 	actor.clientID = clientID;
 	actor.type = 1;
 	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
-	actor.rotate = 0;
+	actor.rotation = {0};
 	actor.speed = 0;
 	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
@@ -185,8 +183,7 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	ActorNpc& actor = actorNpcList.back();
 	actor.type = 1;
 	actor.docID = (CreatureIndex)docID;
-	actor.eye = vec3(0, 0, 0);
-	actor.rotate = 0;
+	actor.rotation = {0};
 	actor.speed = 0;
 	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
@@ -207,8 +204,7 @@ World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, 
 	jukebox.docID = (CreatureIndex)docID;
 	jukebox.pos = pos;
 	jukebox.dir = dir;
-	jukebox.eye = vec3(0, 0, 0);
-	jukebox.rotate = 0;
+	jukebox.rotation = {0};
 	jukebox.speed = 0;
 	jukebox.actionState = ActionStateID::INVALID;
 	jukebox.actionParam1 = -1;

@@ -164,3 +164,30 @@ struct PlayerCastSkill
 	eastl::fixed_vector<ActorUID,32,false> targetList;
 	Cl::CQ_PlayerCastSkill::PosStruct posStruct;
 };
+
+struct RotationHumanoid
+{
+	f32 upperYaw = 0;
+	f32 upperPitch = 0;
+	f32 bodyYaw = 0;
+};
+
+inline f32 MxmYawToWorldYaw(f32 a)
+{
+	return -a - PI/2;
+}
+
+inline f32 WorldYawToMxmYaw(f32 a)
+{
+	return -(a + PI/2);
+}
+
+inline f32 MxmPitchToWorldPitch(f32 a)
+{
+	return a; // TODO: reverse this
+}
+
+inline f32 WorldPitchToMxmPitch(f32 a)
+{
+	return a; // TODO: reverse this
+}

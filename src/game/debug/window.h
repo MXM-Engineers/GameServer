@@ -4,6 +4,7 @@
 #include <common/base.h>
 #include <common/utils.h>
 #include <glm/vec3.hpp>
+#include <game/core.h>
 
 typedef glm::vec3 vec3;
 
@@ -23,11 +24,8 @@ struct Entity
 	u32 UID;
 	WideString name;
 	vec3 pos;
-	vec3 eye;
-	vec3 dir; // body dir
-
-	f32 upperRotate = 0;
-	f32 bodyRotate = 0;
+	RotationHumanoid rot;
+	vec2 moveDir;
 
 	vec3 color;
 };

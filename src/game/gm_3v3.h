@@ -62,8 +62,8 @@ struct Game3v3: IGame
 	void OnPlayerDisconnect(i32 clientID) override;
 	void OnPlayerReadyToLoad(i32 clientID) override;
 	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID) override;
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID) override;
-	void OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, f32 upperRot, f32 bodyRot) override;
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID) override;
+	void OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot) override;
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen) override;
 	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg) override;
 	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex) override;

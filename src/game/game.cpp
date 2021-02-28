@@ -141,7 +141,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -156,8 +156,7 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, cons
 	// TODO: check for movement hacking
 	actor->pos = pos;
 	actor->dir = dir;
-	actor->eye = eye;
-	actor->rotate = rotate;
+	actor->rotation = rot;
 	actor->speed = speed;
 }
 
@@ -207,7 +206,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
 	vec3 pos = spawnPoint.pos;
 	vec3 dir = spawnPoint.dir;
-	vec3 eye(0, 0, 0);
+	RotationHumanoid rot;
 
 	// TODO: check if already leader character
 	if((playerActorUID[clientID] != ActorUID::INVALID)) {
@@ -216,7 +215,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 
 		pos = actor->pos;
 		dir = actor->dir;
-		eye = actor->eye;
+		rot = actor->rotation;
 
 		world.DestroyPlayerActor(playerActorUID[clientID]);
 	}
@@ -231,7 +230,7 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
-	actor.eye = eye;
+	actor.rotation = rot;
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
@@ -251,8 +250,8 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 	ASSERT(actor);
 
 	// TODO: check hacking
-	actor->rotate = rotate;
-	actor->upperRotate = upperRotate;
+	actor->rotation.bodyYaw = rotate;
+	actor->rotation.upperYaw = upperRotate;
 	actor->actionState = state;
 	actor->actionParam1 = param1;
 	actor->actionParam2 = param2;
@@ -284,7 +283,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
+			actor.rotation = playerActor->rotation;
 
 			// trigger second emote
 			actor.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;
@@ -310,7 +309,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
+			actor.rotation = playerActor->rotation;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
@@ -324,7 +323,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
+			actor.rotation = playerActor->rotation;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
@@ -338,7 +337,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
+			actor.rotation = playerActor->rotation;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));

@@ -117,33 +117,30 @@ void Window::Update(f64 delta)
 		rdr.PushMeshUnlit("Ring", e.pos, vec3(0), vec3(50), e.color);
 
 		// this is updated when the player moves
-		const vec3 eyeStart1 = e.pos + vec3(0, 0, 200);
-		const vec3 eyeStart2 = e.pos + vec3(0, 0, 180);
-		f32 eyeA1 = e.eye.x;
-		f32 eyeA2 = e.eye.z;
-		DrawArrowUnlit(eyeStart1, eyeStart1 +  vec3(cosf(eyeA1), sinf(eyeA1), 0) * 150.f, vec3(0.2, 1, 1), 8);
-		DrawArrowUnlit(eyeStart2, eyeStart2 +  vec3(cosf(eyeA2), sinf(eyeA2), 0) * 150.f, vec3(0.2, 1, 1), 8);
-		const vec3 dirStart = e.pos + vec3(0, 0, 80);
-		DrawArrowUnlit(dirStart, dirStart + glm::normalize(e.dir) * 100.0f, vec3(0.2, 1, 0.2), 10);
+		const vec3 upperStart = e.pos + vec3(0, 0, 200);
+		const vec3 upperDir = glm::normalize(vec3(cosf(e.rot.upperYaw), sinf(e.rot.upperYaw), sinf(e.rot.upperPitch)));
+		DrawArrowUnlit(upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
 
-		// this is updated when the player aims
-		const vec3 upperRotStart = e.pos + vec3(0, 0, 200);
-		DrawArrowUnlit(upperRotStart, upperRotStart + vec3(cosf(e.upperRotate), sinf(e.upperRotate), 0) * 200.f, vec3(1, 0.4, 0.1), 10);
-		const vec3 bodyRotStart = e.pos + vec3(0, 0, 80);
-		DrawArrowUnlit(bodyRotStart, bodyRotStart + vec3(cosf(e.bodyRotate), sinf(e.bodyRotate), 0) * 200.f, vec3(1, 0.4, 0.1), 10);
+		const vec3 bodyRotStart = e.pos + vec3(0, 0, 150);
+		DrawArrowUnlit(bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
+		const vec3 dirStart = e.pos + vec3(0, 0, 80);
+		DrawArrowUnlit(dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 	}
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
 
 	if(ImGui::Begin("Entities")) {
-		if(ImGui::BeginTable("EntityList", 5, flags))
+		if(ImGui::BeginTable("EntityList", 8, flags))
 		{
 			ImGui::TableSetupColumn("UID");
 			ImGui::TableSetupColumn("Name");
 			ImGui::TableSetupColumn("PosX");
 			ImGui::TableSetupColumn("PosY");
 			ImGui::TableSetupColumn("PosZ");
+			ImGui::TableSetupColumn("RotUpperYaw");
+			ImGui::TableSetupColumn("RotUpperPitch");
+			ImGui::TableSetupColumn("RotBodyYaw");
 			ImGui::TableHeadersRow();
 
 			foreach_const(ent, entityList) {
@@ -153,12 +150,20 @@ void Window::Update(f64 delta)
 				ImGui::Text("%u", ent->UID);
 				ImGui::TableNextColumn();
 				ImGui::Text("%ls", ent->name.data());
+
 				ImGui::TableNextColumn();
 				ImGui::Text("%.2f", ent->pos.x);
 				ImGui::TableNextColumn();
 				ImGui::Text("%.2f", ent->pos.y);
 				ImGui::TableNextColumn();
 				ImGui::Text("%.2f", ent->pos.z);
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.upperYaw);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.upperPitch);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.bodyYaw);
 			}
 
 			ImGui::EndTable();

@@ -1732,9 +1732,7 @@ void Replication::FrameDifference()
 		ActorUID actorUID;
 		vec3 pos;
 		vec3 dir;
-		vec3 eye;
-		f32 rotate;
-		f32 upperRotate;
+		RotationHumanoid rotation;
 		f32	speed;
 	};
 
@@ -1764,9 +1762,7 @@ void Replication::FrameDifference()
 			update.actorUID = cur.actorUID;
 			update.pos = cur.pos;
 			update.dir = cur.dir;
-			update.eye = cur.eye;
-			update.rotate = cur.rotate;
-			update.upperRotate = cur.upperRotate;
+			update.rotation = cur.rotation;
 			update.speed = cur.speed;
 			listUpdatePosition.push_back(update);
 		}
@@ -1778,8 +1774,10 @@ void Replication::FrameDifference()
 			Sv::SN_GamePlayerSyncByInt sync;
 			sync.p3nPos = f2v(up->pos);
 			sync.p3nDir = f2v(up->dir);
-			sync.p3nEye = f2v(up->eye);
-			sync.nRotate = up->rotate;
+			sync.p3nEye.x = WorldYawToMxmYaw(up->rotation.upperYaw);
+			sync.p3nEye.y = 0; // roll
+			sync.p3nEye.z = WorldPitchToMxmPitch(up->rotation.upperPitch);
+			sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
 			sync.nSpeed = up->speed;
 			sync.nState = -1;
 			sync.nActionIDX = -1;
@@ -1799,8 +1797,8 @@ void Replication::FrameDifference()
 			Sv::SN_PlayerSyncMove sync;
 			sync.destPos = f2v(up->pos);
 			sync.moveDir = { up->dir.x, up->dir.y };
-			sync.upperDir = { (f32)-(up->upperRotate + PI/2), 0 };
-			sync.nRotate = -(up->rotate + PI/2);
+			sync.upperDir = { WorldYawToMxmYaw(up->rotation.upperYaw), WorldPitchToMxmPitch(up->rotation.upperPitch) };
+			sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
 			sync.nSpeed = up->speed;
 			sync.flags = 0;
 			sync.state = ActionStateID::NONE_BEHAVIORSTATE;
@@ -1975,7 +1973,9 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			// TODO: localID?
 
 			packet.Write(actor.pos); // p3nPos
-			packet.Write(actor.dir); // p3nDir
+			packet.Write(WorldYawToMxmYaw(actor.rotation.upperYaw));
+			packet.Write(WorldPitchToMxmPitch(actor.rotation.upperPitch));
+			packet.Write(WorldYawToMxmYaw(actor.rotation.bodyYaw));
 			packet.Write<i32>(-1); // spawnType
 			packet.Write<ActionStateID>(actor.actionState); // actionState
 			packet.Write<i32>(0); // ownerID

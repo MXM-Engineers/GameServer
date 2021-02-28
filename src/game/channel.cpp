@@ -230,13 +230,18 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 		return;
 	}
 
-	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), f2v(update.p3nEye), update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
+	RotationHumanoid rot;
+	rot.upperYaw = MxmYawToWorldYaw(update.p3nEye.x);
+	rot.upperPitch = MxmPitchToWorldPitch(update.p3nEye.z);
+	rot.bodyYaw = MxmYawToWorldYaw(update.nRotate);
+
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, update.nState, update.nActionIDX);
 }
 
 void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) p3nEye=(%g, %g, %g) nSpeed=%g", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nSpeed);
+	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) rot=(%g, %g, %g) nSpeed=%g", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.upperYaw, update.upperPitch, update.bodyYaw, update.nSpeed);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -247,18 +252,18 @@ void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& 
 	float3 dir = { update.p3nDir.x, update.p3nDir.y, 0 };
 
 	// transform rotation for our coordinate system
-	// TODO: make a function
-	update.p3nEye.x = -update.p3nEye.x - PI/2;
-	update.p3nEye.y = -update.p3nEye.y - PI/2;
-	update.p3nEye.z = -update.p3nEye.z - PI/2;
+	RotationHumanoid rot;
+	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
+	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
+	rot.bodyYaw = MxmYawToWorldYaw(update.bodyYaw);
 
-	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), f2v(update.p3nEye), 0, update.nSpeed, ActionStateID::INVALID, 0);
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), rot, update.nSpeed, ActionStateID::INVALID, 0);
 }
 
 void Channel::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u rot1=%f rot2=%f rot3=%f", clientID, (u32)update.characterID, update.rot1, update.rot2, update.rot3);
+	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u rot1=%f rot2=%f rot3=%f", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -267,11 +272,11 @@ void Channel::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& 
 	}
 
 	// transform rotation for our coordinate system
-	update.rot1 = -update.rot1 - PI/2;
-	update.rot2 = -update.rot2 - PI/2;
-	update.rot3 = -update.rot3 - PI/2;
-
-	game->OnPlayerUpdateRotation(clientID, actorUID, update.rot1, update.rot3);
+	RotationHumanoid rot;
+	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
+	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
+	rot.bodyYaw = MxmYawToWorldYaw(update.bodyYaw);
+	game->OnPlayerUpdateRotation(clientID, actorUID, rot);
 }
 
 void Channel::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -296,7 +301,7 @@ void Channel::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& 
 
 void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
+	Cl::CN_GamePlayerSyncActionStateOnly sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
 	i32 state = (i32)sync.state;
 	const char* stateStr = g_ActionStateInvalidString;
@@ -321,6 +326,8 @@ void Channel::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const 
 		return;
 	}
 
+	sync.rotate = MxmYawToWorldYaw(sync.rotate);
+	sync.upperRotate = MxmYawToWorldYaw(sync.upperRotate);
 	game->OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 

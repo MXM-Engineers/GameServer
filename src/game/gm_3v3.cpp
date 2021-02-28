@@ -45,9 +45,8 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	if(step == Step::Move) { // move
 		lego->dir = vec3(legoDir, 0, 0);
 		f32 a = legoAngle * PI/2;
-		lego->eye = vec3(a, 0, a);
-		lego->rotate = a;
-		lego->upperRotate = a;
+		lego->rotation.upperYaw = a;
+		lego->rotation.bodyYaw = a;
 	}
 	else { // stop
 		lego->dir = vec3(0);
@@ -63,10 +62,8 @@ void Game3v3::Update(f64 delta, Time localTime_)
 		e.UID = (u32)actor->UID;
 		e.name = actor->name;
 		e.pos = actor->pos;
-		e.eye = actor->eye;
-		e.dir = actor->dir;
-		e.upperRotate = actor->upperRotate;
-		e.bodyRotate = actor->rotate;
+		e.rot = actor->rotation;
+		e.moveDir = actor->dir;
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -103,9 +100,6 @@ bool Game3v3::LoadMap()
 	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 	lego.pos = vec3(2800, 3532, 550.602905);
 	lego.dir = vec3(0, 0, 0);
-	lego.eye = vec3(0, 0, 0);
-	lego.rotate = 0;
-	lego.upperRotate = 0;
 	lego.speed = 626.200012f;
 	legoUID = lego.UID;
 	return true;
@@ -160,7 +154,7 @@ void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
 }
 
-void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -178,12 +172,11 @@ void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3
 	// TODO: check for movement hacking
 	actor->pos = pos;
 	actor->dir = dir;
-	actor->eye = eye; // is eye ever used for anything? aiming abilities perhaps?
-	// actor->rotate = rotate; // FIXME: restore
+	actor->rotation = rot;
 	actor->speed = speed;
 }
 
-void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, f32 upperRot, f32 bodyRot)
+void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -198,9 +191,7 @@ void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, f32 upperR
 	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor);
 
-	// TODO: check for movement hacking
-	actor->rotate = bodyRot;
-	actor->upperRotate = bodyRot;
+	actor->rotation = rot;
 }
 
 void Game3v3::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
@@ -262,8 +253,8 @@ void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionSta
 	ASSERT(actor);
 
 	// TODO: check hacking
-	actor->rotate = rotate;
-	actor->upperRotate = upperRotate;
+	actor->rotation.bodyYaw = rotate;
+	actor->rotation.upperYaw = upperRotate;
 	actor->actionState = state;
 	actor->actionParam1 = param1;
 	actor->actionParam2 = param2;
@@ -293,7 +284,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
 	vec3 pos = spawnPoint.pos;
 	vec3 dir = spawnPoint.dir;
-	vec3 eye(0, 0, 0);
+	RotationHumanoid rot;
 
 	// TODO: check if already leader character
 	if((player.mainActorUID != ActorUID::INVALID)) {
@@ -302,7 +293,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 
 		pos = actor->pos;
 		dir = actor->dir;
-		eye = actor->eye;
+		rot = actor->rotation;
 
 		world.DestroyPlayerActor(player.mainActorUID);
 		world.DestroyPlayerActor(player.subActorUID);
@@ -316,7 +307,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	World::ActorPlayer& main = world.SpawnPlayerActor(clientID, classType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
 	main.pos = pos;
 	main.dir = dir;
-	main.eye = eye;
+	main.rotation = rot;
 	main.clientID = clientID; // TODO: this is not useful right now
 	player.mainActorUID = main.UID;
 
@@ -325,7 +316,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	World::ActorPlayer& sub = world.SpawnPlayerSubActor(clientID, main.UID, subClassType, SkinIndex::DEFAULT);
 	sub.pos = pos;
 	sub.dir = dir;
-	sub.eye = eye;
+	sub.rotation = rot;
 	sub.clientID = clientID; // TODO: this is not useful right now
 	player.subActorUID = sub.UID;
 
@@ -386,8 +377,7 @@ bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
-			actor.dir = playerActor->dir;
-			actor.eye = playerActor->eye;
+			actor.rotation = playerActor->rotation;
 
 			// trigger second emote
 			actor.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;

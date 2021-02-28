@@ -4,6 +4,7 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
+#include <EASTL/fixed_hash_map.h>
 #include "world.h"
 #include "game.h"
 #include <game/debug/window.h>
@@ -26,6 +27,7 @@ struct Game3v3: IGame
 		const i32 clientID;
 		ActorUID mainActorUID = ActorUID::INVALID;
 		ActorUID subActorUID = ActorUID::INVALID;
+		ActorUID cloneActorUID = ActorUID::INVALID; // TODO: remove
 
 		Player(): clientID(-1) {}
 
@@ -52,6 +54,8 @@ struct Game3v3: IGame
 	i32 legoDir = 1;
 	i32 legoAngle = 0;
 	u32 legoLastStep = 0;
+
+	eastl::fixed_hash_map<i32,ActorUID,MAX_PLAYERS> cloneMap;
 
 	void Init(Replication* replication_) override;
 	void Update(f64 delta, Time localTime_) override;

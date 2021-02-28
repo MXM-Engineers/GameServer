@@ -222,7 +222,7 @@ void Channel::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& he
 void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
+	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d }", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -241,7 +241,7 @@ void Channel::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& head
 void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) rot=(%g, %g, %g) nSpeed=%g", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.upperYaw, update.upperPitch, update.bodyYaw, update.nSpeed);
+	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) rot=(uy=%g, up=%g, vy=%g) nSpeed=%g }", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.upperYaw, update.upperPitch, update.bodyYaw, update.nSpeed);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -263,7 +263,7 @@ void Channel::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& 
 void Channel::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u rot1=%f rot2=%f rot3=%f", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
+	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u upperYaw=%f upperPitch=%f bodyYaw=%f }", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {

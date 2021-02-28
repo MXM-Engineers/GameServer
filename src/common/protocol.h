@@ -655,7 +655,7 @@ struct SN_GameCreateActor
 	CreatureIndex nIDX;
 	i32 dwLocalID;
 	float3 p3nPos;
-	float3 p3nDir;
+	float3 p3nDir; // rotation
 	i32 spawnType;
 	i32 actionState;
 	i32 ownerID;

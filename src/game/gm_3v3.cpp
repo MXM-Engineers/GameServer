@@ -27,6 +27,21 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	localTime = localTime_;
 	Dbg::PushNewFrame(dbgGameUID);
 
+	// update clone
+	foreach_const(p, playerList) {
+		if(p->mainActorUID != ActorUID::INVALID) {
+			World::ActorPlayer* main = world.FindPlayerActor(p->mainActorUID);
+			World::ActorPlayer* clone = world.FindPlayerActor(p->cloneActorUID);
+			ASSERT(main);
+			ASSERT(clone);
+
+			clone->pos = main->pos;
+			clone->dir = main->dir;
+			clone->speed = main->speed;
+			clone->rotation = main->rotation;
+		}
+	}
+
 	enum Step {
 		Move = 0,
 		Stop = 1,
@@ -125,6 +140,7 @@ void Game3v3::OnPlayerDisconnect(i32 clientID)
 		// we can disconnect before spawning, so test if we have an actor associated
 		if(player.mainActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.mainActorUID);
 		if(player.subActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.subActorUID);
+		if(player.cloneActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.cloneActorUID);
 
 		playerList.erase(playerMap[clientID]);
 	}
@@ -308,7 +324,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	main.pos = pos;
 	main.dir = dir;
 	main.rotation = rot;
-	main.clientID = clientID; // TODO: this is not useful right now
+	main.clientID = clientID;
 	player.mainActorUID = main.UID;
 
 	// spawn sub actor as well
@@ -324,6 +340,13 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	// TODO: eventually get rid of this system
 	replication->PlayerRegisterMasterActor(clientID, player.mainActorUID, classType);
 	replication->PlayerRegisterMasterActor(clientID, player.subActorUID, subClassType);
+
+	World::ActorPlayer& clone = world.SpawnPlayerActor(clientID, classType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
+	clone.pos = pos;
+	clone.dir = dir;
+	clone.rotation = rot;
+	clone.clientID = -1;
+	player.cloneActorUID = clone.UID;
 }
 
 void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)

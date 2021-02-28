@@ -1736,7 +1736,15 @@ void Replication::FrameDifference()
 		f32	speed;
 	};
 
+	struct UpdateRotation
+	{
+		i32 clientID;
+		ActorUID actorUID;
+		RotationHumanoid rot;
+	};
+
 	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
+	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
 
 	// find if the position has changed since last frame
 	foreach_const(it, frameCur->playerList) {
@@ -1744,6 +1752,8 @@ void Replication::FrameDifference()
 		auto found = framePrev->playerMap.find(cur.actorUID);
 		if(found == framePrev->playerMap.end()) continue; // previous not found, can't diff
 		const ActorPlayer& prev = *found->second;
+
+		bool rotationUpdated = false;
 
 		// position
 		const f32 posEpsilon = 0.1f;
@@ -1765,6 +1775,21 @@ void Replication::FrameDifference()
 			update.rotation = cur.rotation;
 			update.speed = cur.speed;
 			listUpdatePosition.push_back(update);
+
+			rotationUpdated = true;
+		}
+
+		const f32 rotEpsilon = 0.1f;
+		if(!rotationUpdated &&
+		   (fabs(cur.rotation.upperYaw - prev.rotation.upperYaw) > rotEpsilon ||
+		   fabs(cur.rotation.upperPitch - prev.rotation.upperPitch) > rotEpsilon ||
+		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
+		{
+			UpdateRotation update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.actorUID;
+			update.rot = cur.rotation;
+			listUpdateRotation.push_back(update);
 		}
 	}
 
@@ -1809,6 +1834,21 @@ void Replication::FrameDifference()
 
 				sync.characterID = GetLocalActorID(clientID, up->actorUID);
 				LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
+				SendPacket(clientID, sync);
+			}
+		}
+
+		foreach_const(up, listUpdateRotation) {
+			Sv::SN_PlayerSyncTurn sync;
+			sync.upperDir = { WorldYawToMxmYaw(up->rot.upperYaw), WorldPitchToMxmPitch(up->rot.upperPitch) };
+			sync.nRotate = WorldYawToMxmYaw(up->rot.bodyYaw);
+
+			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+				if(playerState[clientID] != PlayerState::IN_GAME) continue;
+				if(clientID == up->clientID) continue; // ignore self
+
+				sync.characterID = GetLocalActorID(clientID, up->actorUID);
+				LOG("[client%03d] Server :: SN_PlayerSyncTurn :: actorUID=%u", clientID, (u32)up->actorUID);
 				SendPacket(clientID, sync);
 			}
 		}
@@ -2123,7 +2163,9 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write<i32>(-1); // dwLocalID
 
 			packet.Write(actor.pos); // p3nPos
-			packet.Write(actor.dir); // p3nDir
+			packet.Write(WorldYawToMxmYaw(actor.rotation.upperYaw));
+			packet.Write(WorldPitchToMxmPitch(actor.rotation.upperPitch));
+			packet.Write(WorldYawToMxmYaw(actor.rotation.bodyYaw));
 			packet.Write<i32>(-1); // spawnType
 			packet.Write<ActionStateID>(actor.actionState); // actionState
 			packet.Write<i32>(0); // ownerID

@@ -63,6 +63,8 @@ struct MeshBuffer
 	void Push(const FixedStr32& name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount);
 	void UpdateAndBind();
 	void DrawMesh(const FixedStr32& name);
+
+	bool HasMesh(const FixedStr32& name) const;
 };
 
 struct Camera
@@ -96,6 +98,13 @@ struct Camera
 };
 
 struct Window;
+
+enum class Pipeline
+{
+	Shaded = 0,
+	ShadedDoubleSided,
+	Unlit,
+};
 
 struct Renderer
 {
@@ -132,34 +141,24 @@ struct Renderer
 	bool OpenAndLoadMeshFile(const char* name, const char* path);
 
 	inline void PushMesh(
+		Pipeline pipeline,
 		const FixedStr32& meshName,
 		const vec3& pos,
 		const vec3& rot = vec3(0),
 		const vec3& scale = vec3(1),
 		const vec3& color = vec3(1))
 	{
-		drawQueueMesh.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
+		DBG_ASSERT(meshBuffer.HasMesh(meshName));
+		switch(pipeline) {
+			case Pipeline::Shaded: drawQueueMesh.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
+			case Pipeline::ShadedDoubleSided: drawQueueMeshDs.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
+			case Pipeline::Unlit: drawQueueMeshUnlit.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
+			default: ASSERT_MSG(0, "case not handled"); break;
+		}
 	}
 
-	inline void PushMeshDs(
-		const FixedStr32& meshName,
-		const vec3& pos,
-		const vec3& rot = vec3(0),
-		const vec3& scale = vec3(1),
-		const vec3& color = vec3(1))
-	{
-		drawQueueMeshDs.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
-	}
-
-	inline void PushMeshUnlit(
-		const FixedStr32& meshName,
-		const vec3& pos,
-		const vec3& rot = vec3(0),
-		const vec3& scale = vec3(1),
-		const vec3& color = vec3(1))
-	{
-		drawQueueMeshUnlit.push_back(InstanceMesh{ meshName, pos, rot, scale, color });
-	}
+	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness);
+	void PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color);
 
 	void Render(f64 delta);
 	void OnEvent(const sapp_event& event);

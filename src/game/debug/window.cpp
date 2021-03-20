@@ -70,9 +70,6 @@ struct Window
 	void Frame();
 	void OnEvent(const sapp_event& event);
 	void Cleanup();
-
-	void DrawArrow(const vec3& start, const vec3& end, const vec3& color, f32 thickness);
-	void DrawArrowUnlit(const vec3& start, const vec3& end, const vec3& color, f32 thickness);
 };
 
 bool Window::Init()
@@ -95,13 +92,16 @@ void Window::Update(f64 delta)
 	ImGui::ShowDemoWindow();
 
 	// test meshes
-	// rdr.PushMesh({ "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
-	// rdr.PushMesh({ "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
-	// rdr.PushMesh("Cone", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
+	// rdr.PushMesh(Pipeline::Shaded, { "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
+	// rdr.PushMesh(Pipeline::Shaded, { "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
+	// rdr.PushMesh(Pipeline::Shaded, "Cone", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
 	// DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
+	// rdr.PushMesh(Pipeline::Shaded, "Cylinder", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
+	// rdr.PushMesh(Pipeline::Shaded, "Sphere", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
+	rdr.PushCapsule(Pipeline::Unlit, vec3(100, 100, 0), vec3(0), 50, 250, vec3(0.8, 0.2, 0.35));
 
 	// map
-	rdr.PushMeshDs("PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
+	rdr.PushMesh(Pipeline::ShadedDoubleSided, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
 
 	// @Speed: very innefficient locking
 	// Also some blinking because sometimes the gamestate is empty when we render it (NewFrame before adding anything)
@@ -113,18 +113,18 @@ void Window::Update(f64 delta)
 
 	foreach_const(ent, entityList) {
 		const Dbg::Entity& e = *ent;
-		rdr.PushMesh("Capsule", e.pos, vec3(0), vec3(250), e.color);
-		rdr.PushMeshUnlit("Ring", e.pos, vec3(0), vec3(50), e.color);
+		rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 50, 250, e.color);
+		rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
 
 		// this is updated when the player moves
 		const vec3 upperStart = e.pos + vec3(0, 0, 200);
 		const vec3 upperDir = glm::normalize(vec3(cosf(e.rot.upperYaw), sinf(e.rot.upperYaw), sinf(e.rot.upperPitch)));
-		DrawArrowUnlit(upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
+		rdr.PushArrow(Pipeline::Unlit, upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
 
 		const vec3 bodyRotStart = e.pos + vec3(0, 0, 150);
-		DrawArrowUnlit(bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
+		rdr.PushArrow(Pipeline::Unlit, bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
 		const vec3 dirStart = e.pos + vec3(0, 0, 80);
-		DrawArrowUnlit(dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
+		rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 	}
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
@@ -209,39 +209,6 @@ void Window::Cleanup()
 	rdr.Cleanup();
 	simgui_shutdown();
 	sg_shutdown();
-}
-
-void Window::DrawArrow(const vec3& start, const vec3& end, const vec3& color, f32 thickness)
-{
-	vec3 dir = glm::normalize(end - start);
-
-	f32 yaw = atan2(dir.y, dir.x);
-	f32 pitch = asinf(dir.z);
-	f32 len = glm::length(end - start);
-	f32 coneSize = thickness * 1.2f;
-	f32 coneHeight = coneSize * 2;
-	f32 armLen = len - coneHeight;
-	f32 sizeY = thickness;
-	rdr.PushMesh("CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
-	//rdr.PushMesh("Cube", end + vec3(0, 0, 0), vec3(0), vec3(coneSize), color);
-	rdr.PushMesh("Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
-}
-
-void Window::DrawArrowUnlit(const vec3& start, const vec3& end, const vec3& color, f32 thickness)
-{
-	// code duplication
-	vec3 dir = glm::normalize(end - start);
-
-	f32 yaw = atan2(dir.y, dir.x);
-	f32 pitch = asinf(dir.z);
-	f32 len = glm::length(end - start);
-	f32 coneSize = thickness * 1.2f;
-	f32 coneHeight = coneSize * 2;
-	f32 armLen = len - coneHeight;
-	f32 sizeY = thickness;
-
-	rdr.PushMeshUnlit("CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
-	rdr.PushMeshUnlit("Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
 }
 
 static Window* g_pWindow = nullptr;

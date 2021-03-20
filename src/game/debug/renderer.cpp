@@ -92,6 +92,11 @@ void MeshBuffer::DrawMesh(const FixedStr32& name)
 	sg_draw(ref.indexStart, ref.indexCount, 1);
 }
 
+bool MeshBuffer::HasMesh(const FixedStr32& name) const
+{
+	return meshRefMap.find(name) != meshRefMap.end();
+}
+
 void Camera::Save()
 {
 	CConfig& cfg = ConfigMutable();
@@ -223,6 +228,141 @@ void GenerateCapsuleMesh(const f32 height, const f32 radius, const i32 subDivisi
 			else {
 				n = vec3(cosf(a), sinf(a), 0);
 			}
+
+			*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, z, n.x, n.y, n.z };
+			vertCount++;
+		}
+
+		if(z > subHeight) {
+			for(i32 s = 0; s < subDivisions; s++) {
+				i32 b0 = vertCount - ((subDivisions+1) * 2) + s;
+				i32 b1 = vertCount - ((subDivisions+1) * 2) + s + 1;
+				i32 t0 = vertCount - subDivisions + s;
+				i32 t1 = vertCount - subDivisions + s + 1;
+
+				if(s+1 == subDivisions) {
+					b1 = vertCount - ((subDivisions+1) * 2);
+					t1 = vertCount - subDivisions;
+				}
+
+				*outInd++ = b0;
+				*outInd++ = t0;
+				*outInd++ = b1;
+
+				*outInd++ = b1;
+				*outInd++ = t0;
+				*outInd++ = t1;
+			}
+		}
+	}
+
+	const i32 last = vertCount;
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = last - 1 - subDivisions + s;
+		*outInd++ = last;
+		*outInd++ = last - 1 - subDivisions + (s+1) % (subDivisions+1);
+	}
+
+	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 };
+}
+
+template<typename OutputIteratorVertices, typename OutputIteratorIndices>
+void GenerateSphereMesh(const f32 radius, const i32 subDivisions, OutputIteratorVertices outVert, OutputIteratorIndices outInd)
+{
+	// base is 0,0,0
+
+	typedef MeshBuffer::Vertex Vert;
+
+	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 };
+
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = 0;
+		*outInd++ = s+1;
+		*outInd++ = (s+1) % (subDivisions+1) + 1;
+	}
+
+	const f32 height = radius * 2;
+
+	i32 vertCount = 1;
+	const f32 subHeight = height / subDivisions;
+	for(f32 z = subHeight; z < height; z += subHeight) {
+		for(i32 s = 0; s < subDivisions+1; s++) {
+			const f32 a = (2 * PI) / subDivisions * s;
+			f32 r = radius;
+			vec3 n;
+			if(radius - z > 0) {
+				f32 d = radius - z;
+				r = sqrtf(radius*radius - d*d);
+				n = glm::normalize(vec3(cosf(a) * r, sinf(a) * r, -d));
+			}
+			else if((height - z) < radius) {
+				f32 d = radius - (height - z);
+				r = sqrtf(radius*radius - d*d);
+				n = glm::normalize(vec3(cosf(a) * r, sinf(a) * r, d));
+			}
+			else {
+				n = vec3(cosf(a), sinf(a), 0);
+			}
+
+			*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, z, n.x, n.y, n.z };
+			vertCount++;
+		}
+
+		if(z > subHeight) {
+			for(i32 s = 0; s < subDivisions; s++) {
+				i32 b0 = vertCount - ((subDivisions+1) * 2) + s;
+				i32 b1 = vertCount - ((subDivisions+1) * 2) + s + 1;
+				i32 t0 = vertCount - subDivisions + s;
+				i32 t1 = vertCount - subDivisions + s + 1;
+
+				if(s+1 == subDivisions) {
+					b1 = vertCount - ((subDivisions+1) * 2);
+					t1 = vertCount - subDivisions;
+				}
+
+				*outInd++ = b0;
+				*outInd++ = t0;
+				*outInd++ = b1;
+
+				*outInd++ = b1;
+				*outInd++ = t0;
+				*outInd++ = t1;
+			}
+		}
+	}
+
+	const i32 last = vertCount;
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = last - 1 - subDivisions + s;
+		*outInd++ = last;
+		*outInd++ = last - 1 - subDivisions + (s+1) % (subDivisions+1);
+	}
+
+	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 };
+}
+
+template<typename OutputIteratorVertices, typename OutputIteratorIndices>
+void GenerateCylinderMesh(const f32 height, const f32 radius, const i32 subDivisions, OutputIteratorVertices outVert, OutputIteratorIndices outInd)
+{
+	// base is 0,0,0
+
+	typedef MeshBuffer::Vertex Vert;
+
+	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 };
+
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = 0;
+		*outInd++ = s+1;
+		*outInd++ = (s+1) % (subDivisions+1) + 1;
+	}
+
+	i32 vertCount = 1;
+	const f32 subHeight = height / subDivisions;
+	for(f32 z = subHeight; z < height; z += subHeight) {
+		for(i32 s = 0; s < subDivisions+1; s++) {
+			const f32 a = (2 * PI) / subDivisions * s;
+			f32 r = radius;
+			vec3 n = vec3(cosf(a), sinf(a), 0);
 
 			*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, z, n.x, n.y, n.z };
 			vertCount++;
@@ -493,10 +633,12 @@ bool Renderer::Init()
 	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> genVertList;
 	eastl::fixed_vector<u16,1024,true> genIndList;
 
+	/*
 	GenerateCapsuleMesh(1, 0.2f, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Capsule", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
+	*/
 
 	GenerateFlatRingMesh(0.1f, 1, 0.8f, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Ring", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
@@ -505,6 +647,18 @@ bool Renderer::Init()
 
 	GenerateConeMesh(1, 1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
 	meshBuffer.Push("Cone", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	genVertList.clear();
+	genIndList.clear();
+
+	GenerateCylinderMesh(1, 1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	meshBuffer.Push("Cylinder", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	genVertList.clear();
+	genIndList.clear();
+
+	GenerateSphereMesh(1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
+	meshBuffer.Push("Sphere", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	genVertList.clear();
+	genIndList.clear();
 
 	bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
 	if(!r) return false;
@@ -585,6 +739,29 @@ bool Renderer::OpenAndLoadMeshFile(const char* name, const char* path)
 
 	meshBuffer.Push(name, vertices, header.vertexCount, indices, header.indexCount);
 	return true;
+}
+
+void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness)
+{
+	vec3 dir = glm::normalize(end - start);
+
+	f32 yaw = atan2(dir.y, dir.x);
+	f32 pitch = asinf(dir.z);
+	f32 len = glm::length(end - start);
+	f32 coneSize = thickness * 1.2f;
+	f32 coneHeight = coneSize * 2;
+	f32 armLen = len - coneHeight;
+	f32 sizeY = thickness;
+
+	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
+	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
+}
+
+void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color)
+{
+	PushMesh(pipeline, "Sphere", pos, rot, vec3(radius), color);
+	PushMesh(pipeline, "Sphere", pos + vec3(0, 0, height - radius * 2), rot, vec3(radius), color);
+	PushMesh(pipeline, "Cylinder", pos + vec3(0, 0, radius), rot, vec3(radius, radius, height - radius * 2), color);
 }
 
 void Renderer::Render(f64 delta)

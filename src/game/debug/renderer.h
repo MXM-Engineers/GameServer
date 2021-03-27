@@ -6,9 +6,15 @@
 #include <common/vector_math.h>
 #include <common/utils.h>
 #include <EASTL/fixed_map.h>
+#include <EASTL/array.h>
 #include "sokol_app.h"
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
+
+inline u32 CU3(f32 r, f32 g, f32 b)
+{
+	return 0xFF000000 | (u8(b * 255) << 16) | (u8(g * 255) << 8) | (u8(r * 255));
+}
 
 struct Line
 {
@@ -67,6 +73,30 @@ struct MeshBuffer
 	bool HasMesh(const FixedStr32& name) const;
 };
 
+struct TrianglePoint
+{
+	vec3 pos;
+	u32 color;
+};
+
+typedef eastl::array<TrianglePoint,3> TriangleMesh;
+
+struct TriangleBuffer
+{
+	eastl::fixed_vector<TriangleMesh,8192,false> triangleList;
+	sg_buffer vramBuffer = { 0xFFFFFFFF };
+	bool needsUpdate = false;
+
+	sg_buffer GetUpdatedBuffer();
+	void Push(const TriangleMesh& triangle);
+	void Clear();
+
+	inline i32 GetLineCount() const
+	{
+		return triangleList.size();
+	}
+};
+
 struct Camera
 {
 	enum Controls
@@ -114,12 +144,14 @@ struct Renderer
 	sg_pipeline pipeMeshShadedDoubleSided;
 	sg_pipeline pipeMeshUnlit;
 	sg_pipeline pipeLine;
+	sg_pipeline pipeTriangle;
 	sg_shader shaderMeshShaded;
 	sg_shader shaderMeshUnlit;
 	sg_shader shaderLine;
 
 	LineBuffer lineBuffer;
 	MeshBuffer meshBuffer;
+	TriangleBuffer triangleBuffer;
 
 	struct InstanceMesh
 	{

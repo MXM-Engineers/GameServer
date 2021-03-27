@@ -97,6 +97,36 @@ bool MeshBuffer::HasMesh(const FixedStr32& name) const
 	return meshRefMap.find(name) != meshRefMap.end();
 }
 
+sg_buffer TriangleBuffer::GetUpdatedBuffer()
+{
+	if(needsUpdate) {
+		if(vramBuffer.id == 0xFFFFFFFF) {
+			sg_buffer_desc desc = {0};
+			desc.size = sizeof(TriangleMesh) * triangleList.capacity();
+			desc.data.ptr = nullptr;
+			desc.data.size = 0;
+			desc.usage = SG_USAGE_STREAM;
+			vramBuffer = sg_make_buffer(&desc);
+		}
+
+		sg_update_buffer(vramBuffer, { triangleList.data(), triangleList.size() * sizeof(TriangleMesh) });
+		needsUpdate = false;
+	}
+	return vramBuffer;
+}
+
+void TriangleBuffer::Push(const TriangleMesh& triangle)
+{
+	triangleList.push_back(triangle);
+	needsUpdate = true;
+}
+
+void TriangleBuffer::Clear()
+{
+	triangleList.clear();
+	needsUpdate = true;
+}
+
 void Camera::Save()
 {
 	CConfig& cfg = ConfigMutable();
@@ -668,43 +698,63 @@ bool Renderer::Init()
 	shaderLine = sg_make_shader(&ShaderLine());
 
 	// basic mesh pipeline
-	sg_pipeline_desc pipeDesc;
-	memset(&pipeDesc, 0, sizeof(pipeDesc));
-	pipeDesc.shader = shaderMeshShaded;
-	pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
-	pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
-	pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
-	pipeDesc.index_type = SG_INDEXTYPE_UINT16;
-	pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
-	pipeDesc.depth.write_enabled = true;
-	pipeDesc.cull_mode = SG_CULLMODE_BACK;
-	sg_pipeline_desc pipeDescDs = pipeDesc;
-	pipeDescDs.cull_mode = SG_CULLMODE_NONE;
-	pipeMeshShaded = sg_make_pipeline(&pipeDesc);
-	pipeMeshShadedDoubleSided = sg_make_pipeline(&pipeDescDs);
+	{
+		sg_pipeline_desc pipeDesc = {0};
+		pipeDesc.shader = shaderMeshShaded;
+		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
+		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.index_type = SG_INDEXTYPE_UINT16;
+		pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+		pipeDesc.depth.write_enabled = true;
+		pipeDesc.cull_mode = SG_CULLMODE_BACK;
+		sg_pipeline_desc pipeDescDs = pipeDesc;
+		pipeDescDs.cull_mode = SG_CULLMODE_NONE;
+		pipeMeshShaded = sg_make_pipeline(&pipeDesc);
+		pipeMeshShadedDoubleSided = sg_make_pipeline(&pipeDescDs);
+	}
 
-	memset(&pipeDesc, 0, sizeof(pipeDesc));
-	pipeDesc.shader = shaderMeshUnlit;
-	pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
-	pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
-	pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
-	pipeDesc.index_type = SG_INDEXTYPE_UINT16;
-	pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
-	pipeDesc.depth.write_enabled = true;
-	pipeDesc.cull_mode = SG_CULLMODE_BACK;
-	//pipeDesc.rasterizer.cull_mode = SG_CULLMODE_NONE;
-	pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
+	// mesh unlit
+	{
+		sg_pipeline_desc pipeDesc = {0};
+		pipeDesc.shader = shaderMeshUnlit;
+		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
+		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.index_type = SG_INDEXTYPE_UINT16;
+		pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+		pipeDesc.depth.write_enabled = true;
+		pipeDesc.cull_mode = SG_CULLMODE_BACK;
+		//pipeDesc.rasterizer.cull_mode = SG_CULLMODE_NONE;
+		pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
+	}
 
 	// line pipeline
-	sg_pipeline_desc linePipeDesc = {0};
-	linePipeDesc.shader = shaderLine;
-	linePipeDesc.primitive_type = SG_PRIMITIVETYPE_LINES;
-	linePipeDesc.layout.buffers[0].stride = sizeof(Line)/2;
-	linePipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
-	linePipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
-	linePipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
-	linePipeDesc.depth.write_enabled = true;
-	pipeLine = sg_make_pipeline(&linePipeDesc);
+	{
+		sg_pipeline_desc linePipeDesc = {0};
+		linePipeDesc.shader = shaderLine;
+		linePipeDesc.primitive_type = SG_PRIMITIVETYPE_LINES;
+		linePipeDesc.layout.buffers[0].stride = sizeof(Line)/2;
+		linePipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		linePipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
+		linePipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+		linePipeDesc.depth.write_enabled = true;
+		pipeLine = sg_make_pipeline(&linePipeDesc);
+	}
+
+
+	// triangle pipeline
+	{
+		sg_pipeline_desc trianglePipeDesc = {0};
+		trianglePipeDesc.shader = shaderLine;
+		trianglePipeDesc.layout.buffers[0].stride = sizeof(TriangleMesh)/3;
+		trianglePipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		trianglePipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_UBYTE4N;
+		trianglePipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+		trianglePipeDesc.depth.write_enabled = true;
+		trianglePipeDesc.cull_mode = SG_CULLMODE_NONE; // double sided
+		pipeTriangle = sg_make_pipeline(&trianglePipeDesc);
+	}
 
 	camera.Reset();
 	return true;
@@ -871,7 +921,7 @@ void Renderer::Render(f64 delta)
 	}
 
 	// draw lines
-	{
+	if(lineBuffer.GetLineCount() > 0) {
 		mat4 mvp = proj * view;
 
 		sg_bindings bindsLine = {0};
@@ -883,6 +933,19 @@ void Renderer::Render(f64 delta)
 		sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
 	}
 
+	// draw triangles
+	if(triangleBuffer.GetLineCount() > 0) {
+		mat4 mvp = proj * view;
+
+		sg_bindings binds = {0};
+		binds.vertex_buffers[0] = triangleBuffer.GetUpdatedBuffer();
+
+		sg_apply_pipeline(pipeTriangle);
+		sg_apply_bindings(&binds);
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &mvp, sizeof(mvp) });
+		sg_draw(0, triangleBuffer.GetLineCount() * 3, 1);
+	}
+
 	simgui_render();
 	sg_end_pass();
 	sg_commit();
@@ -891,6 +954,7 @@ void Renderer::Render(f64 delta)
 	drawQueueMeshDs.clear();
 	drawQueueMeshUnlit.clear();
 	lineBuffer.Clear();
+	triangleBuffer.Clear();
 }
 
 void Renderer::OnEvent(const sapp_event& event)

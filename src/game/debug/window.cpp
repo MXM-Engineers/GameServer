@@ -25,6 +25,8 @@
 #include "sokol_glue.h"
 #include "sokol_imgui.h"
 
+#include <game/physics.h>
+
 struct GameState
 {
 	eastl::fixed_vector<Dbg::Entity,2048,true> entityList;
@@ -43,6 +45,41 @@ struct GameState
 	}
 };
 
+struct CollisionTest
+{
+	PhysSphere sphere;
+	PhysCapsule capsule;
+	PhysTriangle triangle;
+
+	CollisionTest()
+	{
+		sphere.pos = vec3(1100, 150, 0);
+		sphere.radius = 50;
+
+		capsule.pos = vec3(100, 150, 0);
+		capsule.height = 100;
+		capsule.radius = 20;
+
+		triangle.points = {
+			vec3(600, 100, 0),
+			vec3(600, 200, 0),
+			vec3(600, 150, 100),
+		};
+	}
+
+	void Render(Renderer& rdr)
+	{
+		rdr.PushMesh(Pipeline::Unlit, "Sphere", sphere.pos, vec3(0), vec3(sphere.radius), vec3(0, 0.5, 0.8));
+		rdr.PushCapsule(Pipeline::Unlit, capsule.pos, vec3(0), capsule.radius, capsule.height, vec3(0, 0.5, 0.8));
+
+		rdr.triangleBuffer.Push({
+			TrianglePoint{ triangle.points[0], CU3(0, 0.5, 0) },
+			TrianglePoint{ triangle.points[1], CU3(0, 0.5, 0) },
+			TrianglePoint{ triangle.points[2], CU3(0, 0.5, 0) }
+		});
+	}
+};
+
 struct Window
 {
 	const i32 winWidth;
@@ -56,6 +93,8 @@ struct Window
 
 	GameState game;
 	GameState lastGame;
+
+	CollisionTest collisionTest;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -98,7 +137,7 @@ void Window::Update(f64 delta)
 	// DrawArrow(vec3(200, 0, 0), vec3(300, 400, 500), vec3(1), 20);
 	// rdr.PushMesh(Pipeline::Shaded, "Cylinder", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
 	// rdr.PushMesh(Pipeline::Shaded, "Sphere", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
-	rdr.PushCapsule(Pipeline::Unlit, vec3(100, 100, 0), vec3(0), 50, 250, vec3(0.8, 0.2, 0.35));
+	// rdr.PushCapsule(Pipeline::Unlit, vec3(100, 100, 0), vec3(0), 50, 250, vec3(0.8, 0.2, 0.35));
 
 	// map
 	rdr.PushMesh(Pipeline::ShadedDoubleSided, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
@@ -126,6 +165,8 @@ void Window::Update(f64 delta)
 		const vec3 dirStart = e.pos + vec3(0, 0, 80);
 		rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 	}
+
+	collisionTest.Render(rdr);
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 

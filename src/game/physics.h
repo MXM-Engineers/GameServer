@@ -25,3 +25,5 @@ struct PhysPenetrationVector
 	vec3 impact;
 	vec3 depth;
 };
+
+bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);

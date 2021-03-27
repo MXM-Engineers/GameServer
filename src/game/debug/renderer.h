@@ -16,6 +16,12 @@ inline u32 CU3(f32 r, f32 g, f32 b)
 	return 0xFF000000 | (u8(b * 255) << 16) | (u8(g * 255) << 8) | (u8(r * 255));
 }
 
+inline f64 saw(f64 a)
+{
+	f64 f = glm::fract(a);
+	return f < 0.5 ? f * 2 : 1.0 - (f - 0.5) * 2;
+}
+
 struct Line
 {
 	vec3 p0;

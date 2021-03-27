@@ -47,36 +47,75 @@ struct GameState
 
 struct CollisionTest
 {
-	PhysSphere sphere;
+	// test 1
+	struct {
+		PhysSphere sphereA;
+		PhysSphere sphereB;
+	} t1;
+
+
 	PhysCapsule capsule;
 	PhysTriangle triangle;
+	Renderer& rdr;
+	Time localTime;
 
-	CollisionTest()
+	CollisionTest(Renderer& rdr_): rdr(rdr_)
 	{
-		sphere.pos = vec3(1100, 150, 0);
-		sphere.radius = 50;
+		localTime = TimeRelNow();
 
-		capsule.pos = vec3(100, 150, 0);
+		t1.sphereA.pos = vec3(100, 150, 0);
+		t1.sphereA.radius = 50;
+		t1.sphereB.pos = vec3(600, 150, 0);
+		t1.sphereB.radius = 50;
+
+		capsule.pos = vec3(100, 250, 0);
 		capsule.height = 100;
 		capsule.radius = 20;
 
 		triangle.points = {
-			vec3(600, 100, 0),
 			vec3(600, 200, 0),
-			vec3(600, 150, 100),
+			vec3(600, 300, 0),
+			vec3(600, 250, 100),
 		};
 	}
 
-	void Render(Renderer& rdr)
+	inline void Draw(const PhysSphere& sphere, const vec3& color)
 	{
-		rdr.PushMesh(Pipeline::Unlit, "Sphere", sphere.pos, vec3(0), vec3(sphere.radius), vec3(0, 0.5, 0.8));
-		rdr.PushCapsule(Pipeline::Unlit, capsule.pos, vec3(0), capsule.radius, capsule.height, vec3(0, 0.5, 0.8));
+		rdr.PushMesh(Pipeline::Unlit, "Sphere", sphere.pos, vec3(0), vec3(sphere.radius), color);
+	}
 
+	inline void Draw(const PhysCapsule& capsule, const vec3& color)
+	{
+		rdr.PushCapsule(Pipeline::Unlit, capsule.pos, vec3(0), capsule.radius, capsule.height, color);
+	}
+
+	inline void Draw(const PhysTriangle& triangle, const vec3& color)
+	{
 		rdr.triangleBuffer.Push({
-			TrianglePoint{ triangle.points[0], CU3(0, 0.5, 0) },
-			TrianglePoint{ triangle.points[1], CU3(0, 0.5, 0) },
-			TrianglePoint{ triangle.points[2], CU3(0, 0.5, 0) }
+			TrianglePoint{ triangle.points[0], CU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.points[1], CU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.points[2], CU3(color.x, color.y, color.z) }
 		});
+	}
+
+	void Render()
+	{
+		Time lastLocalTime = localTime;
+		localTime = TimeRelNow();
+		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
+		lastLocalTime = localTime;
+
+		f64 a = (u64)localTime / 10000000000.0;
+		f64 s = saw(a);
+
+		// test 1
+		t1.sphereA.pos.x = 100 + s * 250;
+		t1.sphereB.pos.x = 600 - s * 250;
+
+		PhysPenetrationVector pen;
+		bool intersect = TestIntersection(t1.sphereA, t1.sphereB, &pen);
+		Draw(t1.sphereA, intersect ? vec3(1, 0, 0) : vec3(0, 0.5, 0.8));
+		Draw(t1.sphereB, intersect ? vec3(1, 0, 0) : vec3(0, 0.2, 1)  );
 	}
 };
 
@@ -99,7 +138,8 @@ struct Window
 	Window(i32 width, i32 height):
 		winWidth(width),
 		winHeight(height),
-		rdr{width, height}
+		rdr{width, height},
+		collisionTest(rdr)
 	{
 
 	}
@@ -166,7 +206,7 @@ void Window::Update(f64 delta)
 		rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 	}
 
-	collisionTest.Render(rdr);
+	collisionTest.Render();
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 

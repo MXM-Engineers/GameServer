@@ -57,7 +57,7 @@ struct CollisionTest
 
 	inline void Draw(const PhysSphere& sphere, const vec3& color)
 	{
-		rdr.PushMesh(Pipeline::Wireframe, "Sphere", sphere.pos + vec3(0, 0, -sphere.radius), vec3(0), vec3(sphere.radius), color);
+		rdr.PushMesh(Pipeline::Wireframe, "Sphere", sphere.center + vec3(0, 0, -sphere.radius), vec3(0), vec3(sphere.radius), color);
 	}
 
 	inline void Draw(const PhysCapsule& capsule, const vec3& color)
@@ -93,13 +93,13 @@ struct CollisionTest
 		{
 			PhysSphere sphereA;
 			PhysSphere sphereB;
-			sphereA.pos = vec3(200, 150, 50);
+			sphereA.center = vec3(200, 150, 50);
 			sphereA.radius = 50;
-			sphereB.pos = vec3(500, 150, 50);
+			sphereB.center = vec3(500, 150, 50);
 			sphereB.radius = 50;
 
-			sphereA.pos.x = 200 + s * 140;
-			sphereB.pos.x = 500 - s * 140;
+			sphereA.center.x = 200 + s * 140;
+			sphereB.center.x = 500 - s * 140;
 
 			PhysPenetrationVector pen;
 			bool intersect = TestIntersection(sphereA, sphereB, &pen);
@@ -120,15 +120,18 @@ struct CollisionTest
 			PhysSphere sphereA;
 			PhysTriangle triangleB;
 
-			sphereA.pos = vec3(100, 350, 50);
+			sphereA.center = vec3(100, 349, 50);
 			sphereA.radius = 50;
 			triangleB.p = {
-				vec3(300, 300, 0),
-				vec3(300, 400, 0),
-				vec3(300, 350, 100),
+				vec3(200, 350, 0),
+				vec3(300, 350, 10),
+				vec3(250, 350, 60),
 			};
 
-			sphereA.pos.x = 100 + s * 300;
+			vec3 off = vec3(saw(a) * -300, 0, 20);
+			foreach(p, triangleB.p) {
+				*p += off;
+			}
 
 			PhysPenetrationVector pen;
 			bool intersect = TestIntersection(sphereA, triangleB, &pen);
@@ -138,10 +141,18 @@ struct CollisionTest
 				const PhysTriangle& B = triangleB;
 
 				vec3 planeNorm = B.Normal();
-				f32 signedDistToPlane = glm::dot(A.pos - B.p[0], planeNorm);
+				f32 signedDistToPlane = glm::dot(A.center - B.p[0], planeNorm);
 
 				ImGui::Text("signedDistToPlane = %f", signedDistToPlane);
 				ImGui::Text("radius = %f", A.radius);
+
+				vec3 planeCenter = B.Center();
+				rdr.PushArrow(Pipeline::Unlit, planeCenter, planeCenter + planeNorm * 50.f, vec3(1, 1, 1), 2);
+
+				vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane;
+				rdr.PushArrow(Pipeline::Unlit, projSphereCenter - planeNorm * 10.f, projSphereCenter, vec3(1, 0, 0), 2);
+
+
 			} ImGui::End();
 
 			if(intersect) {
@@ -152,12 +163,6 @@ struct CollisionTest
 			else {
 				Draw(sphereA, vec3(0, 0.5, 0.8));
 				Draw(triangleB, vec3(0, 0.2, 1));
-
-				vec3 planeCenter = triangleB.Center();
-				vec3 planeNorm = triangleB.Normal();
-				rdr.PushArrow(Pipeline::Unlit, planeCenter, planeCenter + planeNorm * 50.f, vec3(1, 1, 1), 2);
-
-
 			}
 		}
 

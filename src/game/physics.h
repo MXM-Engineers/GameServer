@@ -4,7 +4,7 @@
 
 struct PhysSphere
 {
-	vec3 pos;
+	vec3 center;
 	f32 radius;
 };
 

@@ -47,36 +47,12 @@ struct GameState
 
 struct CollisionTest
 {
-	// test 1
-	struct {
-		PhysSphere sphereA;
-		PhysSphere sphereB;
-	} t1;
-
-
-	PhysCapsule capsule;
-	PhysTriangle triangle;
 	Renderer& rdr;
 	Time localTime;
 
 	CollisionTest(Renderer& rdr_): rdr(rdr_)
 	{
 		localTime = TimeRelNow();
-
-		t1.sphereA.pos = vec3(100, 150, 0);
-		t1.sphereA.radius = 50;
-		t1.sphereB.pos = vec3(600, 150, 0);
-		t1.sphereB.radius = 50;
-
-		capsule.pos = vec3(100, 250, 0);
-		capsule.height = 100;
-		capsule.radius = 20;
-
-		triangle.points = {
-			vec3(600, 200, 0),
-			vec3(600, 300, 0),
-			vec3(600, 250, 100),
-		};
 	}
 
 	inline void Draw(const PhysSphere& sphere, const vec3& color)
@@ -92,9 +68,9 @@ struct CollisionTest
 	inline void Draw(const PhysTriangle& triangle, const vec3& color)
 	{
 		rdr.triangleBuffer.Push({
-			TrianglePoint{ triangle.points[0], CU3(color.x, color.y, color.z) },
-			TrianglePoint{ triangle.points[1], CU3(color.x, color.y, color.z) },
-			TrianglePoint{ triangle.points[2], CU3(color.x, color.y, color.z) }
+			TrianglePoint{ triangle.p[0], CU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.p[1], CU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.p[2], CU3(color.x, color.y, color.z) }
 		});
 	}
 
@@ -114,19 +90,75 @@ struct CollisionTest
 		f64 s = saw(a);
 
 		// test 1
-		t1.sphereA.pos.x = 200 + s * 140;
-		t1.sphereB.pos.x = 500 - s * 140;
+		{
+			PhysSphere sphereA;
+			PhysSphere sphereB;
+			sphereA.pos = vec3(200, 150, 50);
+			sphereA.radius = 50;
+			sphereB.pos = vec3(500, 150, 50);
+			sphereB.radius = 50;
 
-		PhysPenetrationVector pen;
-		bool intersect = TestIntersection(t1.sphereA, t1.sphereB, &pen);
-		if(intersect) {
-			Draw(t1.sphereA, vec3(1, 0.5, 0.8));
-			Draw(t1.sphereB, vec3(1, 0.2, 1));
-			Draw(pen, vec3(1, 1, 0));
+			sphereA.pos.x = 200 + s * 140;
+			sphereB.pos.x = 500 - s * 140;
+
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersection(sphereA, sphereB, &pen);
+			if(intersect) {
+				Draw(sphereA, vec3(1, 0.5, 0.8));
+				Draw(sphereB, vec3(1, 0.2, 1));
+				Draw(pen, vec3(1, 1, 0));
+			}
+			else {
+				Draw(sphereA, vec3(0, 0.5, 0.8));
+				Draw(sphereB, vec3(0, 0.2, 1)  );
+			}
 		}
-		else {
-			Draw(t1.sphereA, vec3(0, 0.5, 0.8));
-			Draw(t1.sphereB, vec3(0, 0.2, 1)  );
+
+
+		// test 2
+		{
+			PhysSphere sphereA;
+			PhysTriangle triangleB;
+
+			sphereA.pos = vec3(100, 350, 50);
+			sphereA.radius = 50;
+			triangleB.p = {
+				vec3(300, 300, 0),
+				vec3(300, 400, 0),
+				vec3(300, 350, 100),
+			};
+
+			sphereA.pos.x = 100 + s * 300;
+
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersection(sphereA, triangleB, &pen);
+
+			if(ImGui::Begin("Test 2")) {
+				const PhysSphere& A = sphereA;
+				const PhysTriangle& B = triangleB;
+
+				vec3 planeNorm = B.Normal();
+				f32 signedDistToPlane = glm::dot(A.pos - B.p[0], planeNorm);
+
+				ImGui::Text("signedDistToPlane = %f", signedDistToPlane);
+				ImGui::Text("radius = %f", A.radius);
+			} ImGui::End();
+
+			if(intersect) {
+				Draw(sphereA, vec3(1, 0.5, 0.8));
+				Draw(triangleB, vec3(1, 0.2, 1));
+				Draw(pen, vec3(1, 1, 0));
+			}
+			else {
+				Draw(sphereA, vec3(0, 0.5, 0.8));
+				Draw(triangleB, vec3(0, 0.2, 1));
+
+				vec3 planeCenter = triangleB.Center();
+				vec3 planeNorm = triangleB.Normal();
+				rdr.PushArrow(Pipeline::Unlit, planeCenter, planeCenter + planeNorm * 50.f, vec3(1, 1, 1), 2);
+
+
+			}
 		}
 
 	}
@@ -262,9 +294,8 @@ void Window::Update(f64 delta)
 
 			ImGui::EndTable();
 		}
-
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 void Window::Frame()

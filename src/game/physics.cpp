@@ -11,3 +11,15 @@ bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationV
 	}
 	return glm::length(delta) < (A.radius + B.radius);
 }
+
+bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen)
+{
+	vec3 planeNorm = B.Normal();
+	f32 signedDistToPlane = glm::dot(A.pos - B.p[0], planeNorm);
+
+	if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
+		return false;
+	}
+
+	return true;
+}

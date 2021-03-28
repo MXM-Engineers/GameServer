@@ -729,6 +729,22 @@ bool Renderer::Init()
 		pipeMeshUnlit = sg_make_pipeline(&pipeDesc);
 	}
 
+	// mesh wireframe
+	{
+		sg_pipeline_desc pipeDesc = {0};
+		pipeDesc.shader = shaderMeshUnlit;
+		pipeDesc.primitive_type = SG_PRIMITIVETYPE_LINES;
+		pipeDesc.layout.buffers[0].stride = sizeof(MeshBuffer::Vertex);
+		pipeDesc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
+		pipeDesc.index_type = SG_INDEXTYPE_UINT16;
+		pipeDesc.depth.compare = SG_COMPAREFUNC_LESS_EQUAL;
+		pipeDesc.depth.write_enabled = true;
+		pipeDesc.cull_mode = SG_CULLMODE_BACK;
+		//pipeDesc.rasterizer.cull_mode = SG_CULLMODE_NONE;
+		pipeMeshWire = sg_make_pipeline(&pipeDesc);
+	}
+
 	// line pipeline
 	{
 		sg_pipeline_desc linePipeDesc = {0};
@@ -741,7 +757,6 @@ bool Renderer::Init()
 		linePipeDesc.depth.write_enabled = true;
 		pipeLine = sg_make_pipeline(&linePipeDesc);
 	}
-
 
 	// triangle pipeline
 	{
@@ -835,16 +850,16 @@ void Renderer::Render(f64 delta)
 	// origin
 	const f32 orgnLen = 1000;
 	const f32 orgnThick = 20;
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1) });
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(0, 0, 1) });
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0) });
-	drawQueueMeshUnlit.push_back({ "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(1, 0, 0) });
+	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1));
+	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(0, 0, 1));
+	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0));
+	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(0, 0, orgnLen/2), vec3(0), vec3(orgnThick, orgnThick, orgnLen), vec3(1, 0, 0));
 
 	//static Time lastTime = TimeNow();
 	//Time curTime = TimeNow();
 	//f32 a = sin((u64)curTime / 1000000000.0);
 	const vec3 sunPos = vec3(5000, 5000, 2000);
-	drawQueueMeshUnlit.push_back({ "CubeCentered", sunPos, vec3(0), vec3(100), vec3(1) });
+	PushMesh(Pipeline::Unlit, "CubeCentered", sunPos, vec3(0), vec3(100), vec3(1));
 
 	// rendering
 	const f32 viewDist = 5.0f;
@@ -860,7 +875,7 @@ void Renderer::Render(f64 delta)
 		sg_apply_pipeline(pipeMeshShaded);
 		meshBuffer.UpdateAndBind();
 
-		foreach_const(it, drawQueueMesh) {
+		foreach_const(it, drawQueue[(i32)Pipeline::Shaded]) {
 			mat4 model = glm::identity<mat4>();
 			model = glm::translate(model, it->pos);
 			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
@@ -880,7 +895,7 @@ void Renderer::Render(f64 delta)
 		sg_apply_pipeline(pipeMeshShadedDoubleSided);
 		meshBuffer.UpdateAndBind();
 
-		foreach_const(it, drawQueueMeshDs) {
+		foreach_const(it, drawQueue[(i32)Pipeline::ShadedDoubleSided]) {
 			mat4 model = glm::identity<mat4>();
 			model = glm::translate(model, it->pos);
 			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
@@ -900,7 +915,30 @@ void Renderer::Render(f64 delta)
 		sg_apply_pipeline(pipeMeshUnlit);
 		meshBuffer.UpdateAndBind();
 
-		foreach_const(it, drawQueueMeshUnlit) {
+		foreach_const(it, drawQueue[(i32)Pipeline::Unlit]) {
+			mat4 model = glm::identity<mat4>();
+			model = glm::translate(model, it->pos);
+			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
+			model = glm::scale(model, it->scale);
+
+			struct Uniform0
+			{
+				mat4 mvp;
+			};
+
+			Uniform0 uni0 = { proj * view * model };
+
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
+
+			meshBuffer.DrawMesh(it->meshName);
+		}
+
+		// wireframe
+		sg_apply_pipeline(pipeMeshWire);
+		meshBuffer.UpdateAndBind();
+
+		foreach_const(it, drawQueue[(i32)Pipeline::Wireframe]) {
 			mat4 model = glm::identity<mat4>();
 			model = glm::translate(model, it->pos);
 			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
@@ -950,9 +988,10 @@ void Renderer::Render(f64 delta)
 	sg_end_pass();
 	sg_commit();
 
-	drawQueueMesh.clear();
-	drawQueueMeshDs.clear();
-	drawQueueMeshUnlit.clear();
+	foreach(q, drawQueue) {
+		q->clear();
+	}
+
 	lineBuffer.Clear();
 	triangleBuffer.Clear();
 }

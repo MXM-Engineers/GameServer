@@ -81,12 +81,12 @@ struct CollisionTest
 
 	inline void Draw(const PhysSphere& sphere, const vec3& color)
 	{
-		rdr.PushMesh(Pipeline::Unlit, "Sphere", sphere.pos, vec3(0), vec3(sphere.radius), color);
+		rdr.PushMesh(Pipeline::Wireframe, "Sphere", sphere.pos + vec3(0, 0, -sphere.radius), vec3(0), vec3(sphere.radius), color);
 	}
 
 	inline void Draw(const PhysCapsule& capsule, const vec3& color)
 	{
-		rdr.PushCapsule(Pipeline::Unlit, capsule.pos, vec3(0), capsule.radius, capsule.height, color);
+		rdr.PushCapsule(Pipeline::Wireframe, capsule.pos, vec3(0), capsule.radius, capsule.height, color);
 	}
 
 	inline void Draw(const PhysTriangle& triangle, const vec3& color)
@@ -96,6 +96,11 @@ struct CollisionTest
 			TrianglePoint{ triangle.points[1], CU3(color.x, color.y, color.z) },
 			TrianglePoint{ triangle.points[2], CU3(color.x, color.y, color.z) }
 		});
+	}
+
+	inline void Draw(const PhysPenetrationVector& pen, const vec3& color)
+	{
+		rdr.PushArrow(Pipeline::Unlit, pen.impact, pen.impact + pen.depth, color, 2);
 	}
 
 	void Render()
@@ -109,13 +114,21 @@ struct CollisionTest
 		f64 s = saw(a);
 
 		// test 1
-		t1.sphereA.pos.x = 100 + s * 250;
-		t1.sphereB.pos.x = 600 - s * 250;
+		t1.sphereA.pos.x = 200 + s * 140;
+		t1.sphereB.pos.x = 500 - s * 140;
 
 		PhysPenetrationVector pen;
 		bool intersect = TestIntersection(t1.sphereA, t1.sphereB, &pen);
-		Draw(t1.sphereA, intersect ? vec3(1, 0, 0) : vec3(0, 0.5, 0.8));
-		Draw(t1.sphereB, intersect ? vec3(1, 0, 0) : vec3(0, 0.2, 1)  );
+		if(intersect) {
+			Draw(t1.sphereA, vec3(1, 0.5, 0.8));
+			Draw(t1.sphereB, vec3(1, 0.2, 1));
+			Draw(pen, vec3(1, 1, 0));
+		}
+		else {
+			Draw(t1.sphereA, vec3(0, 0.5, 0.8));
+			Draw(t1.sphereB, vec3(0, 0.2, 1)  );
+		}
+
 	}
 };
 

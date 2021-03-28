@@ -140,6 +140,8 @@ enum class Pipeline
 	Shaded = 0,
 	ShadedDoubleSided,
 	Unlit,
+	Wireframe,
+	_Count
 };
 
 struct Renderer
@@ -149,6 +151,7 @@ struct Renderer
 	sg_pipeline pipeMeshShaded;
 	sg_pipeline pipeMeshShadedDoubleSided;
 	sg_pipeline pipeMeshUnlit;
+	sg_pipeline pipeMeshWire;
 	sg_pipeline pipeLine;
 	sg_pipeline pipeTriangle;
 	sg_shader shaderMeshShaded;
@@ -168,9 +171,7 @@ struct Renderer
 		vec3 color = vec3(1);
 	};
 
-	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMesh;
-	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshDs;
-	eastl::fixed_vector<InstanceMesh, 1024, true> drawQueueMeshUnlit;
+	eastl::array<eastl::fixed_vector<InstanceMesh, 1024, true>, (i32)Pipeline::_Count> drawQueue;
 
 	Camera camera;
 
@@ -187,12 +188,7 @@ struct Renderer
 		const vec3& color = vec3(1))
 	{
 		DBG_ASSERT(meshBuffer.HasMesh(meshName));
-		switch(pipeline) {
-			case Pipeline::Shaded: drawQueueMesh.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
-			case Pipeline::ShadedDoubleSided: drawQueueMeshDs.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
-			case Pipeline::Unlit: drawQueueMeshUnlit.push_back(InstanceMesh{ meshName, pos, rot, scale, color }); break;
-			default: ASSERT_MSG(0, "case not handled"); break;
-		}
+		drawQueue[(i32)pipeline].push_back(InstanceMesh{ meshName, pos, rot, scale, color });
 	}
 
 	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness);

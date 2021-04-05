@@ -806,7 +806,7 @@ bool Renderer::OpenAndLoadMeshFile(const char* name, const char* path)
 	return true;
 }
 
-void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness)
+void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent)
 {
 	vec3 dir = glm::normalize(end - start);
 
@@ -818,15 +818,44 @@ void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, 
 	f32 armLen = len - coneHeight;
 	f32 sizeY = thickness;
 
-	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color);
-	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color);
+	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color, parent);
+	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color, parent);
 }
 
-void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color)
+void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent)
 {
-	PushMesh(pipeline, "Sphere", pos, rot, vec3(radius), color);
-	PushMesh(pipeline, "Sphere", pos + vec3(0, 0, height - radius * 2), rot, vec3(radius), color);
-	PushMesh(pipeline, "Cylinder", pos + vec3(0, 0, radius), rot, vec3(radius, radius, height - radius * 2), color);
+	auto base = PushAnchor(pos, rot, vec3(1), parent);
+	PushMesh(pipeline, "Sphere", vec3(0), vec3(0), vec3(radius), color, base);
+	PushMesh(pipeline, "Sphere", vec3(0, 0, height - radius * 2), vec3(0), vec3(radius), color, base);
+	PushMesh(pipeline, "Cylinder", vec3(0, 0, radius), vec3(0), vec3(radius, radius, height - radius * 2), color, base);
+}
+
+template<class Transform>
+inline mat4 MakeModelMatrixFromTransform(const Transform& t)
+{
+	mat4 model = glm::identity<mat4>();
+	model = glm::translate(model, t.pos);
+	model = model * glm::eulerAngleZYX(t.rot.x, -t.rot.y, t.rot.z);
+	model = glm::scale(model, t.scale);
+	return model;
+}
+
+template<class Transform>
+inline mat4 MakeModelMatrixFromTransformHierarchy(const Transform& t)
+{
+	eastl::fixed_list<const Transform*, 2048, false> parentHierarchy;
+	const Transform* cur = &t;
+	while(cur->parent) {
+		parentHierarchy.push_front(cur->parent);
+		cur = cur->parent;
+	}
+
+	mat4 model = glm::identity<mat4>();
+	foreach_const(p, parentHierarchy) {
+		model = model * MakeModelMatrixFromTransform(**p);
+	}
+	model = model * MakeModelMatrixFromTransform(t);
+	return model;
 }
 
 void Renderer::Render(f64 delta)
@@ -876,10 +905,9 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueue[(i32)Pipeline::Shaded]) {
-			mat4 model = glm::identity<mat4>();
-			model = glm::translate(model, it->pos);
-			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
-			model = glm::scale(model, it->scale);
+			if(it->meshName.empty()) continue; // ignore null meshes
+
+			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
@@ -896,10 +924,7 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueue[(i32)Pipeline::ShadedDoubleSided]) {
-			mat4 model = glm::identity<mat4>();
-			model = glm::translate(model, it->pos);
-			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
-			model = glm::scale(model, it->scale);
+			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
 			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
@@ -916,10 +941,7 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueue[(i32)Pipeline::Unlit]) {
-			mat4 model = glm::identity<mat4>();
-			model = glm::translate(model, it->pos);
-			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
-			model = glm::scale(model, it->scale);
+			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			struct Uniform0
 			{
@@ -939,10 +961,7 @@ void Renderer::Render(f64 delta)
 		meshBuffer.UpdateAndBind();
 
 		foreach_const(it, drawQueue[(i32)Pipeline::Wireframe]) {
-			mat4 model = glm::identity<mat4>();
-			model = glm::translate(model, it->pos);
-			model = model * glm::eulerAngleZYX(it->rot.x, -it->rot.y, it->rot.z);
-			model = glm::scale(model, it->scale);
+			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			struct Uniform0
 			{

@@ -29,6 +29,7 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 	vec3 planeNorm = B.Normal();
 	f32 signedDistToPlane = glm::dot(A.center - B.p[0], planeNorm);
 
+	// does not intersect plane
 	if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
 		return false;
 	}
@@ -85,5 +86,10 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 		return true;
 	}
 
+	return false;
+}
+
+bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen)
+{
 	return false;
 }

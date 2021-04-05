@@ -10,9 +10,9 @@ struct PhysSphere
 
 struct PhysCapsule
 {
-	vec3 pos;
+	vec3 base;
+	vec3 tip;
 	f32 radius;
-	f32 height;
 };
 
 struct PhysTriangle
@@ -38,3 +38,4 @@ struct PhysPenetrationVector
 
 bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen);
+bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);

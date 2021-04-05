@@ -62,7 +62,12 @@ struct CollisionTest
 
 	inline void Draw(const PhysCapsule& capsule, const vec3& color)
 	{
-		rdr.PushCapsule(Pipeline::Wireframe, capsule.pos, vec3(0), capsule.radius, capsule.height, color);
+		f32 height = glm::length(capsule.tip - capsule.base);
+		vec3 dir = glm::normalize(capsule.tip - capsule.base);
+		f32 yaw = atan2(dir.y, dir.x);
+		f32 pitch = asinf(-dir.z);
+
+		rdr.PushCapsule(Pipeline::Wireframe, capsule.base, vec3(yaw, pitch, 0), capsule.radius, height, color);
 	}
 
 	inline void Draw(const PhysTriangle& triangle, const vec3& color)
@@ -151,8 +156,6 @@ struct CollisionTest
 
 				vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane;
 				rdr.PushArrow(Pipeline::Unlit, projSphereCenter - planeNorm * 10.f, projSphereCenter, vec3(1, 0, 0), 2);
-
-
 			} ImGui::End();
 
 			if(intersect) {
@@ -166,6 +169,17 @@ struct CollisionTest
 			}
 		}
 
+		// test3
+		{
+			PhysCapsule capsuleA;
+			PhysCapsule capsuleB;
+
+			capsuleA.base = vec3(100, 500, 0);
+			capsuleA.tip = vec3(100, 500, 100);
+			capsuleA.radius = 20;
+
+			Draw(capsuleA, vec3(0, 0.5, 0.8));
+		}
 	}
 };
 
@@ -220,6 +234,8 @@ void Window::Update(f64 delta)
 {
 	ImGui::ShowDemoWindow();
 
+
+	const f64 t = TimeDiffSec(TimeDiff(startTime, localTime));
 	// test meshes
 	// rdr.PushMesh(Pipeline::Shaded, { "Capsule", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
 	// rdr.PushMesh(Pipeline::Shaded, { "Ring", vec3(0, 0, 0), vec3(0), vec3(1), vec3(1, 0.5, 0) });
@@ -228,6 +244,9 @@ void Window::Update(f64 delta)
 	// rdr.PushMesh(Pipeline::Shaded, "Cylinder", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
 	// rdr.PushMesh(Pipeline::Shaded, "Sphere", vec3(0, 0, 0), vec3(0), vec3(100), vec3(1, 0.5, 0));
 	// rdr.PushCapsule(Pipeline::Unlit, vec3(100, 100, 0), vec3(0), 50, 250, vec3(0.8, 0.2, 0.35));
+	// auto parent = rdr.PushAnchor(vec3(-100, -100, 0), vec3(0), vec3(10));
+	// rdr.PushMesh(Pipeline::Shaded, "Sphere", vec3(0), vec3(0), vec3(1), vec3(1), parent);
+	rdr.PushCapsule(Pipeline::Wireframe, vec3(-100, -100, 0), vec3(t, 0, 0), 20, 100, vec3(0.2, 0.5, 0.2));
 
 	// map
 	rdr.PushMesh(Pipeline::ShadedDoubleSided, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));

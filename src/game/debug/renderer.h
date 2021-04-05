@@ -6,6 +6,7 @@
 #include <common/vector_math.h>
 #include <common/utils.h>
 #include <EASTL/fixed_map.h>
+#include <EASTL/fixed_list.h>
 #include <EASTL/array.h>
 #include "sokol_app.h"
 #include "sokol_gfx.h"
@@ -164,6 +165,7 @@ struct Renderer
 
 	struct InstanceMesh
 	{
+		const InstanceMesh* parent;
 		FixedStr32 meshName;
 		vec3 pos;
 		vec3 rot = vec3(0); // yaw, pitch, roll
@@ -171,7 +173,7 @@ struct Renderer
 		vec3 color = vec3(1);
 	};
 
-	eastl::array<eastl::fixed_vector<InstanceMesh, 1024, true>, (i32)Pipeline::_Count> drawQueue;
+	eastl::array<eastl::fixed_list<InstanceMesh, 4096, true>, (i32)Pipeline::_Count> drawQueue;
 
 	Camera camera;
 
@@ -179,20 +181,34 @@ struct Renderer
 	void Cleanup();
 	bool OpenAndLoadMeshFile(const char* name, const char* path);
 
-	inline void PushMesh(
+	// return ID
+	inline const InstanceMesh* PushMesh(
 		Pipeline pipeline,
 		const FixedStr32& meshName,
 		const vec3& pos,
 		const vec3& rot = vec3(0),
 		const vec3& scale = vec3(1),
-		const vec3& color = vec3(1))
+		const vec3& color = vec3(1),
+		const InstanceMesh* parent = nullptr)
 	{
 		DBG_ASSERT(meshBuffer.HasMesh(meshName));
-		drawQueue[(i32)pipeline].push_back(InstanceMesh{ meshName, pos, rot, scale, color });
+		drawQueue[(i32)pipeline].push_back(InstanceMesh{ parent, meshName, pos, rot, scale, color });
+		return &drawQueue[(i32)pipeline].back();
 	}
 
-	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness);
-	void PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color);
+	// null mesh, only used for parent transforms
+	inline const InstanceMesh* PushAnchor(
+			const vec3& pos,
+			const vec3& rot = vec3(0),
+			const vec3& scale = vec3(1),
+			const InstanceMesh* parent = nullptr)
+	{
+		drawQueue[0].push_back(InstanceMesh{ parent, "", pos, rot, scale, vec3(0) });
+		return &drawQueue[0].back();
+	}
+
+	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent = nullptr);
+	void PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent = nullptr);
 
 	void Render(f64 delta);
 	void OnEvent(const sapp_event& event);

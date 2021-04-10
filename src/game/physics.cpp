@@ -91,5 +91,46 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 
 bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen)
 {
-	return false;
+	// capsule A
+	vec3 a_Normal = glm::normalize(A.tip - A.base);
+	vec3 a_LineEndOffset = a_Normal * A.radius;
+	vec3 a_A = A.base + a_LineEndOffset;
+	vec3 a_B = A.tip - a_LineEndOffset;
+
+	// capsule B
+	vec3 b_Normal = glm::normalize(B.tip - B.base);
+	vec3 b_LineEndOffset = b_Normal * B.radius;
+	vec3 b_A = B.base + b_LineEndOffset;
+	vec3 b_B = B.tip - b_LineEndOffset;
+
+	// vectors between line endpoints
+	vec3 v0 = b_A - a_A;
+	vec3 v1 = b_B - a_A;
+	vec3 v2 = b_A - a_B;
+	vec3 v3 = b_B - a_B;
+
+	// squared distances
+	f32 d0 = LengthSq(v0);
+	f32 d1 = LengthSq(v1);
+	f32 d2 = LengthSq(v2);
+	f32 d3 = LengthSq(v3);
+
+	// select best potential endpoint on capsule A:
+	vec3 bestA;
+	if(d2 < d0 || d2 < d1 || d3 < d0 || d3 < d1) {
+		bestA = a_B;
+	}
+	else {
+		bestA = a_A;
+	}
+
+	// select point on capsule B line segment nearest to best potential endpoint on A capsule:
+	vec3 bestB = ClosestPointOnLineSegment(b_A, b_B, bestA);
+
+	// now do the same for capsule A segment:
+	bestA = ClosestPointOnLineSegment(a_A, a_B, bestB);
+
+	const PhysSphere sphereA = {bestA, A.radius};
+	const PhysSphere sphereB = {bestB, B.radius};
+	return TestIntersection(sphereA, sphereB, pen);
 }

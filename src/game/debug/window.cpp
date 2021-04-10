@@ -178,12 +178,22 @@ struct CollisionTest
 			capsuleA.tip = vec3(100, 500, 100);
 			capsuleA.radius = 20;
 
-			capsuleB.base = vec3(100, 500, 0);
-			capsuleB.tip = vec3(200, 600, 0);
-			capsuleB.radius = 20;
+			capsuleB.base = vec3(300 + saw(a) * -300, 500, 40);
+			capsuleB.tip = vec3(200, 600, 40);
+			capsuleB.radius = 30;
 
-			Draw(capsuleA, vec3(0, 0.5, 0.8));
-			Draw(capsuleB, vec3(0, 0.2, 1));
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersection(capsuleA, capsuleB, &pen);
+
+			if(intersect) {
+				Draw(capsuleA, vec3(1, 0.5, 0.8));
+				Draw(capsuleB, vec3(1, 0.2, 1));
+				Draw(pen, vec3(1, 1, 0));
+			}
+			else {
+				Draw(capsuleA, vec3(0, 0.5, 0.8));
+				Draw(capsuleB, vec3(0, 0.2, 1));
+			}
 		}
 	}
 };

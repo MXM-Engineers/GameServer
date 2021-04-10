@@ -65,7 +65,7 @@ struct CollisionTest
 		f32 height = glm::length(capsule.tip - capsule.base);
 		vec3 dir = glm::normalize(capsule.tip - capsule.base);
 		f32 yaw = atan2(dir.y, dir.x);
-		f32 pitch = asinf(-dir.z);
+		f32 pitch = asinf(dir.z) - PI/2.0;
 
 		rdr.PushCapsule(Pipeline::Wireframe, capsule.base, vec3(yaw, pitch, 0), capsule.radius, height, color);
 	}
@@ -178,7 +178,12 @@ struct CollisionTest
 			capsuleA.tip = vec3(100, 500, 100);
 			capsuleA.radius = 20;
 
+			capsuleB.base = vec3(100, 500, 0);
+			capsuleB.tip = vec3(200, 600, 0);
+			capsuleB.radius = 20;
+
 			Draw(capsuleA, vec3(0, 0.5, 0.8));
+			Draw(capsuleB, vec3(0, 0.2, 1));
 		}
 	}
 };

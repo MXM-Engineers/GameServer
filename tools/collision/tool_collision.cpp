@@ -8,9 +8,6 @@
 	#define DBG
 #endif
 
-template<int CAPACITY>
-using FixedStr = eastl::fixed_string<char,CAPACITY,false>;
-
 template<typename T>
 inline T littleToBigEndian(T in)
 {

@@ -830,6 +830,12 @@ void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, 
 	PushMesh(pipeline, "Cylinder", vec3(0, 0, radius), vec3(0), vec3(radius, radius, height - radius * 2), color, base);
 }
 
+void Renderer::PushLine(const vec3& start, const vec3& end, const vec3& color)
+{
+	u32 c = CU3(color.x, color.y, color.z);
+	lineBuffer.Push({ start, c, end, c });
+}
+
 template<class Transform>
 inline mat4 MakeModelMatrixFromTransform(const Transform& t)
 {

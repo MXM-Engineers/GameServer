@@ -36,6 +36,20 @@ struct PhysPenetrationVector
 	vec3 depth;
 };
 
+inline f32 LengthSq(const vec3& v)
+{
+	return glm::dot(v, v);
+}
+
+// Project point on segment
+inline vec3 ClosestPointOnLineSegment(const vec3& la, const vec3& lb, const vec3& point)
+{
+	vec3 delta = lb - la;
+	f32 t = glm::dot(point - la, delta) / LengthSq(delta);
+	return la + clamp(t, 0.f, 1.f) * delta;
+}
+
 bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
+bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen);

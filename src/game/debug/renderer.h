@@ -210,6 +210,8 @@ struct Renderer
 	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent = nullptr);
 	void PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent = nullptr);
 
+	void PushLine(const vec3& start, const vec3& end, const vec3& color);
+
 	void Render(f64 delta);
 	void OnEvent(const sapp_event& event);
 };

@@ -195,6 +195,98 @@ struct CollisionTest
 				Draw(capsuleB, vec3(0, 0.2, 1));
 			}
 		}
+
+		// test4
+		{
+			PhysCapsule capsuleA;
+			PhysTriangle triangleB;
+
+			const vec3 off = vec3(210 + saw(a * .2) * -210, 0, 0);
+			capsuleA.base = vec3(100, 750, 0) + off;
+			capsuleA.tip = vec3(100, 750, 100) + off;
+			capsuleA.radius = 20;
+
+			triangleB.p = {
+				vec3(200, 700, 0),
+				vec3(300, 750, 100),
+				vec3(200, 800, 0)
+			};
+
+			{
+				const PhysCapsule& A = capsuleA;
+				const PhysTriangle& B = triangleB;
+				const vec3 capsuleNorm = normalize(A.tip - A.base);
+				const vec3 lineEndOffset = capsuleNorm * A.radius;
+				const vec3 pointA = A.base + lineEndOffset;
+				const vec3 pointB = A.tip - lineEndOffset;
+
+				// ray-plane intersection
+				// N is the triangle plane normal
+				const vec3 N = triangleB.Normal();
+				const f32 t = glm::dot(N, (triangleB.p[0] - A.base) / abs(glm::dot(N, capsuleNorm)));
+				const vec3 linePlaneIntersection = A.base + capsuleNorm * t;
+
+				vec3 refPoint;
+
+				// Determine whether linePlaneIntersection is inside all triangle edges
+				const vec3 c0 = glm::cross(linePlaneIntersection - B.p[0], B.p[1] - B.p[0]);
+				const vec3 c1 = glm::cross(linePlaneIntersection - B.p[1], B.p[2] - B.p[1]);
+				const vec3 c2 = glm::cross(linePlaneIntersection - B.p[2], B.p[0] - B.p[2]);
+				bool inside = glm::dot(c0, N) <= 0 && glm::dot(c1, N) <= 0 && glm::dot(c2, N) <= 0;
+
+				if(inside) {
+					refPoint = linePlaneIntersection;
+				}
+				else {
+					// Edge 1
+					vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], linePlaneIntersection);
+					vec3 v1 = linePlaneIntersection - point1;
+					f32 distsq = LengthSq(v1);
+					f32 bestDist = distsq;
+					refPoint = point1;
+
+					// Edge 2
+					vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], linePlaneIntersection);
+					vec3 v2 = linePlaneIntersection - point2;
+					distsq = LengthSq(v2);
+					if(distsq < bestDist) {
+						refPoint = point2;
+						bestDist = distsq;
+					}
+
+					// Edge 3
+					vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], linePlaneIntersection);
+					vec3 v3 = linePlaneIntersection - point3;
+					distsq = LengthSq(v3);
+					if(distsq < bestDist) {
+						refPoint = point3;
+						bestDist = distsq;
+					}
+				}
+
+				// The center of the best sphere candidate
+				vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
+				const PhysSphere sphere = { center, A.radius };
+
+				rdr.PushArrow(Pipeline::Unlit, linePlaneIntersection + vec3(10, 0, 0), linePlaneIntersection, vec3(1, 1, 1), 2);
+				rdr.PushLine(capsuleA.base - capsuleNorm * 1000.f, capsuleA.base + capsuleNorm * 1000.f, vec3(1));
+				Draw(sphere, vec3(1));
+			}
+
+
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersection(capsuleA, triangleB, &pen);
+
+			if(intersect) {
+				Draw(capsuleA, vec3(1, 0.5, 0.8));
+				Draw(triangleB, vec3(1, 0.2, 1));
+				Draw(pen, vec3(1, 1, 0));
+			}
+			else {
+				Draw(capsuleA, vec3(0, 0.5, 0.8));
+				Draw(triangleB, vec3(0, 0.2, 1));
+			}
+		}
 	}
 };
 

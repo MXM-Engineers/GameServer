@@ -18,7 +18,7 @@ enum class CoreAffinity: i32
 // These types can be used when the _Type in EntityComData is CREATURE
 // ToDo get correct values from decompile
 // ToDo test how the game react if the EntityComData Type isn't CREATURE
-enum CreatureType: i32
+enum class CreatureType: i32
 {
 	CREATURE_INVALID = 0,
 	CREATURE_NPC = 1,
@@ -30,7 +30,7 @@ enum CreatureType: i32
 
 // _Type in EntityComData
 // ToDo get correct values from decompile
-enum EntityType : i32
+enum class EntityType : i32
 {
 	ENTITY_INVALID = 0,
 	ENTITY_CREATURE = 1,
@@ -42,7 +42,7 @@ enum EntityType : i32
 
 // Has ItemComData _Type ITEM_TYPE_ETC
 // Most of these types don't have a subtype 
-enum EtcType : i32
+enum class EtcType : i32
 {
 	ETC_INVALID = 0,
 	ETC_SUPPORTKIT = 1,
@@ -75,58 +75,8 @@ enum EtcType : i32
 	ETC_NONE = 28
 };
 
-// Has EntityComData _Type ENTITY_TYPE_ITEM
-enum ItemType : i32
-{
-	ITEM_INVALID = 0,
-	ITEM_WEAPON = 1,
-	ITEM_ETC = 2,
-	ITEM_GEAR = 3
-};
-
-// Has ItemComData _Type ITEM_TYPE_GEAR
-enum GearType : i32
-{
-	GEAR_INVALID = 0,
-	GEAR_ATT = 1,
-	GEAR_DEF = 2,
-	GEAR_UTIL = 3
-};
-
-// NPC's that have shops or the jukebox have also _NPCType in CreatureComData
-// These types can be used when _Type in CreatureComData is NPC
-// ToDo get correct values from decompile
-enum NPCType: i32
-{
-	NPC_INVALID = 0,	// I don't know if these Types have an INVALID value --Delta-47
-	NPC_JUKEBOX = 1,
-	NPC_WAREHOUSE = 2,
-	NPC_MEDAL_TRADER = 3,
-	NPC_INGREDIENT_TRADER = 4,
-	NPC_SKIN_TRADER = 5,
-	NPC_GUILD = 6,
-	NPC_PVE = 7,
-	NPC_PVP = 8,
-	NPC_MASTERTRAINING = 9,
-	NPC_EVENTSHOP = 10
-};
-
-enum MapType: i32
-{
-	MAP_INVALID = 0,
-	MAP_CITY = 1, //LOBBY
-	MAP_INGAME = 2
-};
-
-// Has ETC_TYPE_SUPPORTKIT _Type in EtcItemComData
-enum SupportKitType : i32
-{
-	SUPPORTKIT_INVALID = 0,
-	SUPPORTKIT_HP = 1
-};
-
 // When the maptype is INGAME it has a GameSubModeType except the training room
-enum GameSubModeType : i32
+enum class GameSubModeType : i32
 {
 	GAME_SUB_MODE_INVALID = 0,
 	GAME_SUB_MODE_DEATH_MATCH_NORMAL = 1,
@@ -142,6 +92,70 @@ enum GameSubModeType : i32
 	GAME_SUB_MODE_STAGE_TUTORIAL = 11,
 	GAME_SUB_MODE_STAGE_NORMAL = 12
 };
+
+// Has ItemComData _Type ITEM_TYPE_GEAR
+enum class GearType : i32
+{
+	GEAR_INVALID = 0,
+	GEAR_ATT = 1,
+	GEAR_DEF = 2,
+	GEAR_UTIL = 3
+};
+
+// Has EntityComData _Type ENTITY_TYPE_ITEM
+enum class ItemType : i32
+{
+	ITEM_INVALID = 0,
+	ITEM_WEAPON = 1,
+	ITEM_ETC = 2,
+	ITEM_GEAR = 3
+};
+
+enum class MapType : i32
+{
+	MAP_INVALID = 0,
+	MAP_CITY = 1, //LOBBY
+	MAP_INGAME = 2
+};
+
+// NPC's that have shops or the jukebox have also _NPCType in CreatureComData
+// These types can be used when _Type in CreatureComData is NPC
+// ToDo get correct values from decompile
+enum class NPCType: i32
+{
+	NPC_INVALID = 0,	// I don't know if these Types have an INVALID value --Delta-47
+	NPC_JUKEBOX = 1,
+	NPC_WAREHOUSE = 2,
+	NPC_MEDAL_TRADER = 3,
+	NPC_INGREDIENT_TRADER = 4,
+	NPC_SKIN_TRADER = 5,
+	NPC_GUILD = 6,
+	NPC_PVE = 7,
+	NPC_PVP = 8,
+	NPC_MASTERTRAINING = 9,
+	NPC_EVENTSHOP = 10
+};
+
+// _Type values for <ST_COMMONSKILL> in SKILL.xml
+enum class SkillType : i32
+{
+	SKILL_INVALID = 0,
+	SKILL_PASSIVE,
+	SKILL_SHIRK,
+	SKILL_NORMAL,
+	SKILL_STANCE,
+	SKILL_SUMMON,
+	SKILL_COMBO,
+	SKILL_TOGGLE
+};
+
+// Has ETC_TYPE_SUPPORTKIT _Type in EtcItemComData
+enum class SupportKitType : i32
+{
+	SUPPORTKIT_INVALID = 0,
+	SUPPORTKIT_HP = 1
+};
+
 
 constexpr i32 JUKEBOX_MAX_TRACKS = 8;
 

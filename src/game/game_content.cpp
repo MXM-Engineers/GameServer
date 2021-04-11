@@ -162,6 +162,211 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
+bool GameXmlContent::LoadMasterDefinitionsModel()
+{
+	Path creatureCharacterXml = gameDataDir;
+	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		return false;
+	}
+
+	// get master IDs
+	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
+	do {
+		mastersModel.push_back();
+		CharacterModel &character = mastersModel.back();
+
+		LOG("DEBUG: CharacterModel Adress %x", &character);
+
+		i32 masterID;
+		pNodeMaster->QueryAttribute("ID", &masterID);
+
+		// Entity data
+		XMLElement* pEntityComData = pNodeMaster->FirstChildElement("EntityComData");
+		const char* entityTypeTemp;
+		pEntityComData->QueryStringAttribute("_Type", &entityTypeTemp);
+
+		// Creature data
+		float moveSpeed;
+		float rotateSpeed;
+		float scale;
+
+		pEntityComData->QueryFloatAttribute("_MoveSpeed", &moveSpeed);
+		pEntityComData->QueryFloatAttribute("_RotateSpeed", &rotateSpeed);
+		pEntityComData->QueryFloatAttribute("_Scale", &scale);
+
+		
+		XMLElement* pCreatureCompData = pNodeMaster->FirstChildElement("CreatureComData");
+
+		const char* creatureTypeTemp;
+		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+
+		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
+
+		// Read character data: skills
+
+		// read skill ids
+		u8 skillCounter = 0;
+		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
+		do {
+			i32 skillID;
+			
+			pSkillElt->QueryAttribute("_Index", &skillID);
+			LOG("SkillID: %d", skillID);
+			LoadMasterSkillWithID(skillCounter, &character, skillID);
+			skillCounter++;
+
+			pSkillElt = pSkillElt->NextSiblingElement();
+		} while (pSkillElt);
+
+		// save master data
+		character.setID(masterID);
+		// entity data
+		character.setEntityType(StringToEntityType(entityTypeTemp));
+		// creature data
+		character.setCreatureType(StringToCreatureType(creatureTypeTemp));
+		character.setMoveSpeed(moveSpeed);
+		character.setRotateSpeed(rotateSpeed);
+		character.setScale(scale);
+		
+		pNodeMaster = pNodeMaster->NextSiblingElement();
+
+		//LOG("DEBUG MASTER: Creature Type %d, ID %d, movement speed %f, normal movement speed %f, skill 1 ID %d", character.getCreatureType(), 
+		//	character.getID(), character.getMoveSpeed(), character.getNormalMoveSpeed(), character.getSkills()->getSkillByIndex(0)->getID());
+		character.Print();
+	} while (pNodeMaster);
+
+	return true;
+}
+
+bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID)
+{
+	Path SkillXml = gameDataDir;
+	PathAppend(SkillXml, L"/SKILL.xml");
+
+	i32 fileSize;
+	u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
+	if (!fileData) {
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
+		return false;
+	}
+	defer(memFree(fileData));
+
+	using namespace tinyxml2;
+	XMLDocument doc;
+	XMLError error = doc.Parse((char*)fileData, fileSize);
+	if (error != XML_SUCCESS) {
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pNodeSkill = doc.FirstChildElement()->FirstChildElement();
+
+	do {
+		i32 _skillID;
+		pNodeSkill->QueryAttribute("ID", &_skillID);
+		if (_skillID == skillID)
+		{
+			XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
+			LOG("Skill Match");
+			const char* SkillTypeTemp;
+			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
+			if (EA::StdC::Strcmp(SkillTypeTemp, "SKILL_TYPE_NORMAL") == 0)
+			{
+				SkillsModel* _skillsModel = character->getSkills();
+				SkillNormalModel* _skillNormal = _skillsModel->getSkillByIndex(id);
+				float _temp = 0.0f;
+
+				LOG("DEBUG: Character addres: %x", character);
+				LOG("DEBUG: SkillModel addres: %x", _skillsModel);
+				LOG("DEBUG: SkillNormal addres: %x", _skillNormal);
+
+				_skillNormal->setID(_skillID);
+
+				for (int i = 0; i < 6; i++)
+				{
+					SkillNormalLevelModel* _skillNormalLevelModel = _skillNormal->getSkillNormalLevelByIndex(i);
+					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
+				}	
+			}
+			break;
+		}
+
+		pNodeSkill = pNodeSkill->NextSiblingElement();
+	} while (pNodeSkill);
+	
+	return true;
+}
+
+void GameXmlContent::SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp)
+{
+	if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setAddGroggy(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setAttackMultiplier(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setBaseDamage(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeEP(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeMP(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setConsumeUG(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setCoolTime(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillIndex(_temp); //fix me: float in int32
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillRangeLengthX(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setSkillRangeLengthY(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetMaxDistance(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetRangeLengthX(_temp);
+	}
+	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel->setTargetRangeLengthY(_temp);
+	}
+}
+
 bool GameXmlContent::LoadMapList()
 {
 	Path xmlPath = gameDataDir;
@@ -195,16 +400,16 @@ bool GameXmlContent::LoadMapList()
 		const char* mapTypeXml;
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
 		
-		mapList.gameSubModeType = GAME_SUB_MODE_INVALID;
+		mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_INVALID;
 		if (EA::StdC::Strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
 		{
-			mapList.mapType = MAP_CITY;
+			mapList.mapType = MapType::MAP_CITY;
 		}
 		else if (EA::StdC::Strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
 		{
 			const char* gameSubModeTypeXml;
 
-			mapList.mapType = MAP_INGAME;
+			mapList.mapType = MapType::MAP_INGAME;
 		
 			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) != XML_SUCCESS)
 			{
@@ -212,51 +417,51 @@ bool GameXmlContent::LoadMapList()
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_DEATH_MATCH_NORMAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_DEATH_MATCH_NORMAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_CORE;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_CORE;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_OCCUPY_BUSH;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_BUSH;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_AUTHENTIC;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_AUTHENTIC;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_FIRE_POWER;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_FIRE_POWER;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_RUN;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_RUN;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_SPORTS_SURVIVAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_SURVIVAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_TUTORIAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_TUTORIAL;
 			}
 			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
 			{
-				mapList.gameSubModeType = GAME_SUB_MODE_STAGE_NORMAL;
+				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_NORMAL;
 			}
 			else
 			{
@@ -375,7 +580,7 @@ bool GameXmlContent::LoadLobby(i32 index)
 		return false;
 	};
 
-	if (map->mapType != MAP_CITY)
+	if (map->mapType != MapType::MAP_CITY)
 	{
 		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
 		return false;
@@ -446,6 +651,9 @@ bool GameXmlContent::Load()
 	r = LoadMasterWeaponDefinitions();
 	if(!r) return false;
 
+	r = LoadMasterDefinitionsModel();
+	if (!r) return false;
+
 	r = LoadMapList();
 	if (!r) return false;
 
@@ -496,6 +704,103 @@ bool GameXmlContent::Load()
 
 	LOG("GameContent successfully loaded.");
 	return true;
+}
+
+// Returns CREATURE_INVALID when it doesn't recognises the creature type.
+CreatureType GameXmlContent::StringToCreatureType(const char* s)
+{
+	if (EA::StdC::Strcmp("CREATURE_TYPE_ALLY", s) == 0)
+	{
+		return CreatureType::CREATURE_ALLY;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_BOT", s) == 0)
+	{
+		return CreatureType::CREATURE_BOT;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_MONSTER", s) == 0)
+	{
+		return CreatureType::CREATURE_MONSTER;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_NPC", s) == 0)
+	{
+		return CreatureType::CREATURE_NPC;
+	}
+	else if (EA::StdC::Strcmp("CREATURE_TYPE_PC", s) == 0)
+	{
+		return CreatureType::CREATURE_PC;
+	}
+	else
+	{
+		LOG("Unknown CreatureType: %s", s);
+		return CreatureType::CREATURE_INVALID;
+	}
+}
+
+// Returns ENTITY_INVALID when it doesn't recognises the entity type.
+EntityType GameXmlContent::StringToEntityType(const char* s)
+{
+	if (EA::StdC::Strcmp("ENTITY_TYPE_CREATURE", s) == 0)
+	{
+		return EntityType::ENTITY_CREATURE;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_DYNAMIC", s) == 0)
+	{
+		return EntityType::ENTITY_DYNAMIC;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_ITEM", s) == 0)
+	{
+		return EntityType::ENTITY_ITEM;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_SFX", s) == 0)
+	{
+		return EntityType::ENTITY_SFX;
+	}
+	else if (EA::StdC::Strcmp("ENTITY_TYPE_TERRAIN", s) == 0)
+	{
+		return EntityType::ENTITY_TERRAIN;
+	}
+	else
+	{
+		LOG("Unknown EntityType: %s", s);
+		return EntityType::ENTITY_INVALID;
+	}
+}
+
+SkillType GameXmlContent::StringToSkillType(const char* s)
+{
+	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
+	{
+		return SkillType::SKILL_COMBO;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
+	{
+		return SkillType::SKILL_NORMAL;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
+	{
+		return SkillType::SKILL_PASSIVE;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
+	{
+		return SkillType::SKILL_SHIRK;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
+	{
+		return SkillType::SKILL_STANCE;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
+	{
+		return SkillType::SKILL_SUMMON;
+	}
+	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
+	{
+		return SkillType::SKILL_TOGGLE;
+	}
+	else
+	{
+		LOG("Unknown SkillType: %s", s);
+		return SkillType::SKILL_INVALID;
+	}
 }
 
 const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const

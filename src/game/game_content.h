@@ -6,9 +6,13 @@
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
+#include <tinyxml2.h>
+#include "model/character_model.h"
+
+using namespace tinyxml2;
 
 struct GameXmlContent
-{
+{	
 	struct Master
 	{
 		CreatureIndex ID;
@@ -61,6 +65,7 @@ struct GameXmlContent
 	eastl::hash<const char*> strHash;
 
 	eastl::fixed_vector<Master,100,false> masters;
+	eastl::fixed_vector<CharacterModel,100,false> mastersModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
@@ -73,6 +78,9 @@ struct GameXmlContent
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
+	bool LoadMasterDefinitionsModel();
+	bool LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID);
+	void SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);
@@ -82,6 +90,12 @@ struct GameXmlContent
 
 	const MapList* FindMapListByID(i32 index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
+
+	// helper functions
+	CreatureType StringToCreatureType(const char* s);
+	EntityType StringToEntityType(const char* s);
+	SkillType StringToSkillType(const char* s);
+
 };
 
 bool GameXmlContentLoad();

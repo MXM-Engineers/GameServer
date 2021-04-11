@@ -164,6 +164,27 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 bool GameXmlContent::LoadMasterDefinitionsModel()
 {
+	// Parse SKILLS.xml once
+	{
+		Path SkillXml = gameDataDir;
+		PathAppend(SkillXml, L"/SKILL.xml");
+
+		i32 fileSize;
+		u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
+		if (!fileData) {
+			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
+			return false;
+		}
+		defer(memFree(fileData));
+
+		using namespace tinyxml2;
+		XMLError error = xmlSKILL.Parse((char*)fileData, fileSize);
+		if (error != XML_SUCCESS) {
+			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), xmlSKILL.ErrorStr());
+			return false;
+		}
+	}
+
 	Path creatureCharacterXml = gameDataDir;
 	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
 
@@ -183,13 +204,14 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		return false;
 	}
 
+
 	// get master IDs
 	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
 	do {
 		mastersModel.push_back();
 		CharacterModel &character = mastersModel.back();
 
-		LOG("DEBUG: CharacterModel Adress %x", &character);
+		LOG("DEBUG: CharacterModel addresss %llx", (intptr_t)&character);
 
 		i32 masterID;
 		pNodeMaster->QueryAttribute("ID", &masterID);
@@ -254,26 +276,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 
 bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID)
 {
-	Path SkillXml = gameDataDir;
-	PathAppend(SkillXml, L"/SKILL.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
-	if (!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), doc.ErrorStr());
-		return false;
-	}
-
-	XMLElement* pNodeSkill = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
 
 	do {
 		i32 _skillID;
@@ -290,9 +293,9 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 				SkillNormalModel* _skillNormal = _skillsModel->getSkillByIndex(id);
 				float _temp = 0.0f;
 
-				LOG("DEBUG: Character addres: %x", character);
-				LOG("DEBUG: SkillModel addres: %x", _skillsModel);
-				LOG("DEBUG: SkillNormal addres: %x", _skillNormal);
+				LOG("DEBUG: Character address: %llx", (intptr_t)character);
+				LOG("DEBUG: SkillModel address: %llx", (intptr_t)_skillsModel);
+				LOG("DEBUG: SkillNormal address: %llx", (intptr_t)_skillNormal);
 
 				_skillNormal->setID(_skillID);
 

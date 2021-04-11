@@ -96,6 +96,8 @@ struct GameXmlContent
 	EntityType StringToEntityType(const char* s);
 	SkillType StringToSkillType(const char* s);
 
+private:
+	XMLDocument xmlSKILL;
 };
 
 bool GameXmlContentLoad();

@@ -164,9 +164,6 @@ project "Game"
 		"src/game/**.h",
 		"src/game/**.c",
 		"src/game/**.cpp",
-		"src/game/model/**.h",
-		"src/game/model/**.c",
-		"src/game/model/**.cpp",
 		tinyxml2_files,
 		tracy_files
 	}

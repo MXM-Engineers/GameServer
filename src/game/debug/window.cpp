@@ -202,7 +202,6 @@ struct CollisionTest
 			static bool bShowRefPoint = true;
 			static bool bShowSphere = true;
 			static bool bShowFixedCapsule = true;
-			static bool bShowFixedSphere = true;
 			static f32 fOffsetX = 166.520f;
 
 			if(ImGui::Begin("Test 4")) {
@@ -210,7 +209,6 @@ struct CollisionTest
 				ImGui::Checkbox("Reference point", &bShowRefPoint);
 				ImGui::Checkbox("Collision sphere", &bShowSphere);
 				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
-				ImGui::Checkbox("Fixed sphere", &bShowFixedSphere);
 				ImGui::SliderFloat("Offset", &fOffsetX, 0, 300);
 			}
 			ImGui::End();
@@ -310,85 +308,6 @@ struct CollisionTest
 			if(bShowSphere) {
 				Draw(sphere, vec3(1));
 			}
-
-			// sphere intersection
-			{
-				const PhysSphere& A = sphere;
-				const PhysTriangle& B = triangleB;
-				vec3 planeNorm = B.Normal();
-				f32 signedDistToPlane = glm::dot(A.center - B.p[0], planeNorm);
-
-				// does not intersect plane
-				if(!(signedDistToPlane < -A.radius || signedDistToPlane > A.radius)) {
-					vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane; // projected sphere center on triangle plane
-
-					// Now determine whether projSphereCenter is inside all triangle edges
-					vec3 c0 = cross(projSphereCenter - B.p[0], B.p[1] - B.p[0]);
-					vec3 c1 = cross(projSphereCenter - B.p[1], B.p[2] - B.p[1]);
-					vec3 c2 = cross(projSphereCenter - B.p[2], B.p[0] - B.p[2]);
-					bool inside = glm::dot(c0, planeNorm) <= 0 && glm::dot(c1, planeNorm) <= 0 && glm::dot(c2, planeNorm) <= 0;
-					if(inside) {
-						PhysPenetrationVector pen;
-
-						vec3 delta = projSphereCenter - A.center;
-						if(glm::length(delta) > 0.001f) {
-							pen.impact = A.center + glm::normalize(projSphereCenter - A.center) * A.radius;
-							pen.depth = projSphereCenter - pen.impact;
-							Draw(pen, vec3(0.2, 1, 1));
-						}
-						else {
-							pen.impact = A.center - planeNorm * A.radius;
-							pen.depth = A.center - pen.impact;
-							Draw(pen, vec3(0.1, 0.2, 1));
-						}
-
-						rdr.PushArrow(Pipeline::Unlit, projSphereCenter + vec3(-5, 0, 0), projSphereCenter, vec3(0, 1, 0.2), 2);
-
-						if(bShowFixedSphere) {
-							PhysSphere fixed = sphere;
-							fixed.center += pen.depth;
-							Draw(fixed, vec3(1, 0.8, 0));
-
-							fixed = sphere;
-							fixed.center -= glm::normalize(pen.depth) * (sphere.radius * 2 - glm::length(pen.depth));
-							Draw(fixed, vec3(1, 0.2, 0));
-						}
-					}
-					else {
-						const f32 radiusSq = A.radius * A.radius;
-						bool intersects = false;
-
-						// project center on all edges
-						vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], A.center);
-						intersects |= LengthSq(A.center - point1) < radiusSq;
-						vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], A.center);
-						intersects |= LengthSq(A.center - point2) < radiusSq;
-						vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], A.center);
-						intersects |= LengthSq(A.center - point3) < radiusSq;
-
-						if(intersects) {
-							vec3 bestPoint = point1;
-							f32 bestDist = LengthSq(A.center - point1);
-
-							f32 dist2 = LengthSq(A.center - point2);
-							if(dist2 < bestDist) {
-								bestDist = dist2;
-								bestPoint = point2;
-							}
-
-							f32 dist3 = LengthSq(A.center - point3);
-							if(dist3 < bestDist) {
-								bestPoint = point3;
-							}
-
-							/*vec3 delta = bestPoint - A.center;
-							pen->impact = A.center + glm::normalize(delta) * A.radius;
-							pen->depth = -(glm::normalize(delta) * A.radius - delta);*/
-						}
-					}
-				}
-			}
-			// ------------------------------------------------------------------
 
 			PhysPenetrationVector pen;
 			bool intersect = TestIntersection(capsuleA, triangleB, &pen);

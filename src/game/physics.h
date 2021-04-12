@@ -32,7 +32,7 @@ struct PhysTriangle
 
 struct PhysPenetrationVector
 {
-	vec3 impact;
+	vec3 impact; // impact point is only used for visualization
 	vec3 depth;
 };
 

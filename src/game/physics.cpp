@@ -31,12 +31,12 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 	bool inside = glm::dot(c0, planeNorm) <= 0 && glm::dot(c1, planeNorm) <= 0 && glm::dot(c2, planeNorm) <= 0;
 	if(inside) {
 		vec3 delta = projSphereCenter - A.center;
-		if(glm::length(delta) > 0) {
+		if(glm::length(delta) > 0.001f) {
 			pen->impact = A.center + glm::normalize(projSphereCenter - A.center) * A.radius;
 			pen->depth = projSphereCenter - pen->impact;
 		}
 		else {
-			pen->impact = A.center + planeNorm * A.radius;
+			pen->impact = A.center - planeNorm * A.radius;
 			pen->depth = A.center - pen->impact;
 		}
 		return true;
@@ -131,9 +131,8 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 	const vec3 pointB = A.tip - lineEndOffset;
 
 	// ray-plane intersection
-	// N is the triangle plane normal
-	const vec3 N = B.Normal();
-	const f32 t = glm::dot(N, (B.p[0] - A.base) / abs(glm::dot(N, capsuleNorm)));
+	const vec3 planeNorm = B.Normal();
+	const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / abs(glm::dot(planeNorm, capsuleNorm)));
 	const vec3 linePlaneIntersection = A.base + capsuleNorm * t;
 
 	vec3 refPoint;
@@ -142,7 +141,7 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 	const vec3 c0 = glm::cross(linePlaneIntersection - B.p[0], B.p[1] - B.p[0]);
 	const vec3 c1 = glm::cross(linePlaneIntersection - B.p[1], B.p[2] - B.p[1]);
 	const vec3 c2 = glm::cross(linePlaneIntersection - B.p[2], B.p[0] - B.p[2]);
-	bool inside = glm::dot(c0, N) <= 0 && glm::dot(c1, N) <= 0 && glm::dot(c2, N) <= 0;
+	bool inside = glm::dot(c0, planeNorm) <= 0 && glm::dot(c1, planeNorm) <= 0 && glm::dot(c2, planeNorm) <= 0;
 
 	if(inside) {
 		refPoint = linePlaneIntersection;
@@ -175,7 +174,85 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 	}
 
 	// The center of the best sphere candidate
-	vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
-	const PhysSphere sphere = { center, A.radius };
-	return TestIntersection(sphere, B, pen);
+	const vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
+
+	// inline sphere collision test
+	// -------------------------------------------------------------------------------------------------------------
+	f32 signedDistToPlane = glm::dot(center - B.p[0], planeNorm);
+
+	// does not intersect plane
+	if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
+		return false;
+	}
+
+	vec3 projSphereCenter = center - planeNorm * signedDistToPlane; // projected sphere center on triangle plane
+
+	// Now determine whether projSphereCenter is inside all triangle edges
+	const vec3 d0 = cross(projSphereCenter - B.p[0], B.p[1] - B.p[0]);
+	const vec3 d1 = cross(projSphereCenter - B.p[1], B.p[2] - B.p[1]);
+	const vec3 d2 = cross(projSphereCenter - B.p[2], B.p[0] - B.p[2]);
+	inside = glm::dot(d0, planeNorm) <= 0 && glm::dot(d1, planeNorm) <= 0 && glm::dot(d2, planeNorm) <= 0;
+	if(inside) {
+		vec3 delta = projSphereCenter - center;
+		vec3 impact;
+		vec3 depth;
+		if(glm::length(delta) > 0.001f) {
+			impact = center + glm::normalize(projSphereCenter - center) * A.radius;
+			depth = projSphereCenter - impact;
+		}
+		else {
+			impact  = center - planeNorm * A.radius;
+			depth = center - impact;
+		}
+
+		vec3 depth1 = center + depth - pointA;
+		vec3 depth2 = center - glm::normalize(depth) * (A.radius * 2 - glm::length(depth)) - pointB;
+
+		if(LengthSq(depth1) < LengthSq(depth2)) {
+			pen->depth = depth1;
+			pen->impact = impact - (center - pointA);
+		}
+		else {
+			pen->depth = depth2;
+			pen->impact = center - depth2;
+		}
+		return true;
+	}
+
+	const f32 radiusSq = A.radius * A.radius;
+	bool intersects = false;
+
+	// project center on all edges
+	const vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], center);
+	intersects |= LengthSq(center - point1) < radiusSq;
+	const vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], center);
+	intersects |= LengthSq(center - point2) < radiusSq;
+	const vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], center);
+	intersects |= LengthSq(center - point3) < radiusSq;
+
+	if(intersects) {
+		vec3 bestPoint = point1;
+		f32 bestDist = LengthSq(center - point1);
+
+		f32 dist2 = LengthSq(center - point2);
+		if(dist2 < bestDist) {
+			bestDist = dist2;
+			bestPoint = point2;
+		}
+
+		f32 dist3 = LengthSq(center - point3);
+		if(dist3 < bestDist) {
+			bestPoint = point3;
+		}
+
+		vec3 delta = bestPoint - center;
+		vec3 impact = center + glm::normalize(delta) * A.radius;
+		vec3 depth = -(glm::normalize(delta) * A.radius - delta);
+
+		pen->depth = depth;
+		pen->impact = impact;
+		return true;
+	}
+
+	return false;
 }

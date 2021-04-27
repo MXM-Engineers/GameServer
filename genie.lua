@@ -29,7 +29,7 @@ solution "GameServer"
 	language "C++"
 
 	configuration {"Debug"}
-		targetsuffix "_debug"
+		targetsuffix "_dbg"
 		flags {
 			"Symbols",
 			"FullSymbols"
@@ -101,6 +101,7 @@ solution "GameServer"
 
 project "Login"
 	kind "ConsoleApp"
+	targetname "login_srv"
 
 	configuration {}
 
@@ -140,6 +141,7 @@ project "Login"
 
 project "Game"
 	kind "ConsoleApp"
+	targetname "game_srv"
 
 	configuration {}
 

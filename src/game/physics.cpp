@@ -2,14 +2,13 @@
 
 bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen)
 {
-	vec3 delta = B.center - A.center;
-	f32 deltaLen = glm::length(delta);
-	if(deltaLen < (A.radius + B.radius)) {
-		pen->impact = A.center + glm::normalize(delta) * A.radius;
-		pen->depth = -glm::normalize(delta) * (A.radius + B.radius - deltaLen);
+	f32 len = glm::length(B.center - A.center);
+	if(len < (A.radius + B.radius)) {
+		pen->depth = (A.radius + B.radius) - len;
+		pen->dir = glm::normalize(B.center - A.center);
 		return true;
 	}
-	return glm::length(delta) < (A.radius + B.radius);
+	return false;
 }
 
 bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen)
@@ -32,12 +31,12 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 	if(inside) {
 		vec3 delta = projSphereCenter - A.center;
 		if(glm::length(delta) > 0.001f) {
-			pen->impact = A.center + glm::normalize(projSphereCenter - A.center) * A.radius;
-			pen->depth = projSphereCenter - pen->impact;
+			pen->depth = A.radius - glm::length(delta);
+			pen->dir = glm::normalize(delta);
 		}
 		else {
-			pen->impact = A.center - planeNorm * A.radius;
-			pen->depth = A.center - pen->impact;
+			pen->dir = planeNorm;
+			pen->depth = A.radius;
 		}
 		return true;
 	}
@@ -69,8 +68,8 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 		}
 
 		vec3 delta = bestPoint - A.center;
-		pen->impact = A.center + glm::normalize(delta) * A.radius;
-		pen->depth = -(glm::normalize(delta) * A.radius - delta);
+		pen->depth = A.radius - glm::length(delta);
+		pen->dir = glm::normalize(delta);
 		return true;
 	}
 
@@ -125,14 +124,21 @@ bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B, PhysPenetratio
 
 bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen)
 {
-	const vec3 capsuleNorm = normalize(A.tip - A.base);
+	const vec3 capsuleNorm = glm::normalize(A.tip - A.base);
 	const vec3 lineEndOffset = capsuleNorm * A.radius;
 	const vec3 pointA = A.base + lineEndOffset;
 	const vec3 pointB = A.tip - lineEndOffset;
 
+// fix penetration depth length so we can displace the capsule along the plane normal
+// try to walk the capsule on a double co-planar triangle quad
+
 	// ray-plane intersection
 	const vec3 planeNorm = B.Normal();
-	const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / abs(glm::dot(planeNorm, capsuleNorm)));
+	f32 planeCapsuleDot = abs(glm::dot(planeNorm, capsuleNorm));
+	if(planeCapsuleDot == 0) {
+		planeCapsuleDot = 1;
+	}
+	const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / planeCapsuleDot);
 	const vec3 linePlaneIntersection = A.base + capsuleNorm * t;
 
 	vec3 refPoint;
@@ -194,27 +200,13 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 	inside = glm::dot(d0, planeNorm) <= 0 && glm::dot(d1, planeNorm) <= 0 && glm::dot(d2, planeNorm) <= 0;
 	if(inside) {
 		vec3 delta = projSphereCenter - center;
-		vec3 impact;
-		vec3 depth;
 		if(glm::length(delta) > 0.001f) {
-			impact = center + glm::normalize(projSphereCenter - center) * A.radius;
-			depth = projSphereCenter - impact;
+			pen->depth = glm::length(delta);
+			pen->dir = glm::normalize(delta);
 		}
 		else {
-			impact  = center - planeNorm * A.radius;
-			depth = center - impact;
-		}
-
-		vec3 depth1 = center + depth - pointA;
-		vec3 depth2 = center - glm::normalize(depth) * (A.radius * 2 - glm::length(depth)) - pointB;
-
-		if(LengthSq(depth1) < LengthSq(depth2)) {
-			pen->depth = depth1;
-			pen->impact = impact - (center - pointA);
-		}
-		else {
-			pen->depth = depth2;
-			pen->impact = center - depth2;
+			pen->dir = planeNorm;
+			pen->depth = A.radius;
 		}
 		return true;
 	}
@@ -246,11 +238,8 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 		}
 
 		vec3 delta = bestPoint - center;
-		vec3 impact = center + glm::normalize(delta) * A.radius;
-		vec3 depth = -(glm::normalize(delta) * A.radius - delta);
-
-		pen->depth = depth;
-		pen->impact = impact;
+		pen->depth = glm::length(delta);
+		pen->dir = glm::normalize(delta);
 		return true;
 	}
 

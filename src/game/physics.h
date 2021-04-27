@@ -32,8 +32,8 @@ struct PhysTriangle
 
 struct PhysPenetrationVector
 {
-	vec3 impact; // impact point is only used for visualization
-	vec3 depth;
+	vec3 dir;
+	f32 depth;
 };
 
 inline f32 LengthSq(const vec3& v)

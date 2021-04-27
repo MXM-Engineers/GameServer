@@ -79,9 +79,9 @@ struct CollisionTest
 		});
 	}
 
-	inline void Draw(const PhysPenetrationVector& pen, const vec3& color)
+	inline void DrawVec(const vec3& v, const vec3& at, const vec3& color)
 	{
-		rdr.PushArrow(Pipeline::Unlit, pen.impact, pen.impact + pen.depth, color, 2);
+		rdr.PushArrow(Pipeline::Unlit, at, at + v, color, 2);
 	}
 
 	void Render()
@@ -96,22 +96,39 @@ struct CollisionTest
 
 		// test 1
 		{
+			static bool bShowFixedSphere = true;
+			static bool bAutoMove = true;
+			static f32 fOffsetX = 0;
+
+			if(ImGui::Begin("Test 1")) {
+				ImGui::Checkbox("Fixed sphere", &bShowFixedSphere);
+				ImGui::Checkbox("Auto move", &bAutoMove);
+				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+			}
+			ImGui::End();
+
 			PhysSphere sphereA;
 			PhysSphere sphereB;
-			sphereA.center = vec3(200, 150, 50);
-			sphereA.radius = 50;
-			sphereB.center = vec3(500, 150, 50);
-			sphereB.radius = 50;
 
-			sphereA.center.x = 200 + s * 140;
-			sphereB.center.x = 500 - s * 140;
+			const vec3 off = bAutoMove ? vec3(220 + saw(a * .5) * -220, 0, 0) : vec3(fOffsetX, 0, 0);
+
+			sphereA.center = vec3(200, 150, 50) + off;
+			sphereA.radius = 50;
+			sphereB.center = vec3(310, 150, 50);
+			sphereB.radius = 50;
 
 			PhysPenetrationVector pen;
 			bool intersect = TestIntersection(sphereA, sphereB, &pen);
 			if(intersect) {
 				Draw(sphereA, vec3(1, 0.5, 0.8));
 				Draw(sphereB, vec3(1, 0.2, 1));
-				Draw(pen, vec3(1, 1, 0));
+				DrawVec(-pen.dir * pen.depth, sphereA.center + pen.dir * sphereA.radius, vec3(1, 1, 0));
+
+				if(bShowFixedSphere) {
+					PhysSphere fixed = sphereA;
+					fixed.center -= pen.dir * pen.depth;
+					Draw(fixed, vec3(1, 0.5, 0));
+				}
 			}
 			else {
 				Draw(sphereA, vec3(0, 0.5, 0.8));
@@ -122,18 +139,30 @@ struct CollisionTest
 
 		// test 2
 		{
+			static bool bShowFixedSphere = true;
+			static bool bAutoMove = true;
+			static f32 fOffsetX = 166.520f;
+
+			const bool open = ImGui::Begin("Test 2");
+			if(open) {
+				ImGui::Checkbox("Fixed sphere", &bShowFixedSphere);
+				ImGui::Checkbox("Auto move", &bAutoMove);
+				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+			}
+
+
 			PhysSphere sphereA;
 			PhysTriangle triangleB;
 
 			sphereA.center = vec3(100, 349, 50);
 			sphereA.radius = 50;
 			triangleB.p = {
-				vec3(200, 350, 0),
-				vec3(300, 350, 10),
-				vec3(250, 350, 60),
+				vec3(200, 350, 30),
+				vec3(300, 350, 40),
+				vec3(250, 350, 100),
 			};
 
-			vec3 off = vec3(saw(a) * -300, 0, 20);
+			const vec3 off = bAutoMove ? vec3(saw(a * .5) * -300, 0, 0) : vec3(-fOffsetX, 0, 0);
 			foreach(p, triangleB.p) {
 				*p += off;
 			}
@@ -141,32 +170,29 @@ struct CollisionTest
 			PhysPenetrationVector pen;
 			bool intersect = TestIntersection(sphereA, triangleB, &pen);
 
-			if(ImGui::Begin("Test 2")) {
-				const PhysSphere& A = sphereA;
-				const PhysTriangle& B = triangleB;
-
-				vec3 planeNorm = B.Normal();
-				f32 signedDistToPlane = glm::dot(A.center - B.p[0], planeNorm);
-
-				ImGui::Text("signedDistToPlane = %f", signedDistToPlane);
-				ImGui::Text("radius = %f", A.radius);
-
-				vec3 planeCenter = B.Center();
-				rdr.PushArrow(Pipeline::Unlit, planeCenter, planeCenter + planeNorm * 50.f, vec3(1, 1, 1), 2);
-
-				vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane;
-				rdr.PushArrow(Pipeline::Unlit, projSphereCenter - planeNorm * 10.f, projSphereCenter, vec3(1, 0, 0), 2);
-			} ImGui::End();
+			if(open) {
+				ImGui::Text("%g", pen.depth);
+				vec3 center = triangleB.Center();
+				DrawVec(-triangleB.Normal() * 5.0f, center, vec3(1, 0, 0));
+			}
 
 			if(intersect) {
 				Draw(sphereA, vec3(1, 0.5, 0.8));
 				Draw(triangleB, vec3(1, 0.2, 1));
-				Draw(pen, vec3(1, 1, 0));
+				DrawVec(-pen.dir * pen.depth, sphereA.center + pen.dir * sphereA.radius, vec3(1, 1, 0));
+
+				if(bShowFixedSphere) {
+					PhysSphere fixed = sphereA;
+					fixed.center -= pen.dir * pen.depth;
+					Draw(fixed, vec3(1, 0.5, 0));
+				}
 			}
 			else {
 				Draw(sphereA, vec3(0, 0.5, 0.8));
 				Draw(triangleB, vec3(0, 0.2, 1));
 			}
+
+			ImGui::End();
 		}
 
 		// test3
@@ -188,7 +214,7 @@ struct CollisionTest
 			if(intersect) {
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 				Draw(capsuleB, vec3(1, 0.2, 1));
-				Draw(pen, vec3(1, 1, 0));
+				//Draw(pen, capsuleA.base, vec3(1, 1, 0));
 			}
 			else {
 				Draw(capsuleA, vec3(0, 0.5, 0.8));
@@ -202,6 +228,7 @@ struct CollisionTest
 			static bool bShowRefPoint = true;
 			static bool bShowSphere = true;
 			static bool bShowFixedCapsule = true;
+			static bool bAutoMove = true;
 			static f32 fOffsetX = 166.520f;
 
 			if(ImGui::Begin("Test 4")) {
@@ -209,6 +236,7 @@ struct CollisionTest
 				ImGui::Checkbox("Reference point", &bShowRefPoint);
 				ImGui::Checkbox("Collision sphere", &bShowSphere);
 				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("Offset", &fOffsetX, 0, 300);
 			}
 			ImGui::End();
@@ -217,8 +245,7 @@ struct CollisionTest
 			PhysCapsule capsuleA;
 			PhysTriangle triangleB;
 
-			//const vec3 off = vec3(210 + saw(a * .2) * -210, 0, 0);
-			const vec3 off = vec3(fOffsetX, 0, 0);
+			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
 			capsuleA.base = vec3(100, 750, 0) + off;
 			capsuleA.tip = vec3(100, 750, 100) + off;
 			capsuleA.radius = 20;
@@ -315,13 +342,69 @@ struct CollisionTest
 			if(intersect) {
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 				Draw(triangleB, vec3(1, 0.2, 1));
-				Draw(pen, vec3(1, 1, 0));
+				//Draw(pen, capsuleA.base, vec3(1, 1, 0));
 
 				if(bShowFixedCapsule) {
 					PhysCapsule fixed = capsuleA;
 					fixed.base += pen.depth;
 					fixed.tip += pen.depth;
 					Draw(fixed, vec3(1, 0.5, 0));
+				}
+			}
+			else {
+				Draw(capsuleA, vec3(0, 0.5, 0.8));
+				Draw(triangleB, vec3(0, 0.2, 1));
+			}
+		}
+
+		// test5
+		{
+			static bool bShowFixedCapsule = true;
+			static bool bAutoMove = true;
+			static f32 fOffsetX = 166.520f;
+			static f32 fOffsetY = 0;
+
+			if(ImGui::Begin("Test 5")) {
+				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Auto move", &bAutoMove);
+				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+				ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
+			}
+			ImGui::End();
+
+			PhysCapsule capsuleA;
+			PhysTriangle triangleB;
+
+			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
+			capsuleA.base = vec3(100, 900, 0) + off;
+			capsuleA.tip = vec3(100, 900, 100) + off;
+			capsuleA.radius = 20;
+
+			const vec3 triOff = bAutoMove ? vec3(0, 0, -100 + saw(a) * 200) : vec3(0, 0, fOffsetY);
+			triangleB.p = {
+				vec3(200, 850, 0) + triOff,
+				vec3(200, 900, 80) + triOff,
+				vec3(200, 950, 0) + triOff
+			};
+
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersection(capsuleA, triangleB, &pen);
+
+			if(intersect) {
+				Draw(capsuleA, vec3(1, 0.5, 0.8));
+				Draw(triangleB, vec3(1, 0.2, 1));
+				//Draw(pen, capsuleA.base, vec3(1, 1, 0));
+
+				if(bShowFixedCapsule) {
+					/*vec3 nd = glm::normalize(pen.depth);
+					vec3 np = triangleB.Normal();
+					f32 t = glm::dot(pen.depth, np);
+					vec3 depth = np * glm::length(pen.depth);
+
+					PhysCapsule fixed = capsuleA;
+					fixed.base += depth;
+					fixed.tip += depth;
+					Draw(fixed, vec3(1, 0.5, 0));*/
 				}
 			}
 			else {

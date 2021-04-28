@@ -84,6 +84,11 @@ struct CollisionTest
 		rdr.PushArrow(Pipeline::Unlit, at, at + v, color, 2);
 	}
 
+	inline void Draw(const vec3& at, const vec3& color)
+	{
+		rdr.PushArrow(Pipeline::Unlit, at + vec3(5, 0, 0), at, color, 2);
+	}
+
 	void Render()
 	{
 		Time lastLocalTime = localTime;
@@ -197,24 +202,82 @@ struct CollisionTest
 
 		// test3
 		{
+			static bool bAutoMove = true;
+			static f32 fOffsetX = 166.520f;
+
+			const bool open = ImGui::Begin("Test 3");
+			if(open) {
+				ImGui::Checkbox("Auto move", &bAutoMove);
+				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+			}
+			ImGui::End();
+
 			PhysCapsule capsuleA;
 			PhysCapsule capsuleB;
 
 			capsuleA.base = vec3(100, 500, 0);
-			capsuleA.tip = vec3(100, 500, 100);
+			capsuleA.tip = vec3(120, 500, 100);
 			capsuleA.radius = 20;
 
-			capsuleB.base = vec3(300 + saw(a) * -300, 500, 40);
-			capsuleB.tip = vec3(200, 600, 40);
+			const vec3 off = bAutoMove ? vec3(0, 0, (100 + saw(a * .5) * -100)) : vec3(0, 0, fOffsetX);
+			capsuleB.base = vec3(100, 450, 0) + off;
+			capsuleB.tip = vec3(100, 600, 0);
 			capsuleB.radius = 30;
 
-			PhysPenetrationVector pen;
-			bool intersect = TestIntersection(capsuleA, capsuleB, &pen);
+			bool intersect = TestIntersection(capsuleA, capsuleB);
 
 			if(intersect) {
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 				Draw(capsuleB, vec3(1, 0.2, 1));
-				//Draw(pen, capsuleA.base, vec3(1, 1, 0));
+			}
+			else {
+				Draw(capsuleA, vec3(0, 0.5, 0.8));
+				Draw(capsuleB, vec3(0, 0.2, 1));
+			}
+		}
+
+		// test3.1
+		{
+			static bool bShowFixedCapsule = true;
+			static bool bAutoMove = true;
+			static f32 fOffsetX = 0;
+			static f32 fOffsetZ = 0;
+
+			const bool open = ImGui::Begin("Test 3.1");
+			if(open) {
+				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Auto move", &bAutoMove);
+				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+				ImGui::SliderFloat("OffsetZ", &fOffsetZ, 0, 300);
+			}
+			ImGui::End();
+
+			PhysCapsule capsuleA;
+			PhysCapsule capsuleB;
+
+			capsuleA.base = vec3(300, 500, 0);
+			capsuleA.tip = vec3(300, 500, 100);
+			capsuleA.radius = 20;
+
+			const vec3 off = bAutoMove ? vec3(saw(a * .5) * -200, 0, 0) : vec3(-fOffsetX, 0, -fOffsetZ);
+			capsuleB.base = vec3(400, 500, 0) + off;
+			capsuleB.tip = vec3(400, 500, 100) + off;
+			capsuleB.radius = 30;
+
+			PhysPenetrationVector pen;
+			bool intersect = TestIntersectionUpright(capsuleA, capsuleB, &pen);
+
+			if(intersect) {
+				Draw(capsuleA, vec3(1, 0.5, 0.8));
+				Draw(capsuleB, vec3(1, 0.2, 1));
+				DrawVec(-pen.dir * pen.depth, capsuleA.base, vec3(1, 1, 0));
+
+				if(bShowFixedCapsule) {
+					PhysCapsule fixed = capsuleA;
+					fixed.base += -pen.dir * pen.depth;
+					fixed.tip += -pen.dir * pen.depth;
+					Draw(fixed, vec3(1, 0.5, 0));
+				}
 			}
 			else {
 				Draw(capsuleA, vec3(0, 0.5, 0.8));

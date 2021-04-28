@@ -185,8 +185,10 @@ bool Camera::HandleEvent(const sapp_event& event)
 		}
 	}
 	else if(event.type == SAPP_EVENTTYPE_MOUSE_SCROLL) {
-		speed *= 1 + event.scroll_y * 0.05;
-		speed = clamp(speed, 100.f, 100000.f);
+		if(mouseLocked) {
+			speed *= 1 + event.scroll_y * 0.05;
+			speed = clamp(speed, 1.f, 100000.f);
+		}
 	}
 
 	return false;
@@ -201,23 +203,25 @@ mat4 Camera::UpdateAndComputeMatrix(f32 delta)
 
 	const vec3 right = glm::normalize(glm::cross(dir, up));
 
-	if(keyState[Controls::Forward]) {
-		eye += dir * speed * delta;
-	}
-	else if(keyState[Controls::Backward]) {
-		eye += dir * -speed * delta;
-	}
-	if(keyState[Controls::Left]) {
-		eye += right * -speed * delta;
-	}
-	else if(keyState[Controls::Right]) {
-		eye += right * speed * delta;
-	}
-	if(keyState[Controls::Up]) {
-		eye += up * speed * delta;
-	}
-	else if(keyState[Controls::Down]) {
-		eye += up * -speed * delta;
+	if(mouseLocked) {
+		if(keyState[Controls::Forward]) {
+			eye += dir * speed * delta;
+		}
+		else if(keyState[Controls::Backward]) {
+			eye += dir * -speed * delta;
+		}
+		if(keyState[Controls::Left]) {
+			eye += right * -speed * delta;
+		}
+		else if(keyState[Controls::Right]) {
+			eye += right * speed * delta;
+		}
+		if(keyState[Controls::Up]) {
+			eye += up * speed * delta;
+		}
+		else if(keyState[Controls::Down]) {
+			eye += up * -speed * delta;
+		}
 	}
 
 	return glm::lookAt(eye, eye + dir, up);

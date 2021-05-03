@@ -212,15 +212,12 @@ bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPen
 	return false;
 }
 
-bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen)
+bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter)
 {
 	const vec3 capsuleNorm = glm::normalize(A.tip - A.base);
 	const vec3 lineEndOffset = capsuleNorm * A.radius;
 	const vec3 pointA = A.base + lineEndOffset;
 	const vec3 pointB = A.tip - lineEndOffset;
-
-// fix penetration depth length so we can displace the capsule along the plane normal
-// try to walk the capsule on a double co-planar triangle quad
 
 	// ray-plane intersection
 	const vec3 planeNorm = B.Normal();
@@ -271,67 +268,7 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 
 	// The center of the best sphere candidate
 	const vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
+	*sphereCenter = center;
 
-	// inline sphere collision test
-	// -------------------------------------------------------------------------------------------------------------
-	f32 signedDistToPlane = glm::dot(center - B.p[0], planeNorm);
-
-	// does not intersect plane
-	if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
-		return false;
-	}
-
-	vec3 projSphereCenter = center - planeNorm * signedDistToPlane; // projected sphere center on triangle plane
-
-	// Now determine whether projSphereCenter is inside all triangle edges
-	const vec3 d0 = cross(projSphereCenter - B.p[0], B.p[1] - B.p[0]);
-	const vec3 d1 = cross(projSphereCenter - B.p[1], B.p[2] - B.p[1]);
-	const vec3 d2 = cross(projSphereCenter - B.p[2], B.p[0] - B.p[2]);
-	inside = glm::dot(d0, planeNorm) <= 0 && glm::dot(d1, planeNorm) <= 0 && glm::dot(d2, planeNorm) <= 0;
-	if(inside) {
-		vec3 delta = projSphereCenter - center;
-		if(glm::length(delta) > 0.001f) {
-			pen->depth = glm::length(delta);
-			pen->dir = glm::normalize(delta);
-		}
-		else {
-			pen->dir = planeNorm;
-			pen->depth = A.radius;
-		}
-		return true;
-	}
-
-	const f32 radiusSq = A.radius * A.radius;
-	bool intersects = false;
-
-	// project center on all edges
-	const vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], center);
-	intersects |= LengthSq(center - point1) < radiusSq;
-	const vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], center);
-	intersects |= LengthSq(center - point2) < radiusSq;
-	const vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], center);
-	intersects |= LengthSq(center - point3) < radiusSq;
-
-	if(intersects) {
-		vec3 bestPoint = point1;
-		f32 bestDist = LengthSq(center - point1);
-
-		f32 dist2 = LengthSq(center - point2);
-		if(dist2 < bestDist) {
-			bestDist = dist2;
-			bestPoint = point2;
-		}
-
-		f32 dist3 = LengthSq(center - point3);
-		if(dist3 < bestDist) {
-			bestPoint = point3;
-		}
-
-		vec3 delta = bestPoint - center;
-		pen->depth = glm::length(delta);
-		pen->dir = glm::normalize(delta);
-		return true;
-	}
-
-	return false;
+	return TestIntersection(PhysSphere{ center, A.radius }, B, pen);
 }

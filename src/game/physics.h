@@ -13,6 +13,21 @@ struct PhysCapsule
 	vec3 base;
 	vec3 tip;
 	f32 radius;
+
+	inline vec3 Normal() const
+	{
+		return glm::normalize(tip - base);
+	}
+
+	inline vec3 InnerBase() const
+	{
+		return base + Normal() * radius;
+	}
+
+	inline vec3 InnerTip() const
+	{
+		return tip - Normal() * radius;
+	}
 };
 
 struct PhysTriangle
@@ -49,8 +64,14 @@ inline vec3 ClosestPointOnLineSegment(const vec3& la, const vec3& lb, const vec3
 	return la + clamp(t, 0.f, 1.f) * delta;
 }
 
+inline vec3 ProjectVec(const vec3& v, const vec3& on)
+{
+	vec3 n = glm::normalize(on);
+	return glm::dot(v, n) * n;
+}
+
 bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B);
 bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
-bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen);
+bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);

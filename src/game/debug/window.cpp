@@ -301,7 +301,8 @@ struct CollisionTest
 			static bool bShowSphere = true;
 			static bool bShowFixedCapsule = true;
 			static bool bAutoMove = true;
-			static f32 fOffsetX = 166.520f;
+			static f32 fOffsetX = 40;
+			static f32 fTriangleOffset = 150;
 
 			if(ImGui::Begin("Test 4")) {
 				ImGui::Checkbox("Line plane intersection", &bShowLinePlaneInter);
@@ -310,6 +311,7 @@ struct CollisionTest
 				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("Offset", &fOffsetX, 0, 300);
+				ImGui::SliderFloat("Triangle Offset", &fTriangleOffset, 0, 300);
 			}
 			ImGui::End();
 
@@ -334,23 +336,32 @@ struct CollisionTest
 			// inside
 			triangleB.p = {
 				vec3(200, 680, 0),
-				vec3(300, 750, 80),
+				vec3(300 - fTriangleOffset, 750, 80),
 				vec3(200, 780, 0)
 			};
 
 			// --------------------------------------------------------------------------------------
 			const PhysCapsule& A = capsuleA;
 			const PhysTriangle& B = triangleB;
-			const vec3 capsuleNorm = normalize(A.tip - A.base);
+
+			const vec3 capsuleNorm = glm::normalize(A.tip - A.base);
 			const vec3 lineEndOffset = capsuleNorm * A.radius;
 			const vec3 pointA = A.base + lineEndOffset;
 			const vec3 pointB = A.tip - lineEndOffset;
 
 			// ray-plane intersection
-			// N is the triangle plane normal
-			const vec3 N = triangleB.Normal();
-			const f32 t = glm::dot(N, (triangleB.p[0] - A.base) / abs(glm::dot(N, capsuleNorm)));
+			const vec3 planeNorm = B.Normal();
+			f32 planeCapsuleDot = glm::dot(planeNorm, capsuleNorm);
+			const bool parallel = (planeCapsuleDot == 0);
+			if(parallel) {
+				planeCapsuleDot = 1;
+			}
+			const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / planeCapsuleDot);
 			const vec3 linePlaneIntersection = A.base + capsuleNorm * t;
+
+			if(bShowLinePlaneInter) {
+				Draw(linePlaneIntersection, vec3(1, 1, 1));
+			}
 
 			vec3 refPoint;
 
@@ -358,10 +369,14 @@ struct CollisionTest
 			const vec3 c0 = glm::cross(linePlaneIntersection - B.p[0], B.p[1] - B.p[0]);
 			const vec3 c1 = glm::cross(linePlaneIntersection - B.p[1], B.p[2] - B.p[1]);
 			const vec3 c2 = glm::cross(linePlaneIntersection - B.p[2], B.p[0] - B.p[2]);
-			bool inside = glm::dot(c0, N) <= 0 && glm::dot(c1, N) <= 0 && glm::dot(c2, N) <= 0;
+			bool inside = glm::dot(c0, planeNorm) <= 0 && glm::dot(c1, planeNorm) <= 0 && glm::dot(c2, planeNorm) <= 0;
 
 			if(inside) {
 				refPoint = linePlaneIntersection;
+
+				if(bShowRefPoint) {
+					Draw(refPoint, vec3(1, 0.5, 0.5));
+				}
 			}
 			else {
 				// Edge 1
@@ -388,19 +403,16 @@ struct CollisionTest
 					refPoint = point3;
 					bestDist = distsq;
 				}
+
+				if(bShowRefPoint) {
+					Draw(refPoint, vec3(1, 0, 0));
+				}
 			}
 
 			// The center of the best sphere candidate
 			vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
+
 			const PhysSphere sphere = { center, A.radius };
-
-			if(bShowLinePlaneInter) {
-				rdr.PushArrow(Pipeline::Unlit, linePlaneIntersection + vec3(5, 0, 0), linePlaneIntersection, vec3(1, 1, 1), 2);
-
-			}
-			if(bShowRefPoint) {
-				rdr.PushArrow(Pipeline::Unlit, refPoint + vec3(-5, 0, 0), refPoint, vec3(1, 0, 0), 2);
-			}
 
 			rdr.PushLine(capsuleA.base - capsuleNorm * 1000.f, capsuleA.base + capsuleNorm * 1000.f, vec3(1));
 
@@ -412,6 +424,8 @@ struct CollisionTest
 			vec3 sphereCenter;
 			bool intersect = TestIntersection(capsuleA, triangleB, &pen, &sphereCenter);
 
+			DrawVec(triangleB.Normal() * 20.0f, triangleB.Center(), vec3(1, 1, 1));
+
 			if(intersect) {
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 				Draw(triangleB, vec3(1, 0.2, 1));
@@ -419,13 +433,19 @@ struct CollisionTest
 
 				if(bShowFixedCapsule) {
 					vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
-					Draw(p, vec3(1, 0.8, 0));
+					//Draw(p, vec3(1, 0.8, 0));
 					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
-					DrawVec(pp, sphereCenter, vec3(0.5, 1, 0.5));
+					//DrawVec(pp, sphereCenter, vec3(0.5, 1, 0.5));
 					vec3 pp2 = triangleB.Normal() * capsuleA.radius + pp;
-					DrawVec(pp2, sphereCenter + -triangleB.Normal() * capsuleA.radius, vec3(0.5, 0.5, 1));
+					//DrawVec(pp2, sphereCenter + -triangleB.Normal() * capsuleA.radius, vec3(0.5, 0.5, 1));
 
-					pp2 -= capsuleA.InnerBase() - sphereCenter;
+					f32 d = glm::dot(triangleB.Normal(), capsuleNorm);
+					if(d > 0) {
+						pp2 -= capsuleA.InnerBase() - sphereCenter;
+					}
+					else if(d < 0) {
+						pp2 -= capsuleA.InnerTip() - sphereCenter;
+					}
 
 					PhysCapsule fixed = capsuleA;
 					fixed.base += pp2;
@@ -476,18 +496,29 @@ struct CollisionTest
 			if(intersect) {
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 				Draw(triangleB, vec3(1, 0.2, 1));
-				//Draw(pen, capsuleA.base, vec3(1, 1, 0));
+				DrawVec(-pen.dir * pen.depth, sphereCenter, vec3(1, 1, 0));
 
 				if(bShowFixedCapsule) {
-					/*vec3 nd = glm::normalize(pen.depth);
-					vec3 np = triangleB.Normal();
-					f32 t = glm::dot(pen.depth, np);
-					vec3 depth = np * glm::length(pen.depth);
+					vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
+					Draw(p, vec3(1, 0.8, 0));
+					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
+					DrawVec(pp, sphereCenter, vec3(0.5, 1, 0.5));
+					vec3 pp2 = triangleB.Normal() * capsuleA.radius + pp;
+					DrawVec(pp2, sphereCenter + -triangleB.Normal() * capsuleA.radius, vec3(0.5, 0.5, 1));
+
+					f32 d = glm::dot(triangleB.Normal(), capsuleA.Normal());
+					if(d > 0) {
+						pp2 -= capsuleA.InnerBase() - sphereCenter;
+					}
+					else if(d < 0) {
+						pp2 -= capsuleA.InnerTip() - sphereCenter;
+					}
+
 
 					PhysCapsule fixed = capsuleA;
-					fixed.base += depth;
-					fixed.tip += depth;
-					Draw(fixed, vec3(1, 0.5, 0));*/
+					fixed.base += pp2;
+					fixed.tip += pp2;
+					Draw(fixed, vec3(0.5, 1, 0.5));
 				}
 			}
 			else {

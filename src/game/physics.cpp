@@ -221,7 +221,7 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 
 	// ray-plane intersection
 	const vec3 planeNorm = B.Normal();
-	f32 planeCapsuleDot = abs(glm::dot(planeNorm, capsuleNorm));
+	f32 planeCapsuleDot = glm::dot(planeNorm, capsuleNorm);
 	if(planeCapsuleDot == 0) {
 		planeCapsuleDot = 1;
 	}

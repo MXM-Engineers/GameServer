@@ -45,6 +45,14 @@ struct PhysTriangle
 	}
 };
 
+struct PhysRect
+{
+	vec2 min;
+	vec2 max;
+	vec3 pos;
+	vec3 normal; // defines the plane
+};
+
 struct PhysPenetrationVector
 {
 	vec3 dir;
@@ -70,8 +78,15 @@ inline vec3 ProjectVec(const vec3& v, const vec3& on)
 	return glm::dot(v, n) * n;
 }
 
+inline vec3 Lerp(const vec3& v1, const vec3& v2, f32 a)
+{
+	ASSERT(a >= 0 && a <= 1);
+	return (v1 * (1.0f - a)) + (v2 * a);
+}
+
 bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B);
 bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
+bool TestIntersectionUpright(const PhysCapsule& A, const PhysRect& B, PhysPenetrationVector* pen);

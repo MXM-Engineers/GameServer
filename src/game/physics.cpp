@@ -272,3 +272,8 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 
 	return TestIntersection(PhysSphere{ center, A.radius }, B, pen);
 }
+
+bool TestIntersectionUpright(const PhysCapsule& A, const PhysRect& B, PhysPenetrationVector* pen)
+{
+	return false;
+}

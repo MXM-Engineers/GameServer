@@ -887,8 +887,8 @@ void Renderer::Render(f64 delta)
 	}
 
 	// origin
-	const f32 orgnLen = 1000;
-	const f32 orgnThick = 20;
+	const f32 orgnLen = 100;
+	const f32 orgnThick = 2;
 	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(0), vec3(0), vec3(orgnThick*2), vec3(1));
 	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(orgnLen/2, 0, 0), vec3(0), vec3(orgnLen, orgnThick, orgnThick), vec3(0, 0, 1));
 	PushMesh(Pipeline::Unlit, "CubeCentered", vec3(0, orgnLen/2, 0), vec3(0), vec3(orgnThick, orgnLen, orgnThick), vec3(0, 1, 0));

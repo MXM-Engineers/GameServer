@@ -185,6 +185,27 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		}
 	}
 
+	// Parse SKILL_PROPERTY.xml once
+	{
+		Path SkillPropertyXml = gameDataDir;
+		PathAppend(SkillPropertyXml, L"/SKILL_PROPERTY.xml");
+
+		i32 fileSize;
+		u8* fileData = FileOpenAndReadAll(SkillPropertyXml.data(), &fileSize);
+		if (!fileData) {
+			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillPropertyXml.data());
+			return false;
+		}
+		defer(memFree(fileData));
+
+		using namespace tinyxml2;
+		XMLError error = xmlSKILLPROPERTY.Parse((char*)fileData, fileSize);
+		if (error != XML_SUCCESS) {
+			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillPropertyXml.data(), xmlSKILLPROPERTY.ErrorStr());
+			return false;
+		}
+	}
+
 	Path creatureCharacterXml = gameDataDir;
 	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
 
@@ -303,7 +324,9 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 				{
 					SkillNormalLevelModel* _skillNormalLevelModel = _skillNormal->getSkillNormalLevelByIndex(i);
 					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
-				}	
+				}
+
+				LoadMasterSkillPropertyWithID(_skillNormal, _skillID);
 			}
 			break;
 		}
@@ -311,6 +334,41 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 		pNodeSkill = pNodeSkill->NextSiblingElement();
 	} while (pNodeSkill);
 	
+	return true;
+}
+
+bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel* SkillNormal, i32 skillID)
+{
+	XMLElement* pNodeInfo = xmlSKILLPROPERTY.FirstChildElement()->FirstChildElement();
+
+	do {
+		i32 _skillID;
+		XMLElement * pNodeSkillProperty = pNodeInfo->FirstChildElement("ST_SKILL_PROPERTY");
+		pNodeSkillProperty->QueryAttribute("_SkillIndex", &_skillID);
+
+		if (_skillID == skillID)
+		{
+			int level = 0;
+			float _temp = 0.0f;
+
+			//Probably add check to see if this attribute exist which it should
+			pNodeSkillProperty->QueryIntAttribute("_Priority", &level);
+
+			//LOG("Skill Match");
+			XMLElement* pNodePropertyLevel = pNodeSkillProperty->FirstChildElement("_PROPERTY_LEVEL");
+					
+			//Need -1 to correct index
+			for (int i = level-1; i < 6; i++)
+			{
+				SkillNormalLevelModel* _skillNormalLevelModel = SkillNormal->getSkillNormalLevelByIndex(i);
+				_skillNormalLevelModel->setLevel(level);
+				SetValuesSkillNormalLevel(pNodePropertyLevel, _skillNormalLevelModel, _temp);
+			}
+		}
+	
+		pNodeInfo = pNodeInfo->NextSiblingElement();
+	} while (pNodeInfo);
+
 	return true;
 }
 

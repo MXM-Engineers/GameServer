@@ -97,10 +97,10 @@ struct CollisionTest
 		//DrawVec(vx * 20.f, rect.pos, vec3(1, 0, 0));
 		//DrawVec(vy * 20.f, rect.pos, vec3(0, 1, 0));
 
-		const vec3 bl = rect.pos + vx * rect.min.x + vy * rect.min.y;
-		const vec3 br = rect.pos + vx * rect.max.x + vy * rect.min.y;
-		const vec3 tr = rect.pos + vx * rect.max.x + vy * rect.max.y;
-		const vec3 tl = rect.pos + vx * rect.min.x + vy * rect.max.y;
+		const vec3 bl = rect.pos;
+		const vec3 br = rect.pos + vx * rect.size.x;
+		const vec3 tr = rect.pos + vx * rect.size.x + vy * rect.size.y;
+		const vec3 tl = rect.pos + vy * rect.size.y;
 
 		const u32 c = CU3(color.x, color.y, color.z);
 
@@ -288,14 +288,14 @@ struct CollisionTest
 
 		// test3.1
 		{
-			static bool bShowFixedCapsule = true;
+			static bool bFixedSphere = true;
 			static bool bAutoMove = true;
 			static f32 fOffsetX = 0;
 			static f32 fOffsetZ = 0;
 
 			const bool open = ImGui::Begin("Test 3.1");
 			if(open) {
-				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Fixed capsule", &bFixedSphere);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
 				ImGui::SliderFloat("OffsetZ", &fOffsetZ, 0, 300);
@@ -322,7 +322,7 @@ struct CollisionTest
 				Draw(capsuleB, vec3(1, 0.2, 1));
 				DrawVec(-pen.dir * pen.depth, capsuleA.base, vec3(1, 1, 0));
 
-				if(bShowFixedCapsule) {
+				if(bFixedSphere) {
 					PhysCapsule fixed = capsuleA;
 					fixed.base += -pen.dir * pen.depth;
 					fixed.tip += -pen.dir * pen.depth;
@@ -340,7 +340,7 @@ struct CollisionTest
 			static bool bShowLinePlaneInter = true;
 			static bool bShowRefPoint = true;
 			static bool bShowSphere = true;
-			static bool bShowFixedCapsule = true;
+			static bool bFixedSphere = true;
 			static bool bAutoMove = true;
 			static f32 fOffsetX = 40;
 			static f32 fTriangleOffset = 150;
@@ -349,7 +349,7 @@ struct CollisionTest
 				ImGui::Checkbox("Line plane intersection", &bShowLinePlaneInter);
 				ImGui::Checkbox("Reference point", &bShowRefPoint);
 				ImGui::Checkbox("Collision sphere", &bShowSphere);
-				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Fixed capsule", &bFixedSphere);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("Offset", &fOffsetX, 0, 300);
 				ImGui::SliderFloat("Triangle Offset", &fTriangleOffset, 0, 300);
@@ -472,7 +472,7 @@ struct CollisionTest
 				Draw(triangleB, vec3(1, 0.2, 1));
 				DrawVec(-pen.dir * pen.depth, sphereCenter, vec3(1, 1, 0));
 
-				if(bShowFixedCapsule) {
+				if(bFixedSphere) {
 					vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
 					//Draw(p, vec3(1, 0.8, 0));
 					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
@@ -502,13 +502,13 @@ struct CollisionTest
 
 		// test5
 		{
-			static bool bShowFixedCapsule = true;
+			static bool bFixedSphere = true;
 			static bool bAutoMove = true;
 			static f32 fOffsetX = 166.520f;
 			static f32 fOffsetY = 0;
 
 			if(ImGui::Begin("Test 5")) {
-				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+				ImGui::Checkbox("Fixed capsule", &bFixedSphere);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
 				ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
@@ -539,7 +539,7 @@ struct CollisionTest
 				Draw(triangleB, vec3(1, 0.2, 1));
 				DrawVec(-pen.dir * pen.depth, sphereCenter, vec3(1, 1, 0));
 
-				if(bShowFixedCapsule) {
+				if(bFixedSphere) {
 					vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
 					Draw(p, vec3(1, 0.8, 0));
 					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
@@ -570,65 +570,105 @@ struct CollisionTest
 
 		// test6
 		{
-			static bool bShowFixedCapsule = true;
+			static bool bFixedSphere = true;
 			static bool bAutoMove = true;
-			static f32 fOffsetX = 166.520f;
+			static f32 fOffsetX = 113.077f;
+			static f32 fRectX = -15.f;
+			static f32 fRectY = -59.423f;
 
-			if(ImGui::Begin("Test 6")) {
-				ImGui::Checkbox("Fixed capsule", &bShowFixedCapsule);
+			const bool open = ImGui::Begin("Test 6");
+			if(open) {
+				ImGui::Checkbox("Fixed sphere", &bFixedSphere);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+				ImGui::SliderFloat("RectX", &fRectX, -150, 150);
+				ImGui::SliderFloat("RectY", &fRectY, -150, 150);
 			}
-			ImGui::End();
 
-			PhysCapsule capsuleA;
+			PhysSphere sphereA;
 			PhysRect rectB;
 
 			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
-			capsuleA.base = vec3(100, 1200, 0) + off;
-			capsuleA.tip = vec3(100, 1200, 100) + off;
-			capsuleA.radius = 20;
+			sphereA.center = vec3(100, 1200, 0) + off;
+			sphereA.radius = 20;
 
-			rectB.min = vec2(0, 0);
-			rectB.max = vec2(200, 200);
-			rectB.pos = vec3(200, 1100, 0);
+			rectB.size = vec2(100, 100);
+			rectB.pos = vec3(200, 1100 + fRectX, fRectY);
 			rectB.normal = vec3(-1, 0, 0);
 
+			do {
+				const PhysSphere& A = sphereA;
+				const PhysRect& B = rectB;
+
+				const vec3 planeNorm = B.normal;
+				f32 signedDistToPlane = glm::dot(A.center - B.pos, planeNorm);
+
+				// does not intersect plane
+				if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
+					break;
+				}
+
+				// projected sphere center on plane
+				const vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane;
+
+				Draw(projSphereCenter, vec3(1, 0, 0));
+
+				// project on 2D coordinates and check if inside rectangle
+				const vec3 up = vec3(0, 0, 1);
+				const vec3 vx = -glm::normalize(glm::cross(up, B.normal));
+				const vec3 vy = glm::normalize(glm::cross(vx, B.normal));
+
+				const f32 halfW = B.size.x * 0.5f;
+				const f32 halfH = B.size.y * 0.5f;
+				const f32 dotx = abs(glm::dot(projSphereCenter - B.pos, vx) - halfW);
+				const f32 doty = abs(glm::dot(projSphereCenter - B.pos, vy) - halfH);
+
+				// compute projected circle radius onto 2D rectangle plane
+				const f32 dist = abs(signedDistToPlane);
+				const f32 sb = sqrtf(A.radius*A.radius - dist*dist);
+
+				if(open) {
+					ImGui::Text("dotx = %g", dotx);
+					ImGui::Text("doty = %g", doty);
+					ImGui::Text("dist = %g", dist);
+					ImGui::Text("sb = %g", sb);
+					rdr.PushLine(projSphereCenter, projSphereCenter + -vx * sb, vec3(0.5, 1, 0.5));
+					rdr.PushLine(projSphereCenter, projSphereCenter + -vy * sb, vec3(0.5, 1, 0.5));
+				}
+
+			} while(0);
+
+
+			DrawVec(rectB.normal * 20.f, rectB.Center(), vec3(1, 1, 1));
+
 			PhysPenetrationVector pen;
-			bool intersect = TestIntersectionUpright(capsuleA, rectB, &pen);
+			bool intersect = TestIntersection(sphereA, rectB, &pen);
 
 			if(intersect) {
-				Draw(capsuleA, vec3(1, 0.5, 0.8));
+				Draw(sphereA, vec3(1, 0.5, 0.8));
 				Draw(rectB, vec3(1, 0.2, 1), 12);
-				DrawVec(-pen.dir * pen.depth, capsuleA.base, vec3(1, 1, 0));
+				DrawVec(-pen.dir * pen.depth, sphereA.center, vec3(1, 1, 0));
 
-				if(bShowFixedCapsule) {
-					/*vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
-					Draw(p, vec3(1, 0.8, 0));
-					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
-					DrawVec(pp, sphereCenter, vec3(0.5, 1, 0.5));
-					vec3 pp2 = triangleB.Normal() * capsuleA.radius + pp;
-					DrawVec(pp2, sphereCenter + -triangleB.Normal() * capsuleA.radius, vec3(0.5, 0.5, 1));
-
-					f32 d = glm::dot(triangleB.Normal(), capsuleA.Normal());
-					if(d > 0) {
-						pp2 -= capsuleA.InnerBase() - sphereCenter;
-					}
-					else if(d < 0) {
-						pp2 -= capsuleA.InnerTip() - sphereCenter;
-					}
+				if(bFixedSphere) {
+					vec3 p = sphereA.center + pen.dir * (sphereA.radius - pen.depth);
+					//Draw(p, vec3(1, 0.8, 0));
+					vec3 pp = glm::dot(p - sphereA.center, rectB.normal) * rectB.normal;
+					//DrawVec(pp, sphereA.center, vec3(0.5, 1, 0.5));
+					vec3 pp2 = rectB.normal * sphereA.radius + pp;
+					//DrawVec(pp2, sphereA.center + -rectB.normal * sphereA.radius, vec3(0.5, 0.5, 1));
 
 
-					PhysCapsule fixed = capsuleA;
-					fixed.base += pp2;
-					fixed.tip += pp2;
-					Draw(fixed, vec3(0.5, 1, 0.5));*/
+					PhysSphere fixed = sphereA;
+					fixed.center += pp2;
+					Draw(fixed, vec3(0.5, 1, 0.5));
 				}
 			}
 			else {
-				Draw(capsuleA, vec3(0, 0.5, 0.8));
+				Draw(sphereA, vec3(0, 0.5, 0.8));
 				Draw(rectB, vec3(0, 0.2, 1), 12);
 			}
+
+			ImGui::End();
 		}
 	}
 };

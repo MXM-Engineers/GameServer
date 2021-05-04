@@ -273,7 +273,51 @@ bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrati
 	return TestIntersection(PhysSphere{ center, A.radius }, B, pen);
 }
 
-bool TestIntersectionUpright(const PhysCapsule& A, const PhysRect& B, PhysPenetrationVector* pen)
+bool TestIntersection(const PhysSphere& A, const PhysRect& B, PhysPenetrationVector* pen)
 {
+	const vec3 planeNorm = B.normal;
+	const f32 signedDistToPlane = glm::dot(A.center - B.pos, planeNorm);
+
+	// does not intersect plane
+	if(signedDistToPlane < -A.radius || signedDistToPlane > A.radius) {
+		return false;
+	}
+
+	// projected sphere center on plane
+	const vec3 projSphereCenter = A.center - planeNorm * signedDistToPlane;
+
+	// project on 2D coordinates and check if inside rectangle
+	const vec3 up = vec3(0, 0, 1);
+	const vec3 vx = -glm::normalize(glm::cross(up, B.normal));
+	const vec3 vy = glm::normalize(glm::cross(vx, B.normal));
+
+	const f32 halfW = B.size.x * 0.5f;
+	const f32 halfH = B.size.y * 0.5f;
+	const f32 dotx = abs(glm::dot(projSphereCenter - B.pos, vx) - halfW);
+	const f32 doty = abs(glm::dot(projSphereCenter - B.pos, vy) - halfH);
+
+	// compute projected circle radius onto 2D rectangle plane
+	const f32 dist = abs(signedDistToPlane);
+	const f32 circleR = sqrtf(A.radius*A.radius - dist*dist);
+
+	// 2D circle rectangle intersection
+	if(dotx >= (halfW + circleR) || doty >= (halfH + circleR)) return false;
+
+	const f32 cornerDistSq = (dotx - halfW)*(dotx - halfW) + (doty - halfH)*(doty - halfH);
+
+	bool inside = dotx < halfW || doty < halfH || cornerDistSq < (circleR * circleR);
+	if(inside) {
+		vec3 delta = projSphereCenter - A.center;
+		if(glm::length(delta) > 0.001f) {
+			pen->depth = A.radius - glm::length(delta);
+			pen->dir = glm::normalize(delta);
+		}
+		else {
+			pen->dir = planeNorm;
+			pen->depth = A.radius;
+		}
+		return true;
+	}
+
 	return false;
 }

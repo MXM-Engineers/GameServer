@@ -47,10 +47,17 @@ struct PhysTriangle
 
 struct PhysRect
 {
-	vec2 min;
-	vec2 max;
+	vec2 size;
 	vec3 pos;
 	vec3 normal; // defines the plane
+
+	inline vec3 Center() const
+	{
+		const vec3 up = vec3(0, 0, 1);
+		const vec3 vx = -glm::normalize(glm::cross(up, normal));
+		const vec3 vy = glm::normalize(glm::cross(vx, normal));
+		return pos + vx * (size.x * 0.5f) + vy * (size.y * 0.5f);
+	}
 };
 
 struct PhysPenetrationVector
@@ -89,4 +96,4 @@ bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetratio
 bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B);
 bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
-bool TestIntersectionUpright(const PhysCapsule& A, const PhysRect& B, PhysPenetrationVector* pen);
+bool TestIntersection(const PhysSphere& A, const PhysRect& B, PhysPenetrationVector* pen);

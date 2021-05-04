@@ -696,6 +696,9 @@ struct Window
 
 	MeshFile meshMapPvP;
 
+	bool ui_bCollisionTests = false;
+	bool ui_bMapWireframe = false;
+
 	Window(i32 width, i32 height):
 		winWidth(width),
 		winHeight(height),
@@ -734,8 +737,17 @@ bool Window::Init()
 
 void Window::Update(f64 delta)
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
+	if(ImGui::BeginMainMenuBar()) {
+		if(ImGui::BeginMenu("View")) {
+			ImGui::MenuItem("Collision tests", "", &ui_bCollisionTests);
+			ImGui::MenuItem("Map wireframe", "", &ui_bMapWireframe);
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
 
 	const f64 t = TimeDiffSec(TimeDiff(startTime, localTime));
 	// test meshes
@@ -752,6 +764,23 @@ void Window::Update(f64 delta)
 
 	// map
 	rdr.PushMesh(Pipeline::ShadedDoubleSided, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
+
+	if(ui_bMapWireframe) {
+		const u16 indexCount = meshMapPvP.indexCount;
+
+		for(int i = 0; i < indexCount; i += 3) {
+			const MeshBuffer::Vertex& vert0 = meshMapPvP.vertices[meshMapPvP.indices[i]];
+			const MeshBuffer::Vertex& vert1 = meshMapPvP.vertices[meshMapPvP.indices[i+1]];
+			const MeshBuffer::Vertex& vert2 = meshMapPvP.vertices[meshMapPvP.indices[i+2]];
+			const vec3 v0(vert0.px, vert0.py, vert0.pz);
+			const vec3 v1(vert1.px, vert1.py, vert1.pz);
+			const vec3 v2(vert2.px, vert2.py, vert2.pz);
+
+			rdr.PushLine(v0, v1, vec3(1, 1, 1));
+			rdr.PushLine(v1, v2, vec3(1, 1, 1));
+			rdr.PushLine(v2, v0, vec3(1, 1, 1));
+		}
+	}
 
 	// @Speed: very innefficient locking
 	// Also some blinking because sometimes the gamestate is empty when we render it (NewFrame before adding anything)
@@ -777,7 +806,9 @@ void Window::Update(f64 delta)
 		rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 	}
 
-	collisionTest.Render();
+	if(ui_bCollisionTests) {
+		collisionTest.Render();
+	}
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 

@@ -79,7 +79,7 @@ struct GameXmlContent
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();
-	bool LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID);
+	bool LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel* SkillNormal, i32 skillID);
 	void SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp);
 	bool LoadMapList();

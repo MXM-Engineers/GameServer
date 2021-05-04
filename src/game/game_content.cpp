@@ -262,15 +262,45 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		// Read character data: skills
 
 		// read skill ids
-		u8 skillCounter = 0;
+		SkillsModel* _skillsModel = character.getSkills();
 		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
 		do {
 			i32 skillID;
+			const char* skillSlot;
 			
 			pSkillElt->QueryAttribute("_Index", &skillID);
+			pSkillElt->QueryStringAttribute("_SkillSlot", &skillSlot);
 			LOG("SkillID: %d", skillID);
-			LoadMasterSkillWithID(skillCounter, &character, skillID);
-			skillCounter++;
+
+			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
+			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(0), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_2", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(1), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_3", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(2), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_4", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(3), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_UG", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(_skillsModel->getUltimate(), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_PASSIVE", skillSlot) == 0)
+			{
+
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_SHIRK", skillSlot) == 0)
+			{
+
+			}
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while (pSkillElt);
@@ -295,7 +325,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	return true;
 }
 
-bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID)
+bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 skillID)
 {
 	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
 
@@ -308,25 +338,21 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 			LOG("Skill Match");
 			const char* SkillTypeTemp;
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
-			if (EA::StdC::Strcmp(SkillTypeTemp, "SKILL_TYPE_NORMAL") == 0)
 			{
-				SkillsModel* _skillsModel = character->getSkills();
-				SkillNormalModel* _skillNormal = _skillsModel->getSkillByIndex(id);
 				float _temp = 0.0f;
 
-				LOG("DEBUG: Character address: %llx", (intptr_t)character);
-				LOG("DEBUG: SkillModel address: %llx", (intptr_t)_skillsModel);
-				LOG("DEBUG: SkillNormal address: %llx", (intptr_t)_skillNormal);
+				LOG("DEBUG: SkillModel address: %llx", (intptr_t)SkillNormal);
+				LOG("DEBUG: SkillNormal address: %llx", (intptr_t)SkillNormal);
 
-				_skillNormal->setID(_skillID);
+				SkillNormal->setID(_skillID);
 
 				for (int i = 0; i < 6; i++)
 				{
-					SkillNormalLevelModel* _skillNormalLevelModel = _skillNormal->getSkillNormalLevelByIndex(i);
+					SkillNormalLevelModel* _skillNormalLevelModel = SkillNormal->getSkillNormalLevelByIndex(i);
 					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
 				}
 
-				LoadMasterSkillPropertyWithID(_skillNormal, _skillID);
+				LoadMasterSkillPropertyWithID(SkillNormal, _skillID);
 			}
 			break;
 		}

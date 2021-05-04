@@ -80,6 +80,21 @@ struct MeshBuffer
 	bool HasMesh(const FixedStr32& name) const;
 };
 
+struct MeshFile
+{
+	const u8* fileData;
+	u32 vertexCount;
+	u32 indexCount;
+	const MeshBuffer::Vertex* vertices;
+	const u16* indices;
+
+	~MeshFile() {
+		memFree((void*)fileData);
+	}
+};
+
+bool OpenMeshFile(const char* path, MeshFile* out);
+
 struct TrianglePoint
 {
 	vec3 pos;
@@ -179,7 +194,8 @@ struct Renderer
 
 	bool Init();
 	void Cleanup();
-	bool OpenAndLoadMeshFile(const char* name, const char* path);
+
+	void LoadMeshFile(const char* name, const MeshFile& file);
 
 	// return ID
 	inline const InstanceMesh* PushMesh(

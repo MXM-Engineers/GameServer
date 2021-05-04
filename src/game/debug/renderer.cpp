@@ -97,6 +97,36 @@ bool MeshBuffer::HasMesh(const FixedStr32& name) const
 	return meshRefMap.find(name) != meshRefMap.end();
 }
 
+bool OpenMeshFile(const char* path, MeshFile* out)
+{
+	struct MeshFileHeader
+	{
+		u32 magic;
+		u32 vertexCount;
+		u32 indexCount;
+	};
+
+	i32 fileSize;
+	u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
+	if(!fileBuff) {
+		LOG("ERROR: failed to open '%s'", path);
+		return false;
+	}
+
+	ConstBuffer buff(fileBuff, fileSize);
+	const MeshFileHeader& header = buff.Read<MeshFileHeader>();
+	const MeshBuffer::Vertex* vertices = (MeshBuffer::Vertex*)buff.ReadRaw(sizeof(MeshBuffer::Vertex) * header.vertexCount);
+	const u16* indices = (u16*)buff.ReadRaw(sizeof(u16) * header.indexCount);
+
+	out->fileData = fileBuff;
+	out->vertexCount = header.vertexCount;
+	out->indexCount = header.indexCount;
+	out->vertices = vertices;
+	out->indices = indices;
+	return true;
+}
+
+
 sg_buffer TriangleBuffer::GetUpdatedBuffer()
 {
 	if(needsUpdate) {
@@ -694,9 +724,6 @@ bool Renderer::Init()
 	genVertList.clear();
 	genIndList.clear();
 
-	bool r = OpenAndLoadMeshFile("PVP_DeathMatchCollision", "gamedata/PVP_DeathMatchCollision.msh");
-	if(!r) return false;
-
 	shaderMeshShaded = sg_make_shader(&ShaderBaseMeshShaded());
 	shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
 	shaderLine = sg_make_shader(&ShaderLine());
@@ -784,30 +811,9 @@ void Renderer::Cleanup()
 	camera.Save();
 }
 
-bool Renderer::OpenAndLoadMeshFile(const char* name, const char* path)
+void Renderer::LoadMeshFile(const char* name, const MeshFile& file)
 {
-	struct MeshFileHeader
-	{
-		u32 magic;
-		u32 vertexCount;
-		u32 indexCount;
-	};
-
-	i32 fileSize;
-	u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
-	if(!fileBuff) {
-		LOG("ERROR: failed to open '%s'", path);
-		return false;
-	}
-	defer(memFree(fileBuff));
-
-	ConstBuffer buff(fileBuff, fileSize);
-	const MeshFileHeader& header = buff.Read<MeshFileHeader>();
-	const MeshBuffer::Vertex* vertices = (MeshBuffer::Vertex*)buff.ReadRaw(sizeof(MeshBuffer::Vertex) * header.vertexCount);
-	const u16* indices = (u16*)buff.ReadRaw(sizeof(u16) * header.indexCount);
-
-	meshBuffer.Push(name, vertices, header.vertexCount, indices, header.indexCount);
-	return true;
+	meshBuffer.Push(name, file.vertices, file.vertexCount, file.indices, file.indexCount);
 }
 
 void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent)

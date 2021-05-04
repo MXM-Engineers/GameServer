@@ -130,13 +130,8 @@ struct CollisionTest
 		rdr.PushArrow(Pipeline::Unlit, at + vec3(5, 0, 0), at, color, 2);
 	}
 
-	void Render()
+	void DoCollisionTests()
 	{
-		Time lastLocalTime = localTime;
-		localTime = TimeRelNow();
-		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
-		lastLocalTime = localTime;
-
 		f64 a = (u64)localTime / 10000000000.0;
 		f64 s = saw(a);
 
@@ -671,6 +666,16 @@ struct CollisionTest
 			ImGui::End();
 		}
 	}
+
+	void Render()
+	{
+		Time lastLocalTime = localTime;
+		localTime = TimeRelNow();
+		const f64 delta = TimeDiffSec(TimeDiff(lastLocalTime, localTime));
+		lastLocalTime = localTime;
+
+		DoCollisionTests();
+	}
 };
 
 struct Window
@@ -688,6 +693,8 @@ struct Window
 	GameState lastGame;
 
 	CollisionTest collisionTest;
+
+	MeshFile meshMapPvP;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -717,6 +724,11 @@ bool Window::Init()
 	simgui_desc_t imguiDesc = {0};
 	imguiDesc.ini_filename = "gameserver_imgui.ini";
 	simgui_setup(&imguiDesc);
+
+	r = OpenMeshFile("gamedata/PVP_DeathMatchCollision.msh", &meshMapPvP);
+	if(!r) return false;
+
+	rdr.LoadMeshFile("PVP_DeathMatchCollision", meshMapPvP);
 	return true;
 }
 

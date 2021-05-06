@@ -262,7 +262,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		// Read character data: skills
 
 		// read skill ids
-		SkillsModel* _skillsModel = character.getSkills();
+		SkillsModel& _skillsModel = *character.getSkills();
 		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
 		do {
 			i32 skillID;
@@ -275,23 +275,23 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
 			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(0), skillID);
+				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(0), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_2", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(1), skillID);
+				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(1), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_3", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(2), skillID);
+				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(2), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_4", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel->getSkillByIndex(3), skillID);
+				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(3), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_UG", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel->getUltimate(), skillID);
+				LoadMasterSkillWithID(_skillsModel.getUltimate(), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_PASSIVE", skillSlot) == 0)
 			{
@@ -348,11 +348,11 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 sk
 
 				for (int i = 0; i < 6; i++)
 				{
-					SkillNormalLevelModel* _skillNormalLevelModel = SkillNormal->getSkillNormalLevelByIndex(i);
-					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
+					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal->getSkillNormalLevelByIndex(i);
+					SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel, _temp);
 				}
 
-				LoadMasterSkillPropertyWithID(SkillNormal, _skillID);
+				LoadMasterSkillPropertyWithID(*SkillNormal, _skillID);
 			}
 			break;
 		}
@@ -363,7 +363,7 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 sk
 	return true;
 }
 
-bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel* SkillNormal, i32 skillID)
+bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID)
 {
 	XMLElement* pNodeInfo = xmlSKILLPROPERTY.FirstChildElement()->FirstChildElement();
 
@@ -386,9 +386,9 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel* SkillNormal
 			//Need -1 to correct index
 			for (int i = level-1; i < 6; i++)
 			{
-				SkillNormalLevelModel* _skillNormalLevelModel = SkillNormal->getSkillNormalLevelByIndex(i);
-				_skillNormalLevelModel->setLevel(level);
-				SetValuesSkillNormalLevel(pNodePropertyLevel, _skillNormalLevelModel, _temp);
+				SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
+				_skillNormalLevelModel.setLevel(level);
+				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel, _temp);
 			}
 		}
 	
@@ -398,59 +398,59 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel* SkillNormal
 	return true;
 }
 
-void GameXmlContent::SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp)
+void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel, float _temp)
 {
-	if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setAddGroggy(_temp);
+		_skillNormalLevelModel.setAddGroggy(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setAttackMultiplier(_temp);
+		_skillNormalLevelModel.setAttackMultiplier(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setBaseDamage(_temp);
+		_skillNormalLevelModel.setBaseDamage(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeEP(_temp);
+		_skillNormalLevelModel.setConsumeEP(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeMP(_temp);
+		_skillNormalLevelModel.setConsumeMP(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeUG(_temp);
+		_skillNormalLevelModel.setConsumeUG(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setCoolTime(_temp);
+		_skillNormalLevelModel.setCoolTime(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillIndex(_temp); //fix me: float in int32
+		_skillNormalLevelModel.setSkillIndex(_temp); //fix me: float in int32
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillRangeLengthX(_temp);
+		_skillNormalLevelModel.setSkillRangeLengthX(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillRangeLengthY(_temp);
+		_skillNormalLevelModel.setSkillRangeLengthY(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetMaxDistance(_temp);
+		_skillNormalLevelModel.setTargetMaxDistance(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetRangeLengthX(_temp);
+		_skillNormalLevelModel.setTargetRangeLengthX(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetRangeLengthY(_temp);
+		_skillNormalLevelModel.setTargetRangeLengthY(_temp);
 	}
 }
 

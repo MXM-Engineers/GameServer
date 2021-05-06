@@ -275,23 +275,23 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
 			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(0), skillID);
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(0), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_2", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(1), skillID);
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(1), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_3", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(2), skillID);
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(2), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_4", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel.getSkillByIndex(3), skillID);
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(3), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_UG", skillSlot) == 0)
 			{
-				LoadMasterSkillWithID(_skillsModel.getUltimate(), skillID);
+				LoadMasterSkillWithID(*_skillsModel.getUltimate(), skillID);
 			}
 			else if (EA::StdC::Strcmp("SKILL_SLOT_PASSIVE", skillSlot) == 0)
 			{
@@ -325,7 +325,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	return true;
 }
 
-bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 skillID)
+bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID)
 {
 	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
 
@@ -341,18 +341,18 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel* SkillNormal, i32 sk
 			{
 				float _temp = 0.0f;
 
-				LOG("DEBUG: SkillModel address: %llx", (intptr_t)SkillNormal);
-				LOG("DEBUG: SkillNormal address: %llx", (intptr_t)SkillNormal);
+				LOG("DEBUG: SkillModel address: %llx", SkillNormal);
+				LOG("DEBUG: SkillNormal address: %llx", SkillNormal);
 
-				SkillNormal->setID(_skillID);
+				SkillNormal.setID(_skillID);
 
 				for (int i = 0; i < 6; i++)
 				{
-					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal->getSkillNormalLevelByIndex(i);
+					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
 					SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel, _temp);
 				}
 
-				LoadMasterSkillPropertyWithID(*SkillNormal, _skillID);
+				LoadMasterSkillPropertyWithID(SkillNormal, _skillID);
 			}
 			break;
 		}

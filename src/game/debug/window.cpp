@@ -56,12 +56,12 @@ struct CollisionTest
 		localTime = TimeRelNow();
 	}
 
-	inline void Draw(const PhysSphere& sphere, const vec3& color)
+	inline void Draw(const ShapeSphere& sphere, const vec3& color)
 	{
 		rdr.PushMesh(Pipeline::Wireframe, "Sphere", sphere.center + vec3(0, 0, -sphere.radius), vec3(0), vec3(sphere.radius), color);
 	}
 
-	inline void Draw(const PhysCapsule& capsule, const vec3& color)
+	inline void Draw(const ShapeCapsule& capsule, const vec3& color)
 	{
 		f32 height = glm::length(capsule.tip - capsule.base);
 		vec3 dir = glm::normalize(capsule.tip - capsule.base);
@@ -71,7 +71,7 @@ struct CollisionTest
 		rdr.PushCapsule(Pipeline::Wireframe, capsule.base, vec3(yaw, pitch, 0), capsule.radius, height, color);
 	}
 
-	inline void Draw(const PhysTriangle& triangle, const vec3& color)
+	inline void Draw(const ShapeTriangle& triangle, const vec3& color)
 	{
 		rdr.triangleBuffer.Push({
 			TrianglePoint{ triangle.p[0], CU3(color.x, color.y, color.z) },
@@ -149,8 +149,8 @@ struct CollisionTest
 			}
 			ImGui::End();
 
-			PhysSphere sphereA;
-			PhysSphere sphereB;
+			ShapeSphere sphereA;
+			ShapeSphere sphereB;
 
 			const vec3 off = bAutoMove ? vec3(220 + saw(a * .5) * -220, 0, 0) : vec3(fOffsetX, 0, 0);
 
@@ -167,7 +167,7 @@ struct CollisionTest
 				DrawVec(-pen.dir * pen.depth, sphereA.center + pen.dir * sphereA.radius, vec3(1, 1, 0));
 
 				if(bShowFixedSphere) {
-					PhysSphere fixed = sphereA;
+					ShapeSphere fixed = sphereA;
 					fixed.center -= pen.dir * pen.depth;
 					Draw(fixed, vec3(1, 0.5, 0));
 				}
@@ -195,8 +195,8 @@ struct CollisionTest
 			}
 
 
-			PhysSphere sphereA;
-			PhysTriangle triangleB;
+			ShapeSphere sphereA;
+			ShapeTriangle triangleB;
 
 			sphereA.center = vec3(100, 349, 50);
 			sphereA.radius = 50;
@@ -233,7 +233,7 @@ struct CollisionTest
 					vec3 pp2 = triangleB.Normal() * sphereA.radius + pp;
 					DrawVec(pp2, sphereA.center + -triangleB.Normal() * sphereA.radius, vec3(0.5, 0.5, 1));
 
-					PhysSphere fixed = sphereA;
+					ShapeSphere fixed = sphereA;
 					fixed.center += pp2;
 					Draw(fixed, vec3(0.5, 1, 0.5));
 				}
@@ -258,8 +258,8 @@ struct CollisionTest
 			}
 			ImGui::End();
 
-			PhysCapsule capsuleA;
-			PhysCapsule capsuleB;
+			ShapeCapsule capsuleA;
+			ShapeCapsule capsuleB;
 
 			capsuleA.base = vec3(100, 500, 0);
 			capsuleA.tip = vec3(120, 500, 100);
@@ -298,8 +298,8 @@ struct CollisionTest
 			}
 			ImGui::End();
 
-			PhysCapsule capsuleA;
-			PhysCapsule capsuleB;
+			ShapeCapsule capsuleA;
+			ShapeCapsule capsuleB;
 
 			capsuleA.base = vec3(300, 500, 0);
 			capsuleA.tip = vec3(300, 500, 100);
@@ -319,7 +319,7 @@ struct CollisionTest
 				DrawVec(-pen.dir * pen.depth, capsuleA.base, vec3(1, 1, 0));
 
 				if(bFixedSphere) {
-					PhysCapsule fixed = capsuleA;
+					ShapeCapsule fixed = capsuleA;
 					fixed.base += -pen.dir * pen.depth;
 					fixed.tip += -pen.dir * pen.depth;
 					Draw(fixed, vec3(1, 0.5, 0));
@@ -353,8 +353,8 @@ struct CollisionTest
 			ImGui::End();
 
 
-			PhysCapsule capsuleA;
-			PhysTriangle triangleB;
+			ShapeCapsule capsuleA;
+			ShapeTriangle triangleB;
 
 			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
 			capsuleA.base = vec3(100, 750, 0) + off;
@@ -378,8 +378,8 @@ struct CollisionTest
 			};
 
 			// --------------------------------------------------------------------------------------
-			const PhysCapsule& A = capsuleA;
-			const PhysTriangle& B = triangleB;
+			const ShapeCapsule& A = capsuleA;
+			const ShapeTriangle& B = triangleB;
 
 			const vec3 capsuleNorm = glm::normalize(A.tip - A.base);
 			const vec3 lineEndOffset = capsuleNorm * A.radius;
@@ -449,7 +449,7 @@ struct CollisionTest
 			// The center of the best sphere candidate
 			vec3 center = ClosestPointOnLineSegment(pointA, pointB, refPoint);
 
-			const PhysSphere sphere = { center, A.radius };
+			const ShapeSphere sphere = { center, A.radius };
 
 			rdr.PushLine(capsuleA.base - capsuleNorm * 1000.f, capsuleA.base + capsuleNorm * 1000.f, vec3(1));
 
@@ -484,7 +484,7 @@ struct CollisionTest
 						pp2 -= capsuleA.InnerTip() - sphereCenter;
 					}
 
-					PhysCapsule fixed = capsuleA;
+					ShapeCapsule fixed = capsuleA;
 					fixed.base += pp2;
 					fixed.tip += pp2;
 					Draw(fixed, vec3(0.5, 1, 0.5));
@@ -498,21 +498,21 @@ struct CollisionTest
 
 		// test5
 		{
-			static bool bFixedSphere = true;
+			static bool bFixedCapsule = true;
 			static bool bAutoMove = true;
 			static f32 fOffsetX = 166.520f;
 			static f32 fOffsetY = 0;
 
 			if(ImGui::Begin("Test 5")) {
-				ImGui::Checkbox("Fixed capsule", &bFixedSphere);
+				ImGui::Checkbox("Fixed capsule", &bFixedCapsule);
 				ImGui::Checkbox("Auto move", &bAutoMove);
 				ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
 				ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
 			}
 			ImGui::End();
 
-			PhysCapsule capsuleA;
-			PhysTriangle triangleB;
+			ShapeCapsule capsuleA;
+			ShapeTriangle triangleB;
 
 			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
 			capsuleA.base = vec3(100, 900, 0) + off;
@@ -535,7 +535,7 @@ struct CollisionTest
 				Draw(triangleB, vec3(1, 0.2, 1));
 				DrawVec(-pen.dir * pen.depth, sphereCenter, vec3(1, 1, 0));
 
-				if(bFixedSphere) {
+				if(bFixedCapsule) {
 					vec3 p = sphereCenter + pen.dir * (capsuleA.radius - pen.depth);
 					Draw(p, vec3(1, 0.8, 0));
 					vec3 pp = glm::dot(p - sphereCenter, triangleB.Normal()) * triangleB.Normal();
@@ -552,7 +552,7 @@ struct CollisionTest
 					}
 
 
-					PhysCapsule fixed = capsuleA;
+					ShapeCapsule fixed = capsuleA;
 					fixed.base += pp2;
 					fixed.tip += pp2;
 					Draw(fixed, vec3(0.5, 1, 0.5));
@@ -581,7 +581,7 @@ struct CollisionTest
 				ImGui::SliderFloat("RectY", &fRectY, -150, 150);
 			}
 
-			PhysSphere sphereA;
+			ShapeSphere sphereA;
 			PhysRect rectB;
 
 			const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
@@ -593,7 +593,7 @@ struct CollisionTest
 			rectB.normal = vec3(-1, 0, 0);
 
 			do {
-				const PhysSphere& A = sphereA;
+				const ShapeSphere& A = sphereA;
 				const PhysRect& B = rectB;
 
 				const vec3 planeNorm = B.normal;
@@ -654,7 +654,7 @@ struct CollisionTest
 					//DrawVec(pp2, sphereA.center + -rectB.normal * sphereA.radius, vec3(0.5, 0.5, 1));
 
 
-					PhysSphere fixed = sphereA;
+					ShapeSphere fixed = sphereA;
 					fixed.center += pp2;
 					Draw(fixed, vec3(0.5, 1, 0.5));
 				}
@@ -679,27 +679,6 @@ struct CollisionTest
 	}
 };
 
-bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, PhysMapMesh* out)
-{
-	out->triangleList.reserve(mesh.indexCount/3);
-
-	// triangles
-	for(int i = 0; i < mesh.indexCount; i += 3) {
-		const MeshFile::Vertex& vert0 = mesh.vertices[mesh.indices[i]];
-		const MeshFile::Vertex& vert1 = mesh.vertices[mesh.indices[i+1]];
-		const MeshFile::Vertex& vert2 = mesh.vertices[mesh.indices[i+2]];
-		const vec3 v0(vert0.px, vert0.py, vert0.pz);
-		const vec3 v1(vert1.px, vert1.py, vert1.pz);
-		const vec3 v2(vert2.px, vert2.py, vert2.pz);
-
-		PhysTriangle tri;
-		tri.p = { v0, v2, v1 };
-		out->triangleList.push_back(tri);
-	}
-
-	return true;
-}
-
 struct Window
 {
 	const i32 winWidth;
@@ -718,8 +697,8 @@ struct Window
 
 	MeshFile mfCollision;
 	MeshFile mfEnv;
-	PhysMapMesh mapCollision;
-	PhysMapMesh mapWalls;
+	ShapeMesh mapCollision;
+	ShapeMesh mapWalls;
 
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = true;
@@ -806,7 +785,7 @@ void Window::Update(f64 delta)
 
 	if(ui_bMapWireframe) {
 		foreach_const(it, mapCollision.triangleList) {
-			const PhysTriangle& tri = *it;
+			const ShapeTriangle& tri = *it;
 			const vec3 color = vec3(0.5, 1, 0.5);
 			rdr.PushLine(tri.p[0], tri.p[1], color);
 			rdr.PushLine(tri.p[0], tri.p[2], color);
@@ -814,7 +793,7 @@ void Window::Update(f64 delta)
 			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
 		}
 		foreach_const(it, mapWalls.triangleList) {
-			const PhysTriangle& tri = *it;
+			const ShapeTriangle& tri = *it;
 			const vec3 color = vec3(0.5, 0.5, 1.0);
 			rdr.PushLine(tri.p[0], tri.p[1], color);
 			rdr.PushLine(tri.p[0], tri.p[2], color);
@@ -833,7 +812,7 @@ void Window::Update(f64 delta)
 
 	foreach_const(ent, entityList) {
 		const Dbg::Entity& e = *ent;
-		rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 50, 250, e.color);
+		rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 45, 210, e.color);
 		rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
 
 		// this is updated when the player moves

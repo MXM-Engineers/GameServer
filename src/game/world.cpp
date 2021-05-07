@@ -13,12 +13,23 @@ void World::Update(f64 delta, Time localTime_)
 	delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
+	// players: assign body position and velocity
+	foreach(it, actorPlayerList) {
+		ActorPlayer& p = *it;
+		p.body.dyn->pos = p.pos;
+		p.body.dyn->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
+	}
+
+	physics.Step();
+
 	// players
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
-		if(glm::length(p.dir) > 0) {
-			p.pos += p.dir * (f32)(p.speed * delta);
-		}
+
+		p.pos = p.body.dyn->pos;
+		vec3 vel = p.body.dyn->vel;
+		p.dir = glm::normalize(vel);
+		p.speed = glm::length(vel);
 	}
 
 	// update jukebox
@@ -143,6 +154,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.skinIndex = skinIndex;
 	actor.name = name;
 	actor.guildTag = guildTag;
+	actor.body = physics.CreateCapsule(45, 210, vec3(0));
 
 	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
 	return actor;

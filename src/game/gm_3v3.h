@@ -51,7 +51,7 @@ struct Game3v3: IGame
 	Dbg::GameUID dbgGameUID;
 
 	ActorUID legoUID = ActorUID::INVALID;
-	i32 legoDir = 1;
+	vec2 legoDir = vec2(1, 0);
 	i32 legoAngle = 0;
 	u32 legoLastStep = 0;
 

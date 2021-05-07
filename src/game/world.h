@@ -7,6 +7,7 @@
 #include <EASTL/fixed_vector.h>
 #include "replication.h"
 #include "core.h"
+#include "physics.h"
 
 
 struct World
@@ -40,6 +41,7 @@ struct World
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
+		DynBodyCapsule body;
 
 		explicit ActorPlayer(ActorUID UID_, ActorUID parentActorUID_):
 			ActorCore(UID_),
@@ -95,6 +97,8 @@ struct World
 
 	u32 nextActorUID;
 	Time localTime;
+
+	PhysWorld physics;
 
 	void Init(Replication* replication_);
 	void Update(f64 delta, Time localTime_);

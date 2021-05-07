@@ -1,14 +1,16 @@
 #pragma once
 #include <common/vector_math.h>
+#include <common/utils.h>
 #include <EASTL/array.h>
+#include <EASTL/fixed_list.h>
 
-struct PhysSphere
+struct ShapeSphere
 {
 	vec3 center;
 	f32 radius;
 };
 
-struct PhysCapsule
+struct ShapeCapsule
 {
 	vec3 base;
 	vec3 tip;
@@ -30,7 +32,7 @@ struct PhysCapsule
 	}
 };
 
-struct PhysTriangle
+struct ShapeTriangle
 {
 	eastl::array<vec3,3> p;
 
@@ -85,21 +87,69 @@ inline vec3 ProjectVec(const vec3& v, const vec3& on)
 	return glm::dot(v, n) * n;
 }
 
+// on needs to be normalized
+inline vec3 ProjectVecNorm(const vec3& v, const vec3& on)
+{
+	return glm::dot(v, on) * on;
+}
+
 inline vec3 Lerp(const vec3& v1, const vec3& v2, f32 a)
 {
 	ASSERT(a >= 0 && a <= 1);
 	return (v1 * (1.0f - a)) + (v2 * a);
 }
 
-bool TestIntersection(const PhysSphere& A, const PhysSphere& B, PhysPenetrationVector* pen);
-bool TestIntersection(const PhysSphere& A, const PhysTriangle& B, PhysPenetrationVector* pen);
-bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B);
-bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
-bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
-bool TestIntersection(const PhysSphere& A, const PhysRect& B, PhysPenetrationVector* pen);
-
-struct PhysMapMesh
+inline f32 SignedEpsilon(f32 v)
 {
-	eastl::vector<PhysTriangle> triangleList;
-	f32 maxZ;
+	return v > 0.0f ? 0.001f : -0.001f;
+}
+
+bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);
+bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrationVector* pen);
+bool TestIntersection(const ShapeCapsule& A, const ShapeCapsule& B);
+bool TestIntersectionUpright(const ShapeCapsule& A, const ShapeCapsule& B, PhysPenetrationVector* pen);
+bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
+bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVector* pen);
+
+struct ShapeMesh
+{
+	eastl::vector<ShapeTriangle> triangleList;
+};
+
+struct PhysBody
+{
+	vec3 pos;
+	vec3 vel;
+};
+
+// Does not actually hold the data, just pointers
+struct DynBodyCapsule
+{
+	ListConstItT<ShapeCapsule> shape;
+	ListItT<PhysBody> dyn;
+};
+
+struct PhysWorld
+{
+	eastl::fixed_vector<ShapeTriangle, 4096, false> staticMeshTriangleList;
+	eastl::fixed_list<ShapeCapsule, 4096, false> dynCapsuleShapeList;
+	eastl::fixed_list<PhysBody, 4096, false> dynCapsuleBodyList;
+
+	// temp data used for compute
+	struct Collision
+	{
+		PhysPenetrationVector pen;
+		vec3 sphereCenter;
+		vec3 triangleNormal;
+	};
+
+	eastl::fixed_vector<PhysBody, 4096, false> bodyList;
+	eastl::fixed_vector<ShapeCapsule, 4096, false> shapeCapsuleList;
+	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
+
+	void PushStaticMeshes(const ShapeMesh* meshList, const int count);
+	DynBodyCapsule CreateCapsule(f32 radius, f32 height, vec3 pos);
+	void DeleteCapsule(const DynBodyCapsule& cap);
+
+	void Step();
 };

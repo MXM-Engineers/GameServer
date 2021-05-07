@@ -1,6 +1,7 @@
 #pragma once
 #include "base.h"
 #include <EASTL/fixed_string.h>
+#include <EASTL/fixed_list.h>
 
 typedef eastl::fixed_string<wchar,64,true> WideString;
 typedef eastl::fixed_string<char,32,false> FixedStr32;
@@ -15,6 +16,7 @@ void PathAppend(Path& path, const wchar* app);
 u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize);
 
 u32 RandUint();
+f64 randf01();
 
 template<int DEST_CAP, int SRC_CAP>
 inline void StrConv(eastl::fixed_string<char,DEST_CAP,false>* dest, const eastl::fixed_string<wchar, SRC_CAP>& src)
@@ -28,3 +30,9 @@ inline void StrConv(eastl::fixed_string<char,DEST_CAP,false>* dest, const eastl:
 	buff[src.length()] = 0;
 	*dest = buff;
 }
+
+template<typename T>
+using ListItT = eastl::ListIterator<T, T*, T&>;
+
+template<typename T>
+using ListConstItT = eastl::ListIterator<T, const T*, const T&>;

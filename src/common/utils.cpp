@@ -86,3 +86,8 @@ u32 RandUint()
 	g_XorShiftState = x;
 	return x;
 }
+
+f64 randf01()
+{
+	return (f64)RandUint() / 0xFFFFFFFF;
+}

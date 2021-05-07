@@ -453,3 +453,5 @@ T sign(T val)
 
 template<size_t CAPACITY>
 using FixedStr = eastl::fixed_string<char,CAPACITY,false>;
+
+constexpr i32 UPDATE_TICK_RATE = 60;

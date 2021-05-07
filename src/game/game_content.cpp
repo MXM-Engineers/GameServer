@@ -1,9 +1,12 @@
 #include "game_content.h"
-#include "config.h"
-#include "core.h"
 #include <common/utils.h>
 #include <tinyxml2.h>
 #include <EAStdC/EAString.h>
+
+#include "config.h"
+#include "core.h"
+#include "physics.h"
+
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
@@ -573,5 +576,26 @@ bool OpenMeshFile(const char* path, MeshFile* out)
 		mesh.vertices = vertices;
 		mesh.indices = indices;
 	}
+	return true;
+}
+
+bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out)
+{
+	out->triangleList.reserve(mesh.indexCount/3);
+
+	// triangles
+	for(int i = 0; i < mesh.indexCount; i += 3) {
+		const MeshFile::Vertex& vert0 = mesh.vertices[mesh.indices[i]];
+		const MeshFile::Vertex& vert1 = mesh.vertices[mesh.indices[i+1]];
+		const MeshFile::Vertex& vert2 = mesh.vertices[mesh.indices[i+2]];
+		const vec3 v0(vert0.px, vert0.py, vert0.pz);
+		const vec3 v1(vert1.px, vert1.py, vert1.pz);
+		const vec3 v2(vert2.px, vert2.py, vert2.pz);
+
+		ShapeTriangle tri;
+		tri.p = { v0, v2, v1 };
+		out->triangleList.push_back(tri);
+	}
+
 	return true;
 }

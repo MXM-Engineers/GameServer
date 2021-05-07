@@ -14,6 +14,22 @@ void Game3v3::Init(Replication* replication_)
 
 	world.Init(replication);
 
+	// TODO: move OUT
+	MeshFile mfCollision;
+	MeshFile mfEnv;
+	ShapeMesh shape[2];
+
+	bool r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
+	ASSERT(r);
+	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
+	ASSERT(r);
+	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
+	r = MakeMapCollisionMesh(mshCol, &shape[0]);
+	ASSERT(r);
+	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &shape[1]);
+	ASSERT(r);
+	world.physics.PushStaticMeshes(shape, 2);
+
 	playerMap.fill(playerList.end());
 
 	LoadMap();
@@ -50,21 +66,24 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	World::ActorPlayer* lego = world.FindPlayerActor(legoUID);
 	ASSERT(lego);
 	f64 localTimeSec = TimeDiffSec(localTime);
-	u32 step = ((u64)localTimeSec / 2) & 1;
+	u32 step = ((u64)localTimeSec % 5) == 0;
 
 	if(legoLastStep == Step::Stop && step == Step::Move) {
-		legoDir = -legoDir;
+		f32 a = randf01() * 2 * PI;
+		legoDir = vec2(cosf(a), sinf(a));
 		legoAngle = (legoAngle+1) % 4;
 	}
 
 	if(step == Step::Move) { // move
-		lego->dir = vec3(legoDir, 0, 0);
 		f32 a = legoAngle * PI/2;
 		lego->rotation.upperYaw = a;
 		lego->rotation.bodyYaw = a;
+		lego->dir = vec3(legoDir, 0);
+		lego->speed = 626;
 	}
 	else { // stop
 		lego->dir = vec3(0);
+		lego->speed = 0;
 	}
 
 	legoLastStep = step;
@@ -115,7 +134,7 @@ bool Game3v3::LoadMap()
 	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 	lego.pos = vec3(2800, 3532, 550.602905);
 	lego.dir = vec3(0, 0, 0);
-	lego.speed = 626.200012f;
+	lego.speed = 626;
 	legoUID = lego.UID;
 	return true;
 }

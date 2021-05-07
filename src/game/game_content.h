@@ -115,6 +115,9 @@ struct MeshFile
 
 bool OpenMeshFile(const char* path, MeshFile* out);
 
+struct ShapeMesh;
+bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out);
+
 constexpr const char* g_ActionStateString[] = {
 	"ACTION_STATE_TYPE_IDLE",
 	"NORMAL_STAND_MOVESTATE",

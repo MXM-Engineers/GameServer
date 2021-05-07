@@ -18,7 +18,7 @@ intptr_t ThreadChannel(void* pData)
 	const i32 cpuID = (i32)CoreAffinity::CHANNELS + 0; // TODO: increase this for each channel
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
 
-	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
 	const Time startTime = TimeNow();
 	Time t0 = startTime;
 

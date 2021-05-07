@@ -793,33 +793,33 @@ bool GameXmlContent::Load()
 	return true;
 }
 
-// Returns CREATURE_INVALID when it doesn't recognises the creature type.
+// Returns CREATURE_TYPE_INVALID when it doesn't recognises the creature type.
 CreatureType GameXmlContent::StringToCreatureType(const char* s)
 {
 	if (EA::StdC::Strcmp("CREATURE_TYPE_ALLY", s) == 0)
 	{
-		return CreatureType::CREATURE_ALLY;
+		return CreatureType::CREATURE_TYPE_ALLY;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_BOT", s) == 0)
 	{
-		return CreatureType::CREATURE_BOT;
+		return CreatureType::CREATURE_TYPE_BOT;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_MONSTER", s) == 0)
 	{
-		return CreatureType::CREATURE_MONSTER;
+		return CreatureType::CREATURE_TYPE_MONSTER;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_NPC", s) == 0)
 	{
-		return CreatureType::CREATURE_NPC;
+		return CreatureType::CREATURE_TYPE_NPC;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_PC", s) == 0)
 	{
-		return CreatureType::CREATURE_PC;
+		return CreatureType::CREATURE_TYPE_PC;
 	}
 	else
 	{
 		LOG("Unknown CreatureType: %s", s);
-		return CreatureType::CREATURE_INVALID;
+		return CreatureType::CREATURE_TYPE_INVALID;
 	}
 }
 

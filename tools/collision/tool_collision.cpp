@@ -83,6 +83,7 @@ struct CollisionNifReader
 			eastl::fixed_vector<Component,16,true> componentList;
 		};
 
+		eastl::fixed_string<char,64,false> name;
 		/*
 			<option value="0" name="MESH_PRIMITIVE_TRIANGLES">Triangle primitive type.</option>
 			<option value="1" name="MESH_PRIMITIVE_TRISTRIPS">Triangle strip primitive type.</option>
@@ -102,16 +103,23 @@ struct CollisionNifReader
 		u32 numIndices;
 	};
 
+	struct Node
+	{
+		eastl::fixed_string<char,64,false> name;
+	};
+
 	eastl::fixed_vector<StringSlice,1024,true> stringList;
 	eastl::fixed_vector<u16,1024,true> blockSizeList;
 	eastl::fixed_map<i32,DataStream,16,true> dataStreamMap;
 
 	eastl::fixed_vector<Mesh,8,true> meshList;
+	Node currentNode;
 
 	bool ReadBlock_NiNode(ConstBuffer buff, i32 blockID)
 	{
-		const u32 stringIndex = buff.Read<u32>();
-		const StringSlice& str = (stringIndex != 0xFFFFFFFF) ? stringList[stringIndex] : StringSlice{"_", 1};
+		const i32 stringIndex = buff.Read<i32>();
+		const StringSlice& str = (stringIndex != -1) ? stringList[stringIndex] : StringSlice{"_", 1};
+		currentNode.name.assign(str.at, str.len);
 
 		const u32 numExtraDataList = buff.Read<u32>();
 		eastl::fixed_vector<i32,128,true> refExtraDataList;
@@ -186,6 +194,7 @@ struct CollisionNifReader
 		Mesh& mesh = meshList.push_back();
 		const u32 nameStrID = buff.Read<u32>();
 		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
+		mesh.name = currentNode.name;
 
 		const u32 numExtraDataList = buff.Read<u32>();
 		eastl::fixed_vector<i32,128,true> refExtraDataList;
@@ -473,108 +482,155 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	const CollisionNifReader::Mesh& mesh = nif.meshList.front();
-	if(mesh.meshPrimitiveType != 0) {
-		LOG("ERROR: mesh primitive type not handled");
-		return false;
-	}
-	if(mesh.dataStreamList.size() < 2) {
-		LOG("ERROR: mesh dataStream count < 2");
-		return false;
-	}
+	// mesh file
+	GrowableBuffer outMesh(1024*1024);
+	outMesh.Append("MESH", 4);
+	const u16 version = 2;
+	outMesh.Append(&version, sizeof(version));
+	const u16 meshCount = nif.meshList.size();
+	outMesh.Append(&meshCount, sizeof(meshCount));
 
-	const CollisionNifReader::Mesh::DataStream& streamIndex = mesh.dataStreamList[0];
-	const CollisionNifReader::Mesh::DataStream& streamVertices = mesh.dataStreamList[1];
+	int vertOffset = 1;
 
-	if(streamIndex.componentList.empty()) {
-		LOG("ERROR: streamIndex has no components");
-		return false;
-	}
+	foreach_const(it, nif.meshList) {
+		const CollisionNifReader::Mesh& mesh = *it;
 
-	// VERTICES
-	if(streamVertices.componentList.size() < 3) {
-		LOG("ERROR: streamVertices component count < 3");
-		return false;
-	}
+		if(mesh.meshPrimitiveType != 0) {
+			LOG("ERROR: mesh primitive type not handled");
+			return false;
+		}
+		if(mesh.dataStreamList.size() < 2) {
+			LOG("ERROR: mesh dataStream count < 2");
+			return false;
+		}
 
-	const i32 refVerticesBlock = streamVertices.refStream;
-	if(refVerticesBlock == -1) {
-		LOG("ERROR: refVerticesBlock is null");
-		return false;
-	}
+		const CollisionNifReader::Mesh::DataStream& streamIndex = mesh.dataStreamList[0];
+		const CollisionNifReader::Mesh::DataStream& streamVertices = mesh.dataStreamList[1];
 
-	const CollisionNifReader::Mesh::DataStream::Component& compVertPosition = streamVertices.componentList[0];
-	const CollisionNifReader::Mesh::DataStream::Component& compVertNormal = streamVertices.componentList[1];
-	const CollisionNifReader::Mesh::DataStream::Component& compVertColor = streamVertices.componentList[2];
-	if(!compVertPosition.name.Equals("POSITION")) {
-		LOG("ERROR: compVertPosition is invalid");
-		return false;
-	}
-	if(!compVertNormal.name.Equals("NORMAL")) {
-		LOG("ERROR: compVertNormal is invalid");
-		return false;
-	}
-	if(!compVertColor.name.Equals("COLOR")) {
-		LOG("ERROR: compVertColor is invalid");
-		return false;
-	}
+		if(streamIndex.componentList.empty()) {
+			LOG("ERROR: streamIndex has no components");
+			return false;
+		}
 
-	auto found = nif.dataStreamMap.find(refVerticesBlock);
-	if(found == nif.dataStreamMap.end()) {
-		LOG("ERROR: verticesBlock not found");
-		return false;
-	}
+		// VERTICES
+		if(streamVertices.componentList.size() < 3) {
+			LOG("ERROR: streamVertices component count < 3");
+			return false;
+		}
 
-	const CollisionNifReader::DataStream& verticesBlock = found->second;
+		const i32 refVerticesBlock = streamVertices.refStream;
+		if(refVerticesBlock == -1) {
+			LOG("ERROR: refVerticesBlock is null");
+			return false;
+		}
 
-	PUSH_PACKED;
-	struct Vertex
-	{
-		Vector3 pos;
-		Vector3 normal;
-		u32 color;
-	};
-	POP_PACKED;
-	STATIC_ASSERT(sizeof(Vertex) == 28);
+		const CollisionNifReader::Mesh::DataStream::Component& compVertPosition = streamVertices.componentList[0];
+		const CollisionNifReader::Mesh::DataStream::Component& compVertNormal = streamVertices.componentList[1];
+		const CollisionNifReader::Mesh::DataStream::Component& compVertColor = streamVertices.componentList[2];
+		if(!compVertPosition.name.Equals("POSITION")) {
+			LOG("ERROR: compVertPosition is invalid");
+			return false;
+		}
+		if(!compVertNormal.name.Equals("NORMAL")) {
+			LOG("ERROR: compVertNormal is invalid");
+			return false;
+		}
+		if(!compVertColor.name.Equals("COLOR")) {
+			LOG("ERROR: compVertColor is invalid");
+			return false;
+		}
 
-	ASSERT(verticesBlock.size == sizeof(Vertex) * verticesBlock.numIndices);
+		auto found = nif.dataStreamMap.find(refVerticesBlock);
+		if(found == nif.dataStreamMap.end()) {
+			LOG("ERROR: verticesBlock not found");
+			return false;
+		}
+
+		const CollisionNifReader::DataStream& verticesBlock = found->second;
+
+		PUSH_PACKED;
+		struct Vertex
+		{
+			Vector3 pos;
+			Vector3 normal;
+			u32 color;
+		};
+		POP_PACKED;
+		STATIC_ASSERT(sizeof(Vertex) == 28);
+
+		ASSERT(verticesBlock.size == sizeof(Vertex) * verticesBlock.numIndices);
 
 
-	// INDICES
-	const i32 refIndexBlock = streamIndex.refStream;
-	if(refIndexBlock == -1) {
-		LOG("ERROR: refIndexBlock is null");
-		return false;
-	}
+		// INDICES
+		const i32 refIndexBlock = streamIndex.refStream;
+		if(refIndexBlock == -1) {
+			LOG("ERROR: refIndexBlock is null");
+			return false;
+		}
 
-	const CollisionNifReader::Mesh::DataStream::Component& compIndex = streamIndex.componentList[0];
-	if(!compIndex.name.Equals("INDEX")) {
-		LOG("ERROR: compIndex is invalid");
-		return false;
-	}
+		const CollisionNifReader::Mesh::DataStream::Component& compIndex = streamIndex.componentList[0];
+		if(!compIndex.name.Equals("INDEX")) {
+			LOG("ERROR: compIndex is invalid");
+			return false;
+		}
 
-	found = nif.dataStreamMap.find(refIndexBlock);
-	if(found == nif.dataStreamMap.end()) {
-		LOG("ERROR: indexBlock not found");
-		return false;
-	}
+		found = nif.dataStreamMap.find(refIndexBlock);
+		if(found == nif.dataStreamMap.end()) {
+			LOG("ERROR: indexBlock not found");
+			return false;
+		}
 
-	const CollisionNifReader::DataStream& indexBlock = found->second;
+		const CollisionNifReader::DataStream& indexBlock = found->second;
 
-	ASSERT(indexBlock.size == sizeof(u16) * indexBlock.numIndices);
-	ASSERT((indexBlock.numIndices/3) * 3 == indexBlock.numIndices);
+		ASSERT(indexBlock.size == sizeof(u16) * indexBlock.numIndices);
+		ASSERT((indexBlock.numIndices/3) * 3 == indexBlock.numIndices);
 
-	// obj file
-	const Vertex* vertices = (Vertex*)verticesBlock.at;
-	for(int i = 0; i < verticesBlock.numIndices; i++) {
-		const Vertex& v = vertices[i];
-		out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
-		out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
-	}
+		out.append(FMT("o %s\n", mesh.name.data()));
 
-	const u16* indices = (u16*)indexBlock.at;
-	for(int i = 0; i < indexBlock.numIndices; i += 3) {
-		out.append(FMT("f %d//%d %d//%d %d//%d\n", indices[i]+1 , indices[i]+1, indices[i+1]+1, indices[i+1]+1, indices[i+2]+1, indices[i+2]+1));
+		// obj file
+		const Vertex* vertices = (Vertex*)verticesBlock.at;
+		for(int i = 0; i < verticesBlock.numIndices; i++) {
+			const Vertex& v = vertices[i];
+			out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
+			out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
+		}
+
+		const u16* indices = (u16*)indexBlock.at;
+		for(int i = 0; i < indexBlock.numIndices; i += 3) {
+			out.append(FMT("f %d//%d %d//%d %d//%d\n",
+						indices[i]+vertOffset, indices[i]+vertOffset, indices[i+1]+vertOffset,
+						indices[i+1]+vertOffset, indices[i+2]+vertOffset, indices[i+2]+vertOffset));
+		}
+		vertOffset += verticesBlock.numIndices;
+
+		out.append("\n");
+
+		// mesh file
+
+		// name
+		const i32 nameLen = mesh.name.size();
+		outMesh.Append(&nameLen, sizeof(nameLen));
+		outMesh.Append(mesh.name.data(), nameLen);
+
+		// vertexCount
+		outMesh.Append(&verticesBlock.numIndices, sizeof(verticesBlock.numIndices));
+		// indexCount
+		outMesh.Append(&indexBlock.numIndices, sizeof(indexBlock.numIndices));
+
+		for(int i = 0; i < verticesBlock.numIndices; i++) {
+			const Vertex& v = vertices[i];
+			Vector3 p = { v.pos.x, v.pos.y, v.pos.z };
+			outMesh.Append(&p, sizeof(p));
+			Vector3 n = { v.normal.x, v.normal.y, v.normal.z };
+			outMesh.Append(&n, sizeof(n));
+		}
+
+		// make it so back is culled
+		for(int i = 0; i < indexBlock.numIndices; i += 3) {
+			outMesh.Append(&indices[i], sizeof(u16));
+			outMesh.Append(&indices[i+2], sizeof(u16));
+			outMesh.Append(&indices[i+1], sizeof(u16));
+		}
 	}
 
 	bool r = fileSaveBuff(FMT("%s.obj", outPath), out.data(), out.size());
@@ -582,29 +638,6 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		LOG("ERROR: could not write '%s.obj'", outPath);
 		return false;
 	}
-
-	// mesh file
-	GrowableBuffer outMesh(1024*1024);
-	outMesh.Append("MESH", 4);
-	outMesh.Append(&verticesBlock.numIndices, sizeof(verticesBlock.numIndices));
-	outMesh.Append(&indexBlock.numIndices, sizeof(indexBlock.numIndices));
-
-	for(int i = 0; i < verticesBlock.numIndices; i++) {
-		const Vertex& v = vertices[i];
-		Vector3 p = { v.pos.x, v.pos.y, v.pos.z };
-		outMesh.Append(&p, sizeof(p));
-		Vector3 n = { v.normal.x, v.normal.y, v.normal.z };
-		outMesh.Append(&n, sizeof(n));
-	}
-
-	// make it so back is culled
-	for(int i = 0; i < indexBlock.numIndices; i += 3) {
-		outMesh.Append(&indices[i], sizeof(u16));
-		outMesh.Append(&indices[i+2], sizeof(u16));
-		outMesh.Append(&indices[i+1], sizeof(u16));
-	}
-
-	outMesh.Append(indices, sizeof(u16) * indexBlock.numIndices);
 
 	r = fileSaveBuff(FMT("%s.msh", outPath), outMesh.data, outMesh.size);
 	if(!r) {

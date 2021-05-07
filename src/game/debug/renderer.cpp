@@ -33,7 +33,7 @@ void LineBuffer::Clear()
 	needsUpdate = true;
 }
 
-void MeshBuffer::Push(const FixedStr32& name, const MeshBuffer::Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount)
+void MeshBuffer::Push(const FixedStr64& name, const MeshBuffer::Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount)
 {
 	ASSERT(meshRefMap.find(name) == meshRefMap.end());
 
@@ -86,46 +86,16 @@ void MeshBuffer::UpdateAndBind()
 	sg_apply_bindings(&binds);
 }
 
-void MeshBuffer::DrawMesh(const FixedStr32& name)
+void MeshBuffer::DrawMesh(const FixedStr64& name)
 {
 	const MeshRef& ref = meshRefMap.at(name);
 	sg_draw(ref.indexStart, ref.indexCount, 1);
 }
 
-bool MeshBuffer::HasMesh(const FixedStr32& name) const
+bool MeshBuffer::HasMesh(const FixedStr64& name) const
 {
 	return meshRefMap.find(name) != meshRefMap.end();
 }
-
-bool OpenMeshFile(const char* path, MeshFile* out)
-{
-	struct MeshFileHeader
-	{
-		u32 magic;
-		u32 vertexCount;
-		u32 indexCount;
-	};
-
-	i32 fileSize;
-	u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
-	if(!fileBuff) {
-		LOG("ERROR: failed to open '%s'", path);
-		return false;
-	}
-
-	ConstBuffer buff(fileBuff, fileSize);
-	const MeshFileHeader& header = buff.Read<MeshFileHeader>();
-	const MeshBuffer::Vertex* vertices = (MeshBuffer::Vertex*)buff.ReadRaw(sizeof(MeshBuffer::Vertex) * header.vertexCount);
-	const u16* indices = (u16*)buff.ReadRaw(sizeof(u16) * header.indexCount);
-
-	out->fileData = fileBuff;
-	out->vertexCount = header.vertexCount;
-	out->indexCount = header.indexCount;
-	out->vertices = vertices;
-	out->indices = indices;
-	return true;
-}
-
 
 sg_buffer TriangleBuffer::GetUpdatedBuffer()
 {
@@ -811,9 +781,10 @@ void Renderer::Cleanup()
 	camera.Save();
 }
 
-void Renderer::LoadMeshFile(const char* name, const MeshFile& file)
+void Renderer::LoadMeshFile(const char* name, const MeshFile::Mesh& mesh)
 {
-	meshBuffer.Push(name, file.vertices, file.vertexCount, file.indices, file.indexCount);
+	STATIC_ASSERT(sizeof(MeshBuffer::Vertex) == sizeof(MeshFile::Vertex)); // hacky
+	meshBuffer.Push(name, (MeshBuffer::Vertex*)mesh.vertices, mesh.vertexCount, mesh.indices, mesh.indexCount);
 }
 
 void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent)

@@ -87,6 +87,34 @@ struct GameXmlContent
 bool GameXmlContentLoad();
 const GameXmlContent& GetGameXmlContent();
 
+struct MeshFile
+{
+	const u8* fileData;
+
+	struct Vertex
+	{
+		f32 px, py, pz;
+		f32 nx, ny, nz;
+	};
+
+	struct Mesh
+	{
+		FixedStr64 name;
+		u32 vertexCount;
+		u32 indexCount;
+		const Vertex* vertices;
+		const u16* indices;
+	};
+
+	eastl::fixed_vector<Mesh,16> meshList;
+
+	~MeshFile() {
+		memFree((void*)fileData);
+	}
+};
+
+bool OpenMeshFile(const char* path, MeshFile* out);
+
 constexpr const char* g_ActionStateString[] = {
 	"ACTION_STATE_TYPE_IDLE",
 	"NORMAL_STAND_MOVESTATE",

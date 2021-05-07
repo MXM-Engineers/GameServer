@@ -525,3 +525,53 @@ const GameXmlContent& GetGameXmlContent()
 {
 	return *g_GameXmlContent;
 }
+
+bool OpenMeshFile(const char* path, MeshFile* out)
+{
+	struct MeshFileHeader
+	{
+		u32 magic;
+		u16 version;
+		u16 count;
+	};
+
+	i32 fileSize;
+	u8* fileBuff = fileOpenAndReadAll(path, &fileSize);
+	if(!fileBuff) {
+		LOG("ERROR: failed to open '%s'", path);
+		return false;
+	}
+
+	out->fileData = fileBuff;
+
+	ConstBuffer buff(fileBuff, fileSize);
+	const MeshFileHeader& header = buff.Read<MeshFileHeader>();
+
+	if(strncmp((char*)&header.magic, "MESH", 4) != 0) {
+		WARN("Not a MESH file '%s'", path);
+		return false;
+	}
+
+	if(header.version != 2) {
+		WARN("Version not supported (%d) '%s'", header.version, path);
+		return false;
+	}
+
+	for(int i = 0; i < header.count; i++) {
+		const i32 nameLen = buff.Read<i32>();
+		const char* name = (char*)buff.ReadRaw(nameLen);
+		const u32 vertexCount = buff.Read<u32>();
+		const u32 indexCount = buff.Read<u32>();
+		const MeshFile::Vertex* vertices = (MeshFile::Vertex*)buff.ReadRaw(sizeof(MeshFile::Vertex) * vertexCount);
+		const u16* indices = (u16*)buff.ReadRaw(sizeof(u16) * indexCount);
+
+		MeshFile::Mesh& mesh = out->meshList.push_back();
+		ASSERT(nameLen < 64);
+		mesh.name.assign(name, nameLen);
+		mesh.vertexCount = vertexCount;
+		mesh.indexCount = indexCount;
+		mesh.vertices = vertices;
+		mesh.indices = indices;
+	}
+	return true;
+}

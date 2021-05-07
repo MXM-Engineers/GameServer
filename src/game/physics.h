@@ -97,3 +97,9 @@ bool TestIntersection(const PhysCapsule& A, const PhysCapsule& B);
 bool TestIntersectionUpright(const PhysCapsule& A, const PhysCapsule& B, PhysPenetrationVector* pen);
 bool TestIntersection(const PhysCapsule& A, const PhysTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
 bool TestIntersection(const PhysSphere& A, const PhysRect& B, PhysPenetrationVector* pen);
+
+struct PhysMapMesh
+{
+	eastl::vector<PhysTriangle> triangleList;
+	f32 maxZ;
+};

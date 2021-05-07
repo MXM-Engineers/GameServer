@@ -4,6 +4,7 @@
 
 typedef eastl::fixed_string<wchar,64,true> WideString;
 typedef eastl::fixed_string<char,32,false> FixedStr32;
+typedef eastl::fixed_string<char,64,false> FixedStr64;
 
 
 typedef eastl::fixed_string<wchar,512,true> Path;

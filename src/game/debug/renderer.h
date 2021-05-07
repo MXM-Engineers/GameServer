@@ -12,6 +12,8 @@
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
 
+#include <game/game_content.h>
+
 inline u32 CU3(f32 r, f32 g, f32 b)
 {
 	return 0xFF000000 | (u8(b * 255) << 16) | (u8(g * 255) << 8) | (u8(r * 255));
@@ -70,30 +72,15 @@ struct MeshBuffer
 	eastl::fixed_vector<u16,8192*1024,false> indexBuffer;
 	sg_buffer gpuVertexBuff = { 0xFFFFFFFF };
 	sg_buffer gpuIndexBuff = { 0xFFFFFFFF };
-	eastl::fixed_map<FixedStr32, MeshRef, 2048, false> meshRefMap;
+	eastl::fixed_map<FixedStr64, MeshRef, 2048, false> meshRefMap;
 	bool needsUpdate = false;
 
-	void Push(const FixedStr32& name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount);
+	void Push(const FixedStr64& name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount);
 	void UpdateAndBind();
-	void DrawMesh(const FixedStr32& name);
+	void DrawMesh(const FixedStr64& name);
 
-	bool HasMesh(const FixedStr32& name) const;
+	bool HasMesh(const FixedStr64& name) const;
 };
-
-struct MeshFile
-{
-	const u8* fileData;
-	u32 vertexCount;
-	u32 indexCount;
-	const MeshBuffer::Vertex* vertices;
-	const u16* indices;
-
-	~MeshFile() {
-		memFree((void*)fileData);
-	}
-};
-
-bool OpenMeshFile(const char* path, MeshFile* out);
 
 struct TrianglePoint
 {
@@ -181,7 +168,7 @@ struct Renderer
 	struct InstanceMesh
 	{
 		const InstanceMesh* parent;
-		FixedStr32 meshName;
+		FixedStr64 meshName;
 		vec3 pos;
 		vec3 rot = vec3(0); // yaw, pitch, roll
 		vec3 scale = vec3(1);
@@ -195,12 +182,12 @@ struct Renderer
 	bool Init();
 	void Cleanup();
 
-	void LoadMeshFile(const char* name, const MeshFile& file);
+	void LoadMeshFile(const char* name, const MeshFile::Mesh& mesh);
 
 	// return ID
 	inline const InstanceMesh* PushMesh(
 		Pipeline pipeline,
-		const FixedStr32& meshName,
+		const FixedStr64& meshName,
 		const vec3& pos,
 		const vec3& rot = vec3(0),
 		const vec3& scale = vec3(1),

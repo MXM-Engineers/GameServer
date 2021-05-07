@@ -679,159 +679,15 @@ struct CollisionTest
 	}
 };
 
-bool MakeMapCollisionMesh(const MeshFile::Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount, PhysMapMesh* out)
+bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, PhysMapMesh* out)
 {
-	struct Node {
-		vec3 pos;
-		eastl::fixed_set<u16,16> links;
-	};
-
-	eastl::vector<Node> nodes;
-	eastl::fixed_vector<u16, 4096> contourList;
-	i32 firstNodeIdx = -1;
-
-	nodes.resize(vertexCount);
-
-	f32 maxZ = -FLT_MAX;
-
-	for(int i = 0; i < vertexCount; i++) {
-		const MeshFile::Vertex& vert0 = vertices[i];
-		nodes[i].pos = vec3(vert0.px, vert0.py, 0); // flatten to 2D space
-		maxZ = MAX(vert0.pz, maxZ);
-	}
-
-	for(int i = 0; i < indexCount; i += 3) {
-		const u16 idx0 = indices[i];
-		const u16 idx1 = indices[i+1];
-		const u16 idx2 = indices[i+2];
-
-		nodes[idx0].links.insert(idx1);
-		nodes[idx0].links.insert(idx2);
-
-		nodes[idx1].links.insert(idx0);
-		nodes[idx1].links.insert(idx2);
-
-		nodes[idx2].links.insert(idx0);
-		nodes[idx2].links.insert(idx1);
-	}
-
-	// merge duplicates
-	int mergeCount = 0;
-	for(int i = 0; i < nodes.size(); i++) {
-		Node& n = nodes[i];
-		const vec3 np = n.pos;
-		if(n.links.empty()) continue;
-
-		for(int j = 0; j < nodes.size(); j++) {
-			if(i == j) continue;
-			Node& other = nodes[j];
-			if(other.links.empty()) continue;
-
-			if(LengthSq(np - other.pos) < 0.0001f) {
-				mergeCount++;
-				eastl::copy(other.links.begin(), other.links.end(), eastl::inserter(n.links, n.links.begin()));
-				other.links.clear();
-
-				// replace other links to point to merged node
-				foreach(it, nodes) {
-					if(it->links.find(j) != it->links.end()) {
-						it->links.erase(j);
-						it->links.insert(i);
-					}
-				}
-
-
-			}
-		}
-
-		n.links.erase(i); // remove connections to ourselves
-	}
-
-
-	f32 minX = FLT_MAX;
-	int maxLinkCount = 0;
-	for(int i = 0; i < vertexCount; i++) {
-		if(nodes[i].pos.x < minX) {
-			firstNodeIdx = i;
-			minX = nodes[i].pos.x;
-		}
-		maxLinkCount = MAX(nodes[i].links.size(), maxLinkCount);
-	}
-
-	LOG("vertexCount = %d", vertexCount);
-	LOG("mergeCount = %d", mergeCount);
-	LOG("maxLinkCount = %d", maxLinkCount);
-	LOG("firstNodeIdx = %d", firstNodeIdx);
-
-	int currentNodeID = firstNodeIdx;
-	contourList.push_back(currentNodeID);
-	const Node& n = nodes[currentNodeID];
-	int topLinkID = -1;
-	f32 topDot = -FLT_MAX;
-	foreach_const(li, n.links) {
-		vec3 v = glm::normalize(nodes[*li].pos - n.pos);
-		f32 d = glm::dot(v, vec3(0, 1, 0));
-		if(d > topDot) {
-			topLinkID = *li;
-			topDot = d;
-		}
-	}
-	currentNodeID = topLinkID;
-	contourList.push_back(currentNodeID);
-
-	while(true) {
-		const u16 prevID = *(contourList.end()-2);
-		const Node& prev = nodes[prevID];
-		const Node& cur = nodes[currentNodeID];
-		if(cur.links.size() == 0) {
-			LOG("Failed to finish contour: no links");
-			return false;
-		}
-
-		//LOG("currentNodeID = %d", currentNodeID);
-
-		const vec3 lastEdge = glm::normalize(prev.pos - cur.pos);
-
-		int topLinkID = -1;
-		f32 topAngle = -FLT_MAX;
-		foreach_const(li, cur.links) {
-			if(*li == prevID) continue;
-
-			vec3 v = glm::normalize(nodes[*li].pos - cur.pos);
-			f32 a = glm::orientedAngle(vec2(lastEdge), vec2(v));
-			if(a < 0) a += 2*(f32)PI;
-			//LOG("%d angle = %g", *li, a);
-
-			if(a > topAngle) {
-				topLinkID = *li;
-				topAngle = a;
-			}
-		}
-
-		if(topLinkID == firstNodeIdx) {
-			LOG("success!!!");
-			break;
-		}
-
-		currentNodeID = topLinkID;
-		contourList.push_back(currentNodeID);
-
-		if(contourList.size() > 1000) {
-			LOG("Failed to finish contour: algorithm got stuck");
-			return false;
-		}
-	}
-
-	LOG("contourCount = %zd", contourList.size());
-
-	const int contourCount = contourList.size();
-	out->triangleList.reserve(indexCount/3 + (contourCount)*2);
+	out->triangleList.reserve(mesh.indexCount/3);
 
 	// triangles
-	for(int i = 0; i < indexCount; i += 3) {
-		const MeshFile::Vertex& vert0 = vertices[indices[i]];
-		const MeshFile::Vertex& vert1 = vertices[indices[i+1]];
-		const MeshFile::Vertex& vert2 = vertices[indices[i+2]];
+	for(int i = 0; i < mesh.indexCount; i += 3) {
+		const MeshFile::Vertex& vert0 = mesh.vertices[mesh.indices[i]];
+		const MeshFile::Vertex& vert1 = mesh.vertices[mesh.indices[i+1]];
+		const MeshFile::Vertex& vert2 = mesh.vertices[mesh.indices[i+2]];
 		const vec3 v0(vert0.px, vert0.py, vert0.pz);
 		const vec3 v1(vert1.px, vert1.py, vert1.pz);
 		const vec3 v2(vert2.px, vert2.py, vert2.pz);
@@ -839,25 +695,6 @@ bool MakeMapCollisionMesh(const MeshFile::Vertex* vertices, const u32 vertexCoun
 		PhysTriangle tri;
 		tri.p = { v0, v2, v1 };
 		out->triangleList.push_back(tri);
-	}
-
-	// extrude walls
-	out->maxZ = maxZ + 2000.f;
-
-	const vec3 zUp = vec3(0, 0, out->maxZ);
-	for(int i = 1; i < contourCount; i++) {
-		const vec3& n0 = nodes[contourList[i-1]].pos;
-		const vec3& n1 = nodes[contourList[i]].pos;
-		const vec3 v0 = n0;
-		const vec3 v1 = n1;
-		const vec3 v2 = n0 + zUp;
-		const vec3 v3 = n1 + zUp;
-
-		PhysTriangle tri0, tri1;
-		tri0.p = { v0, v1, v2 };
-		tri1.p = { v1, v3, v2 };
-		out->triangleList.push_back(tri0);
-		out->triangleList.push_back(tri1);
 	}
 
 	return true;
@@ -882,6 +719,7 @@ struct Window
 	MeshFile mfCollision;
 	MeshFile mfEnv;
 	PhysMapMesh mapCollision;
+	PhysMapMesh mapWalls;
 
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = true;
@@ -927,7 +765,9 @@ bool Window::Init()
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
 
-	r = MakeMapCollisionMesh(mshCol.vertices, mshCol.vertexCount, mshCol.indices, mshCol.indexCount, &mapCollision);
+	r = MakeMapCollisionMesh(mshCol, &mapCollision);
+	if(!r) return false;
+	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
 	if(!r) return false;
 
 	return true;
@@ -961,13 +801,21 @@ void Window::Update(f64 delta)
 	rdr.PushCapsule(Pipeline::Wireframe, vec3(-100, -100, 0), vec3(t, 0, 0), 20, 100, vec3(0.2, 0.5, 0.2));
 
 	// map
-	rdr.PushMesh(Pipeline::ShadedDoubleSided, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
+	rdr.PushMesh(Pipeline::Shaded, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
 	rdr.PushMesh(Pipeline::Shaded, "PVP_Deathmatch01_GuardrailMob", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.5));
 
 	if(ui_bMapWireframe) {
 		foreach_const(it, mapCollision.triangleList) {
 			const PhysTriangle& tri = *it;
 			const vec3 color = vec3(0.5, 1, 0.5);
+			rdr.PushLine(tri.p[0], tri.p[1], color);
+			rdr.PushLine(tri.p[0], tri.p[2], color);
+			rdr.PushLine(tri.p[1], tri.p[2], color);
+			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
+		}
+		foreach_const(it, mapWalls.triangleList) {
+			const PhysTriangle& tri = *it;
+			const vec3 color = vec3(0.5, 0.5, 1.0);
 			rdr.PushLine(tri.p[0], tri.p[1], color);
 			rdr.PushLine(tri.p[0], tri.p[2], color);
 			rdr.PushLine(tri.p[1], tri.p[2], color);

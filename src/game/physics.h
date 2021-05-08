@@ -138,9 +138,9 @@ struct PhysWorld
 	// temp data used for compute
 	struct Collision
 	{
-		PhysPenetrationVector pen;
-		vec3 sphereCenter;
 		vec3 triangleNormal;
+		vec3 fix;
+		f32 fixLenSq;
 	};
 
 	eastl::fixed_vector<PhysBody, 4096, false> bodyList;

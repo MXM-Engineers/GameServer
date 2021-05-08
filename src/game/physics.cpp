@@ -398,10 +398,28 @@ void PhysWorld::Step()
 				auto& colList = collisionList[i];
 
 				foreach_const(tri, staticMeshTriangleList) {
-					Collision col;
-					bool intersects = TestIntersection(s, *tri, &col.pen, &col.sphereCenter);
+					PhysPenetrationVector pen;
+					vec3 sphereCenter;
+
+					bool intersects = TestIntersection(s, *tri, &pen, &sphereCenter);
 					if(intersects) {
-						col.triangleNormal = tri->Normal();
+						const vec3 triangleNormal = tri->Normal();
+						vec3 p = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth)));
+						vec3 pp = glm::dot(p - sphereCenter, triangleNormal) * triangleNormal;
+						vec3 pp2 = triangleNormal * s.radius + pp;
+
+						f32 d = glm::dot(triangleNormal, s.Normal());
+						if(d > 0) {
+							pp2 -= s.InnerBase() - sphereCenter;
+						}
+						else if(d < 0) {
+							pp2 -= s.InnerTip() - sphereCenter;
+						}
+
+						Collision col;
+						col.triangleNormal = triangleNormal;
+						col.fix = pp2;
+						col.fixLenSq = LengthSq(pp2);
 						colList.push_back(col);
 						collided = true;
 					}
@@ -415,24 +433,20 @@ void PhysWorld::Step()
 
 				if(!colList.empty()) {
 					eastl::sort(colList.begin(), colList.end(), [](const Collision& a, const Collision& b) {
-						return a.pen.depth > b.pen.depth;
+						return a.fixLenSq < b.fixLenSq;
 					});
+
+					if(colList.size() > 1) {
+						LOG("--");
+						foreach(c, colList) {
+							LOG("n=(%g, %g, %g) f=%g", c->triangleNormal.x, c->triangleNormal.y, c->triangleNormal.z, sqrtf(c->fixLenSq));
+						}
+					}
+
 
 					const Collision& col = colList.front();
 
-					vec3 p = col.sphereCenter + col.pen.dir * (s.radius - (col.pen.depth + SignedEpsilon(col.pen.depth)));
-					vec3 pp = glm::dot(p - col.sphereCenter, col.triangleNormal) * col.triangleNormal;
-					vec3 pp2 = col.triangleNormal * s.radius + pp;
-
-					f32 d = glm::dot(col.triangleNormal, s.Normal());
-					if(d > 0) {
-						pp2 -= s.InnerBase() - col.sphereCenter;
-					}
-					else if(d < 0) {
-						pp2 -= s.InnerTip() - col.sphereCenter;
-					}
-
-					body.pos += pp2;
+					body.pos += col.fix;
 					body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
 				}
 			}

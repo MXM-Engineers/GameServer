@@ -1,5 +1,4 @@
 #pragma once
-#ifdef CONF_WINDOWS
 
 #define SOKOL_D3D11
 
@@ -218,5 +217,3 @@ struct Renderer
 	void Render(f64 delta);
 	void OnEvent(const sapp_event& event);
 };
-
-#endif

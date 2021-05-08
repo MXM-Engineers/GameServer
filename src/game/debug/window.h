@@ -1,5 +1,4 @@
 #pragma once
-#ifdef CONF_WINDOWS
 
 #include <common/base.h>
 #include <common/utils.h>
@@ -36,5 +35,3 @@ void PushEntity(GameUID gameUID, const Entity& entity);
 void PopGame(GameUID gameUID);
 
 }
-
-#endif

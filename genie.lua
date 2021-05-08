@@ -209,5 +209,11 @@ project "Game"
 			"dl",
 		}
 
+		-- technically can be run on linux with a few modifications, this is mostly so the deployed server does not get it
+		-- TODO: make a "production" build
+		excludes {
+			"src/game/debug/*"
+		}
+
 
 dofile("tools/genie_tools.lua");

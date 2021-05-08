@@ -81,7 +81,7 @@ struct GameXmlContent
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
-	void SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel, float _temp);
+	void SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);

@@ -339,17 +339,12 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 sk
 			const char* SkillTypeTemp;
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
 			{
-				float _temp = 0.0f;
-
-				LOG("DEBUG: SkillModel address: %llx", SkillNormal);
-				LOG("DEBUG: SkillNormal address: %llx", SkillNormal);
-
 				SkillNormal.setID(_skillID);
 
 				for (int i = 0; i < 6; i++)
 				{
 					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
-					SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel, _temp);
+					SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel);
 				}
 
 				LoadMasterSkillPropertyWithID(SkillNormal, _skillID);
@@ -388,7 +383,7 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 			{
 				SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
 				_skillNormalLevelModel.setLevel(level);
-				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel, _temp);
+				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel);
 			}
 		}
 	
@@ -398,8 +393,11 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 	return true;
 }
 
-void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel, float _temp)
+void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel)
 {
+	f32 _temp;
+	i64 ival;
+
 	if (pNodeCommonSkill.QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
 	{
 		_skillNormalLevelModel.setAddGroggy(_temp);
@@ -428,9 +426,9 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 	{
 		_skillNormalLevelModel.setCoolTime(_temp);
 	}
-	if (pNodeCommonSkill.QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryInt64Attribute("_SkillIndex", &ival) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel.setSkillIndex(_temp); //fix me: float in int32
+		_skillNormalLevelModel.setSkillIndex(ival);
 	}
 	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
 	{

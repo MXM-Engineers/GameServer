@@ -185,6 +185,27 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		}
 	}
 
+	// Parse SKILL_PROPERTY.xml once
+	{
+		Path SkillPropertyXml = gameDataDir;
+		PathAppend(SkillPropertyXml, L"/SKILL_PROPERTY.xml");
+
+		i32 fileSize;
+		u8* fileData = FileOpenAndReadAll(SkillPropertyXml.data(), &fileSize);
+		if (!fileData) {
+			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillPropertyXml.data());
+			return false;
+		}
+		defer(memFree(fileData));
+
+		using namespace tinyxml2;
+		XMLError error = xmlSKILLPROPERTY.Parse((char*)fileData, fileSize);
+		if (error != XML_SUCCESS) {
+			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillPropertyXml.data(), xmlSKILLPROPERTY.ErrorStr());
+			return false;
+		}
+	}
+
 	Path creatureCharacterXml = gameDataDir;
 	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
 
@@ -241,15 +262,45 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		// Read character data: skills
 
 		// read skill ids
-		u8 skillCounter = 0;
+		SkillsModel& _skillsModel = *character.getSkills();
 		XMLElement* pSkillElt = pNodeMaster->FirstChildElement("SkillComData")->FirstChildElement();
 		do {
 			i32 skillID;
+			const char* skillSlot;
 			
 			pSkillElt->QueryAttribute("_Index", &skillID);
+			pSkillElt->QueryStringAttribute("_SkillSlot", &skillSlot);
 			LOG("SkillID: %d", skillID);
-			LoadMasterSkillWithID(skillCounter, &character, skillID);
-			skillCounter++;
+
+			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
+			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(0), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_2", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(1), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_3", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(2), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_4", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(3), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_UG", skillSlot) == 0)
+			{
+				LoadMasterSkillWithID(*_skillsModel.getUltimate(), skillID);
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_PASSIVE", skillSlot) == 0)
+			{
+
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_SHIRK", skillSlot) == 0)
+			{
+
+			}
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while (pSkillElt);
@@ -274,7 +325,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	return true;
 }
 
-bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i32 skillID)
+bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID)
 {
 	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
 
@@ -287,23 +338,21 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 			LOG("Skill Match");
 			const char* SkillTypeTemp;
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
-			if (EA::StdC::Strcmp(SkillTypeTemp, "SKILL_TYPE_NORMAL") == 0)
 			{
-				SkillsModel* _skillsModel = character->getSkills();
-				SkillNormalModel* _skillNormal = _skillsModel->getSkillByIndex(id);
 				float _temp = 0.0f;
 
-				LOG("DEBUG: Character address: %llx", (intptr_t)character);
-				LOG("DEBUG: SkillModel address: %llx", (intptr_t)_skillsModel);
-				LOG("DEBUG: SkillNormal address: %llx", (intptr_t)_skillNormal);
+				LOG("DEBUG: SkillModel address: %llx", SkillNormal);
+				LOG("DEBUG: SkillNormal address: %llx", SkillNormal);
 
-				_skillNormal->setID(_skillID);
+				SkillNormal.setID(_skillID);
 
 				for (int i = 0; i < 6; i++)
 				{
-					SkillNormalLevelModel* _skillNormalLevelModel = _skillNormal->getSkillNormalLevelByIndex(i);
-					SetValuesSkillNormalLevel(pNodeCommonSkill, _skillNormalLevelModel, _temp);
-				}	
+					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
+					SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel, _temp);
+				}
+
+				LoadMasterSkillPropertyWithID(SkillNormal, _skillID);
 			}
 			break;
 		}
@@ -314,59 +363,94 @@ bool GameXmlContent::LoadMasterSkillWithID(i32 id, CharacterModel* character, i3
 	return true;
 }
 
-void GameXmlContent::SetValuesSkillNormalLevel(XMLElement* pNodeCommonSkill, SkillNormalLevelModel* _skillNormalLevelModel, float _temp)
+bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID)
 {
-	if (pNodeCommonSkill->QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
+	XMLElement* pNodeInfo = xmlSKILLPROPERTY.FirstChildElement()->FirstChildElement();
+
+	do {
+		i32 _skillID;
+		XMLElement * pNodeSkillProperty = pNodeInfo->FirstChildElement("ST_SKILL_PROPERTY");
+		pNodeSkillProperty->QueryAttribute("_SkillIndex", &_skillID);
+
+		if (_skillID == skillID)
+		{
+			int level = 0;
+			float _temp = 0.0f;
+
+			//Probably add check to see if this attribute exist which it should
+			pNodeSkillProperty->QueryIntAttribute("_Priority", &level);
+
+			//LOG("Skill Match");
+			XMLElement* pNodePropertyLevel = pNodeSkillProperty->FirstChildElement("_PROPERTY_LEVEL");
+					
+			//Need -1 to correct index
+			for (int i = level-1; i < 6; i++)
+			{
+				SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
+				_skillNormalLevelModel.setLevel(level);
+				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel, _temp);
+			}
+		}
+	
+		pNodeInfo = pNodeInfo->NextSiblingElement();
+	} while (pNodeInfo);
+
+	return true;
+}
+
+void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel, float _temp)
+{
+	if (pNodeCommonSkill.QueryFloatAttribute("_AddGroggy", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setAddGroggy(_temp);
+		_skillNormalLevelModel.setAddGroggy(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_AttackMultiplier", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setAttackMultiplier(_temp);
+		_skillNormalLevelModel.setAttackMultiplier(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_BaseDamage", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setBaseDamage(_temp);
+		_skillNormalLevelModel.setBaseDamage(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeEP", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeEP(_temp);
+		_skillNormalLevelModel.setConsumeEP(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeMP", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeMP(_temp);
+		_skillNormalLevelModel.setConsumeMP(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setConsumeUG(_temp);
+		_skillNormalLevelModel.setConsumeUG(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setCoolTime(_temp);
+		_skillNormalLevelModel.setCoolTime(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillIndex", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillIndex(_temp); //fix me: float in int32
+		_skillNormalLevelModel.setSkillIndex(_temp); //fix me: float in int32
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillRangeLengthX(_temp);
+		_skillNormalLevelModel.setSkillRangeLengthX(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthY", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setSkillRangeLengthY(_temp);
+		_skillNormalLevelModel.setSkillRangeLengthY(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetMaxDistance", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetMaxDistance(_temp);
+		_skillNormalLevelModel.setTargetMaxDistance(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetRangeLengthX", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetRangeLengthX(_temp);
+		_skillNormalLevelModel.setTargetRangeLengthX(_temp);
 	}
-	if (pNodeCommonSkill->QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
+	if (pNodeCommonSkill.QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
 	{
-		_skillNormalLevelModel->setTargetRangeLengthY(_temp);
+		_skillNormalLevelModel.setTargetRangeLengthY(_temp);
 	}
 }
 
@@ -709,33 +793,33 @@ bool GameXmlContent::Load()
 	return true;
 }
 
-// Returns CREATURE_INVALID when it doesn't recognises the creature type.
+// Returns CREATURE_TYPE_INVALID when it doesn't recognises the creature type.
 CreatureType GameXmlContent::StringToCreatureType(const char* s)
 {
 	if (EA::StdC::Strcmp("CREATURE_TYPE_ALLY", s) == 0)
 	{
-		return CreatureType::CREATURE_ALLY;
+		return CreatureType::CREATURE_TYPE_ALLY;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_BOT", s) == 0)
 	{
-		return CreatureType::CREATURE_BOT;
+		return CreatureType::CREATURE_TYPE_BOT;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_MONSTER", s) == 0)
 	{
-		return CreatureType::CREATURE_MONSTER;
+		return CreatureType::CREATURE_TYPE_MONSTER;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_NPC", s) == 0)
 	{
-		return CreatureType::CREATURE_NPC;
+		return CreatureType::CREATURE_TYPE_NPC;
 	}
 	else if (EA::StdC::Strcmp("CREATURE_TYPE_PC", s) == 0)
 	{
-		return CreatureType::CREATURE_PC;
+		return CreatureType::CREATURE_TYPE_PC;
 	}
 	else
 	{
 		LOG("Unknown CreatureType: %s", s);
-		return CreatureType::CREATURE_INVALID;
+		return CreatureType::CREATURE_TYPE_INVALID;
 	}
 }
 

@@ -18,9 +18,9 @@ void SkillsModel::setSkillByIndex(SkillNormalModel skill, i32 index)
 	_skills[index] = skill;
 }
 
-SkillNormalModel SkillsModel::getUltimate()
+SkillNormalModel* SkillsModel::getUltimate()
 {
-	return _ultimate;
+	return &_ultimate;
 }
 
 void SkillsModel::setUltimate(SkillNormalModel skill)
@@ -39,5 +39,6 @@ void SkillsModel::Print()
 	_skills[2].Print();
 	LOG("\nskill 4:\n");
 	_skills[3].Print();
-
+	LOG("\nUltimate:\n");
+	_ultimate.Print();
 }

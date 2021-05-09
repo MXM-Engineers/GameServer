@@ -34,6 +34,13 @@ void Game3v3::Init(Replication* replication_)
 
 	LoadMap();
 
+	// spawn test
+	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
+	lego.pos = vec3(2800, 3532, 550.602905);
+	lego.dir = vec3(0, 0, 0);
+	lego.speed = 626;
+	legoUID = lego.UID;
+
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
 
@@ -129,13 +136,6 @@ bool Game3v3::LoadMap()
 		npc.faction = 2;
 	}
 	*/
-
-	// spawn test
-	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
-	lego.pos = vec3(2800, 3532, 550.602905);
-	lego.dir = vec3(0, 0, 0);
-	lego.speed = 626;
-	legoUID = lego.UID;
 	return true;
 }
 

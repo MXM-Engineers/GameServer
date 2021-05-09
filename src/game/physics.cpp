@@ -436,14 +436,6 @@ void PhysWorld::Step()
 						return a.fixLenSq < b.fixLenSq;
 					});
 
-					if(colList.size() > 1) {
-						LOG("--");
-						foreach(c, colList) {
-							LOG("n=(%g, %g, %g) f=%g", c->triangleNormal.x, c->triangleNormal.y, c->triangleNormal.z, sqrtf(c->fixLenSq));
-						}
-					}
-
-
 					const Collision& col = colList.front();
 
 					body.pos += col.fix;

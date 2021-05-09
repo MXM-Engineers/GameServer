@@ -61,13 +61,14 @@ struct Window
 
 	CollisionTest collisionTest;
 
-	MeshFile mfCollision;
-	MeshFile mfEnv;
 	ShapeMesh mapCollision;
 	ShapeMesh mapWalls;
 
+	PhysWorld physics;
+	DynBodyCapsule testSubject;
+
 	bool ui_bCollisionTests = false;
-	bool ui_bMapWireframe = true;
+	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = false;
 
 	Window(i32 width, i32 height):
@@ -77,6 +78,16 @@ struct Window
 		collisionTest(rdr)
 	{
 
+	}
+
+	inline void Draw(const DynBodyCapsule& body, vec3 color)
+	{
+		ShapeCapsule shape = *body.shape;
+		vec3 pos = body.dyn->pos;
+		shape.base += pos;
+		shape.tip += pos;
+
+		collisionTest.Draw(shape, color);
 	}
 
 	bool Init();
@@ -99,6 +110,8 @@ bool Window::Init()
 	imguiDesc.ini_filename = "gameserver_imgui.ini";
 	simgui_setup(&imguiDesc);
 
+	MeshFile mfCollision;
+	MeshFile mfEnv;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
 	if(!r) return false;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
@@ -116,6 +129,9 @@ bool Window::Init()
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
 	if(!r) return false;
 
+	physics.PushStaticMeshes(&mapCollision, 1);
+	physics.PushStaticMeshes(&mapWalls, 1);
+	testSubject = physics.CreateCapsule(45, 210, vec3(2800, 3532, 530));
 	return true;
 }
 
@@ -232,6 +248,15 @@ void Window::Update(f64 delta)
 		}
 		ImGui::End();
 	}
+
+	if(ImGui::Begin("Physics")) {
+		if(ImGui::Button("Step")) {
+			physics.Step();
+		}
+	}
+	ImGui::End();
+
+	Draw(testSubject, vec3(0, 1, 1));
 }
 
 void Window::Frame()

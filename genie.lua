@@ -80,11 +80,8 @@ solution "Servers"
 	flags {
 		"NoExceptions",
 		"NoRTTI",
-		"EnableSSE",
-		"EnableSSE2",
 		"EnableAVX",
 		"EnableAVX2",
-		"EnableMinimalRebuild",
 		--"StaticRuntime",
 	}
 

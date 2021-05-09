@@ -65,7 +65,31 @@ struct Window
 	ShapeMesh mapWalls;
 
 	PhysWorld physics;
-	DynBodyCapsule testSubject;
+	bool bFreezeStep = false;
+
+	struct TestSubject
+	{
+		DynBodyCapsule body;
+		vec3 facing;
+
+		enum Input {
+			Forward = 0,
+			Backward,
+			Right,
+			Left,
+
+			_Count
+		};
+
+		eastl::array<u8,Input::_Count> input = {0};
+
+		void Reset() {
+			body.dyn->pos = vec3(5469, 3945, 550);
+			facing = vec3(1, 0, 0);
+			input = {0};
+		}
+	}
+	testSubject;
 
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = false;
@@ -92,6 +116,7 @@ struct Window
 
 	bool Init();
 	void Update(f64 delta);
+	void UpdatePhysics();
 	void Frame();
 	void OnEvent(const sapp_event& event);
 	void Cleanup();
@@ -131,7 +156,9 @@ bool Window::Init()
 
 	physics.PushStaticMeshes(&mapCollision, 1);
 	physics.PushStaticMeshes(&mapWalls, 1);
-	testSubject = physics.CreateCapsule(45, 210, vec3(2800, 3532, 530));
+
+	testSubject.body = physics.CreateCapsule(45, 210, vec3(2800, 3532, 530));
+	testSubject.Reset();
 	return true;
 }
 
@@ -250,13 +277,72 @@ void Window::Update(f64 delta)
 	}
 
 	if(ImGui::Begin("Physics")) {
+		ImGui::Checkbox("Freeze", &bFreezeStep);
+
 		if(ImGui::Button("Step")) {
-			physics.Step();
+			UpdatePhysics();
 		}
+		ImGui::SameLine();
+		if(ImGui::Button("Reset")) {
+			testSubject.Reset();
+		}
+
+		ImGui::BeginTable("testsubject_postable", 3);
+		ImGui::TableSetupColumn("PosX");
+		ImGui::TableSetupColumn("PosY");
+		ImGui::TableSetupColumn("PosZ");
+		ImGui::TableHeadersRow();
+
+		vec3 pos = testSubject.body.dyn->pos;
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.x);
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.y);
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.z);
+
+		ImGui::EndTable();
 	}
 	ImGui::End();
 
-	Draw(testSubject, vec3(0, 1, 1));
+	if(!bFreezeStep) {
+		UpdatePhysics();
+	}
+
+	Draw(testSubject.body, vec3(1, 0, 1));
+}
+
+void Window::UpdatePhysics()
+{
+	f32 speed = 0;
+	vec3 dir = vec3(0);
+	const vec3 right = glm::cross(testSubject.facing, vec3(0, 0, 1));
+
+	if(testSubject.input[TestSubject::Input::Forward]) {
+		speed = 650;
+		dir += testSubject.facing;
+	}
+	if(testSubject.input[TestSubject::Input::Backward]) {
+		speed = 650;
+		dir -= testSubject.facing;
+	}
+	if(testSubject.input[TestSubject::Input::Right]) {
+		speed = 650;
+		dir += right;
+	}
+	if(testSubject.input[TestSubject::Input::Left]) {
+		speed = 650;
+		dir += -right;
+	}
+
+	if(LengthSq(dir) > 0.001f) {
+		dir = glm::normalize(dir);
+	}
+
+	testSubject.body.dyn->vel = dir * speed;
+
+	physics.Step();
 }
 
 void Window::Frame()
@@ -275,11 +361,31 @@ void Window::Frame()
 
 void Window::OnEvent(const sapp_event& event)
 {
-	// quit on escape
 	if(event.type == SAPP_EVENTTYPE_KEY_DOWN) {
+		// quit on escape
 		if(event.key_code == sapp_keycode::SAPP_KEYCODE_ESCAPE) {
 			sapp_request_quit();
 			return;
+		}
+
+		if(!bFreezeStep) {
+			switch(event.key_code) {
+				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left] = 1; break;
+			}
+		}
+	}
+
+	if(event.type == SAPP_EVENTTYPE_KEY_UP) {
+		if(!bFreezeStep) {
+			switch(event.key_code) {
+				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left] = 0; break;
+			}
 		}
 	}
 

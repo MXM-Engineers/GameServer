@@ -8,7 +8,10 @@
 * switch between active games with imgui
 
 # Physics
-* Capsule <-> Triangle collision
+* ✅ Capsule <-> Triangle collision
+* ⚠️ Some ground triangles don't have a perfect up normal vector (I'm guessing it is the case for a lot of them), so we slide on them.
+    - Compare mesh normal with triangle normal
+    - Could be an epsilon issue
 * Try to make rolling work
 
 # Test

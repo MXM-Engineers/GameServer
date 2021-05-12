@@ -12,6 +12,7 @@
 * ⚠️ Some ground triangles don't have a perfect up normal vector (I'm guessing it is the case for a lot of them), so we slide on them.
     - Compare mesh normal with triangle normal
     - Could be an epsilon issue
+    - Actually just make it so if we don't move, there is no XY vel component
 * Try to make rolling work
 
 # Test

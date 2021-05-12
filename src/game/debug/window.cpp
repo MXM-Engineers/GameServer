@@ -66,6 +66,7 @@ struct Window
 
 	PhysWorld physics;
 	bool bFreezeStep = false;
+	i32 iSelectedEvent = 0;
 
 	struct TestSubject
 	{
@@ -164,7 +165,7 @@ bool Window::Init()
 
 void Window::Update(f64 delta)
 {
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("View")) {
@@ -287,6 +288,26 @@ void Window::Update(f64 delta)
 			testSubject.Reset();
 		}
 
+		#ifdef CONF_DEBUG
+		ImGui::Text("LastFrameEvents = %d", physics.lastStepEvents.size());
+		if(ImGui::BeginListBox("Events")) {
+			for(int n = 0; n < physics.lastStepEvents.size(); n++) {
+				const PhysWorld::CollisionEvent& event = physics.lastStepEvents[n];
+
+				const bool isSelected = (iSelectedEvent == n);
+				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.disp)), isSelected)) {
+					iSelectedEvent = n;
+				}
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if(isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndListBox();
+		}
+		#endif
+
 		ImGui::BeginTable("testsubject_postable", 3);
 		ImGui::TableSetupColumn("PosX");
 		ImGui::TableSetupColumn("PosY");
@@ -303,6 +324,8 @@ void Window::Update(f64 delta)
 		ImGui::Text("%.2f", pos.z);
 
 		ImGui::EndTable();
+
+
 	}
 	ImGui::End();
 
@@ -311,6 +334,22 @@ void Window::Update(f64 delta)
 	}
 
 	Draw(testSubject.body, vec3(1, 0, 1));
+
+#ifdef CONF_DEBUG
+	if(iSelectedEvent >= 0 && iSelectedEvent < physics.lastStepEvents.size()) {
+		const PhysWorld::CollisionEvent& event = physics.lastStepEvents[iSelectedEvent];
+		collisionTest.Draw(event.capsule, vec3(1, 0, 0));
+		collisionTest.DrawVec(event.disp, event.capsule.base, vec3(1, 1, 0));
+
+		const ShapeTriangle& tri = event.triangle;
+		const vec3 color = vec3(1, 1, 1);
+		rdr.PushLine(tri.p[0], tri.p[1], color);
+		rdr.PushLine(tri.p[0], tri.p[2], color);
+		rdr.PushLine(tri.p[1], tri.p[2], color);
+		rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
+
+	}
+#endif
 }
 
 void Window::UpdatePhysics()

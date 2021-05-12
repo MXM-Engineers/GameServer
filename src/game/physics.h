@@ -4,6 +4,8 @@
 #include <EASTL/array.h>
 #include <EASTL/fixed_list.h>
 
+constexpr f32 PHYS_EPSILON = 0.0001f;
+
 struct ShapeSphere
 {
 	vec3 center;
@@ -101,7 +103,7 @@ inline vec3 Lerp(const vec3& v1, const vec3& v2, f32 a)
 
 inline f32 SignedEpsilon(f32 v)
 {
-	return v > 0.0f ? 0.001f : -0.001f;
+	return v > 0.0f ? PHYS_EPSILON : -PHYS_EPSILON;
 }
 
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);
@@ -146,6 +148,20 @@ struct PhysWorld
 	eastl::fixed_vector<PhysBody, 4096, false> bodyList;
 	eastl::fixed_vector<ShapeCapsule, 4096, false> shapeCapsuleList;
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
+
+#ifdef CONF_DEBUG
+	struct CollisionEvent
+	{
+		u16 capsuleID;
+		u8 ssi;
+		u8 cri;
+		ShapeCapsule capsule;
+		ShapeTriangle triangle;
+		vec3 disp;
+	};
+
+	eastl::fixed_vector<CollisionEvent, 8192, false> lastStepEvents;
+#endif
 
 	void PushStaticMeshes(const ShapeMesh* meshList, const int count);
 	DynBodyCapsule CreateCapsule(f32 radius, f32 height, vec3 pos);

@@ -31,7 +31,7 @@ bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrat
 	bool inside = glm::dot(c0, planeNorm) <= 0 && glm::dot(c1, planeNorm) <= 0 && glm::dot(c2, planeNorm) <= 0;
 	if(inside) {
 		vec3 delta = projSphereCenter - A.center;
-		if(glm::length(delta) > 0.001f) {
+		if(glm::length(delta) > PHYS_EPSILON) {
 			pen->depth = A.radius - glm::length(delta);
 			pen->dir = glm::normalize(delta);
 		}
@@ -223,7 +223,7 @@ bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetra
 	// ray-plane intersection
 	const vec3 planeNorm = B.Normal();
 	f32 planeCapsuleDot = glm::dot(planeNorm, capsuleNorm);
-	if(planeCapsuleDot == 0) {
+	if(abs(planeCapsuleDot) < PHYS_EPSILON) {
 		planeCapsuleDot = 1;
 	}
 	const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / planeCapsuleDot);
@@ -309,7 +309,7 @@ bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVe
 	bool inside = dotx < halfW || doty < halfH || cornerDistSq < (circleR * circleR);
 	if(inside) {
 		vec3 delta = projSphereCenter - A.center;
-		if(glm::length(delta) > 0.001f) {
+		if(glm::length(delta) > PHYS_EPSILON) {
 			pen->depth = A.radius - glm::length(delta);
 			pen->dir = glm::normalize(delta);
 		}
@@ -365,6 +365,10 @@ void PhysWorld::Step()
 {
 	ASSERT(dynCapsuleBodyList.size() == dynCapsuleShapeList.size());
 
+#ifdef CONF_DEBUG
+	lastStepEvents.clear();
+#endif
+
 	bodyList.clear();
 	eastl::copy(dynCapsuleBodyList.begin(), dynCapsuleBodyList.end(), eastl::back_inserter(bodyList));
 
@@ -409,10 +413,10 @@ void PhysWorld::Step()
 						vec3 pp2 = triangleNormal * s.radius + pp;
 
 						f32 d = glm::dot(triangleNormal, s.Normal());
-						if(d > 0) {
+						if(d > PHYS_EPSILON) {
 							pp2 -= s.InnerBase() - sphereCenter;
 						}
-						else if(d < 0) {
+						else if(d < -PHYS_EPSILON) {
 							pp2 -= s.InnerTip() - sphereCenter;
 						}
 
@@ -422,6 +426,17 @@ void PhysWorld::Step()
 						col.fixLenSq = LengthSq(pp2);
 						colList.push_back(col);
 						collided = true;
+
+						#ifdef CONF_DEBUG
+						CollisionEvent event;
+						event.capsuleID = i;
+						event.ssi = ssi;
+						event.cri = cri;
+						event.capsule = s;
+						event.triangle = *tri;
+						event.disp = col.fix;
+						lastStepEvents.push_back(event);
+						#endif
 					}
 				}
 			}

@@ -46,12 +46,13 @@ bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrat
 	bool intersects = false;
 
 	// project center on all edges
-	vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], A.center);
-	intersects |= LengthSq(A.center - point1) < radiusSq;
-	vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], A.center);
-	intersects |= LengthSq(A.center - point2) < radiusSq;
-	vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], A.center);
-	intersects |= LengthSq(A.center - point3) < radiusSq;
+	const f32 PHYS_EPSILON_BIG = PHYS_EPSILON * 1000;
+	const vec3 point1 = ClosestPointOnLineSegment(B.p[0], B.p[1], A.center);
+	intersects |= LengthSq(A.center - point1) + PHYS_EPSILON_BIG < radiusSq;
+	const vec3 point2 = ClosestPointOnLineSegment(B.p[1], B.p[2], A.center);
+	intersects |= LengthSq(A.center - point2) + PHYS_EPSILON_BIG < radiusSq;
+	const vec3 point3 = ClosestPointOnLineSegment(B.p[2], B.p[0], A.center);
+	intersects |= LengthSq(A.center - point3) + PHYS_EPSILON_BIG < radiusSq;
 
 	if(intersects) {
 		vec3 bestPoint = point1;
@@ -224,7 +225,7 @@ bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetra
 	const vec3 planeNorm = B.Normal();
 	f32 planeCapsuleDot = glm::dot(planeNorm, capsuleNorm);
 	if(abs(planeCapsuleDot) < PHYS_EPSILON) {
-		planeCapsuleDot = 1;
+		planeCapsuleDot = 0.5f;
 	}
 	const f32 t = glm::dot(planeNorm, (B.p[0] - A.base) / planeCapsuleDot);
 	const vec3 linePlaneIntersection = A.base + capsuleNorm * t;
@@ -337,40 +338,44 @@ void PhysWorld::PushStaticMeshes(const ShapeMesh* meshList, const int count)
 	}
 }
 
-DynBodyCapsule PhysWorld::CreateCapsule(f32 radius, f32 height, vec3 pos)
+PhysWorld::BodyHandle PhysWorld::CreateBody(f32 radius, f32 height, vec3 pos)
 {
-	ShapeCapsule shape;
-	shape.base = vec3(0, 0, 0);
-	shape.tip = vec3(0, 0, height);
-	shape.radius = radius;
-	dynCapsuleShapeList.push_back(shape);
+	DynBodyCapsule body;
 
-	PhysBody body = {};
-	body.pos = pos;
+	body.shape = {};
+	body.shape.base = vec3(0, 0, 0);
+	body.shape.tip = vec3(0, 0, height);
+	body.shape.radius = radius;
+
+	body.dyn = {};
+	body.dyn.pos = pos;
+
 	dynCapsuleBodyList.push_back(body);
-
-	DynBodyCapsule dyn;
-	dyn.shape = --dynCapsuleShapeList.end();
-	dyn.dyn = --dynCapsuleBodyList.end();
-	return dyn;
+	return --dynCapsuleBodyList.end();
 }
 
-void PhysWorld::DeleteCapsule(const DynBodyCapsule& cap)
+void PhysWorld::DeleteBody(BodyHandle handle)
 {
-	dynCapsuleShapeList.erase(cap.shape);
-	dynCapsuleBodyList.erase(cap.dyn);
+	dynCapsuleBodyList.erase(handle);
 }
 
 void PhysWorld::Step()
 {
-	ASSERT(dynCapsuleBodyList.size() == dynCapsuleShapeList.size());
+	ASSERT(dynCapsuleBodyList.size() == dynCapsuleBodyList.size());
 
 #ifdef CONF_DEBUG
 	lastStepEvents.clear();
 #endif
 
+	// copy step data to continous buffers
 	bodyList.clear();
-	eastl::copy(dynCapsuleBodyList.begin(), dynCapsuleBodyList.end(), eastl::back_inserter(bodyList));
+	shapeCapsuleList.clear();
+	foreach_const(b, dynCapsuleBodyList) {
+		shapeCapsuleList.push_back(b->shape);
+		bodyList.push_back(b->dyn);
+	}
+
+	const int dynCount = dynCapsuleBodyList.size();
 
 	foreach(b, bodyList) {
 		b->vel.z -= GRAVITY;
@@ -383,22 +388,21 @@ void PhysWorld::Step()
 
 		for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
 			bool collided = false;
-			shapeCapsuleList.clear();
-			eastl::copy(dynCapsuleShapeList.begin(), dynCapsuleShapeList.end(), eastl::back_inserter(shapeCapsuleList));
+			movedShapeCapsuleList.clear();
+			eastl::copy(shapeCapsuleList.begin(), shapeCapsuleList.end(), eastl::back_inserter(movedShapeCapsuleList));
 
-			const int count = dynCapsuleShapeList.size();
-			for(int i = 0; i < count; i++) {
-				ShapeCapsule& s = shapeCapsuleList[i];
+			for(int i = 0; i < dynCount; i++) {
+				ShapeCapsule& s = movedShapeCapsuleList[i];
 				const PhysBody& b = bodyList[i];
 				s.base += b.pos;
 				s.tip += b.pos;
 			}
 
 			collisionList.clear();
-			collisionList.resize(count);
+			collisionList.resize(dynCount);
 
-			for(int i = 0; i < count; i++) {
-				const ShapeCapsule& s = shapeCapsuleList[i];
+			for(int i = 0; i < dynCount; i++) {
+				const ShapeCapsule& s = movedShapeCapsuleList[i];
 				auto& colList = collisionList[i];
 
 				foreach_const(tri, staticMeshTriangleList) {
@@ -408,7 +412,7 @@ void PhysWorld::Step()
 					bool intersects = TestIntersection(s, *tri, &pen, &sphereCenter);
 					if(intersects) {
 						const vec3 triangleNormal = tri->Normal();
-						vec3 p = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth)));
+						vec3 p = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth) * 5.0f));
 						vec3 pp = glm::dot(p - sphereCenter, triangleNormal) * triangleNormal;
 						vec3 pp2 = triangleNormal * s.radius + pp;
 
@@ -441,7 +445,7 @@ void PhysWorld::Step()
 				}
 			}
 
-			for(int i = 0; i < count; i++) {
+			for(int i = 0; i < dynCount; i++) {
 				const ShapeCapsule& s = shapeCapsuleList[i];
 				auto& colList = collisionList[i];
 				auto& body = bodyList[i];
@@ -462,8 +466,11 @@ void PhysWorld::Step()
 		}
 	}
 
+	// copy back
 	int i = 0;
 	foreach(b, dynCapsuleBodyList) {
-		*b = bodyList[i++];
+		b->shape = shapeCapsuleList[i];
+		b->dyn = bodyList[i];
+		i++;
 	}
 }

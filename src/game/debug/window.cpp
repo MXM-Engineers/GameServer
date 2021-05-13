@@ -70,7 +70,7 @@ struct Window
 
 	struct TestSubject
 	{
-		DynBodyCapsule body;
+		PhysWorld::BodyHandle body;
 		vec3 facing;
 
 		enum Input {
@@ -85,7 +85,7 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			body.dyn->pos = vec3(5469, 3945, 550);
+			body->dyn.pos = vec3(5469, 3945, 550);
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -105,10 +105,10 @@ struct Window
 
 	}
 
-	inline void Draw(const DynBodyCapsule& body, vec3 color)
+	inline void Draw(const PhysWorld::BodyHandle& body, vec3 color)
 	{
-		ShapeCapsule shape = *body.shape;
-		vec3 pos = body.dyn->pos;
+		ShapeCapsule shape = body->shape;
+		vec3 pos = body->dyn.pos;
 		shape.base += pos;
 		shape.tip += pos;
 
@@ -158,7 +158,7 @@ bool Window::Init()
 	physics.PushStaticMeshes(&mapCollision, 1);
 	physics.PushStaticMeshes(&mapWalls, 1);
 
-	testSubject.body = physics.CreateCapsule(45, 210, vec3(2800, 3532, 530));
+	testSubject.body = physics.CreateBody(45, 210, vec3(2800, 3532, 530));
 	testSubject.Reset();
 	return true;
 }
@@ -314,7 +314,7 @@ void Window::Update(f64 delta)
 		ImGui::TableSetupColumn("PosZ");
 		ImGui::TableHeadersRow();
 
-		vec3 pos = testSubject.body.dyn->pos;
+		vec3 pos = testSubject.body->dyn.pos;
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 		ImGui::Text("%.2f", pos.x);
@@ -379,7 +379,7 @@ void Window::UpdatePhysics()
 		dir = glm::normalize(dir);
 	}
 
-	testSubject.body.dyn->vel = dir * speed;
+	testSubject.body->dyn.vel = dir * speed;
 
 	physics.Step();
 }

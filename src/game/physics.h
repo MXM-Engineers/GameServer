@@ -124,18 +124,18 @@ struct PhysBody
 	vec3 vel;
 };
 
-// Does not actually hold the data, just pointers
-struct DynBodyCapsule
-{
-	ListConstItT<ShapeCapsule> shape;
-	ListItT<PhysBody> dyn;
-};
-
 struct PhysWorld
 {
+	struct DynBodyCapsule
+	{
+		ShapeCapsule shape;
+		PhysBody dyn;
+	};
+
+	typedef ListItT<DynBodyCapsule> BodyHandle;
+
 	eastl::fixed_vector<ShapeTriangle, 4096, false> staticMeshTriangleList;
-	eastl::fixed_list<ShapeCapsule, 4096, false> dynCapsuleShapeList;
-	eastl::fixed_list<PhysBody, 4096, false> dynCapsuleBodyList;
+	eastl::fixed_list<DynBodyCapsule, 4096, false> dynCapsuleBodyList;
 
 	// temp data used for compute
 	struct Collision
@@ -147,6 +147,7 @@ struct PhysWorld
 
 	eastl::fixed_vector<PhysBody, 4096, false> bodyList;
 	eastl::fixed_vector<ShapeCapsule, 4096, false> shapeCapsuleList;
+	eastl::fixed_vector<ShapeCapsule, 4096, false> movedShapeCapsuleList;
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
 
 #ifdef CONF_DEBUG
@@ -164,8 +165,8 @@ struct PhysWorld
 #endif
 
 	void PushStaticMeshes(const ShapeMesh* meshList, const int count);
-	DynBodyCapsule CreateCapsule(f32 radius, f32 height, vec3 pos);
-	void DeleteCapsule(const DynBodyCapsule& cap);
+	BodyHandle CreateBody(f32 radius, f32 height, vec3 pos);
+	void DeleteBody(BodyHandle handle);
 
 	void Step();
 };

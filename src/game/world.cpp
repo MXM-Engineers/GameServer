@@ -16,8 +16,8 @@ void World::Update(f64 delta, Time localTime_)
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
-		p.body.dyn->pos = p.pos;
-		p.body.dyn->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
+		p.body->dyn.pos = p.pos;
+		p.body->dyn.vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
 	}
 
 	physics.Step();
@@ -26,8 +26,8 @@ void World::Update(f64 delta, Time localTime_)
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
 
-		p.pos = p.body.dyn->pos;
-		vec3 vel = p.body.dyn->vel;
+		p.pos = p.body->dyn.pos;
+		vec3 vel = p.body->dyn.vel;
 		p.dir = glm::normalize(vel);
 		p.speed = glm::length(vel);
 	}
@@ -154,7 +154,7 @@ World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, S
 	actor.skinIndex = skinIndex;
 	actor.name = name;
 	actor.guildTag = guildTag;
-	actor.body = physics.CreateCapsule(45, 210, vec3(0));
+	actor.body = physics.CreateBody(45, 210, vec3(0));
 
 	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
 	return actor;

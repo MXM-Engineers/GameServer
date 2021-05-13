@@ -41,7 +41,7 @@ struct World
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
-		DynBodyCapsule body;
+		PhysWorld::BodyHandle body;
 
 		explicit ActorPlayer(ActorUID UID_, ActorUID parentActorUID_):
 			ActorCore(UID_),

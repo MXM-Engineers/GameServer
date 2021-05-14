@@ -66,6 +66,7 @@ struct Window
 
 	PhysWorld physics;
 	bool bFreezeStep = false;
+	bool bShowSubject = true;
 	i32 iSelectedEvent = 0;
 
 	struct TestSubject
@@ -85,7 +86,8 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			body->dyn.pos = vec3(5469, 3945, 550);
+			//body->dyn.pos = vec3(5469, 3945, 6000);
+			body->dyn.pos = vec3(5820, 3795, 1000);
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -165,7 +167,7 @@ bool Window::Init()
 
 void Window::Update(f64 delta)
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("View")) {
@@ -288,6 +290,8 @@ void Window::Update(f64 delta)
 			testSubject.Reset();
 		}
 
+		ImGui::Checkbox("Show subject", &bShowSubject);
+
 		#ifdef CONF_DEBUG
 		ImGui::Text("LastFrameEvents = %d", physics.lastStepEvents.size());
 		if(ImGui::BeginListBox("Events")) {
@@ -333,15 +337,28 @@ void Window::Update(f64 delta)
 		UpdatePhysics();
 	}
 
-	Draw(testSubject.body, vec3(1, 0, 1));
+	if(bShowSubject) {
+		Draw(testSubject.body, vec3(1, 0, 1));
+	}
 
 #ifdef CONF_DEBUG
 	if(iSelectedEvent >= 0 && iSelectedEvent < physics.lastStepEvents.size()) {
 		const PhysWorld::CollisionEvent& event = physics.lastStepEvents[iSelectedEvent];
-		collisionTest.Draw(event.capsule, vec3(1, 0, 0));
-		collisionTest.DrawVec(event.disp, event.capsule.base, vec3(1, 1, 0));
-
 		const ShapeTriangle& tri = event.triangle;
+
+		collisionTest.Draw(event.capsule, vec3(0, 0, 1));
+		ShapeCapsule fixed = event.capsule;
+		fixed.base += event.disp;
+		fixed.tip += event.disp;
+		collisionTest.Draw(fixed, vec3(1, 1, 0));
+
+		collisionTest.DrawVec(event.disp, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(1, 1, 0));
+		collisionTest.DrawVec(event.vel, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(0.5, 0.5, 1));
+		collisionTest.DrawVec(event.fixedVel, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(1.0, 0.5, 0.2));
+		//vec3 rv = ProjectVec(event.vel, tri.Normal());
+		//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
+
+
 		const vec3 color = vec3(1, 1, 1);
 		rdr.PushLine(tri.p[0], tri.p[1], color);
 		rdr.PushLine(tri.p[0], tri.p[2], color);

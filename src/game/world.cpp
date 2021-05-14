@@ -13,6 +13,7 @@ void World::Update(f64 delta, Time localTime_)
 	delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
+	/*
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
@@ -31,6 +32,7 @@ void World::Update(f64 delta, Time localTime_)
 		p.dir = glm::normalize(vel);
 		p.speed = glm::length(vel);
 	}
+	*/
 
 	// update jukebox
 	if(jukebox.UID != ActorUID::INVALID) {
@@ -182,6 +184,7 @@ World::ActorPlayer& World::SpawnPlayerSubActor(i32 clientID, ActorUID parentActo
 	actor.skinIndex = skinIndex;
 	actor.name = parent->name;
 	actor.guildTag = parent->guildTag;
+	actor.body = physics.CreateBody(45, 210, vec3(0));
 
 	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
 	return actor;

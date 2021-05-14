@@ -159,6 +159,8 @@ struct PhysWorld
 		ShapeCapsule capsule;
 		ShapeTriangle triangle;
 		vec3 disp;
+		vec3 vel;
+		vec3 fixedVel;
 	};
 
 	eastl::fixed_vector<CollisionEvent, 8192, false> lastStepEvents;

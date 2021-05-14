@@ -377,12 +377,9 @@ void PhysWorld::Step()
 
 	const int dynCount = dynCapsuleBodyList.size();
 
-	foreach(b, bodyList) {
-		b->vel.z -= GRAVITY;
-	}
-
 	for(int ssi = 0; ssi < SUB_STEP_COUNT; ssi++) {
 		foreach(b, bodyList) {
+			b->pos.z -= GRAVITY * (f32)(UPDATE_RATE / SUB_STEP_COUNT);
 			b->pos += b->vel * (f32)(UPDATE_RATE / SUB_STEP_COUNT);
 		}
 
@@ -439,6 +436,11 @@ void PhysWorld::Step()
 						event.capsule = s;
 						event.triangle = *tri;
 						event.disp = col.fix;
+						event.vel = bodyList[i].vel;
+						event.fixedVel = bodyList[i].vel;
+						if(glm::dot(glm::normalize(event.fixedVel), col.triangleNormal) < 0) {
+							event.fixedVel -= ProjectVecNorm(event.fixedVel, col.triangleNormal);
+						}
 						lastStepEvents.push_back(event);
 						#endif
 					}
@@ -458,7 +460,9 @@ void PhysWorld::Step()
 					const Collision& col = colList.front();
 
 					body.pos += col.fix;
-					body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
+					if(glm::dot(glm::normalize(body.vel), col.triangleNormal) < 0) {
+						body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
+					}
 				}
 			}
 

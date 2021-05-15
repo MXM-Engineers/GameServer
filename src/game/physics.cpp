@@ -359,6 +359,23 @@ void PhysWorld::DeleteBody(BodyHandle handle)
 	dynCapsuleBodyList.erase(handle);
 }
 
+inline vec3 FixAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCenter, const PhysPenetrationVector& pen, const vec3& norm)
+{
+	const vec3 point = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth)));
+	const vec3 projPoint = ProjectVecNorm(point - sphereCenter, norm);
+	vec3 triPen = norm * s.radius + projPoint;
+
+	f32 d = glm::dot(norm, s.Normal());
+	if(d > PHYS_EPSILON) {
+		triPen -= s.InnerBase() - sphereCenter;
+	}
+	else if(d < -PHYS_EPSILON) {
+		triPen -= s.InnerTip() - sphereCenter;
+	}
+
+	return triPen;
+}
+
 void PhysWorld::Step()
 {
 	ASSERT(dynCapsuleBodyList.size() == dynCapsuleBodyList.size());
@@ -374,6 +391,9 @@ void PhysWorld::Step()
 		shapeCapsuleList.push_back(b->shape);
 		bodyList.push_back(b->dyn);
 	}
+
+	// ASSUME NOTHING IS COLLIDING
+	// TODO: make it so (STATIC -> DYNAMIC -> STATIC -> etc algo)
 
 	const int dynCount = dynCapsuleBodyList.size();
 
@@ -409,22 +429,20 @@ void PhysWorld::Step()
 					bool intersects = TestIntersection(s, *tri, &pen, &sphereCenter);
 					if(intersects) {
 						const vec3 triangleNormal = tri->Normal();
-						vec3 p = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth) * 5.0f));
-						vec3 pp = glm::dot(p - sphereCenter, triangleNormal) * triangleNormal;
-						vec3 pp2 = triangleNormal * s.radius + pp;
+						const vec3 triPen = FixAlongTriangleNormal(s, sphereCenter, pen, triangleNormal);
 
-						f32 d = glm::dot(triangleNormal, s.Normal());
-						if(d > PHYS_EPSILON) {
-							pp2 -= s.InnerBase() - sphereCenter;
-						}
-						else if(d < -PHYS_EPSILON) {
-							pp2 -= s.InnerTip() - sphereCenter;
-						}
+
+						const vec3 vel = bodyList[i].vel + vec3(0, 0, -GRAVITY);
+						const f32 cosTheta = glm::dot(glm::normalize(triPen), -glm::normalize(vel));
+						const f32 fix2Len = glm::length(triPen) / cosTheta;
+						const vec3 fix2 = -glm::normalize(vel) * (fix2Len + PHYS_EPSILON);
 
 						Collision col;
+						col.pen = pen;
 						col.triangleNormal = triangleNormal;
-						col.fix = pp2;
-						col.fixLenSq = LengthSq(pp2);
+						//col.fix = triPen;
+						col.fix = fix2;
+						col.fixLenSq = LengthSq(triPen);
 						colList.push_back(col);
 						collided = true;
 
@@ -435,12 +453,14 @@ void PhysWorld::Step()
 						event.cri = cri;
 						event.capsule = s;
 						event.triangle = *tri;
-						event.disp = col.fix;
+						event.fix = triPen;
+						event.fix2 = fix2;
 						event.vel = bodyList[i].vel;
 						event.fixedVel = bodyList[i].vel;
 						if(glm::dot(glm::normalize(event.fixedVel), col.triangleNormal) < 0) {
 							event.fixedVel -= ProjectVecNorm(event.fixedVel, col.triangleNormal);
 						}
+						event.pen = pen;
 						lastStepEvents.push_back(event);
 						#endif
 					}

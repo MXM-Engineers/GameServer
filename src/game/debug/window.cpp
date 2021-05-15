@@ -67,6 +67,8 @@ struct Window
 	PhysWorld physics;
 	bool bFreezeStep = false;
 	bool bShowSubject = true;
+	bool bShowFixed = true;
+	bool bShowPen = true;
 	i32 iSelectedEvent = 0;
 
 	struct TestSubject
@@ -290,7 +292,9 @@ void Window::Update(f64 delta)
 			testSubject.Reset();
 		}
 
-		ImGui::Checkbox("Show subject", &bShowSubject);
+		ImGui::Checkbox("Subject", &bShowSubject); ImGui::SameLine();
+		ImGui::Checkbox("Fixed", &bShowFixed); ImGui::SameLine();
+		ImGui::Checkbox("Pen", &bShowPen);
 
 		#ifdef CONF_DEBUG
 		ImGui::Text("LastFrameEvents = %d", physics.lastStepEvents.size());
@@ -299,7 +303,7 @@ void Window::Update(f64 delta)
 				const PhysWorld::CollisionEvent& event = physics.lastStepEvents[n];
 
 				const bool isSelected = (iSelectedEvent == n);
-				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.disp)), isSelected)) {
+				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
 					iSelectedEvent = n;
 				}
 
@@ -347,17 +351,27 @@ void Window::Update(f64 delta)
 		const ShapeTriangle& tri = event.triangle;
 
 		collisionTest.Draw(event.capsule, vec3(0, 0, 1));
-		ShapeCapsule fixed = event.capsule;
-		fixed.base += event.disp;
-		fixed.tip += event.disp;
-		collisionTest.Draw(fixed, vec3(1, 1, 0));
 
-		collisionTest.DrawVec(event.disp, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(1, 1, 0));
-		collisionTest.DrawVec(event.vel, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(0.5, 0.5, 1));
-		collisionTest.DrawVec(event.fixedVel, event.capsule.base + vec3(0, 0, event.capsule.radius), vec3(1.0, 0.5, 0.2));
-		//vec3 rv = ProjectVec(event.vel, tri.Normal());
-		//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
 
+		const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
+
+		if(bShowPen) {
+			collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
+		}
+
+		if(bShowFixed) {
+			ShapeCapsule fixed = event.capsule;
+			fixed.base += event.fix;
+			fixed.tip += event.fix;
+			collisionTest.Draw(fixed, vec3(1, 1, 0));
+
+			collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 1, 0));
+			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 0, 0));
+			collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
+			collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
+			//vec3 rv = ProjectVec(event.vel, tri.Normal());
+			//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
+		}
 
 		const vec3 color = vec3(1, 1, 1);
 		rdr.PushLine(tri.p[0], tri.p[1], color);

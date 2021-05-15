@@ -140,6 +140,7 @@ struct PhysWorld
 	// temp data used for compute
 	struct Collision
 	{
+		PhysPenetrationVector pen;
 		vec3 triangleNormal;
 		vec3 fix;
 		f32 fixLenSq;
@@ -158,9 +159,11 @@ struct PhysWorld
 		u8 cri;
 		ShapeCapsule capsule;
 		ShapeTriangle triangle;
-		vec3 disp;
+		vec3 fix;
+		vec3 fix2;
 		vec3 vel;
 		vec3 fixedVel;
+		PhysPenetrationVector pen;
 	};
 
 	eastl::fixed_vector<CollisionEvent, 8192, false> lastStepEvents;

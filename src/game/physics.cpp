@@ -361,7 +361,7 @@ void PhysWorld::DeleteBody(BodyHandle handle)
 
 inline vec3 FixAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCenter, const PhysPenetrationVector& pen, const vec3& norm)
 {
-	const vec3 point = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth)));
+	const vec3 point = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth) * 5.0f));
 	const vec3 projPoint = ProjectVecNorm(point - sphereCenter, norm);
 	vec3 triPen = norm * s.radius + projPoint;
 
@@ -431,17 +431,20 @@ void PhysWorld::Step()
 						const vec3 triangleNormal = tri->Normal();
 						const vec3 triPen = FixAlongTriangleNormal(s, sphereCenter, pen, triangleNormal);
 
+						vec3 fix = triPen;
 
-						const vec3 vel = bodyList[i].vel + vec3(0, 0, -GRAVITY);
-						const f32 cosTheta = glm::dot(glm::normalize(triPen), -glm::normalize(vel));
-						const f32 fix2Len = glm::length(triPen) / cosTheta;
-						const vec3 fix2 = -glm::normalize(vel) * (fix2Len + PHYS_EPSILON);
+						// move body to the ground without sliding in the XY plane when adequate (triangle is not nearly vertical)
+						const vec3 gravityN = glm::normalize(vec3(0, 0, -GRAVITY));
+						const f32 cosTheta = glm::dot(glm::normalize(triPen), -gravityN);
+						if(cosTheta > 0.3) {
+							const f32 fix2Len = glm::length(triPen) / cosTheta;
+							fix = -gravityN * (fix2Len + PHYS_EPSILON);
+						}
 
 						Collision col;
 						col.pen = pen;
 						col.triangleNormal = triangleNormal;
-						//col.fix = triPen;
-						col.fix = fix2;
+						col.fix = fix;
 						col.fixLenSq = LengthSq(triPen);
 						colList.push_back(col);
 						collided = true;
@@ -454,7 +457,7 @@ void PhysWorld::Step()
 						event.capsule = s;
 						event.triangle = *tri;
 						event.fix = triPen;
-						event.fix2 = fix2;
+						event.fix2 = fix;
 						event.vel = bodyList[i].vel;
 						event.fixedVel = bodyList[i].vel;
 						if(glm::dot(glm::normalize(event.fixedVel), col.triangleNormal) < 0) {

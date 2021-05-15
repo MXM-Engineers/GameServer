@@ -88,8 +88,8 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			//body->dyn.pos = vec3(5469, 3945, 6000);
-			body->dyn.pos = vec3(5820, 3795, 1000);
+			body->dyn.pos = vec3(5469, 3945, 1000);
+			//body->dyn.pos = vec3(5820, 3795, 1000);
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -361,12 +361,12 @@ void Window::Update(f64 delta)
 
 		if(bShowFixed) {
 			ShapeCapsule fixed = event.capsule;
-			fixed.base += event.fix;
-			fixed.tip += event.fix;
+			fixed.base += event.fix2;
+			fixed.tip += event.fix2;
 			collisionTest.Draw(fixed, vec3(1, 1, 0));
 
-			collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 1, 0));
-			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 0, 0));
+			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
+			collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
 			collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
 			collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
 			//vec3 rv = ProjectVec(event.vel, tri.Normal());

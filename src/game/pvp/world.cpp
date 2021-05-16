@@ -6,11 +6,11 @@ void World::Init(Replication* replication_)
 	nextActorUID = 1;
 }
 
-void World::Update(f64 delta, Time localTime_)
+void World::Update(Time localTime_)
 {
 	ProfileFunction();
 
-	delta = TimeDurationSec(localTime, localTime_);
+	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
 	/*
@@ -34,55 +34,11 @@ void World::Update(f64 delta, Time localTime_)
 	}
 	*/
 
-	// update jukebox
-	if(jukebox.UID != ActorUID::INVALID) {
-		if(jukebox.currentSong.songID != SongID::INVALID) {
-			if(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)) >= jukebox.currentSong.lengthInSec) {
-				jukebox.currentSong = {};
-			}
-		}
-
-		if(jukebox.currentSong.songID == SongID::INVALID) {
-			if(!jukebox.queue.empty()) {
-				jukebox.currentSong = jukebox.queue.front();
-				jukebox.queue.pop_front();
-				jukebox.playStartTime = localTime;
-			}
-		}
-	}
-
 	Replicate();
 }
 
 void World::Replicate()
 {
-	if(jukebox.UID != ActorUID::INVALID) {
-		// replicate
-		Replication::ActorJukebox rjb;
-		rjb.actorUID = jukebox.UID;
-		rjb.docID = jukebox.docID;
-		rjb.pos = jukebox.pos;
-		rjb.dir = jukebox.dir;
-		rjb.localID = jukebox.localID;
-
-		if(jukebox.currentSong.songID != SongID::INVALID) {
-			rjb.playPosition = (i32)round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
-			rjb.playStartTime = jukebox.playStartTime;
-			rjb.currentSong = { jukebox.currentSong.songID, jukebox.currentSong.requesterNick };
-		}
-		else {
-			rjb.playPosition = 0;
-			rjb.playStartTime = Time::ZERO;
-			rjb.currentSong = { SongID::INVALID };
-		}
-
-		foreach(it, jukebox.queue) {
-			rjb.tracks.push_back({ it->songID, it->requesterNick });
-		}
-
-		replication->FramePushJukebox(rjb);
-	}
-
 	// players
 	foreach_const(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;
@@ -208,24 +164,6 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;
-}
-
-World::ActorJukebox& World::SpawnJukeboxActor(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
-{
-	ASSERT(jukebox.UID == ActorUID::INVALID);
-
-	new(&jukebox) ActorJukebox(NewActorUID());
-	jukebox.type = 1;
-	jukebox.docID = (CreatureIndex)docID;
-	jukebox.pos = pos;
-	jukebox.dir = dir;
-	jukebox.rotation = {0};
-	jukebox.speed = 0;
-	jukebox.actionState = ActionStateID::INVALID;
-	jukebox.actionParam1 = -1;
-	jukebox.actionParam2 = -1;
-	jukebox.localID = localID;
-	return jukebox;
 }
 
 World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID) const

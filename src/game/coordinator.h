@@ -1,8 +1,8 @@
 #pragma once
+#include <eathread/eathread_thread.h>
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
-#include <eathread/eathread_thread.h>
 
 // TODO: move this
 struct AccountData
@@ -14,23 +14,52 @@ struct AccountData
 	// TODO: add to this
 };
 
-struct Channel;
+struct ChannelHub;
+struct ChannelPvP;
 
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
-	enum class ChannelID: i32 {
+	enum class LaneID: i32 {
 		INVALID = -1,
 		FIRST = 0,
-		LOBBY = 0,
-		GAME = 1,
+		HUB = 0,
+		PVP = 1,
 		_COUNT,
 	};
 
+	struct Lane
+	{
+		struct EventOnClientConnect
+		{
+			i32 clientID;
+			const AccountData* accountData;
+		};
+
+		Time localTime;
+
+		EA::Thread::Thread thread;
+
+		GrowableBuffer packetDataQueue;
+		GrowableBuffer processPacketQueue;
+		eastl::fixed_vector<i32,128> clientDisconnectedList;
+		ProfileMutex(Mutex, mutexPacketDataQueue);
+		ProfileMutex(Mutex, mutexClientDisconnectedList);
+		eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
+		ProfileMutex(Mutex, mutexNewPlayerQueue);
+
+		void Init();
+		void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
+		void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
+		void CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count);
+	};
+
 	Server* server;
-	eastl::array<Channel*, (i32)ChannelID::_COUNT> channelList;
+	eastl::array<Lane, (i32)LaneID::_COUNT> laneList;
+	ChannelHub* channelHub;
+	ChannelPvP* channelPvP;
 	eastl::array<AccountData, Server::MAX_CLIENTS> accountData;
-	eastl::array<ChannelID, Server::MAX_CLIENTS> associatedChannel;
+	eastl::array<LaneID, Server::MAX_CLIENTS> associatedChannel;
 	GrowableBuffer recvDataBuff;
 	EA::Thread::Thread thread;
 	Time localTime;

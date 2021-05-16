@@ -1,4 +1,3 @@
-#include "game.h"
 #include "coordinator.h"
 #include "game_content.h"
 #include "config.h"

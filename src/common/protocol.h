@@ -1,16 +1,6 @@
 #pragma once
 #include <common/base.h>
 
-struct float2
-{
-	f32 x = 0, y = 0;
-};
-
-struct float3
-{
-	f32 x = 0, y = 0, z = 0;
-};
-
 enum class LocalActorID: u32
 {
 	INVALID = 0,

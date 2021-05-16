@@ -6,11 +6,10 @@
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_vector.h>
 #include "replication.h"
-#include "core.h"
-#include "physics.h"
+#include <game/core.h>
 
 
-struct World
+struct WorldHub
 {
 	enum {
 		MAX_PLAYERS = Server::MAX_CLIENTS
@@ -23,7 +22,9 @@ struct World
 		CreatureIndex docID;
 		vec3 pos;
 		vec3 dir;
-		RotationHumanoid rotation;
+		vec3 eye;
+		f32 rotate; // whole body rotate
+		f32 upperRotate; // upper body rotate
 		f32 speed;
 		ActionStateID actionState;
 		i32 actionParam1;
@@ -41,7 +42,6 @@ struct World
 		i32 clientID;
 		WideString name;
 		WideString guildTag;
-		PhysWorld::BodyHandle body;
 
 		explicit ActorPlayer(ActorUID UID_, ActorUID parentActorUID_):
 			ActorCore(UID_),
@@ -79,7 +79,7 @@ struct World
 		explicit ActorJukebox(ActorUID UID_): ActorNpc(UID_) {}
 	};
 
-	Replication* replication;
+	ReplicationHub* replication;
 
 	eastl::fixed_list<ActorPlayer,512,true> actorPlayerList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
@@ -98,11 +98,8 @@ struct World
 	u32 nextActorUID;
 	Time localTime;
 
-	PhysWorld physics;
-
-	void Init(Replication* replication_);
-	void Update(f64 delta, Time localTime_);
-	void Replicate();
+	void Init(ReplicationHub* replication_);
+	void Update(Time localTime_);
 
 	ActorUID NewActorUID();
 

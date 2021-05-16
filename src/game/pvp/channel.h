@@ -1,40 +1,21 @@
 #pragma once
 #include "game.h"
-#include <common/protocol.h>
+#include <game/coordinator.h>
 #include <eathread/eathread_thread.h>
 
-struct Channel
+struct ChannelPvP
 {
-	struct EventOnClientConnect
-	{
-		i32 clientID;
-		const AccountData* accountData;
-	};
-
-	Server* server;
-	IGame* game;
-
-	Replication replication;
 	Time localTime;
+	Server* server;
+	Coordinator::Lane* lane;
 
-	EA::Thread::Thread thread;
+	Game* game;
+	Replication replication;
 
-	GrowableBuffer packetDataQueue;
-	GrowableBuffer processPacketQueue;
-	eastl::fixed_vector<i32,128> clientDisconnectedList;
-	ProfileMutex(Mutex, mutexPacketDataQueue);
-	ProfileMutex(Mutex, mutexClientDisconnectedList);
-	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
-	ProfileMutex(Mutex, mutexNewPlayerQueue);
-
-	bool Init(Server* server_, ListenerType type);
+	bool Init(Server* server_);
 	void Cleanup();
 
-	void Update(f64 delta);
-
-	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
-	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
-	void CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count);
+	void Update();
 
 private:
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);

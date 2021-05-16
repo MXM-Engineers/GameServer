@@ -8,7 +8,7 @@
 #include <EASTL/fixed_set.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_list.h>
-#include "core.h"
+#include <game/core.h>
 
 struct AccountData;
 
@@ -127,8 +127,6 @@ struct Replication
 
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
-
-	StageType stageType;
 
 	void Init(Server* server_);
 

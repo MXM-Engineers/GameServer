@@ -1,22 +1,13 @@
 #include "replication.h"
-#include "config.h"
+
 #include <common/protocol.h>
 #include <common/packet_serialize.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EAStdC/EAString.h>
-#include "coordinator.h" // AccountData
-#include "game_content.h"
-
-inline float3 f2v(const vec3& v3)
-{
-	return { v3.x, v3.y, v3.z };
-}
-
-inline float2 f2v(const vec2& v2)
-{
-	return { v2.x, v2.y };
-}
+#include <game/coordinator.h> // AccountData
+#include <game/game_content.h>
+#include <game/config.h>
 
 void Replication::Frame::Clear()
 {
@@ -274,27 +265,25 @@ void Replication::SetPlayerAsInGame(i32 clientID)
 	playerState[clientID] = PlayerState::IN_GAME;
 
 	// FIXME: move this
-	if(stageType == StageType::GAME_INSTANCE) {
-		// SN_InitIngameModeInfo
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+	// SN_InitIngameModeInfo
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
-			packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
-			packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
-			packet.Write<i32>(20); // chPropertyResetCoolTime
-			packet.Write<u8>(0); // transformationPieceCount
-			packet.Write<u16>(0); // titanDocIndexes_count
-			packet.Write<u8>(0); // nextTitanIndex
-			packet.Write<u16>(0); // listExceptionStat_count
+		packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
+		packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
+		packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
+		packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
+		packet.Write<i32>(20); // chPropertyResetCoolTime
+		packet.Write<u8>(0); // transformationPieceCount
+		packet.Write<u16>(0); // titanDocIndexes_count
+		packet.Write<u8>(0); // nextTitanIndex
+		packet.Write<u16>(0); // listExceptionStat_count
 
-			LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
-			SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
-		}
+		LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
+		SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
 	}
 }
 
@@ -1794,63 +1783,38 @@ void Replication::FrameDifference()
 	}
 
 	// send updates
-	if(stageType == StageType::CITY) {
-		foreach_const(up, listUpdatePosition) {
-			Sv::SN_GamePlayerSyncByInt sync;
-			sync.p3nPos = f2v(up->pos);
-			sync.p3nDir = f2v(up->dir);
-			sync.p3nEye.x = WorldYawToMxmYaw(up->rotation.upperYaw);
-			sync.p3nEye.y = 0; // roll
-			sync.p3nEye.z = WorldPitchToMxmPitch(up->rotation.upperPitch);
-			sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
-			sync.nSpeed = up->speed;
-			sync.nState = -1;
-			sync.nActionIDX = -1;
+	foreach_const(up, listUpdatePosition) {
+		Sv::SN_PlayerSyncMove sync;
+		sync.destPos = f2v(up->pos);
+		sync.moveDir = { up->dir.x, up->dir.y };
+		sync.upperDir = { WorldYawToMxmYaw(up->rotation.upperYaw), WorldPitchToMxmPitch(up->rotation.upperPitch) };
+		sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
+		sync.nSpeed = up->speed;
+		sync.flags = 0;
+		sync.state = ActionStateID::NONE_BEHAVIORSTATE;
 
-			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-				if(playerState[clientID] != PlayerState::IN_GAME) continue;
-				if(clientID == up->clientID) continue; // ignore self
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID] != PlayerState::IN_GAME) continue;
+			if(clientID == up->clientID) continue; // ignore self
 
-				sync.characterID = GetLocalActorID(clientID, up->actorUID);
-				LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)up->actorUID);
-				SendPacket(clientID, sync);
-			}
+			sync.characterID = GetLocalActorID(clientID, up->actorUID);
+			LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
+			SendPacket(clientID, sync);
 		}
 	}
-	else if(stageType == StageType::GAME_INSTANCE) {
-		foreach_const(up, listUpdatePosition) {
-			Sv::SN_PlayerSyncMove sync;
-			sync.destPos = f2v(up->pos);
-			sync.moveDir = { up->dir.x, up->dir.y };
-			sync.upperDir = { WorldYawToMxmYaw(up->rotation.upperYaw), WorldPitchToMxmPitch(up->rotation.upperPitch) };
-			sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
-			sync.nSpeed = up->speed;
-			sync.flags = 0;
-			sync.state = ActionStateID::NONE_BEHAVIORSTATE;
 
-			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-				if(playerState[clientID] != PlayerState::IN_GAME) continue;
-				if(clientID == up->clientID) continue; // ignore self
+	foreach_const(up, listUpdateRotation) {
+		Sv::SN_PlayerSyncTurn sync;
+		sync.upperDir = { WorldYawToMxmYaw(up->rot.upperYaw), WorldPitchToMxmPitch(up->rot.upperPitch) };
+		sync.nRotate = WorldYawToMxmYaw(up->rot.bodyYaw);
 
-				sync.characterID = GetLocalActorID(clientID, up->actorUID);
-				LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
-				SendPacket(clientID, sync);
-			}
-		}
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID] != PlayerState::IN_GAME) continue;
+			if(clientID == up->clientID) continue; // ignore self
 
-		foreach_const(up, listUpdateRotation) {
-			Sv::SN_PlayerSyncTurn sync;
-			sync.upperDir = { WorldYawToMxmYaw(up->rot.upperYaw), WorldPitchToMxmPitch(up->rot.upperPitch) };
-			sync.nRotate = WorldYawToMxmYaw(up->rot.bodyYaw);
-
-			for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-				if(playerState[clientID] != PlayerState::IN_GAME) continue;
-				if(clientID == up->clientID) continue; // ignore self
-
-				sync.characterID = GetLocalActorID(clientID, up->actorUID);
-				LOG("[client%03d] Server :: SN_PlayerSyncTurn :: actorUID=%u", clientID, (u32)up->actorUID);
-				SendPacket(clientID, sync);
-			}
+			sync.characterID = GetLocalActorID(clientID, up->actorUID);
+			LOG("[client%03d] Server :: SN_PlayerSyncTurn :: actorUID=%u", clientID, (u32)up->actorUID);
+			SendPacket(clientID, sync);
 		}
 	}
 
@@ -2311,9 +2275,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 	}
 	*/
 
-	if(stageType == StageType::GAME_INSTANCE) {
-		SendMasterSkillSlots(clientID, actor);
-	}
+	SendMasterSkillSlots(clientID, actor);
 }
 
 void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
@@ -2568,46 +2530,25 @@ void Replication::SendInitialFrame(i32 clientID)
 	LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
 	SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
 
-	if(stageType == StageType::CITY) {
-		// SN_TownHudStatistics
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+	// SN_LoadClearedStages
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<u8>(0); // gameModeType
-			packet.Write<u8>(0); // gameType
-			packet.Write<u16>(3); // argList_count
-
-			// arglist
-			packet.Write<i32>(479);
-			packet.Write<i32>(0);
-			packet.Write<i32>(16);
-
-			LOG("[client%03d] Server :: SN_TownHudStatistics :: ", clientID);
-			SendPacketData(clientID, Sv::SN_TownHudStatistics::NET_ID, packet.size, packet.data);
-		}
+		packet.Write<u16>(0); // count
+		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_LoadClearedStages>(packet.data, packet.size));
+		SendPacketData(clientID, Sv::SN_NotifyPcDetailInfos::NET_ID, packet.size, packet.data);
 	}
-	else if(stageType == StageType::GAME_INSTANCE) {
-		// SN_LoadClearedStages
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<u16>(0); // count
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_LoadClearedStages>(packet.data, packet.size));
-			SendPacketData(clientID, Sv::SN_NotifyPcDetailInfos::NET_ID, packet.size, packet.data);
-		}
-
-		/*
-		Sv::SN_NotifyUserLifeInfo lifeInfo;
-		lifeInfo.usn = 1;
-		lifeInfo.lifeCount = 3;
-		lifeInfo.maxLifeCount = 3;
-		lifeInfo.remainLifeCount = 0;
-		LOG("[client%03d] Server :: SN_NotifyUserLifeInfo ::", clientID);
-		SendPacket(clientID, lifeInfo);
-		*/
-	}
+	/*
+	Sv::SN_NotifyUserLifeInfo lifeInfo;
+	lifeInfo.usn = 1;
+	lifeInfo.lifeCount = 3;
+	lifeInfo.maxLifeCount = 3;
+	lifeInfo.remainLifeCount = 0;
+	LOG("[client%03d] Server :: SN_NotifyUserLifeInfo ::", clientID);
+	SendPacket(clientID, lifeInfo);
+	*/
 }
 
 void Replication::CreateLocalActorID(i32 clientID, ActorUID actorUID)

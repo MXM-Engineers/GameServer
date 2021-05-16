@@ -1,11 +1,11 @@
 #include "game.h"
-#include "coordinator.h" // account data
-#include "game_content.h"
-#include "config.h"
+#include <game/coordinator.h> // account data
+#include <game/game_content.h>
+#include <game/config.h>
 #include <EAStdC/EAString.h>
 
 
-void Game::Init(Replication* replication_)
+void GameHub::Init(ReplicationHub* replication_)
 {
 	replication = replication_;
 	replication->stageType = StageType::CITY;
@@ -21,19 +21,19 @@ void Game::Init(Replication* replication_)
 	LoadMap();
 }
 
-void Game::Update(f64 delta, Time localTime_)
+void GameHub::Update(Time localTime_)
 {
 	ProfileFunction();
 
 	localTime = localTime_;
-	world.Update(delta, localTime);
+	world.Update(localTime);
 }
 
-bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
+bool GameHub::JukeboxQueueSong(i32 clientID, SongID songID)
 {
 	ASSERT(playerAccountData[clientID]);
 
-	World::ActorJukebox& jukebox = world.jukebox;
+	WorldHub::ActorJukebox& jukebox = world.jukebox;
 	ASSERT(jukebox.UID != ActorUID::INVALID);
 
 	if(jukebox.queue.full()) {
@@ -71,7 +71,7 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 		return false;
 	}
 
-	World::ActorJukebox::Song song;
+	WorldHub::ActorJukebox::Song song;
 	song.requesterNick = playerAccountData[clientID]->nickname;
 	song.songID = songID;
 	song.lengthInSec = xmlSong->length;
@@ -79,7 +79,7 @@ bool Game::JukeboxQueueSong(i32 clientID, SongID songID)
 	return true;
 }
 
-bool Game::LoadMap()
+bool GameHub::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
@@ -105,7 +105,7 @@ bool Game::LoadMap()
 	return true;
 }
 
-void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
+void GameHub::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 {
 	playerAccountData[clientID] = accountData;
 
@@ -115,9 +115,9 @@ void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 	replication->SendAccountDataLobby(clientID, *accountData);
 }
 
-void Game::OnPlayerDisconnect(i32 clientID)
+void GameHub::OnPlayerDisconnect(i32 clientID)
 {
-	LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
+	LOG("[client%03d] GameHub :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
 
 	// we can disconnect before spawning, so test if we have an actor associated
 	if(playerActorUID[clientID] != ActorUID::INVALID) {
@@ -133,15 +133,15 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	playerAccountData[clientID] = nullptr;
 }
 
-void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
+void GameHub::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
 	// TODO: health
-	const World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
+	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientID == clientID);
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
+void GameHub::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -150,17 +150,18 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, cons
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor);
 
 	// TODO: check for movement hacking
 	actor->pos = pos;
 	actor->dir = dir;
-	actor->rotation = rot;
+	actor->eye = eye;
+	actor->rotate = rotate;
 	actor->speed = speed;
 }
 
-void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
+void GameHub::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
 	if(ParseChatCommand(clientID, msg, msgLen)) {
@@ -175,7 +176,7 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+void GameHub::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
 {
 	ASSERT(playerAccountData[clientID]);
 	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
@@ -198,7 +199,7 @@ void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar*
 	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
 }
 
-void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
+void GameHub::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
@@ -206,16 +207,16 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
 	vec3 pos = spawnPoint.pos;
 	vec3 dir = spawnPoint.dir;
-	RotationHumanoid rot;
+	vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
 	if((playerActorUID[clientID] != ActorUID::INVALID)) {
-		World::ActorCore* actor = world.FindPlayerActor(playerActorUID[clientID]);
+		WorldHub::ActorCore* actor = world.FindPlayerActor(playerActorUID[clientID]);
 		ASSERT(actor);
 
 		pos = actor->pos;
 		dir = actor->dir;
-		rot = actor->rotation;
+		eye = actor->eye;
 
 		world.DestroyPlayerActor(playerActorUID[clientID]);
 	}
@@ -227,17 +228,17 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
 	ASSERT((i32)classType == leaderMasterContentID+1);
 
-	World::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
+	WorldHub::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
-	actor.rotation = rot;
+	actor.eye = eye;
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
 	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void GameHub::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	// FIXME: remove
 	// connect to gameserver when jumping
@@ -246,28 +247,28 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 		replication->SendConnectToServer(clientID, *playerAccountData[clientID], ip, 12900);
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
 	ASSERT(actor);
 
 	// TODO: check hacking
-	actor->rotation.bodyYaw = rotate;
-	actor->rotation.upperYaw = upperRotate;
+	actor->rotate = rotate;
+	actor->upperRotate = upperRotate;
 	actor->actionState = state;
 	actor->actionParam1 = param1;
 	actor->actionParam2 = param2;
 }
 
-void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
+void GameHub::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
 	JukeboxQueueSong(clientID, songID);
 }
 
-void Game::OnPlayerReadyToLoad(i32 clientID)
+void GameHub::OnPlayerReadyToLoad(i32 clientID)
 {
 	replication->SendLoadLobby(clientID, StageIndex::LOBBY_NORMAL);
 }
 
-bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
@@ -277,13 +278,13 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		msg++;
 
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
+			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.rotation = playerActor->rotation;
+			actor.eye = playerActor->eye;
 
 			// trigger second emote
 			actor.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;
@@ -303,13 +304,13 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		}
 
 		if(EA::StdC::Strncmp(msg, L"rozark", 6) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.rotation = playerActor->rotation;
+			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
@@ -317,13 +318,13 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		}
 
 		if(EA::StdC::Strncmp(msg, L"tanian", 6) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.rotation = playerActor->rotation;
+			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
@@ -331,13 +332,13 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		}
 
 		if(EA::StdC::Strncmp(msg, L"fish", 4) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
+			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
 			actor.pos = playerActor->pos;
 			actor.dir = playerActor->dir;
-			actor.rotation = playerActor->rotation;
+			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
@@ -345,7 +346,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		}
 
 		if(EA::StdC::Strncmp(msg, L"smoke", 5) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
 			ASSERT(playerActor);
 
 			SendDbgMsg(clientID, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
@@ -382,14 +383,14 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	return false;
 }
 
-void Game::SendDbgMsg(i32 clientID, const wchar* msg)
+void GameHub::SendDbgMsg(i32 clientID, const wchar* msg)
 {
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-void Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
+void GameHub::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
-	World::ActorCore& actor = world.SpawnNpcActor(docID, localID);
+	WorldHub::ActorCore& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;
 	actor.dir = dir;
 }

@@ -1,9 +1,12 @@
-#include "coordinator.h"
-#include "channel.h"
-#include "game_content.h"
-#include "config.h"
 #include <common/packet_serialize.h>
 #include <zlib.h>
+
+#include "coordinator.h"
+#include "game_content.h"
+#include "config.h"
+
+#include "hub/channel.h"
+#include "pvp/channel.h"
 
 intptr_t ThreadCoordinator(void* pData)
 {
@@ -36,32 +39,102 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
+template<class ChannelT>
+intptr_t ThreadChannel(void* pData)
+{
+	ChannelT& channel = *(ChannelT*)pData;
+
+	ProfileSetThreadName(FMT("Channel_%d", 0)); // TODO: channel ID / name
+	const i32 cpuID = (i32)CoreAffinity::CHANNELS + 0; // TODO: increase this for each channel
+	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
+
+	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
+	const Time startTime = TimeNow();
+	Time t0 = startTime;
+
+	while(channel.server->running)
+	{
+		Time t1 = TimeNow();
+		channel.localTime = TimeDiff(startTime, t1);
+		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
+
+		if(delta > UPDATE_RATE_MS) {
+			channel.Update();
+			t0 = t1;
+		}
+		else {
+			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta));
+			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
+			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
+		}
+	}
+
+	channel.Cleanup();
+	return 0;
+}
+
+void Coordinator::Lane::Init()
+{
+	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
+	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
+}
+
+void Coordinator::Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
+{
+	LOG("[client%03d] ChannelPvP:: New player :: '%ls'", clientID, accountData->nickname.data());
+
+	const LockGuard lock(mutexNewPlayerQueue);
+	newPlayerQueue.push_back(EventOnClientConnect{ clientID, accountData });
+}
+
+void Coordinator::Lane::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
+{
+	const LockGuard lock(mutexPacketDataQueue);
+	packetDataQueue.Append(&clientID, sizeof(clientID));
+	packetDataQueue.Append(&header, sizeof(header));
+	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
+}
+
+void Coordinator::Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
+{
+	const LockGuard lock(mutexClientDisconnectedList);
+	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
+}
+
 void Coordinator::Init(Server* server_)
 {
-	// TODO: allocate channels dynamically
-	static Channel channelLobby_;
-	channelLobby_.Init(server_, ListenerType::LOBBY);
-
-	static Channel channelGame_;
-	channelGame_.Init(server_, ListenerType::GAME);
-
 	server = server_;
-	channelList[(i32)ChannelID::LOBBY] = &channelLobby_;
-	channelList[(i32)ChannelID::GAME] = &channelGame_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	associatedChannel.fill(ChannelID::INVALID);
+	associatedChannel.fill(LaneID::INVALID);
 
 	thread.Begin(ThreadCoordinator, this);
+
+	foreach(it, laneList) {
+		it->Init();
+	}
+
+	// TODO: allocate channels dynamically
+	channelHub = new ChannelHub();
+	channelHub->Init(server_);
+	channelHub->lane = &laneList[(i32)LaneID::HUB];
+
+	channelPvP = new ChannelPvP();
+	channelPvP->Init(server_);
+	channelPvP->lane = &laneList[(i32)LaneID::PVP];
+
+	laneList[(i32)LaneID::HUB].thread.Begin(ThreadChannel<ChannelHub>, channelHub);
+	laneList[(i32)LaneID::PVP].thread.Begin(ThreadChannel<ChannelPvP>, channelPvP);
 }
 
 void Coordinator::Cleanup()
 {
 	LOG("Coordinator cleanup...");
 
-	foreach(it, channelList) {
-		(*it)->Cleanup();
+	foreach(it, laneList) {
+		it->thread.WaitForEnd();
 	}
+
 	thread.WaitForEnd();
 }
 
@@ -73,21 +146,21 @@ void Coordinator::Update(f64 delta)
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
 
-	for(i32 i = (i32)ChannelID::FIRST; i < (i32)ChannelID::_COUNT; i++) {
+	for(i32 i = (i32)LaneID::FIRST; i < (i32)LaneID::_COUNT; i++) {
 		eastl::fixed_vector<i32,128> chanDiscList;
 
 		foreach(cl, clientDisconnectedList) {
-			if(associatedChannel[*cl] == (ChannelID)i) {
+			if(associatedChannel[*cl] == (LaneID)i) {
 				chanDiscList.push_back(*cl);
 			}
 		}
 
-		channelList[i]->CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
+		laneList[i].CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
 	}
 
 	// clear client data
 	foreach(cl, clientDisconnectedList) {
-		associatedChannel[*cl] = ChannelID::INVALID;
+		associatedChannel[*cl] = LaneID::INVALID;
 	}
 
 	// handle received data
@@ -122,8 +195,8 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 		HANDLE_CASE(CQ_TierRecord);
 
 		default: {
-			ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
-			channelList[(i32)associatedChannel[clientID]]->CoordinatorClientHandlePacket(clientID, header, packetData);
+			ASSERT(associatedChannel[clientID] != LaneID::INVALID);
+			laneList[(i32)associatedChannel[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
 		} break;
 	}
 
@@ -162,12 +235,12 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
 	// assign to a channel
-	ASSERT(associatedChannel[clientID] == ChannelID::INVALID);
+	ASSERT(associatedChannel[clientID] == LaneID::INVALID);
 	if(info.listenerType == ListenerType::LOBBY) {
-		associatedChannel[clientID] = ChannelID::LOBBY;
+		associatedChannel[clientID] = LaneID::HUB;
 	}
 	else if(info.listenerType == ListenerType::GAME) {
-		associatedChannel[clientID] = ChannelID::GAME;
+		associatedChannel[clientID] = LaneID::PVP;
 	}
 	else {
 		ASSERT(0); // case not handled
@@ -228,8 +301,8 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
-	channelList[(i32)associatedChannel[clientID]]->CoordinatorRegisterNewPlayer(clientID, &account);
+	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
+	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -270,8 +343,8 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	ASSERT(associatedChannel[clientID] != ChannelID::INVALID);
-	channelList[(i32)associatedChannel[clientID]]->CoordinatorRegisterNewPlayer(clientID, &account);
+	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
+	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

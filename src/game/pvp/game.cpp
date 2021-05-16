@@ -1,17 +1,15 @@
-#include "gm_3v3.h"
+#include "game.h"
 
 #include <EAStdC/EAString.h>
 #include <common/utils.h>
 
-#include "coordinator.h" // account data
-#include "game_content.h"
-#include "config.h"
+#include <game/coordinator.h> // account data
+#include <game/game_content.h>
+#include <game/config.h>
 
-void Game3v3::Init(Replication* replication_)
+void Game::Init(Replication* replication_)
 {
 	replication = replication_;
-	replication->stageType = StageType::GAME_INSTANCE;
-
 	world.Init(replication);
 
 	// TODO: move OUT
@@ -44,7 +42,7 @@ void Game3v3::Init(Replication* replication_)
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
 
-void Game3v3::Update(f64 delta, Time localTime_)
+void Game::Update(Time localTime_)
 {
 	ProfileFunction();
 	localTime = localTime_;
@@ -96,7 +94,7 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	legoLastStep = step;
 
 
-	world.Update(delta, localTime);
+	world.Update(localTime);
 
 	foreach_const(actor, world.actorPlayerList) {
 		Dbg::Entity e;
@@ -110,7 +108,7 @@ void Game3v3::Update(f64 delta, Time localTime_)
 	}
 }
 
-bool Game3v3::LoadMap()
+bool Game::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
@@ -139,7 +137,7 @@ bool Game3v3::LoadMap()
 	return true;
 }
 
-void Game3v3::OnPlayerConnect(i32 clientID, const AccountData* accountData)
+void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 {
 	playerAccountData[clientID] = accountData;
 
@@ -149,7 +147,7 @@ void Game3v3::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 	replication->SendAccountDataPvp(clientID, *accountData);
 }
 
-void Game3v3::OnPlayerDisconnect(i32 clientID)
+void Game::OnPlayerDisconnect(i32 clientID)
 {
 	if(playerMap[clientID] != playerList.end()) {
 		const Player& player = *playerMap[clientID];
@@ -168,12 +166,12 @@ void Game3v3::OnPlayerDisconnect(i32 clientID)
 	playerAccountData[clientID] = nullptr;
 }
 
-void Game3v3::OnPlayerReadyToLoad(i32 clientID)
+void Game::OnPlayerReadyToLoad(i32 clientID)
 {
 	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
 }
 
-void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
+void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -189,7 +187,7 @@ void Game3v3::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
 }
 
-void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -211,7 +209,7 @@ void Game3v3::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3
 	actor->speed = speed;
 }
 
-void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
+void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -229,7 +227,7 @@ void Game3v3::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const Rota
 	actor->rotation = rot;
 }
 
-void Game3v3::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
+void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
 	if(ParseChatCommand(clientID, msg, msgLen)) {
@@ -244,7 +242,7 @@ void Game3v3::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, 
 	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void Game3v3::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
 {
 	ASSERT(playerAccountData[clientID]);
 	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
@@ -267,12 +265,12 @@ void Game3v3::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wch
 	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
 }
 
-void Game3v3::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
+void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
 {
 
 }
 
-void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
@@ -295,17 +293,17 @@ void Game3v3::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionSta
 	actor->actionParam2 = param2;
 }
 
-void Game3v3::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
+void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 {
 
 }
 
-void Game3v3::OnPlayerLoadingComplete(i32 clientID)
+void Game::OnPlayerLoadingComplete(i32 clientID)
 {
 	replication->SendPvpLoadingComplete(clientID);
 }
 
-void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
+void Game::OnPlayerGameMapLoaded(i32 clientID)
 {
 	// map is loaded, spawn
 	// TODO: team, masters
@@ -368,7 +366,7 @@ void Game3v3::OnPlayerGameMapLoaded(i32 clientID)
 	player.cloneActorUID = clone.UID;
 }
 
-void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
+void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
@@ -377,7 +375,7 @@ void Game3v3::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 	replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
 }
 
-void Game3v3::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
+void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
@@ -385,7 +383,7 @@ void Game3v3::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate
 	replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
 }
 
-void Game3v3::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
+void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
@@ -393,7 +391,7 @@ void Game3v3::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
 	replication->SendPlayerAcceptCast(clientID, cast);
 }
 
-void Game3v3::OnPlayerGameIsReady(i32 clientID)
+void Game::OnPlayerGameIsReady(i32 clientID)
 {
 	replication->SendGameReady(clientID);
 
@@ -401,7 +399,7 @@ void Game3v3::OnPlayerGameIsReady(i32 clientID)
 	replication->SendGameStart(clientID);
 }
 
-bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
@@ -442,12 +440,12 @@ bool Game3v3::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	return false;
 }
 
-void Game3v3::SendDbgMsg(i32 clientID, const wchar* msg)
+void Game::SendDbgMsg(i32 clientID, const wchar* msg)
 {
 	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
-World::ActorNpc& Game3v3::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
+World::ActorNpc& Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
 	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;

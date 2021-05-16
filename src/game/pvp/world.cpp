@@ -13,7 +13,6 @@ void World::Update(Time localTime_)
 	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
-	/*
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
@@ -29,10 +28,14 @@ void World::Update(Time localTime_)
 
 		p.pos = p.body->dyn.pos;
 		vec3 vel = p.body->dyn.vel;
-		p.dir = glm::normalize(vel);
+		if(LengthSq(vel) > 0.0001f) {
+			p.dir = glm::normalize(vel);
+		}
+		else {
+			p.dir = vec3(0, 0, 0);
+		}
 		p.speed = glm::length(vel);
 	}
-	*/
 
 	Replicate();
 }
@@ -70,7 +73,6 @@ void World::Replicate()
 		it->actionParam1 = -1;
 		it->actionParam2 = -1;
 	}
-
 
 	// npcs
 	foreach_const(it, actorNpcList) {

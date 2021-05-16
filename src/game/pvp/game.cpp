@@ -34,7 +34,7 @@ void Game::Init(Replication* replication_)
 
 	// spawn test
 	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
-	lego.pos = vec3(2800, 3532, 550.602905);
+	lego.pos = vec3(2800, 3532, 1000);
 	lego.dir = vec3(0, 0, 0);
 	lego.speed = 626;
 	legoUID = lego.UID;
@@ -106,6 +106,8 @@ void Game::Update(Time localTime_)
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
+
+	Dbg::PushPhysics(dbgGameUID, world.physics);
 }
 
 bool Game::LoadMap()

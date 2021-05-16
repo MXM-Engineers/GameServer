@@ -1798,7 +1798,7 @@ void Replication::FrameDifference()
 			if(clientID == up->clientID) continue; // ignore self
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
+			// LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
 			SendPacket(clientID, sync);
 		}
 	}

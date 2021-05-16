@@ -2,10 +2,8 @@
 
 #include <common/base.h>
 #include <common/utils.h>
-#include <glm/vec3.hpp>
 #include <game/core.h>
-
-typedef glm::vec3 vec3;
+#include <game/physics.h>
 
 void WindowCreate();
 intptr_t ThreadWindow(void* pData);
@@ -32,6 +30,7 @@ struct Entity
 GameUID PushNewGame(const FixedStr32& mapName);
 void PushNewFrame(GameUID gameUID);
 void PushEntity(GameUID gameUID, const Entity& entity);
+void PushPhysics(GameUID gameUID, const PhysWorld& world);
 void PopGame(GameUID gameUID);
 
 }

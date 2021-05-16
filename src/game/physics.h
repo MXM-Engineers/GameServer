@@ -152,6 +152,12 @@ struct PhysWorld
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
 
 #ifdef CONF_DEBUG
+	bool bFreezeStep = false;
+	bool bShowSubject = true;
+	bool bShowFixed = true;
+	bool bShowPen = true;
+	i32 iSelectedEvent = 0;
+
 	struct CollisionEvent
 	{
 		u16 capsuleID;

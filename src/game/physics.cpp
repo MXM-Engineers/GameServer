@@ -1,6 +1,8 @@
 #include "physics.h"
 #include <EASTL/sort.h>
 
+#define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
+
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen)
 {
 	f32 len = glm::length(B.center - A.center);
@@ -390,6 +392,12 @@ void PhysWorld::Step()
 	foreach_const(b, dynCapsuleBodyList) {
 		shapeCapsuleList.push_back(b->shape);
 		bodyList.push_back(b->dyn);
+		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
+		DBG_ASSERT_NONNAN(bodyList.back().pos.y);
+		DBG_ASSERT_NONNAN(bodyList.back().pos.z);
+		DBG_ASSERT_NONNAN(bodyList.back().vel.x);
+		DBG_ASSERT_NONNAN(bodyList.back().vel.y);
+		DBG_ASSERT_NONNAN(bodyList.back().vel.z);
 	}
 
 	// ASSUME NOTHING IS COLLIDING
@@ -486,6 +494,13 @@ void PhysWorld::Step()
 					if(glm::dot(glm::normalize(body.vel), col.triangleNormal) < 0) {
 						body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
 					}
+
+					DBG_ASSERT_NONNAN(body.pos.x);
+					DBG_ASSERT_NONNAN(body.pos.y);
+					DBG_ASSERT_NONNAN(body.pos.z);
+					DBG_ASSERT_NONNAN(body.vel.x);
+					DBG_ASSERT_NONNAN(body.vel.y);
+					DBG_ASSERT_NONNAN(body.vel.z);
 				}
 			}
 
@@ -498,6 +513,12 @@ void PhysWorld::Step()
 	foreach(b, dynCapsuleBodyList) {
 		b->shape = shapeCapsuleList[i];
 		b->dyn = bodyList[i];
+		DBG_ASSERT_NONNAN(bodyList[i].pos.x);
+		DBG_ASSERT_NONNAN(bodyList[i].pos.y);
+		DBG_ASSERT_NONNAN(bodyList[i].pos.z);
+		DBG_ASSERT_NONNAN(bodyList[i].vel.x);
+		DBG_ASSERT_NONNAN(bodyList[i].vel.y);
+		DBG_ASSERT_NONNAN(bodyList[i].vel.z);
 		i++;
 	}
 }

@@ -9,10 +9,12 @@
 
 # Physics
 * ✅ Capsule <-> Triangle collision
-* ⚠️ Some ground triangles don't have a perfect up normal vector (I'm guessing it is the case for a lot of them), so we slide on them.
-    - Compare mesh normal with triangle normal
-    - Could be an epsilon issue
-    - Actually just make it so if we don't move, there is no XY vel component
+* ✅ Don't slide on triangles
+* ✅ Go up the ramp
+* ⚠️ Spatial queries:
+    - I'd like to move from A to B, where do I end up?
+* Dynamic body <-> Dynamic body collision (needed for AI mobs such as rozark)
+* Collision groups (only collide with AI mobs not players)
 * Try to make rolling work
 
 # Test

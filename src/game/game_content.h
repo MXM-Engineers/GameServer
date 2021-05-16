@@ -1,18 +1,16 @@
 #pragma once
 #include "core.h"
+#include <tinyxml2.h>
 #include <common/protocol.h>
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
-#include <tinyxml2.h>
 #include "model/character_model.h"
 
-using namespace tinyxml2;
-
 struct GameXmlContent
-{	
+{
 	struct Master
 	{
 		CreatureIndex ID;
@@ -81,7 +79,7 @@ struct GameXmlContent
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
-	void SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
+	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);
@@ -98,8 +96,8 @@ struct GameXmlContent
 	SkillType StringToSkillType(const char* s);
 
 private:
-	XMLDocument xmlSKILL;
-	XMLDocument xmlSKILLPROPERTY;
+	tinyxml2::XMLDocument xmlSKILL;
+	tinyxml2::XMLDocument xmlSKILLPROPERTY;
 };
 
 bool GameXmlContentLoad();

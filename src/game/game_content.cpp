@@ -1,12 +1,13 @@
-#include "game_content.h"
 #include <common/utils.h>
-#include <tinyxml2.h>
 #include <EAStdC/EAString.h>
+#include <tinyxml2.h>
 
 #include "config.h"
 #include "core.h"
 #include "physics.h"
+#include "game_content.h"
 
+using namespace tinyxml2;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 

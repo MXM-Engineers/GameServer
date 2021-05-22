@@ -173,7 +173,7 @@ project "Game"
 		glm_files
 	}
 
-	configuration "Release"
+	--configuration "Release"
 		defines {
 			PROFILE_DEFINE
 		}

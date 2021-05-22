@@ -15,6 +15,9 @@
     - I'd like to move from A to B, where do I end up?
 * Dynamic body <-> Dynamic body collision (needed for AI mobs such as rozark)
 * Collision groups (only collide with AI mobs not players)
+* Fix replication sending players moving while they don't (like when stuck in a corner)
+* Make physics match the client more (for example we can go up the ramp from the side)
+    - Also going up the ramp the usual way still is finnicky
 * Try to make rolling work
 
 # Test

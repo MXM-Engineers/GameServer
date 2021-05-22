@@ -56,9 +56,17 @@ void Game::Update(Time localTime_)
 			ASSERT(main);
 			ASSERT(clone);
 
-			clone->pos = main->pos;
-			clone->dir = main->dir;
-			clone->speed = main->speed;
+			//clone->pos = main->pos;
+			const f32 lensq = LengthSq(main->pos - clone->pos);
+			if(lensq > 0.001f) {
+				clone->dir = glm::normalize(main->pos - clone->pos);
+				clone->speed = 626.200012f;
+			}
+			else {
+				clone->dir = vec3(1, 0, 0);
+				clone->speed = 0;
+			}
+
 			clone->rotation = main->rotation;
 		}
 	}

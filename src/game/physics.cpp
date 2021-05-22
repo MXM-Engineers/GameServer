@@ -380,10 +380,13 @@ inline vec3 FixAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCent
 
 void PhysWorld::Step()
 {
+	ProfileFunction();
+
 	ASSERT(dynCapsuleBodyList.size() == dynCapsuleBodyList.size());
 
 #ifdef CONF_DEBUG
 	lastStepEvents.clear();
+	step++;
 #endif
 
 	// copy step data to continous buffers
@@ -459,6 +462,7 @@ void PhysWorld::Step()
 
 						#ifdef CONF_DEBUG
 						CollisionEvent event;
+						event.step = step;
 						event.capsuleID = i;
 						event.ssi = ssi;
 						event.cri = cri;

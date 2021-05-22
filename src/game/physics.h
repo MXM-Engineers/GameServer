@@ -151,7 +151,8 @@ struct PhysWorld
 	eastl::fixed_vector<ShapeCapsule, 4096, false> movedShapeCapsuleList;
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
 
-#ifdef CONF_DEBUG
+#if 1
+	u64 step = 0;
 	bool bFreezeStep = false;
 	bool bShowSubject = true;
 	bool bShowFixed = true;
@@ -160,6 +161,7 @@ struct PhysWorld
 
 	struct CollisionEvent
 	{
+		u64 step;
 		u16 capsuleID;
 		u8 ssi;
 		u8 cri;

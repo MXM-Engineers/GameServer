@@ -64,6 +64,17 @@ struct Window
 	GameState* gameStateBack = &gameStateList[1];
 	ProfileMutex(Mutex, gameStateMutex);
 
+	bool bGameStateRecording = false;
+	struct Recording
+	{
+		ProfileMutex(Mutex, mutex);
+		i32 filterStep = 1;
+		i32 filterCapsuleID = 0;
+		i32 selectedID = 0;
+		eastl::fixed_vector<PhysWorld::CollisionEvent, 8192, false> events;
+	};
+	Recording gsRecording;
+
 	CollisionTest collisionTest;
 
 	ShapeMesh mapCollision;
@@ -122,8 +133,11 @@ struct Window
 
 	bool Init();
 
-	void DebugPhysicsWorld(PhysWorld& physicsTest, const char* name);
+	void WindowPhysicsWorld(PhysWorld& physicsTest, const char* name);
+	void WindowGameStates();
+	void WindowPhysicsTest();
 
+	void NewFrame(Dbg::GameUID gameUID);
 	void Update(f64 delta);
 	void UpdatePhysics();
 	void Frame();
@@ -171,34 +185,9 @@ bool Window::Init()
 	return true;
 }
 
-void Window::DebugPhysicsWorld(PhysWorld& physics, const char* name)
+void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 {
 	if(ImGui::Begin(name)) {
-		/*
-		ImGui::Checkbox("Fixed", &physics.bShowFixed); ImGui::SameLine();
-		ImGui::Checkbox("Pen", &physics.bShowPen);
-
-		#ifdef CONF_DEBUG
-		ImGui::Text("LastFrameEvents = %d", physics.lastStepEvents.size());
-		if(ImGui::BeginListBox("Events")) {
-			for(int n = 0; n < physics.lastStepEvents.size(); n++) {
-				const PhysWorld::CollisionEvent& event = physics.lastStepEvents[n];
-
-				const bool isSelected = (physics.iSelectedEvent == n);
-				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
-					physics.iSelectedEvent = n;
-				}
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if(isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndListBox();
-		}
-		#endif
-		*/
-
 		const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
 		ImGui::BeginTable("postable", 7, flags);
@@ -234,22 +223,306 @@ void Window::DebugPhysicsWorld(PhysWorld& physics, const char* name)
 		}
 
 		ImGui::EndTable();
+
+		foreach_const(it, physics.dynCapsuleBodyList) {
+			ShapeCapsule shape = it->shape;
+			vec3 pos = it->dyn.pos;
+			vec3 vel = it->dyn.vel;
+			shape.base += pos;
+			shape.tip += pos;
+
+			collisionTest.Draw(shape, vec3(1, 0, 1));
+			collisionTest.DrawVec(vel, shape.base + vec3(0, 0, shape.radius), vec3(1, 0.5, 0.8));
+		}
+	}
+	ImGui::End();
+}
+
+void Window::WindowGameStates()
+{
+	static GameState gameState;
+	{
+		const LockGuard lock(gameStateMutex);
+		gameState = *gameStateBack;
+	}
+
+	WindowPhysicsWorld(gameState.physics, "GameState :: Physics");
+
+	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
+
+
+	if(ImGui::Begin("Entities")) {
+		if(ImGui::BeginTable("EntityList", 8, flags))
+		{
+			ImGui::TableSetupColumn("UID");
+			ImGui::TableSetupColumn("Name");
+			ImGui::TableSetupColumn("PosX");
+			ImGui::TableSetupColumn("PosY");
+			ImGui::TableSetupColumn("PosZ");
+			ImGui::TableSetupColumn("RotUpperYaw");
+			ImGui::TableSetupColumn("RotUpperPitch");
+			ImGui::TableSetupColumn("RotBodyYaw");
+			ImGui::TableHeadersRow();
+
+			foreach_const(ent, gameState.entityList) {
+				ImGui::TableNextRow();
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%u", ent->UID);
+				ImGui::TableNextColumn();
+				ImGui::Text("%ls", ent->name.data());
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.x);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.y);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->pos.z);
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.upperYaw);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.upperPitch);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", ent->rot.bodyYaw);
+			}
+
+			ImGui::EndTable();
+		}
+
+		foreach_const(ent, gameState.entityList) {
+			const Dbg::Entity& e = *ent;
+			//rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 45, 210, e.color);
+			//rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
+
+			// this is updated when the player moves
+			const vec3 upperStart = e.pos + vec3(0, 0, 200);
+			const vec3 upperDir = glm::normalize(vec3(cosf(e.rot.upperYaw), sinf(e.rot.upperYaw), sinf(e.rot.upperPitch)));
+			rdr.PushArrow(Pipeline::Unlit, upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
+
+			const vec3 bodyRotStart = e.pos + vec3(0, 0, 150);
+			rdr.PushArrow(Pipeline::Unlit, bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
+			const vec3 dirStart = e.pos + vec3(0, 0, 80);
+			rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
+		}
 	}
 	ImGui::End();
 
-	if(!physics.bFreezeStep) {
+	if(ImGui::Begin("Recorder")) {
+		if(!bGameStateRecording) {
+			if(ImGui::Button("Start Recording")) {
+				bGameStateRecording = true;
+				const LockGuard lock(gsRecording.mutex);
+				gsRecording.events.clear();
+			}
+		}
+		else {
+			ImGui::TextColored({1, 0, 0, 1}, "Recording..."); ImGui::SameLine();
+			if(ImGui::Button("Stop")) {
+				bGameStateRecording = false;
+			}
+		}
+
+		ImGui::InputInt("Filter capsule ID", &gsRecording.filterCapsuleID);
+
+		i32 minStep = 1;
+		i32 maxStep = 1;
+		if(!gsRecording.events.empty()) {
+			minStep = gsRecording.events.front().step;
+			maxStep = gsRecording.events.back().step;
+			gsRecording.filterStep = clamp(gsRecording.filterStep, minStep, maxStep);
+		}
+		ImGui::SliderInt("Filter step", &gsRecording.filterStep, minStep, maxStep);
+
+		bool wasSelected = false;
+		i32 lastFilteredID = -1;
+
+		if(ImGui::BeginListBox("Events")) {
+			for(int n = 0; n < gsRecording.events.size(); n++) {
+				const PhysWorld::CollisionEvent& event = gsRecording.events[n];
+				if(event.capsuleID != gsRecording.filterCapsuleID) continue;
+				if(event.step != gsRecording.filterStep) continue;
+
+				const bool isSelected = (gsRecording.selectedID == n);
+
+				ImGui::PushID(FMT("recording_event_%d", n));
+				if(ImGui::Selectable(FMT("ssi=%d cri=%d len=%g", event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
+					gsRecording.selectedID = n;
+				}
+				ImGui::PopID();
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if(isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+
+				wasSelected |= (gsRecording.selectedID == n);
+				lastFilteredID = n;
+			}
+			ImGui::EndListBox();
+		}
+
+		// select id withing filtered events
+		if(!wasSelected && lastFilteredID != -1) {
+			gsRecording.selectedID = lastFilteredID;
+		}
+
+		if(gsRecording.selectedID >= 0 && gsRecording.selectedID < gsRecording.events.size()) {
+			const PhysWorld::CollisionEvent& event = gsRecording.events[gsRecording.selectedID];
+			const ShapeTriangle& tri = event.triangle;
+
+			collisionTest.Draw(event.capsule, vec3(0, 0, 1));
+
+
+			const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
+
+			if(/*gsRecording.bShowPen*/ true) {
+				collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
+			}
+
+			if(/*gsRecording.bShowFixed*/ true) {
+				ShapeCapsule fixed = event.capsule;
+				fixed.base += event.fix2;
+				fixed.tip += event.fix2;
+				collisionTest.Draw(fixed, vec3(1, 1, 0));
+
+				collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
+				collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
+				collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
+				collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
+				//vec3 rv = ProjectVec(event.vel, tri.Normal());
+				//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
+			}
+
+			const vec3 color = vec3(1, 1, 1);
+			rdr.PushLine(tri.p[0], tri.p[1], color);
+			rdr.PushLine(tri.p[0], tri.p[2], color);
+			rdr.PushLine(tri.p[1], tri.p[2], color);
+			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
+		}
+	}
+	ImGui::End();
+}
+
+void Window::WindowPhysicsTest()
+{
+	if(ImGui::Begin("Physics")) {
+		ImGui::Checkbox("Freeze", &physicsTest.bFreezeStep);
+
+		if(ImGui::Button("Step")) {
+			UpdatePhysics();
+		}
+		ImGui::SameLine();
+		if(ImGui::Button("Reset")) {
+			testSubject.Reset();
+		}
+
+		ImGui::Checkbox("Subject", &physicsTest.bShowSubject); ImGui::SameLine();
+		ImGui::Checkbox("Fixed", &physicsTest.bShowFixed); ImGui::SameLine();
+		ImGui::Checkbox("Pen", &physicsTest.bShowPen);
+
+
+		ImGui::Text("LastFrameEvents = %d", physicsTest.lastStepEvents.size());
+		if(ImGui::BeginListBox("Events")) {
+			for(int n = 0; n < physicsTest.lastStepEvents.size(); n++) {
+				const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[n];
+
+				const bool isSelected = (physicsTest.iSelectedEvent == n);
+				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
+					physicsTest.iSelectedEvent = n;
+				}
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if(isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndListBox();
+		}
+
+		ImGui::BeginTable("testsubject_postable", 3);
+		ImGui::TableSetupColumn("PosX");
+		ImGui::TableSetupColumn("PosY");
+		ImGui::TableSetupColumn("PosZ");
+		ImGui::TableHeadersRow();
+
+		vec3 pos = testSubject.body->dyn.pos;
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.x);
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.y);
+		ImGui::TableNextColumn();
+		ImGui::Text("%.2f", pos.z);
+
+		ImGui::EndTable();
+
+
+	}
+	ImGui::End();
+
+	if(!physicsTest.bFreezeStep) {
 		UpdatePhysics();
 	}
 
-	foreach_const(it, physics.dynCapsuleBodyList) {
-		ShapeCapsule shape = it->shape;
-		vec3 pos = it->dyn.pos;
-		vec3 vel = it->dyn.vel;
-		shape.base += pos;
-		shape.tip += pos;
+	if(physicsTest.bShowSubject) {
+		Draw(testSubject.body, vec3(1, 0, 1));
+	}
 
-		collisionTest.Draw(shape, vec3(1, 0, 1));
-		collisionTest.DrawVec(vel, shape.base + vec3(0, 0, shape.radius), vec3(1, 0.5, 0.8));
+	if(physicsTest.iSelectedEvent >= 0 && physicsTest.iSelectedEvent < physicsTest.lastStepEvents.size()) {
+		const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[physicsTest.iSelectedEvent];
+		const ShapeTriangle& tri = event.triangle;
+
+		collisionTest.Draw(event.capsule, vec3(0, 0, 1));
+
+
+		const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
+
+		if(physicsTest.bShowPen) {
+			collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
+		}
+
+		if(physicsTest.bShowFixed) {
+			ShapeCapsule fixed = event.capsule;
+			fixed.base += event.fix2;
+			fixed.tip += event.fix2;
+			collisionTest.Draw(fixed, vec3(1, 1, 0));
+
+			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
+			collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
+			collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
+			collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
+			//vec3 rv = ProjectVec(event.vel, tri.Normal());
+			//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
+		}
+
+		const vec3 color = vec3(1, 1, 1);
+		rdr.PushLine(tri.p[0], tri.p[1], color);
+		rdr.PushLine(tri.p[0], tri.p[2], color);
+		rdr.PushLine(tri.p[1], tri.p[2], color);
+		rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
+	}
+}
+
+// WARNING: Threaded call
+void Window::NewFrame(Dbg::GameUID gameUID)
+{
+	{
+		const LockGuard lock(gameStateMutex);
+		eastl::swap(gameStateFront, gameStateBack);
+	}
+
+	gameStateFront->NewFrame();
+
+	if(bGameStateRecording) {
+		static GameState gameState;
+		{
+			const LockGuard lock(gameStateMutex);
+			gameState = *gameStateBack;
+		}
+
+		const LockGuard lock(gsRecording.mutex);
+		eastl::copy(gameState.physics.lastStepEvents.begin(), gameState.physics.lastStepEvents.end(), eastl::back_inserter(gsRecording.events));
 	}
 }
 
@@ -260,6 +533,7 @@ void Window::Update(f64 delta)
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("View")) {
 			ImGui::MenuItem("Collision tests", "", &ui_bCollisionTests);
+			ImGui::MenuItem("Physics tests", "", &ui_bPhysicsTest);
 			ImGui::MenuItem("Map wireframe", "", &ui_bMapWireframe);
 			ImGui::MenuItem("Game states", "", &ui_bGameStates);
 			ImGui::EndMenu();
@@ -298,175 +572,11 @@ void Window::Update(f64 delta)
 	}
 
 	if(ui_bGameStates) {
-		static GameState gameState;
-		{
-			const LockGuard lock(gameStateMutex);
-			gameState = *gameStateBack;
-		}
-
-		DebugPhysicsWorld(gameState.physics, "GameState :: Physics");
-
-		foreach_const(ent, gameState.entityList) {
-			const Dbg::Entity& e = *ent;
-			//rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 45, 210, e.color);
-			//rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
-
-			// this is updated when the player moves
-			const vec3 upperStart = e.pos + vec3(0, 0, 200);
-			const vec3 upperDir = glm::normalize(vec3(cosf(e.rot.upperYaw), sinf(e.rot.upperYaw), sinf(e.rot.upperPitch)));
-			rdr.PushArrow(Pipeline::Unlit, upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
-
-			const vec3 bodyRotStart = e.pos + vec3(0, 0, 150);
-			rdr.PushArrow(Pipeline::Unlit, bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
-			const vec3 dirStart = e.pos + vec3(0, 0, 80);
-			rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
-		}
-
-		const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
-
-
-		if(ImGui::Begin("Entities")) {
-			if(ImGui::BeginTable("EntityList", 8, flags))
-			{
-				ImGui::TableSetupColumn("UID");
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("PosX");
-				ImGui::TableSetupColumn("PosY");
-				ImGui::TableSetupColumn("PosZ");
-				ImGui::TableSetupColumn("RotUpperYaw");
-				ImGui::TableSetupColumn("RotUpperPitch");
-				ImGui::TableSetupColumn("RotBodyYaw");
-				ImGui::TableHeadersRow();
-
-				foreach_const(ent, gameState.entityList) {
-					ImGui::TableNextRow();
-
-					ImGui::TableNextColumn();
-					ImGui::Text("%u", ent->UID);
-					ImGui::TableNextColumn();
-					ImGui::Text("%ls", ent->name.data());
-
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->pos.x);
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->pos.y);
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->pos.z);
-
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->rot.upperYaw);
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->rot.upperPitch);
-					ImGui::TableNextColumn();
-					ImGui::Text("%.2f", ent->rot.bodyYaw);
-				}
-
-				ImGui::EndTable();
-			}
-		}
-		ImGui::End();
+		WindowGameStates();
 	}
 
 	if(ui_bPhysicsTest) {
-		if(ImGui::Begin("Physics")) {
-			ImGui::Checkbox("Freeze", &physicsTest.bFreezeStep);
-
-			if(ImGui::Button("Step")) {
-				UpdatePhysics();
-			}
-			ImGui::SameLine();
-			if(ImGui::Button("Reset")) {
-				testSubject.Reset();
-			}
-
-			ImGui::Checkbox("Subject", &physicsTest.bShowSubject); ImGui::SameLine();
-			ImGui::Checkbox("Fixed", &physicsTest.bShowFixed); ImGui::SameLine();
-			ImGui::Checkbox("Pen", &physicsTest.bShowPen);
-
-			#ifdef CONF_DEBUG
-			ImGui::Text("LastFrameEvents = %d", physicsTest.lastStepEvents.size());
-			if(ImGui::BeginListBox("Events")) {
-				for(int n = 0; n < physicsTest.lastStepEvents.size(); n++) {
-					const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[n];
-
-					const bool isSelected = (physicsTest.iSelectedEvent == n);
-					if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
-						physicsTest.iSelectedEvent = n;
-					}
-
-					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-					if(isSelected) {
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-				ImGui::EndListBox();
-			}
-			#endif
-
-			ImGui::BeginTable("testsubject_postable", 3);
-			ImGui::TableSetupColumn("PosX");
-			ImGui::TableSetupColumn("PosY");
-			ImGui::TableSetupColumn("PosZ");
-			ImGui::TableHeadersRow();
-
-			vec3 pos = testSubject.body->dyn.pos;
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn();
-			ImGui::Text("%.2f", pos.x);
-			ImGui::TableNextColumn();
-			ImGui::Text("%.2f", pos.y);
-			ImGui::TableNextColumn();
-			ImGui::Text("%.2f", pos.z);
-
-			ImGui::EndTable();
-
-
-		}
-		ImGui::End();
-
-		if(!physicsTest.bFreezeStep) {
-			UpdatePhysics();
-		}
-
-		if(physicsTest.bShowSubject) {
-			Draw(testSubject.body, vec3(1, 0, 1));
-		}
-
-	#ifdef CONF_DEBUG
-		if(physicsTest.iSelectedEvent >= 0 && physicsTest.iSelectedEvent < physicsTest.lastStepEvents.size()) {
-			const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[physicsTest.iSelectedEvent];
-			const ShapeTriangle& tri = event.triangle;
-
-			collisionTest.Draw(event.capsule, vec3(0, 0, 1));
-
-
-			const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
-
-			if(physicsTest.bShowPen) {
-				collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
-			}
-
-			if(physicsTest.bShowFixed) {
-				ShapeCapsule fixed = event.capsule;
-				fixed.base += event.fix2;
-				fixed.tip += event.fix2;
-				collisionTest.Draw(fixed, vec3(1, 1, 0));
-
-				collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
-				collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
-				collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
-				collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
-				//vec3 rv = ProjectVec(event.vel, tri.Normal());
-				//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
-			}
-
-			const vec3 color = vec3(1, 1, 1);
-			rdr.PushLine(tri.p[0], tri.p[1], color);
-			rdr.PushLine(tri.p[0], tri.p[2], color);
-			rdr.PushLine(tri.p[1], tri.p[2], color);
-			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
-		}
-		#endif
+		WindowPhysicsTest();
 	}
 }
 
@@ -638,12 +748,7 @@ GameUID PushNewGame(const FixedStr32& mapName)
 
 void PushNewFrame(GameUID gameUID)
 {
-	{
-		const LockGuard lock(g_pWindow->gameStateMutex);
-		eastl::swap(g_pWindow->gameStateFront, g_pWindow->gameStateBack);
-	}
-
-	g_pWindow->gameStateFront->NewFrame();
+	g_pWindow->NewFrame(gameUID);
 }
 
 void PushEntity(GameUID gameUID, const Entity& entity)

@@ -62,26 +62,6 @@ struct Replication
 		i32 faction;
 	};
 
-	struct ActorJukebox: Actor<ActorType::JUKEBOX>
-	{
-		struct Track
-		{
-			SongID songID;
-			WideString requesterNick;
-		};
-
-		i32 localID;
-
-		i32 playPosition;
-		Time playStartTime; // identifier
-		Track currentSong;
-		eastl::fixed_vector<Track,JUKEBOX_MAX_TRACKS,false> tracks;
-
-		ActorJukebox() {
-			actorUID = ActorUID::INVALID;
-		}
-	};
-
 	struct Frame
 	{
 
@@ -93,8 +73,6 @@ struct Replication
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
-
-		ActorJukebox jukebox;
 
 		void Clear();
 	};
@@ -133,7 +111,6 @@ struct Replication
 	void FrameEnd();
 	void FramePushPlayerActor(const ActorPlayer& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
-	void FramePushJukebox(const ActorJukebox& actor);
 
 	void EventPlayerConnect(i32 clientID);
 	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
@@ -173,10 +150,8 @@ private:
 
 	void SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor);
 	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
-	void SendJukeboxSpawn(i32 clientID, const ActorJukebox& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
-	void SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount);
 
 	void SendMasterSkillSlots(i32 clientID, const ActorPlayer& actor);
 

@@ -349,8 +349,8 @@ PhysWorld::BodyHandle PhysWorld::CreateBody(f32 radius, f32 height, vec3 pos)
 	body.shape.tip = vec3(0, 0, height);
 	body.shape.radius = radius;
 
-	body.dyn = {};
-	body.dyn.pos = pos;
+	body.pos = pos;
+	body.vel = vec3(0);
 
 	dynCapsuleBodyList.push_back(body);
 	return --dynCapsuleBodyList.end();
@@ -384,8 +384,9 @@ void PhysWorld::Step()
 
 	ASSERT(dynCapsuleBodyList.size() == dynCapsuleBodyList.size());
 
-#ifdef CONF_DEBUG
+#if 1
 	lastStepEvents.clear();
+	lastStepPositions.clear();
 	step++;
 #endif
 
@@ -394,7 +395,7 @@ void PhysWorld::Step()
 	shapeCapsuleList.clear();
 	foreach_const(b, dynCapsuleBodyList) {
 		shapeCapsuleList.push_back(b->shape);
-		bodyList.push_back(b->dyn);
+		bodyList.push_back({ b->pos, b->vel });
 		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.y);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.z);
@@ -421,7 +422,7 @@ void PhysWorld::Step()
 
 			for(int i = 0; i < dynCount; i++) {
 				ShapeCapsule& s = movedShapeCapsuleList[i];
-				const PhysBody& b = bodyList[i];
+				const MoveComp& b = bodyList[i];
 				s.base += b.pos;
 				s.tip += b.pos;
 			}
@@ -529,7 +530,8 @@ void PhysWorld::Step()
 	int i = 0;
 	foreach(b, dynCapsuleBodyList) {
 		b->shape = shapeCapsuleList[i];
-		b->dyn = bodyList[i];
+		b->pos = bodyList[i].pos;
+		b->vel = bodyList[i].vel;
 		DBG_ASSERT_NONNAN(bodyList[i].pos.x);
 		DBG_ASSERT_NONNAN(bodyList[i].pos.y);
 		DBG_ASSERT_NONNAN(bodyList[i].pos.z);

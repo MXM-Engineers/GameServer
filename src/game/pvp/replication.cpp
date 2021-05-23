@@ -83,16 +83,6 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void Replication::FramePushJukebox(const Replication::ActorJukebox& actor)
-{
-	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
-
-	frameCur->jukebox = actor;
-
-	frameCur->actorUIDSet.insert(actor.actorUID);
-	frameCur->actorType.emplace(actor.actorUID, actor.Type());
-}
-
 void Replication::EventPlayerConnect(i32 clientID)
 {
 	playerState[clientID] = PlayerState::CONNECTED;
@@ -1578,6 +1568,8 @@ void Replication::PlayerRegisterMasterActor(i32 clientID, ActorUID masterActorUI
 
 void Replication::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID)
 {
+	DBG_ASSERT(actorUID != ActorUID::INVALID);
+
 	auto& map = playerLocalInfo[clientID].localActorIDMap;
 	ASSERT(map.find(actorUID) == map.end());
 	map.emplace(actorUID, localActorID);
@@ -1679,11 +1671,6 @@ void Replication::UpdatePlayersLocalState()
 					ASSERT(pm != frameCur->npcMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
 					SendActorNpcSpawn(clientID, *pm->second);
-				} break;
-
-				case ActorType::JUKEBOX: {
-					ASSERT(actorUID == frameCur->jukebox.actorUID);
-					SendJukeboxSpawn(clientID, frameCur->jukebox);
 				} break;
 
 				default: {
@@ -2356,74 +2343,6 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 	}
 }
 
-void Replication::SendJukeboxSpawn(i32 clientID, const Replication::ActorJukebox& actor)
-{
-	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
-	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
-	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
-
-	const LocalActorID localActorID = found->second;
-
-	LOG("[client%03d] Replication :: SendJukeboxSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
-
-	// SN_GameCreateActor
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(1); // nType
-		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(actor.localID); // dwLocalID
-
-		packet.Write(actor.pos); // p3nPos
-		packet.Write(actor.dir); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<ActionStateID>(ActionStateID::INVALID); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(-1); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
-		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
-		packet.Write<i32>(0); // seed
-
-		packet.Write<u16>(0); // maxStats_count
-		packet.Write<u16>(0); // curStats_count
-
-		packet.Write<u8>(1); // isInSight
-		packet.Write<u8>(0); // isDead
-		packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
-
-		packet.Write<u16>(0); // meshChangeActionHistory_count
-
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameCreateActor>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
-	}
-
-	/*
-	// SN_JukeboxHotTrackList
-	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(0); // trackList_count
-
-		LOG("[client%03d] Server :: SN_JukeboxHotTrackList ::", clientID);
-		SendPacketData(clientID, Sv::SN_JukeboxHotTrackList::NET_ID, packet.size, packet.data);
-	}
-	*/
-
-	SongID songID = actor.currentSong.songID;
-	if(songID == SongID::INVALID) {
-		songID = SongID::Default; // send lobby song by default
-	}
-
-	SendJukeboxPlay(clientID, songID, actor.currentSong.requesterNick.data(), actor.playPosition);
-	SendJukeboxQueue(clientID, actor.tracks.data(), actor.tracks.size());
-}
-
 void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 {
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
@@ -2448,21 +2367,6 @@ void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requ
 
 	LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%ls'", clientID, (i32)songID, requesterNick);
 	SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
-}
-
-void Replication::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount)
-{
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<u16>(trackCount); // trackList_count
-	for(int i = 0; i < trackCount; i++) {
-		packet.Write<SongID>(tracks[i].songID);
-		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
-	}
-
-	LOG("[client%03d] Server :: SN_JukeboxEnqueuedList ::", clientID);
-	SendPacketData(clientID, Sv::SN_JukeboxEnqueuedList::NET_ID, packet.size, packet.data);
 }
 
 void Replication::SendMasterSkillSlots(i32 clientID, const Replication::ActorPlayer& actor)
@@ -2567,34 +2471,3 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }
-
-// TODO: remove
-/*
-bool Replication::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
-{
-	const f32 posEpsilon = 0.1f;
-	if(fabs(pos.x - other.pos.x) > posEpsilon) return false;
-	if(fabs(pos.y - other.pos.y) > posEpsilon) return false;
-	if(fabs(pos.z - other.pos.z) > posEpsilon) return false;
-	if(fabs(dir.x - other.dir.x) > posEpsilon) return false;
-	if(fabs(dir.y - other.dir.y) > posEpsilon) return false;
-	if(fabs(dir.z - other.dir.z) > posEpsilon) return false;
-	if(fabs(eye.x - other.eye.x) > posEpsilon) return false;
-	if(fabs(eye.y - other.eye.y) > posEpsilon) return false;
-	if(fabs(eye.z - other.eye.z) > posEpsilon) return false;
-	const f32 rotEpsilon = 0.01f;
-	if(fabs(rotate - other.rotate) > rotEpsilon) return false;
-	const f32 speedEpsilon = 0.1f;
-	if(fabs(speed - other.speed) > speedEpsilon) return false;
-	return true;
-}
-
-bool Replication::Frame::ActionState::HasNotChanged(const Replication::Frame::ActionState& other) const
-{
-	if(other.actionState == ActionStateID::INVALID) return true;
-	if(actionState != other.actionState) return false;
-	if(actionParam1 != other.actionParam1) return false;
-	if(actionParam2 != other.actionParam2) return false;
-	return true;
-}
-*/

@@ -99,8 +99,8 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			body->dyn.pos = vec3(5469, 3945, 1000);
-			//body->dyn.pos = vec3(5820, 3795, 1000);
+			body->pos = vec3(5469, 3945, 1000);
+			//body->pos = vec3(5820, 3795, 1000);
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -124,7 +124,7 @@ struct Window
 	inline void Draw(const PhysWorld::BodyHandle& body, vec3 color)
 	{
 		ShapeCapsule shape = body->shape;
-		vec3 pos = body->dyn.pos;
+		vec3 pos = body->pos;
 		shape.base += pos;
 		shape.tip += pos;
 
@@ -202,8 +202,8 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 
 		int uid = 0;
 		foreach_const(it, physics.dynCapsuleBodyList) {
-			vec3 pos = it->dyn.pos;
-			vec3 vel = it->dyn.vel;
+			vec3 pos = it->pos;
+			vec3 vel = it->vel;
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
 			ImGui::Text("%d", uid);
@@ -226,8 +226,8 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 
 		foreach_const(it, physics.dynCapsuleBodyList) {
 			ShapeCapsule shape = it->shape;
-			vec3 pos = it->dyn.pos;
-			vec3 vel = it->dyn.vel;
+			vec3 pos = it->pos;
+			vec3 vel = it->vel;
 			shape.base += pos;
 			shape.tip += pos;
 
@@ -445,7 +445,7 @@ void Window::WindowPhysicsTest()
 		ImGui::TableSetupColumn("PosZ");
 		ImGui::TableHeadersRow();
 
-		vec3 pos = testSubject.body->dyn.pos;
+		vec3 pos = testSubject.body->pos;
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 		ImGui::Text("%.2f", pos.x);
@@ -606,7 +606,7 @@ void Window::UpdatePhysics()
 		dir = glm::normalize(dir);
 	}
 
-	testSubject.body->dyn.vel = dir * speed;
+	testSubject.body->vel = dir * speed;
 
 	physicsTest.Step();
 }

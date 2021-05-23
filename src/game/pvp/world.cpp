@@ -16,8 +16,8 @@ void World::Update(Time localTime_)
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
-		p.body->dyn.pos = p.pos;
-		p.body->dyn.vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
+		p.body->pos = p.pos;
+		p.body->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
 	}
 
 	physics.Step();
@@ -26,8 +26,8 @@ void World::Update(Time localTime_)
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
 
-		p.pos = p.body->dyn.pos;
-		vec3 vel = p.body->dyn.vel;
+		p.pos = p.body->pos;
+		vec3 vel = p.body->vel;
 		if(LengthSq(vel) > 0.0001f) {
 			p.dir = glm::normalize(vel);
 		}

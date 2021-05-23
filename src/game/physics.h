@@ -106,6 +106,12 @@ inline f32 SignedEpsilon(f32 v)
 	return v > 0.0f ? PHYS_EPSILON : -PHYS_EPSILON;
 }
 
+inline vec3 NormalizeSafe(vec3 v)
+{
+	if(LengthSq(v) > 0.001f) return glm::normalize(v);
+	return vec3(1, 0, 0);
+}
+
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeCapsule& A, const ShapeCapsule& B);
@@ -118,18 +124,17 @@ struct ShapeMesh
 	eastl::vector<ShapeTriangle> triangleList;
 };
 
-struct PhysBody
-{
-	vec3 pos;
-	vec3 vel;
-};
-
 struct PhysWorld
 {
-	struct DynBodyCapsule
+	struct MoveComp
+	{
+		vec3 pos;
+		vec3 vel;
+	};
+
+	struct DynBodyCapsule: MoveComp
 	{
 		ShapeCapsule shape;
-		PhysBody dyn;
 	};
 
 	typedef ListItT<DynBodyCapsule> BodyHandle;
@@ -146,7 +151,7 @@ struct PhysWorld
 		f32 fixLenSq;
 	};
 
-	eastl::fixed_vector<PhysBody, 4096, false> bodyList;
+	eastl::fixed_vector<MoveComp, 4096, false> bodyList;
 	eastl::fixed_vector<ShapeCapsule, 4096, false> shapeCapsuleList;
 	eastl::fixed_vector<ShapeCapsule, 4096, false> movedShapeCapsuleList;
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;

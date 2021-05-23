@@ -174,7 +174,19 @@ struct PhysWorld
 		PhysPenetrationVector pen;
 	};
 
+	struct PositionRec
+	{
+		u64 step;
+		u16 capsuleID;
+		u8 ssi;
+		u8 cri;
+		ShapeCapsule capsule;
+		vec3 pos;
+		vec3 vel;
+	};
+
 	eastl::fixed_vector<CollisionEvent, 8192, false> lastStepEvents;
+	eastl::fixed_vector<PositionRec, 8192, false> lastStepPositions;
 #endif
 
 	void PushStaticMeshes(const ShapeMesh* meshList, const int count);

@@ -460,7 +460,7 @@ void PhysWorld::Step()
 						colList.push_back(col);
 						collided = true;
 
-						#ifdef CONF_DEBUG
+						#if 1
 						CollisionEvent event;
 						event.step = step;
 						event.capsuleID = i;
@@ -481,6 +481,7 @@ void PhysWorld::Step()
 					}
 				}
 			}
+
 
 			for(int i = 0; i < dynCount; i++) {
 				const ShapeCapsule& s = shapeCapsuleList[i];
@@ -506,6 +507,18 @@ void PhysWorld::Step()
 					DBG_ASSERT_NONNAN(body.vel.y);
 					DBG_ASSERT_NONNAN(body.vel.z);
 				}
+
+				#if 1
+				PositionRec rec;
+				rec.step = step;
+				rec.capsuleID = i;
+				rec.ssi = ssi;
+				rec.cri = cri;
+				rec.capsule = s;
+				rec.pos = body.pos;
+				rec.vel = body.vel;
+				lastStepPositions.push_back(rec);
+				#endif
 			}
 
 			if(!collided) break;

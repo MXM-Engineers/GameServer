@@ -71,7 +71,7 @@ struct Window
 		i32 filterStep = 1;
 		i32 filterCapsuleID = 0;
 		i32 selectedID = 0;
-		eastl::fixed_vector<PhysWorld::CollisionEvent, 8192, false> events;
+		eastl::fixed_vector<PhysWorld::CollisionEvent, 8192, true> events;
 	};
 	Recording gsRecording;
 
@@ -333,6 +333,7 @@ void Window::WindowGameStates()
 			gsRecording.filterStep = clamp(gsRecording.filterStep, minStep, maxStep);
 		}
 		ImGui::SliderInt("Filter step", &gsRecording.filterStep, minStep, maxStep);
+		ImGui::InputInt("##Filter step", &gsRecording.filterStep);
 
 		bool wasSelected = false;
 		i32 lastFilteredID = -1;
@@ -340,8 +341,8 @@ void Window::WindowGameStates()
 		if(ImGui::BeginListBox("Events")) {
 			for(int n = 0; n < gsRecording.events.size(); n++) {
 				const PhysWorld::CollisionEvent& event = gsRecording.events[n];
-				if(event.capsuleID != gsRecording.filterCapsuleID) continue;
 				if(event.step != gsRecording.filterStep) continue;
+				if(event.capsuleID != gsRecording.filterCapsuleID) continue;
 
 				const bool isSelected = (gsRecording.selectedID == n);
 
@@ -362,7 +363,7 @@ void Window::WindowGameStates()
 			ImGui::EndListBox();
 		}
 
-		// select id withing filtered events
+		// select id within filtered events
 		if(!wasSelected && lastFilteredID != -1) {
 			gsRecording.selectedID = lastFilteredID;
 		}
@@ -372,8 +373,6 @@ void Window::WindowGameStates()
 			const ShapeTriangle& tri = event.triangle;
 
 			collisionTest.Draw(event.capsule, vec3(0, 0, 1));
-
-
 			const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
 
 			if(/*gsRecording.bShowPen*/ true) {

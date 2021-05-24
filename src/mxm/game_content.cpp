@@ -856,36 +856,36 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 {
 	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
 	{
-		return SkillType::SKILL_COMBO;
+		return SkillType::SKILL_TYPE_COMBO;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
 	{
-		return SkillType::SKILL_NORMAL;
+		return SkillType::SKILL_TYPE_NORMAL;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
 	{
-		return SkillType::SKILL_PASSIVE;
+		return SkillType::SKILL_TYPE_PASSIVE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
 	{
-		return SkillType::SKILL_SHIRK;
+		return SkillType::SKILL_TYPE_SHIRK;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
 	{
-		return SkillType::SKILL_STANCE;
+		return SkillType::SKILL_TYPE_STANCE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
 	{
-		return SkillType::SKILL_SUMMON;
+		return SkillType::SKILL_TYPE_SUMMON;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
 	{
-		return SkillType::SKILL_TOGGLE;
+		return SkillType::SKILL_TYPE_TOGGLE;
 	}
 	else
 	{
 		LOG("Unknown SkillType: %s", s);
-		return SkillType::SKILL_INVALID;
+		return SkillType::SKILL_TYPE_INVALID;
 	}
 }
 

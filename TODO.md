@@ -17,8 +17,9 @@
 * Collision groups (only collide with AI mobs not players)
 * Fix replication sending players moving while they don't (like when stuck in a corner)
 * Make physics match the client more (for example we can go up the ramp from the side)
-    - Also going up the ramp the usual way still is finnicky
-    - So the clone body follows the main body, but the main body drifts between player position updates so it is not accurate -> how to fix?
+    - ✅ Make the phys body move based on input.moveTo
+    - ⚠️ Fix 1s delay
+    - ⚠️ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
 * Try to make rolling work
 
 # Test

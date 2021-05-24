@@ -455,6 +455,7 @@ template<size_t CAPACITY>
 using FixedStr = eastl::fixed_string<char,CAPACITY,false>;
 
 constexpr i32 UPDATE_TICK_RATE = 60;
+constexpr f64 UPDATE_RATE = 1.0/UPDATE_TICK_RATE;
 
 struct float2
 {

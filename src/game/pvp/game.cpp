@@ -54,18 +54,7 @@ void Game::Update(Time localTime_)
 			ASSERT(main);
 			ASSERT(clone);
 
-			//clone->pos = main->pos;
-			/*const f32 lensq = LengthSq(main->pos - clone->pos);
-			if(lensq > 0.001f) {
-				clone->dir = glm::normalize(main->pos - clone->pos);
-				clone->speed = 626.200012f;
-			}
-			else {
-				clone->dir = vec3(1, 0, 0);
-				clone->speed = 0;
-			}*/
-
-			clone->input.rot = main->input.rot;
+			clone->input = main->input;
 		}
 	}
 
@@ -89,11 +78,11 @@ void Game::Update(Time localTime_)
 		f32 a = legoAngle * PI/2;
 		lego->input.rot.upperYaw = a;
 		lego->input.rot.bodyYaw = a;
-		lego->input.moveDir = vec3(legoDir, 0);
+		lego->input.moveTo = lego->Current().body->pos + vec3(legoDir * 1000.f, 0);
 		lego->input.speed = 626;
 	}
 	else { // stop
-		lego->input.moveDir = vec3(0);
+		lego->input.moveTo = vec3(0);
 		lego->input.speed = 0;
 	}
 
@@ -108,7 +97,7 @@ void Game::Update(Time localTime_)
 		e.name = actor->name;
 		e.pos = actor->Current().body->pos;
 		e.rot = actor->input.rot;
-		e.moveDir = actor->input.moveDir;
+		e.moveDir = NormalizeSafe(actor->input.moveTo - actor->Current().body->pos);
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -225,7 +214,7 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	}
 
 	// TODO: check for movement hacking
-	actor->input.moveDir = NormalizeSafe(pos - actor->Current().body->pos);
+	actor->input.moveTo = pos;
 	actor->input.rot = rot;
 	actor->input.speed = speed;
 }

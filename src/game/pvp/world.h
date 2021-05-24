@@ -21,7 +21,7 @@ struct World
 	{
 		struct Input
 		{
-			vec3 moveDir;
+			vec3 moveTo;
 			f32 speed;
 			RotationHumanoid rot;
 

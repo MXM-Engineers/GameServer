@@ -15,27 +15,28 @@ void World::Update(Time localTime_)
 
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
-		//ActorPlayer& p = *it;
-		//p.body->pos = p.pos;
-		//p.body->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
+		ActorPlayer& p = *it;
+
+		vec3 delta = p.input.moveTo - p.Current().body->pos;
+		delta.z = 0;
+		f32 deltaLen = glm::length(delta);
+		if(deltaLen > 1.0f) {
+			vec3 dir = NormalizeSafe(delta);
+
+			// we're close enough that we might miss the point by going full speed in a step, slow down
+			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
+				p.Current().body->vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
+			}
+			else {
+				p.Current().body->vel = vec3(dir.x, dir.y, 0) * p.input.speed;
+			}
+		}
+		else {
+			p.Current().body->vel = vec3(0);
+		}
 	}
 
 	physics.Step();
-
-	// players
-	foreach(it, actorPlayerList) {
-		ActorPlayer& p = *it;
-
-		/*p.pos = p.body->pos;
-		vec3 vel = p.body->vel;
-		if(LengthSq(vel) > 0.0001f) {
-			p.dir = glm::normalize(vel);
-		}
-		else {
-			p.dir = vec3(0, 0, 0);
-		}
-		p.speed = glm::length(vel);*/
-	}
 
 	Replicate();
 }
@@ -191,6 +192,7 @@ bool World::DestroyPlayerActor(ActorUID actorUID)
 	if(actorIt == actorPlayerMap.end()) return false;
 
 	foreach_const(chit, actorIt->second->characters) {
+		physics.DeleteBody((*chit)->body);
 		actorPlayerCharacterMap.erase((*chit)->UID);
 		actorPlayerCharacterList.erase(*chit);
 	}

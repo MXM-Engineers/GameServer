@@ -326,7 +326,6 @@ bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVe
 	return false;
 }
 
-const f64 UPDATE_RATE = 1.0/UPDATE_TICK_RATE;
 const f32 GRAVITY = 1800;
 const int SUB_STEP_COUNT = 4;
 const int COLLISION_RESOLUTION_STEP_COUNT = 4;

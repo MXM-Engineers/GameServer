@@ -363,3 +363,11 @@ inline f32 WorldPitchToMxmPitch(f32 a)
 {
 	return a; // TODO: reverse this
 }
+
+struct PlayerCharaID
+{
+	enum Enum: u8 {
+		Main = 0,
+		Sub = 1,
+	};
+};

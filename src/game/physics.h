@@ -109,7 +109,7 @@ inline f32 SignedEpsilon(f32 v)
 inline vec3 NormalizeSafe(vec3 v)
 {
 	if(LengthSq(v) > 0.001f) return glm::normalize(v);
-	return vec3(1, 0, 0);
+	return vec3(0);
 }
 
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);

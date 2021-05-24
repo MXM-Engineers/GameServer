@@ -17,64 +17,89 @@ struct Replication
 	enum class ActorType: i32
 	{
 		INVALID = 0,
-		PLAYER = 1,
-		NPC = 2,
-		JUKEBOX = 3,
+		Player,
+		PlayerCharacter,
+		Npc,
 	};
 
 	template<ActorType TYPE_>
 	struct Actor
 	{
 		ActorUID actorUID;
-		CreatureIndex docID;
-		vec3 pos;
-		vec3 dir;
 
 		inline ActorType Type() const { return TYPE_; }
 	};
 
-	struct ActorPlayer: Actor<ActorType::PLAYER>
+	struct ActorPlayer: Actor<ActorType::Player>
 	{
 		i32 clientID;
+		WideString name;
+		WideString guildTag;
+
+		eastl::array<ActorUID, 2> characters;
+		PlayerCharaID::Enum currentCharaID;
+	};
+
+	struct ActorPlayerCharacter: Actor<ActorType::PlayerCharacter>
+	{
+		i32 clientID; // useful to copy it here
 		ActorUID parentActorUID;
-		RotationHumanoid rotation;
-		f32 speed;
 		ClassType classType;
 		SkinIndex skinIndex;
 
-		WideString name;
-		WideString guildTag;
+		vec3 pos;
+		vec3 dir;
+		f32 speed;
+		RotationHumanoid rotation;
+
 		i32 weaponID;
 		i32 additionnalOverHeatGauge;
 		i32 additionnalOverHeatGaugeRatio;
-		u8 playerStateInTown;
-		eastl::fixed_vector<u8,16> matchingGameModes;
 
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
 	};
 
-	struct ActorNpc: Actor<ActorType::NPC>
+	struct ActorNpc: Actor<ActorType::Npc>
 	{
+		CreatureIndex docID;
 		i32 type;
 		i32 localID;
 		i32 faction;
+
+		vec3 pos;
+		vec3 dir;
 	};
 
 	struct Frame
 	{
-
 		// TODO: replace fixed_map with fixed_hash_map
 		eastl::fixed_list<ActorPlayer,2048,true> playerList;
+		eastl::fixed_list<ActorPlayerCharacter,2048,true> playerCharaList;
 		eastl::fixed_list<ActorNpc,2048,true> npcList;
 		eastl::fixed_map<ActorUID,decltype(playerList)::iterator,2048,true> playerMap;
+		eastl::fixed_map<ActorUID,decltype(playerCharaList)::iterator,2048,true> playerCharaMap;
 		eastl::fixed_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
 
 		void Clear();
+
+		inline ActorPlayer* FindPlayer(ActorUID actorUID)
+		{
+			auto found = playerMap.find(actorUID);
+			if(found == playerMap.end()) return nullptr;
+			return &(*found->second);
+		}
+
+		inline ActorPlayerCharacter* FindPlayerChara(ActorUID actorUID)
+		{
+			auto found = playerCharaMap.find(actorUID);
+			if(found == playerCharaMap.end()) return nullptr;
+			return &(*found->second);
+		}
 	};
 
 	enum class PlayerState: u8 {
@@ -110,6 +135,7 @@ struct Replication
 
 	void FrameEnd();
 	void FramePushPlayerActor(const ActorPlayer& actor);
+	void FramePushPlayerCharacterActor(const ActorPlayerCharacter& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
 	void EventPlayerConnect(i32 clientID);
@@ -148,12 +174,12 @@ private:
 	void UpdatePlayersLocalState();
 	void FrameDifference();
 
-	void SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor);
+	void SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerCharacter& actor, const ActorPlayer& parent);
 	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
 
-	void SendMasterSkillSlots(i32 clientID, const ActorPlayer& actor);
+	void SendMasterSkillSlots(i32 clientID, const ActorPlayerCharacter& actor);
 
 	void SendInitialFrame(i32 clientID);
 

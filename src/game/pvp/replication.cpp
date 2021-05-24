@@ -12,9 +12,13 @@
 void Replication::Frame::Clear()
 {
 	playerList.clear();
+	playerCharaList.clear();
 	npcList.clear();
+
 	playerMap.clear();
+	playerCharaMap.clear();
 	npcMap.clear();
+
 	actorUIDSet.clear();
 	actorType.clear();
 }
@@ -68,6 +72,23 @@ void Replication::FramePushPlayerActor(const ActorPlayer& actor)
 
 	frameCur->playerList.emplace_back(actor);
 	frameCur->playerMap.emplace(actor.actorUID, --frameCur->playerList.end());
+
+	// ActorPlayers are not replicated as such, only their characters are
+	// So we don't push their actorUID to the actorUIDSet
+	// TODO: should they be called "Actor" then?
+
+	//frameCur->actorUIDSet.insert(actor.actorUID);
+	//frameCur->actorType.emplace(actor.actorUID, actor.Type());
+}
+
+void Replication::FramePushPlayerCharacterActor(const Replication::ActorPlayerCharacter& actor)
+{
+	ASSERT(frameCur->playerCharaMap.find(actor.actorUID) == frameCur->playerCharaMap.end());
+	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
+
+	frameCur->playerCharaList.emplace_back(actor);
+	frameCur->playerCharaMap.emplace(actor.actorUID, --frameCur->playerCharaList.end());
+
 	frameCur->actorUIDSet.insert(actor.actorUID);
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
@@ -1621,13 +1642,13 @@ void Replication::UpdatePlayersLocalState()
 			auto type = framePrev->actorType.find(actorUID);
 			ASSERT(type != framePrev->actorType.end());
 			switch(type->second) {
-				case ActorType::PLAYER: {
+				case ActorType::PlayerCharacter: {
 					auto pm = framePrev->playerMap.find(actorUID);
 					ASSERT(pm != framePrev->playerMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
 				} break;
 
-				case ActorType::NPC: {
+				case ActorType::Npc: {
 					auto pm = framePrev->npcMap.find(actorUID);
 					ASSERT(pm != framePrev->npcMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
@@ -1659,14 +1680,15 @@ void Replication::UpdatePlayersLocalState()
 			ASSERT(type != frameCur->actorType.end());
 
 			switch(type->second) {
-				case ActorType::PLAYER: {
-					const auto pm = frameCur->playerMap.find(actorUID);
-					ASSERT(pm != frameCur->playerMap.end());
-					ASSERT(pm->second->actorUID == actorUID);
-					SendActorPlayerSpawn(clientID, *pm->second);
+				case ActorType::PlayerCharacter: {
+					const ActorPlayerCharacter* chara = frameCur->FindPlayerChara(actorUID);
+					ASSERT(chara);
+					const ActorPlayer* parent = frameCur->FindPlayer(chara->parentActorUID);
+					ASSERT(parent);
+					SendActorPlayerCharacterSpawn(clientID, *chara, *parent);
 				} break;
 
-				case ActorType::NPC: {
+				case ActorType::Npc: {
 					const auto pm = frameCur->npcMap.find(actorUID);
 					ASSERT(pm != frameCur->npcMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
@@ -1723,11 +1745,11 @@ void Replication::FrameDifference()
 	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
 
 	// find if the position has changed since last frame
-	foreach_const(it, frameCur->playerList) {
-		const ActorPlayer& cur = *it;
-		auto found = framePrev->playerMap.find(cur.actorUID);
-		if(found == framePrev->playerMap.end()) continue; // previous not found, can't diff
-		const ActorPlayer& prev = *found->second;
+	foreach_const(it, frameCur->playerCharaList) {
+		const ActorPlayerCharacter& cur = *it;
+		auto found = framePrev->playerCharaMap.find(cur.actorUID);
+		if(found == framePrev->playerCharaMap.end()) continue; // previous not found, can't diff
+		const ActorPlayerCharacter& prev = *found->second;
 
 		bool rotationUpdated = false;
 
@@ -1804,154 +1826,20 @@ void Replication::FrameDifference()
 			SendPacket(clientID, sync);
 		}
 	}
-
-
-	// TODO: restore
-	/*
-	foreach(it, frameCur->playerList) {
-		const ActorUID actorUID = *it;
-		auto type = frameCur->actorType.find(actorUID);
-		ASSERT(type != frameCur->actorType.end());
-
-		switch(type->second) {
-			case ActorType::PLAYER: {
-				// was present in last frame
-				if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
-					// transform
-					{
-						auto pf = framePrev->transformMap.find(actorUID);
-						ASSERT(pf != framePrev->transformMap.end());
-						const Frame::Transform& prev = pf->second;
-
-						auto cf = frameCur->transformMap.find(actorUID);
-						ASSERT(cf != frameCur->transformMap.end());
-						const Frame::Transform& cur = cf->second;
-
-						if(!prev.HasNotChanged(cur)) {
-							tfToSendList.emplace_back(actorUID, cur);
-						}
-					}
-				}
-
-				// action state
-				{
-					auto cf = frameCur->actionStateMap.find(actorUID);
-					ASSERT(cf != frameCur->actionStateMap.end());
-					const Frame::ActionState& cur = cf->second;
-
-					if(cur.actionState != ActionStateID::INVALID) {
-						atToSendList.emplace_back(actorUID, cur);
-					}
-				}
-			} break;
-
-			case ActorType::NPC: {
-				// nothing for now, NPCs don't change
-			} break;
-
-			case ActorType::JUKEBOX: {
-				// was present in last frame
-				if(framePrev->actorUIDSet.find(actorUID) != framePrev->actorUIDSet.end()) {
-					const ActorJukebox& prev = framePrev->jukebox;
-					const ActorJukebox& cur = frameCur->jukebox;
-
-					ASSERT(prev.actorUID == cur.actorUID); // actually the same jukebox
-
-					if(cur.currentSong.songID != SongID::INVALID) {
-						if(prev.currentSong.songID != cur.currentSong.songID || prev.playStartTime != cur.playStartTime) {
-
-							for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-								if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-								SendJukeboxPlay(clientID, cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
-							}
-						}
-					}
-
-					bool doSendTracks = false;
-					if(prev.tracks.size() == cur.tracks.size()) {
-						for(int t = 0; t < cur.tracks.size(); t++) {
-							if(prev.tracks[t].songID != cur.tracks[t].songID ||
-							   prev.tracks[t].requesterNick.compare(cur.tracks[t].requesterNick)) {
-								doSendTracks = true;
-								break;
-							}
-						}
-					}
-					else {
-						doSendTracks = true;
-					}
-
-					if(doSendTracks) {
-						for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-							if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-							SendJukeboxQueue(clientID, cur.tracks.data(), cur.tracks.size());
-						}
-					}
-				}
-			} break;
-
-			default: ASSERT_MSG(0, "case not handled"); break;
-		}
-	}
-
-	// send updates
-	foreach(it, tfToSendList) {
-		const auto& e = *it;
-		const Frame::Transform& tf = e.second;
-
-		Sv::SN_GamePlayerSyncByInt sync;
-		sync.p3nPos = f2v(tf.pos);
-		sync.p3nDir = f2v(tf.dir);
-		sync.p3nEye = f2v(tf.eye);
-		sync.nRotate = tf.rotate;
-		sync.nSpeed = tf.speed;
-		sync.nState = -1;
-		sync.nActionIDX = -1;
-
-		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-			if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-			sync.characterID = GetLocalActorID(clientID, e.first);
-			LOG("[client%03d] Server :: SN_GamePlayerSyncByInt :: actorUID=%u", clientID, (u32)e.first);
-			SendPacket(clientID, sync);
-		}
-	}
-
-	foreach(it, atToSendList) {
-		const auto& e = *it;
-		const Frame::ActionState& at = e.second;
-
-		Sv::SN_PlayerSyncActionStateOnly packet;
-		memset(&packet, 0, sizeof(packet));
-		packet.state = at.actionState;
-		packet.param1 = at.actionParam1;
-		packet.param2 = at.actionParam2;
-		packet.rotate = at.rotate;
-		packet.upperRotate = at.upperRotate;
-
-		for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
-			if(playerState[clientID] != PlayerState::IN_GAME) continue;
-
-			packet.characterID = GetLocalActorID(clientID, e.first);
-			LOG("[client%03d] Server :: SN_PlayerSyncActionStateOnly :: state=%d param1=%d param2=%d", clientID, (i32)packet.state, packet.param1, packet.param2);
-			SendPacket(clientID, packet);
-		}
-	}
-	*/
 }
 
-void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
+void Replication::SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerCharacter& actor, const ActorPlayer& parent)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
+	DBG_ASSERT(parent.actorUID != ActorUID::INVALID);
+
 	const LocalActorID localActorID = GetLocalActorID(clientID, actor.actorUID);
 	ASSERT(localActorID != LocalActorID::INVALID);
 
 	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
 
 	// this is the main actor
-	if(actor.parentActorUID == ActorUID::INVALID) {
+	if(actor.actorUID == parent.characters[PlayerCharaID::Main]) {
 		// SN_GameCreateActor
 		{
 			u8 sendData[1024];
@@ -1959,7 +1847,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<i32>(1); // nType
-			packet.Write<CreatureIndex>(actor.docID); // nIDX
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
 			packet.Write<i32>(-1); // dwLocalID
 			// TODO: localID?
 
@@ -2099,7 +1987,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 	}
 	// this is the sub actor
 	else {
-		const LocalActorID parentLocalActorID = GetLocalActorID(clientID, actor.parentActorUID);
+		const LocalActorID parentLocalActorID = GetLocalActorID(clientID, parent.characters[PlayerCharaID::Main]);
 		ASSERT(parentLocalActorID != LocalActorID::INVALID);
 
 		// SN_GameCreateSubActor
@@ -2110,7 +1998,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<LocalActorID>(parentLocalActorID); // mainEntityID
 			packet.Write<i32>(1); // nType
-			packet.Write<CreatureIndex>(actor.docID); // nIDX
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
 			packet.Write<i32>(-1); // dwLocalID
 
 			packet.Write(actor.pos); // p3nPos
@@ -2189,7 +2077,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<LocalActorID>(localActorID); // playerID
-		packet.WriteStringObj(actor.name.data()); // name
+		packet.WriteStringObj(parent.name.data()); // name
 		packet.Write<ClassType>(actor.classType); // class_
 #if 0
 		packet.Write<i32>(320080005); // displayTitleIDX
@@ -2200,7 +2088,7 @@ void Replication::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
 #endif
 		packet.Write<u8>(0); // badgeType
 		packet.Write<u8>(0); // badgeTierLevel
-		packet.WriteStringObj(actor.guildTag.data()); // guildTag
+		packet.WriteStringObj(parent.guildTag.data()); // guildTag
 		packet.Write<u8>(0); // vipLevel
 		packet.Write<u8>(0); // staffType
 		packet.Write<u8>(0); // isSubstituted
@@ -2369,7 +2257,7 @@ void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requ
 	SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 }
 
-void Replication::SendMasterSkillSlots(i32 clientID, const Replication::ActorPlayer& actor)
+void Replication::SendMasterSkillSlots(i32 clientID, const Replication::ActorPlayerCharacter& actor)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	const LocalActorID localActorID = GetLocalActorID(clientID, actor.actorUID);

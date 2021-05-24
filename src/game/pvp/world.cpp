@@ -15,9 +15,9 @@ void World::Update(Time localTime_)
 
 	// players: assign body position and velocity
 	foreach(it, actorPlayerList) {
-		ActorPlayer& p = *it;
-		p.body->pos = p.pos;
-		p.body->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
+		//ActorPlayer& p = *it;
+		//p.body->pos = p.pos;
+		//p.body->vel = vec3(p.dir.x, p.dir.y, 0) * p.speed;
 	}
 
 	physics.Step();
@@ -26,7 +26,7 @@ void World::Update(Time localTime_)
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
 
-		p.pos = p.body->pos;
+		/*p.pos = p.body->pos;
 		vec3 vel = p.body->vel;
 		if(LengthSq(vel) > 0.0001f) {
 			p.dir = glm::normalize(vel);
@@ -34,7 +34,7 @@ void World::Update(Time localTime_)
 		else {
 			p.dir = vec3(0, 0, 0);
 		}
-		p.speed = glm::length(vel);
+		p.speed = glm::length(vel);*/
 	}
 
 	Replicate();
@@ -44,31 +44,44 @@ void World::Replicate()
 {
 	// players
 	foreach_const(it, actorPlayerList) {
-		const ActorPlayer& actor = *it;
+		const ActorPlayer& player = *it;
 
-		Replication::ActorPlayer rfl;
-		rfl.clientID = actor.clientID;
-		rfl.parentActorUID = actor.parentActorUID;
-		rfl.actorUID = actor.UID;
-		rfl.docID = actor.docID;
-		rfl.pos = actor.pos;
-		rfl.dir = actor.dir;
-		rfl.rotation = actor.rotation;
-		rfl.speed = actor.speed;
-		rfl.actionState = actor.actionState;
-		rfl.actionParam1 = actor.actionParam1;
-		rfl.actionParam2 = actor.actionParam2;
-		rfl.classType = actor.classType;
-		rfl.skinIndex = actor.skinIndex;
+		Replication::ActorPlayer rep;
+		rep.actorUID = player.UID;
+		rep.clientID = player.clientID;
+		rep.name = player.name;
+		rep.guildTag = player.guildTag;
+		rep.characters = {
+			player.characters[PlayerCharaID::Main]->UID,
+			player.characters[PlayerCharaID::Sub]->UID
+		};
+		rep.currentCharaID = player.currentCharaID;
 
-		rfl.name = actor.name;
-		rfl.guildTag = actor.guildTag;
+		replication->FramePushPlayerActor(rep);
 
-		replication->FramePushPlayerActor(rfl);
+		foreach_const(chit, player.characters) {
+			const ActorPlayerCharacter& chara = **chit;
+			Replication::ActorPlayerCharacter rch;
+			rch.actorUID = chara.UID;
+			rch.clientID = player.clientID;
+			rch.parentActorUID = player.UID;
+			rch.classType = chara.classType;
+			rch.skinIndex = chara.skinIndex;
+			rch.pos = chara.body->pos;
+			rch.dir = NormalizeSafe(chara.body->vel);
+			rch.speed = glm::length(chara.body->vel);
+			rch.rotation = player.input.rot; // TODO: compute this?
+
+			rch.actionState = chara.actionState;
+			rch.actionParam1 = chara.actionParam1;
+			rch.actionParam2 = chara.actionParam2;
+
+			replication->FramePushPlayerCharacterActor(rch);
+		}
 	}
 
 	// clear action state
-	foreach(it, actorPlayerList) {
+	foreach(it, actorPlayerCharacterList) {
 		it->actionState = ActionStateID::INVALID;
 		it->actionParam1 = -1;
 		it->actionParam2 = -1;
@@ -80,7 +93,7 @@ void World::Replicate()
 
 		Replication::ActorNpc rfl;
 		rfl.actorUID = actor.UID;
-		rfl.type = actor.type;
+		rfl.type = 1;
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
 		rfl.dir = actor.dir;
@@ -96,56 +109,43 @@ ActorUID World::NewActorUID()
 	return (ActorUID)nextActorUID++;
 }
 
-World::ActorPlayer& World::SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag)
+World::ActorPlayer& World::SpawnPlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
 {
-	ActorUID actorUID = NewActorUID();
+	const ActorUID playerUID = NewActorUID();
+	const ActorUID mainUID = NewActorUID();
+	const ActorUID subUID = NewActorUID();
 
-	actorPlayerList.emplace_back(actorUID, ActorUID::INVALID);
-	ActorPlayer& actor = actorPlayerList.back();
-	actor.clientID = clientID;
-	actor.type = 1;
-	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
-	actor.rotation = {0};
-	actor.speed = 0;
-	actor.actionState = ActionStateID::INVALID;
-	actor.actionParam1 = -1;
-	actor.actionParam2 = -1;
-	actor.classType = classType;
-	actor.skinIndex = skinIndex;
-	actor.name = name;
-	actor.guildTag = guildTag;
-	actor.body = physics.CreateBody(45, 210, vec3(0));
+	actorPlayerCharacterList.emplace_back(mainUID);
+	ActorPlayerCharacter& main = actorPlayerCharacterList.back();
+	ActorPlayerCharacterHandle hMain = --actorPlayerCharacterList.end();
+	actorPlayerCharacterMap.emplace(mainUID, hMain);
 
-	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
-	return actor;
-}
+	actorPlayerCharacterList.emplace_back(subUID);
+	ActorPlayerCharacter& sub = actorPlayerCharacterList.back();
+	ActorPlayerCharacterHandle hSub = --actorPlayerCharacterList.end();
+	actorPlayerCharacterMap.emplace(subUID, hSub);
 
-World::ActorPlayer& World::SpawnPlayerSubActor(i32 clientID, ActorUID parentActorUID, ClassType classType, SkinIndex skinIndex)
-{
-	const ActorPlayer* parent = FindPlayerActor(parentActorUID);
-	ASSERT(parent);
+	actorPlayerList.emplace_back(playerUID, clientID, name, guildTag);
+	ActorPlayer& player = actorPlayerList.back();
+	PlayerHandle hPlayer = --actorPlayerList.end();
+	actorPlayerMap.emplace(playerUID, hPlayer);
 
-	// TODO: probably should deduplicate this code at some point
-	ActorUID actorUID = NewActorUID();
+	player.characters = {
+		hMain,
+		hSub
+	};
 
-	actorPlayerList.emplace_back(actorUID, parentActorUID);
-	ActorPlayer& actor = actorPlayerList.back();
-	actor.clientID = clientID;
-	actor.type = 1;
-	actor.docID = (CreatureIndex)(100000000 + (i32)classType);
-	actor.rotation = {0};
-	actor.speed = 0;
-	actor.actionState = ActionStateID::INVALID;
-	actor.actionParam1 = -1;
-	actor.actionParam2 = -1;
-	actor.classType = classType;
-	actor.skinIndex = skinIndex;
-	actor.name = parent->name;
-	actor.guildTag = parent->guildTag;
-	actor.body = physics.CreateBody(45, 210, vec3(0));
+	main.parent = hPlayer;
+	main.classType = mainClass;
+	main.skinIndex = mainSkin;
+	main.body = physics.CreateBody(45, 210, pos);
 
-	actorPlayerMap.emplace(actorUID, --actorPlayerList.end());
-	return actor;
+	sub.parent = hPlayer;
+	sub.classType = subClass;
+	sub.skinIndex = subSkin;
+	sub.body = physics.CreateBody(45, 210, pos);
+
+	return player;
 }
 
 World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
@@ -154,15 +154,8 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 
 	actorNpcList.emplace_back(actorUID);
 	ActorNpc& actor = actorNpcList.back();
-	actor.type = 1;
 	actor.docID = (CreatureIndex)docID;
-	actor.rotation = {0};
-	actor.speed = 0;
-	actor.actionState = ActionStateID::INVALID;
-	actor.actionParam1 = -1;
-	actor.actionParam2 = -1;
 	actor.localID = localID;
-	actor.faction = 0;
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
 	return actor;
@@ -192,11 +185,15 @@ World::ActorNpc* World::FindNpcActorByCreatureID(CreatureIndex docID)
 	return nullptr;
 }
 
-
 bool World::DestroyPlayerActor(ActorUID actorUID)
 {
 	auto actorIt = actorPlayerMap.find(actorUID);
 	if(actorIt == actorPlayerMap.end()) return false;
+
+	foreach_const(chit, actorIt->second->characters) {
+		actorPlayerCharacterMap.erase((*chit)->UID);
+		actorPlayerCharacterList.erase(*chit);
+	}
 
 	actorPlayerList.erase(actorIt->second);
 	actorPlayerMap.erase(actorIt);

@@ -9,75 +9,89 @@
 #include <game/core.h>
 #include <game/physics.h>
 
-
 struct World
 {
-	enum {
-		MAX_PLAYERS = Server::MAX_CLIENTS
+	struct ActorPlayer;
+	struct ActorPlayerCharacter;
+
+	typedef ListItT<ActorPlayer> PlayerHandle;
+	typedef ListItT<ActorPlayerCharacter> ActorPlayerCharacterHandle;
+
+	struct ActorPlayer
+	{
+		struct Input
+		{
+			vec3 moveDir;
+			f32 speed;
+			RotationHumanoid rot;
+
+			ActionStateID actionState;
+			i32 actionParam1;
+			i32 actionParam2;
+		};
+
+		const ActorUID UID;
+		const i32 clientID; // unique player identifier, also useful to send stuff
+		const WideString name;
+		const WideString guildTag;
+
+		eastl::array<ActorPlayerCharacterHandle, 2> characters;
+		PlayerCharaID::Enum currentCharaID = PlayerCharaID::Main;
+
+		Input input;
+
+		explicit ActorPlayer(ActorUID UID_, i32 clientID_, const WideString& name_, const WideString& guildTag_):
+			UID(UID_),
+			clientID(clientID_),
+			name(name),
+			guildTag(guildTag_)
+		{}
+
+		inline ActorPlayerCharacter& Current() const { return *characters[currentCharaID]; }
+		inline ActorPlayerCharacter& Main() const { return *characters[PlayerCharaID::Main]; }
+		inline ActorPlayerCharacter& Sub() const { return *characters[PlayerCharaID::Sub]; }
 	};
 
-	struct ActorCore
+	struct ActorPlayerCharacter
 	{
 		const ActorUID UID;
-		i32 type;
-		CreatureIndex docID;
-		vec3 pos;
-		vec3 dir;
-		RotationHumanoid rotation;
-		f32 speed;
+		PlayerHandle parent;
+		ClassType classType;
+		SkinIndex skinIndex;
+		PhysWorld::BodyHandle body;
+
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
-		i32 faction;
 
-		explicit ActorCore(ActorUID UID_): UID(UID_) {}
+		explicit ActorPlayerCharacter(ActorUID UID_): UID(UID_) {}
 	};
 
-	struct ActorPlayer: ActorCore
+	struct ActorNpc
 	{
-		const ActorUID parentActorUID;
-		ClassType classType;
-		SkinIndex skinIndex;
-		i32 clientID;
-		WideString name;
-		WideString guildTag;
-		PhysWorld::BodyHandle body;
-
-		explicit ActorPlayer(ActorUID UID_, ActorUID parentActorUID_):
-			ActorCore(UID_),
-			parentActorUID(parentActorUID_)
-		{
-
-		}
-	};
-
-	struct ActorNpc: ActorCore
-	{
+		const ActorUID UID;
+		CreatureIndex docID;
 		i32 localID;
+		i32 faction;
+		vec3 pos;
+		vec3 dir;
 
-		explicit ActorNpc(ActorUID UID_): ActorCore(UID_) {}
-	};
-
-	struct ActorMonster: ActorCore
-	{
-		explicit ActorMonster(ActorUID UID_): ActorCore(UID_) {}
+		explicit ActorNpc(ActorUID UID_): UID(UID_) {}
 	};
 
 
 	Replication* replication;
 
 	eastl::fixed_list<ActorPlayer,512,true> actorPlayerList;
+	eastl::fixed_list<ActorPlayerCharacter,512,true> actorPlayerCharacterList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
-	eastl::fixed_list<ActorMonster,2048,true> actorMonsterList;
 
-	typedef decltype(actorPlayerList)::iterator ActorPlayerHandle;
-	typedef decltype(actorNpcList)::iterator ActorNpcHandle;
-	typedef decltype(actorMonsterList)::iterator ActorMonsterHandle;
+	typedef ListItT<ActorNpc> ActorNpcHandle;
 
 	// TODO: make those fixed_hash_maps
-	eastl::fixed_map<ActorUID, ActorPlayerHandle, 2048, true> actorPlayerMap;
+	eastl::fixed_map<ActorUID, PlayerHandle, 2048, true> actorPlayerMap;
+	eastl::fixed_map<ActorUID, ActorPlayerCharacterHandle, 2048, true> actorPlayerCharacterMap;
 	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
-	eastl::fixed_map<ActorUID, ActorMonsterHandle, 2048, true> actorMonsterMap;
 
 	u32 nextActorUID;
 	Time localTime;
@@ -88,10 +102,7 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	ActorUID NewActorUID();
-
-	ActorPlayer& SpawnPlayerActor(i32 clientID, ClassType classType, SkinIndex skinIndex, const wchar* name, const wchar* guildTag);
-	ActorPlayer& SpawnPlayerSubActor(i32 clientID, ActorUID parentActorUID, ClassType classType, SkinIndex skinIndex);
+	ActorPlayer& SpawnPlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
 	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
@@ -99,4 +110,7 @@ struct World
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 
 	bool DestroyPlayerActor(ActorUID actorUID);
+
+private:
+	ActorUID NewActorUID();
 };

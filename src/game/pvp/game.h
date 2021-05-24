@@ -25,8 +25,7 @@ struct Game
 	struct Player
 	{
 		const i32 clientID;
-		ActorUID mainActorUID = ActorUID::INVALID;
-		ActorUID subActorUID = ActorUID::INVALID;
+		ActorUID actorUID = ActorUID::INVALID;
 		ActorUID cloneActorUID = ActorUID::INVALID; // TODO: remove
 
 		Player(): clientID(-1) {}

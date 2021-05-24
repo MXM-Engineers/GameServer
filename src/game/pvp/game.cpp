@@ -33,10 +33,8 @@ void Game::Init(Replication* replication_)
 	LoadMap();
 
 	// spawn test
-	World::ActorPlayer& lego = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
-	lego.pos = vec3(2800, 3532, 1000);
-	lego.dir = vec3(0, 0, 0);
-	lego.speed = 626;
+	World::ActorPlayer& lego = world.SpawnPlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, vec3(2800, 3532, 1000));
+
 	legoUID = lego.UID;
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
@@ -50,14 +48,14 @@ void Game::Update(Time localTime_)
 
 	// update clone
 	foreach_const(p, playerList) {
-		if(p->mainActorUID != ActorUID::INVALID) {
-			World::ActorPlayer* main = world.FindPlayerActor(p->mainActorUID);
+		if(p->actorUID != ActorUID::INVALID) {
+			World::ActorPlayer* main = world.FindPlayerActor(p->actorUID);
 			World::ActorPlayer* clone = world.FindPlayerActor(p->cloneActorUID);
 			ASSERT(main);
 			ASSERT(clone);
 
 			//clone->pos = main->pos;
-			const f32 lensq = LengthSq(main->pos - clone->pos);
+			/*const f32 lensq = LengthSq(main->pos - clone->pos);
 			if(lensq > 0.001f) {
 				clone->dir = glm::normalize(main->pos - clone->pos);
 				clone->speed = 626.200012f;
@@ -65,9 +63,9 @@ void Game::Update(Time localTime_)
 			else {
 				clone->dir = vec3(1, 0, 0);
 				clone->speed = 0;
-			}
+			}*/
 
-			clone->rotation = main->rotation;
+			clone->input.rot = main->input.rot;
 		}
 	}
 
@@ -89,14 +87,14 @@ void Game::Update(Time localTime_)
 
 	if(step == Step::Move) { // move
 		f32 a = legoAngle * PI/2;
-		lego->rotation.upperYaw = a;
-		lego->rotation.bodyYaw = a;
-		lego->dir = vec3(legoDir, 0);
-		lego->speed = 626;
+		lego->input.rot.upperYaw = a;
+		lego->input.rot.bodyYaw = a;
+		lego->input.moveDir = vec3(legoDir, 0);
+		lego->input.speed = 626;
 	}
 	else { // stop
-		lego->dir = vec3(0);
-		lego->speed = 0;
+		lego->input.moveDir = vec3(0);
+		lego->input.speed = 0;
 	}
 
 	legoLastStep = step;
@@ -108,9 +106,9 @@ void Game::Update(Time localTime_)
 		Dbg::Entity e;
 		e.UID = (u32)actor->UID;
 		e.name = actor->name;
-		e.pos = actor->pos;
-		e.rot = actor->rotation;
-		e.moveDir = actor->dir;
+		e.pos = actor->Current().body->pos;
+		e.rot = actor->input.rot;
+		e.moveDir = actor->input.moveDir;
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -162,11 +160,10 @@ void Game::OnPlayerDisconnect(i32 clientID)
 	if(playerMap[clientID] != playerList.end()) {
 		const Player& player = *playerMap[clientID];
 
-		LOG("[client%03d] Game :: OnClientDisconnect :: mainActorUID=%u subActorUID=%u", clientID, (u32)player.mainActorUID, (u32)player.subActorUID);
+		LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)player.actorUID);
 
 		// we can disconnect before spawning, so test if we have an actor associated
-		if(player.mainActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.mainActorUID);
-		if(player.subActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.subActorUID);
+		if(player.actorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.actorUID);
 		if(player.cloneActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.cloneActorUID);
 
 		playerList.erase(playerMap[clientID]);
@@ -185,56 +182,79 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
+	const World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
+	ASSERT(actor);
+	ASSERT(actor->clientID == clientID);
 
-	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
-		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
-		return;
+	foreach_const(chit, actor->characters) {
+		const World::ActorPlayerCharacter& chara = **chit;
+
+		if(chara.UID == actorUID) {
+			// TODO: health
+			replication->SendCharacterInfo(clientID, chara.UID, (CreatureIndex)(100000000 + (i32)chara.classType), chara.classType, 2400, 2400);
+
+			return;
+		}
 	}
 
-	// TODO: health
-	const World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
-	ASSERT(actor->clientID == clientID);
-	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 2400, 2400);
+	WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 }
 
 void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
+	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
+	ASSERT(actor);
+	DBG_ASSERT(actor->clientID == clientID);
+
+	bool found = false;
+	foreach_const(chit, actor->characters) {
+		const World::ActorPlayerCharacter& chara = **chit;
+		if(chara.UID == actorUID) {
+			found = true;
+			break;
+		}
+	}
 
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+	if(!found) {
 		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
-	ASSERT(actor);
-
 	// TODO: check for movement hacking
-	actor->pos = pos;
-	actor->dir = dir;
-	actor->rotation = rot;
-	actor->speed = speed;
+	actor->input.moveDir = NormalizeSafe(pos - actor->Current().body->pos);
+	actor->input.rot = rot;
+	actor->input.speed = speed;
 }
 
 void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
+	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
+	ASSERT(actor);
+	DBG_ASSERT(actor->clientID == clientID);
+
+	bool found = false;
+	foreach_const(chit, actor->characters) {
+		const World::ActorPlayerCharacter& chara = **chit;
+		if(chara.UID == actorUID) {
+			found = true;
+			break;
+		}
+	}
 
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+	if(!found) {
 		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
-	ASSERT(actor);
-
-	actor->rotation = rot;
+	actor->input.rot = rot;
 }
 
 void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
@@ -284,23 +304,32 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
+	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
+	ASSERT(actor);
+	DBG_ASSERT(actor->clientID == clientID);
+
+	bool found = false;
+	foreach_const(chit, actor->characters) {
+		const World::ActorPlayerCharacter& chara = **chit;
+		if(chara.UID == actorUID) {
+			found = true;
+			break;
+		}
+	}
 
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
-	// LordSk (10/09/2020)
-	if(player.mainActorUID != actorUID && player.subActorUID != actorUID) {
+	// LordSk (30/08/2020)
+	if(!found) {
 		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 		return;
 	}
 
-	World::ActorPlayer* actor = world.FindPlayerActor(actorUID);
-	ASSERT(actor);
-
 	// TODO: check hacking
-	actor->rotation.bodyYaw = rotate;
-	actor->rotation.upperYaw = upperRotate;
-	actor->actionState = state;
-	actor->actionParam1 = param1;
-	actor->actionParam2 = param2;
+	actor->input.rot.bodyYaw = rotate;
+	actor->input.rot.upperYaw = upperRotate;
+	actor->input.actionState = state;
+	actor->input.actionParam1 = param1;
+	actor->input.actionParam2 = param2;
 }
 
 void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
@@ -330,16 +359,10 @@ void Game::OnPlayerGameMapLoaded(i32 clientID)
 	RotationHumanoid rot;
 
 	// TODO: check if already leader character
-	if((player.mainActorUID != ActorUID::INVALID)) {
-		World::ActorCore* actor = world.FindPlayerActor(player.mainActorUID);
-		ASSERT(actor);
-
-		pos = actor->pos;
-		dir = actor->dir;
-		rot = actor->rotation;
-
-		world.DestroyPlayerActor(player.mainActorUID);
-		world.DestroyPlayerActor(player.subActorUID);
+	DBG_ASSERT(player.actorUID == ActorUID::INVALID);
+	if((player.actorUID != ActorUID::INVALID)) {
+		world.DestroyPlayerActor(player.actorUID);
+		world.DestroyPlayerActor(player.cloneActorUID);
 	}
 
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
@@ -347,32 +370,19 @@ void Game::OnPlayerGameMapLoaded(i32 clientID)
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
 	const ClassType classType = ClassType::LUA;
-	World::ActorPlayer& main = world.SpawnPlayerActor(clientID, classType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
-	main.pos = pos;
-	main.dir = dir;
-	main.rotation = rot;
-	main.clientID = clientID;
-	player.mainActorUID = main.UID;
+	const ClassType subClassType = ClassType::SIZUKA;
 
-	// spawn sub actor as well
-	ClassType subClassType = ClassType::SIZUKA;
-	World::ActorPlayer& sub = world.SpawnPlayerSubActor(clientID, main.UID, subClassType, SkinIndex::DEFAULT);
-	sub.pos = pos;
-	sub.dir = dir;
-	sub.rotation = rot;
-	sub.clientID = clientID; // TODO: this is not useful right now
-	player.subActorUID = sub.UID;
+	World::ActorPlayer& actor = world.SpawnPlayer(clientID, account->nickname.data(), account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
+
+	player.actorUID = actor.UID;
 
 	// force LocalActorID for both actors
 	// TODO: eventually get rid of this system
-	replication->PlayerRegisterMasterActor(clientID, player.mainActorUID, classType);
-	replication->PlayerRegisterMasterActor(clientID, player.subActorUID, subClassType);
+	replication->PlayerRegisterMasterActor(clientID, actor.Main().UID, classType);
+	replication->PlayerRegisterMasterActor(clientID, actor.Sub().UID, subClassType);
 
-	World::ActorPlayer& clone = world.SpawnPlayerActor(clientID, classType, SkinIndex::DEFAULT, account->nickname.data(), account->guildTag.data());
-	clone.pos = pos;
-	clone.dir = dir;
-	clone.rotation = rot;
-	clone.clientID = -1;
+	World::ActorPlayer& clone = world.SpawnPlayer(-1, account->nickname.data(), account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
+
 	player.cloneActorUID = clone.UID;
 }
 
@@ -380,9 +390,14 @@ void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
+	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
+	ASSERT(actor);
+	DBG_ASSERT(actor->clientID == clientID);
 
-	eastl::swap(player.mainActorUID, player.subActorUID);
-	replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
+	actor->currentCharaID = PlayerCharaID::Enum(actor->currentCharaID ^ 1);
+
+	// TODO: restore tag replication via frame differential
+	// replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
 }
 
 void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
@@ -390,7 +405,8 @@ void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
 
-	replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
+	// TODO: restore
+	//replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
 }
 
 void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
@@ -422,20 +438,20 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		msg++;
 
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
-			World::ActorCore* playerActor = world.FindPlayerActor(player.mainActorUID); // TODO: find currently active actor
+			World::ActorPlayer* playerActor = world.FindPlayerActor(player.actorUID); // TODO: find currently active actor
 			ASSERT(playerActor);
+			const vec3 pos = playerActor->Current().body->pos;
 
-			World::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
-			actor.pos = playerActor->pos;
-			actor.rotation = playerActor->rotation;
+			World::ActorPlayer& actor = world.SpawnPlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, pos);
+			actor.input.rot = playerActor->input.rot;
 
 			// trigger second emote
-			actor.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;
-			actor.actionParam1 = 2;
+			actor.input.actionState = ActionStateID::EMOTION_BEHAVIORSTATE;
+			actor.input.actionParam1 = 2;
 
 			lastLegoActorUID = actor.UID;
 
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", pos.x, pos.y, pos.z));
 			return true;
 		}
 

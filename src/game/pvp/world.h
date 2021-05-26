@@ -48,6 +48,7 @@ struct World
 		{}
 
 		inline ActorPlayerCharacter& Current() const { return *characters[currentCharaID]; }
+		inline ActorPlayerCharacter& Out() const { return *characters[currentCharaID ^ 1]; }
 		inline ActorPlayerCharacter& Main() const { return *characters[PlayerCharaID::Main]; }
 		inline ActorPlayerCharacter& Sub() const { return *characters[PlayerCharaID::Sub]; }
 	};

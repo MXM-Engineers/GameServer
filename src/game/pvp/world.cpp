@@ -13,7 +13,7 @@ void World::Update(Time localTime_)
 	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
-	// players: assign body position and velocity
+	// players: move based on input
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
 
@@ -34,6 +34,9 @@ void World::Update(Time localTime_)
 		else {
 			p.Current().body->vel = vec3(0);
 		}
+
+		p.Current().body->flags &= ~PhysWorld::Flags::Disabled; // enable current body
+		p.Out().body->flags |= PhysWorld::Flags::Disabled; // disable tagged out body
 	}
 
 	physics.Step();

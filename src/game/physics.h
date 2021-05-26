@@ -126,21 +126,29 @@ struct ShapeMesh
 
 struct PhysWorld
 {
+	enum Flags: u32 {
+		Disabled = 0x1
+	};
+
 	struct MoveComp
 	{
 		vec3 pos;
 		vec3 vel;
 	};
 
-	struct DynBodyCapsule: MoveComp
+	struct BodyCapsule
 	{
-		ShapeCapsule shape;
+		u32 flags;
+		f32 radius;
+		f32 height;
+		vec3 pos;
+		vec3 vel;
 	};
 
-	typedef ListItT<DynBodyCapsule> BodyHandle;
+	typedef ListItT<BodyCapsule> BodyHandle;
 
 	eastl::fixed_vector<ShapeTriangle, 4096, false> staticMeshTriangleList;
-	eastl::fixed_list<DynBodyCapsule, 4096, false> dynCapsuleBodyList;
+	eastl::fixed_list<BodyCapsule, 4096, false> dynCapsuleBodyList;
 
 	// temp data used for compute
 	struct Collision

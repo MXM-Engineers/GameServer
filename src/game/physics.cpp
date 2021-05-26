@@ -341,13 +341,11 @@ void PhysWorld::PushStaticMeshes(const ShapeMesh* meshList, const int count)
 
 PhysWorld::BodyHandle PhysWorld::CreateBody(f32 radius, f32 height, vec3 pos)
 {
-	DynBodyCapsule body;
+	BodyCapsule body;
 
-	body.shape = {};
-	body.shape.base = vec3(0, 0, 0);
-	body.shape.tip = vec3(0, 0, height);
-	body.shape.radius = radius;
-
+	body.flags = 0x0;
+	body.radius = radius;
+	body.height = height;
 	body.pos = pos;
 	body.vel = vec3(0);
 
@@ -393,8 +391,16 @@ void PhysWorld::Step()
 	bodyList.clear();
 	shapeCapsuleList.clear();
 	foreach_const(b, dynCapsuleBodyList) {
-		shapeCapsuleList.push_back(b->shape);
+		if(b->flags & Flags::Disabled) continue;
+
+		ShapeCapsule shape;
+		shape.radius = b->radius;
+		shape.base = vec3(0);
+		shape.tip = vec3(0, 0, b->height);
+
+		shapeCapsuleList.push_back(shape);
 		bodyList.push_back({ b->pos, b->vel });
+
 		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.y);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.z);
@@ -406,7 +412,7 @@ void PhysWorld::Step()
 	// ASSUME NOTHING IS COLLIDING
 	// TODO: make it so (STATIC -> DYNAMIC -> STATIC -> etc algo)
 
-	const int dynCount = dynCapsuleBodyList.size();
+	const int dynCount = bodyList.size();
 
 	for(int ssi = 0; ssi < SUB_STEP_COUNT; ssi++) {
 		foreach(b, bodyList) {
@@ -528,7 +534,8 @@ void PhysWorld::Step()
 	// copy back
 	int i = 0;
 	foreach(b, dynCapsuleBodyList) {
-		b->shape = shapeCapsuleList[i];
+		if(b->flags & Flags::Disabled) continue;
+
 		b->pos = bodyList[i].pos;
 		b->vel = bodyList[i].vel;
 		DBG_ASSERT_NONNAN(bodyList[i].pos.x);

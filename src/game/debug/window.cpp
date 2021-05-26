@@ -123,10 +123,11 @@ struct Window
 
 	inline void Draw(const PhysWorld::BodyHandle& body, vec3 color)
 	{
-		ShapeCapsule shape = body->shape;
 		vec3 pos = body->pos;
-		shape.base += pos;
-		shape.tip += pos;
+		ShapeCapsule shape;
+		shape.radius = body->radius;
+		shape.base = pos;
+		shape.tip = pos + vec3(0, 0, body->height);
 
 		collisionTest.Draw(shape, color);
 	}
@@ -224,14 +225,19 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 
 		ImGui::EndTable();
 
-		foreach_const(it, physics.dynCapsuleBodyList) {
-			ShapeCapsule shape = it->shape;
-			vec3 pos = it->pos;
-			vec3 vel = it->vel;
-			shape.base += pos;
-			shape.tip += pos;
+		foreach_const(b, physics.dynCapsuleBodyList) {
+			vec3 pos = b->pos;
+			vec3 vel = b->vel;
 
-			collisionTest.Draw(shape, vec3(1, 0, 1));
+			ShapeCapsule shape;
+			shape.radius = b->radius;
+			shape.base = pos;
+			shape.tip = pos + vec3(0, 0, b->height);
+
+			vec3 color = vec3(1, 0, 1);
+			if(b->flags & PhysWorld::Flags::Disabled) color = vec3(0.5);
+
+			collisionTest.Draw(shape, color);
 			collisionTest.DrawVec(vel, shape.base + vec3(0, 0, shape.radius), vec3(1, 0.5, 0.8));
 		}
 	}

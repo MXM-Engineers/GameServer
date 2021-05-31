@@ -226,6 +226,12 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		const char* creatureTypeTemp;
 		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
 
+		XMLElement* pPhysxMeshComData = pNodeMaster->FirstChildElement("PhysXMeshComData");
+
+		i32 colliderRadius, colliderHeight;
+		pPhysxMeshComData->QueryIntAttribute("_ColliderRadius", &colliderRadius);
+		pPhysxMeshComData->QueryIntAttribute("_ColliderHeight", &colliderHeight);
+
 		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
 
 		// Read character data: skills
@@ -283,6 +289,9 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		character.setMoveSpeed(moveSpeed);
 		character.setRotateSpeed(rotateSpeed);
 		character.setScale(scale);
+		//Physx data
+		character.setColliderHeight(colliderHeight);
+		character.setColliderRadius(colliderRadius);
 		
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 

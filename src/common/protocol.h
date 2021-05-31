@@ -719,6 +719,13 @@ struct SN_GameCreateSubActor
 	ST_ActionChangeTime meshChangeActionHistory[1];
 };
 
+struct SN_GameLeaveActor
+{
+	enum { NET_ID = 62030 };
+
+	LocalActorID objectID;
+};
+
 struct SN_StatusSnapshot
 {
 	enum { NET_ID = 62031 };

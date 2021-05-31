@@ -1741,9 +1741,34 @@ void Replication::FrameDifference()
 		RotationHumanoid rot;
 	};
 
+	struct UpdateTag
+	{
+		i32 clientID;
+		ActorUID mainUID;
+		ActorUID subUID;
+	};
+
 	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
 	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
+	eastl::fixed_vector<UpdateTag,1024> listUpdateTag;
 
+	foreach_const(it, frameCur->playerList) {
+		const ActorPlayer& cur = *it;
+		const ActorPlayer* found = framePrev->FindPlayer(cur.actorUID);
+		if(!found) continue;
+		const ActorPlayer& prev = *found;
+
+		// tagging
+		if(cur.mainCharaID != prev.mainCharaID) {
+			UpdateTag update;
+			update.clientID = cur.clientID;
+			update.mainUID = cur.characters[cur.mainCharaID];
+			update.subUID = cur.characters[cur.mainCharaID ^ 1];
+			listUpdateTag.push_back(update);
+		}
+	}
+
+	// TODO: don't update everything here if tagged out (such as position)
 	// find if the position has changed since last frame
 	foreach_const(it, frameCur->playerCharaList) {
 		const ActorPlayerCharacter& cur = *it;
@@ -1826,6 +1851,31 @@ void Replication::FrameDifference()
 			SendPacket(clientID, sync);
 		}
 	}
+
+	foreach_const(up, listUpdateTag) {
+		Sv::SN_GamePlayerTag tag;
+		tag.result = 128;
+		tag.attackerID = LocalActorID::INVALID;
+
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+			tag.mainID = GetLocalActorID(clientID, up->mainUID);
+			tag.subID = GetLocalActorID(clientID, up->subUID);
+			ASSERT(tag.mainID != LocalActorID::INVALID);
+			ASSERT(tag.subID != LocalActorID::INVALID);
+
+			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GamePlayerTag>(&tag, sizeof(tag)));
+			SendPacket(clientID, tag);
+
+			if(clientID != up->clientID) { // ignore self
+				Sv::SN_GameLeaveActor leave;
+				leave.objectID = tag.subID;
+				LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameLeaveActor>(&leave, sizeof(leave)));
+				SendPacket(clientID, leave);
+			}
+		}
+	}
 }
 
 void Replication::SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerCharacter& actor, const ActorPlayer& parent)
@@ -1839,7 +1889,7 @@ void Replication::SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerC
 	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
 
 	// this is the main actor
-	if(actor.actorUID == parent.characters[PlayerCharaID::Main]) {
+	if(actor.actorUID == parent.characters[0]) {
 		// SN_GameCreateActor
 		{
 			u8 sendData[1024];
@@ -1987,7 +2037,7 @@ void Replication::SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerC
 	}
 	// this is the sub actor
 	else {
-		const LocalActorID parentLocalActorID = GetLocalActorID(clientID, parent.characters[PlayerCharaID::Main]);
+		const LocalActorID parentLocalActorID = GetLocalActorID(clientID, parent.characters[0]);
 		ASSERT(parentLocalActorID != LocalActorID::INVALID);
 
 		// SN_GameCreateSubActor

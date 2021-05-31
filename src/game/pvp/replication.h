@@ -36,8 +36,8 @@ struct Replication
 		WideString name;
 		WideString guildTag;
 
-		eastl::array<ActorUID, 2> characters;
-		PlayerCharaID::Enum currentCharaID;
+		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> characters;
+		u8 mainCharaID;
 	};
 
 	struct ActorPlayerCharacter: Actor<ActorType::PlayerCharacter>

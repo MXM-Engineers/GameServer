@@ -78,7 +78,7 @@ void Game::Update(Time localTime_)
 		f32 a = legoAngle * PI/2;
 		lego->input.rot.upperYaw = a;
 		lego->input.rot.bodyYaw = a;
-		lego->input.moveTo = lego->Current().body->pos + vec3(legoDir * 1000.f, 0);
+		lego->input.moveTo = lego->Main().body->pos + vec3(legoDir * 1000.f, 0);
 		lego->input.speed = 626;
 	}
 	else { // stop
@@ -95,9 +95,9 @@ void Game::Update(Time localTime_)
 		Dbg::Entity e;
 		e.UID = (u32)actor->UID;
 		e.name = actor->name;
-		e.pos = actor->Current().body->pos;
+		e.pos = actor->Main().body->pos;
 		e.rot = actor->input.rot;
-		e.moveDir = NormalizeSafe(actor->input.moveTo - actor->Current().body->pos);
+		e.moveDir = NormalizeSafe(actor->input.moveTo - actor->Main().body->pos);
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -383,10 +383,8 @@ void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 	ASSERT(actor);
 	DBG_ASSERT(actor->clientID == clientID);
 
-	actor->currentCharaID = PlayerCharaID::Enum(actor->currentCharaID ^ 1);
-
-	// TODO: restore tag replication via frame differential
-	// replication->SendPlayerTag(clientID, player.mainActorUID, player.subActorUID);
+	// TODO: cooldown
+	actor->input.tag = 1;
 }
 
 void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
@@ -429,7 +427,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
 			World::ActorPlayer* playerActor = world.FindPlayerActor(player.actorUID); // TODO: find currently active actor
 			ASSERT(playerActor);
-			const vec3 pos = playerActor->Current().body->pos;
+			const vec3 pos = playerActor->Main().body->pos;
 
 			World::ActorPlayer& actor = world.SpawnPlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, pos);
 			actor.input.rot = playerActor->input.rot;

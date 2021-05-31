@@ -13,11 +13,25 @@ void World::Update(Time localTime_)
 	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
-	// players: move based on input
+	// players: handle input
 	foreach(it, actorPlayerList) {
 		ActorPlayer& p = *it;
 
-		vec3 delta = p.input.moveTo - p.Current().body->pos;
+		// tag
+		if(p.input.tag) {
+			p.input.tag = 0;
+			p.mainCharaID ^= 1;
+
+			p.Main().body->pos = p.Sub().body->pos;
+		}
+
+		// move
+		PhysWorld::BodyCapsule& bodyMain = *p.Main().body;
+		PhysWorld::BodyCapsule& bodySub = *p.Sub().body;
+		bodyMain.flags &= ~PhysWorld::Flags::Disabled; // enable current body
+		bodySub.flags |= PhysWorld::Flags::Disabled; // disable tagged out body
+
+		vec3 delta = p.input.moveTo - bodyMain.pos;
 		delta.z = 0;
 		f32 deltaLen = glm::length(delta);
 		if(deltaLen > 1.0f) {
@@ -25,18 +39,15 @@ void World::Update(Time localTime_)
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
-				p.Current().body->vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
+				bodyMain.vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
 			}
 			else {
-				p.Current().body->vel = vec3(dir.x, dir.y, 0) * p.input.speed;
+				bodyMain.vel = vec3(dir.x, dir.y, 0) * p.input.speed;
 			}
 		}
 		else {
-			p.Current().body->vel = vec3(0);
+			bodyMain.vel = vec3(0);
 		}
-
-		p.Current().body->flags &= ~PhysWorld::Flags::Disabled; // enable current body
-		p.Out().body->flags |= PhysWorld::Flags::Disabled; // disable tagged out body
 	}
 
 	physics.Step();
@@ -56,10 +67,10 @@ void World::Replicate()
 		rep.name = player.name;
 		rep.guildTag = player.guildTag;
 		rep.characters = {
-			player.characters[PlayerCharaID::Main]->UID,
-			player.characters[PlayerCharaID::Sub]->UID
+			player.characters[0]->UID,
+			player.characters[1]->UID
 		};
-		rep.currentCharaID = player.currentCharaID;
+		rep.mainCharaID = player.mainCharaID;
 
 		replication->FramePushPlayerActor(rep);
 

@@ -6,6 +6,10 @@ def read_Vec3(p):
     x, y, z = p.read_f32(), p.read_f32(), p.read_f32()
     return 'Vec3(%g, %g, %g)' % (x, y ,z)
 
+def read_Vec2(p):
+    x, y = p.read_f32(), p.read_f32()
+    return 'Vec2(%g, %g)' % (x, y)
+
 class ServerSerializer:
 
     def serialize_62002(netid, p: common.PacketReader):
@@ -211,6 +215,77 @@ class ServerSerializer:
 
         print('    }')
         print('    meshChangeActionHistory_count=%d' % p.read_u16())
+        print('}')
+
+    def serialize_62029(netid, p: common.PacketReader):
+        print('SN_GameEnterActor {')
+        excludedBits = p.read_u8()
+        print('    excludedBits=%x' % excludedBits)
+
+        # graph move
+        if (excludedBits & 1) == 0:
+            print('    extraGraphMove={')
+            print('        hasGraphMove=%d' % p.read_u8())
+            print('        distance=%f' % p.read_f32())
+            print('        totalTimeS=%f' % p.read_f32())
+            print('        curTimeS=%f' % p.read_f32())
+            print('        startPos=%s' % read_Vec3(p))
+            print('        endPos=%s' % read_Vec3(p))
+            print('        originDistance=%f' % p.read_f32())
+            print('        hasExtraMove=%d' % p.read_u8())
+            print('        vExtraPointMoveTarget=%s' % read_Vec2(p))
+            print('        vExtraPointMoveRemainTime=%f' % p.read_f32())
+            print('        vExtraDirMove=%s' % read_Vec2(p))
+            print('        vExtraDirMoveRemainTime=%f' % p.read_f32())
+            print('    }')
+
+        print('    objectID=%d' % p.read_i32())
+        print('    p3nPos=%s' % read_Vec3(p))
+        print('    p3nDir=%s' % read_Vec3(p))
+        print('    p2nMoveDir=%s' % read_Vec2(p))
+        print('    p2nUpperDir=%s' % read_Vec2(p))
+        print('    p3nMoveTargetPos=%s' % read_Vec3(p))
+        print('    isBattleState=%d' % p.read_u8())
+        print('    baseMoveSpeed=%f' % p.read_f32())
+        print('    actionState=%d' % p.read_i32())
+        print('    aiTargetID=%d' % p.read_i32())
+
+        print('    statSnapshot={')
+
+        count = p.read_u16()
+        print('        curStats(%d)=[' % count)
+        while count > 0:
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
+            count -= 1
+        print('        ]')
+        
+        count = p.read_u16()
+        print('        maxStats(%d)=[' % count)
+        while count > 0:
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
+            count -= 1
+        print('        ]')
+
+        count = p.read_u16()
+        print('        addPrivate(%d)=[' % count)
+        while count > 0:
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
+            count -= 1
+        print('        ]')
+
+        count = p.read_u16()
+        print('        mulPrivate(%d)=[' % count)
+        while count > 0:
+            print('            (type=%d value=%g),' % (p.read_u8(), p.read_f32()))
+            count -= 1
+        print('        ]')
+
+        print('    }')
+        print('}')
+
+    def serialize_62030(netid, p: common.PacketReader):
+        print('SN_GameLeaveActor {')
+        print('    objectID=%d' % p.read_i32())
         print('}')
 
     def serialize_62031(netid, p: common.PacketReader):

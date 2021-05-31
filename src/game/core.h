@@ -364,10 +364,4 @@ inline f32 WorldPitchToMxmPitch(f32 a)
 	return a; // TODO: reverse this
 }
 
-struct PlayerCharaID
-{
-	enum Enum: u8 {
-		Main = 0,
-		Sub = 1,
-	};
-};
+constexpr i32 PLAYER_CHARACTER_COUNT = 2;

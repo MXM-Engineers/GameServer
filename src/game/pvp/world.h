@@ -25,18 +25,19 @@ struct World
 			f32 speed;
 			RotationHumanoid rot;
 
+			u8 tag = 0;
 			ActionStateID actionState;
 			i32 actionParam1;
 			i32 actionParam2;
 		};
 
 		const ActorUID UID;
-		const i32 clientID; // unique player identifier, also useful to send stuff
+		const i32 clientID;
 		const WideString name;
 		const WideString guildTag;
 
-		eastl::array<ActorPlayerCharacterHandle, 2> characters;
-		PlayerCharaID::Enum currentCharaID = PlayerCharaID::Main;
+		eastl::array<ActorPlayerCharacterHandle, PLAYER_CHARACTER_COUNT> characters;
+		u8 mainCharaID = 0;
 
 		Input input;
 
@@ -47,10 +48,8 @@ struct World
 			guildTag(guildTag_)
 		{}
 
-		inline ActorPlayerCharacter& Current() const { return *characters[currentCharaID]; }
-		inline ActorPlayerCharacter& Out() const { return *characters[currentCharaID ^ 1]; }
-		inline ActorPlayerCharacter& Main() const { return *characters[PlayerCharaID::Main]; }
-		inline ActorPlayerCharacter& Sub() const { return *characters[PlayerCharaID::Sub]; }
+		inline ActorPlayerCharacter& Main() const { return *characters[mainCharaID]; }
+		inline ActorPlayerCharacter& Sub() const { return *characters[mainCharaID ^ 1]; }
 	};
 
 	struct ActorPlayerCharacter

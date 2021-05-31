@@ -26,3 +26,6 @@
 * Interpolate (extrapolate) between player positions
 * ✅ Draw directions
 * Try to roll without testing for collision
+
+* ✅ Make ghidra script to fix ALL flow override for function X (clear flow & repair at call site) [constbuffer_advance, _eh_prolog3]
+* ✅ Reverse SN_GameEnterActor packet, ⚠️ use it to tag other players

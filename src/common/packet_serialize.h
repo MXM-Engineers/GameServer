@@ -215,6 +215,19 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_GameLeaveActor>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GameLeaveActor(%d, %d) :: {", Sv::SN_GameLeaveActor::NET_ID, packetSize);
+	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_StatusSnapshot>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -492,6 +505,22 @@ inline const char* PacketSerialize<Sv::SN_GamePlayerStock>(const void* packetDat
 	SER("	vipLevel=%d", buff.Read<u8>());
 	SER("	staffType=%d", buff.Read<u8>());
 	SER("	isSubstituted=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GamePlayerTag>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_GamePlayerTag& packet = *(Sv::SN_GamePlayerTag*)packetData;
+
+	SER("SN_GamePlayerTag(%d, %d) :: {", Sv::SN_GamePlayerTag::NET_ID, packetSize);
+	SER("	result=%d", packet.result);
+	SER("	mainID=%u", packet.mainID);
+	SER("	subID=%u", packet.subID);
+	SER("	attackerID=%u", packet.attackerID);
 	SER("}");
 
 	return str.data();

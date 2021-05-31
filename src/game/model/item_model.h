@@ -9,6 +9,6 @@ public:
 	~ItemModel();
 
 private:
-	ItemType _ItemType;
-	ItemRank _ItemRank;
+	ItemType _ItemType = ItemType::ITEM_TYPE_UNKNOWN;
+	ItemRank _ItemRank = ItemRank::ITEM_RANK_INVALID;
 };

@@ -76,6 +76,7 @@ struct GameXmlContent
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
+	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);

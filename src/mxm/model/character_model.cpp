@@ -1,7 +1,7 @@
 #include "character_model.h"
 
 CharacterModel::CharacterModel()
-	: CreatureModel(0, EntityType::ENTITY_INVALID, 0, 0, 0, 0, CreatureType::CREATURE_TYPE_INVALID)
+	: CreatureModel(0, EntityType::ENTITY_INVALID, 0, 0, 0, 0, CreatureType::CREATURE_TYPE_INVALID, 0, 0)
 {
 }
 

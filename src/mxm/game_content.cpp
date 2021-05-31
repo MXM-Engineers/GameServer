@@ -161,71 +161,39 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
-bool GameXmlContent::LoadMasterDefinitionsModel()
+bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData)
 {
-	return true; // TODO: remove
-
-	// Parse SKILLS.xml once
-	{
-		Path SkillXml = gameDataDir;
-		PathAppend(SkillXml, L"/SKILL.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILL.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), xmlSKILL.ErrorStr());
-			return false;
-		}
-	}
-
-	// Parse SKILL_PROPERTY.xml once
-	{
-		Path SkillPropertyXml = gameDataDir;
-		PathAppend(SkillPropertyXml, L"/SKILL_PROPERTY.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillPropertyXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillPropertyXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILLPROPERTY.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillPropertyXml.data(), xmlSKILLPROPERTY.ErrorStr());
-			return false;
-		}
-	}
-
-	Path creatureCharacterXml = gameDataDir;
-	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
+	Path filePath = gameDataDir;
+	PathAppend(filePath, fileName);
 
 	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
+	u8* fileData = FileOpenAndReadAll(filePath.data(), &fileSize);
 	if (!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", filePath.data());
 		return false;
 	}
 	defer(memFree(fileData));
 
 	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
+	XMLError error = xmlData.Parse((char*)fileData, fileSize);
 	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
 		return false;
 	}
+}
 
+bool GameXmlContent::LoadMasterDefinitionsModel()
+{
+	// Parse SKILLS.xml once
+	LoadXMLFile(L"/SKILL.xml", xmlSKILL);
+
+	// Parse SKILL_PROPERTY.xml once
+	LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY);
+
+	// Parse CREATURE_CHARACTER.xml once
+	using namespace tinyxml2;
+	XMLDocument doc;
+	LoadXMLFile(L"/CREATURE_CHARACTER.xml", doc);
 
 	// get master IDs
 	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();

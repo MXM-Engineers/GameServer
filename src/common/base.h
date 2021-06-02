@@ -272,6 +272,14 @@ struct PacketWriter
 		return size;
 	}
 
+	template<typename T>
+	inline i32 WriteVec(const T* list, const u16 count)
+	{
+		Write<u16>(count);
+		WriteRaw(list, count * sizeof(T));
+		return size;
+	}
+
 	inline i32 WriteRaw(const void* buff, i32 buffSize)
 	{
 		ASSERT(size + buffSize <= capacity);

@@ -44,7 +44,7 @@ struct World
 		explicit ActorPlayer(ActorUID UID_, i32 clientID_, const WideString& name_, const WideString& guildTag_):
 			UID(UID_),
 			clientID(clientID_),
-			name(name),
+			name(name_),
 			guildTag(guildTag_)
 		{}
 

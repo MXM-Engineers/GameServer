@@ -321,14 +321,9 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 	actor->input.actionParam2 = param2;
 }
 
-void Game::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
-{
-
-}
-
 void Game::OnPlayerLoadingComplete(i32 clientID)
 {
-	replication->SendPvpLoadingComplete(clientID);
+
 }
 
 void Game::OnPlayerGameMapLoaded(i32 clientID)
@@ -370,7 +365,7 @@ void Game::OnPlayerGameMapLoaded(i32 clientID)
 	replication->PlayerRegisterMasterActor(clientID, actor.Main().UID, classType);
 	replication->PlayerRegisterMasterActor(clientID, actor.Sub().UID, subClassType);
 
-	World::ActorPlayer& clone = world.SpawnPlayer(-1, account->nickname.data(), account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
+	World::ActorPlayer& clone = world.SpawnPlayer(-1, L"Clone", account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
 
 	player.cloneActorUID = clone.UID;
 }

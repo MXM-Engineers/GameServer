@@ -23,12 +23,12 @@ inline float3 v2f(const vec3& v3)
 	return float3{ v3.x, v3.y, v3.z };
 }
 
-inline float3 f2v(const vec3& v3)
+inline vec2 f2v(const float2& v2)
 {
-	return { v3.x, v3.y, v3.z };
+	return vec2{ v2.x, v2.y };
 }
 
-inline float2 f2v(const vec2& v2)
+inline float2 v2f(const vec2& v2)
 {
-	return { v2.x, v2.y };
+	return float2{ v2.x, v2.y };
 }

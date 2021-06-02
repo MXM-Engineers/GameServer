@@ -13,12 +13,12 @@ namespace PS
 
 	inline const char* ToStr(const float2& v)
 	{
-		return FMT("(%g, %g)", v.x, v.y);
+		return FMT("(%f, %f)", v.x, v.y);
 	}
 
 	inline const char* ToStr(const float3& v)
 	{
-		return FMT("(%g, %g, %g)", v.x, v.y, v.z);
+		return FMT("(%f, %f, %f)", v.x, v.y, v.z);
 	}
 }
 
@@ -211,6 +211,95 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 
 	SER("}");
 
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GameEnterActor>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_GameEnterActor(%d, %d) :: {", Sv::SN_GameEnterActor::NET_ID, packetSize);
+
+	u8 excludedBits = buff.Read<u8>();
+	SER("	excludedBits=%x",  excludedBits);
+
+	// graph move
+	if((excludedBits & 1) == 0) {
+		SER("	extraGraphMove={");
+		SER("		hasGraphMove=%d",  buff.Read<u8>());
+		SER("		distance=%f",  buff.Read<f32>());
+		SER("		totalTimeS=%f",  buff.Read<f32>());
+		SER("		curTimeS=%f",  buff.Read<f32>());
+		SER("		startPos=%s",  PS::ToStr(buff.Read<float3>()));
+		SER("		endPos=%s",  PS::ToStr(buff.Read<float3>()));
+		SER("		originDistance=%f",  buff.Read<f32>());
+		SER("		hasExtraMove=%d",  buff.Read<u8>());
+		SER("		vExtraPointMoveTarget=%s",  PS::ToStr(buff.Read<float2>()));
+		SER("		vExtraPointMoveRemainTime=%f",  buff.Read<f32>());
+		SER("		vExtraDirMove=%s",  PS::ToStr(buff.Read<float2>()));
+		SER("		vExtraDirMoveRemainTime=%f",  buff.Read<f32>());
+		SER("	}");
+	}
+
+	SER("	objectID=%d",  buff.Read<i32>())
+	SER("	p3nPos=%s",  PS::ToStr(buff.Read<float3>()))
+	SER("	p3nDir=%s",  PS::ToStr(buff.Read<float3>()))
+	SER("	p2nMoveDir=%s",  PS::ToStr(buff.Read<float2>()))
+	SER("	p2nUpperDir=%s",  PS::ToStr(buff.Read<float2>()))
+	SER("	p3nMoveTargetPos=%s",  PS::ToStr(buff.Read<float3>()))
+	SER("	isBattleState=%d",  buff.Read<u8>())
+	SER("	baseMoveSpeed=%f",  buff.Read<f32>())
+	SER("	actionState=%d",  buff.Read<i32>())
+	SER("	aiTargetID=%d",  buff.Read<i32>())
+
+	SER("	statSnapshot={")
+
+		u16 count = buff.Read<u16>();
+		SER("		curStats(%d)=[",  count)
+		while(count > 0) {
+			u8 type = buff.Read<u8>();
+			f32 value = buff.Read<f32>();
+			SER("			(type=%d value=%f),",  type, value);
+			count--;
+		}
+		SER("		]");
+
+		count = buff.Read<u16>();
+		SER("		maxStats(%d)=[",  count);
+		while(count > 0) {
+			u8 type = buff.Read<u8>();
+			f32 value = buff.Read<f32>();
+			SER("			(type=%d value=%f),",  type, value);
+			count--;
+		}
+		SER("		]");
+
+		count = buff.Read<u16>();
+		SER("		addPrivate(%d)=[",  count);
+		while(count > 0) {
+			u8 type = buff.Read<u8>();
+			f32 value = buff.Read<f32>();
+			SER("			(type=%d value=%f),",  type, value);
+			count--;
+		}
+		SER("		]");
+
+		count = buff.Read<u16>();
+		SER("		mulPrivate(%d)=[",  count);
+		while(count > 0) {
+			u8 type = buff.Read<u8>();
+			f32 value = buff.Read<f32>();
+			SER("			(type=%d value=%f),",  type, value);
+			count--;
+		}
+		SER("		]");
+
+	SER("	}");
+	SER("}");
+
+	ASSERT(!buff.CanRead(1));
 	return str.data();
 }
 

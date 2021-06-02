@@ -40,7 +40,7 @@ void ChannelPvP::Update()
 		const LockGuard lock(lane->mutexNewPlayerQueue);
 		foreach(it, lane->newPlayerQueue) {
 			game->OnPlayerConnect(it->clientID, it->accountData);
-			replication.EventPlayerConnect(it->clientID);
+			replication.OnPlayerConnect(it->clientID);
 		}
 		lane->newPlayerQueue.clear();
 	}
@@ -72,10 +72,8 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 #define CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
 
 	switch(header.netID) {
-		CASE(CN_ReadyToLoadCharacter);
 		CASE(CN_ReadyToLoadGameMap);
 		CASE(CA_SetGameGvt);
-		CASE(CN_MapIsLoaded);
 		CASE(CN_GameMapLoaded);
 		CASE(CQ_GetCharacterInfo);
 		CASE(CN_UpdatePosition);
@@ -84,7 +82,6 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		CASE(CN_ChannelChatMessage);
 		CASE(CQ_SetLeaderCharacter);
 		CASE(CN_GamePlayerSyncActionStateOnly);
-		CASE(CQ_JukeboxQueueSong);
 		CASE(CQ_WhisperSend);
 		CASE(CQ_PartyCreate);
 		CASE(CQ_RTT_Time);
@@ -103,12 +100,6 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 #undef HANDLE_CASE
 }
 
-void ChannelPvP::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
-	game->OnPlayerReadyToLoad(clientID);
-}
-
 void ChannelPvP::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
@@ -119,12 +110,6 @@ void ChannelPvP::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& heade
 {
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
 	LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
-}
-
-void ChannelPvP::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
-	replication.SetPlayerAsInGame(clientID);
 }
 
 void ChannelPvP::HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -260,15 +245,6 @@ void ChannelPvP::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 	game->OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 
-void ChannelPvP::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
-
-	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
-
-	game->OnPlayerJukeboxQueueSong(clientID, queue.songID);
-}
-
 void ChannelPvP::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	ConstBuffer buff(packetData, packetSize);
@@ -327,6 +303,7 @@ void ChannelPvP::HandlePacket_CQ_LoadingComplete(i32 clientID, const NetHeader& 
 {
 	LOG("[client%03d] Client :: CQ_LoadingComplete", clientID);
 	game->OnPlayerLoadingComplete(clientID);
+	replication.SetPlayerLoaded(clientID);
 }
 
 void ChannelPvP::HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

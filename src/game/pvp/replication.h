@@ -104,8 +104,9 @@ struct Replication
 
 	enum class PlayerState: u8 {
 		DISCONNECTED=0,
-		CONNECTED=1,
-		IN_GAME=2,
+		CONNECTED,
+		IN_GAME,
+		LOADED
 	};
 
 	struct PlayerLocalInfo
@@ -115,7 +116,6 @@ struct Replication
 		LocalActorID nextPlayerLocalActorID;
 		LocalActorID nextNpcLocalActorID;
 		LocalActorID nextMonsterLocalActorID;
-		bool isFirstLoad;
 
 		void Reset();
 	};
@@ -128,7 +128,13 @@ struct Replication
 	// TODO: we propably do not need to store every possible client data here
 	// Use a fixed_vector?
 
-	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
+	struct PlayerStatePair
+	{
+		PlayerState prev;
+		PlayerState cur;
+	};
+
+	eastl::array<PlayerStatePair,Server::MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
 
 	void Init(Server* server_);
@@ -138,10 +144,11 @@ struct Replication
 	void FramePushPlayerCharacterActor(const ActorPlayerCharacter& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
-	void EventPlayerConnect(i32 clientID);
+	void OnPlayerConnect(i32 clientID);
 	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
 	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
+	void SetPlayerLoaded(i32 clientID);
 	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
 

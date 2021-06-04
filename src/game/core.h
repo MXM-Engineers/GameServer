@@ -8,6 +8,11 @@ enum class ActorUID: u32
 	INVALID = 0,
 };
 
+enum class PlayerID: u32
+{
+	INVALID = 0xFFFFFFFF
+};
+
 // used in skill.xml, botskillconditiondata.xml
 // xml tag _NormalConds attribute _ConditionType
 // values are from decompile

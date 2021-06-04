@@ -11,13 +11,12 @@
 
 struct World
 {
-	struct ActorPlayer;
-	struct ActorPlayerCharacter;
+	struct Player;
+	struct ActorMaster;
 
-	typedef ListItT<ActorPlayer> PlayerHandle;
-	typedef ListItT<ActorPlayerCharacter> ActorPlayerCharacterHandle;
+	typedef ListItT<ActorMaster> ActorMasterHandle;
 
-	struct ActorPlayer
+	struct Player
 	{
 		struct Input
 		{
@@ -31,31 +30,54 @@ struct World
 			i32 actionParam2;
 		};
 
-		const ActorUID UID;
+		const PlayerID playerID;
 		const i32 clientID;
 		const WideString name;
 		const WideString guildTag;
 
-		eastl::array<ActorPlayerCharacterHandle, PLAYER_CHARACTER_COUNT> characters;
+		const ClassType mainClass;
+		const SkinIndex mainSkin;
+		const ClassType subClass;
+		const SkinIndex subSkin;
+
+		u8 level;
+		u32 experience;
+
+		eastl::array<ActorMasterHandle, PLAYER_CHARACTER_COUNT> characters;
 		u8 mainCharaID = 0;
 
 		Input input;
 
-		explicit ActorPlayer(ActorUID UID_, i32 clientID_, const WideString& name_, const WideString& guildTag_):
-			UID(UID_),
+		explicit Player(
+				PlayerID playerID_,
+				i32 clientID_,
+				const WideString& name_,
+				const WideString& guildTag_,
+				ClassType mainClass_,
+				SkinIndex mainSkin_,
+				ClassType subClass_,
+				SkinIndex subSkin_
+				):
+			playerID(playerID_),
 			clientID(clientID_),
 			name(name_),
-			guildTag(guildTag_)
-		{}
+			guildTag(guildTag_),
+			mainClass(mainClass_),
+			mainSkin(mainSkin_),
+			subClass(subClass_),
+			subSkin(subSkin_)
+		{
 
-		inline ActorPlayerCharacter& Main() const { return *characters[mainCharaID]; }
-		inline ActorPlayerCharacter& Sub() const { return *characters[mainCharaID ^ 1]; }
+		}
+
+		inline ActorMaster& Main() const { return *characters[mainCharaID]; }
+		inline ActorMaster& Sub() const { return *characters[mainCharaID ^ 1]; }
 	};
 
-	struct ActorPlayerCharacter
+	struct ActorMaster
 	{
 		const ActorUID UID;
-		PlayerHandle parent;
+		Player* parent;
 		ClassType classType;
 		SkinIndex skinIndex;
 		PhysWorld::BodyHandle body;
@@ -64,7 +86,7 @@ struct World
 		i32 actionParam1;
 		i32 actionParam2;
 
-		explicit ActorPlayerCharacter(ActorUID UID_): UID(UID_) {}
+		explicit ActorMaster(ActorUID UID_): UID(UID_) {}
 	};
 
 	struct ActorNpc
@@ -82,15 +104,14 @@ struct World
 
 	Replication* replication;
 
-	eastl::fixed_list<ActorPlayer,512,true> actorPlayerList;
-	eastl::fixed_list<ActorPlayerCharacter,512,true> actorPlayerCharacterList;
+	eastl::fixed_vector<Player,10,false> players;
+	eastl::fixed_list<ActorMaster,512,true> actorMasterList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
 
 	typedef ListItT<ActorNpc> ActorNpcHandle;
 
 	// TODO: make those fixed_hash_maps
-	eastl::fixed_map<ActorUID, PlayerHandle, 2048, true> actorPlayerMap;
-	eastl::fixed_map<ActorUID, ActorPlayerCharacterHandle, 2048, true> actorPlayerCharacterMap;
+	eastl::fixed_map<ActorUID, ActorMasterHandle, 2048, true> actorMasterMap;
 	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
 
 	u32 nextActorUID;
@@ -102,15 +123,16 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	ActorPlayer& SpawnPlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
+	Player& CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin);
+	ActorMaster& SpawnPlayerMasters(Player& player, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
-	ActorPlayer* FindPlayerActor(ActorUID actorUID) const;
+	Player* FindPlayer(PlayerID playerID);
+	Player& GetPlayer(PlayerID playerID);
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 
-	bool DestroyPlayerActor(ActorUID actorUID);
-
 private:
 	ActorUID NewActorUID();
+	ActorMasterHandle MasterInvalidHandle();
 };

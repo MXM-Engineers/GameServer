@@ -32,10 +32,20 @@ void Game::Init(Replication* replication_)
 
 	LoadMap();
 
-	// spawn test
-	World::ActorPlayer& lego = world.SpawnPlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, vec3(2800, 3532, 1000));
+	// create players
+	World::Player& player = world.CreatePlayer(0, L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
+	clone = &world.CreatePlayer(-1, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
+	lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT);
 
-	legoUID = lego.UID;
+	world.SpawnPlayerMasters(*lego, vec3(2800, 3532, 1000));
+
+	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
+	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
+	vec3 pos = spawnPoint.pos;
+	vec3 dir = spawnPoint.dir;
+
+	world.SpawnPlayerMasters(player, pos);
+	world.SpawnPlayerMasters(*clone, pos);
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
@@ -47,23 +57,14 @@ void Game::Update(Time localTime_)
 	Dbg::PushNewFrame(dbgGameUID);
 
 	// update clone
-	foreach_const(p, playerList) {
-		if(p->actorUID != ActorUID::INVALID) {
-			World::ActorPlayer* main = world.FindPlayerActor(p->actorUID);
-			World::ActorPlayer* clone = world.FindPlayerActor(p->cloneActorUID);
-			ASSERT(main);
-			ASSERT(clone);
-
-			clone->input = main->input;
-		}
-	}
+	clone->input = world.FindPlayer((PlayerID)0)->input; // TODO: hardcoded hack
+	// TODO: maybe don't replicate cloned players, just their master?
 
 	enum Step {
 		Move = 0,
 		Stop = 1,
 	};
 
-	World::ActorPlayer* lego = world.FindPlayerActor(legoUID);
 	ASSERT(lego);
 	f64 localTimeSec = TimeDiffSec(localTime);
 	u32 step = ((u64)localTimeSec % 5) == 0;
@@ -91,13 +92,13 @@ void Game::Update(Time localTime_)
 
 	world.Update(localTime);
 
-	foreach_const(actor, world.actorPlayerList) {
+	foreach_const(player, world.players) {
 		Dbg::Entity e;
-		e.UID = (u32)actor->UID;
-		e.name = actor->name;
-		e.pos = actor->Main().body->pos;
-		e.rot = actor->input.rot;
-		e.moveDir = NormalizeSafe(actor->input.moveTo - actor->Main().body->pos);
+		e.UID = (u32)player->playerID;
+		e.name = player->name;
+		e.pos = player->Main().body->pos;
+		e.rot = player->input.rot;
+		e.moveDir = NormalizeSafe(player->input.moveTo - player->Main().body->pos);
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -140,8 +141,6 @@ void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 
 	playerList.push_back(Player(clientID));
 	playerMap[clientID] = --playerList.end();
-
-	replication->SendAccountDataPvp(clientID, *accountData);
 }
 
 void Game::OnPlayerDisconnect(i32 clientID)
@@ -152,8 +151,7 @@ void Game::OnPlayerDisconnect(i32 clientID)
 		LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)player.actorUID);
 
 		// we can disconnect before spawning, so test if we have an actor associated
-		if(player.actorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.actorUID);
-		if(player.cloneActorUID != ActorUID::INVALID) world.DestroyPlayerActor(player.cloneActorUID);
+		// TODO: KILL MASTERS
 
 		playerList.erase(playerMap[clientID]);
 	}
@@ -170,13 +168,16 @@ void Game::OnPlayerReadyToLoad(i32 clientID)
 void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	const Player& player = *playerMap[clientID];
-	const World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
-	ASSERT(actor);
-	ASSERT(actor->clientID == clientID);
 
-	foreach_const(chit, actor->characters) {
-		const World::ActorPlayerCharacter& chara = **chit;
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
+
+	const World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
+
+	foreach_const(chit, player->characters) {
+		const World::ActorMaster& chara = **chit;
 
 		if(chara.UID == actorUID) {
 			// TODO: health
@@ -192,14 +193,17 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	const Player& player = *playerMap[clientID];
-	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
-	ASSERT(actor);
-	DBG_ASSERT(actor->clientID == clientID);
+
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
+
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
 
 	bool found = false;
-	foreach_const(chit, actor->characters) {
-		const World::ActorPlayerCharacter& chara = **chit;
+	foreach_const(chit, player->characters) {
+		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
 			break;
@@ -214,22 +218,25 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	}
 
 	// TODO: check for movement hacking
-	actor->input.moveTo = pos;
-	actor->input.rot = rot;
-	actor->input.speed = speed;
+	player->input.moveTo = pos;
+	player->input.rot = rot;
+	player->input.speed = speed;
 }
 
 void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	const Player& player = *playerMap[clientID];
-	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
-	ASSERT(actor);
-	DBG_ASSERT(actor->clientID == clientID);
+
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
+
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
 
 	bool found = false;
-	foreach_const(chit, actor->characters) {
-		const World::ActorPlayerCharacter& chara = **chit;
+	foreach_const(chit, player->characters) {
+		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
 			break;
@@ -243,7 +250,7 @@ void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const Rotatio
 		return;
 	}
 
-	actor->input.rot = rot;
+	player->input.rot = rot;
 }
 
 void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
@@ -292,14 +299,17 @@ void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, Sk
 void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	const Player& player = *playerMap[clientID];
-	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
-	ASSERT(actor);
-	DBG_ASSERT(actor->clientID == clientID);
+
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
+
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
 
 	bool found = false;
-	foreach_const(chit, actor->characters) {
-		const World::ActorPlayerCharacter& chara = **chit;
+	foreach_const(chit, player->characters) {
+		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
 			break;
@@ -314,11 +324,11 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 	}
 
 	// TODO: check hacking
-	actor->input.rot.bodyYaw = rotate;
-	actor->input.rot.upperYaw = upperRotate;
-	actor->input.actionState = state;
-	actor->input.actionParam1 = param1;
-	actor->input.actionParam2 = param2;
+	player->input.rot.bodyYaw = rotate;
+	player->input.rot.upperYaw = upperRotate;
+	player->input.actionState = state;
+	player->input.actionParam1 = param1;
+	player->input.actionParam2 = param2;
 }
 
 void Game::OnPlayerLoadingComplete(i32 clientID)
@@ -345,41 +355,38 @@ void Game::OnPlayerGameMapLoaded(i32 clientID)
 	// TODO: check if already leader character
 	DBG_ASSERT(player.actorUID == ActorUID::INVALID);
 	if((player.actorUID != ActorUID::INVALID)) {
-		world.DestroyPlayerActor(player.actorUID);
-		world.DestroyPlayerActor(player.cloneActorUID);
+
+		//world.DestroyPlayerActor(player.actorUID);
+		//world.DestroyPlayerActor(player.cloneActorUID);
 	}
 
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
 	const AccountData* account = playerAccountData[clientID];
 
-	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const ClassType classType = ClassType::LUA;
-	const ClassType subClassType = ClassType::SIZUKA;
+	World::Player& worldPlayer = world.GetPlayer((PlayerID)0);
 
-	World::ActorPlayer& actor = world.SpawnPlayer(clientID, account->nickname.data(), account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
-
-	player.actorUID = actor.UID;
+	//player.actorUID = actor.UID;
 
 	// force LocalActorID for both actors
 	// TODO: eventually get rid of this system
-	replication->PlayerRegisterMasterActor(clientID, actor.Main().UID, classType);
-	replication->PlayerRegisterMasterActor(clientID, actor.Sub().UID, subClassType);
+	replication->PlayerRegisterMasterActor(clientID, worldPlayer.Main().UID, worldPlayer.mainClass);
+	replication->PlayerRegisterMasterActor(clientID, worldPlayer.Sub().UID, worldPlayer.subClass);
 
-	World::ActorPlayer& clone = world.SpawnPlayer(-1, L"Clone", account->guildTag.data(), classType, SkinIndex::DEFAULT, subClassType, SkinIndex::DEFAULT, pos);
-
-	player.cloneActorUID = clone.UID;
+	//player.cloneActorUID = clone.UID;
 }
 
 void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	Player& player = *playerMap[clientID];
-	World::ActorPlayer* actor = world.FindPlayerActor(player.actorUID);
-	ASSERT(actor);
-	DBG_ASSERT(actor->clientID == clientID);
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
+
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
 
 	// TODO: cooldown
-	actor->input.tag = 1;
+	player->input.tag = 1;
 }
 
 void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
@@ -420,11 +427,13 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		msg++;
 
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
-			World::ActorPlayer* playerActor = world.FindPlayerActor(player.actorUID); // TODO: find currently active actor
+			// TODO: restore?
+			/*
+			World::Player* playerActor = world.FindPlayer(player.actorUID); // TODO: find currently active actor
 			ASSERT(playerActor);
 			const vec3 pos = playerActor->Main().body->pos;
 
-			World::ActorPlayer& actor = world.SpawnPlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, pos);
+			World::Player& actor = world.SpawnPlayerMasters(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, pos);
 			actor.input.rot = playerActor->input.rot;
 
 			// trigger second emote
@@ -435,13 +444,17 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", pos.x, pos.y, pos.z));
 			return true;
+			*/
 		}
 
 		if(EA::StdC::Strncmp(msg, L"delete", 6) == 0) {
+			// TODO: restore?
+			/*
 			world.DestroyPlayerActor(lastLegoActorUID);
 
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
+			*/
 		}
 	}
 

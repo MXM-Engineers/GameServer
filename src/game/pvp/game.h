@@ -49,12 +49,13 @@ struct Game
 
 	Dbg::GameUID dbgGameUID;
 
-	ActorUID legoUID = ActorUID::INVALID;
+	World::Player* lego = nullptr;
 	vec2 legoDir = vec2(1, 0);
 	i32 legoAngle = 0;
 	u32 legoLastStep = 0;
 
-	eastl::fixed_hash_map<i32,ActorUID,MAX_PLAYERS> cloneMap;
+	World::Player* clone = nullptr;
+
 
 	void Init(Replication* replication_);
 	void Update(Time localTime_);

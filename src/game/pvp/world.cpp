@@ -14,8 +14,8 @@ void World::Update(Time localTime_)
 	localTime = localTime_;
 
 	// players: handle input
-	foreach(it, actorPlayerList) {
-		ActorPlayer& p = *it;
+	foreach(it, players) {
+		Player& p = *it;
 
 		// tag
 		if(p.input.tag) {
@@ -58,28 +58,34 @@ void World::Update(Time localTime_)
 void World::Replicate()
 {
 	// players
-	foreach_const(it, actorPlayerList) {
-		const ActorPlayer& player = *it;
+	foreach_const(it, players) {
+		const Player& player = *it;
 
-		Replication::ActorPlayer rep;
-		rep.actorUID = player.UID;
+		Replication::Player rep;
+		rep.playerID = player.playerID;
 		rep.clientID = player.clientID;
 		rep.name = player.name;
 		rep.guildTag = player.guildTag;
+
+		rep.mainClass = player.mainClass;
+		rep.mainSkin = player.mainSkin;
+		rep.subClass = player.subClass;
+		rep.subSkin = player.subSkin;
+
 		rep.characters = {
 			player.characters[0]->UID,
 			player.characters[1]->UID
 		};
 		rep.mainCharaID = player.mainCharaID;
 
-		replication->FramePushPlayerActor(rep);
+		replication->FramePushPlayer(rep);
 
 		foreach_const(chit, player.characters) {
-			const ActorPlayerCharacter& chara = **chit;
-			Replication::ActorPlayerCharacter rch;
+			const ActorMaster& chara = **chit;
+			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
 			rch.clientID = player.clientID;
-			rch.parentActorUID = player.UID;
+			rch.playerID = player.playerID;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 			rch.pos = chara.body->pos;
@@ -91,12 +97,12 @@ void World::Replicate()
 			rch.actionParam1 = chara.actionParam1;
 			rch.actionParam2 = chara.actionParam2;
 
-			replication->FramePushPlayerCharacterActor(rch);
+			replication->FramePushMasterActor(rch);
 		}
 	}
 
 	// clear action state
-	foreach(it, actorPlayerCharacterList) {
+	foreach(it, actorMasterList) {
 		it->actionState = ActionStateID::INVALID;
 		it->actionParam1 = -1;
 		it->actionParam2 = -1;
@@ -119,48 +125,51 @@ void World::Replicate()
 	}
 }
 
-ActorUID World::NewActorUID()
+World::Player& World::CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin)
 {
-	return (ActorUID)nextActorUID++;
+	players.emplace_back((PlayerID)players.size(), clientID, name, guildTag, mainClass, mainSkin, subClass, subSkin);
+	Player& player = players.back();
+	player.level = 1;
+	player.experience = 0;
+
+	player.characters.fill(MasterInvalidHandle());
+	return player;
 }
 
-World::ActorPlayer& World::SpawnPlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
+World::ActorMaster& World::SpawnPlayerMasters(Player& player, const vec3& pos)
 {
-	const ActorUID playerUID = NewActorUID();
+	ASSERT(player.characters[0] == MasterInvalidHandle());
+	ASSERT(player.characters[1] == MasterInvalidHandle());
+
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();
 
-	actorPlayerCharacterList.emplace_back(mainUID);
-	ActorPlayerCharacter& main = actorPlayerCharacterList.back();
-	ActorPlayerCharacterHandle hMain = --actorPlayerCharacterList.end();
-	actorPlayerCharacterMap.emplace(mainUID, hMain);
+	actorMasterList.emplace_back(mainUID);
+	ActorMaster& main = actorMasterList.back();
+	ActorMasterHandle hMain = --actorMasterList.end();
+	actorMasterMap.emplace(mainUID, hMain);
 
-	actorPlayerCharacterList.emplace_back(subUID);
-	ActorPlayerCharacter& sub = actorPlayerCharacterList.back();
-	ActorPlayerCharacterHandle hSub = --actorPlayerCharacterList.end();
-	actorPlayerCharacterMap.emplace(subUID, hSub);
-
-	actorPlayerList.emplace_back(playerUID, clientID, name, guildTag);
-	ActorPlayer& player = actorPlayerList.back();
-	PlayerHandle hPlayer = --actorPlayerList.end();
-	actorPlayerMap.emplace(playerUID, hPlayer);
+	actorMasterList.emplace_back(subUID);
+	ActorMaster& sub = actorMasterList.back();
+	ActorMasterHandle hSub = --actorMasterList.end();
+	actorMasterMap.emplace(subUID, hSub);
 
 	player.characters = {
 		hMain,
 		hSub
 	};
 
-	main.parent = hPlayer;
-	main.classType = mainClass;
-	main.skinIndex = mainSkin;
+	main.parent = &player;
+	main.classType = player.mainClass;
+	main.skinIndex = player.mainSkin;
 	main.body = physics.CreateBody(45, 210, pos);
 
-	sub.parent = hPlayer;
-	sub.classType = subClass;
-	sub.skinIndex = subSkin;
+	sub.parent = &player;
+	sub.classType = player.subClass;
+	sub.skinIndex = player.subSkin;
 	sub.body = physics.CreateBody(45, 210, pos);
 
-	return player;
+	return main;
 }
 
 World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
@@ -176,11 +185,15 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	return actor;
 }
 
-World::ActorPlayer* World::FindPlayerActor(ActorUID actorUID) const
+World::Player* World::FindPlayer(PlayerID playerID)
 {
-	auto it = actorPlayerMap.find(actorUID);
-	if(it == actorPlayerMap.end()) return nullptr;
-	return &(*it->second);
+	if((i32)playerID >= players.size()) return nullptr;
+	return &(players[(u32)playerID]);
+}
+
+World::Player& World::GetPlayer(PlayerID playerID)
+{
+	return players[(u32)playerID];
 }
 
 World::ActorNpc* World::FindNpcActor(ActorUID actorUID) const
@@ -200,18 +213,12 @@ World::ActorNpc* World::FindNpcActorByCreatureID(CreatureIndex docID)
 	return nullptr;
 }
 
-bool World::DestroyPlayerActor(ActorUID actorUID)
+ActorUID World::NewActorUID()
 {
-	auto actorIt = actorPlayerMap.find(actorUID);
-	if(actorIt == actorPlayerMap.end()) return false;
+	return (ActorUID)nextActorUID++;
+}
 
-	foreach_const(chit, actorIt->second->characters) {
-		physics.DeleteBody((*chit)->body);
-		actorPlayerCharacterMap.erase((*chit)->UID);
-		actorPlayerCharacterList.erase(*chit);
-	}
-
-	actorPlayerList.erase(actorIt->second);
-	actorPlayerMap.erase(actorIt);
-	return true;
+World::ActorMasterHandle World::MasterInvalidHandle()
+{
+	return actorMasterList.end();
 }

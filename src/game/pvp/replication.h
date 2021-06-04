@@ -17,8 +17,7 @@ struct Replication
 	enum class ActorType: i32
 	{
 		INVALID = 0,
-		Player,
-		PlayerCharacter,
+		Master,
 		Npc,
 	};
 
@@ -30,20 +29,26 @@ struct Replication
 		inline ActorType Type() const { return TYPE_; }
 	};
 
-	struct ActorPlayer: Actor<ActorType::Player>
+	struct Player
 	{
 		i32 clientID;
+		PlayerID playerID = PlayerID::INVALID;
 		WideString name;
 		WideString guildTag;
+
+		ClassType mainClass;
+		SkinIndex mainSkin;
+		ClassType subClass;
+		SkinIndex subSkin;
 
 		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> characters;
 		u8 mainCharaID;
 	};
 
-	struct ActorPlayerCharacter: Actor<ActorType::PlayerCharacter>
+	struct ActorMaster: Actor<ActorType::Master>
 	{
 		i32 clientID; // useful to copy it here
-		ActorUID parentActorUID;
+		PlayerID playerID;
 		ClassType classType;
 		SkinIndex skinIndex;
 
@@ -75,29 +80,39 @@ struct Replication
 	struct Frame
 	{
 		// TODO: replace fixed_map with fixed_hash_map
-		eastl::fixed_list<ActorPlayer,2048,true> playerList;
-		eastl::fixed_list<ActorPlayerCharacter,2048,true> playerCharaList;
+		eastl::fixed_list<Player,10,false> playerList;
+		eastl::fixed_list<ActorMaster,2048,true> masterList;
 		eastl::fixed_list<ActorNpc,2048,true> npcList;
-		eastl::fixed_map<ActorUID,decltype(playerList)::iterator,2048,true> playerMap;
-		eastl::fixed_map<ActorUID,decltype(playerCharaList)::iterator,2048,true> playerCharaMap;
+
+		eastl::fixed_map<PlayerID,decltype(playerList)::iterator,2048,true> playerMap;
+		eastl::fixed_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
 		eastl::fixed_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
 
+		eastl::fixed_map<i32,PlayerID,10,false> clientPlayerMap;
+
 		void Clear();
 
-		inline ActorPlayer* FindPlayer(ActorUID actorUID)
+		inline Player* FindPlayer(PlayerID playerID)
 		{
-			auto found = playerMap.find(actorUID);
+			auto found = playerMap.find(playerID);
 			if(found == playerMap.end()) return nullptr;
 			return &(*found->second);
 		}
 
-		inline ActorPlayerCharacter* FindPlayerChara(ActorUID actorUID)
+		inline Player* FindClientPlayer(i32 clientID)
 		{
-			auto found = playerCharaMap.find(actorUID);
-			if(found == playerCharaMap.end()) return nullptr;
+			auto found = clientPlayerMap.find(clientID);
+			if(found == clientPlayerMap.end()) return nullptr;
+			return FindPlayer(found->second);
+		}
+
+		inline ActorMaster* FindMaster(ActorUID actorUID)
+		{
+			auto found = masterMap.find(actorUID);
+			if(found == masterMap.end()) return nullptr;
 			return &(*found->second);
 		}
 	};
@@ -137,14 +152,16 @@ struct Replication
 	eastl::array<PlayerStatePair,Server::MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
 
+	eastl::array<const AccountData*,Server::MAX_CLIENTS> playerAccountData;
+
 	void Init(Server* server_);
 
 	void FrameEnd();
-	void FramePushPlayerActor(const ActorPlayer& actor);
-	void FramePushPlayerCharacterActor(const ActorPlayerCharacter& actor);
+	void FramePushPlayer(const Player& player);
+	void FramePushMasterActor(const ActorMaster& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
-	void OnPlayerConnect(i32 clientID);
+	void OnPlayerConnect(i32 clientID, const AccountData* account);
 	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
 	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
@@ -157,8 +174,7 @@ struct Replication
 	void SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg);
 	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
 
-	void SendAccountDataLobby(i32 clientID, const AccountData& account);
-	void SendAccountDataPvp(i32 clientID, const AccountData& account);
+	void SendAccountDataPvp(i32 clientID);
 
 	void SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port);
 	void SendPvpLoadingComplete(i32 clientID);
@@ -181,12 +197,12 @@ private:
 	void UpdatePlayersLocalState();
 	void FrameDifference();
 
-	void SendActorPlayerCharacterSpawn(i32 clientID, const ActorPlayerCharacter& actor, const ActorPlayer& parent);
+	void SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, const Player& parent);
 	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
 	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
 
-	void SendMasterSkillSlots(i32 clientID, const ActorPlayerCharacter& actor);
+	void SendMasterSkillSlots(i32 clientID, const ActorMaster& actor);
 
 	void SendInitialFrame(i32 clientID);
 

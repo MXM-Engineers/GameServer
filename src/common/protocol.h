@@ -1460,7 +1460,7 @@ struct SN_ProfileCharacters
 		f32 y;
 		f32 z;
 		i32 characterType;
-		i32 skinIndex;
+		SkinIndex skinIndex;
 		WeaponIndex weaponIndex;
 		u8 masterGearNo;
 	};
@@ -1514,7 +1514,7 @@ struct SN_ProfileWeapons
 	{
 		LocalActorID characterID;
 		i32 weaponType;
-		i32 weaponIndex;
+		WeaponIndex weaponIndex;
 		i32 grade;
 		u8 isUnlocked;
 		u8 isActivated;

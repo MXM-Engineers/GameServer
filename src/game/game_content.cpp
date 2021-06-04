@@ -908,6 +908,13 @@ const GameXmlContent::Song* GameXmlContent::FindJukeboxSongByID(SongID songID) c
 	return nullptr;
 }
 
+const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) const
+{
+	auto found = masterClassTypeMap.find(classType);
+	ASSERT(found != masterClassTypeMap.end());
+	return *found->second;
+}
+
 bool GameXmlContentLoad()
 {
 	static GameXmlContent content;

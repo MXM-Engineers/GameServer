@@ -40,7 +40,7 @@ void ChannelPvP::Update()
 		const LockGuard lock(lane->mutexNewPlayerQueue);
 		foreach(it, lane->newPlayerQueue) {
 			game->OnPlayerConnect(it->clientID, it->accountData);
-			replication.OnPlayerConnect(it->clientID);
+			replication.OnPlayerConnect(it->clientID, it->accountData);
 		}
 		lane->newPlayerQueue.clear();
 	}

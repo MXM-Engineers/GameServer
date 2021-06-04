@@ -557,7 +557,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			chara.y = 0;
 			chara.z = 0;
 			chara.characterType = 1;
-			chara.skinIndex = 0;
+			chara.skinIndex = SkinIndex::DEFAULT;
 			chara.weaponIndex = it->weaponIDs[0];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
@@ -948,7 +948,7 @@ void ReplicationHub::SendAccountDataPvp(i32 clientID, const AccountData& account
 			chara.y = 0;
 			chara.z = 0;
 			chara.characterType = 1;
-			chara.skinIndex = 0;
+			chara.skinIndex = SkinIndex::DEFAULT;
 			chara.weaponIndex = it->weaponIDs[1];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
@@ -966,7 +966,7 @@ void ReplicationHub::SendAccountDataPvp(i32 clientID, const AccountData& account
 			chara.y = 0;
 			chara.z = 0;
 			chara.characterType = 1;
-			chara.skinIndex = 0;
+			chara.skinIndex = SkinIndex::DEFAULT;
 			chara.weaponIndex = it->weaponIDs[1];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
@@ -986,7 +986,7 @@ void ReplicationHub::SendAccountDataPvp(i32 clientID, const AccountData& account
 		Sv::SN_ProfileWeapons::Weapon weap;
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)ClassType::LUA);
 		weap.weaponType = 1;
-		weap.weaponIndex = 131135011;
+		weap.weaponIndex = WeaponIndex(131135011);
 		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
@@ -994,7 +994,7 @@ void ReplicationHub::SendAccountDataPvp(i32 clientID, const AccountData& account
 
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)ClassType::SIZUKA);
 		weap.weaponType = 1;
-		weap.weaponIndex = 131103011;
+		weap.weaponIndex = WeaponIndex(131103011);
 		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;

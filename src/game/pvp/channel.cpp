@@ -76,7 +76,6 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		CASE(CA_SetGameGvt);
 		CASE(CN_GameMapLoaded);
 		CASE(CQ_GetCharacterInfo);
-		CASE(CN_UpdatePosition);
 		CASE(CN_GameUpdatePosition);
 		CASE(CN_GameUpdateRotation);
 		CASE(CN_ChannelChatMessage);
@@ -131,25 +130,6 @@ void ChannelPvP::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader&
 	}
 
 	game->OnPlayerGetCharacterInfo(clientID, actorUID);
-}
-
-void ChannelPvP::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d }", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
-
-	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
-	if(actorUID == ActorUID::INVALID) {
-		WARN("Client sent an invalid actor (localActorID=%d)", update.characterID);
-		return;
-	}
-
-	RotationHumanoid rot;
-	rot.upperYaw = MxmYawToWorldYaw(update.p3nEye.x);
-	rot.upperPitch = MxmPitchToWorldPitch(update.p3nEye.z);
-	rot.bodyYaw = MxmYawToWorldYaw(update.nRotate);
-
-	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, update.nState, update.nActionIDX);
 }
 
 void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

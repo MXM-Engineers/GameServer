@@ -27,6 +27,7 @@ void Game::Init(Replication* replication_)
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &shape[1]);
 	ASSERT(r);
 	world.physics.PushStaticMeshes(shape, 2);
+	// --------------------------
 
 	playerMap.fill(playerList.end());
 
@@ -218,7 +219,12 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	}
 
 	// TODO: check for movement hacking
-	player->input.moveTo = pos;
+	if(dir.x == 0 && dir.y == 0) {
+		player->input.moveTo = pos;
+	}
+	else {
+		player->input.moveTo = pos + vec3(glm::normalize(vec2(dir)) * speed, 0);
+	}
 	player->input.rot = rot;
 	player->input.speed = speed;
 }

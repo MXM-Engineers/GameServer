@@ -191,12 +191,10 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY);
 
 	// Parse CREATURE_CHARACTER.xml once
-	using namespace tinyxml2;
-	XMLDocument doc;
-	LoadXMLFile(L"/CREATURE_CHARACTER.xml", doc);
+	LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER);
 
 	// get master IDs
-	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
 	do {
 		mastersModel.push_back();
 		CharacterModel &character = mastersModel.back();
@@ -225,6 +223,12 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 
 		const char* creatureTypeTemp;
 		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+
+		XMLElement* pMoveControllerComData = pNodeMaster->FirstChildElement("MoveController_ComData");
+
+		i32 actorRadius, actorHeight;
+		pMoveControllerComData->QueryIntAttribute("ActorRadius", &actorRadius);
+		pMoveControllerComData->QueryIntAttribute("ActorHeight", &actorHeight);
 
 		XMLElement* pPhysxMeshComData = pNodeMaster->FirstChildElement("PhysXMeshComData");
 
@@ -289,6 +293,9 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		character.setMoveSpeed(moveSpeed);
 		character.setRotateSpeed(rotateSpeed);
 		character.setScale(scale);
+		//MoveController data
+		character.setActorHeight(actorHeight);
+		character.setActorRadius(actorRadius);
 		//Physx data
 		character.setColliderHeight(colliderHeight);
 		character.setColliderRadius(colliderRadius);

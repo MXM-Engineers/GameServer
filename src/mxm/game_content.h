@@ -100,6 +100,7 @@ struct GameXmlContent
 private:
 	tinyxml2::XMLDocument xmlSKILL;
 	tinyxml2::XMLDocument xmlSKILLPROPERTY;
+	tinyxml2::XMLDocument xmlCREATURECHARACTER;
 };
 
 bool GameXmlContentLoad();

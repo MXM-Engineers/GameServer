@@ -502,8 +502,10 @@ void PhysWorld::Step()
 					const Collision& col = colList.front();
 
 					body.pos += col.fix;
+					const f32 len = glm::length(body.vel);
 					if(glm::dot(glm::normalize(body.vel), col.triangleNormal) < 0) {
 						body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
+						body.vel = glm::normalize(body.vel) * len; // resitute all the speed
 					}
 
 					DBG_ASSERT_NONNAN(body.pos.x);

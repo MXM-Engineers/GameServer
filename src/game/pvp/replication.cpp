@@ -1692,23 +1692,6 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 	}
 
 	/*
-	if(stageType == StageType::CITY) {
-		// SN_PlayerStateInTown
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
-
-			packet.Write<LocalActorID>(localActorID); // playerID
-			packet.Write<u8>(0); // playerStateInTown
-			packet.Write<u16>(0); // matchingGameModes_count
-
-			LOG("[client%03d] Server :: SN_PlayerStateInTown :: state=%d", clientID, -1);
-			SendPacketData(clientID, Sv::SN_PlayerStateInTown::NET_ID, packet.size, packet.data);
-		}
-	}
-	*/
-
-	/*
 	// SN_StatusSnapshot
 	{
 		u8 sendData[1024];

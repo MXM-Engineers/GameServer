@@ -18,8 +18,8 @@
 * Fix replication sending players moving while they don't (like when stuck in a corner)
 * Make physics match the client more (for example we can go up the ramp from the side)
     - ✅ Make the phys body move based on input.moveTo
-    - ⚠️ Fix 1s delay
-    - ⚠️ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
+    - ✅ Fix 1s delay
+    - ✅ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
 * Try to make rolling work
 
 # Test
@@ -28,4 +28,4 @@
 * Try to roll without testing for collision
 
 * ✅ Make ghidra script to fix ALL flow override for function X (clear flow & repair at call site) [constbuffer_advance, _eh_prolog3]
-* ✅ Reverse SN_GameEnterActor packet, ⚠️ use it to tag other players
+* ✅ Reverse SN_GameEnterActor packet, ✅ use it to tag other players

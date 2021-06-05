@@ -143,15 +143,13 @@ void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeade
 		return;
 	}
 
-	float3 dir = { update.p3nDir.x, update.p3nDir.y, 0 };
-
 	// transform rotation for our coordinate system
 	RotationHumanoid rot;
 	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
 	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
 	rot.bodyYaw = MxmYawToWorldYaw(update.bodyYaw);
 
-	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(dir), rot, update.nSpeed, ActionStateID::INVALID, 0);
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, 0);
 }
 
 void ChannelPvP::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

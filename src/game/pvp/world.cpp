@@ -31,11 +31,11 @@ void World::Update(Time localTime_)
 		bodyMain.flags &= ~PhysWorld::Flags::Disabled; // enable current body
 		bodySub.flags |= PhysWorld::Flags::Disabled; // disable tagged out body
 
-		vec3 delta = p.input.moveTo - bodyMain.pos;
-		delta.z = 0;
+		vec2 delta = vec2(p.input.moveTo - bodyMain.pos);
 		f32 deltaLen = glm::length(delta);
-		if(deltaLen > 1.0f) {
-			vec3 dir = NormalizeSafe(delta);
+		if(deltaLen > 1.0f && p.input.speed > 0.f) {
+			vec2 dir = NormalizeSafe(delta);
+			p._moveDir = dir;
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
@@ -46,6 +46,7 @@ void World::Update(Time localTime_)
 			}
 		}
 		else {
+			p._moveDir = vec2(0);
 			bodyMain.vel = vec3(0);
 		}
 	}
@@ -89,8 +90,10 @@ void World::Replicate()
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 			rch.pos = chara.body->pos;
-			rch.dir = NormalizeSafe(chara.body->vel);
-			rch.speed = glm::length(chara.body->vel);
+
+			rch.moveDir = player._moveDir;
+			rch.speed = player.input.speed;
+
 			rch.rotation = player.input.rot; // TODO: compute this?
 
 			rch.actionState = chara.actionState;
@@ -162,12 +165,12 @@ World::ActorMaster& World::SpawnPlayerMasters(Player& player, const vec3& pos)
 	main.parent = &player;
 	main.classType = player.mainClass;
 	main.skinIndex = player.mainSkin;
-	main.body = physics.CreateBody(45, 210, pos);
+	main.body = physics.CreateBody(100, 270, pos);
 
 	sub.parent = &player;
 	sub.classType = player.subClass;
 	sub.skinIndex = player.subSkin;
-	sub.body = physics.CreateBody(45, 210, pos);
+	sub.body = physics.CreateBody(100, 270, pos);
 
 	return main;
 }

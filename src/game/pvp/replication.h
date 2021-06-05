@@ -53,7 +53,7 @@ struct Replication
 		SkinIndex skinIndex;
 
 		vec3 pos;
-		vec3 dir;
+		vec2 moveDir;
 		f32 speed;
 		RotationHumanoid rotation;
 

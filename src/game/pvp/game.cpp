@@ -36,9 +36,9 @@ void Game::Init(Replication* replication_)
 	// create players
 	World::Player& player = world.CreatePlayer(0, L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
 	clone = &world.CreatePlayer(-1, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
-	lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT);
 
-	world.SpawnPlayerMasters(*lego, vec3(2800, 3532, 1000));
+	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT);
+	//world.SpawnPlayerMasters(*lego, vec3(2800, 3532, 1000));
 
 	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
 	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
@@ -61,34 +61,35 @@ void Game::Update(Time localTime_)
 	clone->input = world.FindPlayer((PlayerID)0)->input; // TODO: hardcoded hack
 	// TODO: maybe don't replicate cloned players, just their master?
 
-	enum Step {
-		Move = 0,
-		Stop = 1,
-	};
+	if(lego) {
+		enum Step {
+			Move = 0,
+			Stop = 1,
+		};
 
-	ASSERT(lego);
-	f64 localTimeSec = TimeDiffSec(localTime);
-	u32 step = ((u64)localTimeSec % 5) == 0;
+		f64 localTimeSec = TimeDiffSec(localTime);
+		u32 step = ((u64)localTimeSec % 5) == 0;
 
-	if(legoLastStep == Step::Stop && step == Step::Move) {
-		f32 a = randf01() * 2 * PI;
-		legoDir = vec2(cosf(a), sinf(a));
-		legoAngle = (legoAngle+1) % 4;
+		if(legoLastStep == Step::Stop && step == Step::Move) {
+			f32 a = randf01() * 2 * PI;
+			legoDir = vec2(cosf(a), sinf(a));
+			legoAngle = (legoAngle+1) % 4;
+		}
+
+		if(step == Step::Move) { // move
+			f32 a = legoAngle * PI/2;
+			lego->input.rot.upperYaw = a;
+			lego->input.rot.bodyYaw = a;
+			lego->input.moveTo = lego->Main().body->pos + vec3(legoDir * 1000.f, 0);
+			lego->input.speed = 626;
+		}
+		else { // stop
+			lego->input.moveTo = vec3(0);
+			lego->input.speed = 0;
+		}
+
+		legoLastStep = step;
 	}
-
-	if(step == Step::Move) { // move
-		f32 a = legoAngle * PI/2;
-		lego->input.rot.upperYaw = a;
-		lego->input.rot.bodyYaw = a;
-		lego->input.moveTo = lego->Main().body->pos + vec3(legoDir * 1000.f, 0);
-		lego->input.speed = 626;
-	}
-	else { // stop
-		lego->input.moveTo = vec3(0);
-		lego->input.speed = 0;
-	}
-
-	legoLastStep = step;
 
 
 	world.Update(localTime);
@@ -191,7 +192,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
 

@@ -70,6 +70,11 @@ struct PhysPenetrationVector
 	f32 depth;
 };
 
+inline f32 LengthSq(const vec2& v)
+{
+	return glm::dot(v, v);
+}
+
 inline f32 LengthSq(const vec3& v)
 {
 	return glm::dot(v, v);
@@ -104,6 +109,12 @@ inline vec3 Lerp(const vec3& v1, const vec3& v2, f32 a)
 inline f32 SignedEpsilon(f32 v)
 {
 	return v > 0.0f ? PHYS_EPSILON : -PHYS_EPSILON;
+}
+
+inline vec2 NormalizeSafe(vec2 v)
+{
+	if(LengthSq(v) > 0.001f) return glm::normalize(v);
+	return vec2(0);
 }
 
 inline vec3 NormalizeSafe(vec3 v)

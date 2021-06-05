@@ -66,7 +66,7 @@ struct Game
 	void OnPlayerDisconnect(i32 clientID);
 	void OnPlayerReadyToLoad(i32 clientID);
 	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec3& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID);
+	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID);
 	void OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot);
 	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);

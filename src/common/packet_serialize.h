@@ -781,6 +781,25 @@ inline const char* PacketSerialize<Sv::SN_InitScoreBoard>(const void* packetData
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_PlayerSyncMove(%d, %d) :: {", Sv::SN_PlayerSyncMove::NET_ID, packetSize);
+	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	destPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("	moveDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("	upperDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("	nRotate=%f", buff.Read<f32>());
+	SER("	nSpeed=%f", buff.Read<f32>());
+	SER("	flags=%u", buff.Read<u8>());
+	SER("	state=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
 
 #undef SER_BEGIN
 #undef SER

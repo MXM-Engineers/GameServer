@@ -411,7 +411,8 @@ void Replication::SendAccountDataPvp(i32 clientID)
 
 	const GameXmlContent& content = GetGameXmlContent();
 
-	const Player* player = frameCur->FindClientPlayer(clientID);
+	// FIXME: hack, get player associated with accountID?
+	const Player* player = &frameCur->playerList.front();
 	ASSERT(player);
 
 	const GameXmlContent::Master& masterMain = content.GetMaster(player->mainClass);
@@ -1192,7 +1193,7 @@ void Replication::FrameDifference()
 		i32 clientID;
 		ActorUID actorUID;
 		vec3 pos;
-		vec3 dir;
+		vec2 moveDir;
 		RotationHumanoid rotation;
 		f32	speed;
 	};
@@ -1246,22 +1247,21 @@ void Replication::FrameDifference()
 		bool rotationUpdated = false;
 
 		// position
-		const f32 posEpsilon = 0.1f;
-		const f32 dirEpsilon = 0.01f;
-		const f32 speedEpsilon = 0.1f;
+		const f32 posEpsilon = 0.5f;
+		const f32 dirEpsilon = 0.001f;
+		const f32 speedEpsilon = 0.001f;
 		if(fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
 		   fabs(cur.pos.y - prev.pos.y) > posEpsilon ||
 		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
-		   fabs(cur.dir.x - prev.dir.x) > dirEpsilon ||
-		   fabs(cur.dir.y - prev.dir.y) > dirEpsilon ||
-		   fabs(cur.dir.z - prev.dir.z) > dirEpsilon ||
+		   fabs(cur.moveDir.x - prev.moveDir.x) > dirEpsilon ||
+		   fabs(cur.moveDir.y - prev.moveDir.y) > dirEpsilon ||
 		   fabs(cur.speed - prev.speed) > speedEpsilon)
 		{
 			UpdatePosition update;
 			update.clientID = cur.clientID;
 			update.actorUID = cur.actorUID;
 			update.pos = cur.pos;
-			update.dir = cur.dir;
+			update.moveDir = cur.moveDir;
 			update.rotation = cur.rotation;
 			update.speed = cur.speed;
 			listUpdatePosition.push_back(update);
@@ -1287,7 +1287,7 @@ void Replication::FrameDifference()
 	foreach_const(up, listUpdatePosition) {
 		Sv::SN_PlayerSyncMove sync;
 		sync.destPos = v2f(up->pos);
-		sync.moveDir = { up->dir.x, up->dir.y };
+		sync.moveDir = v2f(up->moveDir);
 		sync.upperDir = { WorldYawToMxmYaw(up->rotation.upperYaw), WorldPitchToMxmPitch(up->rotation.upperPitch) };
 		sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
 		sync.nSpeed = up->speed;
@@ -1299,7 +1299,7 @@ void Replication::FrameDifference()
 			if(clientID == up->clientID) continue; // ignore self
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			// LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
+			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
 			SendPacket(clientID, sync);
 		}
 	}
@@ -1314,7 +1314,7 @@ void Replication::FrameDifference()
 			if(clientID == up->clientID) continue; // ignore self
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			LOG("[client%03d] Server :: SN_PlayerSyncTurn :: actorUID=%u", clientID, (u32)up->actorUID);
+			// LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncTurn>(&sync, sizeof(sync)));
 			SendPacket(clientID, sync);
 		}
 	}

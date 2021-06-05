@@ -47,6 +47,7 @@ struct World
 		u8 mainCharaID = 0;
 
 		Input input;
+		vec2 _moveDir;
 
 		explicit Player(
 				PlayerID playerID_,

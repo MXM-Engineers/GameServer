@@ -48,6 +48,7 @@ struct World
 
 		Input input;
 		vec2 _moveDir;
+		PhysWorld::BodyHandle body;
 
 		explicit Player(
 				PlayerID playerID_,
@@ -81,7 +82,6 @@ struct World
 		Player* parent;
 		ClassType classType;
 		SkinIndex skinIndex;
-		PhysWorld::BodyHandle body;
 
 		ActionStateID actionState;
 		i32 actionParam1;
@@ -124,8 +124,7 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	Player& CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin);
-	ActorMaster& SpawnPlayerMasters(Player& player, const vec3& pos);
+	Player& CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
 	Player* FindPlayer(PlayerID playerID);

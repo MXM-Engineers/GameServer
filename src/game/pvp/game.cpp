@@ -33,20 +33,16 @@ void Game::Init(Replication* replication_)
 
 	LoadMap();
 
-	// create players
-	World::Player& player = world.CreatePlayer(0, L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
-	clone = &world.CreatePlayer(-1, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT);
-
-	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT);
-	//world.SpawnPlayerMasters(*lego, vec3(2800, 3532, 1000));
-
 	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
 	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
 	vec3 pos = spawnPoint.pos;
 	vec3 dir = spawnPoint.dir;
 
-	world.SpawnPlayerMasters(player, pos);
-	world.SpawnPlayerMasters(*clone, pos);
+	// create players
+	World::Player& player = world.CreatePlayer(0, L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
+	clone = &world.CreatePlayer(-1, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
+
+	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
@@ -80,7 +76,7 @@ void Game::Update(Time localTime_)
 			f32 a = legoAngle * PI/2;
 			lego->input.rot.upperYaw = a;
 			lego->input.rot.bodyYaw = a;
-			lego->input.moveTo = lego->Main().body->pos + vec3(legoDir * 1000.f, 0);
+			lego->input.moveTo = lego->body->pos + vec3(legoDir * 1000.f, 0);
 			lego->input.speed = 626;
 		}
 		else { // stop
@@ -98,9 +94,9 @@ void Game::Update(Time localTime_)
 		Dbg::Entity e;
 		e.UID = (u32)player->playerID;
 		e.name = player->name;
-		e.pos = player->Main().body->pos;
+		e.pos = player->body->pos;
 		e.rot = player->input.rot;
-		e.moveDir = NormalizeSafe(player->input.moveTo - player->Main().body->pos);
+		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->pos);
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}

@@ -21,17 +21,12 @@ void World::Update(Time localTime_)
 		if(p.input.tag) {
 			p.input.tag = 0;
 			p.mainCharaID ^= 1;
-
-			p.Main().body->pos = p.Sub().body->pos;
 		}
 
 		// move
-		PhysWorld::BodyCapsule& bodyMain = *p.Main().body;
-		PhysWorld::BodyCapsule& bodySub = *p.Sub().body;
-		bodyMain.flags &= ~PhysWorld::Flags::Disabled; // enable current body
-		bodySub.flags |= PhysWorld::Flags::Disabled; // disable tagged out body
+		PhysWorld::BodyCapsule& body = *p.body;
 
-		vec2 delta = vec2(p.input.moveTo - bodyMain.pos);
+		vec2 delta = vec2(p.input.moveTo - body.pos);
 		f32 deltaLen = glm::length(delta);
 		if(deltaLen > 1.0f && p.input.speed > 0.f) {
 			vec2 dir = NormalizeSafe(delta);
@@ -39,15 +34,15 @@ void World::Update(Time localTime_)
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
-				bodyMain.vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
+				body.vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
 			}
 			else {
-				bodyMain.vel = vec3(dir.x, dir.y, 0) * p.input.speed;
+				body.vel = vec3(dir.x, dir.y, 0) * p.input.speed;
 			}
 		}
 		else {
 			p._moveDir = vec2(0);
-			bodyMain.vel = vec3(0);
+			body.vel = vec3(0);
 		}
 	}
 
@@ -89,7 +84,7 @@ void World::Replicate()
 			rch.playerID = player.playerID;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
-			rch.pos = chara.body->pos;
+			rch.pos = player.body->pos;
 
 			rch.moveDir = player._moveDir;
 			rch.speed = player.input.speed;
@@ -128,21 +123,13 @@ void World::Replicate()
 	}
 }
 
-World::Player& World::CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin)
+World::Player& World::CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
 {
 	players.emplace_back((PlayerID)players.size(), clientID, name, guildTag, mainClass, mainSkin, subClass, subSkin);
 	Player& player = players.back();
 	player.level = 1;
 	player.experience = 0;
-
-	player.characters.fill(MasterInvalidHandle());
-	return player;
-}
-
-World::ActorMaster& World::SpawnPlayerMasters(Player& player, const vec3& pos)
-{
-	ASSERT(player.characters[0] == MasterInvalidHandle());
-	ASSERT(player.characters[1] == MasterInvalidHandle());
+	player.body = physics.CreateBody(100, 270, pos);
 
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();
@@ -165,14 +152,11 @@ World::ActorMaster& World::SpawnPlayerMasters(Player& player, const vec3& pos)
 	main.parent = &player;
 	main.classType = player.mainClass;
 	main.skinIndex = player.mainSkin;
-	main.body = physics.CreateBody(100, 270, pos);
 
 	sub.parent = &player;
 	sub.classType = player.subClass;
 	sub.skinIndex = player.subSkin;
-	sub.body = physics.CreateBody(100, 270, pos);
-
-	return main;
+	return player;
 }
 
 World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)

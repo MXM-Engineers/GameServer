@@ -143,8 +143,9 @@ struct PhysWorld
 
 	struct MoveComp
 	{
-		vec3 pos;
-		vec3 vel;
+		dvec3 pos;
+		dvec3 force;
+		dvec3 vel;
 	};
 
 	struct BodyCapsule
@@ -153,6 +154,7 @@ struct PhysWorld
 		f32 radius;
 		f32 height;
 		vec3 pos;
+		vec3 force;
 		vec3 vel;
 	};
 
@@ -165,8 +167,8 @@ struct PhysWorld
 	struct Collision
 	{
 		PhysPenetrationVector pen;
-		vec3 triangleNormal;
-		vec3 fix;
+		dvec3 triangleNormal;
+		dvec3 fix;
 		f32 fixLenSq;
 	};
 

@@ -13,6 +13,8 @@ void World::Update(Time localTime_)
 	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
+	vec3 prevPos = players.front().body->pos;
+
 	// players: handle input
 	foreach(it, players) {
 		Player& p = *it;
@@ -34,19 +36,33 @@ void World::Update(Time localTime_)
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
-				body.vel = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
+				body.force = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
 			}
 			else {
-				body.vel = vec3(dir.x, dir.y, 0) * p.input.speed;
+				body.force = vec3(dir.x, dir.y, 0) * p.input.speed;
 			}
 		}
 		else {
 			p._moveDir = vec2(0);
-			body.vel = vec3(0);
+			body.force = vec3(0);
+		}
+
+		// jump
+		if(p.input.jump) {
+			p.input.jump = 0;
+			body.force.z = GetGlobalTweakableVars().jumpForce;
 		}
 	}
 
 	physics.Step();
+
+	static f64 accumulatedDiff = 0.0;
+	vec3 deltaPos = players.front().body->pos - prevPos;
+	f32 moveDiff = players.front().input.speed * UPDATE_RATE - glm::length(vec2(deltaPos));
+	if(moveDiff != 0 && players.front()._moveDir != vec2(0)) {
+		accumulatedDiff += moveDiff;
+		LOG("Move diff = %f  |  accumulatedDiff = %g", moveDiff, accumulatedDiff);
+	}
 
 	Replicate();
 }

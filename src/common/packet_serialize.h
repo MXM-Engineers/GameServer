@@ -801,5 +801,20 @@ inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SA_RTT_Time>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SA_RTT_Time& p = *(Sv::SA_RTT_Time*)packetData;
+
+	SER("SA_RTT_Time(%d, %d) :: {", Sv::SA_RTT_Time::NET_ID, packetSize);
+	SER("	clientTimestamp=%u", p.clientTimestamp);
+	SER("	serverTimestamp=%lld", p.serverTimestamp);
+	SER("}");
+
+	return str.data();
+}
+
 #undef SER_BEGIN
 #undef SER

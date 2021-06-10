@@ -25,7 +25,7 @@ void ChannelHub::Update()
 	ProfileFunction();
 
 	// clients disconnected
-	{
+	if(!lane->clientDisconnectedList.empty()) {
 		const LockGuard lock(lane->mutexClientDisconnectedList);
 		foreach(it, lane->clientDisconnectedList) {
 			const i32 clientID = *it;
@@ -36,7 +36,7 @@ void ChannelHub::Update()
 	}
 
 	// clients connected
-	{
+	if(!lane->newPlayerQueue.empty()) {
 		const LockGuard lock(lane->mutexNewPlayerQueue);
 		foreach(it, lane->newPlayerQueue) {
 			game->OnPlayerConnect(it->clientID, it->accountData);
@@ -47,7 +47,7 @@ void ChannelHub::Update()
 
 	// process packets
 	lane->processPacketQueue.Clear();
-	{
+	if(lane->packetDataQueue.size > 0) {
 		const LockGuard lock(lane->mutexPacketDataQueue);
 		lane->processPacketQueue.Append(lane->packetDataQueue.data, lane->packetDataQueue.size);
 		lane->packetDataQueue.Clear();

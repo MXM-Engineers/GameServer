@@ -116,7 +116,7 @@ struct Server
 		GrowableBuffer pendingSendBuff;
 		ProfileMutex(Mutex, mutexRecv);
 		ProfileMutex(Mutex, mutexSend);
-		ProfileMutex(Mutex, mutexConnect);
+		Mutex mutexConnect;
 	};
 
 	struct ClientInfo

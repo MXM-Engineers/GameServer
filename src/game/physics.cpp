@@ -326,8 +326,12 @@ bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVe
 	return false;
 }
 
-const f32 GRAVITY = 1800;
-const int SUB_STEP_COUNT = 4;
+//const f32 GRAVITY = 1800;
+// FIXME: remove
+#include <game/core.h>
+#define GRAVITY GetGlobalTweakableVars().gravity
+
+const int SUB_STEP_COUNT = 1;
 const int COLLISION_RESOLUTION_STEP_COUNT = 4;
 
 void PhysWorld::PushStaticMeshes(const ShapeMesh* meshList, const int count)
@@ -399,7 +403,7 @@ void PhysWorld::Step()
 		shape.tip = vec3(0, 0, b->height);
 
 		shapeCapsuleList.push_back(shape);
-		bodyList.push_back({ b->pos, b->vel });
+		bodyList.push_back({ b->pos, b->force, b->vel + b->force});
 
 		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.y);
@@ -416,8 +420,8 @@ void PhysWorld::Step()
 
 	for(int ssi = 0; ssi < SUB_STEP_COUNT; ssi++) {
 		foreach(b, bodyList) {
-			b->pos.z -= GRAVITY * (f32)(UPDATE_RATE / SUB_STEP_COUNT);
-			b->pos += b->vel * (f32)(UPDATE_RATE / SUB_STEP_COUNT);
+			b->vel += dvec3(0, 0, -GRAVITY) * (UPDATE_RATE / SUB_STEP_COUNT);
+			b->pos += b->vel * (UPDATE_RATE / SUB_STEP_COUNT);
 		}
 
 		for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
@@ -456,6 +460,7 @@ void PhysWorld::Step()
 						if(cosTheta > 0.3) {
 							const f32 fix2Len = glm::length(triPen) / cosTheta;
 							fix = -gravityN * (fix2Len + PHYS_EPSILON);
+							// TODO: grounded, remove all Z component
 						}
 
 						Collision col;
@@ -478,7 +483,7 @@ void PhysWorld::Step()
 						event.fix2 = fix;
 						event.vel = bodyList[i].vel;
 						event.fixedVel = bodyList[i].vel;
-						if(glm::dot(glm::normalize(event.fixedVel), col.triangleNormal) < 0) {
+						if(glm::dot(glm::normalize(bodyList[i].vel), col.triangleNormal) < 0) {
 							event.fixedVel -= ProjectVecNorm(event.fixedVel, col.triangleNormal);
 						}
 						event.pen = pen;
@@ -505,7 +510,6 @@ void PhysWorld::Step()
 					const f32 len = glm::length(body.vel);
 					if(glm::dot(glm::normalize(body.vel), col.triangleNormal) < 0) {
 						body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
-						body.vel = glm::normalize(body.vel) * len; // resitute all the speed
 					}
 
 					DBG_ASSERT_NONNAN(body.pos.x);
@@ -537,15 +541,16 @@ void PhysWorld::Step()
 	int i = 0;
 	foreach(b, dynCapsuleBodyList) {
 		if(b->flags & Flags::Disabled) continue;
+		const MoveComp& bl = bodyList[i];
 
-		b->pos = bodyList[i].pos;
-		b->vel = bodyList[i].vel;
-		DBG_ASSERT_NONNAN(bodyList[i].pos.x);
-		DBG_ASSERT_NONNAN(bodyList[i].pos.y);
-		DBG_ASSERT_NONNAN(bodyList[i].pos.z);
-		DBG_ASSERT_NONNAN(bodyList[i].vel.x);
-		DBG_ASSERT_NONNAN(bodyList[i].vel.y);
-		DBG_ASSERT_NONNAN(bodyList[i].vel.z);
+		b->pos = bl.pos;
+		b->vel = vec3(0, 0, bl.vel.z); // 100% ground friction, 0% air friction
+		DBG_ASSERT_NONNAN(bl.pos.x);
+		DBG_ASSERT_NONNAN(bl.pos.y);
+		DBG_ASSERT_NONNAN(bl.pos.z);
+		DBG_ASSERT_NONNAN(bl.vel.x);
+		DBG_ASSERT_NONNAN(bl.vel.y);
+		DBG_ASSERT_NONNAN(bl.vel.z);
 		i++;
 	}
 }

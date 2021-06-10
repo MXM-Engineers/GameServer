@@ -190,6 +190,8 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 
 void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
 {
+	ProfileFunction();
+
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
@@ -224,6 +226,9 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	}
 	player->input.rot = rot;
 	player->input.speed = speed;
+
+	vec2 delta = vec2(pos - player->body->pos);
+	LOG("Position diff = %f", glm::length(delta));
 }
 
 void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
@@ -395,10 +400,17 @@ void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
 void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	Player& player = *playerMap[clientID];
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
 
-	// TODO: restore
-	//replication->SendPlayerJump(clientID, player.mainActorUID, rotate, moveDirX, moveDirY);
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
+
+	player->input.jump = 1;
+
+	// TODO: do this at the end of a frame
+	replication->SendPlayerJump(clientID, player->Main().UID, rotate, moveDirX, moveDirY);
 }
 
 void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)

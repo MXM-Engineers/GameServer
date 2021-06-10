@@ -579,8 +579,10 @@ struct CN_GameUpdatePosition
 	f32 upperPitch;
 	f32 bodyYaw;
 	f32 nSpeed;
-	i32 unk1;
-	u8 unk2[6];
+	u8 unk1; // flags maybe?
+	ActionStateID actionState;
+	f32 localTimeS;
+	u8 unk2;
 };
 POP_PACKED
 ASSERT_SIZE(CN_GameUpdatePosition, 50);

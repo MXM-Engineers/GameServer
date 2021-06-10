@@ -25,8 +25,8 @@ void ChannelPvP::Update()
 	ProfileFunction();
 
 	// clients disconnected
-	{
-		const LockGuard lock(lane->mutexClientDisconnectedList);
+	if(!lane->clientDisconnectedList.empty()) {
+		LOCK_MUTEX(lane->mutexClientDisconnectedList);
 		foreach(it, lane->clientDisconnectedList) {
 			const i32 clientID = *it;
 			game->OnPlayerDisconnect(clientID);
@@ -36,8 +36,8 @@ void ChannelPvP::Update()
 	}
 
 	// clients connected
-	{
-		const LockGuard lock(lane->mutexNewPlayerQueue);
+	if(!lane->newPlayerQueue.empty()) {
+		LOCK_MUTEX(lane->mutexNewPlayerQueue);
 		foreach(it, lane->newPlayerQueue) {
 			game->OnPlayerConnect(it->clientID, it->accountData);
 			replication.OnPlayerConnect(it->clientID, it->accountData);
@@ -47,8 +47,8 @@ void ChannelPvP::Update()
 
 	// process packets
 	lane->processPacketQueue.Clear();
-	{
-		const LockGuard lock(lane->mutexPacketDataQueue);
+	if(lane->packetDataQueue.size > 0) {
+		LOCK_MUTEX(lane->mutexPacketDataQueue);
 		lane->processPacketQueue.Append(lane->packetDataQueue.data, lane->packetDataQueue.size);
 		lane->packetDataQueue.Clear();
 	}
@@ -134,8 +134,20 @@ void ChannelPvP::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader&
 
 void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	ProfileFunction();
+
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g) rot=(uy=%g, up=%g, vy=%g) nSpeed=%g }", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.upperYaw, update.upperPitch, update.bodyYaw, update.nSpeed);
+	LOG("[client%03d] Client :: CN_GameUpdatePosition :: {", clientID);
+	LOG("	characterID=%d", (u32)update.characterID);
+	LOG("	p3nPos=(%g, %g, %g)", update.p3nPos.x, update.p3nPos.y, update.p3nPos.z);
+	LOG("	p3nDir=(%g, %g)", update.p3nDir.x, update.p3nDir.y);
+	LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
+	LOG("	nSpeed=%g", update.nSpeed);
+	LOG("	unk1=%u", update.unk1);
+	LOG("	actionState=%s (%d)", ActionStateString(update.actionState), update.actionState);
+	LOG("	localTimeS=%g", update.localTimeS);
+	LOG("	unk2=%u", update.unk2);
+	LOG("}");
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -154,6 +166,8 @@ void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeade
 
 void ChannelPvP::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	ProfileFunction();
+
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
 	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u upperYaw=%f upperPitch=%f bodyYaw=%f }", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
@@ -267,7 +281,7 @@ void ChannelPvP::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header,
 	Sv::SA_RTT_Time answer;
 	answer.clientTimestamp = rtt.time;
 	answer.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	LOG("[client%03d] Server :: SA_RTT_Time ::", clientID);
+	LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_RTT_Time>(&answer, sizeof(answer)));
 	server->SendPacket(clientID, answer);
 }
 

@@ -24,7 +24,9 @@ struct World
 			f32 speed;
 			RotationHumanoid rot;
 
-			u8 tag = 0;
+			u8 tag: 1;
+			u8 jump: 1;
+
 			ActionStateID actionState;
 			i32 actionParam1;
 			i32 actionParam2;

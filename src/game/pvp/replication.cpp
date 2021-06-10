@@ -1003,9 +1003,25 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		packet.Write<u8>(0); // costLevel
 
 		ActionStateID actionState = ActionStateID::INVALID;
+		f32 distance = 0.0f;
+		f32 moveDuration = 1.0f; // WARNING: if this is 0 the character fall through the map (probably a division by 0 error)
+
 		switch(cast.skillID) {
-			case (SkillID)180350002: actionState = (ActionStateID)103; break;
-			case (SkillID)180350010: actionState = (ActionStateID)31; break;
+			// Lua dodge
+			case (SkillID)180350002: {
+				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
+				distance = 500;
+				moveDuration = 0.7333333f;
+			} break;
+
+			// Sizuka dodge
+			case (SkillID)180030002: {
+				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
+				distance = 500;
+				moveDuration = 0.01f;
+			} break;
+
+			case (SkillID)180350010: actionState = ActionStateID::SKILL_1_BEHAVIORSTATE; break;
 			case (SkillID)180350030: actionState = (ActionStateID)30; break;
 			case (SkillID)180030020: actionState = (ActionStateID)32; break;
 			case (SkillID)180030030: actionState = (ActionStateID)33; break;
@@ -1027,11 +1043,12 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		packet.Write<f32>(0); // fSkillChargeDamageMultiplier
 
 		// graphMove
-		packet.Write<u8>(0); // bApply
+		packet.Write<u8>(1); // bApply
 		packet.Write<float3>(cast.posStruct.pos); // startPos
-		packet.Write<float3>(cast.posStruct.destPos); // endPos
-		packet.Write<f32>(0); // durationTimeS
-		packet.Write<f32>(0); // originDistance
+		vec3 endPos = f2v(cast.posStruct.pos) + vec3(distance, 0, 0);
+		packet.Write<float3>(v2f(endPos)); // endPos
+		packet.Write<f32>(moveDuration); // durationTimeS
+		packet.Write<f32>(distance); // originDistance
 
 		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ExecuteSkill>(packet.data, packet.size));
 		SendPacketData(clientID, Sv::SN_ExecuteSkill::NET_ID, packet.size, packet.data);
@@ -1072,6 +1089,8 @@ LocalActorID Replication::GetLocalActorID(i32 clientID, ActorUID actorUID) const
 
 ActorUID Replication::GetWorldActorUID(i32 clientID, LocalActorID localActorID) const
 {
+	ProfileFunction();
+
 	// TODO: second map, for this reverse lookup
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	foreach(it, map) {
@@ -1297,6 +1316,8 @@ void Replication::FrameDifference()
 		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
 			if(clientID == up->clientID) continue; // ignore self
+
+			ProfileBlock("Send Sv::SN_PlayerSyncMove");
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
 			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));

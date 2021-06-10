@@ -371,27 +371,32 @@ struct Mutex: EA::Thread::Futex
 	tracy_force_inline void unlock() { Unlock(); }
 };
 
-class LockGuard
+template<class Mutex>
+class LockGuardT
 {
-	typedef tracy::Lockable<Mutex> TracyMutex;
 public:
-	LockGuard(TracyMutex& futex):
+	LockGuardT(Mutex& futex):
 		mFutex(futex)
 	{
 		mFutex.lock();
 	}
-   ~LockGuard()
+	~LockGuardT()
 	{
 		mFutex.unlock();
 	}
 
 protected:
-	TracyMutex& mFutex;
+	Mutex& mFutex;
 
 	// Prevent copying by default, as copying is dangerous.
-	LockGuard(const TracyMutex&);
-	const LockGuard& operator=(const TracyMutex&);
+	LockGuardT(const LockGuardT&);
+	const LockGuardT& operator=(const LockGuardT&);
 };
+
+typedef LockGuardT<tracy::Lockable<Mutex>> LockGuard;
+
+#define LOCK_MUTEX(MUTEX) const LockGuardT<decltype(MUTEX)> lock(MUTEX)
+#define LOCK_MUTEXN(MUTEX, NAME) const LockGuardT<decltype(MUTEX)> NAME(MUTEX)
 
 #define ProfileFunction() ZoneScopedN(FUNCTION_STR)
 #define ProfileBlock(name) ZoneScopedN(FUNCTION_STR ">>" name)
@@ -420,6 +425,8 @@ protected:
 
 typedef EA::Thread::Futex Mutex;
 typedef EA::Thread::AutoFutex LockGuard;
+
+#define LOCK_MUTEX(MUTEX) const LockGuard lock(MUTEX)
 #endif
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?

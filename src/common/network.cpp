@@ -41,7 +41,7 @@ bool Server::Init()
 {
 	if(!NetworkInit()) return false;
 
-	memset(&clientIsConnected, 0, sizeof(clientIsConnected));
+	clientIsConnected.fill(0);
 
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
@@ -65,7 +65,7 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_, ListenerType list
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
 			ClientNet& client = clientNet[clientID];
-			const LockGuard lock(client.mutexConnect);
+			LOCK_MUTEX(client.mutexConnect);
 
 			ASSERT(clientSocket[clientID] == INVALID_SOCKET);
 
@@ -114,7 +114,7 @@ void Server::DisconnectClient(i32 clientID)
 	if(clientIsConnected[clientID] == 0) return;
 
 	ClientNet& client = clientNet[clientID];
-	const LockGuard lock(client.mutexConnect);
+	LOCK_MUTEX(client.mutexConnect);
 
 	{
 		const LockGuard lock(mutexClientDisconnectedList);
@@ -147,7 +147,7 @@ void Server::Update()
 		if(clientIsConnected[clientID] == 0) continue; // first check for speed
 
 		ClientNet& client = clientNet[clientID];
-		const LockGuard lock(client.mutexConnect);
+		LOCK_MUTEX(client.mutexConnect);
 		if(clientIsConnected[clientID] == 0) continue; // second check to be certain
 
 		SOCKET sock = clientSocket[clientID];
@@ -202,7 +202,7 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 		ClientNet& client = clientNet[clientID];
 
 		{
-			const LockGuard lock(client.mutexRecv);
+			LOCK_MUTEX(client.mutexRecv);
 
 			if(client.recvPendingProcessingBuff.size > 0) {
 				ReceiveBufferHeader header;
@@ -236,6 +236,8 @@ bool Server::ClientStartReceiving(i32 clientID)
 
 bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 {
+	ProfileFunction();
+
 	DBG_ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
 	ClientNet& client = clientNet[clientID];
 
@@ -248,7 +250,7 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	}
 
 	// append to pending processing buffer
-	const LockGuard lock(client.mutexRecv);
+	LOCK_MUTEX(client.mutexRecv);
 	client.recvPendingProcessingBuff.Append(client.async.GetReceivedData(), dataLen);
 	return true;
 }

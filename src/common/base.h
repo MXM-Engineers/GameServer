@@ -401,7 +401,7 @@ typedef LockGuardT<tracy::Lockable<Mutex>> LockGuard;
 #define ProfileFunction() ZoneScopedN(FUNCTION_STR)
 #define ProfileBlock(name) ZoneScopedN(FUNCTION_STR ">>" name)
 #define ProfileMutex(TYPE, NAME) TracyLockable(TYPE, NAME)
-#define ProfileNewFrame() FrameMark
+#define ProfileNewFrame(NAME) FrameMarkNamed(NAME)
 #define ProfilePlotVar(V) TracyPlot(#V, V)
 #define ProfilePlotVarN(N, V) TracyPlot(N, V)
 #define ProfileMemAlloc(PTR, SIZE) TracyAlloc(PTR, SIZE)
@@ -450,6 +450,7 @@ f64 TimeDiffSec(Time diff);
 f64 TimeDiffMs(Time diff);
 f64 TimeDurationSinceSec(Time t0);
 f64 TimeDurationSinceMs(Time t0);
+Time TimeMsToTime(f64 ms);
 
 
 template<typename T>

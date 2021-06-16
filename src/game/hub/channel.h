@@ -4,6 +4,7 @@
 
 struct ChannelHub
 {
+	i32 threadID;
 	Time localTime;
 	Server* server;
 	Coordinator::Lane* lane;

@@ -26,7 +26,7 @@ intptr_t ThreadCoordinator(void* pData)
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
 		if(delta > UPDATE_RATE_MS) {
-			ProfileNewFrame();
+			ProfileNewFrame("Coordinator");
 			coordinator.Update(delta / 1000.0);
 			t0 = t1;
 		}
@@ -44,13 +44,18 @@ intptr_t ThreadChannel(void* pData)
 {
 	ChannelT& channel = *(ChannelT*)pData;
 
-	ProfileSetThreadName(FMT("Channel_%d", 0)); // TODO: channel ID / name
-	const i32 cpuID = (i32)CoreAffinity::CHANNELS + 0; // TODO: increase this for each channel
+	ProfileSetThreadName(FMT("Channel_%d", channel.threadID));
+	const i32 cpuID = (i32)CoreAffinity::CHANNELS + channel.threadID;
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
 
 	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
 	const Time startTime = TimeNow();
 	Time t0 = startTime;
+
+	char name[256];
+	snprintf(name, sizeof(name), "Channel_%d", channel.threadID);
+
+	f64 accumulator = 0.0f;
 
 	while(channel.server->running)
 	{
@@ -59,13 +64,17 @@ intptr_t ThreadChannel(void* pData)
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
 		if(delta > UPDATE_RATE_MS) {
+			ProfileNewFrame(name);
 			channel.Update();
-			t0 = t1;
+			t0 = Time((u64)t0 + (u64)TimeMsToTime(UPDATE_RATE_MS));
 		}
-		else {
+		/*else {
 			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta));
 			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
+		}*/
+		else {
+			EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 		}
 	}
 
@@ -116,10 +125,12 @@ void Coordinator::Init(Server* server_)
 
 	// TODO: allocate channels dynamically
 	channelHub = new ChannelHub();
+	channelHub->threadID = 0;
 	channelHub->Init(server_);
 	channelHub->lane = &laneList[(i32)LaneID::HUB];
 
 	channelPvP = new ChannelPvP();
+	channelPvP->threadID = 1;
 	channelPvP->Init(server_);
 	channelPvP->lane = &laneList[(i32)LaneID::PVP];
 

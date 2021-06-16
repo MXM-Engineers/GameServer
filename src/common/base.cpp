@@ -190,6 +190,11 @@ f64 TimeDurationSinceMs(Time t0)
 	return stm_ms(stm_since((u64)t0));
 }
 
+Time TimeMsToTime(f64 ms)
+{
+	return Time(u64(ms * 1000000.0));
+}
+
 static void EASTL_AssertionFailed(const char* expression, void* pContext)
 {
 	__assertion_failed(expression, "eastl", 0);

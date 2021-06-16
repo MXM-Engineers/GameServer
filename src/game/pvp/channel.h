@@ -5,6 +5,7 @@
 
 struct ChannelPvP
 {
+	i32 threadID;
 	Time localTime;
 	Server* server;
 	Coordinator::Lane* lane;

@@ -25,6 +25,7 @@
     - ✅ Make the phys body move based on input.moveTo
     - ✅ Fix 1s delay
     - ⚠️ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
+    - ✅ Fix losing speed on flat ground
 * Try to make rolling work
 
 * Make the client send more position updates (like rotation updates)

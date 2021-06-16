@@ -1320,7 +1320,7 @@ void Replication::FrameDifference()
 			ProfileBlock("Send Sv::SN_PlayerSyncMove");
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
+			//LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
 			SendPacket(clientID, sync);
 		}
 	}

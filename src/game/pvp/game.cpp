@@ -188,7 +188,7 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID)
+void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
 {
 	ProfileFunction();
 
@@ -217,6 +217,42 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 		return;
 	}
 
+	const f64 serverTime = TimeDiffSec(TimeRelNow());
+
+	static f64 prevClientTime = 0;
+	static f64 prevServerTime = 0;
+	static vec3 prevPos = vec3(0);
+	static vec3 prevBodyPos = vec3(0);
+	static f64 accumulatedSpeedDiff = 0.0;
+
+	if(dir == vec2(0)) {
+		accumulatedSpeedDiff = 0.0;
+	}
+	else {
+		f64 clientDelta = clientTime - prevClientTime;
+		f64 serverDelta = serverTime - prevServerTime;
+		vec3 posDelta = prevPos - pos;
+		vec3 posBodyDelta = prevBodyPos - player->body->pos;
+
+		vec2 delta = vec2(pos - player->body->pos);
+		f64 speedClient = glm::length(posDelta) / clientDelta;
+		f64 speedServer = glm::length(posBodyDelta) / serverDelta;
+		if(speedClient - speedServer > 0) {
+			accumulatedSpeedDiff += speedClient - speedServer;
+		}
+
+		LOG("Position diff = %f", glm::length(delta));
+		LOG("Speed client = %g", speedClient);
+		LOG("Speed server = %g", speedServer);
+		LOG("Speed diff accumulated = %g", accumulatedSpeedDiff);
+	}
+
+	prevClientTime = clientTime;
+	prevServerTime = serverTime;
+	prevPos = pos;
+	prevBodyPos = player->body->pos;
+
+
 	// TODO: check for movement hacking
 	if(dir.x == 0 && dir.y == 0) {
 		player->input.moveTo = pos;
@@ -226,9 +262,6 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	}
 	player->input.rot = rot;
 	player->input.speed = speed;
-
-	vec2 delta = vec2(pos - player->body->pos);
-	LOG("Position diff = %f", glm::length(delta));
 }
 
 void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)

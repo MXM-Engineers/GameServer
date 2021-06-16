@@ -12,6 +12,16 @@ struct ChannelPvP
 	Game* game;
 	Replication replication;
 
+	struct ClientTime
+	{
+		f64 posClient = 0;
+		f64 posServer = 0;
+		u32 rttClient = 0;
+		i64 rttServer = 0;
+	};
+
+	eastl::array<ClientTime, Server::MAX_CLIENTS> clientTime;
+
 	bool Init(Server* server_);
 	void Cleanup();
 

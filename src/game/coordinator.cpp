@@ -15,7 +15,7 @@ intptr_t ThreadCoordinator(void* pData)
 
 	Coordinator& coordinator = *(Coordinator*)pData;
 
-	const f64 UPDATE_RATE_MS = (1.0/60.0) * 1000.0;
+	const f64 UPDATE_RATE_MS = (1.0/120.0) * 1000.0;
 	const Time startTime = TimeNow();
 	Time t0 = startTime;
 

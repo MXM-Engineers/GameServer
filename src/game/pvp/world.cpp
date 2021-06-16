@@ -57,6 +57,10 @@ void World::Update(Time localTime_)
 	physics.Step();
 
 	static f64 accumulatedDiff = 0.0;
+	if(players.front()._moveDir == vec2(0)) {
+		accumulatedDiff = 0.0;
+	}
+
 	vec3 deltaPos = players.front().body->pos - prevPos;
 	f32 moveDiff = players.front().input.speed * UPDATE_RATE - glm::length(vec2(deltaPos));
 	if(moveDiff != 0 && players.front()._moveDir != vec2(0)) {

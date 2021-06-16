@@ -12,6 +12,8 @@ bool ChannelPvP::Init(Server* server_)
 
 	game = new Game();
 	game->Init(&replication);
+
+	clientTime.fill({});
 	return true;
 }
 
@@ -155,13 +157,22 @@ void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeade
 		return;
 	}
 
+	const f64 serverTime = TimeDiffSec(TimeRelNow());
+	f64 clientDelta = (f64)update.localTimeS - clientTime[clientID].posClient;
+	f64 serverDelta = serverTime - clientTime[clientID].posServer;
+
+	clientTime[clientID].posClient = update.localTimeS;
+	clientTime[clientID].posServer = serverTime;
+
+	LOG("clientDelta=%g serverDelta=%g", clientDelta, serverDelta);
+
 	// transform rotation for our coordinate system
 	RotationHumanoid rot;
 	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
 	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
 	rot.bodyYaw = MxmYawToWorldYaw(update.bodyYaw);
 
-	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, 0);
+	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, 0, update.localTimeS);
 }
 
 void ChannelPvP::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -278,9 +289,18 @@ void ChannelPvP::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header,
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
 	LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
 
+	const i64 serverTime = (i64)TimeDiffMs(TimeRelNow());
+	i64 clientDelta = (i64)rtt.time - (i64)clientTime[clientID].rttClient;
+	i64 serverDelta = serverTime - clientTime[clientID].rttServer;
+
+	clientTime[clientID].rttClient = rtt.time;
+	clientTime[clientID].rttServer = serverTime;
+
+	LOG("clientDelta=%lld serverDelta=%lld", clientDelta, serverDelta);
+
 	Sv::SA_RTT_Time answer;
 	answer.clientTimestamp = rtt.time;
-	answer.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
+	answer.serverTimestamp = serverTime;
 	LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_RTT_Time>(&answer, sizeof(answer)));
 	server->SendPacket(clientID, answer);
 }

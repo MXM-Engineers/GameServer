@@ -1,6 +1,7 @@
 #pragma once
 #include "../core.h"
 #include "item_model.h"
+#include "weapon_spec.h"
 
 class WeaponModel :
 	public ItemModel {
@@ -19,5 +20,5 @@ private:
 	i32 _FirstGradeIndex = -1;
 	i32 _NextGradeIndex = -1;
 	//Specifications
-	// 24 spec entries max how to solve this
+	WeaponSpec WeaponSpec;
 };

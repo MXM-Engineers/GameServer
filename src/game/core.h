@@ -378,6 +378,7 @@ struct GlobalTweakableVariables
 {
 	f32 jumpForce = 2000;
 	f32 gravity = 5000;
+	f32 stepHeight = 200;
 };
 
 GlobalTweakableVariables& GetGlobalTweakableVars();

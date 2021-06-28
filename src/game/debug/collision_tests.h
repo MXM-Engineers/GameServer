@@ -27,18 +27,28 @@ struct CollisionTest
 		rdr.PushCapsule(Pipeline::Wireframe, capsule.base, vec3(yaw, pitch, 0), capsule.radius, height, color);
 	}
 
+	inline void Draw(const ShapeCylinder& cylinder, const vec3& color)
+	{
+		f32 height = glm::length(cylinder.tip - cylinder.base);
+		vec3 dir = glm::normalize(cylinder.tip - cylinder.base);
+		f32 yaw = atan2(dir.y, dir.x);
+		f32 pitch = asinf(dir.z) - PI/2.0;
+
+		rdr.PushCylinder(Pipeline::Wireframe, cylinder.base, vec3(yaw, pitch, 0), cylinder.radius, height, color);
+	}
+
 	inline void Draw(const ShapeTriangle& triangle, const vec3& color)
 	{
 		rdr.triangleBuffer.Push({
-			TrianglePoint{ triangle.p[0], CU3(color.x, color.y, color.z) },
-			TrianglePoint{ triangle.p[1], CU3(color.x, color.y, color.z) },
-			TrianglePoint{ triangle.p[2], CU3(color.x, color.y, color.z) }
+			TrianglePoint{ triangle.p[0], ColorU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.p[1], ColorU3(color.x, color.y, color.z) },
+			TrianglePoint{ triangle.p[2], ColorU3(color.x, color.y, color.z) }
 		});
 	}
 
 	inline void DrawSimpleQuad(const vec3& bl, const vec3& br, const vec3& tr, const vec3& tl, const vec3& color)
 	{
-		const u32 c = CU3(color.x, color.y, color.z);
+		const u32 c = ColorU3(color.x, color.y, color.z);
 
 		rdr.lineBuffer.Push({ bl, c, br, c });
 		rdr.lineBuffer.Push({ bl, c, tl, c });
@@ -59,7 +69,7 @@ struct CollisionTest
 		const vec3 tr = rect.pos + vx * rect.size.x + vy * rect.size.y;
 		const vec3 tl = rect.pos + vy * rect.size.y;
 
-		const u32 c = CU3(color.x, color.y, color.z);
+		const u32 c = ColorU3(color.x, color.y, color.z);
 
 		DrawSimpleQuad(bl, br, tr, tl, color);
 

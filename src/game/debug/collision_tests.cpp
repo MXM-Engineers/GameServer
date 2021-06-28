@@ -1,5 +1,6 @@
 #include "collision_tests.h"
 #include <imgui.h>
+#include <glm/gtx/vector_angle.hpp>
 
 void CollisionTest::DoCollisionTests()
 {
@@ -535,6 +536,262 @@ void CollisionTest::DoCollisionTests()
 		}
 
 		ImGui::End();
+	}
+
+	// test7 -- cylinder upright triangle
+	{
+		static bool bFixedCylinder = false;
+		static bool bAutoMove = false;
+		static bool bCenter = false;
+		static f32 fOffsetX = 166.520f;
+		static f32 fOffsetY = 0;
+		static f32 fTipOff = 0;
+		static f32 fTriY = 0;
+		static f32 fTriZ = 0;
+
+		if(ImGui::Begin("Test 7")) {
+			ImGui::Checkbox("Fixed cylinder", &bFixedCylinder);
+			ImGui::Checkbox("Auto move", &bAutoMove);
+			ImGui::Checkbox("Center", &bCenter);
+			ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
+			ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
+			ImGui::SliderFloat("TipOff", &fTipOff, -200, 200);
+			ImGui::SliderFloat("TriY", &fTriY, -200, 200);
+			ImGui::SliderFloat("TriZ", &fTriZ, -200, 200);
+		}
+		ImGui::End();
+
+		ShapeCylinder cylinderA;
+		ShapeTriangle triangleB;
+
+		const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
+		cylinderA.base = vec3(100, 1300, 0) + off;
+		cylinderA.tip = vec3(100, 1300, 100) + off;
+		cylinderA.radius = 20;
+
+		const vec3 triOff = bAutoMove ? vec3(0, 0, -100 + saw(a) * 200) : vec3(0, 0, fOffsetY);
+		triangleB.p = {
+			vec3(200, 1250 + fTriY, 0 + fTriZ) + triOff,
+			vec3(200 + fTipOff, 1300 + fTriY, 80 + fTriZ) + triOff,
+			vec3(200, 1350 + fTriY, 0 + fTriZ) + triOff
+		};
+
+		rdr.PushLine(cylinderA.base - vec3(0, 0, 1000.f), cylinderA.base + vec3(0, 0, 1000.f), vec3(1));
+
+
+		{
+			const ShapeCylinder& A = cylinderA;
+			const ShapeTriangle& B = triangleB;
+
+			const vec3 cylNorm = glm::normalize(A.tip - A.base);
+			const vec3 planeNorm = B.Normal();
+			DBG_ASSERT(glm::dot(cylNorm, vec3(0, 0, 1)) == 1); // upright
+
+			eastl::fixed_vector<vec3,4> points;
+
+			foreach_const(p, B.p) {
+				if(p->z < A.tip.z && p->z >= A.base.z) {
+					points.push_back(*p);
+				}
+			}
+
+			// top plane
+			vec3 ti0, ti1, ti2;
+			bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.tip, &ti0);
+			bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.tip, &ti1);
+			bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.tip, &ti2);
+			bool intersectsTopPlane = rt0 | rt1 | rt2;
+
+			if(rt0) {
+				//Draw(ti0, vec3(1, 0, 0));
+				points.push_back(ti0);
+			}
+			if(rt1) {
+				//Draw(ti1, vec3(1, 0, 0));
+				points.push_back(ti1);
+			}
+			if(rt2) {
+				//Draw(ti2, vec3(1, 0, 0));
+				points.push_back(ti2);
+			}
+
+			// bottom plane
+			vec3 bi0, bi1, bi2;
+			bool rb0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.base, &bi0);
+			bool rb1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.base, &bi1);
+			bool rb2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.base, &bi2);
+			bool intersectsBotPlane = rb0 | rb1 | rb2;
+
+			if(rb0) {
+				//Draw(bi0, vec3(1, 0.5, 0.5));
+				points.push_back(bi0);
+			}
+			if(rb1) {
+				//Draw(bi1, vec3(1, 0.5, 0.5));
+				points.push_back(bi1);
+			}
+			if(rb2) {
+				//Draw(bi2, vec3(1, 0.5, 0.5));
+				points.push_back(bi2);
+			}
+
+			if(!points.empty()) {
+				// sort points
+				{
+					vec3 center = vec3(0);
+					foreach_const(p, points) {
+						center += *p;
+					}
+					center /= (f32)points.size();
+					
+					//Draw(center, vec3(1));
+					
+					bool sort = true;
+					while(sort) {
+						sort = false;
+						
+						for(int i = 2; i < points.size(); i++) {
+							vec3 d0 = glm::normalize(points[i-2] - center);
+							vec3 d1 = glm::normalize(points[i-1] - center);
+							vec3 d2 = glm::normalize(points[i] - center);
+							f32 a0 = glm::angle(d0, d1);
+							f32 a1 = glm::angle(d0, d2);
+							if(a0 > a1) {
+								eastl::swap(points[i], points[i-1]);
+								sort = true;
+							}
+						}
+					}
+				}
+				
+				/*
+				for(int i = 0; i < points.size(); i++) {
+					Draw(points[i], vec3(1, (f32)i/points.size(), 0));
+				}
+				*/
+				
+				// triangulate
+				vec3 anchor = points[0];
+				points.erase(points.begin());
+				
+				eastl::fixed_vector<ShapeTriangle,2> tris;
+				
+				for(int i = 0; i < points.size() - 1; i++) {
+					ShapeTriangle t;
+					t.p = {
+						anchor,
+						points[i],
+						points[i+1],
+					};
+					tris.push_back(t);
+				}
+				
+				foreach_const(t, tris) {
+					rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
+					rdr.PushLine(t->p[0], t->p[2], ColorV3(0xfc0283));
+					rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
+				}
+				
+				foreach(t, tris) {
+					t->p[0].z = 0;
+					t->p[1].z = 0;
+					t->p[2].z = 0;
+				}
+				
+				foreach_const(t, tris) {
+					rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
+					rdr.PushLine(t->p[0], t->p[2], ColorV3(0xfc0283));
+					rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
+				}
+				
+				vec2 center = vec2(cylinderA.base);
+				f32 r = cylinderA.radius;
+				foreach_const(t, tris) {
+					vec2 triDir = glm::normalize(vec2(planeNorm));
+					
+					eastl::array<vec2,3> closestList;
+					closestList[0] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[1]), triDir);
+					closestList[1] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[2]), triDir);
+					closestList[2] = ProjectPointOnSegment(center, vec2(t->p[1]), vec2(t->p[2]), triDir);
+
+					foreach_const(c, closestList) {
+						Draw(vec3(*c, 0), vec3(1, 1, 0));
+					}
+					
+					vec2 closest = closestList[0];
+					f32 bestDist = LengthSq(center - closest);
+					
+					f32 dist = LengthSq(closestList[1] - center);
+					if(dist < bestDist) {
+						closest = closestList[1];
+						bestDist = dist;
+					}
+					
+					dist = LengthSq(closestList[2] - center);
+					if(dist < bestDist) {
+						closest = closestList[2];
+					}
+					
+					vec2 p0 = closest;
+					if(bestDist < r*r) {
+						Draw(vec3(p0, 0), vec3(1, 0, 0));
+						
+						vec3 inters;
+						LinePlaneIntersection(vec3(p0, 0), vec3(p0, 1), planeNorm, B.p[0], &inters);
+						vec3 delta = vec3(p0 - center, 0);
+						Draw(inters, vec3(1));
+						
+						vec2 triDir = glm::normalize(vec2(planeNorm));
+						f32 sign = 1;
+						if(glm::dot(planeNorm, cylNorm) > 0) {
+							sign = -1;
+						}
+						vec2 onCircle = center + triDir * (r * sign);
+						Draw(vec3(onCircle, 0), vec3(0, 0, 1));
+						vec3 projOnCircle;
+						bool r = LinePlaneIntersection(vec3(onCircle, 0), vec3(onCircle, 1), planeNorm, B.p[0], &projOnCircle);
+						ASSERT(r);
+						Draw(projOnCircle, ColorV3(0x8671fc));
+					}
+				}
+			}
+		}
+
+		rdr.PushLine(cylinderA.base + vec3(0, 0, -1000), cylinderA.tip + vec3(0, 0, 1000), vec3(1));
+
+		PhysPenetrationVector pen;
+		vec3 sphereCenter;
+		bool intersect = TestIntersectionUpright(cylinderA, triangleB, &pen, &sphereCenter);
+
+		DrawVec(triangleB.Normal() * 20.f, triangleB.Center(), vec3(1));
+
+		if(intersect) {
+			Draw(cylinderA, vec3(1, 0.5, 0.8));
+			Draw(triangleB, vec3(1, 0.2, 1));
+			DrawVec(-pen.dir * pen.depth, cylinderA.base + vec3(0, 0, (pen.dir * pen.depth).z), vec3(1, 1, 0));
+
+			if(bFixedCylinder) {
+				vec3 pp2;
+				vec3 planeNorm = triangleB.Normal();
+				f32 d = glm::dot(triangleB.Normal(), cylinderA.Normal());
+				if(d > 0) {
+					pp2 = cylinderA.base - sphereCenter - glm::normalize(vec3(planeNorm.x, planeNorm.y, 0)) * cylinderA.radius;
+				}
+				else if(d < 0) {
+					pp2 = cylinderA.tip - sphereCenter - glm::normalize(vec3(planeNorm.x, planeNorm.y, 0)) * cylinderA.radius;
+				}
+
+
+				ShapeCylinder fixed = cylinderA;
+				fixed.base -= pp2;
+				fixed.tip -= pp2;
+				Draw(fixed, vec3(0.5, 1, 0.5));
+			}
+		}
+		else {
+			Draw(cylinderA, vec3(0, 0.5, 0.8));
+			Draw(triangleB, vec3(0, 0.2, 1));
+		}
 	}
 }
 

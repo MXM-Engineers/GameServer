@@ -548,6 +548,7 @@ void Window::Update(f64 delta)
 			auto& g = GetGlobalTweakableVars();
 			ImGui::SliderFloat("JumpForce", &g.jumpForce, 0, 50000);
 			ImGui::SliderFloat("Gravity", &g.gravity, 0, 2000);
+			ImGui::SliderFloat("Step height", &g.stepHeight, 10, 2000);
 			ImGui::EndMenu();
 		}
 

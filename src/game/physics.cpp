@@ -1,7 +1,23 @@
 #include "physics.h"
 #include <EASTL/sort.h>
+#include <glm/gtx/vector_angle.hpp>
 
 #define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
+
+bool SegmentPlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint)
+{
+	const vec3 segNorm = glm::normalize(s1 - s0);
+	f32 dot = glm::dot(planeNorm, segNorm);
+	if(abs(dot) < PHYS_EPSILON) {
+		return false; // parallel
+	}
+
+	const f32 t = glm::dot(planeNorm, (planePoint - s0) / dot);
+	if(t < 0 || t*t >= LengthSq(s1 - s0)) return false;
+
+	*intersPoint = s0 + segNorm * t;
+	return true;
+}
 
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen)
 {
@@ -277,6 +293,155 @@ bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetra
 	return TestIntersection(ShapeSphere{ center, A.radius }, B, pen);
 }
 
+bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* diskCenter)
+{
+	/** PLAN
+	 * Take the intersection between the infinite rect defined by the cylinder Z min and max
+	 * -> get a triangle or polygon
+	 * -> if polygon, make it 2 triangles
+	 * -> project on 2D plane, do triangle circle intersection in 2D
+	 **/
+
+	const vec3 cylNorm = glm::normalize(A.tip - A.base);
+	const vec3 planeNorm = B.Normal();
+	DBG_ASSERT(glm::dot(cylNorm, vec3(0, 0, 1)) == 1); // upright
+
+	eastl::fixed_vector<vec3,4> points;
+
+	foreach_const(p, B.p) {
+		if(p->z < A.tip.z && p->z >= A.base.z) {
+			points.push_back(*p);
+		}
+	}
+
+	// top plane
+	vec3 ti0, ti1, ti2;
+	bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.tip, &ti0);
+	bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.tip, &ti1);
+	bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.tip, &ti2);
+
+	if(rt0) {
+		points.push_back(ti0);
+	}
+	if(rt1) {
+		points.push_back(ti1);
+	}
+	if(rt2) {
+		points.push_back(ti2);
+	}
+
+	// bottom plane
+	vec3 bi0, bi1, bi2;
+	bool rb0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.base, &bi0);
+	bool rb1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.base, &bi1);
+	bool rb2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.base, &bi2);
+
+	if(rb0) {
+		points.push_back(bi0);
+	}
+	if(rb1) {
+		points.push_back(bi1);
+	}
+	if(rb2) {
+		points.push_back(bi2);
+	}
+
+	if(points.empty()) return false;
+
+	// sort points
+	{
+		vec3 center = vec3(0);
+		foreach_const(p, points) {
+			center += *p;
+		}
+		center /= (f32)points.size();
+
+		bool sort = true;
+		while(sort) {
+			sort = false;
+
+			for(int i = 2; i < points.size(); i++) {
+				vec3 d0 = glm::normalize(points[i-2] - center);
+				vec3 d1 = glm::normalize(points[i-1] - center);
+				vec3 d2 = glm::normalize(points[i] - center);
+				f32 a0 = glm::angle(d0, d1);
+				f32 a1 = glm::angle(d0, d2);
+				if(a0 > a1) {
+					eastl::swap(points[i], points[i-1]);
+					sort = true;
+				}
+			}
+		}
+	}
+
+	// triangulate
+	vec3 anchor = points[0];
+	points.erase(points.begin());
+
+	eastl::fixed_vector<ShapeTriangle,2> tris;
+
+	for(int i = 0; i < points.size() - 1; i++) {
+		ShapeTriangle t;
+		t.p = {
+			anchor,
+			points[i],
+			points[i+1],
+		};
+		tris.push_back(t);
+	}
+
+	const vec2 center = vec2(A.base);
+	const f32 r = A.radius;
+	foreach_const(t, tris) {
+		vec2 triDir = glm::normalize(vec2(planeNorm));
+
+		eastl::array<vec2,3> closestList;
+		closestList[0] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[1]), triDir);
+		closestList[1] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[2]), triDir);
+		closestList[2] = ProjectPointOnSegment(center, vec2(t->p[1]), vec2(t->p[2]), triDir);
+
+		vec2 closest = closestList[0];
+		f32 bestDist = LengthSq(center - closest);
+
+		f32 dist = LengthSq(closestList[1] - center);
+		if(dist < bestDist) {
+			closest = closestList[1];
+			bestDist = dist;
+		}
+
+		dist = LengthSq(closestList[2] - center);
+		if(dist < bestDist) {
+			closest = closestList[2];
+			bestDist = dist;
+		}
+
+		vec2 p0 = closest;
+		if(bestDist < r*r) {
+			vec3 inters;
+			LinePlaneIntersection(vec3(p0, 0), vec3(p0, 1), planeNorm, B.p[0], &inters);
+
+			vec2 triDir = glm::normalize(vec2(planeNorm));
+			f32 sign = 1;
+			if(glm::dot(planeNorm, cylNorm) > 0) {
+				sign = -1;
+			}
+			vec2 onCircle = center + triDir * (r * sign);
+			vec3 projOnCircle;
+			bool r = LinePlaneIntersection(vec3(onCircle, 0), vec3(onCircle, 1), planeNorm, B.p[0], &projOnCircle);
+			ASSERT(r);
+
+			vec3 delta = vec3(onCircle, A.base.z) - inters;
+			pen->dir = glm::normalize(delta);
+			pen->depth = r - glm::length(delta);
+
+			*diskCenter = projOnCircle;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVector* pen)
 {
 	const vec3 planeNorm = B.normal;
@@ -330,6 +495,7 @@ bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVe
 // FIXME: remove
 #include <game/core.h>
 #define GRAVITY GetGlobalTweakableVars().gravity
+#define STEP_HEIGHT GetGlobalTweakableVars().stepHeight
 
 const int SUB_STEP_COUNT = 1;
 const int COLLISION_RESOLUTION_STEP_COUNT = 4;
@@ -504,7 +670,17 @@ void PhysWorld::Step()
 						return a.fixLenSq < b.fixLenSq;
 					});
 
-					const Collision& col = colList.front();
+					Collision* selected = &(*colList.begin());
+					for(auto it = colList.rbegin(); it != colList.rend(); it++) {
+						const Collision& col = *it;
+						
+						f32 deltaZ = col.fix.z;
+						if(deltaZ > 0.f && deltaZ < STEP_HEIGHT) {
+							selected = &(*it);
+						}
+					}
+
+					const Collision& col = *selected;
 
 					body.pos += col.fix;
 					const f32 len = glm::length(body.vel);

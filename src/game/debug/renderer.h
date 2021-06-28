@@ -13,9 +13,14 @@
 
 #include <game/game_content.h>
 
-inline u32 CU3(f32 r, f32 g, f32 b)
+inline u32 ColorU3(f32 r, f32 g, f32 b)
 {
 	return 0xFF000000 | (u8(b * 255) << 16) | (u8(g * 255) << 8) | (u8(r * 255));
+}
+
+inline vec3 ColorV3(u32 rgb)
+{
+	return vec3((f32)(rgb >> 16 & 0xFF) / 0xFF, (f32)(rgb >> 8 & 0xFF) / 0xFF, (f32)(rgb & 0xFF) / 0xFF);
 }
 
 inline f64 saw(f64 a)
@@ -211,6 +216,7 @@ struct Renderer
 
 	void PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent = nullptr);
 	void PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent = nullptr);
+	void PushCylinder(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent = nullptr);
 
 	void PushLine(const vec3& start, const vec3& end, const vec3& color);
 

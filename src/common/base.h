@@ -415,7 +415,7 @@ typedef LockGuardT<tracy::Lockable<Mutex>> LockGuard;
 #define ProfileFunction()
 #define ProfileBlock(name)
 #define ProfileMutex(TYPE, NAME) TYPE NAME;
-#define ProfileNewFrame()
+#define ProfileNewFrame(NAME)
 #define ProfilePlotVar(V)
 #define ProfilePlotVarN(N,V)
 #define ProfileMemAlloc(PTR, SIZE)

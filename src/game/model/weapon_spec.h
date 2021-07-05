@@ -5,6 +5,38 @@ class WeaponSpec
 public:
 	WeaponSpec();
 	~WeaponSpec();
+
+	float getFiringMethodChargingTimeLevel1();
+	void setFiringMethodChargingTimeLevel1(float var);
+	float getFiringMethodChargingTimeLevel2();
+	void setFiringMethodChargingTimeLevel2(float var);
+	float getFiringMethodChargingTimeLevel3();
+	void setFiringMethodChargingTimeLevel3(float var);
+	float getFiringMethodComboFireDelay();
+	void setFiringMethodComboFireDelay(float var);
+	float getFiringMethodComboValidTime();
+	void setFiringMethodComboValidTime(float var);
+	float getFiringMethodConsumption();
+	void setFiringMethodConsumption(float var);
+	float getFiringMethodConsumptionByCharging();
+	void setFiringMethodConsumptionByCharging(float var);
+	float getFiringMethodErrorAngle();
+	void setFiringMethodErrorAngle(float var);
+	float getFiringMethodFireDelay();
+	void setFiringMethodFireDelay(float var);
+	float getFiringMethodMaxDistance();
+	void setFiringMethodMaxDistance(float var);
+	float getFiringMethodMinDistance();
+	void setFiringMethodMinDistance(float var);
+	float getFiringMethodChargingLevel1CreateRadiateMaxNum();
+	void setFiringMethodChargingLevel1CreateRadiateMaxNum(float var);
+	float getFiringMethodChargingLevel2CreateRadiateMaxNum();
+	void setFiringMethodChargingLevel2CreateRadiateMaxNum(float var);
+	float getFiringMethodCreateRadiateMaxAngBle();
+	void setFiringMethodCreateRadiateMaxAngBle(float var);
+	float getFiringMethodCreateRadiateMaxNum();
+	void setFiringMethodCreateRadiateMaxNum(float var);
+
 private:
 	float _FiringMethodChargingTimeLevel1 = 0.0f;
 	float _FiringMethodChargingTimeLevel2 = 0.0f;

@@ -87,14 +87,14 @@ struct CollisionTest
 		}
 	}
 
-	inline void DrawVec(const vec3& v, const vec3& at, const vec3& color)
+	inline void DrawVec(const vec3& v, const vec3& at, const vec3& color, f32 size = 2)
 	{
-		rdr.PushArrow(Pipeline::Unlit, at, at + v, color, 2);
+		rdr.PushArrow(Pipeline::Unlit, at, at + v, color, size);
 	}
 
 	inline void Draw(const vec3& at, const vec3& color)
 	{
-		rdr.PushArrow(Pipeline::Unlit, at + vec3(5, 0, 0), at, color, 2);
+		rdr.PushArrow(Pipeline::Unlit, at + vec3(1, 0, 0), at, color, 1);
 	}
 
 	void DoCollisionTests();

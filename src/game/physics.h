@@ -82,6 +82,13 @@ struct PhysPenetrationVector
 	f32 depth;
 };
 
+struct PhysResolutionCylinderTriangle
+{
+	vec3 slide;
+	vec3 pushX;
+	vec3 pushZ;
+};
+
 inline f32 LengthSq(const vec2& v)
 {
 	return glm::dot(v, v);
@@ -113,8 +120,18 @@ inline vec3 ProjectVec(const vec3& v, const vec3& on)
 	return glm::dot(v, n) * n;
 }
 
+inline vec2 ProjectVec2(const vec2& v, const vec2& on)
+{
+	vec2 n = glm::normalize(on);
+	return glm::dot(v, n) * n;
+}
+
 // on needs to be normalized
 inline vec3 ProjectVecNorm(const vec3& v, const vec3& on)
+{
+	return glm::dot(v, on) * on;
+}
+inline vec2 ProjectVec2Norm(const vec2& v, const vec2& on)
 {
 	return glm::dot(v, on) * on;
 }
@@ -142,6 +159,13 @@ inline vec3 NormalizeSafe(vec3 v)
 	return vec3(0);
 }
 
+inline f32 VecAngle(vec2 v)
+{
+	f32 a = atan2(v.y, v.x);
+	if(a < 0.0f) a += 2 * (f32)PI;
+	return a;
+}
+
 // NOTE: pn needs to be normalized
 bool SegmentPlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint);
 inline bool LinePlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint)
@@ -157,11 +181,13 @@ inline bool LinePlaneIntersection(const vec3& s0, const vec3& s1, const vec3& pl
 	return true;
 }
 
-inline vec2 ProjectPointOnSegment(const vec2& point, const vec2& l0, const vec2& l1, const vec2& projDir)
+inline vec2 ProjectPointOnSegment(const vec2& point, vec2 l0, vec2 l1, const vec2& projDir)
 {
+	//if(VecAngle(l0 - l1) > VecAngle(l1 - l0)) eastl::swap(l0, l1);
+	
 	const vec2 lineDir = glm::normalize(l1 - l0);
-	const vec2 norm = vec2(-lineDir.y, lineDir.x);
-	const f32 dot = glm::dot(norm, projDir);
+	const vec2 norm = vec2(glm::cross(vec3(lineDir, 0), vec3(0, 0, 1)));
+	f32 dot = glm::dot(norm, projDir);
 	if(abs(dot) < PHYS_EPSILON) {
 		return l0; // parallel
 	}
@@ -170,9 +196,9 @@ inline vec2 ProjectPointOnSegment(const vec2& point, const vec2& l0, const vec2&
 	const vec2 proj = l0 + projD * lineDir;
 	const vec2 A = proj - point;
 	const f32 d = glm::length(A) / dot;
-	//f32 lineD = clamp(glm::dot(projDir * d, lineDir), 0.f, glm::length(l0 - l1));
-	const f32 lineD = clamp(glm::dot(projDir * d, lineDir) + projD, 0.0f, glm::length(l0 - l1));
-	return l0 + lineDir * lineD;
+	//const f32 lineD = clamp(glm::dot(projDir * d, lineDir) + projD, 0.0f, glm::length(l0 - l1));
+	const f32 lineD = glm::dot(projDir * d, lineDir);
+	return proj + lineDir * lineD;
 }
 
 inline bool IsPointInsideTriangle(const vec3& point, const ShapeTriangle& tri)
@@ -185,13 +211,38 @@ inline bool IsPointInsideTriangle(const vec3& point, const ShapeTriangle& tri)
 	return inside;
 }
 
+// NOTE: planeNorm needs to be normalized
+inline vec3 ProjectPointOnPlane(const vec3& point, const vec3& planeNorm, const vec3& planePoint)
+{
+	vec3 delta = planePoint - point;
+	f32 dot = glm::dot(delta, -planeNorm);
+	return -planeNorm * dot + point;
+}
+
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeCapsule& A, const ShapeCapsule& B);
 bool TestIntersectionUpright(const ShapeCapsule& A, const ShapeCapsule& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
-bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* diskCenter);
+bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen);
 bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVector* pen);
+
+inline vec3 FixCapsuleAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCenter, const PhysPenetrationVector& pen, const vec3& norm)
+{
+	const vec3 point = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth) * 5.0f));
+	const vec3 projPoint = ProjectVecNorm(point - sphereCenter, norm);
+	vec3 triPen = norm * s.radius + projPoint;
+
+	f32 d = glm::dot(norm, s.Normal());
+	if(d > PHYS_EPSILON) {
+		triPen -= s.InnerBase() - sphereCenter;
+	}
+	else if(d < -PHYS_EPSILON) {
+		triPen -= s.InnerTip() - sphereCenter;
+	}
+
+	return triPen;
+}
 
 struct ShapeMesh
 {

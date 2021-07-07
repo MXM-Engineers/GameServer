@@ -543,6 +543,7 @@ void CollisionTest::DoCollisionTests()
 		static bool bFixedCylinder = false;
 		static bool bAutoMove = false;
 		static bool bCenter = false;
+		static bool bCapsule = false;
 		static f32 fOffsetX = 166.520f;
 		static f32 fOffsetY = 0;
 		static f32 fTipOff = 0;
@@ -553,21 +554,26 @@ void CollisionTest::DoCollisionTests()
 			ImGui::Checkbox("Fixed cylinder", &bFixedCylinder);
 			ImGui::Checkbox("Auto move", &bAutoMove);
 			ImGui::Checkbox("Center", &bCenter);
+			ImGui::Checkbox("Capsule", &bCapsule);
 			ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
 			ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
 			ImGui::SliderFloat("TipOff", &fTipOff, -200, 200);
 			ImGui::SliderFloat("TriY", &fTriY, -200, 200);
 			ImGui::SliderFloat("TriZ", &fTriZ, -200, 200);
 		}
-		ImGui::End();
 
 		ShapeCylinder cylinderA;
+		ShapeCapsule capsuleA;
 		ShapeTriangle triangleB;
 
 		const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
 		cylinderA.base = vec3(100, 1300, 0) + off;
 		cylinderA.tip = vec3(100, 1300, 100) + off;
 		cylinderA.radius = 20;
+
+		capsuleA.base = cylinderA.base;
+		capsuleA.tip = cylinderA.tip;
+		capsuleA.radius = cylinderA.radius;
 
 		const vec3 triOff = bAutoMove ? vec3(0, 0, -100 + saw(a) * 200) : vec3(0, 0, fOffsetY);
 		triangleB.p = {
@@ -579,7 +585,7 @@ void CollisionTest::DoCollisionTests()
 		rdr.PushLine(cylinderA.base - vec3(0, 0, 1000.f), cylinderA.base + vec3(0, 0, 1000.f), vec3(1));
 
 
-		{
+		do {
 			const ShapeCylinder& A = cylinderA;
 			const ShapeTriangle& B = triangleB;
 
@@ -635,163 +641,267 @@ void CollisionTest::DoCollisionTests()
 				points.push_back(bi2);
 			}
 
-			if(!points.empty()) {
-				// sort points
-				{
-					vec3 center = vec3(0);
-					foreach_const(p, points) {
-						center += *p;
-					}
-					center /= (f32)points.size();
-					
-					//Draw(center, vec3(1));
-					
-					bool sort = true;
-					while(sort) {
-						sort = false;
-						
-						for(int i = 2; i < points.size(); i++) {
-							vec3 d0 = glm::normalize(points[i-2] - center);
-							vec3 d1 = glm::normalize(points[i-1] - center);
-							vec3 d2 = glm::normalize(points[i] - center);
-							f32 a0 = glm::angle(d0, d1);
-							f32 a1 = glm::angle(d0, d2);
-							if(a0 > a1) {
-								eastl::swap(points[i], points[i-1]);
-								sort = true;
-							}
-						}
-					}
-				}
-				
-				/*
-				for(int i = 0; i < points.size(); i++) {
-					Draw(points[i], vec3(1, (f32)i/points.size(), 0));
-				}
-				*/
-				
-				// triangulate
-				vec3 anchor = points[0];
-				points.erase(points.begin());
-				
-				eastl::fixed_vector<ShapeTriangle,2> tris;
-				
-				for(int i = 0; i < points.size() - 1; i++) {
-					ShapeTriangle t;
-					t.p = {
-						anchor,
-						points[i],
-						points[i+1],
-					};
-					tris.push_back(t);
-				}
-				
-				foreach_const(t, tris) {
-					rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
-					rdr.PushLine(t->p[0], t->p[2], ColorV3(0xfc0283));
-					rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
-				}
-				
-				foreach(t, tris) {
-					t->p[0].z = 0;
-					t->p[1].z = 0;
-					t->p[2].z = 0;
-				}
-				
-				foreach_const(t, tris) {
-					rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
-					rdr.PushLine(t->p[0], t->p[2], ColorV3(0xfc0283));
-					rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
-				}
-				
-				vec2 center = vec2(cylinderA.base);
-				f32 r = cylinderA.radius;
-				foreach_const(t, tris) {
-					vec2 triDir = glm::normalize(vec2(planeNorm));
-					
-					eastl::array<vec2,3> closestList;
-					closestList[0] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[1]), triDir);
-					closestList[1] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[2]), triDir);
-					closestList[2] = ProjectPointOnSegment(center, vec2(t->p[1]), vec2(t->p[2]), triDir);
+			if(points.empty()) break;
 
-					foreach_const(c, closestList) {
-						Draw(vec3(*c, 0), vec3(1, 1, 0));
-					}
-					
-					vec2 closest = closestList[0];
-					f32 bestDist = LengthSq(center - closest);
-					
-					f32 dist = LengthSq(closestList[1] - center);
-					if(dist < bestDist) {
-						closest = closestList[1];
-						bestDist = dist;
-					}
-					
-					dist = LengthSq(closestList[2] - center);
-					if(dist < bestDist) {
-						closest = closestList[2];
-					}
-					
-					vec2 p0 = closest;
-					if(bestDist < r*r) {
-						Draw(vec3(p0, 0), vec3(1, 0, 0));
-						
-						vec3 inters;
-						LinePlaneIntersection(vec3(p0, 0), vec3(p0, 1), planeNorm, B.p[0], &inters);
-						vec3 delta = vec3(p0 - center, 0);
-						Draw(inters, vec3(1));
-						
-						vec2 triDir = glm::normalize(vec2(planeNorm));
-						f32 sign = 1;
-						if(glm::dot(planeNorm, cylNorm) > 0) {
-							sign = -1;
+			// sort points
+			{
+				vec3 center = vec3(0);
+				foreach_const(p, points) {
+					center += *p;
+				}
+				center /= (f32)points.size();
+
+				//Draw(center, vec3(1));
+
+				bool sort = true;
+				while(sort) {
+					sort = false;
+
+					for(int i = 2; i < points.size(); i++) {
+						vec3 d0 = glm::normalize(points[i-2] - center);
+						vec3 d1 = glm::normalize(points[i-1] - center);
+						vec3 d2 = glm::normalize(points[i] - center);
+						f32 a0 = glm::angle(d0, d1);
+						f32 a1 = glm::angle(d0, d2);
+						if(a0 > a1) {
+							eastl::swap(points[i], points[i-1]);
+							sort = true;
 						}
-						vec2 onCircle = center + triDir * (r * sign);
-						Draw(vec3(onCircle, 0), vec3(0, 0, 1));
-						vec3 projOnCircle;
-						bool r = LinePlaneIntersection(vec3(onCircle, 0), vec3(onCircle, 1), planeNorm, B.p[0], &projOnCircle);
-						ASSERT(r);
-						Draw(projOnCircle, ColorV3(0x8671fc));
 					}
 				}
 			}
-		}
+
+			ImGui::Text("intersectsTopPlane: %d", intersectsTopPlane);
+			ImGui::Text("intersectsBotPlane: %d", intersectsBotPlane);
+			ImGui::Text("Points: %d", points.size());
+
+			/*
+			for(int i = 0; i < points.size(); i++) {
+				Draw(points[i], vec3(1, (f32)i/points.size(), 0));
+			}
+			*/
+
+			// triangulate
+			vec3 anchor = points[0];
+			points.erase(points.begin());
+
+			eastl::fixed_vector<ShapeTriangle,2> tris;
+
+			for(int i = 0; i < points.size() - 1; i++) {
+				ShapeTriangle t;
+				t.p = {
+					anchor,
+					points[i],
+					points[i+1],
+				};
+
+				// remove 0 surface triangles
+				if(LengthSq(t.p[0] - t.p[1]) < 1.0f) break;
+				if(LengthSq(t.p[0] - t.p[2]) < 1.0f) break;
+				if(LengthSq(t.p[1] - t.p[2]) < 1.0f) break;
+
+				tris.push_back(t);
+			}
+
+			ImGui::Text("Triangles: %d", tris.size());
+
+			foreach_const(t, tris) {
+				rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
+				rdr.PushLine(t->p[0], t->p[2], ColorV3(0xfc0283));
+				rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
+			}
+
+			foreach(t, tris) {
+				t->p[0].z = 0;
+				t->p[1].z = 0;
+				t->p[2].z = 0;
+			}
+
+			foreach_const(t, tris) {
+				#define DRAW_NORM(P0, P1) DrawVec(glm::cross(P1 - P0, vec3(0, 0, 1)), (P0 + P1) * 0.5f, vec3(1), 0.5f)
+
+				rdr.PushLine(t->p[0], t->p[1], ColorV3(0xfc0283));
+				rdr.PushLine(t->p[1], t->p[2], ColorV3(0xfc0283));
+				rdr.PushLine(t->p[2], t->p[0], ColorV3(0xfc0283));
+
+				//DRAW_NORM(t->p[0], t->p[1]);
+				//DRAW_NORM(t->p[1], t->p[2]);
+				//DRAW_NORM(t->p[2], t->p[0]);
+
+				#undef DRAW_NORM
+			}
+
+			const vec2 triDir = glm::normalize(vec2(planeNorm));
+			const f32 triMinZ = MIN(MIN(B.p[0].z, B.p[1].z), B.p[2].z);
+			const f32 triMaxZ = MAX(MAX(B.p[0].z, B.p[1].z), B.p[2].z);
+			const vec2 center = vec2(A.base);
+			const f32 r = A.radius;
+			bool intersects = false;
+
+			foreach_const(t, tris) {
+				// TODO: make 2D version of this
+				ShapeTriangle tri2D = *t;
+				tri2D.p[0].z = 0;
+				tri2D.p[1].z = 0;
+				tri2D.p[2].z = 0;
+
+				if(IsPointInsideTriangle(vec3(center, 0), tri2D)) {
+					intersects = true;
+					break;
+				}
+
+				eastl::array<vec2,3> closestList;
+				closestList[0] = ClosestPointOnLineSegment(vec2(t->p[0]), vec2(t->p[1]), center);
+				closestList[1] = ClosestPointOnLineSegment(vec2(t->p[1]), vec2(t->p[2]), center);
+				closestList[2] = ClosestPointOnLineSegment(vec2(t->p[2]), vec2(t->p[0]), center);
+
+				vec2 closest = closestList[0];
+				f32 bestDist = LengthSq(center - closest);
+
+				f32 dist = LengthSq(closestList[1] - center);
+				if(dist < bestDist) {
+					closest = closestList[1];
+					bestDist = dist;
+				}
+
+				dist = LengthSq(closestList[2] - center);
+				if(dist < bestDist) {
+					closest = closestList[2];
+					bestDist = dist;
+				}
+
+				vec2 p0 = closest;
+				if(bestDist < r*r) {
+					vec3 inters;
+					LinePlaneIntersection(vec3(p0, 0), vec3(p0, 1), planeNorm, B.p[0], &inters);
+
+					f32 sign = 1;
+					if(glm::dot(planeNorm, cylNorm) > 0) {
+						sign = -1;
+					}
+
+					f32 planeDot = glm::dot(cylNorm, planeNorm);
+					if(abs(planeDot) > 1.0f-PHYS_EPSILON) {
+						// collinear
+					}
+					else {
+						intersects = true;
+						break;
+					}
+				}
+			}
+
+			if(intersects) {
+				vec3 projCenter;
+				LinePlaneIntersection(vec3(center, A.base.z), vec3(center, A.tip.z), planeNorm, B.p[0], &projCenter);
+				projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
+
+				f32 baseZ = A.base.z;
+				if(glm::dot(cylNorm, planeNorm) < 0) {
+					baseZ = A.tip.z;
+				}
+				vec3 farthestPoint = vec3(center + -triDir * r, projCenter.z);
+				vec3 projFarthestPoint = ProjectPointOnPlane(farthestPoint, planeNorm, B.p[0]);
+
+				vec3 delta = farthestPoint - projFarthestPoint + vec3(0, 0, baseZ - projCenter.z);
+				//pen->dir = glm::normalize(delta);
+				//pen->depth = glm::length(delta);
+
+				Draw(projCenter, vec3(1));
+				Draw(farthestPoint, vec3(0, 0, 1));
+				Draw(projFarthestPoint, ColorV3(0x8b57bf));
+
+				// X push
+				vec2 pushX = vec2(0);
+				f32 pushXLenSq = 0;
+				const vec2 fp = vec2(farthestPoint);
+
+				foreach_const(t, tris) {
+					vec2 t0 = vec2(t->p[0]);
+					vec2 t1 = vec2(t->p[1]);
+					vec2 t2 = vec2(t->p[2]);
+
+					vec2 p0 = ProjectVec2(fp - t0, t1 - t0) + t0;
+					vec2 p1 = ProjectVec2(fp - t0, t2 - t0) + t0;
+					vec2 p2 = ProjectVec2(fp - t1, t2 - t1) + t1;
+
+					f32 d0 = glm::dot(p0 - fp, triDir);
+					f32 d1 = glm::dot(p1 - fp, triDir);
+					f32 d2 = glm::dot(p2 - fp, triDir);
+
+					if(d0 > pushXLenSq) {
+						pushXLenSq = d0;
+						pushX = d0 * triDir;
+					}
+					if(d1 > pushXLenSq) {
+						pushXLenSq = d1;
+						pushX = d1 * triDir;
+					}
+					if(d2 > pushXLenSq) {
+						pushXLenSq = d2;
+						pushX = d2 * triDir;
+					}
+
+					Draw(vec3(p0, 0), ColorV3(0x00b724));
+					Draw(vec3(p1, 0), ColorV3(0x00b724));
+					Draw(vec3(p2, 0), ColorV3(0x00b724));
+				}
+
+				DrawVec(vec3(pushX, 0), vec3(fp, 0), ColorV3(0x62b6c1));
+			}
+
+		} while(0);
 
 		rdr.PushLine(cylinderA.base + vec3(0, 0, -1000), cylinderA.tip + vec3(0, 0, 1000), vec3(1));
 
-		PhysPenetrationVector pen;
-		vec3 sphereCenter;
-		bool intersect = TestIntersectionUpright(cylinderA, triangleB, &pen, &sphereCenter);
+		PhysResolutionCylinderTriangle pen;
+		bool intersect = TestIntersectionUpright(cylinderA, triangleB, &pen);
 
 		DrawVec(triangleB.Normal() * 20.f, triangleB.Center(), vec3(1));
 
 		if(intersect) {
 			Draw(cylinderA, vec3(1, 0.5, 0.8));
 			Draw(triangleB, vec3(1, 0.2, 1));
-			DrawVec(-pen.dir * pen.depth, cylinderA.base + vec3(0, 0, (pen.dir * pen.depth).z), vec3(1, 1, 0));
+			DrawVec(-pen.slide, cylinderA.base + glm::normalize(pen.slide) * cylinderA.radius, vec3(1, 1, 0));
+
+			PhysPenetrationVector capsPen = { vec3(1), 0.f };
+			vec3 capsSphereCenter;
+			if(bCapsule) {
+				bool capsInt = TestIntersection(capsuleA, triangleB, &capsPen, &capsSphereCenter);
+				Draw(capsuleA, vec3(1, 0.5, 0.8));
+			}
 
 			if(bFixedCylinder) {
-				vec3 pp2;
-				vec3 planeNorm = triangleB.Normal();
-				f32 d = glm::dot(triangleB.Normal(), cylinderA.Normal());
-				if(d > 0) {
-					pp2 = cylinderA.base - sphereCenter - glm::normalize(vec3(planeNorm.x, planeNorm.y, 0)) * cylinderA.radius;
-				}
-				else if(d < 0) {
-					pp2 = cylinderA.tip - sphereCenter - glm::normalize(vec3(planeNorm.x, planeNorm.y, 0)) * cylinderA.radius;
-				}
-
-
 				ShapeCylinder fixed = cylinderA;
-				fixed.base -= pp2;
-				fixed.tip -= pp2;
+				fixed.base += -pen.slide;
+				fixed.tip += -pen.slide;
 				Draw(fixed, vec3(0.5, 1, 0.5));
+
+				fixed = cylinderA;
+				fixed.base += pen.pushX;
+				fixed.tip += pen.pushX;
+				Draw(fixed, ColorV3(0xfcd276));
+
+				if(bCapsule) {
+					ShapeSphere sphere;
+					sphere.center = capsSphereCenter;
+					sphere.radius = capsuleA.radius;
+					Draw(sphere, vec3(1));
+
+					vec3 triPen = FixCapsuleAlongTriangleNormal(capsuleA, capsSphereCenter, capsPen, triangleB.Normal());
+					ShapeCapsule capsFixed = capsuleA;
+					capsFixed.base += triPen;
+					capsFixed.tip += triPen;
+					Draw(capsFixed, vec3(0.5, 1, 0.5));
+				}
 			}
 		}
 		else {
 			Draw(cylinderA, vec3(0, 0.5, 0.8));
 			Draw(triangleB, vec3(0, 0.2, 1));
 		}
+
+		ImGui::End();
 	}
 }
 

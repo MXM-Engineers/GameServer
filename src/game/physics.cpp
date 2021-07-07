@@ -293,7 +293,7 @@ bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetra
 	return TestIntersection(ShapeSphere{ center, A.radius }, B, pen);
 }
 
-bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* diskCenter)
+bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen)
 {
 	/** PLAN
 	 * Take the intersection between the infinite rect defined by the cylinder Z min and max
@@ -390,15 +390,29 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 		tris.push_back(t);
 	}
 
+	const vec2 triDir = glm::normalize(vec2(planeNorm));
+	const f32 triMinZ = MIN(MIN(B.p[0].z, B.p[1].z), B.p[2].z);
+	const f32 triMaxZ = MAX(MAX(B.p[0].z, B.p[1].z), B.p[2].z);
 	const vec2 center = vec2(A.base);
 	const f32 r = A.radius;
+	bool intersects = false;
+
 	foreach_const(t, tris) {
-		vec2 triDir = glm::normalize(vec2(planeNorm));
+		// TODO: make 2D version of this
+		ShapeTriangle tri2D = *t;
+		tri2D.p[0].z = 0;
+		tri2D.p[1].z = 0;
+		tri2D.p[2].z = 0;
+
+		if(IsPointInsideTriangle(vec3(center, 0), tri2D)) {
+			intersects = true;
+			break;
+		}
 
 		eastl::array<vec2,3> closestList;
-		closestList[0] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[1]), triDir);
-		closestList[1] = ProjectPointOnSegment(center, vec2(t->p[0]), vec2(t->p[2]), triDir);
-		closestList[2] = ProjectPointOnSegment(center, vec2(t->p[1]), vec2(t->p[2]), triDir);
+		closestList[0] = ClosestPointOnLineSegment(vec2(t->p[0]), vec2(t->p[1]), center);
+		closestList[1] = ClosestPointOnLineSegment(vec2(t->p[1]), vec2(t->p[2]), center);
+		closestList[2] = ClosestPointOnLineSegment(vec2(t->p[2]), vec2(t->p[0]), center);
 
 		vec2 closest = closestList[0];
 		f32 bestDist = LengthSq(center - closest);
@@ -420,23 +434,71 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 			vec3 inters;
 			LinePlaneIntersection(vec3(p0, 0), vec3(p0, 1), planeNorm, B.p[0], &inters);
 
-			vec2 triDir = glm::normalize(vec2(planeNorm));
 			f32 sign = 1;
 			if(glm::dot(planeNorm, cylNorm) > 0) {
 				sign = -1;
 			}
-			vec2 onCircle = center + triDir * (r * sign);
-			vec3 projOnCircle;
-			bool r = LinePlaneIntersection(vec3(onCircle, 0), vec3(onCircle, 1), planeNorm, B.p[0], &projOnCircle);
-			ASSERT(r);
 
-			vec3 delta = vec3(onCircle, A.base.z) - inters;
-			pen->dir = glm::normalize(delta);
-			pen->depth = r - glm::length(delta);
-
-			*diskCenter = projOnCircle;
-			return true;
+			f32 planeDot = glm::dot(cylNorm, planeNorm);
+			if(abs(planeDot) > 1.0f-PHYS_EPSILON) {
+				// collinear
+			}
+			else {
+				intersects = true;
+				break;
+			}
 		}
+	}
+
+	if(intersects) {
+		vec3 projCenter;
+		LinePlaneIntersection(vec3(center, A.base.z), vec3(center, A.tip.z), planeNorm, B.p[0], &projCenter);
+		projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
+
+		f32 baseZ = A.base.z;
+		if(glm::dot(cylNorm, planeNorm) < 0) {
+			baseZ = A.tip.z;
+		}
+		vec3 farthestPoint = vec3(center + -triDir * r, projCenter.z);
+		vec3 projFarthestPoint = ProjectPointOnPlane(farthestPoint, planeNorm, B.p[0]);
+
+		vec3 delta = farthestPoint - projFarthestPoint + vec3(0, 0, baseZ - projCenter.z);
+		pen->slide = delta;
+
+		// X push
+		vec2 pushX = vec2(0);
+		f32 pushXLenSq = 0;
+		const vec2 fp = vec2(farthestPoint);
+
+		foreach_const(t, tris) {
+			vec2 t0 = vec2(t->p[0]);
+			vec2 t1 = vec2(t->p[1]);
+			vec2 t2 = vec2(t->p[2]);
+
+			vec2 p0 = ProjectVec2(fp - t0, t1 - t0) + t0;
+			vec2 p1 = ProjectVec2(fp - t0, t2 - t0) + t0;
+			vec2 p2 = ProjectVec2(fp - t1, t2 - t1) + t1;
+
+			f32 d0 = glm::dot(p0 - fp, triDir);
+			f32 d1 = glm::dot(p1 - fp, triDir);
+			f32 d2 = glm::dot(p2 - fp, triDir);
+
+			if(d0 > pushXLenSq) {
+				pushXLenSq = d0;
+				pushX = d0 * triDir;
+			}
+			if(d1 > pushXLenSq) {
+				pushXLenSq = d1;
+				pushX = d1 * triDir;
+			}
+			if(d2 > pushXLenSq) {
+				pushXLenSq = d2;
+				pushX = d2 * triDir;
+			}
+		}
+
+		pen->pushX = vec3(pushX, 0);
+		return true;
 	}
 
 	return false;
@@ -528,23 +590,6 @@ void PhysWorld::DeleteBody(BodyHandle handle)
 	dynCapsuleBodyList.erase(handle);
 }
 
-inline vec3 FixAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCenter, const PhysPenetrationVector& pen, const vec3& norm)
-{
-	const vec3 point = sphereCenter + pen.dir * (s.radius - (pen.depth + SignedEpsilon(pen.depth) * 5.0f));
-	const vec3 projPoint = ProjectVecNorm(point - sphereCenter, norm);
-	vec3 triPen = norm * s.radius + projPoint;
-
-	f32 d = glm::dot(norm, s.Normal());
-	if(d > PHYS_EPSILON) {
-		triPen -= s.InnerBase() - sphereCenter;
-	}
-	else if(d < -PHYS_EPSILON) {
-		triPen -= s.InnerTip() - sphereCenter;
-	}
-
-	return triPen;
-}
-
 void PhysWorld::Step()
 {
 	ProfileFunction();
@@ -616,7 +661,7 @@ void PhysWorld::Step()
 					bool intersects = TestIntersection(s, *tri, &pen, &sphereCenter);
 					if(intersects) {
 						const vec3 triangleNormal = tri->Normal();
-						const vec3 triPen = FixAlongTriangleNormal(s, sphereCenter, pen, triangleNormal);
+						const vec3 triPen = FixCapsuleAlongTriangleNormal(s, sphereCenter, pen, triangleNormal);
 
 						vec3 fix = triPen;
 

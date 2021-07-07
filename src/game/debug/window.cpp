@@ -107,7 +107,7 @@ struct Window
 	}
 	testSubject;
 
-	bool ui_bCollisionTests = false;
+	bool ui_bCollisionTests = true;
 	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
 	bool ui_bPhysicsTest = false;

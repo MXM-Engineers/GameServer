@@ -164,6 +164,8 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 bool GameXmlContent::LoadMasterDefinitionsModel()
 {
+	return true; // TODO: remove
+
 	// Parse SKILLS.xml once
 	{
 		Path SkillXml = gameDataDir;

@@ -816,30 +816,38 @@ void CollisionTest::DoCollisionTests()
 				f32 pushXLenSq = 0;
 				const vec2 fp = vec2(farthestPoint);
 
+
+
 				foreach_const(t, tris) {
 					vec2 t0 = vec2(t->p[0]);
 					vec2 t1 = vec2(t->p[1]);
 					vec2 t2 = vec2(t->p[2]);
 
-					vec2 p0 = ProjectVec2(fp - t0, t1 - t0) + t0;
-					vec2 p1 = ProjectVec2(fp - t0, t2 - t0) + t0;
-					vec2 p2 = ProjectVec2(fp - t1, t2 - t1) + t1;
+					vec2 p0, p1, p2;
+					bool r0 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t1, &p0);
+					bool r1 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t2, &p1);
+					bool r2 = LineSegmentIntersection(fp, fp + triDir * 100.f, t1, t2, &p2);
 
-					f32 d0 = glm::dot(p0 - fp, triDir);
-					f32 d1 = glm::dot(p1 - fp, triDir);
-					f32 d2 = glm::dot(p2 - fp, triDir);
-
-					if(d0 > pushXLenSq) {
-						pushXLenSq = d0;
-						pushX = d0 * triDir;
+					if(r0) {
+						f32 d0 = glm::dot(p0 - fp, triDir);
+						if(d0 > pushXLenSq) {
+							pushXLenSq = d0;
+							pushX = d0 * triDir;
+						}
 					}
-					if(d1 > pushXLenSq) {
-						pushXLenSq = d1;
-						pushX = d1 * triDir;
+					if(r1) {
+						f32 d1 = glm::dot(p1 - fp, triDir);
+						if(d1 > pushXLenSq) {
+							pushXLenSq = d1;
+							pushX = d1 * triDir;
+						}
 					}
-					if(d2 > pushXLenSq) {
-						pushXLenSq = d2;
-						pushX = d2 * triDir;
+					if(r2) {
+						f32 d2 = glm::dot(p2 - fp, triDir);
+						if(d2 > pushXLenSq) {
+							pushXLenSq = d2;
+							pushX = d2 * triDir;
+						}
 					}
 
 					Draw(vec3(p0, 0), ColorV3(0x00b724));
@@ -847,10 +855,21 @@ void CollisionTest::DoCollisionTests()
 					Draw(vec3(p2, 0), ColorV3(0x00b724));
 				}
 
-				DrawVec(vec3(pushX, 0), vec3(fp, 0), ColorV3(0x62b6c1));
+				DrawVec(vec3(pushX, 0), vec3(fp, 0), ColorV3(0x62b6c1), 0.2f);
 			}
 
 		} while(0);
+
+		vec2 p0;
+		vec2 la0 = vec2(-300, 10);
+		vec2 la1 = vec2(300, 10);
+		vec2 lb0 = vec2(150, -300);
+		vec2 lb1 = vec2(150, 0);
+		bool r = LineLineIntersection(la0, la1, lb0, lb1, &p0);
+
+		rdr.PushLine(vec3(la0, 0), vec3(la1, 0), vec3(1, 0.2, 0));
+		rdr.PushLine(vec3(lb0, 0), vec3(lb1, 0), vec3(1, 0.2, 0));
+		if(r) Draw(vec3(p0, 0), vec3(1));
 
 		rdr.PushLine(cylinderA.base + vec3(0, 0, -1000), cylinderA.tip + vec3(0, 0, 1000), vec3(1));
 

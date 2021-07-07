@@ -475,25 +475,31 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 			vec2 t1 = vec2(t->p[1]);
 			vec2 t2 = vec2(t->p[2]);
 
-			vec2 p0 = ProjectVec2(fp - t0, t1 - t0) + t0;
-			vec2 p1 = ProjectVec2(fp - t0, t2 - t0) + t0;
-			vec2 p2 = ProjectVec2(fp - t1, t2 - t1) + t1;
+			vec2 p0, p1, p2;
+			bool r0 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t1, &p0);
+			bool r1 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t2, &p1);
+			bool r2 = LineSegmentIntersection(fp, fp + triDir * 100.f, t1, t2, &p2);
 
-			f32 d0 = glm::dot(p0 - fp, triDir);
-			f32 d1 = glm::dot(p1 - fp, triDir);
-			f32 d2 = glm::dot(p2 - fp, triDir);
-
-			if(d0 > pushXLenSq) {
-				pushXLenSq = d0;
-				pushX = d0 * triDir;
+			if(r0) {
+				f32 d0 = glm::dot(p0 - fp, triDir);
+				if(d0 > pushXLenSq) {
+					pushXLenSq = d0;
+					pushX = d0 * triDir;
+				}
 			}
-			if(d1 > pushXLenSq) {
-				pushXLenSq = d1;
-				pushX = d1 * triDir;
+			if(r1) {
+				f32 d1 = glm::dot(p1 - fp, triDir);
+				if(d1 > pushXLenSq) {
+					pushXLenSq = d1;
+					pushX = d1 * triDir;
+				}
 			}
-			if(d2 > pushXLenSq) {
-				pushXLenSq = d2;
-				pushX = d2 * triDir;
+			if(r2) {
+				f32 d2 = glm::dot(p2 - fp, triDir);
+				if(d2 > pushXLenSq) {
+					pushXLenSq = d2;
+					pushX = d2 * triDir;
+				}
 			}
 		}
 

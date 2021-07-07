@@ -166,6 +166,49 @@ inline f32 VecAngle(vec2 v)
 	return a;
 }
 
+inline f32 Vec2Cross(vec2 v1, vec2 v2)
+{
+	return v1.x * v2.y - v1.y * v2.x;
+}
+
+inline bool LineLineIntersection(vec2 la0, vec2 la1, vec2 lb0, vec2 lb1, vec2* tu)
+{
+	// t = (q − p) × s / (r × s)
+	// u = (q − p) × r / (r × s)
+
+	vec2 p = la0;
+	vec2 r = la1 - la0;
+	vec2 q = lb0;
+	vec2 s = lb1 - lb0;
+
+	const f32 c0 = Vec2Cross(q - p, r);
+	const f32 c1 = Vec2Cross(r, s);
+
+	if(abs(c0) < PHYS_EPSILON) {
+		if(abs(c1) < PHYS_EPSILON) { // collinear
+			*tu = vec2(0);
+			return true;
+		}
+		return false; // parallel
+	}
+
+	f32 u = c0 / c1;
+	f32 t = Vec2Cross(q - p, s) / c1;
+	*tu = vec2(t, u);
+	return true;
+}
+
+inline bool LineSegmentIntersection(vec2 l0, vec2 l1, vec2 s0, vec2 s1, vec2* inters)
+{
+	vec2 tu;
+	bool r = LineLineIntersection(l0, l1, s0, s1, &tu);
+	if(!r) return false;
+
+	if(tu.y < 0.0 || tu.y >= 1.0) return false;
+	*inters = l0 + ((l1 - l0) * tu.x);
+	return true;
+}
+
 // NOTE: pn needs to be normalized
 bool SegmentPlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint);
 inline bool LinePlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint)

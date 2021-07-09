@@ -544,6 +544,7 @@ void CollisionTest::DoCollisionTests()
 		static bool bAutoMove = false;
 		static bool bCenter = false;
 		static bool bCapsule = false;
+		static bool bExtraDisplace = false;
 		static f32 fOffsetX = 166.520f;
 		static f32 fOffsetY = 0;
 		static f32 fTipOff = 0;
@@ -555,6 +556,7 @@ void CollisionTest::DoCollisionTests()
 			ImGui::Checkbox("Auto move", &bAutoMove);
 			ImGui::Checkbox("Center", &bCenter);
 			ImGui::Checkbox("Capsule", &bCapsule);
+			ImGui::Checkbox("ExtraDisplace", &bExtraDisplace);
 			ImGui::SliderFloat("OffsetX", &fOffsetX, 0, 300);
 			ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
 			ImGui::SliderFloat("TipOff", &fTipOff, -200, 200);
@@ -815,47 +817,63 @@ void CollisionTest::DoCollisionTests()
 				vec2 pushX = vec2(0);
 				f32 pushXLenSq = 0;
 				const vec2 fp = vec2(farthestPoint);
-
-
+				const ShapeTriangle* farthestTri = &tris[0];
 
 				foreach_const(t, tris) {
 					vec2 t0 = vec2(t->p[0]);
 					vec2 t1 = vec2(t->p[1]);
 					vec2 t2 = vec2(t->p[2]);
 
-					vec2 p0, p1, p2;
-					bool r0 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t1, &p0);
-					bool r1 = LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t2, &p1);
-					bool r2 = LineSegmentIntersection(fp, fp + triDir * 100.f, t1, t2, &p2);
+					eastl::array<vec2, 3> pointList = {
+						fp, fp, fp,
+					};
 
-					if(r0) {
-						f32 d0 = glm::dot(p0 - fp, triDir);
+					bool oneInters = false;
+					oneInters |= LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t1, &pointList[0]);
+					oneInters |= LineSegmentIntersection(fp, fp + triDir * 100.f, t0, t2, &pointList[1]);
+					oneInters |= LineSegmentIntersection(fp, fp + triDir * 100.f, t1, t2, &pointList[2]);
+
+					if(!oneInters) {
+						pointList = {
+							LengthSq(center - t0) < r*r ? t0 : fp,
+							LengthSq(center - t1) < r*r ? t1 : fp,
+							LengthSq(center - t2) < r*r ? t2 : fp,
+						};
+					}
+
+					foreach_const(p, pointList) {
+						f32 d0 = glm::dot(*p - fp, triDir);
 						if(d0 > pushXLenSq) {
 							pushXLenSq = d0;
 							pushX = d0 * triDir;
-						}
-					}
-					if(r1) {
-						f32 d1 = glm::dot(p1 - fp, triDir);
-						if(d1 > pushXLenSq) {
-							pushXLenSq = d1;
-							pushX = d1 * triDir;
-						}
-					}
-					if(r2) {
-						f32 d2 = glm::dot(p2 - fp, triDir);
-						if(d2 > pushXLenSq) {
-							pushXLenSq = d2;
-							pushX = d2 * triDir;
+							farthestTri = &(*t);
 						}
 					}
 
-					Draw(vec3(p0, 0), ColorV3(0x00b724));
-					Draw(vec3(p1, 0), ColorV3(0x00b724));
-					Draw(vec3(p2, 0), ColorV3(0x00b724));
+					Draw(vec3(pointList[0], 0), ColorV3(0x00b724));
+					Draw(vec3(pointList[1], 0), ColorV3(0x00b724));
+					Draw(vec3(pointList[2], 0), ColorV3(0x00b724));
 				}
 
 				DrawVec(vec3(pushX, 0), vec3(fp, 0), ColorV3(0x62b6c1), 0.2f);
+
+				vec2 displaced = vec2(A.base) + pushX;
+
+				f32 dist;
+				vec2 closest = ClosestPointToTriangle(displaced, *farthestTri, &dist);
+
+				Draw(vec3(displaced, 0), ColorV3(0x000000));
+				Draw(vec3(closest, 0), ColorV3(0xfcf67e));
+
+				vec2 extra = NormalizeSafe(displaced - closest) * (A.radius - dist);
+				if(Vec2Dot(extra, triDir) > 0) {
+					pushX += extra;
+					DrawVec(vec3(extra, 0), vec3(displaced, 0), vec3(1), 1.0f);
+					DrawVec(vec3(triDir * 10.0f, 0), vec3(displaced, 0), vec3(1, 0, 0), 1.0f);
+				}
+
+				ImGui::Text("Dist: %f", dist);
+				ImGui::Text("Dot: %f", Vec2Dot(extra, triDir));
 			}
 
 		} while(0);
@@ -894,7 +912,7 @@ void CollisionTest::DoCollisionTests()
 				ShapeCylinder fixed = cylinderA;
 				fixed.base += -pen.slide;
 				fixed.tip += -pen.slide;
-				Draw(fixed, vec3(0.5, 1, 0.5));
+				//Draw(fixed, vec3(0.5, 1, 0.5));
 
 				fixed = cylinderA;
 				fixed.base += pen.pushX;

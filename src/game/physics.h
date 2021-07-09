@@ -171,6 +171,11 @@ inline f32 Vec2Cross(vec2 v1, vec2 v2)
 	return v1.x * v2.y - v1.y * v2.x;
 }
 
+inline f32 Vec2Dot(vec2 v1, vec2 v2)
+{
+	return v1.x * v2.x + v1.y * v2.y;
+}
+
 inline bool LineLineIntersection(vec2 la0, vec2 la1, vec2 lb0, vec2 lb1, vec2* tu)
 {
 	// t = (q − p) × s / (r × s)
@@ -204,7 +209,7 @@ inline bool LineSegmentIntersection(vec2 l0, vec2 l1, vec2 s0, vec2 s1, vec2* in
 	bool r = LineLineIntersection(l0, l1, s0, s1, &tu);
 	if(!r) return false;
 
-	if(tu.y < 0.0 || tu.y >= 1.0) return false;
+	if(tu.y < 0.0 || tu.y > 1.0) return false;
 	*inters = l0 + ((l1 - l0) * tu.x);
 	return true;
 }
@@ -260,6 +265,32 @@ inline vec3 ProjectPointOnPlane(const vec3& point, const vec3& planeNorm, const 
 	vec3 delta = planePoint - point;
 	f32 dot = glm::dot(delta, -planeNorm);
 	return -planeNorm * dot + point;
+}
+
+inline vec2 ClosestPointToTriangle(const vec2& point, const ShapeTriangle& triangle, f32* outDist)
+{
+	eastl::array<vec2,3> closestList;
+	closestList[0] = ClosestPointOnLineSegment(vec2(triangle.p[0]), vec2(triangle.p[1]), point);
+	closestList[1] = ClosestPointOnLineSegment(vec2(triangle.p[1]), vec2(triangle.p[2]), point);
+	closestList[2] = ClosestPointOnLineSegment(vec2(triangle.p[2]), vec2(triangle.p[0]), point);
+
+	vec2 closest = closestList[0];
+	f32 bestDistSq = LengthSq(point - closest);
+
+	f32 dist = LengthSq(closestList[1] - point);
+	if(dist < bestDistSq) {
+		closest = closestList[1];
+		bestDistSq = dist;
+	}
+
+	dist = LengthSq(closestList[2] - point);
+	if(dist < bestDistSq) {
+		closest = closestList[2];
+		bestDistSq = dist;
+	}
+
+	*outDist = sqrtf(bestDistSq);
+	return closest;
 }
 
 bool TestIntersection(const ShapeSphere& A, const ShapeSphere& B, PhysPenetrationVector* pen);

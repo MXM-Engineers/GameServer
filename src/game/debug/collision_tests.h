@@ -29,8 +29,8 @@ struct CollisionTest
 
 	inline void Draw(const ShapeCylinder& cylinder, const vec3& color)
 	{
-		f32 height = glm::length(cylinder.tip - cylinder.base);
-		vec3 dir = glm::normalize(cylinder.tip - cylinder.base);
+		f32 height = glm::length(cylinder.height);
+		vec3 dir = cylinder.Normal();
 		f32 yaw = atan2(dir.y, dir.x);
 		f32 pitch = asinf(dir.z) - PI/2.0;
 

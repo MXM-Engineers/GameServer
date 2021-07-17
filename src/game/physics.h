@@ -52,12 +52,12 @@ struct ShapeTriangle
 struct ShapeCylinder
 {
 	vec3 base;
-	vec3 tip;
+	f32 height;
 	f32 radius;
 
 	inline vec3 Normal() const
 	{
-		return glm::normalize(tip - base);
+		return vec3(0, 0, 1);
 	}
 };
 
@@ -298,7 +298,7 @@ bool TestIntersection(const ShapeSphere& A, const ShapeTriangle& B, PhysPenetrat
 bool TestIntersection(const ShapeCapsule& A, const ShapeCapsule& B);
 bool TestIntersectionUpright(const ShapeCapsule& A, const ShapeCapsule& B, PhysPenetrationVector* pen);
 bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetrationVector* pen, vec3* sphereCenter);
-bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen);
+bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen);
 bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVector* pen);
 
 inline vec3 FixCapsuleAlongTriangleNormal(const ShapeCapsule& s, const vec3& sphereCenter, const PhysPenetrationVector& pen, const vec3& norm)

@@ -574,11 +574,11 @@ void CollisionTest::DoCollisionTests()
 
 		const vec3 off = bAutoMove ? vec3(210 + saw(a * .5) * -210, 0, 0) : vec3(fOffsetX, 0, 0);
 		cylinderA.base = vec3(100, 1300, 0) + off;
-		cylinderA.tip = vec3(100, 1300, 100) + off;
+		cylinderA.height = 100;
 		cylinderA.radius = 20;
 
 		capsuleA.base = cylinderA.base;
-		capsuleA.tip = cylinderA.tip;
+		capsuleA.tip = cylinderA.base + vec3(0, 0, cylinderA.height);
 		capsuleA.radius = cylinderA.radius;
 
 		const vec3 triOff = bAutoMove ? vec3(0, 0, -100 + saw(a) * 200) : vec3(0, 0, fOffsetY);
@@ -595,23 +595,24 @@ void CollisionTest::DoCollisionTests()
 			const ShapeCylinder& A = cylinderA;
 			const ShapeTriangle& B = triangleB;
 
-			const vec3 cylNorm = glm::normalize(A.tip - A.base);
+			const vec3 cylNorm = cylinderA.Normal();
 			const vec3 planeNorm = B.Normal();
-			DBG_ASSERT(glm::dot(cylNorm, vec3(0, 0, 1)) == 1); // upright
+			const vec3 base = A.base;
+			const vec3 tip = A.base + vec3(0, 0, A.height);
 
 			eastl::fixed_vector<vec3,4> points;
 
 			foreach_const(p, B.p) {
-				if(p->z < A.tip.z && p->z >= A.base.z) {
+				if(p->z < tip.z && p->z >= A.base.z) {
 					points.push_back(*p);
 				}
 			}
 
 			// top plane
 			vec3 ti0, ti1, ti2;
-			bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.tip, &ti0);
-			bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.tip, &ti1);
-			bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.tip, &ti2);
+			bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), tip, &ti0);
+			bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), tip, &ti1);
+			bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), tip, &ti2);
 			bool intersectsTopPlane = rt0 | rt1 | rt2;
 
 			if(rt0) {
@@ -799,12 +800,12 @@ void CollisionTest::DoCollisionTests()
 
 			if(intersects) {
 				vec3 projCenter;
-				LinePlaneIntersection(vec3(center, A.base.z), vec3(center, A.tip.z), planeNorm, B.p[0], &projCenter);
+				LinePlaneIntersection(vec3(center, A.base.z), vec3(center, tip.z), planeNorm, B.p[0], &projCenter);
 				projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
 
 				f32 baseZ = A.base.z;
 				if(glm::dot(cylNorm, planeNorm) < 0) {
-					baseZ = A.tip.z;
+					baseZ = tip.z;
 				}
 				vec3 farthestPoint = vec3(center + -triDir * r, projCenter.z);
 				vec3 projFarthestPoint = ProjectPointOnPlane(farthestPoint, planeNorm, B.p[0]);
@@ -893,10 +894,10 @@ void CollisionTest::DoCollisionTests()
 		rdr.PushLine(vec3(lb0, 0), vec3(lb1, 0), vec3(1, 0.2, 0));
 		if(r) Draw(vec3(p0, 0), vec3(1));
 
-		rdr.PushLine(cylinderA.base + vec3(0, 0, -1000), cylinderA.tip + vec3(0, 0, 1000), vec3(1));
+		rdr.PushLine(cylinderA.base + vec3(0, 0, -1000), cylinderA.base + vec3(0, 0, 1000), vec3(1));
 
 		PhysResolutionCylinderTriangle pen;
-		bool intersect = TestIntersectionUpright(cylinderA, triangleB, &pen);
+		bool intersect = TestIntersection(cylinderA, triangleB, &pen);
 
 		DrawVec(triangleB.Normal() * 20.f, triangleB.Center(), vec3(1));
 
@@ -915,7 +916,6 @@ void CollisionTest::DoCollisionTests()
 			if(bFixedCylinderSlide) {
 				ShapeCylinder fixed = cylinderA;
 				fixed.base += -pen.slide;
-				fixed.tip += -pen.slide;
 				Draw(fixed, vec3(0.5, 1, 0.5));
 
 				if(bCapsule) {
@@ -935,14 +935,12 @@ void CollisionTest::DoCollisionTests()
 			if(bFixedCylinderPushX) {
 				ShapeCylinder fixed = cylinderA;
 				fixed.base += pen.pushX;
-				fixed.tip += pen.pushX;
 				Draw(fixed, ColorV3(0xfcd276));
 			}
 
 			if(bFixedCylinderPushZ) {
 				ShapeCylinder fixed = cylinderA;
 				fixed.base += pen.pushZ;
-				fixed.tip += pen.pushZ;
 				Draw(fixed, ColorV3(0xfca176));
 			}
 		}

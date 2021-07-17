@@ -293,7 +293,7 @@ bool TestIntersection(const ShapeCapsule& A, const ShapeTriangle& B, PhysPenetra
 	return TestIntersection(ShapeSphere{ center, A.radius }, B, pen);
 }
 
-bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen)
+bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolutionCylinderTriangle* pen)
 {
 	/** PLAN
 	 * Take the intersection between the infinite rect defined by the cylinder Z min and max
@@ -302,23 +302,24 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 	 * -> project on 2D plane, do triangle circle intersection in 2D
 	 **/
 
-	const vec3 cylNorm = glm::normalize(A.tip - A.base);
+	const vec3 cylNorm = A.Normal();
 	const vec3 planeNorm = B.Normal();
-	DBG_ASSERT(glm::dot(cylNorm, vec3(0, 0, 1)) == 1); // upright
+	const vec3 base = A.base;
+	const vec3 tip = A.base + vec3(0, 0, A.height);
 
 	eastl::fixed_vector<vec3,4> points;
 
 	foreach_const(p, B.p) {
-		if(p->z < A.tip.z && p->z >= A.base.z) {
+		if(p->z < tip.z && p->z >= A.base.z) {
 			points.push_back(*p);
 		}
 	}
 
 	// top plane
 	vec3 ti0, ti1, ti2;
-	bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), A.tip, &ti0);
-	bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), A.tip, &ti1);
-	bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), A.tip, &ti2);
+	bool rt0 = SegmentPlaneIntersection(B.p[0], B.p[1], vec3(0, 0, 1), tip, &ti0);
+	bool rt1 = SegmentPlaneIntersection(B.p[0], B.p[2], vec3(0, 0, 1), tip, &ti1);
+	bool rt2 = SegmentPlaneIntersection(B.p[1], B.p[2], vec3(0, 0, 1), tip, &ti2);
 
 	if(rt0) {
 		points.push_back(ti0);
@@ -437,12 +438,12 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 
 	if(intersects) {
 		vec3 projCenter;
-		LinePlaneIntersection(vec3(center, A.base.z), vec3(center, A.tip.z), planeNorm, B.p[0], &projCenter);
+		LinePlaneIntersection(vec3(center, A.base.z), vec3(center, tip.z), planeNorm, B.p[0], &projCenter);
 		projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
 
 		f32 baseZ = A.base.z;
 		if(glm::dot(cylNorm, planeNorm) < 0) {
-			baseZ = A.tip.z;
+			baseZ = tip.z;
 		}
 		vec3 farthestPoint = vec3(center + -triDir * r, projCenter.z);
 		vec3 projFarthestPoint = ProjectPointOnPlane(farthestPoint, planeNorm, B.p[0]);

@@ -384,55 +384,75 @@ void GenerateCylinderMesh(const f32 height, const f32 radius, const i32 subDivis
 
 	*outVert++ = Vert{ 0, 0, 0, 0, 0, -1 };
 
+	i32 vertCount = 1;
+	for(i32 s = 0; s < subDivisions+1; s++) {
+		const f32 a = (2 * PI) / subDivisions * s;
+		const f32 r = radius;
+		const vec3 n = vec3(0, 0, -1);
+
+		*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, 0, n.x, n.y, n.z };
+		vertCount++;
+	}
+
 	for(i32 s = 0; s < subDivisions; s++) {
 		*outInd++ = 0;
 		*outInd++ = s+1;
 		*outInd++ = (s+1) % (subDivisions+1) + 1;
 	}
 
-	i32 vertCount = 1;
 	const f32 subHeight = height / subDivisions;
-	for(f32 z = subHeight; z < height; z += subHeight) {
+	for(f32 z = 0; z < height + subHeight/2.f; z += subHeight) {
 		for(i32 s = 0; s < subDivisions+1; s++) {
 			const f32 a = (2 * PI) / subDivisions * s;
-			f32 r = radius;
-			vec3 n = vec3(cosf(a), sinf(a), 0);
+			const f32 r = radius;
+			const vec3 n = vec3(cosf(a), sinf(a), 0);
 
 			*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, z, n.x, n.y, n.z };
 			vertCount++;
 		}
 
-		if(z > subHeight) {
-			for(i32 s = 0; s < subDivisions; s++) {
-				i32 b0 = vertCount - ((subDivisions+1) * 2) + s;
-				i32 b1 = vertCount - ((subDivisions+1) * 2) + s + 1;
-				i32 t0 = vertCount - subDivisions + s;
-				i32 t1 = vertCount - subDivisions + s + 1;
+		if(z == 0) continue;
 
-				if(s+1 == subDivisions) {
-					b1 = vertCount - ((subDivisions+1) * 2);
-					t1 = vertCount - subDivisions;
-				}
+		for(i32 s = 0; s < subDivisions; s++) {
+			i32 b0 = vertCount - ((subDivisions+1) * 2) + s;
+			i32 b1 = vertCount - ((subDivisions+1) * 2) + s + 1;
+			i32 t0 = vertCount - subDivisions + s;
+			i32 t1 = vertCount - subDivisions + s + 1;
 
-				*outInd++ = b0;
-				*outInd++ = t0;
-				*outInd++ = b1;
-
-				*outInd++ = b1;
-				*outInd++ = t0;
-				*outInd++ = t1;
+			if(s+1 == subDivisions) {
+				b1 = vertCount - ((subDivisions+1) * 2);
+				t1 = vertCount - subDivisions;
 			}
+
+			*outInd++ = b0;
+			*outInd++ = t0;
+			*outInd++ = b1;
+
+			*outInd++ = b1;
+			*outInd++ = t0;
+			*outInd++ = t1;
 		}
 	}
 
-	const i32 last = vertCount;
-	for(i32 s = 0; s < subDivisions; s++) {
-		*outInd++ = last - 1 - subDivisions + s;
-		*outInd++ = last;
-		*outInd++ = last - 1 - subDivisions + (s+1) % (subDivisions+1);
+	// cap
+	for(i32 s = 0; s < subDivisions+1; s++) {
+		const f32 a = (2 * PI) / subDivisions * s;
+		const f32 r = radius;
+		const vec3 n = vec3(0, 0, 1);
+
+		*outVert++ = Vert{ cosf(a) * r, sinf(a) * r, height, n.x, n.y, n.z };
+		vertCount++;
 	}
 
 	*outVert++ = Vert{ 0, 0, height, 0, 0, 1 };
+
+	const i32 last = vertCount;
+
+	for(i32 s = 0; s < subDivisions; s++) {
+		*outInd++ = last;
+		*outInd++ = last - (s+1);
+		*outInd++ = last - ((s+1) % (subDivisions+1) + 1);
+	}
 }
 
 template<typename OutputIteratorVertices, typename OutputIteratorIndices>

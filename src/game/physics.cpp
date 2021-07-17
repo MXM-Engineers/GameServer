@@ -347,7 +347,7 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 		points.push_back(bi2);
 	}
 
-	if(points.empty()) return false;
+	if(points.size() < 3) return false;
 
 	// sort points
 	{
@@ -391,7 +391,12 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 		tris.push_back(t);
 	}
 
-	const vec2 triDir = glm::normalize(vec2(planeNorm));
+	/*// parallel
+	if(LengthSq(vec2(planeNorm)) < 0.001f) {
+		return false; // FIXME: actually do this case
+	}*/
+
+	const vec2 triDir = NormalizeSafe(vec2(planeNorm));
 	const f32 triMinZ = MIN(MIN(B.p[0].z, B.p[1].z), B.p[2].z);
 	const f32 triMaxZ = MAX(MAX(B.p[0].z, B.p[1].z), B.p[2].z);
 	const vec2 center = vec2(A.base);
@@ -439,7 +444,7 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 	if(intersects) {
 		vec3 projCenter;
 		LinePlaneIntersection(vec3(center, A.base.z), vec3(center, tip.z), planeNorm, B.p[0], &projCenter);
-		projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
+		projCenter.z = clamp(projCenter.z, MAX(triMinZ, A.base.z), MIN(triMaxZ, tip.z));
 
 		f32 baseZ = A.base.z;
 		if(glm::dot(cylNorm, planeNorm) < 0) {
@@ -449,7 +454,7 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 		vec3 projFarthestPoint = ProjectPointOnPlane(farthestPoint, planeNorm, B.p[0]);
 
 		vec3 delta = farthestPoint - projFarthestPoint + vec3(0, 0, baseZ - projCenter.z);
-		pen->slide = delta;
+		pen->slide = -delta;
 
 		// X push
 		vec2 pushX = vec2(0);
@@ -500,9 +505,18 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 
 		pen->pushX = vec3(pushX, 0);
 
-		const f32 cosTheta = glm::dot(glm::normalize(pen->slide), cylNorm);
-		const f32 fix2Len = glm::length(pen->slide) / cosTheta;
-		pen->pushZ = -cylNorm * (fix2Len);
+		const f32 cosTheta = glm::dot(NormalizeSafe(pen->slide), cylNorm);
+		if(abs(cosTheta) > PHYS_EPSILON) {
+			const f32 fix2Len = glm::length(pen->slide) / cosTheta;
+			pen->pushZ = cylNorm * (fix2Len);
+		}
+		else {
+			pen->pushZ = vec3(0);
+		}
+
+		DBG_ASSERT_NONNAN(pen->slide.x); DBG_ASSERT_NONNAN(pen->slide.y); DBG_ASSERT_NONNAN(pen->slide.z);
+		DBG_ASSERT_NONNAN(pen->pushX.x); DBG_ASSERT_NONNAN(pen->pushX.y); DBG_ASSERT_NONNAN(pen->pushX.z);
+		DBG_ASSERT_NONNAN(pen->pushZ.x); DBG_ASSERT_NONNAN(pen->pushZ.y); DBG_ASSERT_NONNAN(pen->pushZ.z);
 		return true;
 	}
 
@@ -578,7 +592,7 @@ void PhysWorld::PushStaticMeshes(const ShapeMesh* meshList, const int count)
 
 PhysWorld::BodyHandle PhysWorld::CreateBody(f32 radius, f32 height, vec3 pos)
 {
-	BodyCapsule body;
+	Body body;
 
 	body.flags = 0x0;
 	body.radius = radius;
@@ -586,20 +600,20 @@ PhysWorld::BodyHandle PhysWorld::CreateBody(f32 radius, f32 height, vec3 pos)
 	body.pos = pos;
 	body.vel = vec3(0);
 
-	dynCapsuleBodyList.push_back(body);
-	return --dynCapsuleBodyList.end();
+	dynBodyList.push_back(body);
+	return --dynBodyList.end();
 }
 
 void PhysWorld::DeleteBody(BodyHandle handle)
 {
-	dynCapsuleBodyList.erase(handle);
+	dynBodyList.erase(handle);
 }
 
 void PhysWorld::Step()
 {
 	ProfileFunction();
 
-	ASSERT(dynCapsuleBodyList.size() == dynCapsuleBodyList.size());
+	ASSERT(dynBodyList.size() == dynBodyList.size());
 
 #if 1
 	lastStepEvents.clear();
@@ -609,16 +623,16 @@ void PhysWorld::Step()
 
 	// copy step data to continous buffers
 	bodyList.clear();
-	shapeCapsuleList.clear();
-	foreach_const(b, dynCapsuleBodyList) {
+	shapeCylinderList.clear();
+	foreach_const(b, dynBodyList) {
 		if(b->flags & Flags::Disabled) continue;
 
-		ShapeCapsule shape;
+		ShapeCylinder shape;
 		shape.radius = b->radius;
 		shape.base = vec3(0);
-		shape.tip = vec3(0, 0, b->height);
+		shape.height = b->height;
 
-		shapeCapsuleList.push_back(shape);
+		shapeCylinderList.push_back(shape);
 		bodyList.push_back({ b->pos, b->force, b->vel + b->force});
 
 		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
@@ -642,48 +656,52 @@ void PhysWorld::Step()
 
 		for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
 			bool collided = false;
-			movedShapeCapsuleList.clear();
-			eastl::copy(shapeCapsuleList.begin(), shapeCapsuleList.end(), eastl::back_inserter(movedShapeCapsuleList));
+			movedShapeCylinderList.clear();
+			eastl::copy(shapeCylinderList.begin(), shapeCylinderList.end(), eastl::back_inserter(movedShapeCylinderList));
 
 			for(int i = 0; i < dynCount; i++) {
-				ShapeCapsule& s = movedShapeCapsuleList[i];
+				ShapeCylinder& s = movedShapeCylinderList[i];
 				const MoveComp& b = bodyList[i];
 				s.base += b.pos;
-				s.tip += b.pos;
 			}
 
 			collisionList.clear();
 			collisionList.resize(dynCount);
 
 			for(int i = 0; i < dynCount; i++) {
-				const ShapeCapsule& s = movedShapeCapsuleList[i];
+				const ShapeCylinder& s = movedShapeCylinderList[i];
 				auto& colList = collisionList[i];
 
 				foreach_const(tri, staticMeshTriangleList) {
-					PhysPenetrationVector pen;
-					vec3 sphereCenter;
+					PhysResolutionCylinderTriangle pen;
 
-					bool intersects = TestIntersection(s, *tri, &pen, &sphereCenter);
+					bool intersects = TestIntersection(s, *tri, &pen);
 					if(intersects) {
 						const vec3 triangleNormal = tri->Normal();
-						const vec3 triPen = FixCapsuleAlongTriangleNormal(s, sphereCenter, pen, triangleNormal);
+						const vec3 triPen = pen.slide;
 
-						vec3 fix = triPen;
+						vec3 fix = pen.pushZ;
 
-						// move body to the ground without sliding in the XY plane when adequate (triangle is not nearly vertical)
-						const vec3 gravityN = glm::normalize(vec3(0, 0, -GRAVITY));
-						const f32 cosTheta = glm::dot(glm::normalize(triPen), -gravityN);
-						if(cosTheta > 0.3) {
-							const f32 fix2Len = glm::length(triPen) / cosTheta;
-							fix = -gravityN * (fix2Len + PHYS_EPSILON);
-							// TODO: grounded, remove all Z component
+						// almost parallel
+						const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
+						if(abs(cosTheta) < 0.1) {
+							fix = pen.pushX;
 						}
+
+						/*// move body to the ground without sliding in the XY plane when adequate (triangle is not nearly vertical)
+						const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
+						if(cosTheta > 0.3) {
+							fix = pen.pushX;
+						}
+						*/
+
+						fix += NormalizeSafe(fix) * PHYS_EPSILON;
 
 						Collision col;
 						col.pen = pen;
 						col.triangleNormal = triangleNormal;
 						col.fix = fix;
-						col.fixLenSq = LengthSq(triPen);
+						col.fixLenSq = LengthSq(fix);
 						colList.push_back(col);
 						collided = true;
 
@@ -693,10 +711,10 @@ void PhysWorld::Step()
 						event.capsuleID = i;
 						event.ssi = ssi;
 						event.cri = cri;
-						event.capsule = s;
+						event.cylinder = s;
 						event.triangle = *tri;
-						event.fix = triPen;
-						event.fix2 = fix;
+						event.fix = fix;
+						event.fix2 = pen.slide;
 						event.vel = bodyList[i].vel;
 						event.fixedVel = bodyList[i].vel;
 						if(glm::dot(glm::normalize(bodyList[i].vel), col.triangleNormal) < 0) {
@@ -711,7 +729,7 @@ void PhysWorld::Step()
 
 
 			for(int i = 0; i < dynCount; i++) {
-				const ShapeCapsule& s = shapeCapsuleList[i];
+				const ShapeCylinder& s = shapeCylinderList[i];
 				auto& colList = collisionList[i];
 				auto& body = bodyList[i];
 
@@ -720,8 +738,9 @@ void PhysWorld::Step()
 						return a.fixLenSq < b.fixLenSq;
 					});
 
+
 					Collision* selected = &(*colList.begin());
-					for(auto it = colList.rbegin(); it != colList.rend(); it++) {
+					/*for(auto it = colList.rbegin(); it != colList.rend(); it++) {
 						const Collision& col = *it;
 						
 						f32 deltaZ = col.fix.z;
@@ -729,6 +748,7 @@ void PhysWorld::Step()
 							selected = &(*it);
 						}
 					}
+					*/
 
 					const Collision& col = *selected;
 
@@ -752,7 +772,7 @@ void PhysWorld::Step()
 				rec.capsuleID = i;
 				rec.ssi = ssi;
 				rec.cri = cri;
-				rec.capsule = s;
+				rec.cylinder = s;
 				rec.pos = body.pos;
 				rec.vel = body.vel;
 				lastStepPositions.push_back(rec);
@@ -765,7 +785,7 @@ void PhysWorld::Step()
 
 	// copy back
 	int i = 0;
-	foreach(b, dynCapsuleBodyList) {
+	foreach(b, dynBodyList) {
 		if(b->flags & Flags::Disabled) continue;
 		const MoveComp& bl = bodyList[i];
 

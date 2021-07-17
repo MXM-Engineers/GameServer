@@ -648,7 +648,7 @@ void CollisionTest::DoCollisionTests()
 				points.push_back(bi2);
 			}
 
-			if(points.empty()) break;
+			if(points.size() < 3) break;
 
 			// sort points
 			{
@@ -801,7 +801,7 @@ void CollisionTest::DoCollisionTests()
 			if(intersects) {
 				vec3 projCenter;
 				LinePlaneIntersection(vec3(center, A.base.z), vec3(center, tip.z), planeNorm, B.p[0], &projCenter);
-				projCenter.z = clamp(projCenter.z, triMinZ, triMaxZ);
+				projCenter.z = clamp(projCenter.z, MAX(triMinZ, A.base.z), MIN(triMaxZ, tip.z));
 
 				f32 baseZ = A.base.z;
 				if(glm::dot(cylNorm, planeNorm) < 0) {
@@ -915,7 +915,7 @@ void CollisionTest::DoCollisionTests()
 
 			if(bFixedCylinderSlide) {
 				ShapeCylinder fixed = cylinderA;
-				fixed.base += -pen.slide;
+				fixed.base += pen.slide;
 				Draw(fixed, vec3(0.5, 1, 0.5));
 
 				if(bCapsule) {

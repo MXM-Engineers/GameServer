@@ -27,14 +27,14 @@ struct CollisionTest
 		rdr.PushCapsule(Pipeline::Wireframe, capsule.base, vec3(yaw, pitch, 0), capsule.radius, height, color);
 	}
 
-	inline void Draw(const ShapeCylinder& cylinder, const vec3& color)
+	inline void Draw(const ShapeCylinder& cylinder, const vec3& color, Pipeline pipe = Pipeline::Wireframe)
 	{
 		f32 height = glm::length(cylinder.height);
 		vec3 dir = cylinder.Normal();
 		f32 yaw = atan2(dir.y, dir.x);
 		f32 pitch = asinf(dir.z) - PI/2.0;
 
-		rdr.PushCylinder(Pipeline::Wireframe, cylinder.base, vec3(yaw, pitch, 0), cylinder.radius, height, color);
+		rdr.PushCylinder(pipe, cylinder.base, vec3(yaw, pitch, 0), cylinder.radius, height, color);
 	}
 
 	inline void Draw(const ShapeTriangle& triangle, const vec3& color)

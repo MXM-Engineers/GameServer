@@ -107,7 +107,7 @@ struct Window
 	}
 	testSubject;
 
-	bool ui_bCollisionTests = true;
+	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
 	bool ui_bPhysicsTest = false;
@@ -202,7 +202,7 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 		ImGui::TableHeadersRow();
 
 		int uid = 0;
-		foreach_const(it, physics.dynCapsuleBodyList) {
+		foreach_const(it, physics.dynBodyList) {
 			vec3 pos = it->pos;
 			vec3 vel = it->vel;
 			ImGui::TableNextRow();
@@ -225,14 +225,14 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 
 		ImGui::EndTable();
 
-		foreach_const(b, physics.dynCapsuleBodyList) {
+		foreach_const(b, physics.dynBodyList) {
 			vec3 pos = b->pos;
 			vec3 vel = b->vel;
 
-			ShapeCapsule shape;
+			ShapeCylinder shape;
 			shape.radius = b->radius;
+			shape.height = b->height;
 			shape.base = pos;
-			shape.tip = pos + vec3(0, 0, b->height);
 
 			vec3 color = vec3(1, 0, 1);
 			if(b->flags & PhysWorld::Flags::Disabled) color = vec3(0.5);
@@ -378,18 +378,20 @@ void Window::WindowGameStates()
 			const PhysWorld::CollisionEvent& event = gsRecording.events[gsRecording.selectedID];
 			const ShapeTriangle& tri = event.triangle;
 
-			collisionTest.Draw(event.capsule, vec3(0, 0, 1));
-			const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
+			collisionTest.Draw(event.cylinder, vec3(0, 0, 1));
+			const vec3 vorg = event.cylinder.base + vec3(0, 0, event.cylinder.radius);
 
 			if(/*gsRecording.bShowPen*/ true) {
-				collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
+				collisionTest.DrawVec(event.pen.slide * 10.0f, vorg, vec3(0.5, 1, 0.5));
 			}
 
 			if(/*gsRecording.bShowFixed*/ true) {
-				ShapeCapsule fixed = event.capsule;
-				fixed.base += event.fix2;
-				fixed.tip += event.fix2;
+				ShapeCylinder fixed = event.cylinder;
+				fixed.base += event.fix;
 				collisionTest.Draw(fixed, vec3(1, 1, 0));
+				fixed = event.cylinder;
+				fixed.base += event.fix2;
+				collisionTest.Draw(fixed, ColorV3(0xfc4137));
 
 				collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
 				collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
@@ -478,19 +480,18 @@ void Window::WindowPhysicsTest()
 		const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[physicsTest.iSelectedEvent];
 		const ShapeTriangle& tri = event.triangle;
 
-		collisionTest.Draw(event.capsule, vec3(0, 0, 1));
+		collisionTest.Draw(event.cylinder, vec3(0, 0, 1));
 
 
-		const vec3 vorg = event.capsule.base + vec3(0, 0, event.capsule.radius);
+		const vec3 vorg = event.cylinder.base + vec3(0, 0, event.cylinder.radius);
 
 		if(physicsTest.bShowPen) {
-			collisionTest.DrawVec(event.pen.dir * event.pen.depth * 10.0f, vorg, vec3(0.5, 1, 0.5));
+			collisionTest.DrawVec(event.pen.slide * 10.0f, vorg, vec3(0.5, 1, 0.5));
 		}
 
 		if(physicsTest.bShowFixed) {
-			ShapeCapsule fixed = event.capsule;
+			ShapeCylinder fixed = event.cylinder;
 			fixed.base += event.fix2;
-			fixed.tip += event.fix2;
 			collisionTest.Draw(fixed, vec3(1, 1, 0));
 
 			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));

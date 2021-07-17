@@ -4,7 +4,7 @@
 #include <EASTL/array.h>
 #include <EASTL/fixed_list.h>
 
-constexpr f32 PHYS_EPSILON = 0.0001f;
+constexpr f32 PHYS_EPSILON = 0.0001f; // Warning: NEVER change this value
 
 struct ShapeSphere
 {
@@ -84,9 +84,9 @@ struct PhysPenetrationVector
 
 struct PhysResolutionCylinderTriangle
 {
-	vec3 slide;
-	vec3 pushX;
-	vec3 pushZ;
+	vec3 slide = vec3(0);
+	vec3 pushX = vec3(0);
+	vec3 pushZ = vec3(0);
 };
 
 inline f32 LengthSq(const vec2& v)
@@ -336,7 +336,7 @@ struct PhysWorld
 		dvec3 vel;
 	};
 
-	struct BodyCapsule
+	struct Body
 	{
 		u32 flags;
 		f32 radius;
@@ -346,23 +346,23 @@ struct PhysWorld
 		vec3 vel;
 	};
 
-	typedef ListItT<BodyCapsule> BodyHandle;
+	typedef ListItT<Body> BodyHandle;
 
 	eastl::fixed_vector<ShapeTriangle, 4096, false> staticMeshTriangleList;
-	eastl::fixed_list<BodyCapsule, 4096, false> dynCapsuleBodyList;
+	eastl::fixed_list<Body, 4096, false> dynBodyList;
 
 	// temp data used for compute
 	struct Collision
 	{
-		PhysPenetrationVector pen;
+		PhysResolutionCylinderTriangle pen;
 		dvec3 triangleNormal;
 		dvec3 fix;
 		f32 fixLenSq;
 	};
 
 	eastl::fixed_vector<MoveComp, 4096, false> bodyList;
-	eastl::fixed_vector<ShapeCapsule, 4096, false> shapeCapsuleList;
-	eastl::fixed_vector<ShapeCapsule, 4096, false> movedShapeCapsuleList;
+	eastl::fixed_vector<ShapeCylinder, 4096, false> shapeCylinderList;
+	eastl::fixed_vector<ShapeCylinder, 4096, false> movedShapeCylinderList;
 	eastl::fixed_vector<eastl::fixed_vector<Collision,16,false>, 4096, false> collisionList;
 
 #if 1
@@ -379,13 +379,13 @@ struct PhysWorld
 		u16 capsuleID;
 		u8 ssi;
 		u8 cri;
-		ShapeCapsule capsule;
+		ShapeCylinder cylinder;
 		ShapeTriangle triangle;
 		vec3 fix;
 		vec3 fix2;
 		vec3 vel;
 		vec3 fixedVel;
-		PhysPenetrationVector pen;
+		PhysResolutionCylinderTriangle pen;
 	};
 
 	struct PositionRec
@@ -394,7 +394,7 @@ struct PhysWorld
 		u16 capsuleID;
 		u8 ssi;
 		u8 cri;
-		ShapeCapsule capsule;
+		ShapeCylinder cylinder;
 		vec3 pos;
 		vec3 vel;
 	};

@@ -26,7 +26,7 @@ void World::Update(Time localTime_)
 		}
 
 		// move
-		PhysWorld::BodyCapsule& body = *p.body;
+		PhysWorld::Body& body = *p.body;
 
 		vec2 delta = vec2(p.input.moveTo - body.pos);
 		f32 deltaLen = glm::length(delta);

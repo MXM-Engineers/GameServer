@@ -540,19 +540,23 @@ void CollisionTest::DoCollisionTests()
 
 	// test7 -- cylinder upright triangle
 	{
-		static bool bFixedCylinder = false;
+		static bool bFixedCylinderSlide = false;
+		static bool bFixedCylinderPushX = false;
+		static bool bFixedCylinderPushZ = false;
 		static bool bAutoMove = false;
 		static bool bCenter = false;
 		static bool bCapsule = false;
 		static bool bExtraDisplace = false;
 		static f32 fOffsetX = 166.520f;
 		static f32 fOffsetY = 0;
-		static f32 fTipOff = 0;
+		static f32 fTipOff = 80;
 		static f32 fTriY = 0;
-		static f32 fTriZ = 0;
+		static f32 fTipZ = -68;
 
 		if(ImGui::Begin("Test 7")) {
-			ImGui::Checkbox("Fixed cylinder", &bFixedCylinder);
+			ImGui::Checkbox("Fixed Slide", &bFixedCylinderSlide); ImGui::SameLine();
+			ImGui::Checkbox("Fixed PushX", &bFixedCylinderPushX); ImGui::SameLine();
+			ImGui::Checkbox("Fixed PushZ", &bFixedCylinderPushZ);
 			ImGui::Checkbox("Auto move", &bAutoMove);
 			ImGui::Checkbox("Center", &bCenter);
 			ImGui::Checkbox("Capsule", &bCapsule);
@@ -561,7 +565,7 @@ void CollisionTest::DoCollisionTests()
 			ImGui::SliderFloat("OffsetY", &fOffsetY, -200, 200);
 			ImGui::SliderFloat("TipOff", &fTipOff, -200, 200);
 			ImGui::SliderFloat("TriY", &fTriY, -200, 200);
-			ImGui::SliderFloat("TriZ", &fTriZ, -200, 200);
+			ImGui::SliderFloat("TipZ", &fTipZ, -200, 200);
 		}
 
 		ShapeCylinder cylinderA;
@@ -579,9 +583,9 @@ void CollisionTest::DoCollisionTests()
 
 		const vec3 triOff = bAutoMove ? vec3(0, 0, -100 + saw(a) * 200) : vec3(0, 0, fOffsetY);
 		triangleB.p = {
-			vec3(200, 1250 + fTriY, 0 + fTriZ) + triOff,
-			vec3(200 + fTipOff, 1300 + fTriY, 80 + fTriZ) + triOff,
-			vec3(200, 1350 + fTriY, 0 + fTriZ) + triOff
+			vec3(200, 1250 + fTriY, 0) + triOff,
+			vec3(200 + fTipOff, 1300 + fTriY, 80 + fTipZ) + triOff,
+			vec3(200, 1350 + fTriY, 0) + triOff
 		};
 
 		rdr.PushLine(cylinderA.base - vec3(0, 0, 1000.f), cylinderA.base + vec3(0, 0, 1000.f), vec3(1));
@@ -908,16 +912,11 @@ void CollisionTest::DoCollisionTests()
 				Draw(capsuleA, vec3(1, 0.5, 0.8));
 			}
 
-			if(bFixedCylinder) {
+			if(bFixedCylinderSlide) {
 				ShapeCylinder fixed = cylinderA;
 				fixed.base += -pen.slide;
 				fixed.tip += -pen.slide;
-				//Draw(fixed, vec3(0.5, 1, 0.5));
-
-				fixed = cylinderA;
-				fixed.base += pen.pushX;
-				fixed.tip += pen.pushX;
-				Draw(fixed, ColorV3(0xfcd276));
+				Draw(fixed, vec3(0.5, 1, 0.5));
 
 				if(bCapsule) {
 					ShapeSphere sphere;
@@ -931,6 +930,20 @@ void CollisionTest::DoCollisionTests()
 					capsFixed.tip += triPen;
 					Draw(capsFixed, vec3(0.5, 1, 0.5));
 				}
+			}
+
+			if(bFixedCylinderPushX) {
+				ShapeCylinder fixed = cylinderA;
+				fixed.base += pen.pushX;
+				fixed.tip += pen.pushX;
+				Draw(fixed, ColorV3(0xfcd276));
+			}
+
+			if(bFixedCylinderPushZ) {
+				ShapeCylinder fixed = cylinderA;
+				fixed.base += pen.pushZ;
+				fixed.tip += pen.pushZ;
+				Draw(fixed, ColorV3(0xfca176));
 			}
 		}
 		else {

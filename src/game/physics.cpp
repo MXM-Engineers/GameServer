@@ -498,6 +498,10 @@ bool TestIntersectionUpright(const ShapeCylinder& A, const ShapeTriangle& B, Phy
 		}
 
 		pen->pushX = vec3(pushX, 0);
+
+		const f32 cosTheta = glm::dot(glm::normalize(pen->slide), cylNorm);
+		const f32 fix2Len = glm::length(pen->slide) / cosTheta;
+		pen->pushZ = -cylNorm * (fix2Len);
 		return true;
 	}
 

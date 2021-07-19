@@ -149,13 +149,13 @@ inline f32 SignedEpsilon(f32 v)
 
 inline vec2 NormalizeSafe(vec2 v)
 {
-	if(LengthSq(v) > 0.001f) return glm::normalize(v);
+	if(LengthSq(v) > FLT_EPSILON) return glm::normalize(v);
 	return vec2(0);
 }
 
 inline vec3 NormalizeSafe(vec3 v)
 {
-	if(LengthSq(v) > 0.001f) return glm::normalize(v);
+	if(LengthSq(v) > FLT_EPSILON) return glm::normalize(v);
 	return vec3(0);
 }
 
@@ -326,14 +326,15 @@ struct ShapeMesh
 struct PhysWorld
 {
 	enum Flags: u32 {
-		Disabled = 0x1
+		Disabled = 0x1,
+		Grounded = 0x2 // Read Only
 	};
 
 	struct MoveComp
 	{
 		dvec3 pos;
-		dvec3 force;
 		dvec3 vel;
+		u32 flags;
 	};
 
 	struct Body

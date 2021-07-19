@@ -43,6 +43,7 @@ struct Replication
 
 		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> characters;
 		u8 mainCharaID;
+		bool hasJumped;
 	};
 
 	struct ActorMaster: Actor<ActorType::Master>
@@ -183,6 +184,8 @@ struct Replication
 	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
 	void SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast);
+
+	void SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, const vec2& moveDir, RotationHumanoid rot, f32 speed, ActionStateID action);
 
 	void EventClientDisconnect(i32 clientID);
 

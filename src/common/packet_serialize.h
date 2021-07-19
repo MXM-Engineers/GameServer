@@ -795,7 +795,8 @@ inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData
 	SER("	nRotate=%f", buff.Read<f32>());
 	SER("	nSpeed=%f", buff.Read<f32>());
 	SER("	flags=%u", buff.Read<u8>());
-	SER("	state=%d", buff.Read<i32>());
+	ActionStateID action = buff.Read<ActionStateID>();
+	SER("	state=%s (%d)", ActionStateString(action), action);
 	SER("}");
 
 	return str.data();
@@ -811,6 +812,24 @@ inline const char* PacketSerialize<Sv::SA_RTT_Time>(const void* packetData, cons
 	SER("SA_RTT_Time(%d, %d) :: {", Sv::SA_RTT_Time::NET_ID, packetSize);
 	SER("	clientTimestamp=%u", p.clientTimestamp);
 	SER("	serverTimestamp=%lld", p.serverTimestamp);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_ResultSpAction>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("Sv::SA_ResultSpAction(%d, %d) :: {", Sv::SA_ResultSpAction::NET_ID, packetSize);
+	SER("	excludedFieldBits=%d", buff.Read<u8>());
+	SER("	actionID=%d", buff.Read<i32>());
+	SER("	localActorID=%d", buff.Read<LocalActorID>());
+	SER("	rotate=%f", buff.Read<f32>());
+	SER("	moveDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("	errorType=%d", buff.Read<i32>());
 	SER("}");
 
 	return str.data();

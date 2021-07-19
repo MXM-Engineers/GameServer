@@ -32,7 +32,7 @@ void World::Update(Time localTime_)
 		f32 deltaLen = glm::length(delta);
 		if(deltaLen > 1.0f && p.input.speed > 0.f) {
 			vec2 dir = NormalizeSafe(delta);
-			p._moveDir = dir;
+			p.movement.moveDir = dir;
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
@@ -43,27 +43,50 @@ void World::Update(Time localTime_)
 			}
 		}
 		else {
-			p._moveDir = vec2(0);
+			p.movement.moveDir = vec2(0);
 			body.force = vec3(0);
 		}
 
 		// jump
+		p.movement.hasJumped = false;
 		if(p.input.jump) {
 			p.input.jump = 0;
+			p.movement.hasJumped = true;
 			body.force.z = GetGlobalTweakableVars().jumpForce;
 		}
 	}
 
 	physics.Step();
 
+	foreach(it, players) {
+		Player& p = *it;
+
+		const PhysWorld::Body& body = *p.body;
+
+		p.movement.prevFlags = p.movement.flags;
+		p.movement.flags = body.flags;
+
+		/*
+		if((p.movement.flags & PhysWorld::Flags::Grounded) && !(p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
+			p.Main().actionState = ActionStateID::JUMP_END_MOVESTATE;
+		}
+		else if(!(p.movement.flags & PhysWorld::Flags::Grounded) && !(p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
+			p.Main().actionState = ActionStateID::JUMP_LOOP_MOVESTATE;
+		}
+		else if(!(p.movement.flags & PhysWorld::Flags::Grounded) && (p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
+			p.Main().actionState = ActionStateID::JUMP_START_MOVESTATE;
+		}
+		*/
+	}
+
 	static f64 accumulatedDiff = 0.0;
-	if(players.front()._moveDir == vec2(0)) {
+	if(players.front().movement.moveDir == vec2(0)) {
 		accumulatedDiff = 0.0;
 	}
 
 	vec3 deltaPos = players.front().body->pos - prevPos;
 	f32 moveDiff = players.front().input.speed * UPDATE_RATE - glm::length(vec2(deltaPos));
-	if(moveDiff != 0 && players.front()._moveDir != vec2(0)) {
+	if(moveDiff != 0 && players.front().movement.moveDir != vec2(0)) {
 		accumulatedDiff += moveDiff;
 		LOG("Move diff = %f  |  accumulatedDiff = %g", moveDiff, accumulatedDiff);
 	}
@@ -93,6 +116,7 @@ void World::Replicate()
 			player.characters[1]->UID
 		};
 		rep.mainCharaID = player.mainCharaID;
+		rep.hasJumped = player.movement.hasJumped;
 
 		replication->FramePushPlayer(rep);
 
@@ -106,7 +130,7 @@ void World::Replicate()
 			rch.skinIndex = chara.skinIndex;
 			rch.pos = player.body->pos;
 
-			rch.moveDir = player._moveDir;
+			rch.moveDir = player.movement.moveDir;
 			rch.speed = player.input.speed;
 
 			rch.rotation = player.input.rot; // TODO: compute this?
@@ -149,7 +173,7 @@ World::Player& World::CreatePlayer(i32 clientID, const wchar* name, const wchar*
 	Player& player = players.back();
 	player.level = 1;
 	player.experience = 0;
-	player.body = physics.CreateBody(100, 270, pos);
+	player.body = physics.CreateBody(90, 270, pos); // radius 100 is found in files but 90 matches better
 
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();

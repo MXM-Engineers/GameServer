@@ -23,6 +23,7 @@ struct Entity
 	vec3 pos;
 	RotationHumanoid rot;
 	vec2 moveDir;
+	vec3 moveDest;
 
 	vec3 color;
 };

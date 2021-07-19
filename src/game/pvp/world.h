@@ -49,8 +49,15 @@ struct World
 		u8 mainCharaID = 0;
 
 		Input input;
-		vec2 _moveDir;
 		PhysWorld::BodyHandle body;
+
+		// book keeping
+		struct {
+			vec2 moveDir;
+			u32 flags = 0x0;
+			u32 prevFlags = 0x0;
+			bool hasJumped = false;
+		} movement;
 
 		explicit Player(
 				PlayerID playerID_,

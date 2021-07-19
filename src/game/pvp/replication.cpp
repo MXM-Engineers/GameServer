@@ -1055,6 +1055,46 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 	}
 }
 
+void Replication::SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, const vec2& moveDir, RotationHumanoid rot, f32 speed, ActionStateID action)
+{
+	Sv::SN_PlayerSyncMove sync;
+	sync.destPos = v2f(pos);
+	sync.moveDir = v2f(moveDir);
+	sync.upperDir = { WorldYawToMxmYaw(rot.upperYaw), WorldPitchToMxmPitch(rot.upperPitch) };
+	sync.nRotate = WorldYawToMxmYaw(rot.bodyYaw);
+	sync.nSpeed = speed;
+	sync.flags = 0;
+	sync.state = action;
+
+	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+		//if(clientID == up->clientID) continue; // ignore self
+
+		ProfileBlock("Send Sv::SN_PlayerSyncMove");
+
+		sync.characterID = GetLocalActorID(clientID, actorUID);
+		if(sync.state != ActionStateID::NONE_BEHAVIORSTATE) {
+			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
+		}
+		SendPacket(clientID, sync);
+
+
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u8>(0x20); // excludedFieldBits
+		packet.Write<i32>(0); // actionID
+		packet.Write<LocalActorID>(GetLocalActorID(clientID, actorUID));
+		packet.Write<f32>(rot.bodyYaw);
+		packet.Write<f32>(moveDir.x);
+		packet.Write<f32>(moveDir.y);
+		packet.Write<i32>(0); // errorType
+
+		LOG("[client%03d] Server :: SA_ResultSpAction", clientID);
+		SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
+	}
+}
+
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID].cur = PlayerState::DISCONNECTED;
@@ -1215,6 +1255,7 @@ void Replication::FrameDifference()
 		vec2 moveDir;
 		RotationHumanoid rotation;
 		f32	speed;
+		ActionStateID action;
 	};
 
 	struct UpdateRotation
@@ -1232,9 +1273,18 @@ void Replication::FrameDifference()
 		vec3 pos;
 	};
 
+	struct UpdateJump
+	{
+		i32 clientID;
+		ActorUID actorUID;
+		vec2 moveDir;
+		f32 rotate;
+	};
+
 	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
 	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
 	eastl::fixed_vector<UpdateTag,1024> listUpdateTag;
+	eastl::fixed_vector<UpdateJump,1024> listUpdateJump;
 
 	foreach_const(it, frameCur->playerList) {
 		const Player& cur = *it;
@@ -1248,10 +1298,21 @@ void Replication::FrameDifference()
 			update.clientID = cur.clientID;
 			update.mainUID = cur.characters[cur.mainCharaID];
 			update.subUID = cur.characters[cur.mainCharaID ^ 1];
-			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]);
+			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]); // @Speed
 			ASSERT(chara);
 			update.pos = chara->pos;
 			listUpdateTag.push_back(update);
+		}
+
+		if(cur.hasJumped && !prev.hasJumped) {
+			UpdateJump update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.characters[cur.mainCharaID];
+			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]);  // @Speed
+			ASSERT(chara);
+			update.rotate = chara->rotation.bodyYaw;
+			update.moveDir = chara->moveDir;
+			listUpdateJump.push_back(update);
 		}
 	}
 
@@ -1274,7 +1335,8 @@ void Replication::FrameDifference()
 		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
 		   fabs(cur.moveDir.x - prev.moveDir.x) > dirEpsilon ||
 		   fabs(cur.moveDir.y - prev.moveDir.y) > dirEpsilon ||
-		   fabs(cur.speed - prev.speed) > speedEpsilon)
+		   fabs(cur.speed - prev.speed) > speedEpsilon ||
+		   cur.actionState != prev.actionState)
 		{
 			UpdatePosition update;
 			update.clientID = cur.clientID;
@@ -1283,6 +1345,15 @@ void Replication::FrameDifference()
 			update.moveDir = cur.moveDir;
 			update.rotation = cur.rotation;
 			update.speed = cur.speed;
+
+			if(cur.actionState != ActionStateID::INVALID) {
+				update.action = cur.actionState;
+				//update.action = ActionStateID::JUMP_START_MOVESTATE;
+			}
+			else {
+				update.action = ActionStateID::NONE_BEHAVIORSTATE;
+			}
+
 			listUpdatePosition.push_back(update);
 
 			rotationUpdated = true;
@@ -1311,7 +1382,7 @@ void Replication::FrameDifference()
 		sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
 		sync.nSpeed = up->speed;
 		sync.flags = 0;
-		sync.state = ActionStateID::NONE_BEHAVIORSTATE;
+		sync.state = up->action;
 
 		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
 			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
@@ -1320,7 +1391,9 @@ void Replication::FrameDifference()
 			ProfileBlock("Send Sv::SN_PlayerSyncMove");
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			//LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
+			if(sync.state != ActionStateID::NONE_BEHAVIORSTATE) {
+				LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
+			}
 			SendPacket(clientID, sync);
 		}
 	}
@@ -1426,6 +1499,26 @@ void Replication::FrameDifference()
 				// LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
 				SendPacket(clientID, sync);
 			}
+		}
+	}
+
+	foreach_const(up, listUpdateJump) {
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+
+			u8 sendData[1024];
+			PacketWriter packet(sendData, sizeof(sendData));
+
+			packet.Write<u8>(0x20); // excludedFieldBits
+			packet.Write<i32>(0); // actionID
+			packet.Write<LocalActorID>(GetLocalActorID(clientID, up->actorUID));
+			packet.Write<f32>(up->rotate);
+			packet.Write<f32>(up->moveDir.x);
+			packet.Write<f32>(up->moveDir.y);
+			packet.Write<i32>(0); // errorType
+
+			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_ResultSpAction>(packet.data, packet.size));
+			SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
 		}
 	}
 }

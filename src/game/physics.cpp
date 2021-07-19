@@ -511,7 +511,7 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 			pen->pushZ = cylNorm * (fix2Len);
 		}
 		else {
-			pen->pushZ = vec3(0);
+			pen->pushZ = pen->slide;
 		}
 
 		DBG_ASSERT_NONNAN(pen->slide.x); DBG_ASSERT_NONNAN(pen->slide.y); DBG_ASSERT_NONNAN(pen->slide.z);
@@ -633,7 +633,7 @@ void PhysWorld::Step()
 		shape.height = b->height;
 
 		shapeCylinderList.push_back(shape);
-		bodyList.push_back({ b->pos, b->force, b->vel + b->force});
+		bodyList.push_back({ b->pos, b->vel + b->force});
 
 		DBG_ASSERT_NONNAN(bodyList.back().pos.x);
 		DBG_ASSERT_NONNAN(bodyList.back().pos.y);
@@ -677,25 +677,25 @@ void PhysWorld::Step()
 
 					bool intersects = TestIntersection(s, *tri, &pen);
 					if(intersects) {
-						const vec3 triangleNormal = tri->Normal();
-						const vec3 triPen = pen.slide;
+						vec3 triangleNormal = tri->Normal();
 
-						vec3 fix = pen.pushZ;
+						//vec3 fix = pen.slide;
+						vec3 fix = pen.pushZ; // this seems to work better
 
-						// almost parallel
+						// almost parallel to a wall
 						const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
 						if(abs(cosTheta) < 0.1) {
 							fix = pen.pushX;
+							triangleNormal = NormalizeSafe(fix);
 						}
 
-						/*// move body to the ground without sliding in the XY plane when adequate (triangle is not nearly vertical)
-						const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
-						if(cosTheta > 0.3) {
-							fix = pen.pushX;
-						}
-						*/
+						/*// move body to the ground without sliding in the XY plane when adequate
+						if(glm::dot(triangleNormal, vec3(0, 0, 1)) > 0.8) {
+							fix = pen.pushZ;
+							triangleNormal = NormalizeSafe(fix);
+						}*/
 
-						fix += NormalizeSafe(fix) * PHYS_EPSILON;
+						fix += NormalizeSafe(fix) * (PHYS_EPSILON * 10.0f);
 
 						Collision col;
 						col.pen = pen;
@@ -739,8 +739,9 @@ void PhysWorld::Step()
 					});
 
 
+					// step
 					Collision* selected = &(*colList.begin());
-					/*for(auto it = colList.rbegin(); it != colList.rend(); it++) {
+					for(auto it = colList.rbegin(); it != colList.rend(); it++) {
 						const Collision& col = *it;
 						
 						f32 deltaZ = col.fix.z;
@@ -748,7 +749,6 @@ void PhysWorld::Step()
 							selected = &(*it);
 						}
 					}
-					*/
 
 					const Collision& col = *selected;
 
@@ -756,6 +756,11 @@ void PhysWorld::Step()
 					const f32 len = glm::length(body.vel);
 					if(glm::dot(glm::normalize(body.vel), col.triangleNormal) < 0) {
 						body.vel -= ProjectVecNorm(body.vel, col.triangleNormal);
+					}
+
+					// we are on the ground
+					if(abs(col.triangleNormal.z) > PHYS_EPSILON) {
+						body.flags |= Grounded;
 					}
 
 					DBG_ASSERT_NONNAN(body.pos.x);
@@ -791,6 +796,8 @@ void PhysWorld::Step()
 
 		b->pos = bl.pos;
 		b->vel = vec3(0, 0, bl.vel.z); // 100% ground friction, 0% air friction
+		b->vel.z = (i32)(b->vel.z * 10000.f) / 10000.f; // quantize
+		b->flags = bl.flags;
 		DBG_ASSERT_NONNAN(bl.pos.x);
 		DBG_ASSERT_NONNAN(bl.pos.y);
 		DBG_ASSERT_NONNAN(bl.pos.z);

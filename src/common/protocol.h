@@ -248,6 +248,8 @@ enum class ActionStateID: i32
 	UNKNOWN_ACTION_STATE_TYPE,
 };
 
+const char* ActionStateString(ActionStateID state);
+
 enum class StageIndex: i32
 {
 	LOBBY_NORMAL = 160000042,

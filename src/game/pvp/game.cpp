@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <EAStdC/EAString.h>
+#include <EAStdC/EAScanf.h>
 #include <common/utils.h>
 
 #include <game/coordinator.h> // account data
@@ -97,6 +98,7 @@ void Game::Update(Time localTime_)
 		e.pos = player->body->pos;
 		e.rot = player->input.rot;
 		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->pos);
+		e.moveDest = player->input.moveTo;
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
 	}
@@ -441,9 +443,6 @@ void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f
 	ASSERT(player->clientID == clientID);
 
 	player->input.jump = 1;
-
-	// TODO: do this at the end of a frame
-	replication->SendPlayerJump(clientID, player->Main().UID, rotate, moveDirX, moveDirY);
 }
 
 void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
@@ -474,7 +473,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	if(msg[0] == L'!') {
 		msg++;
 
-		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
+		if(EA::StdC::Strcmp(msg, L"lego") == 0) {
 			// TODO: restore?
 			/*
 			World::Player* playerActor = world.FindPlayer(player.actorUID); // TODO: find currently active actor
@@ -495,7 +494,7 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			*/
 		}
 
-		if(EA::StdC::Strncmp(msg, L"delete", 6) == 0) {
+		if(EA::StdC::Strcmp(msg, L"delete") == 0) {
 			// TODO: restore?
 			/*
 			world.DestroyPlayerActor(lastLegoActorUID);
@@ -503,6 +502,20 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 			*/
+		}
+
+		i32 jumpAction;
+		if(EA::StdC::Sscanf(msg, L"j %d", &jumpAction) == 1) {
+			World::Player& clone = world.players[1];
+			World::ActorMaster& actor = clone.Main();
+			replication->SendTestOtherPlayerJump(actor.UID,
+												 clone.body->pos + vec3(0, 0, 300),
+												 vec2(0, 0),
+												 clone.input.rot,
+												 clone.input.speed,
+												 ActionStateID(jumpAction));
+			SendDbgMsg(clientID, LFMT(L"Jump %hs", ActionStateString(ActionStateID(jumpAction))));
+			return true;
 		}
 	}
 

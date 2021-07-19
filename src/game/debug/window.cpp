@@ -310,6 +310,8 @@ void Window::WindowGameStates()
 			rdr.PushArrow(Pipeline::Unlit, bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
 			const vec3 dirStart = e.pos + vec3(0, 0, 80);
 			rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
+
+			rdr.PushArrow(Pipeline::Unlit, e.moveDest + vec3(0, 0, 15), e.moveDest, ColorV3(0x3405b5), 5);
 		}
 	}
 	ImGui::End();
@@ -406,6 +408,9 @@ void Window::WindowGameStates()
 			rdr.PushLine(tri.p[0], tri.p[2], color);
 			rdr.PushLine(tri.p[1], tri.p[2], color);
 			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
+
+
+			ImGui::Text("Dot: %f", glm::dot(event.triangle.Normal(), event.cylinder.Normal()));
 		}
 	}
 	ImGui::End();

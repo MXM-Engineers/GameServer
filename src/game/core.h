@@ -371,14 +371,11 @@ inline f32 WorldPitchToMxmPitch(f32 a)
 
 constexpr i32 PLAYER_CHARACTER_COUNT = 2;
 
-
-const char* ActionStateString(ActionStateID state);
-
 struct GlobalTweakableVariables
 {
 	f32 jumpForce = 2000;
 	f32 gravity = 5000;
-	f32 stepHeight = 200;
+	f32 stepHeight = 120;
 };
 
 GlobalTweakableVariables& GetGlobalTweakableVars();

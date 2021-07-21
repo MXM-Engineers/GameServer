@@ -3,6 +3,7 @@
 #include <common/vector_math.h>
 #include <common/utils.h>
 #include <common/protocol.h>
+#include <common/packet_serialize.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
@@ -65,6 +66,10 @@ struct Replication
 		ActionStateID actionState;
 		i32 actionParam1;
 		i32 actionParam2;
+
+		SkillID castSkill = SkillID::INVALID;
+		vec3 skillMove;
+		f32 skillMoveDurationS;
 	};
 
 	struct ActorNpc: Actor<ActorType::Npc>
@@ -203,7 +208,6 @@ private:
 	void SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, const Player& parent);
 	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
 	void SendActorDestroy(i32 clientID, ActorUID actorUID);
-	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
 
 	void SendMasterSkillSlots(i32 clientID, const ActorMaster& actor);
 
@@ -215,10 +219,19 @@ private:
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)
 	{
-		SendPacketData(clientID, Packet::NET_ID, sizeof(packet), &packet);
+		SendPacketData<Packet>(clientID, sizeof(packet), &packet);
 	}
-	inline void SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
+
+	template<typename Packet>
+	inline void SendPacket(i32 clientID, const PacketWriter& writer)
 	{
-		server->SendPacketData(clientID, netID, packetSize, packetData);
+		SendPacketData<Packet>(clientID, writer.size, writer.data);
+	}
+
+	template<typename Packet>
+	inline void SendPacketData(i32 clientID, u16 packetSize, const void* packetData)
+	{
+		NT_LOG("[client%03d] Replication :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientID, Packet::NET_ID, packetSize, packetData);
 	}
 };

@@ -9,6 +9,7 @@ local common_includes = {
 
 local common_files = {
 	SRC_DIR .. "/common/base.cpp",
+	SRC_DIR .. "/common/logger.cpp",
 	SRC_DIR .. "/common/platform_windows.cpp",
 	SRC_DIR .. "/common/platform_linux.cpp",
 }

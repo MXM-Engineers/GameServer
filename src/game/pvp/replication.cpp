@@ -1,7 +1,6 @@
 #include "replication.h"
 
 #include <common/protocol.h>
-#include <common/packet_serialize.h>
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EAStdC/EAString.h>
@@ -117,8 +116,7 @@ void Replication::OnPlayerConnect(i32 clientID, const AccountData* account)
 void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 {
 	// SN_LoadCharacterStart
-	LOG("[client%03d] Server :: SN_LoadCharacterStart :: ", clientID);
-	SendPacketData(clientID, Sv::SN_LoadCharacterStart::NET_ID, 0, nullptr);
+	SendPacketData<Sv::SN_LoadCharacterStart>(clientID, 0, nullptr);
 
 	// SN_SetGameGvt
 	{
@@ -138,8 +136,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.Write<u16>(0);
 
-		LOG("[client%03d] Server :: SN_SummaryInfoAll :: ", clientID);
-		SendPacketData(clientID, Sv::SN_SummaryInfoAll::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_SummaryInfoAll>(clientID, packet);
 	}
 
 	// SN_AvailableSummaryRewardCountList
@@ -162,8 +159,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(rewardCount, sizeof(rewardCount));
 
-		LOG("[client%03d] Server :: SN_AvailableSummaryRewardCountList :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AvailableSummaryRewardCountList::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_AvailableSummaryRewardCountList>(clientID, packet);
 	}
 
 
@@ -189,8 +185,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(infoList, sizeof(infoList));
 
-		LOG("[client%03d] Server :: SN_SummaryInfoLatest :: ", clientID);
-		SendPacketData(clientID, Sv::SN_SummaryInfoLatest::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_SummaryInfoLatest>(clientID, packet);
 	}
 
 	// SN_AchieveInfo
@@ -202,8 +197,7 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 		packet.Write<i32>(800); // achievementScore
 		packet.Write<u16>(0); // achList_count
 
-		LOG("[client%03d] Server :: SN_AchieveInfo :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AchieveInfo::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_AchieveInfo>(clientID, packet);
 	}
 
 	// SN_AchieveLatest
@@ -213,26 +207,22 @@ void Replication::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.Write<u16>(0); // achList_count
 
-		LOG("[client%03d] Server :: SN_AchieveLatest :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AchieveLatest::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_AchieveLatest>(clientID, packet);
 	}
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
 	cityMapInfo.cityMapID = (StageIndex)Config().LobbyMap;
-	LOG("[client%03d] Server :: SN_CityMapInfo :: cityMapID=%d", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
-	LOG("[client%03d] Server :: SQ_CityLobbyJoinCity :: ", clientID);
-	SendPacketData(clientID, Sv::SQ_CityLobbyJoinCity::NET_ID, 0, nullptr);
+	SendPacketData<Sv::SQ_CityLobbyJoinCity>(clientID, 0, nullptr);
 
 	// SN_SetGameGvt
 	{
 		Sv::SN_SetGameGvt gameGvt;
 		gameGvt.sendTime = 0;
 		gameGvt.virtualTime = 0;
-		LOG("[client%03d] Server :: SN_SetGameGvt :: ", clientID);
 		SendPacket(clientID, gameGvt);
 	}
 }
@@ -241,18 +231,15 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 {
 	Sv::SN_UpdateGameOwner owner;
 	owner.userID = 1;
-	LOG("[client%03d] Server :: SN_UpdateGameOwner :: { userID=%d }", clientID, owner.userID);
 	SendPacket(clientID, owner);
 
 	Sv::SN_LobbyStartGame lobby;
 	lobby.stageType = StageType::GAME_INSTANCE;
-	LOG("[client%03d] Server :: SN_LobbyStartGame :: { stageType=GAME_INSTANCE }", clientID);
 	SendPacket(clientID, lobby);
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
 	cityMapInfo.cityMapID = stageIndex;
-	LOG("[client%03d] Server :: SN_CityMapInfo :: { cityMapID=%d }", clientID, (i32)cityMapInfo.cityMapID);
 	SendPacket(clientID, cityMapInfo);
 
 	/*
@@ -268,8 +255,7 @@ void Replication::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
 		packet.Write<u8>(0); // firingCombo
 		packet.Write<i32>(-1); // result
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_WeaponState>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_WeaponState::NET_ID, packet.size, packet.data);
+		SendPacketData<>(clientID, Sv::SN_WeaponState::NET_ID, packet.size, packet.data);
 	}
 
 	playerState[clientID].cur = PlayerState::IN_GAME;*/
@@ -301,7 +287,6 @@ void Replication::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureInd
 	info.classType = classType;
 	info.hp = health;
 	info.maxHp = healthMax;
-	LOG("[client%03d] Server :: SA_GetCharacterInfo :: ", clientID);
 	SendPacket(clientID, info);
 }
 
@@ -317,7 +302,6 @@ void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUI
 		Sv::SN_LeaderCharacter leader;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		LOG("[client%03d] Server :: SN_LeaderCharacter :: actorUID=%d localActorID=%d", clientID, (u32)masterActorUID, (u32)laiLeader);
 		SendPacket(clientID, leader);
 	}
 	else {
@@ -327,7 +311,6 @@ void Replication::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUI
 		leader.result = 0;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		LOG("[client%03d] Server :: SA_SetLeader :: actorUID=%d localActorID=%d", clientID, (u32)masterActorUID, (u32)laiLeader);
 		SendPacket(clientID, leader);
 	}
 }
@@ -347,8 +330,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
 
-		LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%ls' msg='%.*S'", clientID, senderName, msgLen, msg);
-		SendPacketData(clientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ChatChannelMessage>(clientID, packet);
 	}
 }
 
@@ -367,8 +349,7 @@ void Replication::SendChatMessageToClient(i32 toClientID, const wchar* senderNam
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	LOG("[client%03d] Server :: SN_ChatChannelMessage :: sender='%ls' msg='%.*S'", toClientID, senderName, msgLen, msg);
-	SendPacketData(toClientID, Sv::SN_ChatChannelMessage::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SN_ChatChannelMessage>(toClientID, packet);
 }
 
 void Replication::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg)
@@ -380,8 +361,7 @@ void Replication::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
-	LOG("[client%03d] Server :: SA_WhisperSend :: destNick='%ls' msg='%ls'", senderClientID, destNick, msg);
-	SendPacketData(senderClientID, Sv::SA_WhisperSend::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SA_WhisperSend>(senderClientID, packet);
 }
 
 void Replication::SendChatWhisperToClient(i32 destClientID, const wchar* senderName, const wchar* msg)
@@ -393,8 +373,7 @@ void Replication::SendChatWhisperToClient(i32 destClientID, const wchar* senderN
 	packet.Write<u8>(0); // staffType
 	packet.WriteStringObj(msg); // msg
 
-	LOG("[client%03d] Server :: SN_WhisperReceive :: senderName='%ls' msg='%ls'", destClientID, senderName, msg);
-	SendPacketData(destClientID, Sv::SN_WhisperReceive::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SN_WhisperReceive>(destClientID, packet);
 }
 
 void Replication::SendAccountDataPvp(i32 clientID)
@@ -459,8 +438,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 			packet.Write(chara);
 		}
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ProfileCharacters>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_ProfileCharacters::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ProfileCharacters>(clientID, packet);
 	}
 
 	// SN_ProfileWeapons
@@ -487,8 +465,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 		weap.isActivated = 1;
 		packet.Write(weap);
 
-		LOG("[client%03d] Server :: SN_ProfileWeapons :: %s", clientID, PacketSerialize<Sv::SN_ProfileWeapons>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_ProfileWeapons::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ProfileWeapons>(clientID, packet);
 	}
 
 	// SN_ProfileItems
@@ -499,8 +476,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 		packet.Write<u8>(1); // packetNum
 		packet.Write<u16>(0); // items_count
 
-		LOG("[client%03d] Server :: SN_ProfileItems :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileItems::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ProfileItems>(clientID, packet);
 	}
 
 	// SN_ProfileSkills
@@ -551,8 +527,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 			skillStatusID++;
 		}
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ProfileSkills>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_ProfileSkills::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ProfileSkills>(clientID, packet);
 	}
 
 	// SN_ProfileMasterGears
@@ -578,8 +553,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 		packet.Write<i32>(80); // gearType
 		packet.Write<i32>(1073741825); // gearItemID
 
-		LOG("[client%03d] Server :: SN_ProfileMasterGears :: ", clientID);
-		SendPacketData(clientID, Sv::SN_ProfileMasterGears::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ProfileMasterGears>(clientID, packet);
 	}
 
 
@@ -605,7 +579,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 		packet.Write<u8>(0); // badgeType
 
 		LOG("[client%03d] Server :: SN_AccountInfo :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AccountInfo::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_AccountInfo>(clientID, packet);
 	}
 
 	// SN_AccountEquipmentList
@@ -615,15 +589,13 @@ void Replication::SendAccountDataPvp(i32 clientID)
 
 		packet.Write<i32>(-1); // supportKitDocIndex
 
-		LOG("[client%03d] Server :: SN_AccountEquipmentList :: ", clientID);
-		SendPacketData(clientID, Sv::SN_AccountEquipmentList::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_AccountEquipmentList>(clientID, packet);
 	}
 
 	// SN_Money
 	Sv::SN_Money money;
 	money.nMoney = 666;
 	money.nReason = 1;
-	LOG("[client%03d] Server :: SN_Money :: ", clientID);
 	SendPacket(clientID, money);
 
 	// SN_GameFieldReady
@@ -688,8 +660,7 @@ void Replication::SendAccountDataPvp(i32 clientID)
 		packet.Write<u16>(0);
 		packet.Write<u32>(180000); // surrenderAbleTime
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameFieldReady>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_GameFieldReady::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_GameFieldReady>(clientID, packet);
 	}
 }
 
@@ -705,8 +676,7 @@ void Replication::SendConnectToServer(i32 clientID, const AccountData& account, 
 	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
 	packet.Write<i32>(340); // instantKey
 
-	LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_DoConnectGameServer>(packet.data, packet.size));
-	SendPacketData(clientID, Sv::SN_DoConnectGameServer::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SN_DoConnectGameServer>(clientID, packet);
 
 	// NOTE: client will disconnect on reception
 }
@@ -749,8 +719,7 @@ void Replication::SendPvpLoadingComplete(i32 clientID)
 		}
 
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_NotifyPcDetailInfos>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_NotifyPcDetailInfos::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_NotifyPcDetailInfos>(clientID, packet);
 	}
 
 	// SN_InitScoreBoard
@@ -777,13 +746,11 @@ void Replication::SendPvpLoadingComplete(i32 clientID)
 		}
 
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_InitScoreBoard>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_InitScoreBoard::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_InitScoreBoard>(clientID, packet);
 	}
 
 	// SA_LoadingComplete
-	LOG("[client%03d] Server :: SA_LoadingComplete ::", clientID);
-	SendPacketData(clientID, Sv::SA_LoadingComplete::NET_ID, 0, nullptr);
+	SendPacketData<Sv::SA_LoadingComplete>(clientID,  0, nullptr);
 }
 
 void Replication::SendGameReady(i32 clientID)
@@ -792,20 +759,17 @@ void Replication::SendGameReady(i32 clientID)
 	ready.waitingTimeMs = 3000;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
 	ready.readyElapsedMs = 0;
-	LOG("[client%03d] Server :: SA_GameReady ::", clientID);
 	SendPacket(clientID, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
 	notify.userID = 1;
 	notify.skillPoint = 1;
-	LOG("[client%03d] Server :: SN_NotifyIngameSkillPoint", clientID);
 	SendPacket(clientID, notify);
 
 	Sv::SN_NotifyTimestamp notifyTimestamp;
 	notifyTimestamp.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
 	notifyTimestamp.curCount = 4;
 	notifyTimestamp.maxCount = 5;
-	LOG("[client%03d] Server :: SN_NotifyTimestamp", clientID);
 	SendPacket(clientID, notifyTimestamp);
 
 	/*
@@ -880,12 +844,10 @@ void Replication::SendGameReady(i32 clientID)
 
 void Replication::SendGameStart(i32 clientID)
 {
-	LOG("[client%03d] Server :: SN_GameStart", clientID);
-	SendPacketData(clientID, Sv::SN_GameStart::NET_ID, 0, nullptr);
+	SendPacketData<Sv::SN_GameStart>(clientID, 0, nullptr);
 
 	Sv::SN_NotifyAasRestricted notify;
 	notify.isRestrictedByAAS = 0;
-	LOG("[client%03d] Server :: SN_NotifyAasRestricted :: isRestrictedByAAS=%d", clientID, notify.isRestrictedByAAS);
 	SendPacket(clientID, notify);
 
 	// Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
@@ -897,7 +859,6 @@ void Replication::SendGameStart(i32 clientID)
 		seq.rootEventID = 163;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientID, seq);
 	}
 
@@ -910,7 +871,6 @@ void Replication::SendGameStart(i32 clientID)
 		seq.rootEventID = 270;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientID, seq);
 	}
 }
@@ -926,7 +886,6 @@ void Replication::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID su
 	ASSERT(tag.mainID != LocalActorID::INVALID);
 	ASSERT(tag.subID != LocalActorID::INVALID);
 
-	LOG("[client%03d] Server :: SN_GamePlayerTag", clientID);
 	SendPacket(clientID, tag);
 }
 
@@ -946,8 +905,7 @@ void Replication::SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate
 	packet.Write<f32>(moveDirY);
 	packet.Write<i32>(0); // errorType
 
-	LOG("[client%03d] Server :: SA_ResultSpAction", clientID);
-	SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SA_ResultSpAction>(clientID, packet);
 }
 
 void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast)
@@ -962,7 +920,6 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		accept.ret = 0;
 		accept.skillIndex = cast.skillID;
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_CastSkill>(&accept, sizeof(accept)));
 		SendPacket(clientID, accept);
 	}
 
@@ -988,8 +945,7 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		packet.Write<f32>(cast.posStruct.speed);
 		packet.Write<i32>(cast.posStruct.clientTime);
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_CastSkill>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_CastSkill::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_CastSkill>(clientID, packet);
 	}
 
 	// SN_ExecuteSkill
@@ -1050,8 +1006,7 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 		packet.Write<f32>(moveDuration); // durationTimeS
 		packet.Write<f32>(distance); // originDistance
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_ExecuteSkill>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_ExecuteSkill::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ExecuteSkill>(clientID, packet);
 	}
 }
 
@@ -1073,9 +1028,6 @@ void Replication::SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, co
 		ProfileBlock("Send Sv::SN_PlayerSyncMove");
 
 		sync.characterID = GetLocalActorID(clientID, actorUID);
-		if(sync.state != ActionStateID::NONE_BEHAVIORSTATE) {
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
-		}
 		SendPacket(clientID, sync);
 
 
@@ -1090,8 +1042,7 @@ void Replication::SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, co
 		packet.Write<f32>(moveDir.y);
 		packet.Write<i32>(0); // errorType
 
-		LOG("[client%03d] Server :: SA_ResultSpAction", clientID);
-		SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_ResultSpAction>(clientID, packet);
 	}
 }
 
@@ -1275,16 +1226,31 @@ void Replication::FrameDifference()
 
 	struct UpdateJump
 	{
-		i32 clientID;
 		ActorUID actorUID;
 		vec2 moveDir;
 		f32 rotate;
+	};
+
+	struct UpdateSendCast
+	{
+		i32 clientID;
+		ActorUID actorUID;
+		SkillID skill;
+		f32 distance;
+		f32 moveDurationS;
+		vec3 endPos;
+		vec3 actorPos;
+		vec2 moveDir;
+		RotationHumanoid rotation;
+		f32 speed;
+		ActionStateID action;
 	};
 
 	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
 	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
 	eastl::fixed_vector<UpdateTag,1024> listUpdateTag;
 	eastl::fixed_vector<UpdateJump,1024> listUpdateJump;
+	eastl::fixed_vector<UpdateSendCast,1024> listUpdateSendCast;
 
 	foreach_const(it, frameCur->playerList) {
 		const Player& cur = *it;
@@ -1306,7 +1272,6 @@ void Replication::FrameDifference()
 
 		if(cur.hasJumped && !prev.hasJumped) {
 			UpdateJump update;
-			update.clientID = cur.clientID;
 			update.actorUID = cur.characters[cur.mainCharaID];
 			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]);  // @Speed
 			ASSERT(chara);
@@ -1330,9 +1295,9 @@ void Replication::FrameDifference()
 		const f32 posEpsilon = 0.5f;
 		const f32 dirEpsilon = 0.001f;
 		const f32 speedEpsilon = 0.001f;
-		if(fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
+		if(/*fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
 		   fabs(cur.pos.y - prev.pos.y) > posEpsilon ||
-		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
+		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||*/
 		   fabs(cur.moveDir.x - prev.moveDir.x) > dirEpsilon ||
 		   fabs(cur.moveDir.y - prev.moveDir.y) > dirEpsilon ||
 		   fabs(cur.speed - prev.speed) > speedEpsilon ||
@@ -1371,6 +1336,22 @@ void Replication::FrameDifference()
 			update.rot = cur.rotation;
 			listUpdateRotation.push_back(update);
 		}
+
+		if(cur.castSkill != SkillID::INVALID) {
+			UpdateSendCast update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.actorUID;
+			update.skill = cur.castSkill;
+			update.endPos = cur.pos + cur.skillMove;
+			update.actorPos = cur.pos;
+			update.moveDir = cur.moveDir;
+			update.rotation = cur.rotation;
+			update.speed = cur.speed;
+			update.distance = glm::length(cur.skillMove);
+			update.moveDurationS = cur.skillMoveDurationS;
+			update.action = cur.actionState;
+			listUpdateSendCast.push_back(update);
+		}
 	}
 
 	// send updates
@@ -1391,9 +1372,6 @@ void Replication::FrameDifference()
 			ProfileBlock("Send Sv::SN_PlayerSyncMove");
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			if(sync.state != ActionStateID::NONE_BEHAVIORSTATE) {
-				LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncMove>(&sync, sizeof(sync)));
-			}
 			SendPacket(clientID, sync);
 		}
 	}
@@ -1408,7 +1386,6 @@ void Replication::FrameDifference()
 			if(clientID == up->clientID) continue; // ignore self
 
 			sync.characterID = GetLocalActorID(clientID, up->actorUID);
-			// LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSyncTurn>(&sync, sizeof(sync)));
 			SendPacket(clientID, sync);
 		}
 	}
@@ -1426,13 +1403,11 @@ void Replication::FrameDifference()
 			ASSERT(tag.mainID != LocalActorID::INVALID);
 			ASSERT(tag.subID != LocalActorID::INVALID);
 
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GamePlayerTag>(&tag, sizeof(tag)));
 			SendPacket(clientID, tag);
 
 			if(clientID != up->clientID) { // ignore self
 				Sv::SN_GameLeaveActor leave;
 				leave.objectID = tag.subID;
-				LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameLeaveActor>(&leave, sizeof(leave)));
 				SendPacket(clientID, leave);
 
 				// Sv::SN_GameEnterActor
@@ -1483,8 +1458,7 @@ void Replication::FrameDifference()
 					packet.WriteVec(addPrivate.data(), addPrivate.size());
 					packet.WriteVec(mulPrivate.data(), mulPrivate.size());
 
-					LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameEnterActor>(packet.data, packet.size));
-					SendPacketData(clientID, Sv::SN_GameEnterActor::NET_ID, packet.size, packet.data);
+					SendPacket<Sv::SN_GameEnterActor>(clientID, packet);
 				}
 
 				Sv::SN_PlayerSyncMove sync;
@@ -1496,7 +1470,6 @@ void Replication::FrameDifference()
 				sync.flags = 0;
 				sync.state = ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE;
 				sync.characterID = tag.mainID;
-				// LOG("[client%03d] Server :: SN_PlayerSyncMove :: actorUID=%u", clientID, (u32)up->actorUID);
 				SendPacket(clientID, sync);
 			}
 		}
@@ -1517,8 +1490,97 @@ void Replication::FrameDifference()
 			packet.Write<f32>(up->moveDir.y);
 			packet.Write<i32>(0); // errorType
 
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_ResultSpAction>(packet.data, packet.size));
-			SendPacketData(clientID, Sv::SA_ResultSpAction::NET_ID, packet.size, packet.data);
+			SendPacket<Sv::SA_ResultSpAction>(clientID, packet);
+		}
+	}
+
+	foreach_const(up, listUpdateSendCast) {
+		if(up->clientID != -1) {
+			LocalActorID localActorID = GetLocalActorID(up->clientID, up->actorUID);
+
+			// SA_CastSkill
+			{
+				Sv::SA_CastSkill accept;
+				accept.characterID = localActorID;
+				accept.ret = 0;
+				accept.skillIndex = up->skill;
+
+				SendPacket(up->clientID, accept);
+			}
+
+			// SN_CastSkill
+			{
+				u8 sendData[1024];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<LocalActorID>(localActorID); // entityID
+				packet.Write<i32>(0); // ret
+				packet.Write<SkillID>(up->skill);
+				packet.Write<u8>(0); // costLevel
+				packet.Write<ActionStateID>(ActionStateID::INVALID);
+				packet.Write<float3>(v2f(up->actorPos));
+
+				packet.Write<u16>(0); // targetList_count
+
+
+				packet.Write<u8>(1); // bSyncMyPosition
+				packet.Write<float3>(v2f(up->actorPos));
+				packet.Write<float3>(v2f(up->endPos));
+				packet.Write<float2>(v2f(up->moveDir));
+				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
+				packet.Write<f32>(up->speed);
+				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+
+				SendPacket<Sv::SN_CastSkill>(up->clientID, packet);
+			}
+		}
+
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+
+			// SN_ExecuteSkill
+			{
+				u8 sendData[1024];
+				PacketWriter packet(sendData, sizeof(sendData));
+
+				packet.Write<LocalActorID>(GetLocalActorID(clientID, up->actorUID)); // entityID
+				packet.Write<i32>(0); // ret
+				packet.Write<SkillID>(up->skill);
+				packet.Write<u8>(0); // costLevel
+				packet.Write<ActionStateID>(up->action);
+				packet.Write<float3>(v2f(up->actorPos));
+
+				packet.Write<u16>(0); // targetList_count
+
+				packet.Write<u8>(1); // bSyncMyPosition
+				packet.Write<float3>(v2f(up->actorPos));
+				packet.Write<float3>(v2f(up->endPos));
+				packet.Write<float2>(v2f(up->moveDir));
+				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
+				packet.Write<f32>(up->speed);
+				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+
+				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
+
+				if(up->distance > 0) {
+					// graphMove
+					packet.Write<u8>(1); // bApply
+					packet.Write<float3>(v2f(up->actorPos)); // startPos
+					packet.Write<float3>(v2f(up->endPos)); // endPos
+					packet.Write<f32>(up->moveDurationS); // durationTimeS
+					packet.Write<f32>(up->distance); // originDistance
+				}
+				else {
+					// graphMove
+					packet.Write<u8>(0); // bApply
+					packet.Write<float3>(float3()); // startPos
+					packet.Write<float3>(float3()); // endPos
+					packet.Write<f32>(0); // durationTimeS
+					packet.Write<f32>(0); // originDistance
+				}
+
+				SendPacket<Sv::SN_ExecuteSkill>(clientID, packet);
+			}
 		}
 	}
 }
@@ -1675,8 +1737,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameCreateActor>(packet.data, packet.size));
-			SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+			SendPacket<Sv::SN_GameCreateActor>(clientID, packet);
 		}
 	}
 	// this is the sub actor
@@ -1748,8 +1809,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameCreateSubActor>(packet.data, packet.size));
-			SendPacketData(clientID, Sv::SN_GameCreateSubActor::NET_ID, packet.size, packet.data);
+			SendPacket<Sv::SN_GameCreateSubActor>(clientID, packet);
 		}
 	}
 
@@ -1761,8 +1821,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.actorUID);
-		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_SpawnPosForMinimap>(clientID, packet);
 	}
 
 	// SN_GamePlayerStock
@@ -1787,8 +1846,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 		packet.Write<u8>(0); // staffType
 		packet.Write<u8>(0); // isSubstituted
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GamePlayerStock>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_GamePlayerStock::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_GamePlayerStock>(clientID, packet);
 	}
 
 	// SN_GamePlayerEquipWeapon
@@ -1801,8 +1859,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 		packet.Write<i32>(0); // additionnalOverHeatGauge
 		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GamePlayerEquipWeapon>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_GamePlayerEquipWeapon::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_GamePlayerEquipWeapon>(clientID, packet);
 	}
 
 	/*
@@ -1822,8 +1879,7 @@ void Replication::SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, c
 		packet.Write<i32>(0); // durationTimeMs
 		packet.Write<i32>(0); // remainTimeMs
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_StatusSnapshot>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_StatusSnapshot::NET_ID, packet.size, packet.data);
+		SendPacketData<>(clientID, Sv::SN_StatusSnapshot::NET_ID, packet.size, packet.data);
 	}
 	*/
 
@@ -1891,8 +1947,7 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_GameCreateActor>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_GameCreateActor::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_GameCreateActor>(clientID, packet);
 	}
 
 	// SN_SpawnPosForMinimap
@@ -1903,8 +1958,7 @@ void Replication::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		LOG("[client%03d] Server :: SN_SpawnPosForMinimap :: actorUID=%d", clientID, (u32)actor.actorUID);
-		SendPacketData(clientID, Sv::SN_SpawnPosForMinimap::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_SpawnPosForMinimap>(clientID, packet);
 	}
 }
 
@@ -1918,20 +1972,6 @@ void Replication::SendActorDestroy(i32 clientID, ActorUID actorUID)
 	packet.characterID = localActorID;
 	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, (u32)actorUID);
 	SendPacket(clientID, packet);
-}
-
-void Replication::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
-{
-	u8 sendData[256];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<i32>(0); // result
-	packet.Write<SongID>(songID); // trackID
-	packet.WriteStringObj(requesterNick); // nickname
-	packet.Write<u16>(playPosInSec); // playPositionSec
-
-	LOG("[client%03d] Server :: SN_JukeboxPlay :: songID=%d requester='%ls'", clientID, (i32)songID, requesterNick);
-	SendPacketData(clientID, Sv::SN_JukeboxPlay::NET_ID, packet.size, packet.data);
 }
 
 void Replication::SendMasterSkillSlots(i32 clientID, const Replication::ActorMaster& actor)
@@ -1988,8 +2028,7 @@ void Replication::SendMasterSkillSlots(i32 clientID, const Replication::ActorMas
 		packet.Write<SkillID>(master.skillIDs[1]); // currentSkillSlot2
 		packet.Write<SkillID>(master.skillIDs.back()); // shirkSkillSlot
 
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_PlayerSkillSlot>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_PlayerSkillSlot::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_PlayerSkillSlot>(clientID, packet);
 	}
 }
 
@@ -2013,13 +2052,11 @@ void Replication::SendInitialFrame(i32 clientID)
 		packet.Write<u8>(0); // nextTitanIndex
 		packet.Write<u16>(0); // listExceptionStat_count
 
-		LOG("[client%03d] Server :: SN_InitIngameModeInfo :: ", clientID);
-		SendPacketData(clientID, Sv::SN_InitIngameModeInfo::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_InitIngameModeInfo>(clientID, packet);
 	}
 
 	// SN_ScanEnd
-	LOG("[client%03d] Server :: SN_ScanEnd ::", clientID);
-	SendPacketData(clientID, Sv::SN_ScanEnd::NET_ID, 0, nullptr);
+	SendPacketData<Sv::SN_ScanEnd>(clientID, 0, nullptr);
 
 	// SN_LoadClearedStages
 	{
@@ -2027,8 +2064,7 @@ void Replication::SendInitialFrame(i32 clientID)
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<u16>(0); // count
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_LoadClearedStages>(packet.data, packet.size));
-		SendPacketData(clientID, Sv::SN_NotifyPcDetailInfos::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_NotifyPcDetailInfos>(clientID, packet);
 	}
 
 	/*

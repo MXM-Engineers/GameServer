@@ -115,6 +115,7 @@ int main(int argc, char** argv)
 {
 	PlatformInit();
 	LogInit("game_server.log");
+	LogNetTrafficInit("game_server_nt.log", 0x0);
 	TimeInit();
 
 	// TODO: linux thread affinity (sched_setaffinity)

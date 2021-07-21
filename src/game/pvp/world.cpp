@@ -19,15 +19,62 @@ void World::Update(Time localTime_)
 	foreach(it, players) {
 		Player& p = *it;
 
+		PhysWorld::Body& body = *p.body;
+
 		// tag
 		if(p.input.tag) {
 			p.input.tag = 0;
 			p.mainCharaID ^= 1;
 		}
 
-		// move
-		PhysWorld::Body& body = *p.body;
+		p.cast.skill = SkillID::INVALID;
+		if(p.input.castSkill != SkillID::INVALID) {
+			// TODO: check for requirements in general
+			// TODO: check for skill
+			// TODO: check for cost
+			p.cast.skill = p.input.castSkill;
 
+			ActionStateID actionState;
+			f32 distance = 0;
+			f32 moveDuration = 0;
+
+			switch(p.cast.skill) {
+				// Lua dodge
+				case (SkillID)180350002: {
+					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
+					distance = 500;
+					moveDuration = 0.7333333f;
+				} break;
+
+				// Sizuka dodge
+				case (SkillID)180030002: {
+					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
+					distance = 100;
+					moveDuration = 0.01f;
+				} break;
+
+				case (SkillID)180350010: actionState = ActionStateID::SKILL_1_BEHAVIORSTATE; break;
+				case (SkillID)180350030: actionState = (ActionStateID)30; break;
+				case (SkillID)180030020: actionState = (ActionStateID)32; break;
+				case (SkillID)180030030: actionState = (ActionStateID)33; break;
+				case (SkillID)180030050: actionState = (ActionStateID)35; break;
+			}
+
+			if(distance > 0) {
+// #error Sometimes dest is not attainable (when going up a ramp for example)
+				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(vec2(1, 0) * distance, 0));
+				p.cast.move = endPos - body.pos;
+				body.pos = endPos;
+				p.input.moveTo = endPos;
+			}
+			p.cast.moveDurationS = moveDuration;
+
+			p.input.castSkill = SkillID::INVALID;
+
+			p.Main().actionState = actionState;
+		}
+
+		// move
 		vec2 delta = vec2(p.input.moveTo - body.pos);
 		f32 deltaLen = glm::length(delta);
 		if(deltaLen > 1.0f && p.input.speed > 0.f) {
@@ -79,6 +126,7 @@ void World::Update(Time localTime_)
 		*/
 	}
 
+	/*
 	static f64 accumulatedDiff = 0.0;
 	if(players.front().movement.moveDir == vec2(0)) {
 		accumulatedDiff = 0.0;
@@ -90,6 +138,7 @@ void World::Update(Time localTime_)
 		accumulatedDiff += moveDiff;
 		LOG("Move diff = %f  |  accumulatedDiff = %g", moveDiff, accumulatedDiff);
 	}
+	*/
 
 	Replicate();
 }
@@ -128,16 +177,22 @@ void World::Replicate()
 			rch.playerID = player.playerID;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
-			rch.pos = player.body->pos;
 
-			rch.moveDir = player.movement.moveDir;
-			rch.speed = player.input.speed;
+			if(chara.UID == player.Main().UID) {
+				rch.pos = player.body->pos;
 
-			rch.rotation = player.input.rot; // TODO: compute this?
+				rch.moveDir = player.movement.moveDir;
+				rch.speed = player.input.speed;
+				rch.rotation = player.input.rot; // TODO: compute this?
 
-			rch.actionState = chara.actionState;
-			rch.actionParam1 = chara.actionParam1;
-			rch.actionParam2 = chara.actionParam2;
+				rch.actionState = chara.actionState;
+				rch.actionParam1 = chara.actionParam1;
+				rch.actionParam2 = chara.actionParam2;
+
+				rch.castSkill = player.cast.skill;
+				rch.skillMove = player.cast.move;
+				rch.skillMoveDurationS = player.cast.moveDurationS;
+			}
 
 			replication->FramePushMasterActor(rch);
 		}

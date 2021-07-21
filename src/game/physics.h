@@ -409,4 +409,6 @@ struct PhysWorld
 	void DeleteBody(BodyHandle handle);
 
 	void Step();
+
+	vec3 MoveUntilWall(const BodyHandle handle, const vec3& dest);
 };

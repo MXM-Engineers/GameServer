@@ -807,3 +807,88 @@ void PhysWorld::Step()
 		i++;
 	}
 }
+
+vec3 PhysWorld::MoveUntilWall(const PhysWorld::BodyHandle handle, const vec3& dest)
+{
+	ShapeCylinder baseShape;
+	baseShape.radius = handle->radius;
+	baseShape.base = vec3(0);
+	baseShape.height = handle->height;
+
+	vec3 pos = handle->pos;
+
+	while(LengthSq(vec2(pos) - vec2(dest)) > 1.f) {
+		vec3 prevPos = pos;
+
+		f32 length = glm::length(dest - pos);
+		i32 count = i32(length / 10.0f) + 1;
+		const vec3 seg = NormalizeSafe(dest - pos) * (length / count);
+		pos += seg;
+
+		for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
+			ShapeCylinder s = baseShape;
+			s.base = pos;
+			eastl::fixed_vector<Collision,16,false> colList;
+			bool collided = false;
+
+			foreach_const(tri, staticMeshTriangleList) {
+				PhysResolutionCylinderTriangle pen;
+
+				bool intersects = TestIntersection(s, *tri, &pen);
+				if(intersects) {
+					vec3 triangleNormal = tri->Normal();
+					vec3 fix = pen.pushZ; // this seems to work better
+
+					// almost parallel to a wall
+					const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
+					if(abs(cosTheta) < 0.1) {
+						fix = pen.pushX;
+						triangleNormal = NormalizeSafe(fix);
+					}
+
+					fix += NormalizeSafe(fix) * (PHYS_EPSILON * 10.0f);
+
+					Collision col;
+					col.pen = pen;
+					col.triangleNormal = triangleNormal;
+					col.fix = fix;
+					col.fixLenSq = LengthSq(fix);
+					colList.push_back(col);
+					collided = true;
+				}
+			}
+
+			if(!colList.empty()) {
+				eastl::sort(colList.begin(), colList.end(), [](const Collision& a, const Collision& b) {
+					return a.fixLenSq < b.fixLenSq;
+				});
+
+
+				// step
+				Collision* selected = &(*colList.begin());
+				for(auto it = colList.rbegin(); it != colList.rend(); it++) {
+					const Collision& col = *it;
+
+					f32 deltaZ = col.fix.z;
+					if(deltaZ > 0.f && deltaZ < STEP_HEIGHT) {
+						selected = &(*it);
+					}
+				}
+
+				const Collision& col = *selected;
+
+				pos += col.fix;
+
+				DBG_ASSERT_NONNAN(pos.x);
+				DBG_ASSERT_NONNAN(pos.y);
+				DBG_ASSERT_NONNAN(pos.z);
+			}
+
+			if(!collided) break;
+		}
+
+		if(LengthSq(vec2(prevPos) - vec2(pos)) < 1.f) break;
+	}
+
+	return pos;
+}

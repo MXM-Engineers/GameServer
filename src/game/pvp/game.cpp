@@ -448,9 +448,17 @@ void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f
 void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
 {
 	ASSERT(playerMap[clientID] != playerList.end());
-	Player& player = *playerMap[clientID];
+	// TODO: associate clients to world players in some way
+	// FIXME: hack
 
-	replication->SendPlayerAcceptCast(clientID, cast);
+	World::Player* player = world.FindPlayer((PlayerID)0);
+	ASSERT(player);
+	ASSERT(player->clientID == clientID);
+
+	player->input.castSkill = cast.skillID;
+	player->input.castPos = cast.p3nPos;
+
+	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
 }
 
 void Game::OnPlayerGameIsReady(i32 clientID)

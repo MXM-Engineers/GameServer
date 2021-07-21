@@ -7,17 +7,7 @@
 #include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_string.h>
-
-extern FILE* g_LogFile;
-void LogInit(const char* name);
-void __LogfLine(const char* fmt, ...);
-void __Logf(const char* fmt, ...);
-void __Warnf(const char* functionName, const char* fmt, ...);
-
-#define MSVC_VERIFY_FORMATTING(...) (0 && snprintf(0, 0, ##__VA_ARGS__))
-#define LOG(...) do { __LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
-#define LOG_NNL(...) do { __Logf(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
-#define WARN(...) do { __Warnf(FUNCTION_STR, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
+#include "logger.h"
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
@@ -25,9 +15,7 @@ void __Warnf(const char* functionName, const char* fmt, ...);
 inline void __assertion_failed(const char* cond, const char* file, int line)
 {
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);
-	fflush(stdout);
-	fflush(g_LogFile);
-	fclose(g_LogFile);
+	LogsFlushAndClose();
 	DbgBreak();
 }
 
@@ -224,12 +212,12 @@ inline bool StringEquals(const char* str1, const char* str2)
 
 inline void logAsHex(const void* data, int size)
 {
-	LOG_NNL("[ ");
+	LOGN("[ ");
 	const u8* b = (u8*)data;
 	for(int i = 0; i < size; i++) {
-		LOG_NNL("%x, ", b[i]);
+		LOGN("%x, ", b[i]);
 	}
-	LOG_NNL("]");
+	LOGN("]");
 }
 
 // https://www.gingerbill.org/article/2015/08/19/defer-in-cpp/

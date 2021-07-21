@@ -30,6 +30,9 @@ struct World
 			ActionStateID actionState;
 			i32 actionParam1;
 			i32 actionParam2;
+
+			SkillID castSkill = SkillID::INVALID;
+			vec3 castPos;
 		};
 
 		const PlayerID playerID;
@@ -58,6 +61,12 @@ struct World
 			u32 prevFlags = 0x0;
 			bool hasJumped = false;
 		} movement;
+
+		struct {
+			SkillID skill;
+			vec3 move;
+			f32 moveDurationS;
+		} cast;
 
 		explicit Player(
 				PlayerID playerID_,

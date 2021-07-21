@@ -342,13 +342,6 @@ struct PlayerCastSkill
 	Cl::CQ_PlayerCastSkill::PosStruct posStruct;
 };
 
-struct RotationHumanoid
-{
-	f32 upperYaw = 0;
-	f32 upperPitch = 0;
-	f32 bodyYaw = 0;
-};
-
 inline f32 MxmYawToWorldYaw(f32 a)
 {
 	return -a - PI/2;
@@ -368,6 +361,22 @@ inline f32 WorldPitchToMxmPitch(f32 a)
 {
 	return a; // TODO: reverse this
 }
+
+struct RotationHumanoid
+{
+	f32 upperYaw = 0;
+	f32 upperPitch = 0;
+	f32 bodyYaw = 0;
+
+	inline RotationHumanoid ConvertToMxm() const
+	{
+		RotationHumanoid rot;
+		rot.upperYaw = WorldYawToMxmYaw(rot.upperYaw);
+		rot.upperPitch = WorldPitchToMxmPitch(rot.upperPitch);
+		rot.bodyYaw = WorldYawToMxmYaw(rot.bodyYaw);
+		return rot;
+	}
+};
 
 constexpr i32 PLAYER_CHARACTER_COUNT = 2;
 

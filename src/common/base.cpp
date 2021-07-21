@@ -5,91 +5,6 @@
 #include <EAStdC/EASprintf.h>
 #include <EAStdC/EAString.h>
 
-#ifdef CONF_WINDOWS
-	#include <windows.h> // OutputDebugStringA
-#endif
-
-FILE* g_LogFile;
-const char* g_LogFileName;
-
-struct Logger
-{
-	ProfileMutex(Mutex, mutex);
-
-	~Logger() {
-		fclose(g_LogFile);
-	}
-};
-
-static Logger g_Logger;
-
-void LogInit(const char* name)
-{
-	g_LogFileName = name;
-	g_LogFile = fopen(g_LogFileName, "wb");
-	ASSERT(g_LogFile);
-}
-
-void Logf(const char* fmt, va_list list)
-{
-	char buff[4096];
-	char final[4096+100];
-
-	EA::StdC::Vsnprintf(buff, sizeof(buff), fmt, list);
-
-	// this one is faster but gives a big number
-	/*
-	EA::Thread::ThreadUniqueId threadID;
-	EAThreadGetUniqueId(threadID);
-	*/
-	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
-
-	EA::StdC::Snprintf(final, sizeof(final), "[%x] %s", (i32)(intptr_t)threadID, buff);
-	const i32 len = EA::StdC::Strlen(final);
-
-	const LockGuard lock(g_Logger.mutex);
-	fwrite(final, 1, len, stdout);
-	fwrite(final, 1, len, g_LogFile);
-
-#ifdef CONF_WINDOWS
-#ifdef CONF_DEBUG
-	if(IsDebuggerPresent()) {
-		OutputDebugStringA(final);
-	}
-#endif
-#endif
-}
-
-void __Logf(const char* fmt, ...)
-{
-	va_list list;
-	va_start(list, fmt);
-	Logf(fmt, list);
-	va_end(list);
-}
-
-void __LogfLine(const char* fmt, ...)
-{
-	eastl::fixed_string<char,4096,false> fmtLn(fmt);
-	fmtLn.append("\n");
-
-	va_list list;
-	va_start(list, fmt);
-	Logf(fmtLn.data(), list);
-	va_end(list);
-}
-
-void __Warnf(const char* functionName, const char* fmt, ...)
-{
-	eastl::fixed_string<char,4096,false> fmtLn;
-	fmtLn.append_sprintf("WARNING(%s): %s\n", functionName, fmt);
-
-	va_list list;
-	va_start(list, fmt);
-	Logf(fmtLn.data(), list);
-	va_end(list);
-}
-
 // EASTL new operators
 void* operator new[](size_t size, const char* name, int flags, unsigned debugFlags, const char* file, int line)
 {
@@ -103,7 +18,7 @@ void* operator new[](size_t size, size_t alignment, size_t offset, const char* n
 }
 const char* _TempStrFormat(const char* fmt, ...)
 {
-	thread_local char buff[4096];
+	thread_local char buff[8192];
 
 	va_list list;
 	va_start(list, fmt);
@@ -115,7 +30,7 @@ const char* _TempStrFormat(const char* fmt, ...)
 
 const wchar* _TempWideStrFormat(const wchar* fmt, ...)
 {
-	thread_local wchar buff[4096];
+	thread_local wchar buff[8192];
 
 	va_list list;
 	va_start(list, fmt);

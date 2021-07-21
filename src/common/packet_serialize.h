@@ -835,5 +835,70 @@ inline const char* PacketSerialize<Sv::SA_ResultSpAction>(const void* packetData
 	return str.data();
 }
 
+#define DEFAULT_SERIALIZE(PACKET)\
+	template<>\
+	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\
+	{\
+		SER_BEGIN();\
+		ConstBuffer buff(packetData, packetSize);\
+	\
+		SER(#PACKET "(%d, %d) :: {", PACKET::NET_ID, packetSize);\
+		SER("}");\
+	\
+		return str.data();\
+	}
+
+DEFAULT_SERIALIZE(Sv::SN_LoadCharacterStart);
+DEFAULT_SERIALIZE(Sv::SN_SummaryInfoAll);
+DEFAULT_SERIALIZE(Sv::SN_AvailableSummaryRewardCountList);
+DEFAULT_SERIALIZE(Sv::SN_SummaryInfoLatest);
+DEFAULT_SERIALIZE(Sv::SN_AchieveInfo);
+DEFAULT_SERIALIZE(Sv::SN_AchieveLatest);
+DEFAULT_SERIALIZE(Sv::SQ_CityLobbyJoinCity);
+DEFAULT_SERIALIZE(Sv::SN_ChatChannelMessage);
+DEFAULT_SERIALIZE(Sv::SA_WhisperSend);
+DEFAULT_SERIALIZE(Sv::SN_WhisperReceive);
+DEFAULT_SERIALIZE(Sv::SN_ProfileItems);
+DEFAULT_SERIALIZE(Sv::SN_ProfileMasterGears);
+DEFAULT_SERIALIZE(Sv::SN_AccountInfo);
+DEFAULT_SERIALIZE(Sv::SN_AccountEquipmentList);
+DEFAULT_SERIALIZE(Sv::SA_LoadingComplete);
+DEFAULT_SERIALIZE(Sv::SN_GameStart);
+DEFAULT_SERIALIZE(Sv::SN_SpawnPosForMinimap);
+DEFAULT_SERIALIZE(Sv::SN_InitIngameModeInfo);
+DEFAULT_SERIALIZE(Sv::SN_ScanEnd);
+DEFAULT_SERIALIZE(Sv::SN_SetGameGvt);
+DEFAULT_SERIALIZE(Sv::SN_CityMapInfo);
+DEFAULT_SERIALIZE(Sv::SN_UpdateGameOwner);
+DEFAULT_SERIALIZE(Sv::SN_LobbyStartGame);
+DEFAULT_SERIALIZE(Sv::SA_GetCharacterInfo);
+DEFAULT_SERIALIZE(Sv::SN_LeaderCharacter);
+DEFAULT_SERIALIZE(Sv::SA_SetLeader);
+DEFAULT_SERIALIZE(Sv::SN_Money);
+DEFAULT_SERIALIZE(Sv::SA_GameReady);
+DEFAULT_SERIALIZE(Sv::SN_NotifyIngameSkillPoint);
+DEFAULT_SERIALIZE(Sv::SN_NotifyTimestamp);
+DEFAULT_SERIALIZE(Sv::SN_NotifyAasRestricted);
+DEFAULT_SERIALIZE(Sv::SN_RunClientLevelEventSeq);
+DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTurn);
+DEFAULT_SERIALIZE(Sv::SN_DestroyEntity);
+
+#undef DEFAULT_SERIALIZE
+
+
+/*
+template<>
+inline const char* PacketSerialize<Sv::SN_LoadCharacterStart>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("Sv::SN_LoadCharacterStart(%d, %d) :: {", Sv::SN_LoadCharacterStart::NET_ID, packetSize);
+	SER("}");
+
+	return str.data();
+}
+*/
+
 #undef SER_BEGIN
 #undef SER

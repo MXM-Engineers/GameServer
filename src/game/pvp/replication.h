@@ -190,8 +190,6 @@ struct Replication
 	void SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
 	void SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast);
 
-	void SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, const vec2& moveDir, RotationHumanoid rot, f32 speed, ActionStateID action);
-
 	void EventClientDisconnect(i32 clientID);
 
 	void PlayerRegisterMasterActor(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution

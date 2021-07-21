@@ -1010,42 +1010,6 @@ void Replication::SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast
 	}
 }
 
-void Replication::SendTestOtherPlayerJump(ActorUID actorUID, const vec3& pos, const vec2& moveDir, RotationHumanoid rot, f32 speed, ActionStateID action)
-{
-	Sv::SN_PlayerSyncMove sync;
-	sync.destPos = v2f(pos);
-	sync.moveDir = v2f(moveDir);
-	sync.upperDir = { WorldYawToMxmYaw(rot.upperYaw), WorldPitchToMxmPitch(rot.upperPitch) };
-	sync.nRotate = WorldYawToMxmYaw(rot.bodyYaw);
-	sync.nSpeed = speed;
-	sync.flags = 0;
-	sync.state = action;
-
-	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-		//if(clientID == up->clientID) continue; // ignore self
-
-		ProfileBlock("Send Sv::SN_PlayerSyncMove");
-
-		sync.characterID = GetLocalActorID(clientID, actorUID);
-		SendPacket(clientID, sync);
-
-
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u8>(0x20); // excludedFieldBits
-		packet.Write<i32>(0); // actionID
-		packet.Write<LocalActorID>(GetLocalActorID(clientID, actorUID));
-		packet.Write<f32>(rot.bodyYaw);
-		packet.Write<f32>(moveDir.x);
-		packet.Write<f32>(moveDir.y);
-		packet.Write<i32>(0); // errorType
-
-		SendPacket<Sv::SA_ResultSpAction>(clientID, packet);
-	}
-}
-
 void Replication::EventClientDisconnect(i32 clientID)
 {
 	playerState[clientID].cur = PlayerState::DISCONNECTED;
@@ -1295,13 +1259,12 @@ void Replication::FrameDifference()
 		const f32 posEpsilon = 0.5f;
 		const f32 dirEpsilon = 0.001f;
 		const f32 speedEpsilon = 0.001f;
-		if(/*fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
+		if(fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
 		   fabs(cur.pos.y - prev.pos.y) > posEpsilon ||
-		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||*/
+		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
 		   fabs(cur.moveDir.x - prev.moveDir.x) > dirEpsilon ||
 		   fabs(cur.moveDir.y - prev.moveDir.y) > dirEpsilon ||
-		   fabs(cur.speed - prev.speed) > speedEpsilon ||
-		   cur.actionState != prev.actionState)
+		   fabs(cur.speed - prev.speed) > speedEpsilon)
 		{
 			UpdatePosition update;
 			update.clientID = cur.clientID;
@@ -1460,17 +1423,6 @@ void Replication::FrameDifference()
 
 					SendPacket<Sv::SN_GameEnterActor>(clientID, packet);
 				}
-
-				Sv::SN_PlayerSyncMove sync;
-				sync.destPos = v2f(up->pos);
-				sync.moveDir = { 1, 0 };
-				sync.upperDir = { 0, 0 };
-				sync.nRotate = WorldYawToMxmYaw(0);
-				sync.nSpeed = 620;
-				sync.flags = 0;
-				sync.state = ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE;
-				sync.characterID = tag.mainID;
-				SendPacket(clientID, sync);
 			}
 		}
 	}
@@ -1518,18 +1470,29 @@ void Replication::FrameDifference()
 				packet.Write<SkillID>(up->skill);
 				packet.Write<u8>(0); // costLevel
 				packet.Write<ActionStateID>(ActionStateID::INVALID);
-				packet.Write<float3>(v2f(up->actorPos));
+				packet.Write<float3>({});
 
 				packet.Write<u16>(0); // targetList_count
 
 
+				packet.Write<u8>(0); // bSyncMyPosition
+				packet.Write<float3>({});
+				packet.Write<float3>({});
+				packet.Write<float2>({});
+				packet.Write<RotationHumanoid>({});
+				packet.Write<f32>(0);
+				packet.Write<i32>(0);
+
+				/*
 				packet.Write<u8>(1); // bSyncMyPosition
 				packet.Write<float3>(v2f(up->actorPos));
 				packet.Write<float3>(v2f(up->endPos));
 				packet.Write<float2>(v2f(up->moveDir));
 				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
 				packet.Write<f32>(up->speed);
-				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				//packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				packet.Write<i32>(0);
+				*/
 
 				SendPacket<Sv::SN_CastSkill>(up->clientID, packet);
 			}
@@ -1548,10 +1511,20 @@ void Replication::FrameDifference()
 				packet.Write<SkillID>(up->skill);
 				packet.Write<u8>(0); // costLevel
 				packet.Write<ActionStateID>(up->action);
-				packet.Write<float3>(v2f(up->actorPos));
+				packet.Write<float3>({});
 
 				packet.Write<u16>(0); // targetList_count
 
+
+				packet.Write<u8>(0); // bSyncMyPosition
+				packet.Write<float3>({});
+				packet.Write<float3>({});
+				packet.Write<float2>({});
+				packet.Write<RotationHumanoid>({});
+				packet.Write<f32>(0);
+				packet.Write<i32>(0);
+
+				/*
 				packet.Write<u8>(1); // bSyncMyPosition
 				packet.Write<float3>(v2f(up->actorPos));
 				packet.Write<float3>(v2f(up->endPos));
@@ -1559,6 +1532,7 @@ void Replication::FrameDifference()
 				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
 				packet.Write<f32>(up->speed);
 				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				*/
 
 				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
 

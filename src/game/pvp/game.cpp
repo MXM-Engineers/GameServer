@@ -511,20 +511,6 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			return true;
 			*/
 		}
-
-		i32 jumpAction;
-		if(EA::StdC::Sscanf(msg, L"j %d", &jumpAction) == 1) {
-			World::Player& clone = world.players[1];
-			World::ActorMaster& actor = clone.Main();
-			replication->SendTestOtherPlayerJump(actor.UID,
-												 clone.body->pos + vec3(0, 0, 300),
-												 vec2(0, 0),
-												 clone.input.rot,
-												 clone.input.speed,
-												 ActionStateID(jumpAction));
-			SendDbgMsg(clientID, LFMT(L"Jump %hs", ActionStateString(ActionStateID(jumpAction))));
-			return true;
-		}
 	}
 
 	return false;

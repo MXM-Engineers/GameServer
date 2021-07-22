@@ -24,17 +24,20 @@
 * Make physics match the client more (for example we can go up the ramp from the side)
     - ✅ Make the phys body move based on input.moveTo
     - ✅ Fix 1s delay
-    - ⚠️ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
+    - ✅ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
     - ✅ Fix losing speed on flat ground
-* Try to make rolling work
+* ⚠️ Try to make rolling work
 
 * Make the client send more position updates (like rotation updates)
     - ✅ Hypothesis: the 0.5s delay is due to a bug. Since we send a position update every 0.5s, the first one is delayed by that amount.
 
 # Test
-* Interpolate (extrapolate) between player positions
 * ✅ Draw directions
 * ✅ Try to roll without testing for collision
 
 * ✅ Make ghidra script to fix ALL flow override for function X (clear flow & repair at call site) [constbuffer_advance, _eh_prolog3]
 * ✅ Reverse SN_GameEnterActor packet, ✅ use it to tag other players
+
+# NavMesh
+* Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)
+    - This would replace the "physics engine" while navigating

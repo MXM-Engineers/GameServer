@@ -49,7 +49,7 @@ void World::Update(Time localTime_)
 				// Sizuka dodge
 				case (SkillID)180030002: {
 					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-					distance = 1000;
+					distance = 500;
 					moveDuration = 0.01f;
 				} break;
 
@@ -62,10 +62,12 @@ void World::Update(Time localTime_)
 
 			if(distance > 0) {
 				p.cast.startPos = body.pos;
-				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(vec2(1, 0) * distance, 0));
+				vec2 dir = vec2(cosf(p.input.rot.upperYaw), sinf(p.input.rot.upperYaw));
+				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(dir * distance, 0));
 				p.cast.endPos = endPos;
 				body.pos = endPos;
 				p.input.moveTo = endPos;
+				p.movement.moveDir = dir;
 			}
 			p.cast.moveDurationS = moveDuration;
 
@@ -169,8 +171,9 @@ void World::Replicate()
 
 		replication->FramePushPlayer(rep);
 
-		foreach_const(chit, player.characters) {
-			const ActorMaster& chara = **chit;
+		// main
+		{
+			const ActorMaster& chara = player.Main();
 			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
 			rch.clientID = player.clientID;
@@ -178,22 +181,32 @@ void World::Replicate()
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
-			if(chara.UID == player.Main().UID) {
-				rch.pos = player.body->pos;
+			rch.pos = player.body->pos;
+			rch.moveDir = player.movement.moveDir;
+			rch.speed = player.input.speed;
+			rch.rotation = player.input.rot; // TODO: compute this?
 
-				rch.moveDir = player.movement.moveDir;
-				rch.speed = player.input.speed;
-				rch.rotation = player.input.rot; // TODO: compute this?
+			rch.actionState = chara.actionState;
+			rch.actionParam1 = chara.actionParam1;
+			rch.actionParam2 = chara.actionParam2;
 
-				rch.actionState = chara.actionState;
-				rch.actionParam1 = chara.actionParam1;
-				rch.actionParam2 = chara.actionParam2;
+			rch.castSkill = player.cast.skill;
+			rch.skillStartPos = player.cast.startPos;
+			rch.skillEndPos = player.cast.endPos;
+			rch.skillMoveDurationS = player.cast.moveDurationS;
 
-				rch.castSkill = player.cast.skill;
-				rch.skillStartPos = player.cast.startPos;
-				rch.skillEndPos = player.cast.endPos;
-				rch.skillMoveDurationS = player.cast.moveDurationS;
-			}
+			replication->FramePushMasterActor(rch);
+		}
+
+		// sub
+		{
+			const ActorMaster& chara = player.Sub();
+			Replication::ActorMaster rch;
+			rch.actorUID = chara.UID;
+			rch.clientID = player.clientID;
+			rch.playerID = player.playerID;
+			rch.classType = chara.classType;
+			rch.skinIndex = chara.skinIndex;
 
 			replication->FramePushMasterActor(rch);
 		}

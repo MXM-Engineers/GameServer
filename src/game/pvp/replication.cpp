@@ -1202,8 +1202,8 @@ void Replication::FrameDifference()
 		SkillID skill;
 		f32 distance;
 		f32 moveDurationS;
+		vec3 startPos;
 		vec3 endPos;
-		vec3 actorPos;
 		vec2 moveDir;
 		RotationHumanoid rotation;
 		f32 speed;
@@ -1254,12 +1254,45 @@ void Replication::FrameDifference()
 		const ActorMaster& prev = *found->second;
 
 		bool rotationUpdated = false;
+		bool positionUpdated = false;
+
+		const f32 rotEpsilon = 0.1f;
+		if(!rotationUpdated &&
+		   (fabs(cur.rotation.upperYaw - prev.rotation.upperYaw) > rotEpsilon ||
+		   fabs(cur.rotation.upperPitch - prev.rotation.upperPitch) > rotEpsilon ||
+		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
+		{
+			UpdateRotation update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.actorUID;
+			update.rot = cur.rotation;
+			listUpdateRotation.push_back(update);
+		}
+
+		if(cur.castSkill != SkillID::INVALID) {
+			UpdateSendCast update;
+			update.clientID = cur.clientID;
+			update.actorUID = cur.actorUID;
+			update.skill = cur.castSkill;
+			update.startPos = cur.skillStartPos;
+			update.endPos = cur.skillEndPos;
+			update.moveDir = cur.moveDir;
+			//update.moveDir = vec3(1, 0, 0);
+			update.rotation = cur.rotation;
+			update.speed = cur.speed;
+			update.distance = glm::length(cur.skillEndPos - cur.skillStartPos);
+			update.moveDurationS = cur.skillMoveDurationS;
+			update.action = cur.actionState;
+			listUpdateSendCast.push_back(update);
+			positionUpdated = true;
+		}
 
 		// position
 		const f32 posEpsilon = 0.5f;
 		const f32 dirEpsilon = 0.001f;
 		const f32 speedEpsilon = 0.001f;
-		if(fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
+		if(!positionUpdated &&
+		   fabs(cur.pos.x - prev.pos.x) > posEpsilon ||
 		   fabs(cur.pos.y - prev.pos.y) > posEpsilon ||
 		   fabs(cur.pos.z - prev.pos.z) > posEpsilon ||
 		   fabs(cur.moveDir.x - prev.moveDir.x) > dirEpsilon ||
@@ -1285,35 +1318,6 @@ void Replication::FrameDifference()
 			listUpdatePosition.push_back(update);
 
 			rotationUpdated = true;
-		}
-
-		const f32 rotEpsilon = 0.1f;
-		if(!rotationUpdated &&
-		   (fabs(cur.rotation.upperYaw - prev.rotation.upperYaw) > rotEpsilon ||
-		   fabs(cur.rotation.upperPitch - prev.rotation.upperPitch) > rotEpsilon ||
-		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
-		{
-			UpdateRotation update;
-			update.clientID = cur.clientID;
-			update.actorUID = cur.actorUID;
-			update.rot = cur.rotation;
-			listUpdateRotation.push_back(update);
-		}
-
-		if(cur.castSkill != SkillID::INVALID) {
-			UpdateSendCast update;
-			update.clientID = cur.clientID;
-			update.actorUID = cur.actorUID;
-			update.skill = cur.castSkill;
-			update.endPos = cur.pos + cur.skillMove;
-			update.actorPos = cur.pos;
-			update.moveDir = cur.moveDir;
-			update.rotation = cur.rotation;
-			update.speed = cur.speed;
-			update.distance = glm::length(cur.skillMove);
-			update.moveDurationS = cur.skillMoveDurationS;
-			update.action = cur.actionState;
-			listUpdateSendCast.push_back(update);
 		}
 	}
 
@@ -1459,6 +1463,12 @@ void Replication::FrameDifference()
 
 				SendPacket(up->clientID, accept);
 			}
+		}
+
+		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+
+			LocalActorID localActorID = GetLocalActorID(clientID, up->actorUID);
 
 			// SN_CastSkill
 			{
@@ -1475,6 +1485,7 @@ void Replication::FrameDifference()
 				packet.Write<u16>(0); // targetList_count
 
 
+#if 0
 				packet.Write<u8>(0); // bSyncMyPosition
 				packet.Write<float3>({});
 				packet.Write<float3>({});
@@ -1483,30 +1494,26 @@ void Replication::FrameDifference()
 				packet.Write<f32>(0);
 				packet.Write<i32>(0);
 
-				/*
+#else
 				packet.Write<u8>(1); // bSyncMyPosition
-				packet.Write<float3>(v2f(up->actorPos));
-				packet.Write<float3>(v2f(up->endPos));
+				packet.Write<float3>(v2f(up->startPos));
+				packet.Write<float3>(v2f(up->startPos));
 				packet.Write<float2>(v2f(up->moveDir));
 				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
 				packet.Write<f32>(up->speed);
 				//packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
 				packet.Write<i32>(0);
-				*/
+#endif
 
-				SendPacket<Sv::SN_CastSkill>(up->clientID, packet);
+				SendPacket<Sv::SN_CastSkill>(clientID, packet);
 			}
-		}
-
-		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
 
 			// SN_ExecuteSkill
 			{
 				u8 sendData[1024];
 				PacketWriter packet(sendData, sizeof(sendData));
 
-				packet.Write<LocalActorID>(GetLocalActorID(clientID, up->actorUID)); // entityID
+				packet.Write<LocalActorID>(localActorID); // entityID
 				packet.Write<i32>(0); // ret
 				packet.Write<SkillID>(up->skill);
 				packet.Write<u8>(0); // costLevel
@@ -1539,7 +1546,7 @@ void Replication::FrameDifference()
 				if(up->distance > 0) {
 					// graphMove
 					packet.Write<u8>(1); // bApply
-					packet.Write<float3>(v2f(up->actorPos)); // startPos
+					packet.Write<float3>(v2f(up->startPos)); // startPos
 					packet.Write<float3>(v2f(up->endPos)); // endPos
 					packet.Write<f32>(up->moveDurationS); // durationTimeS
 					packet.Write<f32>(up->distance); // originDistance

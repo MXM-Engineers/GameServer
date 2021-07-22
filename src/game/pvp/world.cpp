@@ -49,7 +49,7 @@ void World::Update(Time localTime_)
 				// Sizuka dodge
 				case (SkillID)180030002: {
 					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-					distance = 100;
+					distance = 1000;
 					moveDuration = 0.01f;
 				} break;
 
@@ -61,9 +61,9 @@ void World::Update(Time localTime_)
 			}
 
 			if(distance > 0) {
-// #error Sometimes dest is not attainable (when going up a ramp for example)
+				p.cast.startPos = body.pos;
 				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(vec2(1, 0) * distance, 0));
-				p.cast.move = endPos - body.pos;
+				p.cast.endPos = endPos;
 				body.pos = endPos;
 				p.input.moveTo = endPos;
 			}
@@ -190,7 +190,8 @@ void World::Replicate()
 				rch.actionParam2 = chara.actionParam2;
 
 				rch.castSkill = player.cast.skill;
-				rch.skillMove = player.cast.move;
+				rch.skillStartPos = player.cast.startPos;
+				rch.skillEndPos = player.cast.endPos;
 				rch.skillMoveDurationS = player.cast.moveDurationS;
 			}
 

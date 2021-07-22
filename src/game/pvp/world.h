@@ -64,7 +64,8 @@ struct World
 
 		struct {
 			SkillID skill;
-			vec3 move;
+			vec3 startPos;
+			vec3 endPos;
 			f32 moveDurationS;
 		} cast;
 

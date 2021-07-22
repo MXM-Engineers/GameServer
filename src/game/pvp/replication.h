@@ -54,10 +54,10 @@ struct Replication
 		ClassType classType;
 		SkinIndex skinIndex;
 
-		vec3 pos;
-		vec2 moveDir;
-		f32 speed;
-		RotationHumanoid rotation;
+		vec3 pos = vec3(0);
+		vec2 moveDir = vec2(0);
+		f32 speed = 0;
+		RotationHumanoid rotation = {0};
 
 		i32 weaponID;
 		i32 additionnalOverHeatGauge;
@@ -68,7 +68,8 @@ struct Replication
 		i32 actionParam2;
 
 		SkillID castSkill = SkillID::INVALID;
-		vec3 skillMove;
+		vec3 skillStartPos;
+		vec3 skillEndPos;
 		f32 skillMoveDurationS;
 	};
 

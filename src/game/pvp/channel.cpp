@@ -94,7 +94,7 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		CASE(CQ_PlayerCastSkill);
 
 		default: {
-			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
+			NT_LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 		} break;
 	}
 
@@ -103,19 +103,19 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 
 void ChannelPvP::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
+	NT_LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 
 void ChannelPvP::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
-	LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
+	NT_LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
 void ChannelPvP::HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CN_GameMapLoaded ::", clientID);
+	NT_LOG("[client%03d] Client :: CN_GameMapLoaded ::", clientID);
 	game->OnPlayerGameMapLoaded(clientID);
 	replication.SetPlayerAsInGame(clientID);
 }
@@ -123,7 +123,7 @@ void ChannelPvP::HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& he
 void ChannelPvP::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
+	NT_LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -139,17 +139,17 @@ void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeade
 	ProfileFunction();
 
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdatePosition :: {", clientID);
-	LOG("	characterID=%d", (u32)update.characterID);
-	LOG("	p3nPos=(%g, %g, %g)", update.p3nPos.x, update.p3nPos.y, update.p3nPos.z);
-	LOG("	p3nDir=(%g, %g)", update.p3nDir.x, update.p3nDir.y);
-	LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
-	LOG("	nSpeed=%g", update.nSpeed);
-	LOG("	unk1=%u", update.unk1);
-	LOG("	actionState=%s (%d)", ActionStateString(update.actionState), update.actionState);
-	LOG("	localTimeS=%g", update.localTimeS);
-	LOG("	unk2=%u", update.unk2);
-	LOG("}");
+	NT_LOG("[client%03d] Client :: CN_GameUpdatePosition :: {", clientID);
+	NT_LOG("	characterID=%d", (u32)update.characterID);
+	NT_LOG("	p3nPos=(%g, %g, %g)", update.p3nPos.x, update.p3nPos.y, update.p3nPos.z);
+	NT_LOG("	p3nDir=(%g, %g)", update.p3nDir.x, update.p3nDir.y);
+	NT_LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
+	NT_LOG("	nSpeed=%g", update.nSpeed);
+	NT_LOG("	unk1=%u", update.unk1);
+	NT_LOG("	actionState=%s (%d)", ActionStateString(update.actionState), update.actionState);
+	NT_LOG("	localTimeS=%g", update.localTimeS);
+	NT_LOG("	unk2=%u", update.unk2);
+	NT_LOG("}");
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -180,7 +180,7 @@ void ChannelPvP::HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeade
 	ProfileFunction();
 
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u upperYaw=%f upperPitch=%f bodyYaw=%f }", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
+	NT_LOG("[client%03d] Client :: CN_GameUpdateRotation :: { characterID=%u upperYaw=%f upperPitch=%f bodyYaw=%f }", clientID, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -203,7 +203,7 @@ void ChannelPvP::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeade
 	const u16 msgLen = buff.Read<u16>();
 	const wchar* msg = (wchar*)buff.ReadRaw(msgLen * 2);
 
-	LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
+	NT_LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
 
 	game->OnPlayerChatMessage(clientID, chatType, msg, msgLen);
 }
@@ -211,7 +211,7 @@ void ChannelPvP::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeade
 void ChannelPvP::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
+	NT_LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
 }
@@ -226,16 +226,16 @@ void ChannelPvP::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 		stateStr = g_ActionStateString[state];
 	}
 
-	LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
-	LOG("	characterID=%d", (u32)sync.characterID);
-	LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
-	LOG("	bApply=%d", sync.bApply);
-	LOG("	param1=%d", sync.param1);
-	LOG("	param2=%d", sync.param2);
-	LOG("	i4=%d", sync.i4);
-	LOG("	rotate=%g", sync.rotate);
-	LOG("	upperRotate=%g", sync.upperRotate);
-	LOG("}");
+	NT_LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
+	NT_LOG("	characterID=%d", (u32)sync.characterID);
+	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
+	NT_LOG("	bApply=%d", sync.bApply);
+	NT_LOG("	param1=%d", sync.param1);
+	NT_LOG("	param2=%d", sync.param2);
+	NT_LOG("	i4=%d", sync.i4);
+	NT_LOG("	rotate=%g", sync.rotate);
+	NT_LOG("	upperRotate=%g", sync.upperRotate);
+	NT_LOG("}");
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, sync.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -269,7 +269,7 @@ void ChannelPvP::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 {
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
 
-	LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.someID, create.stageType);
+	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.someID, create.stageType);
 
 	// we don't support creating parties right now, send back an error
 
@@ -287,7 +287,7 @@ void ChannelPvP::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 void ChannelPvP::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
+	NT_LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
 
 	const i64 serverTime = (i64)TimeDiffMs(TimeRelNow());
 	i64 clientDelta = (i64)rtt.time - (i64)clientTime[clientID].rttClient;
@@ -308,19 +308,19 @@ void ChannelPvP::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header,
 void ChannelPvP::HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
+	NT_LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
 }
 
 void ChannelPvP::HandlePacket_CQ_LoadingComplete(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_LoadingComplete", clientID);
+	NT_LOG("[client%03d] Client :: CQ_LoadingComplete", clientID);
 	game->OnPlayerLoadingComplete(clientID);
 	replication.SetPlayerLoaded(clientID);
 }
 
 void ChannelPvP::HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_GameIsReady", clientID);
+	NT_LOG("[client%03d] Client :: CQ_GameIsReady", clientID);
 	game->OnPlayerGameIsReady(clientID);
 }
 
@@ -328,7 +328,7 @@ void ChannelPvP::HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& he
 {
 	const Cl::CQ_GamePlayerTag& tag = SafeCast<Cl::CQ_GamePlayerTag>(packetData, packetSize);
 
-	LOG("[client%03d] Client :: CQ_GamePlayerTag :: localActorID=%d", clientID, tag.characterID);
+	NT_LOG("[client%03d] Client :: CQ_GamePlayerTag :: localActorID=%d", clientID, tag.characterID);
 	game->OnPlayerTag(clientID, tag.characterID);
 }
 
@@ -342,13 +342,13 @@ void ChannelPvP::HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& heade
 	const f32 moveDirX = buff.Read<f32>();
 	const f32 moveDirY = buff.Read<f32>();
 
-	LOG("[client%03d] Client :: CQ_PlayerJump :: localActorID", clientID, actorID);
+	NT_LOG("[client%03d] Client :: CQ_PlayerJump :: localActorID", clientID, actorID);
 	game->OnPlayerJump(clientID, actorID, rotate, moveDirX, moveDirY);
 }
 
 void ChannelPvP::HandlePacket_CQ_PlayerCastSkill(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PlayerCastSkill>(packetData, packetSize));
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PlayerCastSkill>(packetData, packetSize));
 
 	PlayerCastSkill cast;
 	ReadPacket(&cast, clientID, packetData, packetSize);

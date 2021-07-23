@@ -21,12 +21,15 @@ void World::Update(Time localTime_)
 
 		PhysWorld::Body& body = *p.body;
 
+		p.movement.rot = p.input.rot;
+
 		// tag
 		if(p.input.tag) {
 			p.input.tag = 0;
 			p.mainCharaID ^= 1;
 		}
 
+		// cast skill
 		p.cast.skill = SkillID::INVALID;
 		if(p.input.castSkill != SkillID::INVALID) {
 			// TODO: check for requirements in general
@@ -62,17 +65,20 @@ void World::Update(Time localTime_)
 
 			if(distance > 0) {
 				p.cast.startPos = body.pos;
-				vec2 dir = vec2(cosf(p.input.rot.upperYaw), sinf(p.input.rot.upperYaw));
+				const f32 angle = p.input.rot.upperYaw;
+				vec2 dir = vec2(cosf(angle), sinf(angle));
 				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(dir * distance, 0));
-				p.cast.endPos = endPos;
+
 				body.pos = endPos;
+
+				p.cast.endPos = endPos;
 				p.input.moveTo = endPos;
 				p.movement.moveDir = dir;
+				p.movement.rot = { angle, 0, angle };
 			}
 			p.cast.moveDurationS = moveDuration;
 
 			p.input.castSkill = SkillID::INVALID;
-
 			p.Main().actionState = actionState;
 		}
 
@@ -106,27 +112,6 @@ void World::Update(Time localTime_)
 	}
 
 	physics.Step();
-
-	foreach(it, players) {
-		Player& p = *it;
-
-		const PhysWorld::Body& body = *p.body;
-
-		p.movement.prevFlags = p.movement.flags;
-		p.movement.flags = body.flags;
-
-		/*
-		if((p.movement.flags & PhysWorld::Flags::Grounded) && !(p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
-			p.Main().actionState = ActionStateID::JUMP_END_MOVESTATE;
-		}
-		else if(!(p.movement.flags & PhysWorld::Flags::Grounded) && !(p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
-			p.Main().actionState = ActionStateID::JUMP_LOOP_MOVESTATE;
-		}
-		else if(!(p.movement.flags & PhysWorld::Flags::Grounded) && (p.movement.prevFlags & PhysWorld::Flags::Grounded)) {
-			p.Main().actionState = ActionStateID::JUMP_START_MOVESTATE;
-		}
-		*/
-	}
 
 	/*
 	static f64 accumulatedDiff = 0.0;
@@ -184,7 +169,7 @@ void World::Replicate()
 			rch.pos = player.body->pos;
 			rch.moveDir = player.movement.moveDir;
 			rch.speed = player.input.speed;
-			rch.rotation = player.input.rot; // TODO: compute this?
+			rch.rotation = player.movement.rot;
 
 			rch.actionState = chara.actionState;
 			rch.actionParam1 = chara.actionParam1;

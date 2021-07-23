@@ -1277,7 +1277,6 @@ void Replication::FrameDifference()
 			update.startPos = cur.skillStartPos;
 			update.endPos = cur.skillEndPos;
 			update.moveDir = cur.moveDir;
-			//update.moveDir = vec3(1, 0, 0);
 			update.rotation = cur.rotation;
 			update.speed = cur.speed;
 			update.distance = glm::length(cur.skillEndPos - cur.skillStartPos);

@@ -57,8 +57,7 @@ struct World
 		// book keeping
 		struct {
 			vec2 moveDir;
-			u32 flags = 0x0;
-			u32 prevFlags = 0x0;
+			RotationHumanoid rot;
 			bool hasJumped = false;
 		} movement;
 

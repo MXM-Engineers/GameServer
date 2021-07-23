@@ -371,9 +371,9 @@ struct RotationHumanoid
 	inline RotationHumanoid ConvertToMxm() const
 	{
 		RotationHumanoid rot;
-		rot.upperYaw = WorldYawToMxmYaw(rot.upperYaw);
-		rot.upperPitch = WorldPitchToMxmPitch(rot.upperPitch);
-		rot.bodyYaw = WorldYawToMxmYaw(rot.bodyYaw);
+		rot.upperYaw = WorldYawToMxmYaw(upperYaw);
+		rot.upperPitch = WorldPitchToMxmPitch(upperPitch);
+		rot.bodyYaw = WorldYawToMxmYaw(bodyYaw);
 		return rot;
 	}
 };

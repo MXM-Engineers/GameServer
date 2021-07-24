@@ -457,6 +457,8 @@ void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
 
 	player->input.castSkill = cast.skillID;
 	player->input.castPos = cast.p3nPos;
+	float3 r = cast.posStruct.rotateStruct;
+	player->input.rot = RotConvertToWorld({ r.x, r.y, r.z });
 
 	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
 }

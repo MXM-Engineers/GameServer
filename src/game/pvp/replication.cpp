@@ -1498,7 +1498,7 @@ void Replication::FrameDifference()
 				packet.Write<float3>(v2f(up->startPos));
 				packet.Write<float3>(v2f(up->startPos));
 				packet.Write<float2>(v2f(up->moveDir));
-				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
+				packet.Write<RotationHumanoid>(RotConvertToMxm(up->rotation));
 				packet.Write<f32>(up->speed);
 				//packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
 				packet.Write<i32>(0);

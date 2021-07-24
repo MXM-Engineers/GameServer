@@ -379,7 +379,7 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 	vec3 anchor = points[0];
 	points.erase(points.begin());
 
-	eastl::fixed_vector<ShapeTriangle,2> tris;
+	eastl::fixed_vector<ShapeTriangle,8,false> tris; // we should only need 2 triangles here, something is wrong
 
 	for(int i = 0; i < points.size() - 1; i++) {
 		ShapeTriangle t;
@@ -388,6 +388,11 @@ bool TestIntersection(const ShapeCylinder& A, const ShapeTriangle& B, PhysResolu
 			points[i],
 			points[i+1],
 		};
+
+		if(LengthSq(t.p[0] - t.p[1]) < 1.f) continue;
+		if(LengthSq(t.p[0] - t.p[2]) < 1.f) continue;
+		if(LengthSq(t.p[1] - t.p[2]) < 1.f) continue;
+
 		tris.push_back(t);
 	}
 
@@ -810,85 +815,174 @@ void PhysWorld::Step()
 
 vec3 PhysWorld::MoveUntilWall(const PhysWorld::BodyHandle handle, const vec3& dest)
 {
-	ShapeCylinder baseShape;
-	baseShape.radius = handle->radius;
-	baseShape.base = vec3(0);
-	baseShape.height = handle->height;
+	ShapeCylinder shape;
+	shape.radius = handle->radius;
+	shape.height = handle->height;
 
-	vec3 pos = handle->pos;
+	vec3 pos = FixCollision(shape, handle->pos);
+	const vec2 dir = NormalizeSafe(vec2(dest - pos));
+	i32 i = i32(glm::length(dest - pos) / 10.0f) + 1;
+	const i32 count = i;
+	const vec2 dest2 = vec2(dest);
 
-	while(LengthSq(vec2(pos) - vec2(dest)) > 1.f) {
+	while(i && LengthSq(vec2(pos) - dest2) > 1.f) {
 		vec3 prevPos = pos;
 
-		f32 length = glm::length(dest - pos);
-		i32 count = i32(length / 10.0f) + 1;
-		const vec3 seg = NormalizeSafe(dest - pos) * (length / count);
-		pos += seg;
+		f32 length = glm::length(dest2 - vec2(pos));
+		const vec3 seg = vec3(NormalizeSafe(dest2 - vec2(pos)) * MIN(MAX(10.0f, length/i), length), 0);
 
-		for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
-			ShapeCylinder s = baseShape;
-			s.base = pos;
-			eastl::fixed_vector<Collision,16,false> colList;
-			bool collided = false;
+		pos = FixCollision(shape, pos + seg);
+		pos = SnapToGround(shape, pos);
 
-			foreach_const(tri, staticMeshTriangleList) {
-				PhysResolutionCylinderTriangle pen;
-
-				bool intersects = TestIntersection(s, *tri, &pen);
-				if(intersects) {
-					vec3 triangleNormal = tri->Normal();
-					vec3 fix = pen.pushZ; // this seems to work better
-
-					// almost parallel to a wall
-					const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
-					if(abs(cosTheta) < 0.1) {
-						fix = pen.pushX;
-						triangleNormal = NormalizeSafe(fix);
-					}
-
-					fix += NormalizeSafe(fix) * (PHYS_EPSILON * 10.0f);
-
-					Collision col;
-					col.pen = pen;
-					col.triangleNormal = triangleNormal;
-					col.fix = fix;
-					col.fixLenSq = LengthSq(fix);
-					colList.push_back(col);
-					collided = true;
-				}
-			}
-
-			if(!colList.empty()) {
-				eastl::sort(colList.begin(), colList.end(), [](const Collision& a, const Collision& b) {
-					return a.fixLenSq < b.fixLenSq;
-				});
-
-
-				// step
-				Collision* selected = &(*colList.begin());
-				for(auto it = colList.rbegin(); it != colList.rend(); it++) {
-					const Collision& col = *it;
-
-					f32 deltaZ = col.fix.z;
-					if(deltaZ > 0.f && deltaZ < STEP_HEIGHT) {
-						selected = &(*it);
-					}
-				}
-
-				const Collision& col = *selected;
-
-				pos += col.fix;
-
-				DBG_ASSERT_NONNAN(pos.x);
-				DBG_ASSERT_NONNAN(pos.y);
-				DBG_ASSERT_NONNAN(pos.z);
-			}
-
-			if(!collided) break;
+		if(LengthSq(dest2 - vec2(pos)) > LengthSq(dest2 - vec2(prevPos))) {  // we moved backward
+			pos = prevPos;
+			break;
 		}
 
-		if(LengthSq(vec2(prevPos) - vec2(pos)) < 1.f) break;
+		if(LengthSq(vec2(prevPos) - vec2(pos)) < 1.f) break; // we have not moved
+
+		i--;
 	}
 
+	return pos;
+}
+
+vec3 PhysWorld::FixCollision(const ShapeCylinder& shape, vec3 pos)
+{
+	ShapeCylinder s;
+	s.radius = shape.radius;
+	s.base = pos;
+	s.height = shape.height;
+
+	for(int cri = 0; cri < COLLISION_RESOLUTION_STEP_COUNT; cri++) {
+		eastl::fixed_vector<Collision,16,false> colList;
+		bool collided = false;
+
+		foreach_const(tri, staticMeshTriangleList) {
+			PhysResolutionCylinderTriangle pen;
+
+			bool intersects = TestIntersection(s, *tri, &pen);
+			if(intersects) {
+				vec3 triangleNormal = tri->Normal();
+				vec3 fix = pen.pushZ; // this seems to work better
+
+				// almost parallel to a wall
+				const f32 cosTheta = glm::dot(triangleNormal, s.Normal());
+				if(abs(cosTheta) < 0.1) {
+					fix = pen.pushX;
+					triangleNormal = NormalizeSafe(fix);
+				}
+
+				fix += NormalizeSafe(fix) * (PHYS_EPSILON * 10.0f);
+
+				Collision col;
+				col.pen = pen;
+				col.triangleNormal = triangleNormal;
+				col.fix = fix;
+				col.fixLenSq = LengthSq(fix);
+				colList.push_back(col);
+				collided = true;
+			}
+		}
+
+		if(!colList.empty()) {
+			eastl::sort(colList.begin(), colList.end(), [](const Collision& a, const Collision& b) {
+				return a.fixLenSq < b.fixLenSq;
+			});
+
+
+			// step
+			Collision* selected = &(*colList.begin());
+			for(auto it = colList.rbegin(); it != colList.rend(); it++) {
+				const Collision& col = *it;
+
+				f32 deltaZ = col.fix.z;
+				if(deltaZ > 0.f && deltaZ < STEP_HEIGHT) {
+					selected = &(*it);
+				}
+			}
+
+			const Collision& col = *selected;
+
+			pos += col.fix;
+
+			DBG_ASSERT_NONNAN(pos.x);
+			DBG_ASSERT_NONNAN(pos.y);
+			DBG_ASSERT_NONNAN(pos.z);
+		}
+
+		if(!collided) break;
+	}
+
+	return pos;
+}
+
+vec3 PhysWorld::SnapToGround(const ShapeCylinder& shape, vec3 pos)
+{
+	const vec2 center = vec2(pos);
+	const f32 r = shape.radius;
+
+	eastl::fixed_vector<ShapeTriangle,32> tris;
+
+	// project all triangles to 2D plane and check intersection
+	foreach_const(t, staticMeshTriangleList) {
+		// TODO: make 2D version of this
+		ShapeTriangle tri2D = *t;
+		tri2D.p[0].z = 0;
+		tri2D.p[1].z = 0;
+		tri2D.p[2].z = 0;
+
+		if(IsPointInsideTriangle(vec3(center, 0), tri2D)) {
+			tris.push_back(*t); // intersects
+			continue;
+		}
+
+		eastl::array<vec2,3> closestList;
+		closestList[0] = ClosestPointOnLineSegment(vec2(t->p[0]), vec2(t->p[1]), center);
+		closestList[1] = ClosestPointOnLineSegment(vec2(t->p[1]), vec2(t->p[2]), center);
+		closestList[2] = ClosestPointOnLineSegment(vec2(t->p[2]), vec2(t->p[0]), center);
+
+		vec2 closest = closestList[0];
+		f32 bestDist = LengthSq(center - closest);
+
+		f32 dist = LengthSq(closestList[1] - center);
+		if(dist < bestDist) {
+			closest = closestList[1];
+			bestDist = dist;
+		}
+
+		dist = LengthSq(closestList[2] - center);
+		if(dist < bestDist) {
+			closest = closestList[2];
+			bestDist = dist;
+		}
+
+		if(bestDist < r*r) {
+			tris.push_back(*t); // intersects
+		}
+	}
+
+	// intersect in 3D with all selected triangles and find max Z (highest triangle)
+	f32 maxZ = 0;
+	foreach_const(t, tris) {
+		const f32 triMinZ = MIN(MIN(t->p[0].z, t->p[1].z), t->p[2].z);
+
+		ShapeCylinder s;
+		s.radius = shape.radius;
+		s.height = shape.height;
+		s.base = pos;
+		s.base.z = triMinZ;
+
+		PhysResolutionCylinderTriangle pen;
+
+		bool intersects = TestIntersection(s, *t, &pen);
+		if(intersects) {
+			vec3 fix = pen.pushZ;
+			fix += NormalizeSafe(fix) * (PHYS_EPSILON * 10.0f);
+			maxZ = MAX(maxZ, s.base.z + fix.z);
+		}
+	}
+
+	pos.z = maxZ;
 	return pos;
 }

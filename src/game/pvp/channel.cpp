@@ -167,10 +167,7 @@ void ChannelPvP::HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeade
 	LOG("clientDelta=%g serverDelta=%g", clientDelta, serverDelta);
 
 	// transform rotation for our coordinate system
-	RotationHumanoid rot;
-	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
-	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
-	rot.bodyYaw = MxmYawToWorldYaw(update.bodyYaw);
+	RotationHumanoid rot = RotConvertToWorld({ update.upperYaw, update.upperPitch, update.bodyYaw });
 
 	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, 0, update.localTimeS);
 }

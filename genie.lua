@@ -173,12 +173,14 @@ project "Game"
 		glm_files
 	}
 
+	defines {
+		"GLM_FORCE_XYZW_ONLY"
+	}
+
 	configuration "Release"
 		defines {
 			PROFILE_DEFINE
 		}
-
-	configuration {}
 
 	configuration "windows"
 		buildoptions{ "/W2" }

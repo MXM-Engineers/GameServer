@@ -411,4 +411,6 @@ struct PhysWorld
 	void Step();
 
 	vec3 MoveUntilWall(const BodyHandle handle, const vec3& dest);
+	vec3 FixCollision(const ShapeCylinder& shape, vec3 pos);
+	vec3 SnapToGround(const ShapeCylinder& shape, vec3 pos);
 };

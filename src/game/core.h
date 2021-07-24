@@ -367,16 +367,25 @@ struct RotationHumanoid
 	f32 upperYaw = 0;
 	f32 upperPitch = 0;
 	f32 bodyYaw = 0;
-
-	inline RotationHumanoid ConvertToMxm() const
-	{
-		RotationHumanoid rot;
-		rot.upperYaw = WorldYawToMxmYaw(upperYaw);
-		rot.upperPitch = WorldPitchToMxmPitch(upperPitch);
-		rot.bodyYaw = WorldYawToMxmYaw(bodyYaw);
-		return rot;
-	}
 };
+
+inline RotationHumanoid RotConvertToMxm(const RotationHumanoid& in)
+{
+	RotationHumanoid out;
+	out.upperYaw = WorldYawToMxmYaw(in.upperYaw);
+	out.upperPitch = WorldPitchToMxmPitch(in.upperPitch);
+	out.bodyYaw = WorldYawToMxmYaw(in.bodyYaw);
+	return out;
+}
+
+inline RotationHumanoid RotConvertToWorld(const RotationHumanoid& in)
+{
+	RotationHumanoid out;
+	out.upperYaw = MxmYawToWorldYaw(in.upperYaw);
+	out.upperPitch = MxmPitchToWorldPitch(in.upperPitch);
+	out.bodyYaw = MxmYawToWorldYaw(in.bodyYaw);
+	return out;
+}
 
 constexpr i32 PLAYER_CHARACTER_COUNT = 2;
 

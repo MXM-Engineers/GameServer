@@ -1,4 +1,5 @@
 #pragma once
+#include "../core.h"
 
 class WeaponSpec
 {
@@ -36,6 +37,74 @@ public:
 	void setFiringMethodCreateRadiateMaxAngBle(float var);
 	float getFiringMethodCreateRadiateMaxNum();
 	void setFiringMethodCreateRadiateMaxNum(float var);
+	float getFiringMethodFiringStatMovementSpeed();
+	void setFiringMethodFiringStatMovementSpeed(float var);
+	float getFiringMethodFiringGaugeLevel();
+	void setFiringMethodFiringGaugeLevel(float var);
+	float getFiringMethodChargingLevel1CreateParallelMaxNum();
+	void setFiringMethodChargingLevel1CreateParallelMaxNum(float var);
+	float getFiringMethodChargingLevel2CreateParallelMaxNum();
+	void setFiringMethodChargingLevel2CreateParallelMaxNum(float var);
+	float getFiringMethodChargingLevel1AnimationMoveHorizon();
+	void setFiringMethodChargingLevel1AnimationMoveHorizon(float var);
+	float getFiringMethodChargingLevel2AnimationMoveHorizon();
+	void setFiringMethodChargingLevel2AnimationMoveHorizon(float var);
+	float getFiringMethodGaugeAutoRegen();
+	void setFiringMethodGaugeAutoRegen(float var);
+	float getRemoteAngle();
+	void setRemoteAngle(float var);
+	float getRemoteAttackMultiplier();
+	void setRemoteAttackMultiplier(float var);
+	float getRemoteDamageOnBound();
+	void setRemoteDamageOnBound(float var);
+	float getRemoteFOV();
+	void setRemoteFOV(float var);
+	float getRemoteLengthX();
+	void setRemoteLengthX(float var);
+	float getRemoteLengthY();
+	void setRemoteLengthY(float var);
+	float getRemoteMaxDistance();
+	void setRemoteMaxDistance(float var);
+	float getRemoteMaxScale();
+	void setRemoteMaxScale(float var);
+	float getRemoteMinScale();
+	void setRemoteMinScale(float var);
+	float getRemoteMaxSpeed();
+	void setRemoteMaxSpeed(float var);
+	float getRemotePenetrationCount();
+	void setRemotePenetrationCount(float var);
+	float getRemoteSight();
+	void setRemoteSight(float var);
+	float getRemoteStatusRate();
+	void setRemoteStatusRate(float var);
+	float getRemoteCriticalRate();
+	void setRemoteCriticalRate(float var);
+	float getRemoteSubBoundLenght();
+	void setRemoteSubBoundLenght(float var);
+	float getActionBaseParam1();
+	void setActionBaseParam1(float var);
+	float getStatusDistance();
+	void setStatusDistance(float var);
+	float getStatusRegenAndHealth();
+	void setStatusRegenAndHealth(float var);
+	float getStatusStatMovementSpeed();
+	void setStatusStatMovementSpeed(float var);
+	float getStatusStatDefence();
+	void setStatusStatDefence(float var);
+	float getStatusDurationTime();
+	void setStatusDurationTime(float var);
+	float getStatusMaxOverlapCount();
+	void setStatusMaxOverlapCount(float var);
+	float getStatusDotDamageMultiplier();
+	void setStatusDotDamageMultiplier(float var);
+	float getAttack();
+	void setAttack(float var);
+	float getStatAndCriticalDamage();
+	void setStatAndCriticalDamage(float var);
+	float getStatAndCriticalRate();
+	void setStatAndCriticalRate(float var);
+	
+	void print(void);
 
 private:
 	float _FiringMethodChargingTimeLevel1 = 0.0f;

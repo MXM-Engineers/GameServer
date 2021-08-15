@@ -13,7 +13,9 @@ if _OPTIONS["profile"] then
 	PROFILE_DEFINE = "TRACY_ENABLE"
 end
 
-solution "GameServer"
+local natvis = "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")
+
+solution "PrivateMxM"
 	location(BUILD_DIR)
 	targetdir(BUILD_DIR)
 
@@ -94,8 +96,12 @@ solution "GameServer"
 	dofile("external/genie_glm.lua");
 	dofile("external/genie_sokol.lua");
 	dofile("external/genie_imgui.lua");
-	
 
+
+-- Tools
+dofile("tools/genie_tools.lua")
+
+-- Servers
 project "Login"
 	kind "ConsoleApp"
 	targetname "login_srv"
@@ -120,14 +126,14 @@ project "Login"
 		"src/common/**.h",
 		"src/common/**.c",
 		"src/common/**.cpp",
-		"src/login/**.h",
-		"src/login/**.c",
-		"src/login/**.cpp",
+		"src/servers/login/**.h",
+		"src/servers/login/**.c",
+		"src/servers/login/**.cpp",
 	}
 
 	configuration "windows"
 		buildoptions{ "/W2" }
-		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
+		linkoptions{ natvis}
 		links {
 			"ws2_32",
 		}
@@ -136,41 +142,71 @@ project "Login"
 			"pthread",
 		}
 
-project "Game"
+local server_common_includedirs = {
+	"src",
+	zlib_includedir,
+	eastl_includedir,
+	eathread_includedir,
+	eabase_includedir,
+	eastdc_includedir,
+	tinyxml2_includedir,
+	tracy_includedir,
+	glm_includedir
+}
+
+local server_common_links = {
+	"zlib",
+	"eastl",
+	"eathread",
+	"eastdc",
+}
+
+local server_common_links_win = {
+	"ws2_32",
+	"user32",
+	"advapi32"
+}
+
+local server_common_links_linux = {
+	"pthread",
+	"dl",
+}
+
+local server_common_files = {
+	"src/common/**.h",
+	"src/common/**.c",
+	"src/common/**.cpp",
+	"src/mxm/**.h",
+	"src/mxm/**.c",
+	"src/mxm/**.cpp",
+	tinyxml2_files,
+	tracy_files,
+	glm_files
+}
+
+local server_common_defines = {
+	"GLM_FORCE_XYZW_ONLY"
+}
+
+project "HubServer"
 	kind "ConsoleApp"
-	targetname "game_srv"
+	targetname "hub_srv"
 
 	configuration {}
 
 	includedirs {
-		"src",
-		zlib_includedir,
-		eastl_includedir,
-		eathread_includedir,
-		eabase_includedir,
-		eastdc_includedir,
-		tinyxml2_includedir,
-		tracy_includedir,
-		glm_includedir
+		server_common_includedirs
 	}
 
 	links {
-		"zlib",
-		"eastl",
-		"eathread",
-		"eastdc",
+		server_common_links
 	}
 	
 	files {
-		"src/common/**.h",
-		"src/common/**.c",
-		"src/common/**.cpp",
-		"src/game/**.h",
-		"src/game/**.c",
-		"src/game/**.cpp",
-		tinyxml2_files,
-		tracy_files,
-		glm_files
+		server_common_files,
+		"src/servers/hub/**.h",
+		"src/servers/hub/**.c",
+		"src/servers/hub/**.cpp",
 	}
 
 	defines {
@@ -184,12 +220,54 @@ project "Game"
 
 	configuration "windows"
 		buildoptions{ "/W2" }
-		linkoptions{ "/NATVIS:" .. path.getabsolute("external/EASTL-3.16.07/doc/EASTL.natvis")}
+		linkoptions{ natvis }
 
 		links {
-			"ws2_32",
-			"user32",
-			"advapi32"
+			server_common_links_win
+		}
+
+	configuration "linux"
+		links {
+			server_common_links_linux
+		}
+
+project "GameServer"
+	kind "ConsoleApp"
+	targetname "game_srv"
+
+	configuration {}
+
+	includedirs {
+		server_common_includedirs,
+		"src/servers/game",
+	}
+
+	links {
+		server_common_links
+	}
+	
+	files {
+		server_common_files,
+		"src/servers/game/**.h",
+		"src/servers/game/**.c",
+		"src/servers/game/**.cpp",
+	}
+
+	defines {
+		server_common_defines
+	}
+
+	configuration "Release"
+		defines {
+			PROFILE_DEFINE
+		}
+
+	configuration "windows"
+		buildoptions{ "/W2" }
+		linkoptions{ natvis }
+
+		links {
+			server_common_links_win
 		}
 
 		files {
@@ -204,8 +282,7 @@ project "Game"
 
 	configuration "linux"
 		links {
-			"pthread",
-			"dl",
+			server_common_links_linux
 		}
 
 		-- technically can be run on linux with a few modifications, this is mostly so the deployed server does not get it
@@ -213,6 +290,3 @@ project "Game"
 		excludes {
 			"src/game/debug/*"
 		}
-
-
-dofile("tools/genie_tools.lua");

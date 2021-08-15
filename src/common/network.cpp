@@ -60,7 +60,7 @@ void Server::Cleanup()
 }
 
 // NOTE: this is called from listeners
-i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_, ListenerType listenerType)
+i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
@@ -97,7 +97,6 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_, ListenerType list
 			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
 			//info.port = htons(sin.sin_port);
 			info.port = sin.sin_port;
-			info.listenerType = listenerType;
 
 			clientIsConnected[clientID] = 1; // register the socket at the end, when everything is initialized
 			return clientID;
@@ -275,5 +274,74 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 		fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d.raw", packetCounter, header.netID)), sendBuff, header.size);
 		packetCounter++;
 		mutexFile.Unlock();
+	}
+}
+
+bool Listener::Init(i32 listenPort_)
+{
+	listenPort = listenPort_;
+	struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	hints.ai_flags = AI_PASSIVE;
+
+	// Resolve the local address and port to be used by the server
+	int iResult = getaddrinfo(NULL, FMT("%d", listenPort), &hints, &result);
+	if (iResult != 0) {
+		LOG("ERROR: getaddrinfo failed: %d", iResult);
+		return false;
+	}
+	defer(freeaddrinfo(result));
+
+	listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	if(listenSocket == INVALID_SOCKET) {
+		LOG("ERROR(socket): %d", NetworkGetLastError());
+		return false;
+	}
+
+	// Setup the TCP listening socket
+	iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
+	if(iResult == SOCKET_ERROR) {
+		LOG("ERROR(bind): failed with error: %d", NetworkGetLastError());
+		return false;
+	}
+
+	// listen
+	if(listen(listenSocket, SOMAXCONN) == SOCKET_ERROR) {
+		LOG("ERROR(listen): failed with error: %d", NetworkGetLastError());
+		return false;
+	}
+	return true;
+}
+
+void Listener::Stop()
+{
+	closesocket(listenSocket);
+	listenSocket = INVALID_SOCKET;
+}
+
+void Listener::Listen()
+{
+	while(IsRunning()) {
+		// Accept a client socket
+		LOG("[%d] Waiting for a connection...", listenPort);
+		struct sockaddr clientAddr;
+		AddrLen addrLen = sizeof(sockaddr);
+		SOCKET clientSocket = accept(listenSocket, &clientAddr, &addrLen);
+		if(clientSocket == INVALID_SOCKET) {
+			if(IsRunning()) {
+				LOG("[%d] ERROR(accept): failed: %d", listenPort, NetworkGetLastError());
+				return;
+			}
+			else {
+				break;
+			}
+		}
+
+		LOG("[%d] New connection (%s)", listenPort, GetIpString(clientAddr));
+		server.ListenerAddClient(clientSocket, clientAddr);
 	}
 }

@@ -38,6 +38,11 @@
 * ✅ Make ghidra script to fix ALL flow override for function X (clear flow & repair at call site) [constbuffer_advance, _eh_prolog3]
 * ✅ Reverse SN_GameEnterActor packet, ✅ use it to tag other players
 
+* 🔥 Edit SKILL.xml in DOCUMENTS to make Sizuka's dodge not test terrain.
+* 🔥🔥🔥 Send message from hub to game server to create a game (pvp 3v3) instance, then connect to it
+    - Need an inner communication protocol
+    - Need to connect to game servers (make a game_servers.txt list)
+
 # NavMesh
 * Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)
     - This would replace the "physics engine" while navigating

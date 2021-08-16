@@ -36,3 +36,22 @@ using ListItT = eastl::ListIterator<T, T*, T&>;
 
 template<typename T>
 using ListConstItT = eastl::ListIterator<T, const T*, const T&>;
+
+template<class OutputIterator>
+void StringSplit(const char* str, const int len, const char separator, OutputIterator out, const int maxCount)
+{
+	int start = 0;
+	int outCount = 0;
+	for(int i = 0; i < len && outCount < maxCount; i++) {
+		if(str[i] == separator) {
+			*out = eastl::string_view(str + start, i - start);
+			++out;
+			outCount++;
+			start = i+1;
+		}
+	}
+
+	if(outCount < maxCount && len - start > 0) {
+		*out = eastl::string_view(str + start, len - start);
+	}
+}

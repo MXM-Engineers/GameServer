@@ -129,6 +129,7 @@ project "Login"
 		"src/servers/login/**.h",
 		"src/servers/login/**.c",
 		"src/servers/login/**.cpp",
+		"src/servers/login/**.rc",
 	}
 
 	configuration "windows"
@@ -207,6 +208,7 @@ project "HubServer"
 		"src/servers/hub/**.h",
 		"src/servers/hub/**.c",
 		"src/servers/hub/**.cpp",
+		"src/servers/hub/**.rc",
 	}
 
 	defines {
@@ -251,6 +253,7 @@ project "GameServer"
 		"src/servers/game/**.h",
 		"src/servers/game/**.c",
 		"src/servers/game/**.cpp",
+		"src/servers/game/**.rc",
 	}
 
 	defines {

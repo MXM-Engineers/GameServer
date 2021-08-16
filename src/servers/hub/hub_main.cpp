@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 
 	LoadConfig();
 
-	LOG(".: Game server :.");
+	LOG(".: Hub server :.");
 
 	Config().Print();
 
@@ -58,7 +58,11 @@ int main(int argc, char** argv)
 	}
 
 	static Coordinator coordinator;
-	coordinator.Init(&server);
+	r = coordinator.Init(&server);
+	if(!r) {
+		LOG("ERROR: Could not init coordinator");
+		return 1;
+	}
 
 	// listen on main thread
 	listenLobby.Listen();

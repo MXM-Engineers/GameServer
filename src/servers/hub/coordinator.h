@@ -61,12 +61,14 @@ struct Coordinator
 	EA::Thread::Thread thread;
 	Time localTime;
 
-	void Init(Server* server_);
+	bool Init(Server* server_);
 	void Cleanup();
 
 	void Update(f64 delta);
 
 private:
+	bool ConnectToInfrastructure();
+
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
 	void ClientHandleReceivedChunk(i32 clientID, const u8* data, const i32 dataSize);
 

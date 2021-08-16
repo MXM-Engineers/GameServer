@@ -345,3 +345,21 @@ void Listener::Listen()
 		server.ListenerAddClient(clientSocket, clientAddr);
 	}
 }
+
+bool NetConnection::Connect(const u8* ip, u16 port)
+{
+	sockaddr_in addr = {0};
+	memmove(&addr.sin_addr.s_addr, ip, 4);
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	int r = connect(sock, (sockaddr*)&addr, sizeof(addr));
+	if(r) return false;
+	return true;
+}
+
+void NetConnection::SendPacketData(u16 netID, u16 packetSize, const void* packetData)
+{
+
+}

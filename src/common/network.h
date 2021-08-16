@@ -187,3 +187,17 @@ struct Listener
 
 	inline bool IsRunning() const { return listenSocket != INVALID_SOCKET; }
 };
+
+struct NetConnection
+{
+	SOCKET sock;
+
+	bool Connect(const u8* ip, u16 port);
+
+	template<typename Packet>
+	inline void SendPacket(const Packet& packet)
+	{
+		SendPacketData(Packet::NET_ID, sizeof(packet), &packet);
+	}
+	void SendPacketData(u16 netID, u16 packetSize, const void* packetData);
+};

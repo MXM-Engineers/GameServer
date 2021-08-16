@@ -1,6 +1,8 @@
 #include <common/packet_serialize.h>
 #include <mxm/game_content.h>
 #include <zlib.h>
+#include <EAStdC/EAString.h>
+#include <EAStdC/EASprintf.h>
 
 #include "coordinator.h"
 #include "config.h"
@@ -108,14 +110,19 @@ void Coordinator::Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, 
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
 }
 
-void Coordinator::Init(Server* server_)
+inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
+{
+	const int len = strlen(str);
+	if(len != sv.length()) return false;
+	return sv.compare(str) == 0;
+}
+
+bool Coordinator::Init(Server* server_)
 {
 	server = server_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
 	associatedChannel.fill(LaneID::INVALID);
-
-	thread.Begin(ThreadCoordinator, this);
 
 	foreach(it, laneList) {
 		it->Init();
@@ -128,6 +135,12 @@ void Coordinator::Init(Server* server_)
 	channelHub->lane = &laneList[(i32)LaneID::HUB];
 
 	laneList[(i32)LaneID::HUB].thread.Begin(ThreadChannel<ChannelHub>, channelHub);
+
+	bool r = ConnectToInfrastructure();
+	if(!r) return false;
+
+	thread.Begin(ThreadCoordinator, this);
+	return true;
 }
 
 void Coordinator::Cleanup()
@@ -179,6 +192,73 @@ void Coordinator::Update(f64 delta)
 	recvDataBuff.Clear();
 }
 
+bool Coordinator::ConnectToInfrastructure()
+{
+	const char* path = "config/server_list.l";
+	i32 fileSize;
+	u8* fileData = fileOpenAndReadAll(path, &fileSize);
+	if(!fileData) {
+		WARN("ERROR: failed to load '%s'", path);
+		return false;
+	}
+	defer(memFree(fileData));
+
+	struct ServerIp {
+		u8 addr[4];
+		u16 port;
+	};
+
+	eastl::fixed_vector<ServerIp, 64> list;
+
+	eastl::fixed_vector<eastl::string_view, 1024> lines;
+	StringSplit((char*)fileData, fileSize, '\n', eastl::back_inserter(lines), lines.capacity());
+
+	foreach_const(l, lines) {
+		if(l->length() == 0 || (*l)[0] == '#') continue; // skip empty lines and comments
+
+		eastl::fixed_vector<eastl::string_view, 3> block;
+		StringSplit(l->data(), l->length(), ':', eastl::back_inserter(block), block.capacity());
+
+		if(block.size() != 3) {
+			WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+			continue;
+		}
+
+		if(StringViewEquals(block[0], "game")) {
+			eastl::fixed_string<char,64> strIp(block[1].data(), block[1].length());
+			eastl::fixed_string<char,64> strPort(block[2].data(), block[2].length());
+
+			ServerIp entry;
+			int ip[4];
+			int port;
+			if(EA::StdC::Sscanf(strIp.data(), "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) != 4) {
+				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+				continue;
+			}
+
+			if(EA::StdC::Sscanf(strPort.data(), "%d", &port) != 1) {
+				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+				continue;
+			}
+
+			entry.addr[0] = ip[0];
+			entry.addr[1] = ip[1];
+			entry.addr[2] = ip[2];
+			entry.addr[3] = ip[3];
+			entry.port = port;
+			list.push_back(entry);
+		}
+	}
+
+	foreach_const(ip, list) {
+		LOG("%d.%d.%d.%d:%u", ip->addr[0], ip->addr[1], ip->addr[2], ip->addr[3], ip->port);
+		NetConnection conn;
+		bool r = conn.Connect(ip->addr, ip->port);
+		LOG("connected = %d", r);
+	}
+
+	return true;
+}
 
 void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {

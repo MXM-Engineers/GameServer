@@ -1,4 +1,5 @@
 #include <common/packet_serialize.h>
+#include <common/inner_protocol.h>
 #include <mxm/game_content.h>
 #include <zlib.h>
 #include <EAStdC/EAString.h>
@@ -110,6 +111,45 @@ void Coordinator::Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, 
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
 }
 
+void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void* packetData)
+{
+	const i32 packetTotalSize = packetSize + sizeof(NetHeader);
+	ASSERT(packetTotalSize + sendQ.size <= InnerConnection::SendQueue::QUEUE_CAPACITY);
+
+	NetHeader header;
+	header.size = packetTotalSize;
+	header.netID = netID;
+
+	u8* at = sendQ.data + sendQ.size;
+	memmove(at, &header, sizeof(header));
+	memmove(at+sizeof(NetHeader), packetData, packetSize);
+	sendQ.size += packetTotalSize;
+}
+
+void InnerConnection::SendPendingData()
+{
+	NetPollResult r = async.PollSend();
+	if(r == NetPollResult::SUCCESS) {
+		async.PushSendData(sendQ.data, sendQ.size);
+		async.StartSending();
+		sendQ.size = 0;
+	}
+}
+
+void InnerConnection::RecvPendingData(u8* buff, const i32 buffCapacity, i32* size)
+{
+	*size = 0;
+
+	i32 len = 0;
+	NetPollResult r = async.PollReceive(&len);
+	if(r == NetPollResult::SUCCESS) {
+		ASSERT(len <= buffCapacity);
+		memmove(buff, async.GetReceivedData(), len);
+		*size = len;
+		async.StartReceiving();
+	}
+}
+
 inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
 {
 	const int len = strlen(str);
@@ -157,6 +197,48 @@ void Coordinator::Cleanup()
 void Coordinator::Update(f64 delta)
 {
 	ProfileFunction();
+
+	// handle inner communication
+	foreach_mut(conn, connGameSrv) {
+		// remove disconnected from list
+		if(!conn->async.IsConnected()) {
+			conn = connGameSrv.erase_unsorted(conn);
+			--conn;
+			continue;
+		}
+
+		conn->SendPendingData();
+
+		u8 recvBuff[8192];
+		i32 recvLen = 0;
+		conn->RecvPendingData(recvBuff, sizeof(recvBuff), &recvLen);
+
+		if(recvLen > 0) {
+			ConstBuffer reader(recvBuff, recvLen);
+
+			while(reader.CanRead(sizeof(NetHeader))) {
+				const NetHeader& header = reader.Read<NetHeader>();
+				const i32 packetDataSize = header.size - sizeof(NetHeader);
+				ASSERT(reader.CanRead(packetDataSize));
+				const u8* packetData = reader.ReadRaw(packetDataSize);
+
+				switch(header.netID) {
+					case In::R_Handshake::NET_ID: {
+						const In::R_Handshake resp = SafeCast<In::R_Handshake>(packetData, packetDataSize);
+						LOG("[Inner_%d] received handshake response = %d", conn->ID, resp.result);
+					} break;
+				}
+			}
+		}
+	}
+
+	if(connGameSrv.empty()) {
+		// big panic, we are not connected to *any* game server
+		LOG("ERROR: all connections to game servers have been lost");
+		server->running = false;
+		// TODO: stop listenner as well
+		return;
+	}
 
 	// handle client disconnections
 	eastl::fixed_vector<i32,128> clientDisconnectedList;
@@ -250,11 +332,46 @@ bool Coordinator::ConnectToInfrastructure()
 		}
 	}
 
-	foreach_const(ip, list) {
-		LOG("%d.%d.%d.%d:%u", ip->addr[0], ip->addr[1], ip->addr[2], ip->addr[3], ip->port);
-		NetConnection conn;
-		bool r = conn.Connect(ip->addr, ip->port);
-		LOG("connected = %d", r);
+	i32 nextID = 0;
+	const int tries = 10;
+	connGameSrv.resize(list.size());
+	foreach(c, connGameSrv) {
+		c->async.Init();
+		c->ID = nextID++;
+	}
+
+	bool keepTrying = true;
+	for(int i = 0; i < tries && keepTrying; i++) {
+		keepTrying = false;
+		LOG("Connecting to game servers... (%d/%d)", i, tries);
+
+		i32 l = 0;
+		foreach_const(ip, list) {
+			InnerConnection& conn = connGameSrv[l];
+
+			if(conn.async.IsConnected()) continue;
+			LOG("%d) %d.%d.%d.%d:%u ...", l, ip->addr[0], ip->addr[1], ip->addr[2], ip->addr[3], ip->port);
+
+			bool r = conn.async.ConnectTo(ip->addr, ip->port);
+			if(!r) {
+				LOG("connection failed");
+				keepTrying = true;
+			}
+			else {
+				conn.async.StartReceiving();
+
+				// send handshake
+				In::Q_Handshake packet;
+				packet.magic = In::MagicHandshake;
+				conn.SendPacket(packet);
+			}
+			l++;
+		}
+	}
+
+	if(keepTrying) {
+		LOG("ERROR: Failed to connect to all game servers");
+		return false;
 	}
 
 	return true;

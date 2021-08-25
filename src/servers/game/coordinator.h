@@ -14,7 +14,6 @@ struct AccountData
 	// TODO: add to this
 };
 
-struct ChannelHub;
 struct ChannelPvP;
 
 // Responsible for managing Account data and dispatching client to game channels/instances
@@ -23,8 +22,13 @@ struct Coordinator
 	enum class LaneID: i32 {
 		INVALID = -1,
 		FIRST = 0,
-		PVP = 0,
 		_COUNT,
+	};
+
+	enum class ClientType: u8 {
+		UNKNOWN = 0,
+		PLAYER = 1,
+		INNER = 2, // a server from our infrastructure
 	};
 
 	struct Lane
@@ -55,10 +59,10 @@ struct Coordinator
 
 	Server* server;
 	eastl::array<Lane, (i32)LaneID::_COUNT> laneList;
-	ChannelHub* channelHub;
 	ChannelPvP* channelPvP;
 	eastl::array<AccountData, Server::MAX_CLIENTS> accountData;
-	eastl::array<LaneID, Server::MAX_CLIENTS> associatedChannel;
+	eastl::array<LaneID, Server::MAX_CLIENTS> associatedLane;
+	eastl::array<ClientType, Server::MAX_CLIENTS> clientType;
 	GrowableBuffer recvDataBuff;
 	EA::Thread::Thread thread;
 	Time localTime;
@@ -80,6 +84,8 @@ private:
 	void HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	void HandlePacket_In_Q_Handshake(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 	void ClientSendAccountData(i32 clientID);
 

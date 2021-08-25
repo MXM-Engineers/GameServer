@@ -127,6 +127,7 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 				return NetPollResult::PENDING;
 			}
 			LOG("ERROR(PollReceive): recv failed (%d)", errno);
+			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
 
@@ -134,6 +135,7 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 			recvBuff.Append(recvTempBuff, len);
 		}
 		else if(len == 0) { // disconnect
+			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
 	}
@@ -181,6 +183,7 @@ NetPollResult AsyncConnection::PollSend()
 				return NetPollResult::PENDING;
 			}
 			LOG("ERROR(PollSend): write failed (%d)", errno);
+			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
 

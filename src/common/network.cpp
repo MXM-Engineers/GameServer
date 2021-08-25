@@ -83,7 +83,7 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 			}
 			client.pendingSendBuff.Clear();
 
-			client.async.PrepareForNewConnection(s);
+			client.async.PostConnectionInit(s);
 
 			// start receiving
 			bool r = ClientStartReceiving(clientID);
@@ -159,13 +159,10 @@ void Server::Update()
 			continue;
 		}
 		else if(r == NetPollResult::SUCCESS) {
-			bool r = ClientHandleReceivedData(clientID, len);
-			if(!r) {
-				continue;
-			}
+			ClientHandleReceivedData(clientID, len);
 
 			// start receiving again
-			r = ClientStartReceiving(clientID);
+			bool r = ClientStartReceiving(clientID);
 			if(!r) {
 				continue;
 			}
@@ -233,7 +230,7 @@ bool Server::ClientStartReceiving(i32 clientID)
 	return true;
 }
 
-bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
+void Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 {
 	ProfileFunction();
 
@@ -243,15 +240,10 @@ bool Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 #ifdef CONF_LOG_TRAFFIC_BYTELEN
 	LOG("[client%03d] Received %d bytes", clientID, dataLen);
 #endif
-	if(dataLen == 0) {
-		DisconnectClient(clientID);
-		return false;
-	}
 
 	// append to pending processing buffer
 	LOCK_MUTEX(client.mutexRecv);
 	client.recvPendingProcessingBuff.Append(client.async.GetReceivedData(), dataLen);
-	return true;
 }
 
 void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
@@ -344,22 +336,4 @@ void Listener::Listen()
 		LOG("[%d] New connection (%s)", listenPort, GetIpString(clientAddr));
 		server.ListenerAddClient(clientSocket, clientAddr);
 	}
-}
-
-bool NetConnection::Connect(const u8* ip, u16 port)
-{
-	sockaddr_in addr = {0};
-	memmove(&addr.sin_addr.s_addr, ip, 4);
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
-	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	int r = connect(sock, (sockaddr*)&addr, sizeof(addr));
-	if(r) return false;
-	return true;
-}
-
-void NetConnection::SendPacketData(u16 netID, u16 packetSize, const void* packetData)
-{
-
 }

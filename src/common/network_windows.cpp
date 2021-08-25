@@ -37,7 +37,22 @@ void AsyncConnection::Reset()
 	WSAResetEvent(hEventSend);
 }
 
-void AsyncConnection::PrepareForNewConnection(SOCKET s)
+bool AsyncConnection::ConnectTo(const u8* ip, u16 port)
+{
+	sockaddr_in addr = {0};
+	memmove(&addr.sin_addr.s_addr, ip, 4);
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	int r = connect(s, (sockaddr*)&addr, sizeof(addr));
+	if(r) return false;
+
+	PostConnectionInit(s);
+	return true;
+}
+
+void AsyncConnection::PostConnectionInit(SOCKET s)
 {
 	sock = s;
 
@@ -121,10 +136,17 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 	if(r == FALSE) {
 		if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
 			LOG("ERROR(PollReceive): Recv WSAGetOverlappedResult failed (%d)", WSAGetLastError());
+			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
 		return NetPollResult::PENDING;
 	}
+
+	if(len == 0) {
+		sock = INVALID_SOCKET;
+		return NetPollResult::POLL_ERROR;
+	}
+
 	*outRecvLen = len;
 	return NetPollResult::SUCCESS;
 }
@@ -137,6 +159,7 @@ NetPollResult AsyncConnection::PollSend()
 	if(r == FALSE) {
 		if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
 			LOG("ERROR(PollSend): Send WSAGetOverlappedResult failed (%d)", WSAGetLastError());
+			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
 		return NetPollResult::PENDING;

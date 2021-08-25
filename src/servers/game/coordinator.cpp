@@ -1,5 +1,6 @@
 #include <mxm/game_content.h>
 #include <common/packet_serialize.h>
+#include <common/inner_protocol.h>
 #include <zlib.h>
 
 #include "coordinator.h"
@@ -113,7 +114,8 @@ void Coordinator::Init(Server* server_)
 	server = server_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	associatedChannel.fill(LaneID::INVALID);
+	associatedLane.fill(LaneID::INVALID);
+	clientType.fill(ClientType::UNKNOWN);
 
 	thread.Begin(ThreadCoordinator, this);
 
@@ -125,9 +127,9 @@ void Coordinator::Init(Server* server_)
 	channelPvP = new ChannelPvP();
 	channelPvP->threadID = 1;
 	channelPvP->Init(server_);
-	channelPvP->lane = &laneList[(i32)LaneID::PVP];
+	channelPvP->lane = &laneList[(i32)LaneID::FIRST];
 
-	laneList[(i32)LaneID::PVP].thread.Begin(ThreadChannel<ChannelPvP>, channelPvP);
+	laneList[(i32)LaneID::FIRST].thread.Begin(ThreadChannel<ChannelPvP>, channelPvP);
 }
 
 void Coordinator::Cleanup()
@@ -152,8 +154,8 @@ void Coordinator::Update(f64 delta)
 	for(i32 i = (i32)LaneID::FIRST; i < (i32)LaneID::_COUNT; i++) {
 		eastl::fixed_vector<i32,128> chanDiscList;
 
-		foreach(cl, clientDisconnectedList) {
-			if(associatedChannel[*cl] == (LaneID)i) {
+		foreach_const(cl, clientDisconnectedList) {
+			if(associatedLane[*cl] == (LaneID)i) {
 				chanDiscList.push_back(*cl);
 			}
 		}
@@ -162,8 +164,9 @@ void Coordinator::Update(f64 delta)
 	}
 
 	// clear client data
-	foreach(cl, clientDisconnectedList) {
-		associatedChannel[*cl] = LaneID::INVALID;
+	foreach_const(cl, clientDisconnectedList) {
+		associatedLane[*cl] = LaneID::INVALID;
+		clientType[*cl] = ClientType::UNKNOWN;
 	}
 
 	// handle received data
@@ -185,25 +188,41 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 	DBG_ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
-#define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
+#define CASE_CL(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
+#define CASE_IN(PACKET) case In::PACKET::NET_ID: { HandlePacket_In_##PACKET(clientID, header, packetData, packetSize); } break
 
 	switch(header.netID) {
-		HANDLE_CASE(CQ_FirstHello);
-		HANDLE_CASE(CQ_Authenticate);
-		HANDLE_CASE(CQ_AuthenticateGameServer);
-		HANDLE_CASE(CQ_GetGuildProfile);
-		HANDLE_CASE(CQ_GetGuildMemberList);
-		HANDLE_CASE(CQ_GetGuildHistoryList);
-		HANDLE_CASE(CQ_GetGuildRankingSeasonList);
-		HANDLE_CASE(CQ_TierRecord);
+		CASE_CL(CQ_FirstHello);
+		CASE_CL(CQ_Authenticate);
+		CASE_CL(CQ_AuthenticateGameServer);
+		CASE_CL(CQ_GetGuildProfile);
+		CASE_CL(CQ_GetGuildMemberList);
+		CASE_CL(CQ_GetGuildHistoryList);
+		CASE_CL(CQ_GetGuildRankingSeasonList);
+		CASE_CL(CQ_TierRecord);
+
+		CASE_IN(Q_Handshake);
 
 		default: {
-			ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-			laneList[(i32)associatedChannel[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
+			switch(clientType[clientID]) {
+				case ClientType::INNER: {
+
+				} break;
+
+				case ClientType::PLAYER: {
+					ASSERT(associatedLane[clientID] != LaneID::INVALID);
+					laneList[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
+				} break;
+
+				default: {
+					ASSERT_MSG(false, "Client type not handled");
+				}
+			}
 		} break;
 	}
 
-#undef HANDLE_CASE
+#undef CASE_CL
+#undef CASE_IN
 }
 
 void Coordinator::ClientHandleReceivedChunk(i32 clientID, const u8* data, const i32 dataSize)
@@ -237,9 +256,12 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	// TODO: verify version, protocol, etc
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
+	// client type
+	clientType[clientID] = ClientType::PLAYER;
+
 	// assign to a channel
-	ASSERT(associatedChannel[clientID] == LaneID::INVALID);
-	associatedChannel[clientID] = LaneID::PVP;
+	ASSERT(associatedLane[clientID] == LaneID::INVALID);
+	associatedLane[clientID] = LaneID::FIRST;
 
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
@@ -293,8 +315,8 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
+	ASSERT(associatedLane[clientID] != LaneID::INVALID);
+	laneList[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -335,8 +357,8 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 	ClientSendAccountData(clientID);
 
 	// register new player to the game
-	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
+	ASSERT(associatedLane[clientID] != LaneID::INVALID);
+	laneList[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -542,6 +564,28 @@ void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& head
 
 		LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
 		SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
+	}
+}
+
+void Coordinator::HandlePacket_In_Q_Handshake(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	LOG("[client%03d] Client :: In_Q_Handshake ::", clientID);
+	const In::Q_Handshake& hand = SafeCast<In::Q_Handshake>(packetData, packetSize);
+
+	// client type
+	ASSERT(clientType[clientID] == ClientType::UNKNOWN);
+	clientType[clientID] = ClientType::INNER;
+
+	// TODO: check we are on the infrastructure ip list (white list)
+
+	if(hand.magic == In::MagicHandshake) {
+		In::R_Handshake response;
+		response.result = 1;
+		SendPacket(clientID, response);
+	}
+	else {
+		LOG("ERROR: Client %d sent an incorrect handshake (%x)", clientID, hand.magic);
+		server->DisconnectClient(clientID);
 	}
 }
 

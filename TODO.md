@@ -26,9 +26,9 @@
     - ✅ Fix 1s delay
     - ✅ Going up the ramp is slower on our side because we don't convert 100% of the speed, make it the same
     - ✅ Fix losing speed on flat ground
-* ⚠️ Try to make rolling work
+* ✅ Try to make rolling work
 
-* Make the client send more position updates (like rotation updates)
+* ✅ Make the client send more position updates (like rotation updates)
     - ✅ Hypothesis: the 0.5s delay is due to a bug. Since we send a position update every 0.5s, the first one is delayed by that amount.
 
 # Test
@@ -39,9 +39,17 @@
 * ✅ Reverse SN_GameEnterActor packet, ✅ use it to tag other players
 
 * 🔥 Edit SKILL.xml in DOCUMENTS to make Sizuka's dodge not test terrain.
+
+# Inner communication
 * 🔥🔥🔥 Send message from hub to game server to create a game (pvp 3v3) instance, then connect to it
     - Need an inner communication protocol
-    - Need to connect to game servers (make a game_servers.txt list)
+    - ✅ Need to connect to game servers (make a game_servers.txt list)
+    - Have a timeout for each request in case a game server goes down (crash, network, whatever else). The request needs to be resent elsewhere then.
+
+# Networking
+* Check packet length when parsing / receiving? And drop client instead of crashing (damn you russian bots)
+* Make a unique identifier for each client and a mapping between Local client ID and Unique client ID
+    - Everything except server uses unique client ID
 
 # NavMesh
 * Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)

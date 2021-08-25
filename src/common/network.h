@@ -77,7 +77,9 @@ enum {
 
 		void Init();
 		void Reset();
-		void PrepareForNewConnection(SOCKET s);
+
+		bool ConnectTo(const u8* ip, u16 port);
+		void PostConnectionInit(SOCKET s);
 
 		bool StartReceiving();
 		bool StartSending();
@@ -85,6 +87,8 @@ enum {
 		const char* GetReceivedData();
 		NetPollResult PollReceive(int* outRecvLen);
 		NetPollResult PollSend();
+
+		inline bool IsConnected() const { return sock != INVALID_SOCKET; }
 	};
 #endif
 
@@ -170,7 +174,7 @@ private:
 
 	void ClientSend(i32 clientID, const void* data, i32 dataSize);
 	bool ClientStartReceiving(i32 clientID);
-	bool ClientHandleReceivedData(i32 clientID, i32 dataLen);
+	void ClientHandleReceivedData(i32 clientID, i32 dataLen);
 };
 
 struct Listener
@@ -186,18 +190,4 @@ struct Listener
 	void Listen();
 
 	inline bool IsRunning() const { return listenSocket != INVALID_SOCKET; }
-};
-
-struct NetConnection
-{
-	SOCKET sock;
-
-	bool Connect(const u8* ip, u16 port);
-
-	template<typename Packet>
-	inline void SendPacket(const Packet& packet)
-	{
-		SendPacketData(Packet::NET_ID, sizeof(packet), &packet);
-	}
-	void SendPacketData(u16 netID, u16 packetSize, const void* packetData);
 };

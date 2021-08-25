@@ -16,6 +16,35 @@ struct AccountData
 
 struct ChannelHub;
 
+struct InnerConnection
+{
+	AsyncConnection async;
+
+	struct SendQueue
+	{
+		enum {
+			QUEUE_CAPACITY = 1024 * 1024 // 1MB
+		};
+
+		u8 data[QUEUE_CAPACITY];
+		i32 size = 0;
+	};
+
+	i32 ID;
+	SendQueue sendQ;
+
+	template<typename Packet>
+	inline void SendPacket(const Packet& packet)
+	{
+		SendPacketData(Packet::NET_ID, sizeof(packet), &packet);
+	}
+
+	void SendPacketData(u16 netID, u16 packetSize, const void* packetData);
+
+	void SendPendingData();
+	void RecvPendingData(u8* buff, const i32 buffCapacity, i32* size);
+};
+
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
@@ -53,8 +82,11 @@ struct Coordinator
 	};
 
 	Server* server;
+	eastl::fixed_vector<InnerConnection, 16, false> connGameSrv;
+
 	eastl::array<Lane, (i32)LaneID::_COUNT> laneList;
 	ChannelHub* channelHub;
+
 	eastl::array<AccountData, Server::MAX_CLIENTS> accountData;
 	eastl::array<LaneID, Server::MAX_CLIENTS> associatedChannel;
 	GrowableBuffer recvDataBuff;

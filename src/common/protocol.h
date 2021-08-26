@@ -263,6 +263,11 @@ enum StageType: i32
 	GAME_INSTANCE = 2
 };
 
+enum class EntrySystemID: i32
+{
+	ARENA_3v3 = 210036812
+};
+
 struct NetHeader
 {
 	u16 size;
@@ -502,12 +507,20 @@ struct CQ_GamePlayerTag
 	LocalActorID characterID;
 };
 
+struct CQ_EnqueuePvpQueue
+{
+	enum { NET_ID = 60073 };
+
+	i32 arenaID;
+};
+ASSERT_SIZE(CQ_EnqueuePvpQueue, 4);
+
 struct CQ_PartyCreate
 {
 	enum { NET_ID = 60074 };
 
-	i32 someID;
-	i32 stageType;
+	EntrySystemID entrySysID;
+	StageType stageType;
 };
 ASSERT_SIZE(CQ_PartyCreate, 8);
 

@@ -266,7 +266,7 @@ void ChannelPvP::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 {
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
 
-	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.someID, create.stageType);
+	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.entrySysID, create.stageType);
 
 	// we don't support creating parties right now, send back an error
 

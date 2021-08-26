@@ -4,9 +4,9 @@
 
 namespace PS
 {
-	inline eastl::fixed_string<char,8192,false>& NewString()
+	inline eastl::fixed_string<char,8192,true>& NewString()
 	{
-		thread_local eastl::fixed_string<char,8192,false> buff;
+		thread_local eastl::fixed_string<char,8192,true> buff;
 		buff.clear();
 		return buff;
 	}
@@ -823,13 +823,28 @@ inline const char* PacketSerialize<Sv::SA_ResultSpAction>(const void* packetData
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
 
-	SER("Sv::SA_ResultSpAction(%d, %d) :: {", Sv::SA_ResultSpAction::NET_ID, packetSize);
+	SER("SA_ResultSpAction(%d, %d) :: {", Sv::SA_ResultSpAction::NET_ID, packetSize);
 	SER("	excludedFieldBits=%d", buff.Read<u8>());
 	SER("	actionID=%d", buff.Read<i32>());
 	SER("	localActorID=%d", buff.Read<LocalActorID>());
 	SER("	rotate=%f", buff.Read<f32>());
 	SER("	moveDir=%s", PS::ToStr(buff.Read<float2>()));
 	SER("	errorType=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_PartyCreate>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_PartyCreate(%d, %d) :: {", Sv::SA_PartyCreate::NET_ID, packetSize);
+	SER("	retval=%d", buff.Read<i32>());
+	SER("	ownerUserID=%d", buff.Read<i32>());
+	SER("	stageType=%d", buff.Read<i32>());
 	SER("}");
 
 	return str.data();
@@ -882,6 +897,27 @@ DEFAULT_SERIALIZE(Sv::SN_NotifyAasRestricted);
 DEFAULT_SERIALIZE(Sv::SN_RunClientLevelEventSeq);
 DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTurn);
 DEFAULT_SERIALIZE(Sv::SN_DestroyEntity);
+DEFAULT_SERIALIZE(Sv::SN_RegionServicePolicy);
+DEFAULT_SERIALIZE(Sv::SN_AllCharacterBaseData);
+DEFAULT_SERIALIZE(Sv::SN_MyGuild);
+DEFAULT_SERIALIZE(Sv::SN_ProfileTitles);
+DEFAULT_SERIALIZE(Sv::SN_ProfileCharacterSkinList);
+DEFAULT_SERIALIZE(Sv::SN_AccountExtraInfo);
+DEFAULT_SERIALIZE(Sv::SN_GuildChannelEnter);
+DEFAULT_SERIALIZE(Sv::SN_FriendList);
+DEFAULT_SERIALIZE(Sv::SN_PveComradeInfo);
+DEFAULT_SERIALIZE(Sv::SN_AchieveUpdate);
+DEFAULT_SERIALIZE(Sv::SN_FriendRequestList);
+DEFAULT_SERIALIZE(Sv::SN_BlockList);
+DEFAULT_SERIALIZE(Sv::SN_MailUnreadNotice);
+DEFAULT_SERIALIZE(Sv::SN_WarehouseItems);
+DEFAULT_SERIALIZE(Sv::SN_MutualFriendList);
+DEFAULT_SERIALIZE(Sv::SN_GuildMemberStatus);
+DEFAULT_SERIALIZE(Sv::SN_GamePlayerSyncByInt);
+DEFAULT_SERIALIZE(Sv::SN_PlayerSyncActionStateOnly);
+DEFAULT_SERIALIZE(Sv::SN_JukeboxPlay);
+DEFAULT_SERIALIZE(Sv::SN_JukeboxEnqueuedList);
+DEFAULT_SERIALIZE(Sv::SN_TownHudStatistics);
 
 #undef DEFAULT_SERIALIZE
 

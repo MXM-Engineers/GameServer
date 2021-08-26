@@ -20,7 +20,8 @@ def GenerateKey(ipPortStr):
 
 def Decrypt(data):
     c_data = (c_ubyte * len(data))(*data)
-    leaDll.Decrypt(leaCurrentKey, c_data, c_int32(len(data)))
+    if leaCurrentKey:
+        leaDll.Decrypt(leaCurrentKey, c_data, c_int32(len(data)))
     return list(c_data)
 # -----------
 
@@ -43,7 +44,12 @@ def packet_serialize_cl(netid, data):
     print('')
 
 def packet_serialize_sv(netid, data):
-    f = getattr(ServerSerializer, 'serialize_%d' % netid, None)
+    f = None
+
+    # if encrypted but we have no key, skip serialize
+    if netid in ServerEncryptedIDs and leaCurrentKey != None:
+        f = getattr(ServerSerializer, 'serialize_%d' % netid, None)
+    
     if f == None:
         f = getattr(ServerPacketName, 'name_%d' % netid, None)
         if f:
@@ -93,7 +99,8 @@ class PacketSpitter:
 
         print('(o=%d netid=%d size=%d)' % (self.order, netid, size))
 
-        if size > 10240 or netid < 60000 or netid > 63000:
+        #if size > 10240 or netid < 60000 or netid > 63000:
+        if size > 10240:
             print("ERROR: invalid packet (netid=%d size=%d)" % (netid, size))
             exit(1)
 
@@ -129,12 +136,16 @@ class PacketSpitter:
 
 
 # Script start
+print('.: Wireshark capture parser :.')
 if len(sys.argv) < 3:
     print('Usage: wireshark_to_raw.py capture_file "output/dir"')
     exit(1)
 
 output_dir = sys.argv[2]
+
+print('Parsing capture file...')
 cap = pyshark.FileCapture(sys.argv[1])
+print('Parsing done.')
 
 next_packet_id = 1
 
@@ -142,7 +153,8 @@ client_spitter = PacketSpitter('cl')
 server_spitter = PacketSpitter('sv')
 
 scan_list = [
-    '11900'
+    '11900',
+    '12101'
 ]
 
 last_time = 0

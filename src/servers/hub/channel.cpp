@@ -88,7 +88,7 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		HANDLE_CASE(CQ_LoadingProgressData);
 
 		default: {
-			LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
+			NT_LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
 		} break;
 	}
 
@@ -97,32 +97,32 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 
 void ChannelHub::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
+	NT_LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 
 void ChannelHub::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
+	NT_LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 
 void ChannelHub::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
-	LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
+	NT_LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
 void ChannelHub::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
+	NT_LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
 	replication.SetPlayerAsInGame(clientID);
 }
 
 void ChannelHub::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
+	NT_LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -136,7 +136,7 @@ void ChannelHub::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader&
 void ChannelHub::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
+	NT_LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -154,7 +154,7 @@ void ChannelHub::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeade
 	const u16 msgLen = buff.Read<u16>();
 	const wchar* msg = (wchar*)buff.ReadRaw(msgLen * 2);
 
-	LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
+	NT_LOG("[client%03d] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientID, chatType, msgLen, msg);
 
 	game->OnPlayerChatMessage(clientID, chatType, msg, msgLen);
 }
@@ -162,7 +162,7 @@ void ChannelHub::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeade
 void ChannelHub::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
+	NT_LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
 }
@@ -177,7 +177,7 @@ void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 		stateStr = g_ActionStateString[state];
 	}
 
-	LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
+	NT_LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
 	LOG("	characterID=%d", (u32)sync.characterID);
 	LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
 	LOG("	bApply=%d", sync.bApply);
@@ -200,8 +200,7 @@ void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 void ChannelHub::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
-
-	LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
+	NT_LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
 
 	game->OnPlayerJukeboxQueueSong(clientID, queue.songID);
 }
@@ -226,8 +225,7 @@ void ChannelHub::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& head
 void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
-
-	LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.someID, create.stageType);
+	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientID, create.entrySysID, create.stageType);
 
 	// we don't support creating parties right now, send back an error
 
@@ -239,24 +237,22 @@ void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 	packet.Write<i32>(0); // ownerUserID
 	packet.Write<i32>(create.stageType); // stageType
 
-	LOG("[client%03d] Server :: SA_PartyCreate ::", clientID);
-	server->SendPacketData(clientID, Sv::SA_PartyCreate::NET_ID, packet.size, packet.data);
+	SendPacket<Sv::SA_PartyCreate>(clientID, packet);
 }
 
 void ChannelHub::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
+	NT_LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
 
 	Sv::SA_RTT_Time answer;
 	answer.clientTimestamp = rtt.time;
 	answer.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	LOG("[client%03d] Server :: SA_RTT_Time ::", clientID);
-	server->SendPacket(clientID, answer);
+	SendPacket(clientID, answer);
 }
 
 void ChannelHub::HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
+	NT_LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
 }

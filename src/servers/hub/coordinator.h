@@ -3,8 +3,13 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
+#include <EASTL/queue.h>
 
 // TODO: move this
+enum class AccountID: u32 {
+	INVALID = 0
+};
+
 struct AccountData
 {
 	WideString nickname;
@@ -45,13 +50,42 @@ struct InnerConnection
 	void RecvPendingData(u8* buff, const i32 buffCapacity, i32* size);
 };
 
+struct MatchFindFilter
+{
+	// pvp: 3v3, 5v5
+	// pve: map, level?
+	// mini game
+	// ?
+
+	u8 region;
+};
+
+struct Matchmaker
+{
+	struct Match3v3
+	{
+		eastl::fixed_vector<AccountID,6,false> players;
+	};
+
+	eastl::fixed_vector<InnerConnection, 16, false> connGameSrv;
+	eastl::fixed_vector<AccountID, 2048> waitingQueue;
+	eastl::fixed_vector<Match3v3, 2048> pendingMatch3v3;
+
+	bool Init();
+	bool Update();
+
+	void PushPlayerToQueue(AccountID accountID, const MatchFindFilter& filter);
+
+private:
+	void HandlePacket(InnerConnection& conn, u16 netID, const u8* packetData, const i32 packetSize);
+};
+
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
 	enum class LaneID: i32 {
 		INVALID = -1,
 		FIRST = 0,
-		HUB = 0,
 		_COUNT,
 	};
 
@@ -82,7 +116,7 @@ struct Coordinator
 	};
 
 	Server* server;
-	eastl::fixed_vector<InnerConnection, 16, false> connGameSrv;
+	Matchmaker matchmaker;
 
 	eastl::array<Lane, (i32)LaneID::_COUNT> laneList;
 	ChannelHub* channelHub;
@@ -99,8 +133,6 @@ struct Coordinator
 	void Update(f64 delta);
 
 private:
-	bool ConnectToInfrastructure();
-
 	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
 	void ClientHandleReceivedChunk(i32 clientID, const u8* data, const i32 dataSize);
 

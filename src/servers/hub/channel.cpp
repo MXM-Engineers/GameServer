@@ -234,11 +234,12 @@ void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 	u8 sendData[2048];
 	PacketWriter packet(sendData, sizeof(sendData));
 
-	packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
+	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
+	packet.Write<i32>(0); // retval: success
 	packet.Write<i32>(0); // ownerUserID
 	packet.Write<i32>(create.stageType); // stageType
 
-	LOG("[client%03d] Server :: SA_PartyCreate :: NO", clientID);
+	LOG("[client%03d] Server :: SA_PartyCreate ::", clientID);
 	server->SendPacketData(clientID, Sv::SA_PartyCreate::NET_ID, packet.size, packet.data);
 }
 

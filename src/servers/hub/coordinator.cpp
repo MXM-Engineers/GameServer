@@ -9,6 +9,187 @@
 #include "config.h"
 #include "channel.h"
 
+bool Matchmaker::Init()
+{
+	const char* path = "config/server_list.l";
+	i32 fileSize;
+	u8* fileData = fileOpenAndReadAll(path, &fileSize);
+	if(!fileData) {
+		WARN("ERROR: failed to load '%s'", path);
+		return false;
+	}
+	defer(memFree(fileData));
+
+	struct ServerIp {
+		u8 addr[4];
+		u16 port;
+	};
+
+	eastl::fixed_vector<ServerIp, 64> list;
+
+	eastl::fixed_vector<eastl::string_view, 1024> lines;
+	StringSplit((char*)fileData, fileSize, '\n', eastl::back_inserter(lines), lines.capacity());
+
+	foreach_const(l, lines) {
+		if(l->length() == 0 || (*l)[0] == '#') continue; // skip empty lines and comments
+
+		eastl::fixed_vector<eastl::string_view, 3> block;
+		StringSplit(l->data(), l->length(), ':', eastl::back_inserter(block), block.capacity());
+
+		if(block.size() != 3) {
+			WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+			continue;
+		}
+
+		if(StringViewEquals(block[0], "game")) {
+			eastl::fixed_string<char,64> strIp(block[1].data(), block[1].length());
+			eastl::fixed_string<char,64> strPort(block[2].data(), block[2].length());
+
+			ServerIp entry;
+			int ip[4];
+			int port;
+			if(EA::StdC::Sscanf(strIp.data(), "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) != 4) {
+				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+				continue;
+			}
+
+			if(EA::StdC::Sscanf(strPort.data(), "%d", &port) != 1) {
+				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
+				continue;
+			}
+
+			entry.addr[0] = ip[0];
+			entry.addr[1] = ip[1];
+			entry.addr[2] = ip[2];
+			entry.addr[3] = ip[3];
+			entry.port = port;
+			list.push_back(entry);
+		}
+	}
+
+	i32 nextID = 0;
+	const int tries = 10;
+	connGameSrv.resize(list.size());
+	foreach(c, connGameSrv) {
+		c->async.Init();
+		c->ID = nextID++;
+	}
+
+	bool keepTrying = true;
+	for(int i = 0; i < tries && keepTrying; i++) {
+		keepTrying = false;
+		LOG("[MM] Connecting to game servers... (%d/%d)", i, tries);
+
+		i32 l = 0;
+		foreach_const(ip, list) {
+			InnerConnection& conn = connGameSrv[l];
+
+			if(conn.async.IsConnected()) continue;
+			LOG("[MM][%d] %d.%d.%d.%d:%u ...", conn.ID, ip->addr[0], ip->addr[1], ip->addr[2], ip->addr[3], ip->port);
+
+			bool r = conn.async.ConnectTo(ip->addr, ip->port);
+			if(!r) {
+				LOG("connection failed");
+				keepTrying = true;
+			}
+			else {
+				conn.async.StartReceiving();
+
+				// send handshake
+				In::Q_Handshake packet;
+				packet.magic = In::MagicHandshake;
+				conn.SendPacket(packet);
+			}
+			l++;
+		}
+	}
+
+	if(keepTrying) {
+		LOG("[MM] ERROR: Failed to connect to all game servers");
+		return false;
+	}
+
+	return true;
+}
+
+bool Matchmaker::Update()
+{
+	// handle inner communication
+	foreach_mut(conn, connGameSrv) {
+		// remove disconnected from list
+		if(!conn->async.IsConnected()) {
+			conn = connGameSrv.erase_unsorted(conn);
+			--conn;
+			continue;
+		}
+
+		conn->SendPendingData();
+
+		u8 recvBuff[8192];
+		i32 recvLen = 0;
+		conn->RecvPendingData(recvBuff, sizeof(recvBuff), &recvLen);
+
+		if(recvLen > 0) {
+			ConstBuffer reader(recvBuff, recvLen);
+
+			while(reader.CanRead(sizeof(NetHeader))) {
+				const NetHeader& header = reader.Read<NetHeader>();
+				const i32 packetDataSize = header.size - sizeof(NetHeader);
+				ASSERT(reader.CanRead(packetDataSize));
+				const u8* packetData = reader.ReadRaw(packetDataSize);
+
+				HandlePacket(*conn, header.netID, packetData, packetDataSize);
+			}
+		}
+	}
+
+	if(connGameSrv.empty()) {
+		LOG("[MM] ERROR: all connections to game servers have been lost");
+		return false;
+	}
+
+	if(true) {
+		if(!waitingQueue.empty()) {
+			Match3v3 match;
+			foreach_const(e, waitingQueue) {
+				match.players.push_back(*e);
+
+				if(match.players.full()) {
+					pendingMatch3v3.push_back(match);
+					match = {};
+				}
+			}
+
+			// fill with ai
+			if(!match.players.empty()) {
+				while(!match.players.full()) {
+					match.players.push_back(AccountID::INVALID);
+				}
+			}
+			pendingMatch3v3.push_back(match);
+			waitingQueue.clear();
+		}
+	}
+
+	return true;
+}
+
+void Matchmaker::PushPlayerToQueue(AccountID accountID, const MatchFindFilter& filter)
+{
+	// ignore filter for now
+	waitingQueue.push_back(accountID);
+}
+
+void Matchmaker::HandlePacket(InnerConnection& conn, u16 netID, const u8* packetData, const i32 packetSize)
+{
+	switch(netID) {
+		case In::R_Handshake::NET_ID: {
+			const In::R_Handshake resp = SafeCast<In::R_Handshake>(packetData, packetSize);
+			LOG("[MM][%d] received handshake response = %d", conn.ID, resp.result);
+		} break;
+	}
+}
+
 intptr_t ThreadCoordinator(void* pData)
 {
 	ProfileSetThreadName("Coordinator");
@@ -150,13 +331,6 @@ void InnerConnection::RecvPendingData(u8* buff, const i32 buffCapacity, i32* siz
 	}
 }
 
-inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
-{
-	const int len = strlen(str);
-	if(len != sv.length()) return false;
-	return sv.compare(str) == 0;
-}
-
 bool Coordinator::Init(Server* server_)
 {
 	server = server_;
@@ -172,11 +346,11 @@ bool Coordinator::Init(Server* server_)
 	channelHub = new ChannelHub();
 	channelHub->threadID = 0;
 	channelHub->Init(server_);
-	channelHub->lane = &laneList[(i32)LaneID::HUB];
+	channelHub->lane = &laneList[(i32)LaneID::FIRST];
 
-	laneList[(i32)LaneID::HUB].thread.Begin(ThreadChannel<ChannelHub>, channelHub);
+	laneList[(i32)LaneID::FIRST].thread.Begin(ThreadChannel<ChannelHub>, channelHub);
 
-	bool r = ConnectToInfrastructure();
+	bool r = matchmaker.Init();
 	if(!r) return false;
 
 	thread.Begin(ThreadCoordinator, this);
@@ -198,46 +372,12 @@ void Coordinator::Update(f64 delta)
 {
 	ProfileFunction();
 
-	// handle inner communication
-	foreach_mut(conn, connGameSrv) {
-		// remove disconnected from list
-		if(!conn->async.IsConnected()) {
-			conn = connGameSrv.erase_unsorted(conn);
-			--conn;
-			continue;
-		}
-
-		conn->SendPendingData();
-
-		u8 recvBuff[8192];
-		i32 recvLen = 0;
-		conn->RecvPendingData(recvBuff, sizeof(recvBuff), &recvLen);
-
-		if(recvLen > 0) {
-			ConstBuffer reader(recvBuff, recvLen);
-
-			while(reader.CanRead(sizeof(NetHeader))) {
-				const NetHeader& header = reader.Read<NetHeader>();
-				const i32 packetDataSize = header.size - sizeof(NetHeader);
-				ASSERT(reader.CanRead(packetDataSize));
-				const u8* packetData = reader.ReadRaw(packetDataSize);
-
-				switch(header.netID) {
-					case In::R_Handshake::NET_ID: {
-						const In::R_Handshake resp = SafeCast<In::R_Handshake>(packetData, packetDataSize);
-						LOG("[Inner_%d] received handshake response = %d", conn->ID, resp.result);
-					} break;
-				}
-			}
-		}
-	}
-
-	if(connGameSrv.empty()) {
+	// inline match maker update, in the future this will be a separate server
+	bool r = matchmaker.Update();
+	if(!r) {
 		// big panic, we are not connected to *any* game server
-		LOG("ERROR: all connections to game servers have been lost");
 		server->running = false;
 		// TODO: stop listenner as well
-		return;
 	}
 
 	// handle client disconnections
@@ -272,109 +412,6 @@ void Coordinator::Update(f64 delta)
 	}
 
 	recvDataBuff.Clear();
-}
-
-bool Coordinator::ConnectToInfrastructure()
-{
-	const char* path = "config/server_list.l";
-	i32 fileSize;
-	u8* fileData = fileOpenAndReadAll(path, &fileSize);
-	if(!fileData) {
-		WARN("ERROR: failed to load '%s'", path);
-		return false;
-	}
-	defer(memFree(fileData));
-
-	struct ServerIp {
-		u8 addr[4];
-		u16 port;
-	};
-
-	eastl::fixed_vector<ServerIp, 64> list;
-
-	eastl::fixed_vector<eastl::string_view, 1024> lines;
-	StringSplit((char*)fileData, fileSize, '\n', eastl::back_inserter(lines), lines.capacity());
-
-	foreach_const(l, lines) {
-		if(l->length() == 0 || (*l)[0] == '#') continue; // skip empty lines and comments
-
-		eastl::fixed_vector<eastl::string_view, 3> block;
-		StringSplit(l->data(), l->length(), ':', eastl::back_inserter(block), block.capacity());
-
-		if(block.size() != 3) {
-			WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
-			continue;
-		}
-
-		if(StringViewEquals(block[0], "game")) {
-			eastl::fixed_string<char,64> strIp(block[1].data(), block[1].length());
-			eastl::fixed_string<char,64> strPort(block[2].data(), block[2].length());
-
-			ServerIp entry;
-			int ip[4];
-			int port;
-			if(EA::StdC::Sscanf(strIp.data(), "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) != 4) {
-				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
-				continue;
-			}
-
-			if(EA::StdC::Sscanf(strPort.data(), "%d", &port) != 1) {
-				WARN("Failed to parse line '%.*s'", (int)l->length(), l->data());
-				continue;
-			}
-
-			entry.addr[0] = ip[0];
-			entry.addr[1] = ip[1];
-			entry.addr[2] = ip[2];
-			entry.addr[3] = ip[3];
-			entry.port = port;
-			list.push_back(entry);
-		}
-	}
-
-	i32 nextID = 0;
-	const int tries = 10;
-	connGameSrv.resize(list.size());
-	foreach(c, connGameSrv) {
-		c->async.Init();
-		c->ID = nextID++;
-	}
-
-	bool keepTrying = true;
-	for(int i = 0; i < tries && keepTrying; i++) {
-		keepTrying = false;
-		LOG("Connecting to game servers... (%d/%d)", i, tries);
-
-		i32 l = 0;
-		foreach_const(ip, list) {
-			InnerConnection& conn = connGameSrv[l];
-
-			if(conn.async.IsConnected()) continue;
-			LOG("%d) %d.%d.%d.%d:%u ...", l, ip->addr[0], ip->addr[1], ip->addr[2], ip->addr[3], ip->port);
-
-			bool r = conn.async.ConnectTo(ip->addr, ip->port);
-			if(!r) {
-				LOG("connection failed");
-				keepTrying = true;
-			}
-			else {
-				conn.async.StartReceiving();
-
-				// send handshake
-				In::Q_Handshake packet;
-				packet.magic = In::MagicHandshake;
-				conn.SendPacket(packet);
-			}
-			l++;
-		}
-	}
-
-	if(keepTrying) {
-		LOG("ERROR: Failed to connect to all game servers");
-		return false;
-	}
-
-	return true;
 }
 
 void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
@@ -436,7 +473,7 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 
 	// assign to a channel
 	ASSERT(associatedChannel[clientID] == LaneID::INVALID);
-	associatedChannel[clientID] = LaneID::HUB;
+	associatedChannel[clientID] = LaneID::FIRST;
 
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;

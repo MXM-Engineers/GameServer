@@ -55,3 +55,10 @@ void StringSplit(const char* str, const int len, const char separator, OutputIte
 		*out = eastl::string_view(str + start, len - start);
 	}
 }
+
+inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
+{
+	const int len = strlen(str);
+	if(len != sv.length()) return false;
+	return sv.compare(str) == 0;
+}

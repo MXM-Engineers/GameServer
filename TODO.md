@@ -54,3 +54,10 @@
 # NavMesh
 * Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)
     - This would replace the "physics engine" while navigating
+
+# Matchmaking
+* When 6 players are in queue, consume them.
+    - Ask a game server to create a match instance.
+    - When created, send packet to players to connect to said server.
+    - When all players are connected, start the picking phase
+    - When picking phase is done, send load map

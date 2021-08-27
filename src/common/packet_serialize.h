@@ -931,6 +931,34 @@ inline const char* PacketSerialize<Sv::SA_CalendarDetail>(const void* packetData
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Cl::CQ_Authenticate>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_Authenticate(%d, %d) :: {", Cl::CQ_Authenticate::NET_ID, packetSize);
+	auto nick = buff.ReadWideStringObj();
+	SER("	nick='%ls'", nick.data());
+	SER("	var=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_GetGuildRankingSeasonList(%d, %d) :: {", Cl::CQ_GetGuildRankingSeasonList::NET_ID, packetSize);
+	SER("	rankingType=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\
@@ -1005,6 +1033,13 @@ DEFAULT_SERIALIZE(Sv::SA_GetGuildHistoryList);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildRankingSeasonList);
 DEFAULT_SERIALIZE(Sv::SA_TierRecord);
 DEFAULT_SERIALIZE(Sv::SN_ClientSettings);
+DEFAULT_SERIALIZE(Cl::CQ_AuthenticateGameServer);
+DEFAULT_SERIALIZE(Cl::CQ_GetGuildProfile);
+DEFAULT_SERIALIZE(Cl::CQ_GetGuildMemberList);
+DEFAULT_SERIALIZE(Cl::CQ_GetGuildHistoryList);
+DEFAULT_SERIALIZE(Cl::CQ_TierRecord);
+DEFAULT_SERIALIZE(Sv::SN_Unknown_62472);
+DEFAULT_SERIALIZE(Sv::SN_UpdateEntrySystem);
 
 #undef DEFAULT_SERIALIZE
 

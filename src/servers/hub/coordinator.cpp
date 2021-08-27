@@ -495,8 +495,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
-	i32 var = request.Read<i32>();
-	NT_LOG("[client%03d] Client :: CQ_Authenticate :: %.*ls var=%d", clientID, nickLen, nick, var);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_Authenticate>(packetData, packetSize));
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -534,10 +533,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
-	i32 var = request.Read<i32>();
-	i32 var2 = request.Read<i32>();
-	u8 b1 = request.Read<u8>();
-	NT_LOG("[client%03d] Client :: CQ_AuthenticateGameServer :: %.*ls var=%d var2=%d b1=%d", clientID, nickLen, nick, var, var2, b1);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_AuthenticateGameServer>(packetData, packetSize));
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -572,7 +568,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
 
 	// SA_GetGuildProfile
 	{
@@ -653,7 +649,7 @@ void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader&
 
 void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
 	{
@@ -715,7 +711,7 @@ void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHead
 
 void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
 	{
@@ -733,7 +729,7 @@ void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHea
 void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
-	NT_LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
 
 	// SA_GetGuildRankingSeasonList
 	{
@@ -751,7 +747,7 @@ void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const 
 
 void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
 
 	// SA_TierRecord
 	{

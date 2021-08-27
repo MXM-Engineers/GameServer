@@ -661,7 +661,17 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		u8 sendData[128];
 		PacketWriter packet(sendData, sizeof(sendData));
 
-		packet.Write<u16>(0); // userGradeList_count
+		// membership
+		Sv::SN_AccountExtraInfo::UserGrade grade = {
+			5,
+			1,
+			CurrentFiletimeTimestampUTC() + (1*24*3600*10000000ull),
+			0,
+			0,
+			0
+		};
+
+		packet.WriteVec(&grade, 1);
 		packet.Write<i32>(0); // activityPoint
 		packet.Write<u8>(0); // activityRewaredState
 
@@ -678,16 +688,15 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		SendPacket<Sv::SN_AccountEquipmentList>(clientID, packet);
 	}
 
-	/*// SN_Unknown_62472
+	// SN_Unknown_62472
 	{
 		u8 sendData[32];
 		PacketWriter packet(sendData, sizeof(sendData));
 
 		packet.Write<u8>(1);
 
-		LOG("[client%03d] Server :: SN_Unknown_62472 :: ", clientID);
-		SendPacket<>(clientID, 62472, packet.size, packet.data);
-	}*/
+		SendPacket<Sv::SN_Unknown_62472>(clientID, packet);
+	}
 
 	// SN_GuildChannelEnter
 	{
@@ -809,6 +818,218 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 	money.nMoney = 116472;
 	money.nReason = 1;
 	SendPacket(clientID, money);
+
+	// SN_UpdateEntrySystem
+	{
+		u8 sendData[512];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u16>(7); // entrySystemListCount
+
+		{
+			packet.Write<u32>(210036011); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 2, 190009205 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(1);
+			packet.Write<u8>(2); // areaKey
+			packet.Write<i32>(200101330); // stageIndex
+			const u8 gametypes[] = { 4, 6 };
+			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+		}
+		{
+			packet.Write<u32>(210036010); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 3, 190009204 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(1);
+			packet.Write<u8>(3); // areaKey
+			packet.Write<i32>(200101320); // stageIndex
+			const u8 gametypes[] = { 4, 6 };
+			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+		}
+		{
+			packet.Write<u32>(210037002); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 4, 190004000 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(1);
+			packet.Write<u8>(4); // areaKey
+			packet.Write<i32>(200000100); // stageIndex
+			const u8 gametypes[] = { 1 };
+			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+		}
+		{
+			packet.Write<u32>(210037000); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 5, 190000006 },
+				{ 6, 190000007 },
+				{ 7, 190000008 },
+				{ 8, 190000009 },
+				{ 9, 190000010 },
+				{ 10, 190000011 },
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(12);
+			{
+				packet.Write<u8>(5); // areaKey
+				packet.Write<i32>(200007101); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(5); // areaKey
+				packet.Write<i32>(200007103); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(6); // areaKey
+				packet.Write<i32>(200007201); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(6); // areaKey
+				packet.Write<i32>(200007203); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(7); // areaKey
+				packet.Write<i32>(200007301); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(7); // areaKey
+				packet.Write<i32>(200007303); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(8); // areaKey
+				packet.Write<i32>(200007401); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(8); // areaKey
+				packet.Write<i32>(200007403); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(9); // areaKey
+				packet.Write<i32>(200007501); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(9); // areaKey
+				packet.Write<i32>(200007503); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(10); // areaKey
+				packet.Write<i32>(200007601); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(10); // areaKey
+				packet.Write<i32>(200007603); // stageIndex
+				const u8 gametypes[] = { 1 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+		}
+		{
+			packet.Write<u32>(210037006); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 11, 190001000 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(1);
+			packet.Write<u8>(11); // areaKey
+			packet.Write<i32>(200011109); // stageIndex
+			const u8 gametypes[] = { 1 };
+			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+		}
+		{
+			packet.Write<u32>(210036812); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 1, 190002101 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			// stageList
+			packet.Write<u16>(3);
+			{
+				packet.Write<u8>(1); // areaKey
+				packet.Write<i32>(200020102); // stageIndex
+				const u8 gametypes[] = { 4, 6 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(1); // areaKey
+				packet.Write<i32>(200101000); // stageIndex
+				const u8 gametypes[] = { 4, 6, 5 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(1); // areaKey
+				packet.Write<i32>(200006112); // stageIndex
+				const u8 gametypes[] = { 4 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+		}
+		{
+			packet.Write<u32>(210037003); // entrySystemIndex
+
+			// areaList
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
+				{ 18, 190002200 }
+			};
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
+
+			// stageList
+			packet.Write<u16>(1);
+			packet.Write<u8>(18); // areaKey
+			packet.Write<i32>(200006203); // stageIndex
+			const u8 gametypes[] = { 7 };
+			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+		}
+
+
+		SendPacket<Sv::SN_UpdateEntrySystem>(clientID, packet);
+	}
 }
 
 void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port)

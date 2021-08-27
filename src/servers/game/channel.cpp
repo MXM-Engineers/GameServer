@@ -84,7 +84,6 @@ void ChannelPvP::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		CASE(CQ_SetLeaderCharacter);
 		CASE(CN_GamePlayerSyncActionStateOnly);
 		CASE(CQ_WhisperSend);
-		CASE(CQ_PartyCreate);
 		CASE(CQ_RTT_Time);
 		CASE(CQ_LoadingProgressData);
 		CASE(CQ_LoadingComplete);
@@ -260,25 +259,6 @@ void ChannelPvP::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& head
 	msg.assign(msg_str, msg_len);
 
 	game->OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
-}
-
-void ChannelPvP::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
-
-	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { someID=%d stageType=%d }", clientID, create.entrySysID, create.stageType);
-
-	// we don't support creating parties right now, send back an error
-
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
-
-	packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
-	packet.Write<i32>(0); // ownerUserID
-	packet.Write<i32>(create.stageType); // stageType
-
-	LOG("[client%03d] Server :: SA_PartyCreate :: NO", clientID);
-	server->SendPacketData(clientID, Sv::SA_PartyCreate::NET_ID, packet.size, packet.data);
 }
 
 void ChannelPvP::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

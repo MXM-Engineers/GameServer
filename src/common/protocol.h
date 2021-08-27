@@ -1368,7 +1368,7 @@ struct SN_AccountExtraInfo
 	{
 		u8 userGrade;
 		u8 activated;
-		i64 expireDateTime64;
+		u64 expireDateTime64;
 		u8 level;
 		u16 point;
 		u16 nextPoint;
@@ -2212,6 +2212,39 @@ struct SN_MailUnreadNotice
 	i32 newAttachmentsPending[1];
 };
 
+struct SN_UpdateEntrySystem
+{
+	enum { NET_ID = 62426 };
+
+	PUSH_PACKED
+	struct Area
+	{
+		u8 areaKey;
+		i32 areaIndex;
+	};
+	POP_PACKED
+
+	struct StageIndex
+	{
+		u8 areaKey;
+		i32 stageIndex;
+		u16 gametypeCount;
+		u8 gametypes[1];
+	};
+
+	struct Entry
+	{
+		u32 entrySystemIndex;
+		u16 areaListCount;
+		Area areaList[1];
+		u16 stageListCount;
+		StageIndex stageList[1];
+	};
+
+	u16 entrySystemListCount;
+	Entry entrySystemList[1];
+};
+
 struct SQ_Heartbeat
 {
 	enum { NET_ID = 62446 };
@@ -2266,6 +2299,13 @@ struct SA_TierRecord
 	i32 allTierLeave;
 	u16 stageRecordList_count;
 	PST_TierStageRecord stageRecordList[1];
+};
+
+struct SN_Unknown_62472
+{
+	enum { NET_ID = 62472 };
+
+	u8 unk;
 };
 
 PUSH_PACKED

@@ -236,7 +236,7 @@ void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 
 	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
 	packet.Write<i32>(0); // retval: success
-	packet.Write<i32>(0); // ownerUserID
+	packet.Write<i32>(1); // ownerUserID
 	packet.Write<i32>(create.stageType); // stageType
 
 	SendPacket<Sv::SA_PartyCreate>(clientID, packet);

@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 
 #ifdef CONF_LINUX
 	#define PUSH_PACKED _Pragma("pack(push, 1)")
@@ -28,3 +29,5 @@ bool SetCloseSignalHandler(Func_CloseSignalHandler func);
 void MakeDirectory(const char* path);
 
 const char* FormatPath(const char* path); // replace / with \ on windows
+
+uint64_t CurrentFiletimeTimestampUTC();

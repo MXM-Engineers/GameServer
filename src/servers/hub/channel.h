@@ -35,6 +35,8 @@ private:
 	void HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_RequestCalendar(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)

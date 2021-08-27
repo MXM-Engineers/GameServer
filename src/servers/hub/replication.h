@@ -153,8 +153,6 @@ struct ReplicationHub
 	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
 
-	StageType stageType;
-
 	void Init(Server* server_);
 
 	void FrameEnd();
@@ -164,7 +162,6 @@ struct ReplicationHub
 
 	void EventPlayerConnect(i32 clientID);
 	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
-	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
 	void SetPlayerAsInGame(i32 clientID);
 	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
@@ -175,12 +172,12 @@ struct ReplicationHub
 	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataLobby(i32 clientID, const AccountData& account);
-	void SendAccountDataPvp(i32 clientID, const AccountData& account);
 
 	void SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port);
-	void SendPvpLoadingComplete(i32 clientID);
 	void SendGameReady(i32 clientID);
-	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
+
+	void SendCalendar(i32 clientID);
+	void SendAreaPopularity(i32 clientID, u32 areaID);
 
 	void EventClientDisconnect(i32 clientID);
 

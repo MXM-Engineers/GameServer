@@ -36,6 +36,13 @@ class ClientSerializer:
     def serialize_60016(netid, p: common.PacketReader):
         print('CN_GameMapLoaded {}')
 
+    def serialize_60024(netid, p: common.PacketReader):
+        print('CA_SetGameGvt {')
+        print('    sendTime=%d' % p.read_i32())
+        print('    virtualTime=%d' % p.read_i32())
+        print('    unk=%d' % p.read_i32())
+        print('}')
+
     def serialize_60022(netid, p: common.PacketReader):
         print('CN_UpdatePosition {')
         print('    playerID=%d' % p.read_i32())
@@ -94,6 +101,17 @@ class ClientSerializer:
     def serialize_60053(netid, p: common.PacketReader):
         print('CQ_GamePlayerTag {')
         print('    characterID=%d' % p.read_i32())
+        print('}')
+
+    def serialize_60073(netid, p: common.PacketReader):
+        print('CQ_RequestAreaPopularity {')
+        print('    area=%d' % p.read_i32())
+        print('}')
+
+    def serialize_60074(netid, p: common.PacketReader):
+        print('CQ_PartyCreate {')
+        print('    entrySysID=%d' % p.read_i32())
+        print('    stageType=%d' % p.read_i32())
         print('}')
 
     def serialize_60113(netid, p: common.PacketReader):
@@ -158,4 +176,9 @@ class ClientSerializer:
 
     def serialize_60265(netid, p: common.PacketReader):
         print('CN_NCGuardMsg {}')
+
+    def serialize_60272(netid, p: common.PacketReader):
+        print('CQ_RequestCalendar {')
+        print('    filetimeUTC=%u' % p.read_i64())
+        print('}')
 

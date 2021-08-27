@@ -515,6 +515,14 @@ struct CQ_EnqueuePvpQueue
 };
 ASSERT_SIZE(CQ_EnqueuePvpQueue, 4);
 
+struct CQ_RequestAreaPopularity
+{
+	enum { NET_ID = 60073 };
+
+	u32 areaID; // TODO: type ID
+};
+ASSERT_SIZE(CQ_RequestAreaPopularity, 4);
+
 struct CQ_PartyCreate
 {
 	enum { NET_ID = 60074 };
@@ -638,6 +646,14 @@ struct CQ_RTT_Time
 
 	u32 time;
 };
+
+struct CQ_RequestCalendar
+{
+	enum { NET_ID = 60272 };
+
+	u64 filetimeUTC;
+};
+ASSERT_SIZE(CQ_RequestCalendar, 8);
 
 } // Cl
 
@@ -1600,6 +1616,31 @@ struct SN_ProfileMasterGears
 	Gear masterGears;
 };
 
+struct SA_AreaPopularity
+{
+	enum { NET_ID = 62173 };
+
+	i32 errCode;
+};
+ASSERT_SIZE(SA_AreaPopularity, 4);
+
+struct SN_AreaPopularity
+{
+	enum { NET_ID = 62174 };
+
+	struct Popularity
+	{
+		i32 stageIndex;
+		i32 gameType;
+		i32 popularityLevel;
+	};
+	ASSERT_SIZE(Popularity, 12);
+
+	u32 areaID;
+	u16 popularityCount;
+	Popularity popularities[1];
+};
+
 struct SA_PartyCreate
 {
 	enum { NET_ID = 62175 };
@@ -2308,6 +2349,25 @@ struct SN_AccountEquipmentList
 	i32 supportKitDocIndex;
 };
 ASSERT_SIZE(SN_AccountEquipmentList, 4);
+
+struct SA_CalendarDetail
+{
+	enum { NET_ID = 62545 };
+
+	PUSH_PACKED
+	struct Event
+	{
+		u8 dataType;
+		i32 index;
+		u64 startDateTime; // filetime UTC
+		u64 endDateTime;
+	};
+	POP_PACKED
+
+	u64 todayUTCDateTime;
+	u16 eventCount;
+	Event events[1];
+};
 
 struct SN_InitScoreBoard
 {

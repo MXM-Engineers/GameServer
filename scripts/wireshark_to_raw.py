@@ -47,7 +47,7 @@ def packet_serialize_sv(netid, data):
     f = None
 
     # if encrypted but we have no key, skip serialize
-    if netid in ServerEncryptedIDs and leaCurrentKey != None:
+    if not(leaCurrentKey == None and netid in ServerEncryptedIDs):
         f = getattr(ServerSerializer, 'serialize_%d' % netid, None)
     
     if f == None:
@@ -99,8 +99,7 @@ class PacketSpitter:
 
         print('(o=%d netid=%d size=%d)' % (self.order, netid, size))
 
-        #if size > 10240 or netid < 60000 or netid > 63000:
-        if size > 10240:
+        if size > 10240 or netid < 60000 or netid > 63000:
             print("ERROR: invalid packet (netid=%d size=%d)" % (netid, size))
             exit(1)
 

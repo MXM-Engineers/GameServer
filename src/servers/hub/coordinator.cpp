@@ -272,7 +272,7 @@ void Coordinator::Lane::Init()
 
 void Coordinator::Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
 {
-	LOG("[client%03d] ChannelPvP:: New player :: '%ls'", clientID, accountData->nickname.data());
+	LOG("[Lane][client%03d] New player :: '%ls'", clientID, accountData->nickname.data());
 
 	const LockGuard lock(mutexNewPlayerQueue);
 	newPlayerQueue.push_back(EventOnClientConnect{ clientID, accountData });
@@ -292,7 +292,7 @@ void Coordinator::Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, 
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
 }
 
-void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void* packetData)
+void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void *packetData)
 {
 	const i32 packetTotalSize = packetSize + sizeof(NetHeader);
 	ASSERT(packetTotalSize + sendQ.size <= InnerConnection::SendQueue::QUEUE_CAPACITY);
@@ -466,7 +466,7 @@ void Coordinator::ClientHandleReceivedChunk(i32 clientID, const u8* data, const 
 void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
-	LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
 	// TODO: verify version, protocol, etc
 	const Server::ClientInfo& info = server->clientInfo[clientID];
@@ -487,7 +487,6 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	hello.clientPort = info.port;
 	hello.tqosWorldId = 1;
 
-	LOG("[client%03d] Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", clientID, hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
 	SendPacket(clientID, hello);
 }
 
@@ -497,7 +496,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
 	i32 var = request.Read<i32>();
-	LOG("[client%03d] Client :: CQ_Authenticate :: %.*ls var=%d", clientID, nickLen, nick, var);
+	NT_LOG("[client%03d] Client :: CQ_Authenticate :: %.*ls var=%d", clientID, nickLen, nick, var);
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -506,7 +505,6 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	// send authentication result
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
-	LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
 	SendPacket(clientID, auth);
 
 
@@ -539,7 +537,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 	i32 var = request.Read<i32>();
 	i32 var2 = request.Read<i32>();
 	u8 b1 = request.Read<u8>();
-	LOG("[client%03d] Client :: CQ_AuthenticateGameServer :: %.*ls var=%d var2=%d b1=%d", clientID, nickLen, nick, var, var2, b1);
+	NT_LOG("[client%03d] Client :: CQ_AuthenticateGameServer :: %.*ls var=%d var2=%d b1=%d", clientID, nickLen, nick, var, var2, b1);
 
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -548,7 +546,6 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 	// send authentication result
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
-	LOG("[client%03d] Server :: SA_AuthResult :: result=%d", clientID, auth.result);
 	SendPacket(clientID, auth);
 
 
@@ -575,7 +572,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const Net
 
 void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
+	NT_LOG("[client%03d] Client :: CQ_GetGuildProfile ::", clientID);
 
 	// SA_GetGuildProfile
 	{
@@ -650,14 +647,13 @@ void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader&
 		packet.Write<i32>(450); // maxDailyArenaGuildPoint
 		packet.Write<u8>(1); // todayRollCallCount
 
-		LOG("[client%03d] Server :: SA_GetGuildProfile :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildProfile::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_GetGuildProfile>(clientID, packet);
 	}
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
+	NT_LOG("[client%03d] Client :: CQ_GetGuildMemberList ::", clientID);
 
 	// SA_GetGuildMemberList
 	{
@@ -713,14 +709,13 @@ void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHead
 		packet.Write<u16>(0); // guildPvpPlay
 		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
 
-		LOG("[client%03d] Server :: SA_GetGuildMemberList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildMemberList::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_GetGuildMemberList>(clientID, packet);
 	}
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
+	NT_LOG("[client%03d] Client :: CQ_GetGuildHistoryList ::", clientID);
 
 	// SA_GetGuildMemberList
 	{
@@ -731,16 +726,14 @@ void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHea
 
 		packet.Write<u16>(0); // guildHistories_count
 
-
-		LOG("[client%03d] Server :: SA_GetGuildHistoryList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildHistoryList::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_GetGuildHistoryList>(clientID, packet);
 	}
 }
 
 void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
-	LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
+	NT_LOG("[client%03d] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientID, rank.rankingType);
 
 	// SA_GetGuildRankingSeasonList
 	{
@@ -752,15 +745,13 @@ void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const 
 
 		packet.Write<u16>(0); // rankingSeasonList_count
 
-
-		LOG("[client%03d] Server :: SA_GetGuildRankingSeasonList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildRankingSeasonList::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_GetGuildRankingSeasonList>(clientID, packet);
 	}
 }
 
 void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
+	NT_LOG("[client%03d] Client :: CQ_TierRecord ::", clientID);
 
 	// SA_TierRecord
 	{
@@ -774,8 +765,7 @@ void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& head
 		packet.Write<i32>(0); // allTierLeave
 		packet.Write<u16>(0); // stageRecordList_count
 
-		LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
-		SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SA_TierRecord>(clientID, packet);
 	}
 }
 
@@ -910,8 +900,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ClientSettings>(clientID, packet);
 	}
 
 	// SN_ClientSettings
@@ -1008,8 +997,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ClientSettings>(clientID, packet);
 	}
 
 	// SN_ClientSettings
@@ -1140,7 +1128,6 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket<Sv::SN_ClientSettings>(clientID, packet);
 	}
 }

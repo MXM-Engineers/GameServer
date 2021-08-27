@@ -8,7 +8,6 @@
 void GameHub::Init(ReplicationHub* replication_)
 {
 	replication = replication_;
-	replication->stageType = StageType::CITY;
 
 	memset(&playerActorUID, 0, sizeof(playerActorUID));
 

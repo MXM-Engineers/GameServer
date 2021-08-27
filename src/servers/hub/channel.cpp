@@ -86,6 +86,8 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		HANDLE_CASE(CQ_PartyCreate);
 		HANDLE_CASE(CQ_RTT_Time);
 		HANDLE_CASE(CQ_LoadingProgressData);
+		HANDLE_CASE(CQ_RequestCalendar);
+		HANDLE_CASE(CQ_RequestAreaPopularity);
 
 		default: {
 			NT_LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -255,4 +257,20 @@ void ChannelHub::HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHead
 {
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
+}
+
+void ChannelHub::HandlePacket_CQ_RequestCalendar(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_RequestCalendar& req = SafeCast<Cl::CQ_RequestCalendar>(packetData, packetSize);
+	NT_LOG("[client%03d] Client :: CQ_RequestCalendar :: { filetimeUTC=%llu }", clientID, req.filetimeUTC);
+
+	replication.SendCalendar(clientID);
+}
+
+void ChannelHub::HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_RequestAreaPopularity& req = SafeCast<Cl::CQ_RequestAreaPopularity>(packetData, packetSize);
+	NT_LOG("[client%03d] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientID, req.areaID);
+
+	replication.SendAreaPopularity(clientID, req.areaID);
 }

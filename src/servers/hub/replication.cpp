@@ -250,67 +250,9 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 	}
 }
 
-void ReplicationHub::SendLoadPvpMap(i32 clientID, StageIndex stageIndex)
-{
-	Sv::SN_UpdateGameOwner owner;
-	owner.userID = 1;
-	SendPacket(clientID, owner);
-
-	Sv::SN_LobbyStartGame lobby;
-	lobby.stageType = StageType::GAME_INSTANCE;
-	SendPacket(clientID, lobby);
-
-	// SN_CityMapInfo
-	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = stageIndex;
-	SendPacket(clientID, cityMapInfo);
-
-	/*
-	// SN_WeaponState
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<LocalActorID>((LocalActorID)21035); // ownerID
-		packet.Write<i32>(90); // weaponID
-		packet.Write<i32>(0); // state
-		packet.Write<u8>(0); // chargeLevel
-		packet.Write<u8>(0); // firingCombo
-		packet.Write<i32>(-1); // result
-
-		LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SN_WeaponState>(packet.data, packet.size));
-		SendPacket<>(clientID, Sv::SN_WeaponStatepacket);
-	}
-
-	playerState[clientID] = PlayerState::IN_GAME;*/
-}
-
 void ReplicationHub::SetPlayerAsInGame(i32 clientID)
 {
 	playerState[clientID] = PlayerState::IN_GAME;
-
-	// FIXME: move this
-	if(stageType == StageType::GAME_INSTANCE) {
-		// SN_InitIngameModeInfo
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
-
-			packet.Write<i32>(0); // transformationVotingPlayerCoolTimeByVotingFail
-			packet.Write<i32>(0); // transformationVotingTeamCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // playerCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // currentTransformationVotingPlayerCoolTimeByVotingFail
-			packet.Write<i32>(0); // currentTransformationVotingTeamCoolTimeByTransformationEnd
-			packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
-			packet.Write<i32>(20); // chPropertyResetCoolTime
-			packet.Write<u8>(0); // transformationPieceCount
-			packet.Write<u16>(0); // titanDocIndexes_count
-			packet.Write<u8>(0); // nextTitanIndex
-			packet.Write<u16>(0); // listExceptionStat_count
-
-			SendPacket<Sv::SN_InitIngameModeInfo>(clientID, packet);
-		}
-	}
 }
 
 void ReplicationHub::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
@@ -869,334 +811,6 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 	SendPacket(clientID, money);
 }
 
-void ReplicationHub::SendAccountDataPvp(i32 clientID, const AccountData& account)
-{
-	// SN_Money
-	// SN_ProfileCharacters
-	// SN_ProfileItems
-	// SN_ProfileWeapons
-	// SN_ProfileSkills
-	// SN_ProfileMasterGears
-	// SN_PlayerSkillSlot x2
-	// SN_AccountEquipmentList
-	// SN_GameFieldReady
-
-	const GameXmlContent& content = GetGameXmlContent();
-
-	// SN_ProfileCharacters
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(2); // charaList_count
-
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::LUA) continue;
-
-			Sv::SN_ProfileCharacters::Character chara;
-			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
-			chara.creatureIndex = it->ID;
-			chara.skillShot1 = it->skillIDs[0];
-			chara.skillShot2 = it->skillIDs[1];
-			chara.classType = it->classType;
-			chara.x = 0;
-			chara.y = 0;
-			chara.z = 0;
-			chara.characterType = 1;
-			chara.skinIndex = SkinIndex::DEFAULT;
-			chara.weaponIndex = it->weaponIDs[1];
-			chara.masterGearNo = 1;
-			packet.Write(chara);
-		}
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::SIZUKA) continue;
-
-			Sv::SN_ProfileCharacters::Character chara;
-			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
-			chara.creatureIndex = it->ID;
-			chara.skillShot1 = it->skillIDs[0];
-			chara.skillShot2 = it->skillIDs[1];
-			chara.classType = it->classType;
-			chara.x = 0;
-			chara.y = 0;
-			chara.z = 0;
-			chara.characterType = 1;
-			chara.skinIndex = SkinIndex::DEFAULT;
-			chara.weaponIndex = it->weaponIDs[1];
-			chara.masterGearNo = 1;
-			packet.Write(chara);
-		}
-
-		SendPacket<Sv::SN_ProfileCharacters>(clientID, packet);
-	}
-
-	// SN_ProfileWeapons
-	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(2); // weaponList_count
-
-		Sv::SN_ProfileWeapons::Weapon weap;
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)ClassType::LUA);
-		weap.weaponType = 1;
-		weap.weaponIndex = WeaponIndex(131135011);
-		weap.grade = 0;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
-
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)ClassType::SIZUKA);
-		weap.weaponType = 1;
-		weap.weaponIndex = WeaponIndex(131103011);
-		weap.grade = 0;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
-
-		SendPacket<Sv::SN_ProfileWeapons>(clientID, packet);
-	}
-
-	// SN_ProfileItems
-	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u8>(1); // packetNum
-		packet.Write<u16>(0); // items_count
-
-		/*
-		// jukebox coins
-		packet.Write<i32>(1073741864); // itemID
-		packet.Write<u8>(0); // invenType
-		packet.Write<i32>(200); // slot
-		packet.Write<i32>(137120001); // itemIndex -> actual jukebox coin identifier
-		packet.Write<i32>(1337); // count
-		packet.Write<i32>(-1); // propertyGroupIndex
-		packet.Write<u8>(0); // isLifeTimeAbsolute
-		packet.Write<i64>(0); // lifeEndTimeUTC
-		packet.Write<u16>(0); // properties_count
-		*/
-
-		SendPacket<Sv::SN_ProfileItems>(clientID, packet);
-	}
-
-	// SN_ProfileSkills
-	{
-		u8 sendData[8192];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u8>(1); // packetNum
-
-		i32 skillCount = 0;
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::SIZUKA && it->classType != ClassType::LUA) continue;
-
-			foreach(skill, it->skillIDs) {
-				skillCount++;
-			}
-		}
-
-		packet.Write<u16>(skillCount); // skills_count
-
-		/*
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::SIZUKA && it->classType != ClassType::LUA) continue;
-
-			foreach(skill, it->skillIDs) {
-				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
-				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(1); // isUnlocked
-				packet.Write<u8>(1); // isActivated
-				packet.Write<u16>(0); // properties_count
-			}
-		}
-		*/
-
-		struct SkillStatus {
-			u8 isUnlocked;
-			u8 isActivated;
-		};
-
-		// NOTE: not having all skills enabled here is important. There are 5 skills per master selectable at a time.
-		const SkillStatus skillStatusList[7] = {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-		};
-
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::LUA) continue;
-
-			i32 skillStatusID = 0;
-			foreach(skill, it->skillIDs) {
-				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
-				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-				packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-				packet.Write<u16>(0); // properties_count
-
-				skillStatusID++;
-			}
-		}
-		foreach(it, content.masters) {
-			if(it->classType != ClassType::SIZUKA) continue;
-
-			i32 skillStatusID = 0;
-			foreach(skill, it->skillIDs) {
-				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
-				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-				packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-				packet.Write<u16>(0); // properties_count
-
-				skillStatusID++;
-			}
-		}
-
-		SendPacket<Sv::SN_ProfileSkills>(clientID, packet);
-	}
-
-	// SN_ProfileMasterGears
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(1); // masterGears_count
-
-		packet.Write<u8>(1); // masterGearNo
-		packet.WriteStringObj(L""); // name
-		packet.Write<u16>(6); // slots_count
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(80); // gearType
-		packet.Write<i32>(1073741825); // gearItemID
-
-		SendPacket<Sv::SN_ProfileMasterGears>(clientID, packet);
-	}
-
-
-	// SN_AccountInfo
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.WriteStringObj(account.nickname.data()); // nick
-		packet.Write<i32>(4); // inventoryLineCountTab0
-		packet.Write<i32>(4); // inventoryLineCountTab1
-		packet.Write<i32>(4); // inventoryLineCountTab2
-#if 0
-		packet.Write<i32>(320080005); // displayTitlteIndex
-		packet.Write<i32>(320080005); // statTitleIndex
-#else // disable title
-		packet.Write<i32>(-1); // displayTitlteIndex
-		packet.Write<i32>(-1); // statTitleIndex
-#endif
-		packet.Write<i32>(1); // warehouseLineCount
-		packet.Write<i32>(-1); // tutorialState
-		packet.Write<i32>(3600); // masterGearDurability
-		packet.Write<u8>(0); // badgeType
-
-		SendPacket<Sv::SN_AccountInfo>(clientID, packet);
-	}
-
-	// SN_AccountEquipmentList
-	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(-1); // supportKitDocIndex
-
-		SendPacket<Sv::SN_AccountEquipmentList>(clientID, packet);
-	}
-
-	// SN_Money
-	Sv::SN_Money money;
-	money.nMoney = 666;
-	money.nReason = 1;
-	SendPacket(clientID, money);
-
-	// SN_GameFieldReady
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<i32>(449); // InGameID=449
-		packet.Write<i32>(6); // GameType=6
-		packet.Write<i32>(190002202); // AreaIndex=190002202
-		packet.Write<i32>(200020104); // StageIndex=200020104
-		packet.Write<i32>(1); // GameDefinitionType=1
-		packet.Write<u8>(6); // initPlayerCount=6
-		packet.Write<u8>(1); // CanEscape=1
-		packet.Write<u8>(0); // IsTrespass=0
-		packet.Write<u8>(0); // IsSpectator=0
-
-		// InGameUsers
-		packet.Write<u16>(6);
-		packet.Write<i32>(1); //userID
-		packet.WriteStringObj(account.nickname.data()); // nickname
-		packet.Write<u8>(3); // team
-		packet.Write<u8>(0); // isBot
-		for(int i = 1; i < 6; i++) {
-			packet.Write<i32>(i+1); //userID
-			packet.WriteStringObj(LFMT(L"Player_%d", i)); // nickname
-			packet.Write<u8>(3 + i/3); // team
-			packet.Write<u8>(0); // isBot
-		}
-
-		// IngamePlayers
-		packet.Write<u16>(6);
-		for(int i = 0; i < 6; i++) {
-			packet.Write<i32>(i+1); //userID
-			packet.Write<CreatureIndex>((CreatureIndex)100000035); //mainCreatureIndex
-			packet.Write<i32>(0); //mainSkinIndex
-
-			if(i == 0) {
-				packet.Write<i32>(180350010); //mainSkillindex1
-				packet.Write<i32>(180350030); //mainSkillIndex2
-			}
-			else {
-				packet.Write<i32>(-1); //mainSkillindex1
-				packet.Write<i32>(-1); //mainSkillIndex2
-			}
-
-			packet.Write<CreatureIndex>((CreatureIndex)100000003); //subCreatureIndex
-			packet.Write<i32>(0); //subSkinIndex
-
-			if(i == 0) {
-				packet.Write<i32>(180030020); //subSkillIndex1
-				packet.Write<i32>(180030030); //subSkillIndex2
-			}
-			else {
-				packet.Write<i32>(-1); //subSkillIndex1
-				packet.Write<i32>(-1); //subSkillIndex2
-			}
-			packet.Write<i32>(-1); //stageSkillIndex1
-			packet.Write<i32>(-1); //stageSkillIndex2
-			packet.Write<i32>(-1); //supportKitIndex
-			packet.Write<u8>(0); //isBot
-		}
-
-		// IngameGuilds
-		packet.Write<u16>(0);
-		packet.Write<u32>(180000); // surrenderAbleTime
-
-		SendPacket<Sv::SN_GameFieldReady>(clientID, packet);
-	}
-}
-
 void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port)
 {
 	u8 sendData[1024];
@@ -1212,84 +826,6 @@ void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& accoun
 	SendPacket<Sv::SN_DoConnectGameServer>(clientID, packet);
 
 	// NOTE: client will disconnect on reception
-}
-
-void ReplicationHub::SendPvpLoadingComplete(i32 clientID)
-{
-	// SN_NotifyPcDetailInfos
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(6); // pcList_count
-
-		packet.Write<i32>(1); // userID
-		// mainPC
-		packet.Write<LocalActorID>(LocalActorID(21035)); // characterID
-		packet.Write<CreatureIndex>((CreatureIndex)100000035); // docID
-		packet.Write<ClassType>(ClassType::LUA); // classType
-		packet.Write<i32>(2400); // hp
-		packet.Write<i32>(2400); // maxHp
-		// subPC
-		packet.Write<LocalActorID>(LocalActorID(21003)); // characterID
-		packet.Write<CreatureIndex>((CreatureIndex)100000003); // docID
-		packet.Write<ClassType>(ClassType::SIZUKA); // classType
-		packet.Write<i32>(1764); // hp
-		packet.Write<i32>(1764); // maxHp
-		packet.Write<i32>(0); // remainTagCooltimeMS
-		packet.Write<u8>(0); // canCastSkillSlotUG
-
-
-		for(int i = 1; i < 6; i++) {
-			packet.Write<i32>(i+1); // userID
-			// mainPC
-			packet.Write<LocalActorID>((LocalActorID)((u32)22000 + i)); // characterID
-			packet.Write<CreatureIndex>((CreatureIndex)100000035); // docID
-			packet.Write<ClassType>(ClassType::LUA); // classType
-			packet.Write<i32>(2400); // hp
-			packet.Write<i32>(2400); // maxHp
-			// subPC
-			packet.Write<LocalActorID>((LocalActorID)((u32)22000 + i + 1)); // characterID
-			packet.Write<CreatureIndex>((CreatureIndex)100000003); // docID
-			packet.Write<ClassType>(ClassType::SIZUKA); // classType
-			packet.Write<i32>(2400); // hp
-			packet.Write<i32>(2400); // maxHp
-
-			packet.Write<i32>(0); // remainTagCooltimeMS
-			packet.Write<u8>(0); // canCastSkillSlotUG
-		}
-
-		SendPacket<Sv::SN_NotifyPcDetailInfos>(clientID, packet);
-	}
-
-	// SN_InitScoreBoard
-	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
-
-		packet.Write<u16>(6); // userInfos_count
-
-		packet.Write<i32>(1); // usn
-		packet.WriteStringObj(L"LordSk");
-		packet.Write<i32>(3); // teamType
-		packet.Write<CreatureIndex>((CreatureIndex)100000035); // mainCreatureIndex
-		packet.Write<CreatureIndex>((CreatureIndex)100000003); // subCreatureIndex
-
-
-		for(int i = 1; i < 6; i++) {
-			packet.Write<i32>(i+1); // usn
-			packet.WriteStringObj(LFMT(L"Player_%d", i));
-			packet.Write<i32>(3 + i/3); // teamType
-			packet.Write<CreatureIndex>((CreatureIndex)100000035); // mainCreatureIndex
-			packet.Write<CreatureIndex>((CreatureIndex)100000003); // subCreatureIndex
-		}
-
-
-		SendPacket<Sv::SN_InitScoreBoard>(clientID, packet);
-	}
-
-	// SA_LoadingComplete
-	SendPacketData<Sv::SA_LoadingComplete>(clientID, 0, nullptr);
 }
 
 void ReplicationHub::SendGameReady(i32 clientID)
@@ -1381,18 +917,479 @@ void ReplicationHub::SendGameReady(i32 clientID)
 	*/
 }
 
-void ReplicationHub::SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID)
+void ReplicationHub::SendCalendar(i32 clientID)
 {
-	Sv::SN_GamePlayerTag tag;
-	tag.result = 128;
-	tag.mainID = GetLocalActorID(clientID, mainActorUID);
-	tag.subID = GetLocalActorID(clientID, subActorUID);
-	tag.attackerID = LocalActorID::INVALID;
+	// SA_CalendarDetail
+	{
+		u8 sendData[4096];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-	ASSERT(tag.mainID != LocalActorID::INVALID);
-	ASSERT(tag.subID != LocalActorID::INVALID);
+		const u64 now = CurrentFiletimeTimestampUTC();
+		const u64 before = now - (2*24*3600*10000000ull); // 2 days before
+		const u64 after = now + (2*24*3600*10000000ull); // 2 days after
 
-	SendPacket(clientID, tag);
+		packet.Write<u64>(now); // todayUTCDateTime
+
+		const Sv::SA_CalendarDetail::Event events[] = {
+			{
+				4,
+				80602001,
+				before,
+				after
+			},
+			{
+				4,
+				80602002,
+				before,
+				after
+			},
+			{
+				4,
+				80602003,
+				before,
+				after
+			},
+			{
+				4,
+				80602004,
+				before,
+				after
+			},
+			{
+				4,
+				80602006,
+				before,
+				after
+			},
+			{
+				4,
+				80602007,
+				before,
+				after
+			},
+			{
+				4,
+				80602005,
+				before,
+				after
+			},
+			{
+				4,
+				70600005,
+				before,
+				after
+			},
+			{
+				4,
+				70600006,
+				before,
+				after
+			},
+			{
+				4,
+				70600008,
+				before,
+				after
+			},
+			{
+				4,
+				70600009,
+				before,
+				after
+			},
+			{
+				4,
+				70600010,
+				before,
+				after
+			},
+			{
+				4,
+				70600012,
+				before,
+				after
+			},
+			{
+				4,
+				70600002,
+				before,
+				after
+			},
+			{
+				6,
+				980000714,
+				before,
+				after
+			},
+			{
+				6,
+				980000168,
+				before,
+				after
+			},
+			{
+				6,
+				980000147,
+				before,
+				after
+			},
+			{
+				6,
+				980000735,
+				before,
+				after
+			},
+			{
+				6,
+				980000756,
+				before,
+				after
+			},
+			{
+				6,
+				980000777,
+				before,
+				after
+			},
+			{
+				6,
+				980000798,
+				before,
+				after
+			},
+			{
+				6,
+				980000819,
+				before,
+				after
+			},
+			{
+				6,
+				980000840,
+				before,
+				after
+			},
+			{
+				6,
+				980000861,
+				before,
+				after
+			},
+			{
+				4,
+				80602001,
+				before,
+				after
+			},
+			{
+				4,
+				80602002,
+				before,
+				after
+			},
+			{
+				4,
+				80602003,
+				before,
+				after
+			},
+			{
+				4,
+				80602004,
+				before,
+				after
+			},
+			{
+				4,
+				80602006,
+				before,
+				after
+			},
+			{
+				4,
+				80602007,
+				before,
+				after
+			},
+			{
+				4,
+				80602005,
+				before,
+				after
+			},
+			{
+				4,
+				70600005,
+				before,
+				after
+			},
+			{
+				4,
+				70600006,
+				before,
+				after
+			},
+			{
+				4,
+				70600008,
+				before,
+				after
+			},
+			{
+				4,
+				70600009,
+				before,
+				after
+			},
+			{
+				4,
+				70600010,
+				before,
+				after
+			},
+			{
+				4,
+				70600012,
+				before,
+				after
+			},
+			{
+				4,
+				70600002,
+				before,
+				after
+			},
+			{
+				6,
+				980000714,
+				before,
+				after
+			},
+			{
+				6,
+				980000168,
+				before,
+				after
+			},
+			{
+				6,
+				980000147,
+				before,
+				after
+			},
+			{
+				6,
+				980000735,
+				before,
+				after
+			},
+			{
+				6,
+				980000756,
+				before,
+				after
+			},
+			{
+				6,
+				980000777,
+				before,
+				after
+			},
+			{
+				6,
+				980000798,
+				before,
+				after
+			},
+			{
+				6,
+				980000819,
+				before,
+				after
+			},
+			{
+				6,
+				980000840,
+				before,
+				after
+			},
+			{
+				6,
+				980000861,
+				before,
+				after
+			},
+			{
+				4,
+				80602001,
+				before,
+				after
+			},
+			{
+				4,
+				80602002,
+				before,
+				after
+			},
+			{
+				4,
+				80602003,
+				before,
+				after
+			},
+			{
+				4,
+				80602004,
+				before,
+				after
+			},
+			{
+				4,
+				80602006,
+				before,
+				after
+			},
+			{
+				4,
+				80602007,
+				before,
+				after
+			},
+			{
+				4,
+				80602005,
+				before,
+				after
+			},
+			{
+				4,
+				70600005,
+				before,
+				after
+			},
+			{
+				4,
+				70600006,
+				before,
+				after
+			},
+			{
+				4,
+				70600008,
+				before,
+				after
+			},
+			{
+				4,
+				70600009,
+				before,
+				after
+			},
+			{
+				4,
+				70600010,
+				before,
+				after
+			},
+			{
+				4,
+				70600012,
+				before,
+				after
+			},
+			{
+				4,
+				70600002,
+				before,
+				after
+			},
+			{
+				6,
+				980000714,
+				before,
+				after
+			},
+			{
+				6,
+				980000168,
+				before,
+				after
+			},
+			{
+				6,
+				980000147,
+				before,
+				after
+			},
+			{
+				6,
+				980000735,
+				before,
+				after
+			},
+			{
+				6,
+				980000756,
+				before,
+				after
+			},
+			{
+				6,
+				980000777,
+				before,
+				after
+			},
+			{
+				6,
+				980000798,
+				before,
+				after
+			},
+			{
+				6,
+				980000819,
+				before,
+				after
+			},
+			{
+				6,
+				980000840,
+				before,
+				after
+			},
+			{
+				6,
+				980000861,
+				before,
+				after
+			}
+		};
+
+		packet.WriteVec(events, ARRAY_COUNT(events));
+
+		SendPacket<Sv::SA_CalendarDetail>(clientID, packet);
+	}
+}
+
+void ReplicationHub::SendAreaPopularity(i32 clientID, u32 areaID)
+{
+	// SA_AreaPopularity
+	{
+		Sv::SA_AreaPopularity packet;
+		packet.errCode = 0;
+		SendPacket(clientID, packet);
+	}
+
+	// SN_AreaPopularity
+	{
+		u8 sendData[256];
+		PacketWriter packet(sendData, sizeof(sendData));
+
+		packet.Write<u32>(areaID);
+		packet.WriteVec((Sv::SN_AreaPopularity*)nullptr, 0);
+
+		SendPacket<Sv::SN_AreaPopularity>(clientID, packet);
+	}
 }
 
 void ReplicationHub::EventClientDisconnect(i32 clientID)
@@ -1991,10 +1988,6 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 		SendPacket<>(clientID, Sv::SN_StatusSnapshotpacket);
 	}
 	*/
-
-	if(stageType == StageType::GAME_INSTANCE) {
-		SendMasterSkillSlots(clientID, actor);
-	}
 }
 
 void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
@@ -2237,43 +2230,21 @@ void ReplicationHub::SendInitialFrame(i32 clientID)
 	// SN_ScanEnd
 	SendPacketData<Sv::SN_ScanEnd>(clientID, 0, nullptr);
 
-	if(stageType == StageType::CITY) {
-		// SN_TownHudStatistics
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+	// SN_TownHudStatistics
+	{
+		u8 sendData[1024];
+		PacketWriter packet(sendData, sizeof(sendData));
 
-			packet.Write<u8>(0); // gameModeType
-			packet.Write<u8>(0); // gameType
-			packet.Write<u16>(3); // argList_count
+		packet.Write<u8>(0); // gameModeType
+		packet.Write<u8>(0); // gameType
+		packet.Write<u16>(3); // argList_count
 
-			// arglist
-			packet.Write<i32>(479);
-			packet.Write<i32>(0);
-			packet.Write<i32>(16);
+		// arglist
+		packet.Write<i32>(479);
+		packet.Write<i32>(0);
+		packet.Write<i32>(16);
 
-			SendPacket<Sv::SN_TownHudStatistics>(clientID, packet);
-		}
-	}
-	else if(stageType == StageType::GAME_INSTANCE) {
-		// SN_LoadClearedStages
-		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
-
-			packet.Write<u16>(0); // count
-			SendPacket<Sv::SN_NotifyPcDetailInfos>(clientID, packet);
-		}
-
-		/*
-		Sv::SN_NotifyUserLifeInfo lifeInfo;
-		lifeInfo.usn = 1;
-		lifeInfo.lifeCount = 3;
-		lifeInfo.maxLifeCount = 3;
-		lifeInfo.remainLifeCount = 0;
-		LOG("[client%03d] Server :: SN_NotifyUserLifeInfo ::", clientID);
-		SendPacket(clientID, lifeInfo);
-		*/
+		SendPacket<Sv::SN_TownHudStatistics>(clientID, packet);
 	}
 }
 

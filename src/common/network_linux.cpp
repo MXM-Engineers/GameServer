@@ -247,4 +247,20 @@ void AsyncConnection::CropPartialPackets()
 	}
 }
 
+// https://stackoverflow.com/a/4135003
+/**
+ * number of seconds from 1 Jan. 1601 00:00 to 1 Jan 1970 00:00 UTC
+ */
+#define EPOCH_DIFF 11644473600LL
+
+uint64_t CurrentFiletimeTimestampUTC()
+{
+	struct timeval tv;
+	uint64_t result = EPOCH_DIFF;
+	gettimeofday(&tv, NULL);
+	result += tv.tv_sec;
+	result *= 10000000LL;
+	result += tv.tv_usec * 10;
+	return result;
+}
 #endif

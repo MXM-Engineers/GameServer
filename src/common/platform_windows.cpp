@@ -69,3 +69,12 @@ void PlatformInit()
 }
 #endif
 
+uint64_t CurrentFiletimeTimestampUTC()
+{
+	FILETIME ft;
+	GetSystemTimeAsFileTime(&ft);
+	ULARGE_INTEGER large;
+	large.LowPart = ft.dwLowDateTime;
+	large.HighPart = ft.dwHighDateTime;
+	return large.QuadPart;
+}

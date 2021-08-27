@@ -850,6 +850,87 @@ inline const char* PacketSerialize<Sv::SA_PartyCreate>(const void* packetData, c
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SA_AreaPopularity>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_AreaPopularity(%d, %d) :: {", Sv::SA_AreaPopularity::NET_ID, packetSize);
+	SER("	errCode=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AreaPopularity>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_AreaPopularity(%d, %d) :: {", Sv::SN_AreaPopularity::NET_ID, packetSize);
+	SER("	areaCode=%u", buff.Read<u32>());
+
+	const u16 count = buff.Read<u16>();
+	SER("	popularities(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		stageIndex=%d", buff.Read<i32>());
+		SER("		gameType=%d", buff.Read<i32>());
+		SER("		popularityLevel=%d", buff.Read<i32>());
+		SER("	},");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_FirstHello>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SA_FirstHello& packet = *(Sv::SA_FirstHello*)packetData;
+
+	SER("SA_FirstHello(%d, %d) :: {", Sv::SA_AreaPopularity::NET_ID, packetSize);
+	SER("	dwProtocolCRC=%u", packet.dwProtocolCRC);
+	SER("	dwErrorCRC=%u", packet.dwErrorCRC);
+	SER("	serverType=%u", packet.serverType);
+	SER("	clientIp=(%u.%u.%u.%u)", packet.clientIp[0], packet.clientIp[1], packet.clientIp[2], packet.clientIp[3]);
+	SER("	clientPort=%u", packet.clientPort);
+	SER("	tqosWorldId=%u", packet.tqosWorldId);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_CalendarDetail>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_CalendarDetail(%d, %d) :: {", Sv::SA_CalendarDetail::NET_ID, packetSize);
+	SER("	todayUTCDateTime=%llu", buff.Read<u64>());
+
+	const u16 count = buff.Read<u16>();
+	SER("	events(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		dataType=%u", buff.Read<u8>());
+		SER("		index=%d", buff.Read<i32>());
+		SER("		startDateTime=%llu", buff.Read<u64>());
+		SER("		endDateTime=%llu", buff.Read<u64>());
+		SER("	},");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\
@@ -857,8 +938,7 @@ inline const char* PacketSerialize<Sv::SA_PartyCreate>(const void* packetData, c
 		SER_BEGIN();\
 		ConstBuffer buff(packetData, packetSize);\
 	\
-		SER(#PACKET "(%d, %d) :: {", PACKET::NET_ID, packetSize);\
-		SER("}");\
+		SER(#PACKET "(%d, %d) :: {}", PACKET::NET_ID, packetSize);\
 	\
 		return str.data();\
 	}
@@ -918,6 +998,13 @@ DEFAULT_SERIALIZE(Sv::SN_PlayerSyncActionStateOnly);
 DEFAULT_SERIALIZE(Sv::SN_JukeboxPlay);
 DEFAULT_SERIALIZE(Sv::SN_JukeboxEnqueuedList);
 DEFAULT_SERIALIZE(Sv::SN_TownHudStatistics);
+DEFAULT_SERIALIZE(Sv::SA_AuthResult);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildProfile);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildMemberList);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildHistoryList);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildRankingSeasonList);
+DEFAULT_SERIALIZE(Sv::SA_TierRecord);
+DEFAULT_SERIALIZE(Sv::SN_ClientSettings);
 
 #undef DEFAULT_SERIALIZE
 

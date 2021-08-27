@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 {
 	PlatformInit();
 	LogInit("hub_server.log");
-	LogNetTrafficInit("hub_server_nt.log", 0x0);
+	LogNetTrafficInit("hub_server_nt.log"/*, 0x0*/);
 	TimeInit();
 
 	// TODO: linux thread affinity (sched_setaffinity)

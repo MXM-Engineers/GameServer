@@ -150,10 +150,19 @@ private:
 	template<typename Packet>
 	inline void SendPacket(i32 clientID, const Packet& packet)
 	{
-		SendPacketData(clientID, Packet::NET_ID, sizeof(packet), &packet);
+		SendPacketData<Packet>(clientID, sizeof(packet), &packet);
 	}
-	inline void SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
+
+	template<typename Packet>
+	inline void SendPacket(i32 clientID, const PacketWriter& writer)
 	{
-		server->SendPacketData(clientID, netID, packetSize, packetData);
+		SendPacketData<Packet>(clientID, writer.size, writer.data);
+	}
+
+	template<typename Packet>
+	inline void SendPacketData(i32 clientID, u16 packetSize, const void* packetData)
+	{
+		NT_LOG("[client%03d] Hub :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientID, Packet::NET_ID, packetSize, packetData);
 	}
 };

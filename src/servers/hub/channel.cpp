@@ -231,15 +231,14 @@ void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 
 	// we don't support creating parties right now, send back an error
 
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SA_PartyCreate> packet;
 
 	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
 	packet.Write<i32>(0); // retval: success
 	packet.Write<i32>(1); // ownerUserID
 	packet.Write<i32>(create.stageType); // stageType
 
-	SendPacket<Sv::SA_PartyCreate>(clientID, packet);
+	SendPacket(clientID, packet);
 }
 
 void ChannelHub::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

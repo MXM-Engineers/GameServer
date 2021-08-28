@@ -1,5 +1,6 @@
 #pragma once
 #include "protocol.h"
+#include "inner_protocol.h"
 #include <EASTL/fixed_string.h>
 
 namespace PS
@@ -954,6 +955,19 @@ inline const char* PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(const void*
 
 	SER("CQ_GetGuildRankingSeasonList(%d, %d) :: {", Cl::CQ_GetGuildRankingSeasonList::NET_ID, packetSize);
 	SER("	rankingType=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::R_Handshake>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("R_Handshake(%d, %d) :: {", In::R_Handshake::NET_ID, packetSize);
+	SER("	result=%d", buff.Read<u8>());
 	SER("}");
 
 	return str.data();

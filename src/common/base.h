@@ -7,6 +7,7 @@
 #include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_string.h>
+#include <EAStdC/EAString.h>
 #include "logger.h"
 
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
@@ -238,18 +239,16 @@ privDefer<F> defer_func(F f) {
 #define DEFER_3(x)    DEFER_2(x, __COUNTER__)
 #define defer(code)   auto DEFER_3(_defer_) = defer_func([&](){code;})
 
+template<typename Packet, u32 CAPACITY=256>
 struct PacketWriter
 {
-	u8*const data;
-	i32 size;
-	const i32 capacity;
+	enum {
+		NET_ID = Packet::NET_ID,
+		capacity = CAPACITY
+	};
 
-	PacketWriter(void* data_, i32 dataSize)
-		: data((u8*)data_),
-		  capacity(dataSize)
-	{
-		size = 0;
-	}
+	u8 data[capacity];
+	i32 size = 0;
 
 	template<typename T>
 	inline i32 Write(const T& val)
@@ -276,7 +275,13 @@ struct PacketWriter
 		return size;
 	}
 
-	i32 WriteStringObj(const wchar* str, i32 len = -1);
+	i32 WriteStringObj(const wchar* str, i32 len = -1)
+	{
+		if(len == -1) len = EA::StdC::Strlen(str);
+		Write<u16>(len);
+		WriteRaw(str, len * sizeof(wchar));
+		return size;
+	}
 };
 
 template<typename T>

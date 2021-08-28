@@ -367,8 +367,7 @@ void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader&
 
 	// SA_GetGuildProfile
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_GetGuildProfile,1024> packet;
 
 		packet.Write<i32>(0); // result;
 		packet.WriteStringObj(L"Alpha testers"); // guildName
@@ -438,8 +437,7 @@ void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader&
 		packet.Write<i32>(450); // maxDailyArenaGuildPoint
 		packet.Write<u8>(1); // todayRollCallCount
 
-		LOG("[client%03d] Server :: SA_GetGuildProfile :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildProfile::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -449,8 +447,7 @@ void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHead
 
 	// SA_GetGuildMemberList
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_GetGuildMemberList,512> packet;
 
 		packet.Write<i32>(0); // result
 
@@ -501,8 +498,7 @@ void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHead
 		packet.Write<u16>(0); // guildPvpPlay
 		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
 
-		LOG("[client%03d] Server :: SA_GetGuildMemberList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildMemberList::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -512,16 +508,12 @@ void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHea
 
 	// SA_GetGuildMemberList
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_GetGuildHistoryList> packet;
 
 		packet.Write<i32>(0); // result
-
 		packet.Write<u16>(0); // guildHistories_count
 
-
-		LOG("[client%03d] Server :: SA_GetGuildHistoryList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildHistoryList::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -532,17 +524,15 @@ void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const 
 
 	// SA_GetGuildRankingSeasonList
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_GetGuildRankingSeasonList> packet;
 
 		packet.Write<i32>(0); // result
 		packet.Write<u8>(rank.rankingType); // result
-
 		packet.Write<u16>(0); // rankingSeasonList_count
 
 
 		LOG("[client%03d] Server :: SA_GetGuildRankingSeasonList :: ", clientID);
-		SendPacketData(clientID, Sv::SA_GetGuildRankingSeasonList::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -552,8 +542,7 @@ void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& head
 
 	// SA_TierRecord
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_TierRecord> packet;
 
 		packet.Write<u8>(1); // seasonId
 		packet.Write<i32>(0); // allTierWin
@@ -562,8 +551,7 @@ void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& head
 		packet.Write<i32>(0); // allTierLeave
 		packet.Write<u16>(0); // stageRecordList_count
 
-		LOG("[client%03d] Server :: SA_TierRecord :: ", clientID);
-		SendPacketData(clientID, Sv::SA_TierRecord::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -596,8 +584,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 
 	// SN_ClientSettings
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ClientSettings,4096> packet;
 
 		const char* src = R"foo(
 						  <?xml version="1.0" encoding="utf-8"?>
@@ -720,14 +707,12 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ClientSettings
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ClientSettings,4096> packet;
 
 		const char* src =
 				R"foo(
@@ -818,14 +803,12 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ClientSettings
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ClientSettings,4096> packet;
 
 		const char* src =
 				R"foo(
@@ -950,7 +933,6 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		LOG("[client%03d] Server :: SN_ClientSettings :: dataLen=%ld", clientID, destLen);
-		SendPacketData(clientID, Sv::SN_ClientSettings::NET_ID, packet.size, packet.data);
+		SendPacket(clientID, packet);
 	}
 }

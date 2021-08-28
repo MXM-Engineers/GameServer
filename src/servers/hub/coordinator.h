@@ -153,8 +153,8 @@ private:
 		SendPacketData<Packet>(clientID, sizeof(packet), &packet);
 	}
 
-	template<typename Packet>
-	inline void SendPacket(i32 clientID, const PacketWriter& writer)
+	template<typename Packet, u32 CAPACITY>
+	inline void SendPacket(i32 clientID, const PacketWriter<Packet,CAPACITY>& writer)
 	{
 		SendPacketData<Packet>(clientID, writer.size, writer.data);
 	}

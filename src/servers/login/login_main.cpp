@@ -208,8 +208,7 @@ struct Client
 
 				LOG("Server :: SN_TgchatServerInfo");
 				{
-					u8 sendData[1024];
-					PacketWriter packet(sendData, sizeof(sendData));
+					PacketWriter<Sv::SN_TgchatServerInfo> packet;
 
 					// host
 					const wchar* host = L"127.0.0.1";
@@ -236,8 +235,7 @@ struct Client
 
 				LOG("Server :: SA_VersionInfo");
 				{
-					u8 gatewayData[256];
-					PacketWriter packet(gatewayData, sizeof(gatewayData));
+					PacketWriter<Sv::SA_VersionInfo> packet;
 					const wchar* infoStr = L"Gateway Server CSP 1.17.1017.7954";
 					const i32 infoStrLen = 33;
 					packet.Write<u16>(infoStrLen);
@@ -250,9 +248,8 @@ struct Client
 				const Cl::ConfirmGatewayInfo& confirm = SafeCast<Cl::ConfirmGatewayInfo>(packetData, packetSize);
 				LOG("Client :: Cl::ConfirmGatewayInfo :: var=%d", confirm.var);
 
-				LOG("Server :: Sv::SendStationList");
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+				LOG("Server :: Sv::SN_StationList");
+				PacketWriter<Sv::SN_StationList> packet;
 
 				packet.Write<u16>(1); // count
 
@@ -287,9 +284,8 @@ struct Client
 				status.var1 = 5;
 				SendPacket(status);
 
-				LOG("Server :: Sv::Finish");
-				u8 sendData[1024];
-				PacketWriter packet(sendData, sizeof(sendData));
+				LOG("Server :: Sv::SN_DoConnectChannelServer");
+				PacketWriter<Sv::SN_DoConnectChannelServer> packet;
 
 				packet.Write<u16>(1); // count
 				packet.Write<u8[4]>(g_Config.gameServerIP); // ip

@@ -3,7 +3,6 @@
 #include <eathread/eathread.h>
 #include <EASTL/array.h>
 #include <EAStdC/EASprintf.h>
-#include <EAStdC/EAString.h>
 
 // EASTL new operators
 void* operator new[](size_t size, const char* name, int flags, unsigned debugFlags, const char* file, int line)
@@ -39,15 +38,6 @@ const wchar* _TempWideStrFormat(const wchar* fmt, ...)
 
 	return buff;
 }
-
-i32 PacketWriter::WriteStringObj(const wchar* str, i32 len)
-{
-	if(len == -1) len = EA::StdC::Strlen(str);
-	Write<u16>(len);
-	WriteRaw(str, len * sizeof(wchar));
-	return size;
-}
-
 
 #define SOKOL_IMPL
 #include "sokol_time.h"

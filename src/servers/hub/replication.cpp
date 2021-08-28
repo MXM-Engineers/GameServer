@@ -154,18 +154,16 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 	// SN_SummaryInfoAll
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_SummaryInfoAll> packet;
 
 		packet.Write<u16>(0);
 
-		SendPacket<Sv::SN_SummaryInfoAll>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AvailableSummaryRewardCountList
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AvailableSummaryRewardCountList> packet;
 
 		packet.Write<u16>(8);
 
@@ -182,14 +180,13 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(rewardCount, sizeof(rewardCount));
 
-		SendPacket<Sv::SN_AvailableSummaryRewardCountList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 
 	// SN_SummaryInfoLatest
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_SummaryInfoLatest> packet;
 
 		packet.Write<u16>(10);
 
@@ -208,29 +205,27 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(infoList, sizeof(infoList));
 
-		SendPacket<Sv::SN_SummaryInfoLatest>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AchieveInfo
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AchieveInfo> packet;
 
 		packet.Write<u8>(1); // packetNum
 		packet.Write<i32>(800); // achievementScore
 		packet.Write<u16>(0); // achList_count
 
-		SendPacket<Sv::SN_AchieveInfo>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AchieveLatest
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AchieveLatest> packet;
 
 		packet.Write<u16>(0); // achList_count
 
-		SendPacket<Sv::SN_AchieveLatest>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_CityMapInfo
@@ -303,8 +298,7 @@ void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 {
 	// TODO: restrict message length
 
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
 	packet.Write<i32>(chatType); // chatType
 	packet.WriteStringObj(senderName);
@@ -314,7 +308,7 @@ void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		SendPacket<Sv::SN_ChatChannelMessage>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -325,47 +319,43 @@ void ReplicationHub::SendChatMessageToClient(i32 toClientID, const wchar* sender
 
 	if(msgLen == -1) msgLen = EA::StdC::Strlen(msg);
 
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
 	packet.Write<i32>(chatType); // chatType
 	packet.WriteStringObj(senderName);
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	SendPacket<Sv::SN_ChatChannelMessage>(toClientID, packet);
+	SendPacket(toClientID, packet);
 }
 
 void ReplicationHub::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg)
 {
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SA_WhisperSend> packet;
 
 	packet.Write<i32>(0); // result
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
-	SendPacket<Sv::SA_WhisperSend>(senderClientID, packet);
+	SendPacket(senderClientID, packet);
 }
 
 void ReplicationHub::SendChatWhisperToClient(i32 destClientID, const wchar* senderName, const wchar* msg)
 {
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_WhisperReceive> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
 	packet.Write<u8>(0); // staffType
 	packet.WriteStringObj(msg); // msg
 
-	SendPacket<Sv::SN_WhisperReceive>(destClientID, packet);
+	SendPacket(destClientID, packet);
 }
 
 void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& account)
 {
 	// SN_RegionServicePolicy
 	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_RegionServicePolicy> packet;
 
 		packet.Write<u16>(1); // newMasterRestrict_count
 		packet.Write<u8>(1); // newMasterRestrict[0]
@@ -399,13 +389,12 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u8>(1); // useFatigueSystem
 
-		SendPacket<Sv::SN_RegionServicePolicy>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AllCharacterBaseData
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AllCharacterBaseData,2048> packet;
 
 		packet.Write<u16>(1); // charaList_count
 
@@ -452,15 +441,14 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(1); // cur
 		packet.Write<i32>(1); // max
 
-		SendPacket<Sv::SN_AllCharacterBaseData>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	const GameXmlContent& content = GetGameXmlContent();
 
 	// SN_ProfileCharacters
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileCharacters,2048> packet;
 
 		packet.Write<u16>(content.masters.size()); // charaList_count
 
@@ -481,15 +469,14 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			packet.Write(chara);
 		}
 
-		SendPacket<Sv::SN_ProfileCharacters>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// TODO: send weapons
 	/*
 	// SN_ProfileWeapons
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<> packet;
 
 		packet.Write<u16>(3); // weaponList_count
 
@@ -525,30 +512,27 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 	// SN_MyGuild
 	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_MyGuild> packet;
 
 		packet.WriteStringObj(L"Alpha");
 		packet.Write<i64>(0);
 		packet.Write<u8>(0);
 
-		SendPacket<Sv::SN_MyGuild>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ProfileMasterGears
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileMasterGears> packet;
 
 		packet.Write<u16>(0); // masterGears_count
 
-		SendPacket<Sv::SN_ProfileMasterGears>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ProfileItems
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileItems> packet;
 
 		packet.Write<u8>(1); // packetNum
 		packet.Write<u16>(1); // items_count
@@ -564,13 +548,12 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i64>(0); // lifeEndTimeUTC
 		packet.Write<u16>(0); // properties_count
 
-		SendPacket<Sv::SN_ProfileItems>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ProfileSkills
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileSkills,4096> packet;
 
 		packet.Write<u8>(1); // packetNum
 
@@ -592,24 +575,22 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			}
 		}
 
-		SendPacket<Sv::SN_ProfileSkills>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ProfileTitles
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileTitles> packet;
 
 		packet.Write<u16>(1); // titles_count
 		packet.Write<i32>(320080004); // titles[0]
 
-		SendPacket<Sv::SN_ProfileTitles>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_ProfileCharacterSkinList
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_ProfileCharacterSkinList,4096> packet;
 
 		i32 skinCount = 0;
 		foreach(it, content.masters) {
@@ -629,13 +610,12 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			}
 		}
 
-		SendPacket<Sv::SN_ProfileCharacterSkinList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AccountInfo
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AccountInfo> packet;
 
 		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<i32>(4); // inventoryLineCountTab0
@@ -653,13 +633,12 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(3600); // masterGearDurability
 		packet.Write<u8>(0); // badgeType
 
-		SendPacket<Sv::SN_AccountInfo>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AccountExtraInfo
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AccountExtraInfo> packet;
 
 		// membership
 		Sv::SN_AccountExtraInfo::UserGrade grade = {
@@ -675,66 +654,60 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(0); // activityPoint
 		packet.Write<u8>(0); // activityRewaredState
 
-		SendPacket<Sv::SN_AccountExtraInfo>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AccountEquipmentList
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AccountEquipmentList> packet;
 
 		packet.Write<i32>(-1); // supportKitDocIndex
 
-		SendPacket<Sv::SN_AccountEquipmentList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_Unknown_62472
 	{
-		u8 sendData[32];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_Unknown_62472> packet;
 
 		packet.Write<u8>(1);
 
-		SendPacket<Sv::SN_Unknown_62472>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_GuildChannelEnter
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GuildChannelEnter> packet;
 
 		packet.WriteStringObj(L"Alpha"); // guildName
 		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<u8>(0); // onlineStatus
 
-		SendPacket<Sv::SN_GuildChannelEnter>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_FriendList
 	{
-		u8 sendData[32];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_FriendList> packet;
 
 		packet.Write<u16>(0); // friendList_count
 
-		SendPacket<Sv::SN_FriendList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_PveComradeInfo
 	{
-		u8 sendData[32];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_PveComradeInfo> packet;
 
 		packet.Write<i32>(5); // availableComradeCount
 		packet.Write<i32>(5); // maxComradeCount
 
-		SendPacket<Sv::SN_PveComradeInfo>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_AchieveUpdate
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AchieveUpdate> packet;
 
 		packet.Write<i32>(800); // achievementScore
 		packet.Write<i32>(300190005); // index
@@ -744,33 +717,30 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i64>(6); // progressInt64
 		packet.Write<i64>(6); // date
 
-		SendPacket<Sv::SN_AchieveUpdate>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_FriendRequestList
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_FriendRequestList> packet;
 
 		packet.Write<u16>(0); // friendRequestList_count
 
-		SendPacket<Sv::SN_FriendRequestList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_BlockList
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_BlockList> packet;
 
 		packet.Write<u16>(0); // blocks_count
 
-		SendPacket<Sv::SN_BlockList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_MailUnreadNotice
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_MailUnreadNotice> packet;
 
 		packet.Write<u16>(1); // unreadInboxMailCount
 		packet.Write<u16>(0); // unreadArchivedMailCount
@@ -780,37 +750,34 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<u16>(16); // shopMailCount
 		packet.Write<u16>(0); // newAttachmentsPending_count
 
-		SendPacket<Sv::SN_MailUnreadNotice>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_WarehouseItems
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_WarehouseItems> packet;
 
 		packet.Write<u16>(0); // items_count
 
-		SendPacket<Sv::SN_WarehouseItems>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_MutualFriendList
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_MutualFriendList> packet;
 
 		packet.Write<u16>(0); // candidates_count
 
-		SendPacket<Sv::SN_MutualFriendList>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_GuildMemberStatus
 	{
-		u8 sendData[128];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GuildMemberStatus> packet;
 
 		packet.Write<u16>(0); // guildMemberStatusList_count
 
-		SendPacket<Sv::SN_GuildMemberStatus>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_Money
@@ -821,8 +788,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 	// SN_UpdateEntrySystem
 	{
-		u8 sendData[512];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_UpdateEntrySystem,2048> packet;
 
 		packet.Write<u16>(7); // entrySystemListCount
 
@@ -1028,14 +994,13 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		}
 
 
-		SendPacket<Sv::SN_UpdateEntrySystem>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
 void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port)
 {
-	u8 sendData[1024];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_DoConnectGameServer> packet;
 
 	packet.Write<u16>(port);
 	packet.WriteRaw(ip, 4);
@@ -1044,7 +1009,7 @@ void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& accoun
 	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
 	packet.Write<i32>(340); // instantKey
 
-	SendPacket<Sv::SN_DoConnectGameServer>(clientID, packet);
+	SendPacket(clientID, packet);
 
 	// NOTE: client will disconnect on reception
 }
@@ -1142,8 +1107,7 @@ void ReplicationHub::SendCalendar(i32 clientID)
 {
 	// SA_CalendarDetail
 	{
-		u8 sendData[4096];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SA_CalendarDetail,2048> packet;
 
 		const u64 now = CurrentFiletimeTimestampUTC();
 		const u64 before = now - (2*24*3600*10000000ull); // 2 days before
@@ -1588,7 +1552,7 @@ void ReplicationHub::SendCalendar(i32 clientID)
 
 		packet.WriteVec(events, ARRAY_COUNT(events));
 
-		SendPacket<Sv::SA_CalendarDetail>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -1603,13 +1567,12 @@ void ReplicationHub::SendAreaPopularity(i32 clientID, u32 areaID)
 
 	// SN_AreaPopularity
 	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_AreaPopularity> packet;
 
 		packet.Write<u32>(areaID);
 		packet.WriteVec((Sv::SN_AreaPopularity*)nullptr, 0);
 
-		SendPacket<Sv::SN_AreaPopularity>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -1911,8 +1874,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 	if(actor.parentActorUID == ActorUID::INVALID) {
 		// SN_GameCreateActor
 		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+			PacketWriter<Sv::SN_GameCreateActor> packet;
 
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<i32>(1); // nType
@@ -2048,7 +2010,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			SendPacket<Sv::SN_GameCreateActor>(clientID, packet);
+			SendPacket(clientID, packet);
 		}
 	}
 	// this is the sub actor
@@ -2058,8 +2020,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 
 		// SN_GameCreateSubActor
 		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+			PacketWriter<Sv::SN_GameCreateSubActor> packet;
 
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<LocalActorID>(parentLocalActorID); // mainEntityID
@@ -2118,25 +2079,23 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			SendPacket<Sv::SN_GameCreateSubActor>(clientID, packet);
+			SendPacket(clientID, packet);
 		}
 	}
 
 	// SN_SpawnPosForMinimap
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_SpawnPosForMinimap> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		SendPacket<Sv::SN_SpawnPosForMinimap>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_GamePlayerStock
 	{
-		u8 sendData[2048];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GamePlayerStock> packet;
 
 		packet.Write<LocalActorID>(localActorID); // playerID
 		packet.WriteStringObj(actor.name.data()); // name
@@ -2155,28 +2114,26 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 		packet.Write<u8>(0); // staffType
 		packet.Write<u8>(0); // isSubstituted
 
-		SendPacket<Sv::SN_GamePlayerStock>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_GamePlayerEquipWeapon
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GamePlayerEquipWeapon> packet;
 
 		packet.Write<LocalActorID>(localActorID); // characterID
 		packet.Write<i32>(131135011); // weaponDocIndex
 		packet.Write<i32>(0); // additionnalOverHeatGauge
 		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
-		SendPacket<Sv::SN_GamePlayerEquipWeapon>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	/*
 	if(stageType == StageType::CITY) {
 		// SN_PlayerStateInTown
 		{
-			u8 sendData[1024];
-			PacketWriter packet(sendData, sizeof(sendData));
+			PacketWriter<> packet;
 
 			packet.Write<LocalActorID>(localActorID); // playerID
 			packet.Write<u8>(0); // playerStateInTown
@@ -2191,8 +2148,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 	/*
 	// SN_StatusSnapshot
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write<u16>(1); // statusArray_count
@@ -2221,8 +2177,7 @@ void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 
 	// SN_GameCreateActor
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GameCreateActor> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write<i32>(actor.type); // nType
@@ -2270,18 +2225,17 @@ void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		SendPacket<Sv::SN_GameCreateActor>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	// SN_SpawnPosForMinimap
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_SpawnPosForMinimap> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		SendPacket<Sv::SN_SpawnPosForMinimap>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -2295,8 +2249,7 @@ void ReplicationHub::SendJukeboxSpawn(i32 clientID, const ReplicationHub::ActorJ
 
 	// SN_GameCreateActor
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_GameCreateActor> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write<i32>(1); // nType
@@ -2325,14 +2278,13 @@ void ReplicationHub::SendJukeboxSpawn(i32 clientID, const ReplicationHub::ActorJ
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		SendPacket<Sv::SN_GameCreateActor>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 
 	/*
 	// SN_JukeboxHotTrackList
 	{
-		u8 sendData[256];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<> packet;
 
 		packet.Write<u16>(0); // trackList_count
 
@@ -2363,21 +2315,19 @@ void ReplicationHub::SendActorDestroy(i32 clientID, ActorUID actorUID)
 
 void ReplicationHub::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
 {
-	u8 sendData[256];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_JukeboxPlay> packet;
 
 	packet.Write<i32>(0); // result
 	packet.Write<SongID>(songID); // trackID
 	packet.WriteStringObj(requesterNick); // nickname
 	packet.Write<u16>(playPosInSec); // playPositionSec
 
-	SendPacket<Sv::SN_JukeboxPlay>(clientID, packet);
+	SendPacket(clientID, packet);
 }
 
 void ReplicationHub::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount)
 {
-	u8 sendData[2048];
-	PacketWriter packet(sendData, sizeof(sendData));
+	PacketWriter<Sv::SN_JukeboxEnqueuedList> packet;
 
 	packet.Write<u16>(trackCount); // trackList_count
 	for(int i = 0; i < trackCount; i++) {
@@ -2385,7 +2335,7 @@ void ReplicationHub::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* t
 		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
 	}
 
-	SendPacket<Sv::SN_JukeboxEnqueuedList>(clientID, packet);
+	SendPacket(clientID, packet);
 }
 
 void ReplicationHub::SendMasterSkillSlots(i32 clientID, const ReplicationHub::ActorPlayer& actor)
@@ -2398,8 +2348,7 @@ void ReplicationHub::SendMasterSkillSlots(i32 clientID, const ReplicationHub::Ac
 
 	// SN_PlayerSkillSlot
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_PlayerSkillSlot> packet;
 
 		packet.Write<LocalActorID>(localActorID); // characterID
 
@@ -2442,7 +2391,7 @@ void ReplicationHub::SendMasterSkillSlots(i32 clientID, const ReplicationHub::Ac
 		packet.Write<SkillID>(master.skillIDs[1]); // currentSkillSlot2
 		packet.Write<SkillID>(master.skillIDs.back()); // shirkSkillSlot
 
-		SendPacket<Sv::SN_PlayerSkillSlot>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 
@@ -2453,8 +2402,7 @@ void ReplicationHub::SendInitialFrame(i32 clientID)
 
 	// SN_TownHudStatistics
 	{
-		u8 sendData[1024];
-		PacketWriter packet(sendData, sizeof(sendData));
+		PacketWriter<Sv::SN_TownHudStatistics> packet;
 
 		packet.Write<u8>(0); // gameModeType
 		packet.Write<u8>(0); // gameType
@@ -2465,7 +2413,7 @@ void ReplicationHub::SendInitialFrame(i32 clientID)
 		packet.Write<i32>(0);
 		packet.Write<i32>(16);
 
-		SendPacket<Sv::SN_TownHudStatistics>(clientID, packet);
+		SendPacket(clientID, packet);
 	}
 }
 

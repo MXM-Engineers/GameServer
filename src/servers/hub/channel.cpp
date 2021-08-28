@@ -88,6 +88,7 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		HANDLE_CASE(CQ_LoadingProgressData);
 		HANDLE_CASE(CQ_RequestCalendar);
 		HANDLE_CASE(CQ_RequestAreaPopularity);
+		HANDLE_CASE(CQ_PartyModify);
 
 		default: {
 			NT_LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -272,4 +273,14 @@ void ChannelHub::HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHe
 	NT_LOG("[client%03d] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientID, req.areaID);
 
 	replication.SendAreaPopularity(clientID, req.areaID);
+}
+
+void ChannelHub::HandlePacket_CQ_PartyModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: CQ_PartyModify :: { }", clientID);
+
+
+	Sv::SA_PartyModify packet;
+	packet.retval = 0;
+	SendPacket(clientID, packet);
 }

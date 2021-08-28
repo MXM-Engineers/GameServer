@@ -973,6 +973,19 @@ inline const char* PacketSerialize<In::R_Handshake>(const void* packetData, cons
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SA_PartyModify>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_PartyModify(%d, %d) :: {", Sv::SA_PartyModify::NET_ID, packetSize);
+	SER("	retval=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\

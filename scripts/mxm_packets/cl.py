@@ -114,6 +114,22 @@ class ClientSerializer:
         print('    stageType=%d' % p.read_i32())
         print('}')
 
+    def serialize_60075(netid, p: common.PacketReader):
+        print('CQ_PartyModify {')
+        count = p.read_u16()
+        print('	stageIDList[%d]=[' % count)
+        while count > 0:
+            print('		%d,' % p.read_i32())
+            count -= 1
+        print('	]')
+        print('	gametype=%d' % p.read_i32())
+        print('	unkown=%d' % p.read_i32())
+        print('	byte=%d' % p.read_u8())
+        print('}')
+
+    def serialize_60081(netid, p: common.PacketReader):
+        print('CQ_PartyFillWithBots {}')
+
     def serialize_60113(netid, p: common.PacketReader):
         print('CQ_PlayerJump {')
         excludedFieldBits = p.read_u8()

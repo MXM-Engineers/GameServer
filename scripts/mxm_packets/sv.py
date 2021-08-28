@@ -980,8 +980,21 @@ class ServerSerializer:
         print('    enable=%d' % p.read_u8())
         print('}')
 
+    def serialize_62188(netid, p: common.PacketReader):
+        print('SN_PartyJoin {')
+        print('    userID=%d' % p.read_i32())
+        print('    name="%s"' % p.read_wstr())
+        print('    isBot=%d' % p.read_u8())
+        print('    creatureIndex=%d' % p.read_i32())
+        print('    isOwner=%d' % p.read_u8())
+        print('    gametype=%d' % p.read_i32())
+        print('    gameDefinitionType=%d' % p.read_i32())
+        print('    teamType=%d' % p.read_i32())
+        print('    teamSlotIndex=%d' % p.read_u8())
+        print('}')
+
     def serialize_62191(netid, p: common.PacketReader):
-        print('SA_partyAddBot {')
+        print('SA_PartyAddBot {')
         print('    retval=%d' % p.read_i32())
         print('}')
 
@@ -1007,7 +1020,7 @@ class ServerSerializer:
         while count > 0:
             print('    {')
             print('      userID=%d' % p.read_i32())
-            print('      nickname=%s' % p.read_wstr())
+            print('      nickname="%s"' % p.read_wstr())
             print('      isBot=%d' % p.read_u8())
             print('      tier=%d' % p.read_i32())
             print('      tierGroupRanking=%d' % p.read_i32())
@@ -1022,7 +1035,7 @@ class ServerSerializer:
         while count > 0:
             print('    {')
             print('      userID=%d' % p.read_i32())
-            print('      nickname=%s' % p.read_wstr())
+            print('      nickname="%s"' % p.read_wstr())
             print('      isBot=%d' % p.read_u8())
             print('      tier=%d' % p.read_i32())
             print('      tierGroupRanking=%d' % p.read_i32())
@@ -1037,7 +1050,7 @@ class ServerSerializer:
         while count > 0:
             print('    {')
             print('      userID=%d' % p.read_i32())
-            print('      nickname=%s' % p.read_wstr())
+            print('      nickname="%s"' % p.read_wstr())
             print('      isBot=%d' % p.read_u8())
             print('      tier=%d' % p.read_i32())
             print('      tierGroupRanking=%d' % p.read_i32())

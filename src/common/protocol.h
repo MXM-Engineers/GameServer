@@ -532,6 +532,16 @@ struct CQ_PartyCreate
 };
 ASSERT_SIZE(CQ_PartyCreate, 8);
 
+struct CQ_PartyModify
+{
+	enum { NET_ID = 60075 };
+
+	u16 stageCount;
+	i32 stages[1];
+	i32 unk1;
+	u8 unk2;
+};
+
 struct CQ_PlayerJump
 {
 	enum { NET_ID = 60113 };
@@ -1648,6 +1658,13 @@ struct SA_PartyCreate
 	i32 retval;
 	i32 ownerUserID;
 	i32 stageType;
+};
+
+struct SA_PartyModify
+{
+	enum { NET_ID = 62176 };
+
+	i32 retval;
 };
 
 struct SN_UpdateGameOwner

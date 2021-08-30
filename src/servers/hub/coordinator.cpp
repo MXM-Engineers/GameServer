@@ -221,13 +221,11 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
-template<class ChannelT>
-intptr_t ThreadChannel(void* pData)
+intptr_t ThreadLane(void* pData)
 {
-	ChannelT& channel = *(ChannelT*)pData;
-
-	ProfileSetThreadName(FMT("Channel_%d", channel.threadID));
-	const i32 cpuID = (i32)CoreAffinity::CHANNELS + channel.threadID;
+	Lane& lane = *(Lane*)pData;
+	ProfileSetThreadName(FMT("Lane_%d", lane.laneIndex));
+	const i32 cpuID = (i32)CoreAffinity::LANES + lane.laneIndex;
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
 
 	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
@@ -235,19 +233,19 @@ intptr_t ThreadChannel(void* pData)
 	Time t0 = startTime;
 
 	char name[256];
-	snprintf(name, sizeof(name), "Channel_%d", channel.threadID);
+	snprintf(name, sizeof(name), "Lane_%d", lane.laneIndex);
 
 	f64 accumulator = 0.0f;
 
-	while(channel.server->running)
+	while(lane.server->running)
 	{
 		Time t1 = TimeNow();
-		channel.localTime = TimeDiff(startTime, t1);
+		lane.localTime = TimeDiff(startTime, t1);
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
 		if(delta > UPDATE_RATE_MS) {
 			ProfileNewFrame(name);
-			channel.Update();
+			lane.Update();
 			t0 = Time((u64)t0 + (u64)TimeMsToTime(UPDATE_RATE_MS));
 		}
 		/*else {
@@ -260,35 +258,121 @@ intptr_t ThreadChannel(void* pData)
 		}
 	}
 
-	channel.Cleanup();
+	LOG("[Lane%d] Closing...", lane.laneIndex);
+	lane.Cleanup();
 	return 0;
 }
 
-void Coordinator::Lane::Init()
+void Lane::Init(Server* server_)
 {
+	server = server_;
+
+	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
+
+	// TODO: several of these
+	instance = new ChannelHub();
+	instance->Init(server_);
 }
 
-void Coordinator::Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
+void Lane::Update()
 {
-	LOG("[Lane][client%03d] New player :: '%ls'", clientID, accountData->nickname.data());
+	// TODO: handle multiple instances
 
-	const LockGuard lock(mutexNewPlayerQueue);
+	eastl::fixed_vector<i32,Server::MAX_CLIENTS> disconnectedClientList;
+	eastl::fixed_vector<eastl::pair<i32, const AccountData*>,Server::MAX_CLIENTS> newClientList;
+
+	{ LOCK_MUTEX(mutexClientDisconnectedList);
+		foreach_const(n, clientDisconnectedList) {
+			clientSet.erase(*n);
+			disconnectedClientList.push_back(*n);
+		}
+		clientDisconnectedList.clear();
+	}
+
+	{ LOCK_MUTEX(mutexNewPlayerQueue);
+		foreach_const(n, newPlayerQueue) {
+			ASSERT(clientSet.find(n->clientID) == clientSet.end());
+			clientSet.insert(n->clientID);
+			newClientList.push_back({ n->clientID, n->accountData });
+		}
+		newPlayerQueue.clear();
+	}
+
+	instance->OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
+	instance->OnNewClientsConnected(newClientList.data(), newClientList.size());
+
+	{ LOCK_MUTEX(mutexPacketDataQueue);
+		recvDataBuff.Append(packetDataQueue.data, packetDataQueue.size);
+		packetDataQueue.Clear();
+	}
+
+	eastl::fixed_vector<i32,Server::MAX_CLIENTS> clientList;
+	eastl::copy(clientSet.begin(), clientSet.end(), eastl::back_inserter(clientList));
+
+	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
+
+	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
+	while(buff.CanRead(sizeof(Server::ReceiveBufferHeader))) {
+		const Server::ReceiveBufferHeader& chunkInfo = buff.Read<Server::ReceiveBufferHeader>();
+		const u8* data = buff.ReadRaw(chunkInfo.len);
+
+		ConstBuffer reader(data, chunkInfo.len);
+
+		if(!reader.CanRead(sizeof(NetHeader))) {
+			WARN("Packet too small (clientID=%d size=%d)", chunkInfo.clientID, chunkInfo.len);
+			server->DisconnectClient(chunkInfo.clientID);
+			continue;
+		}
+
+		const NetHeader& header = reader.Read<NetHeader>();
+		const i32 packetDataSize = header.size - sizeof(NetHeader);
+
+		if(!reader.CanRead(packetDataSize)) {
+			WARN("Packet header size differs from actual data size (clientID=%d size=%d)", chunkInfo.clientID, header.size);
+			server->DisconnectClient(chunkInfo.clientID);
+			continue;
+		}
+
+		const u8* packetData = reader.ReadRaw(packetDataSize);
+		instance->OnNewPacket(chunkInfo.clientID, header, packetData);
+	}
+
+	recvDataBuff.Clear();
+
+	instance->localTime = localTime;
+	instance->Update();
+}
+
+void Lane::Cleanup()
+{
+	instance->Cleanup();
+}
+
+void Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
+{
+	LOG("[Lane%d][client%03d] New player :: '%ls'", laneIndex, clientID, accountData->nickname.data());
+
+	LOCK_MUTEX(mutexNewPlayerQueue);
 	newPlayerQueue.push_back(EventOnClientConnect{ clientID, accountData });
 }
 
-void Coordinator::Lane::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
+void Lane::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
-	const LockGuard lock(mutexPacketDataQueue);
-	packetDataQueue.Append(&clientID, sizeof(clientID));
+	LOCK_MUTEX(mutexPacketDataQueue);
+
+	Server::ReceiveBufferHeader chunkInfo;
+	chunkInfo.clientID = clientID;
+	chunkInfo.len = header.size;
+	packetDataQueue.Append(&chunkInfo, sizeof(chunkInfo));
 	packetDataQueue.Append(&header, sizeof(header));
 	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
 }
 
-void Coordinator::Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
+void Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
 {
-	const LockGuard lock(mutexClientDisconnectedList);
+	LOCK_MUTEX(mutexClientDisconnectedList);
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
 }
 
@@ -336,19 +420,12 @@ bool Coordinator::Init(Server* server_)
 	server = server_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	associatedChannel.fill(LaneID::INVALID);
+	associatedLane.fill(LaneID::NONE);
 
-	foreach(it, laneList) {
-		it->Init();
+	foreach(it, lanes) {
+		it->Init(server);
+		it->thread.Begin(ThreadLane, &(*it));
 	}
-
-	// TODO: allocate channels dynamically
-	channelHub = new ChannelHub();
-	channelHub->threadID = 0;
-	channelHub->Init(server_);
-	channelHub->lane = &laneList[(i32)LaneID::FIRST];
-
-	laneList[(i32)LaneID::FIRST].thread.Begin(ThreadChannel<ChannelHub>, channelHub);
 
 	bool r = matchmaker.Init();
 	if(!r) return false;
@@ -361,7 +438,7 @@ void Coordinator::Cleanup()
 {
 	LOG("Coordinator cleanup...");
 
-	foreach(it, laneList) {
+	foreach(it, lanes) {
 		it->thread.WaitForEnd();
 	}
 
@@ -388,21 +465,28 @@ void Coordinator::Update(f64 delta)
 		eastl::fixed_vector<i32,128> chanDiscList;
 
 		foreach(cl, clientDisconnectedList) {
-			if(associatedChannel[*cl] == (LaneID)i) {
+			if(associatedLane[*cl] == (LaneID)i) {
 				chanDiscList.push_back(*cl);
 			}
 		}
 
-		laneList[i].CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
+		lanes[i].CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
 	}
 
 	// clear client data
 	foreach(cl, clientDisconnectedList) {
-		associatedChannel[*cl] = LaneID::INVALID;
+		associatedLane[*cl] = LaneID::NONE;
 	}
 
 	// handle received data
-	server->TransferAllReceivedData(&recvDataBuff);
+	eastl::fixed_vector<i32,Server::MAX_CLIENTS> clientList;
+	for(i32 clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		if(associatedLane[clientID] == LaneID::NONE) {
+			clientList.push_back(clientID);
+		}
+	}
+
+	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
 	while(buff.CanRead(sizeof(Server::ReceiveBufferHeader))) {
@@ -424,16 +508,11 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 	switch(header.netID) {
 		HANDLE_CASE(CQ_FirstHello);
 		HANDLE_CASE(CQ_Authenticate);
-		HANDLE_CASE(CQ_AuthenticateGameServer);
-		HANDLE_CASE(CQ_GetGuildProfile);
-		HANDLE_CASE(CQ_GetGuildMemberList);
-		HANDLE_CASE(CQ_GetGuildHistoryList);
-		HANDLE_CASE(CQ_GetGuildRankingSeasonList);
-		HANDLE_CASE(CQ_TierRecord);
 
 		default: {
-			ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-			laneList[(i32)associatedChannel[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
+			WARN("Unhandled packet (netID=%x size=%d)", header.netID, header.size);
+			ASSERT(associatedLane[clientID] != LaneID::NONE);
+			lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
 		} break;
 	}
 
@@ -471,10 +550,6 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	// TODO: verify version, protocol, etc
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
-	// assign to a channel
-	ASSERT(associatedChannel[clientID] == LaneID::INVALID);
-	associatedChannel[clientID] = LaneID::FIRST;
-
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
@@ -501,11 +576,14 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 
 	// TODO: check authentication
 
+	// assign to a channel
+	ASSERT(associatedLane[clientID] == LaneID::NONE);
+	associatedLane[clientID] = LaneID::FIRST;
+
 	// send authentication result
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
 	SendPacket(clientID, auth);
-
 
 	// TODO: fetch account data
 	AccountData& account = accountData[clientID];
@@ -521,243 +599,11 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	}
 
 	// send account data
-	ClientSendAccountData(clientID);
+	ClientSendAccountData(clientID); // TODO: move this to hub instance
 
 	// register new player to the game
-	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
-}
-
-void Coordinator::HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	ConstBuffer request(packetData, packetSize);
-	const u16 nickLen = request.Read<u16>();
-	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_AuthenticateGameServer>(packetData, packetSize));
-
-	const Server::ClientInfo& info = server->clientInfo[clientID];
-
-	// TODO: check authentication
-
-	// send authentication result
-	Sv::SA_AuthResult auth;
-	auth.result = 91;
-	SendPacket(clientID, auth);
-
-
-	// TODO: fetch account data
-	AccountData& account = accountData[clientID];
-	account = {};
-	account.nickname.assign(nick, nickLen);
-	account.guildTag = L"Alpha";
-	account.leaderMasterID = 0; // Lua
-
-	// remove the @plaync... part
-	i64 f = account.nickname.find(L'@');
-	if(f != -1) {
-		account.nickname = account.nickname.left(f);
-	}
-
-	// send account data
-	ClientSendAccountData(clientID);
-
-	// register new player to the game
-	ASSERT(associatedChannel[clientID] != LaneID::INVALID);
-	laneList[(i32)associatedChannel[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
-
-	// SA_GetGuildProfile
-	{
-		PacketWriter<Sv::SA_GetGuildProfile,512> packet;
-
-		packet.Write<i32>(0); // result;
-		packet.WriteStringObj(L"Alpha testers"); // guildName
-		packet.WriteStringObj(L"Alpha"); // guildTag
-		packet.Write<i32>(100203); // emblemIndex
-		packet.Write<u8>(10); // guildLvl
-		packet.Write<u8>(120); // memberMax
-		packet.WriteStringObj(L"Malachi"); // ownerNickname
-		packet.Write<i64>(131474874000000000); // createdDate
-		packet.Write<i64>(0); // dissolutionDate
-		packet.Write<u8>(0); // joinType
-
-		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
-		guildInterest.likePveStage = 1;
-		guildInterest.likeDefence = 1;
-		guildInterest.likePvpNormal = 1;
-		guildInterest.likePvpOccupy = 1;
-		guildInterest.likePvpGot = 1;
-		guildInterest.likePvpRank = 1;
-		guildInterest.likeOlympic = 1;
-		packet.Write(guildInterest);
-
-		packet.WriteStringObj(L"This is a great intro"); // guildIntro
-		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
-		packet.Write<i32>(460281); // guildPoint
-		packet.Write<i32>(9999); // guildFund
-
-		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
-		guildPvpRecord.rp = 5;
-		guildPvpRecord.win = 4;
-		guildPvpRecord.draw = 3;
-		guildPvpRecord.lose = 2;
-		packet.Write(guildPvpRecord);
-
-		packet.Write<i32>(-1); // guildRankNo
-
-		packet.Write<u16>(1); // guildMemberClassList_count
-		// guildMemberClassList[0]
-		packet.Write<i32>(12456); // id
-		packet.Write<u8>(3); // type
-		packet.Write<u8>(2); // iconIndex
-		packet.WriteStringObj(L"Malachi");
-
-		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
-		rights.hasInviteRight = 1;
-		rights.hasExpelRight = 1;
-		rights.hasMembershipChgRight = 1;
-		rights.hasClassAssignRight = 1;
-		rights.hasNoticeChgRight = 1;
-		rights.hasIntroChgRight = 1;
-		rights.hasInterestChgRight = 1;
-		rights.hasFundManageRight = 1;
-		rights.hasJoinTypeRight = 1;
-		rights.hasEmblemRight = 1;
-		packet.Write(rights);
-
-		packet.Write<u16>(1); // guildSkills_count
-		// guildSkills[0]
-		packet.Write<u8>(1); // type
-		packet.Write<u8>(9); // level
-		packet.Write<i64>(0); // expiryDate
-		packet.Write<u16>(0); // extensionCount
-
-		packet.Write<i32>(7); // curDailyStageGuildPoint
-		packet.Write<i32>(500); // maxDailyStageGuildPoint
-		packet.Write<i32>(2); // curDailyArenaGuildPoint
-		packet.Write<i32>(450); // maxDailyArenaGuildPoint
-		packet.Write<u8>(1); // todayRollCallCount
-
-		SendPacket(clientID, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
-
-	// SA_GetGuildMemberList
-	{
-		PacketWriter<Sv::SA_GetGuildMemberList,512> packet;
-
-		packet.Write<i32>(0); // result
-
-		packet.Write<u16>(3); // guildMemberProfileList_count
-
-		// guildMemberProfileList[0]
-		packet.WriteStringObj(L"Malachi");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[1]
-		packet.WriteStringObj(L"Delta-47");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[2]
-		packet.WriteStringObj(L"LordSk");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		SendPacket(clientID, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
-
-	// SA_GetGuildMemberList
-	{
-		PacketWriter<Sv::SA_GetGuildHistoryList> packet;
-
-		packet.Write<i32>(0); // result
-
-		packet.Write<u16>(0); // guildHistories_count
-
-		SendPacket(clientID, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
-
-	// SA_GetGuildRankingSeasonList
-	{
-		PacketWriter<Sv::SA_GetGuildRankingSeasonList> packet;
-
-		packet.Write<i32>(0); // result
-		packet.Write<u8>(rank.rankingType); // result
-
-		packet.Write<u16>(0); // rankingSeasonList_count
-
-		SendPacket(clientID, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
-
-	// SA_TierRecord
-	{
-		PacketWriter<Sv::SA_TierRecord> packet;
-
-		packet.Write<u8>(1); // seasonId
-		packet.Write<i32>(0); // allTierWin
-		packet.Write<i32>(0); // allTierDraw
-		packet.Write<i32>(0); // allTierLose
-		packet.Write<i32>(0); // allTierLeave
-		packet.Write<u16>(0); // stageRecordList_count
-
-		SendPacket(clientID, packet);
-	}
+	ASSERT(associatedLane[clientID] != LaneID::NONE);
+	lanes[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
 }
 
 void Coordinator::ClientSendAccountData(i32 clientID)

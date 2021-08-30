@@ -44,7 +44,7 @@ intptr_t ThreadChannel(void* pData)
 	ChannelT& channel = *(ChannelT*)pData;
 
 	ProfileSetThreadName(FMT("Channel_%d", channel.threadID));
-	const i32 cpuID = (i32)CoreAffinity::CHANNELS + channel.threadID;
+	const i32 cpuID = (i32)CoreAffinity::LANES + channel.threadID;
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
 
 	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;

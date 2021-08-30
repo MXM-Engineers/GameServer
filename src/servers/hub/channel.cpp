@@ -24,54 +24,41 @@ void ChannelHub::Update()
 {
 	ProfileFunction();
 
-	// clients disconnected
-	if(!lane->clientDisconnectedList.empty()) {
-		const LockGuard lock(lane->mutexClientDisconnectedList);
-		foreach(it, lane->clientDisconnectedList) {
-			const i32 clientID = *it;
-			game->OnPlayerDisconnect(clientID);
-			replication.EventClientDisconnect(clientID);
-		}
-		lane->clientDisconnectedList.clear();
-	}
-
-	// clients connected
-	if(!lane->newPlayerQueue.empty()) {
-		const LockGuard lock(lane->mutexNewPlayerQueue);
-		foreach(it, lane->newPlayerQueue) {
-			game->OnPlayerConnect(it->clientID, it->accountData);
-			replication.EventPlayerConnect(it->clientID);
-		}
-		lane->newPlayerQueue.clear();
-	}
-
-	// process packets
-	lane->processPacketQueue.Clear();
-	if(lane->packetDataQueue.size > 0) {
-		const LockGuard lock(lane->mutexPacketDataQueue);
-		lane->processPacketQueue.Append(lane->packetDataQueue.data, lane->packetDataQueue.size);
-		lane->packetDataQueue.Clear();
-	}
-
-	ConstBuffer buff(lane->processPacketQueue.data, lane->processPacketQueue.size);
-	while(buff.CanRead(4)) {
-		const i32 clientID = buff.Read<i32>();
-		const NetHeader& header = buff.Read<NetHeader>();
-		const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
-		ClientHandlePacket(clientID, header, packetData);
-	}
-
 	game->Update(localTime);
 	replication.FrameEnd();
 }
 
-void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
+void ChannelHub::OnNewClientsConnected(const eastl::pair<i32, const AccountData*>* clientList, const i32 count)
+{
+	for(int i = 0; i < count; i++) {
+		auto& it = clientList[i];
+		game->OnPlayerConnect(it.first, it.second);
+		replication.EventPlayerConnect(it.first);
+	}
+}
+
+void ChannelHub::OnNewClientsDisconnected(const i32* clientList, const i32 count)
+{
+	for(int i = 0; i < count; i++) {
+		i32 clientID = clientList[i];
+		game->OnPlayerDisconnect(clientID);
+		replication.EventClientDisconnect(clientID);
+	}
+}
+
+void ChannelHub::OnNewPacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
 #define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
 
 	switch(header.netID) {
+		HANDLE_CASE(CQ_GetGuildProfile);
+		HANDLE_CASE(CQ_GetGuildMemberList);
+		HANDLE_CASE(CQ_GetGuildHistoryList);
+		HANDLE_CASE(CQ_GetGuildRankingSeasonList);
+		HANDLE_CASE(CQ_TierRecord);
+
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
 		HANDLE_CASE(CN_ReadyToLoadGameMap);
 		HANDLE_CASE(CA_SetGameGvt);
@@ -98,6 +85,200 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 	}
 
 #undef HANDLE_CASE
+}
+
+void ChannelHub::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
+
+	// SA_GetGuildProfile
+	{
+		PacketWriter<Sv::SA_GetGuildProfile,512> packet;
+
+		packet.Write<i32>(0); // result;
+		packet.WriteStringObj(L"Alpha testers"); // guildName
+		packet.WriteStringObj(L"Alpha"); // guildTag
+		packet.Write<i32>(100203); // emblemIndex
+		packet.Write<u8>(10); // guildLvl
+		packet.Write<u8>(120); // memberMax
+		packet.WriteStringObj(L"Malachi"); // ownerNickname
+		packet.Write<i64>(131474874000000000); // createdDate
+		packet.Write<i64>(0); // dissolutionDate
+		packet.Write<u8>(0); // joinType
+
+		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
+		guildInterest.likePveStage = 1;
+		guildInterest.likeDefence = 1;
+		guildInterest.likePvpNormal = 1;
+		guildInterest.likePvpOccupy = 1;
+		guildInterest.likePvpGot = 1;
+		guildInterest.likePvpRank = 1;
+		guildInterest.likeOlympic = 1;
+		packet.Write(guildInterest);
+
+		packet.WriteStringObj(L"This is a great intro"); // guildIntro
+		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
+		packet.Write<i32>(460281); // guildPoint
+		packet.Write<i32>(9999); // guildFund
+
+		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
+		guildPvpRecord.rp = 5;
+		guildPvpRecord.win = 4;
+		guildPvpRecord.draw = 3;
+		guildPvpRecord.lose = 2;
+		packet.Write(guildPvpRecord);
+
+		packet.Write<i32>(-1); // guildRankNo
+
+		packet.Write<u16>(1); // guildMemberClassList_count
+		// guildMemberClassList[0]
+		packet.Write<i32>(12456); // id
+		packet.Write<u8>(3); // type
+		packet.Write<u8>(2); // iconIndex
+		packet.WriteStringObj(L"Malachi");
+
+		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
+		rights.hasInviteRight = 1;
+		rights.hasExpelRight = 1;
+		rights.hasMembershipChgRight = 1;
+		rights.hasClassAssignRight = 1;
+		rights.hasNoticeChgRight = 1;
+		rights.hasIntroChgRight = 1;
+		rights.hasInterestChgRight = 1;
+		rights.hasFundManageRight = 1;
+		rights.hasJoinTypeRight = 1;
+		rights.hasEmblemRight = 1;
+		packet.Write(rights);
+
+		packet.Write<u16>(1); // guildSkills_count
+		// guildSkills[0]
+		packet.Write<u8>(1); // type
+		packet.Write<u8>(9); // level
+		packet.Write<i64>(0); // expiryDate
+		packet.Write<u16>(0); // extensionCount
+
+		packet.Write<i32>(7); // curDailyStageGuildPoint
+		packet.Write<i32>(500); // maxDailyStageGuildPoint
+		packet.Write<i32>(2); // curDailyArenaGuildPoint
+		packet.Write<i32>(450); // maxDailyArenaGuildPoint
+		packet.Write<u8>(1); // todayRollCallCount
+
+		SendPacket(clientID, packet);
+	}
+}
+
+void ChannelHub::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
+
+	// SA_GetGuildMemberList
+	{
+		PacketWriter<Sv::SA_GetGuildMemberList,512> packet;
+
+		packet.Write<i32>(0); // result
+
+		packet.Write<u16>(3); // guildMemberProfileList_count
+
+		// guildMemberProfileList[0]
+		packet.WriteStringObj(L"Malachi");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		// guildMemberProfileList[1]
+		packet.WriteStringObj(L"Delta-47");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		// guildMemberProfileList[2]
+		packet.WriteStringObj(L"LordSk");
+		packet.Write<i32>(0);  // membershipID
+		packet.Write<u16>(99); // lvl
+		packet.Write<u16>(10); // leaderClassType
+		packet.Write<u16>(27); // masterCount
+		packet.Write<i32>(12455); // achievementScore
+		packet.Write<u8>(0); // topPvpTierGrade
+		packet.Write<u16>(0); // topPvpTierPoint
+		packet.Write<i32>(16965); // contributedGuildPoint
+		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<u16>(0); // guildPvpWin
+		packet.Write<u16>(0); // guildPvpPlay
+		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+
+		SendPacket(clientID, packet);
+	}
+}
+
+void ChannelHub::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
+
+	// SA_GetGuildMemberList
+	{
+		PacketWriter<Sv::SA_GetGuildHistoryList> packet;
+
+		packet.Write<i32>(0); // result
+
+		packet.Write<u16>(0); // guildHistories_count
+
+		SendPacket(clientID, packet);
+	}
+}
+
+void ChannelHub::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
+
+	// SA_GetGuildRankingSeasonList
+	{
+		PacketWriter<Sv::SA_GetGuildRankingSeasonList> packet;
+
+		packet.Write<i32>(0); // result
+		packet.Write<u8>(rank.rankingType); // result
+
+		packet.Write<u16>(0); // rankingSeasonList_count
+
+		SendPacket(clientID, packet);
+	}
+}
+
+void ChannelHub::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
+
+	// SA_TierRecord
+	{
+		PacketWriter<Sv::SA_TierRecord> packet;
+
+		packet.Write<u8>(1); // seasonId
+		packet.Write<i32>(0); // allTierWin
+		packet.Write<i32>(0); // allTierDraw
+		packet.Write<i32>(0); // allTierLose
+		packet.Write<i32>(0); // allTierLeave
+		packet.Write<u16>(0); // stageRecordList_count
+
+		SendPacket(clientID, packet);
+	}
 }
 
 void ChannelHub::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)

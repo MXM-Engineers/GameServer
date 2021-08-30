@@ -103,7 +103,7 @@ i32 NetworkGetLastError();
 struct Server
 {
 	enum {
-		MAX_CLIENTS=256,
+		MAX_CLIENTS=256, // TODO: vastly increase this number
 	};
 
 	struct ClientNet
@@ -152,6 +152,7 @@ struct Server
 	void Update();
 
 	void TransferAllReceivedData(GrowableBuffer* out);
+	void TransferReceivedData(GrowableBuffer* out, const i32* clientList, const u32 clientCount);
 
 	template<class Array>
 	void TransferDisconnectedClientList(Array* out)

@@ -4,6 +4,8 @@
 #include <common/utils.h>
 #include <common/protocol.h>
 #include <EASTL/queue.h>
+#include <EASTL/fixed_set.h>
+#include <EASTL/fixed_map.h>
 
 // TODO: move this
 enum class AccountID: u32 {
@@ -80,49 +82,64 @@ private:
 	void HandlePacket(InnerConnection& conn, u16 netID, const u8* packetData, const i32 packetSize);
 };
 
+enum class LaneID: i32
+{
+	NONE = -1,
+	FIRST = 0,
+	_COUNT // TODO: fetch core count instead and fill them that way
+};
+
+// Each lane is a separate thread hosting hub instances
+struct Lane
+{
+	struct EventOnClientConnect
+	{
+		i32 clientID;
+		const AccountData* accountData;
+	};
+
+	u32 laneIndex;
+	Time localTime;
+
+	EA::Thread::Thread thread;
+	Server* server;
+
+	GrowableBuffer recvDataBuff;
+
+	ProfileMutex(Mutex, mutexNewPlayerQueue);
+	GrowableBuffer packetDataQueue;
+	GrowableBuffer processPacketQueue;
+
+	ProfileMutex(Mutex, mutexClientDisconnectedList);
+	eastl::fixed_vector<i32,128> clientDisconnectedList;
+
+	ProfileMutex(Mutex, mutexPacketDataQueue);
+	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
+
+	// TODO: unique client ID
+	eastl::fixed_set<i32,Server::MAX_CLIENTS,false> clientSet;
+
+	ChannelHub* instance;
+
+	void Init(Server* server_);
+	void Update();
+	void Cleanup();
+
+	void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
+	void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
+	void CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count);
+};
+
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
-	enum class LaneID: i32 {
-		INVALID = -1,
-		FIRST = 0,
-		_COUNT,
-	};
-
-	struct Lane
-	{
-		struct EventOnClientConnect
-		{
-			i32 clientID;
-			const AccountData* accountData;
-		};
-
-		Time localTime;
-
-		EA::Thread::Thread thread;
-
-		GrowableBuffer packetDataQueue;
-		GrowableBuffer processPacketQueue;
-		eastl::fixed_vector<i32,128> clientDisconnectedList;
-		ProfileMutex(Mutex, mutexPacketDataQueue);
-		ProfileMutex(Mutex, mutexClientDisconnectedList);
-		eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
-		ProfileMutex(Mutex, mutexNewPlayerQueue);
-
-		void Init();
-		void CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData);
-		void CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
-		void CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count);
-	};
-
 	Server* server;
 	Matchmaker matchmaker;
 
-	eastl::array<Lane, (i32)LaneID::_COUNT> laneList;
-	ChannelHub* channelHub;
+	eastl::array<Lane, (i32)LaneID::_COUNT> lanes;
 
 	eastl::array<AccountData, Server::MAX_CLIENTS> accountData;
-	eastl::array<LaneID, Server::MAX_CLIENTS> associatedChannel;
+	eastl::array<LaneID, Server::MAX_CLIENTS> associatedLane;
 	GrowableBuffer recvDataBuff;
 	EA::Thread::Thread thread;
 	Time localTime;
@@ -138,12 +155,6 @@ private:
 
 	void HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_AuthenticateGameServer(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 	void ClientSendAccountData(i32 clientID);
 
@@ -162,7 +173,7 @@ private:
 	template<typename Packet>
 	inline void SendPacketData(i32 clientID, u16 packetSize, const void* packetData)
 	{
-		NT_LOG("[client%03d] Hub :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
+		NT_LOG("[client%03d] Coordinator :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientID, Packet::NET_ID, packetSize, packetData);
 	}
 };

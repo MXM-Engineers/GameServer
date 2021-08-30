@@ -214,6 +214,31 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 	}
 }
 
+void Server::TransferReceivedData(GrowableBuffer* out, const i32* clientList, const u32 clientCount)
+{
+	for(int i = 0; i < clientCount; i++) {
+		i32 clientID = clientList[i];
+
+		if(clientSocket[clientID] == INVALID_SOCKET) continue;
+		ClientNet& client = clientNet[clientID];
+
+		{
+			LOCK_MUTEX(client.mutexRecv);
+
+			if(client.recvPendingProcessingBuff.size > 0) {
+				ReceiveBufferHeader header;
+				header.clientID = clientID;
+				header.len = client.recvPendingProcessingBuff.size;
+
+				out->Append(&header, sizeof(header));
+				out->Append(client.recvPendingProcessingBuff.data, client.recvPendingProcessingBuff.size);
+
+				client.recvPendingProcessingBuff.Clear();
+			}
+		}
+	}
+}
+
 bool Server::ClientStartReceiving(i32 clientID)
 {
 	DBG_ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);

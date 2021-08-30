@@ -5,10 +5,8 @@
 
 struct ChannelHub
 {
-	i32 threadID;
 	Time localTime;
 	Server* server;
-	Coordinator::Lane* lane;
 
 	GameHub* game;
 	ReplicationHub replication;
@@ -18,8 +16,16 @@ struct ChannelHub
 
 	void Update();
 
+	void OnNewClientsConnected(const eastl::pair<i32,const AccountData*>* clientList, const i32 count);
+	void OnNewClientsDisconnected(const i32* clientList, const i32 count);
+	void OnNewPacket(i32 clientID, const NetHeader& header, const u8* packetData);
+
 private:
-	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
+	void HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
 	void HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);

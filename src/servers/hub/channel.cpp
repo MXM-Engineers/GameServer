@@ -364,15 +364,15 @@ void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 	}
 
 	NT_LOG("[client%03d] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientID);
-	LOG("	characterID=%d", (u32)sync.characterID);
-	LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
-	LOG("	bApply=%d", sync.bApply);
-	LOG("	param1=%d", sync.param1);
-	LOG("	param2=%d", sync.param2);
-	LOG("	i4=%d", sync.i4);
-	LOG("	rotate=%g", sync.rotate);
-	LOG("	upperRotate=%g", sync.upperRotate);
-	LOG("}");
+	NT_LOG("	characterID=%d", (u32)sync.characterID);
+	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
+	NT_LOG("	bApply=%d", sync.bApply);
+	NT_LOG("	param1=%d", sync.param1);
+	NT_LOG("	param2=%d", sync.param2);
+	NT_LOG("	i4=%d", sync.i4);
+	NT_LOG("	rotate=%g", sync.rotate);
+	NT_LOG("	upperRotate=%g", sync.upperRotate);
+	NT_LOG("}");
 
 	ActorUID actorUID = replication.GetWorldActorUID(clientID, sync.characterID);
 	if(actorUID == ActorUID::INVALID) {

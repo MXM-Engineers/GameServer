@@ -318,25 +318,27 @@ void Lane::Update()
 		const Server::ReceiveBufferHeader& chunkInfo = buff.Read<Server::ReceiveBufferHeader>();
 		const u8* data = buff.ReadRaw(chunkInfo.len);
 
+		// handle each packet in chunk
 		ConstBuffer reader(data, chunkInfo.len);
-
 		if(!reader.CanRead(sizeof(NetHeader))) {
 			WARN("Packet too small (clientID=%d size=%d)", chunkInfo.clientID, chunkInfo.len);
 			server->DisconnectClient(chunkInfo.clientID);
 			continue;
 		}
 
-		const NetHeader& header = reader.Read<NetHeader>();
-		const i32 packetDataSize = header.size - sizeof(NetHeader);
+		while(reader.CanRead(sizeof(NetHeader))) {
+			const NetHeader& header = reader.Read<NetHeader>();
+			const i32 packetDataSize = header.size - sizeof(NetHeader);
 
-		if(!reader.CanRead(packetDataSize)) {
-			WARN("Packet header size differs from actual data size (clientID=%d size=%d)", chunkInfo.clientID, header.size);
-			server->DisconnectClient(chunkInfo.clientID);
-			continue;
+			if(!reader.CanRead(packetDataSize)) {
+				WARN("Packet header size differs from actual data size (clientID=%d size=%d)", chunkInfo.clientID, header.size);
+				server->DisconnectClient(chunkInfo.clientID);
+				break;
+			}
+
+			const u8* packetData = reader.ReadRaw(packetDataSize);
+			instance->OnNewPacket(chunkInfo.clientID, header, packetData);
 		}
-
-		const u8* packetData = reader.ReadRaw(packetDataSize);
-		instance->OnNewPacket(chunkInfo.clientID, header, packetData);
 	}
 
 	recvDataBuff.Clear();

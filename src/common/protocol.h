@@ -538,8 +538,23 @@ struct CQ_PartyModify
 
 	u16 stageCount;
 	i32 stages[1];
+	i32 gametype;
 	i32 unk1;
 	u8 unk2;
+};
+
+struct CQ_PartyOptionModify
+{
+	enum { NET_ID = 60076 };
+
+	u8 option;
+	u8 enable;
+};
+ASSERT_SIZE(CQ_PartyOptionModify, 2);
+
+struct CQ_EnqueueGame
+{
+	enum { NET_ID = 60097 };
 };
 
 struct CQ_PlayerJump
@@ -1626,6 +1641,14 @@ struct SN_ProfileMasterGears
 	Gear masterGears;
 };
 
+struct SA_EnqueueGame
+{
+	enum { NET_ID = 62158 };
+
+	i32 retval;
+};
+ASSERT_SIZE(SA_EnqueueGame, 4);
+
 struct SA_AreaPopularity
 {
 	enum { NET_ID = 62173 };
@@ -1659,6 +1682,7 @@ struct SA_PartyCreate
 	i32 ownerUserID;
 	i32 stageType;
 };
+ASSERT_SIZE(SA_PartyCreate, 12);
 
 struct SA_PartyModify
 {
@@ -1666,6 +1690,33 @@ struct SA_PartyModify
 
 	i32 retval;
 };
+ASSERT_SIZE(SA_PartyModify, 4);
+
+PUSH_PACKED
+struct SA_PartyOptionModify
+{
+	enum { NET_ID = 62177 };
+
+	i32 retval;
+	u8 option;
+	u8 enable;
+};
+POP_PACKED
+ASSERT_SIZE(SA_PartyOptionModify, 6);
+
+PUSH_PACKED
+struct SN_EnqueueMatchingQueue
+{
+	enum { NET_ID = 62201 };
+
+	i32 stageIndex;
+	i32 currentMatchingTimeMs;
+	i32 avgMatchingTimeMs;
+	u8 disableMatchExpansion;
+	u8 isMatchingExpanded;
+};
+POP_PACKED
+ASSERT_SIZE(SN_EnqueueMatchingQueue, 14);
 
 struct SN_UpdateGameOwner
 {

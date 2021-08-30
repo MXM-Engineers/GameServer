@@ -986,6 +986,86 @@ inline const char* PacketSerialize<Sv::SA_PartyModify>(const void* packetData, c
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SA_PartyOptionModify>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_PartyOptionModify(%d, %d) :: {", Sv::SA_PartyOptionModify::NET_ID, packetSize);
+	SER("	retval=%d", buff.Read<i32>());
+	SER("	option=%u", buff.Read<u8>());
+	SER("	enable=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_EnqueueGame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_EnqueueGame(%d, %d) :: {", Sv::SA_EnqueueGame::NET_ID, packetSize);
+	SER("	retval=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_PartyModify>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_PartyModify(%d, %d) :: {", Cl::CQ_PartyModify::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	stageList(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+	SER("	gametype=%d", buff.Read<i32>());
+	SER("	unk1=%d", buff.Read<i32>());
+	SER("	un2=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_PartyOptionModify>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_PartyOptionModify(%d, %d) :: {", Cl::CQ_PartyOptionModify::NET_ID, packetSize);
+	SER("	option=%u", buff.Read<u8>());
+	SER("	enable=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_EnqueueMatchingQueue>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_EnqueueMatchingQueue(%d, %d) :: {", Sv::SN_EnqueueMatchingQueue::NET_ID, packetSize);
+	SER("	stageIndex=%d", buff.Read<i32>());
+	SER("	currentMatchingTimeMs=%d", buff.Read<i32>());
+	SER("	avgMatchingTimeMs=%d", buff.Read<i32>());
+	SER("	disableMatchExpansion=%u", buff.Read<u8>());
+	SER("	isMatchingExpanded=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\

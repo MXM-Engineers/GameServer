@@ -1066,7 +1066,7 @@ class ServerSerializer:
         print('}')
 
     def serialize_62208(netid, p: common.PacketReader):
-        print('SA_masterPick {')
+        print('SA_MasterPick {')
         print('    retval=%d' % p.read_i32())
         print('    characterID=%d' % p.read_i32())
         print('}')

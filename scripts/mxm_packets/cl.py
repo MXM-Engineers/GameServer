@@ -127,8 +127,17 @@ class ClientSerializer:
         print('	byte=%d' % p.read_u8())
         print('}')
 
+    def serialize_60076(netid, p: common.PacketReader):
+        print('CQ_PartyOptionModify {')
+        print('	option=%d' % p.read_u8())
+        print('	val=%d' % p.read_u8())
+        print('}')
+
     def serialize_60081(netid, p: common.PacketReader):
         print('CQ_PartyFillWithBots {}')
+
+    def serialize_60097(netid, p: common.PacketReader):
+        print('CQ_EnqueueGame {}')
 
     def serialize_60113(netid, p: common.PacketReader):
         print('CQ_PlayerJump {')

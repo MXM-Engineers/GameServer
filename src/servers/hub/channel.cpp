@@ -89,6 +89,8 @@ void ChannelHub::ClientHandlePacket(i32 clientID, const NetHeader& header, const
 		HANDLE_CASE(CQ_RequestCalendar);
 		HANDLE_CASE(CQ_RequestAreaPopularity);
 		HANDLE_CASE(CQ_PartyModify);
+		HANDLE_CASE(CQ_PartyOptionModify);
+		HANDLE_CASE(CQ_EnqueueGame);
 
 		default: {
 			NT_LOG("[client%03d] Client :: Unknown packet :: size=%d netID=%d", clientID, header.size, header.netID);
@@ -277,10 +279,38 @@ void ChannelHub::HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHe
 
 void ChannelHub::HandlePacket_CQ_PartyModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%03d] Client :: CQ_PartyModify :: { }", clientID);
-
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
 
 	Sv::SA_PartyModify packet;
 	packet.retval = 0;
 	SendPacket(clientID, packet);
+}
+
+void ChannelHub::HandlePacket_CQ_PartyOptionModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_PartyOptionModify& req = SafeCast<Cl::CQ_PartyOptionModify>(packetData, packetSize);
+	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PartyOptionModify>(packetData, packetSize));
+
+	Sv::SA_PartyOptionModify packet;
+	packet.retval = 0;
+	packet.option = req.option;
+	packet.enable = req.enable;
+	SendPacket(clientID, packet);
+}
+
+void ChannelHub::HandlePacket_CQ_EnqueueGame(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%03d] Client :: CQ_EnqueueGame :: { }", clientID);
+
+	Sv::SA_EnqueueGame packet;
+	packet.retval = 0;
+	SendPacket(clientID, packet);
+
+	Sv::SN_EnqueueMatchingQueue matching;
+	matching.stageIndex = 200020102;
+	matching.currentMatchingTimeMs = 0;
+	matching.avgMatchingTimeMs = 121634;
+	matching.disableMatchExpansion = 0;
+	matching.isMatchingExpanded = 0;
+	SendPacket(clientID, matching);
 }

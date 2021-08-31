@@ -8,6 +8,7 @@
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
 #include "model/character_model.h"
+#include "model/weapon_spec.h"
 
 struct GameXmlContent
 {
@@ -81,6 +82,7 @@ struct GameXmlContent
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
+	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);

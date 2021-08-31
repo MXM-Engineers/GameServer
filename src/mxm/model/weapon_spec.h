@@ -39,8 +39,8 @@ public:
 	void setFiringMethodCreateRadiateMaxNum(float var);
 	float getFiringMethodFiringStatMovementSpeed();
 	void setFiringMethodFiringStatMovementSpeed(float var);
-	float getFiringMethodFiringGaugeLevel();
-	void setFiringMethodFiringGaugeLevel(float var);
+	float getFiringMethodGaugeLevel();
+	void setFiringMethodGaugeLevel(float var);
 	float getFiringMethodChargingLevel1CreateParallelMaxNum();
 	void setFiringMethodChargingLevel1CreateParallelMaxNum(float var);
 	float getFiringMethodChargingLevel2CreateParallelMaxNum();
@@ -123,7 +123,7 @@ private:
 	float _FiringMethodCreateRadiateMaxAngBle = 0.0f;
 	float _FiringMethodCreateRadiateMaxNum = 0.0f;
 	float _FiringMethodFiringStatMovementSpeed = 0.0f;
-	float _FiringMethodFiringGaugeLevel = 0.0f;
+	float _FiringMethodGaugeLevel = 0.0f;
 	float _FiringMethodChargingLevel1CreateParallelMaxNum = 0.0f;
 	float _FiringMethodChargingLevel2CreateParallelMaxNum = 0.0f;
 	float _FiringMethodChargingLevel1AnimationMoveHorizon = 0.0f;

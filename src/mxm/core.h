@@ -225,6 +225,22 @@ enum class EtcType : i32
 	ETC_TYPE_SOUL // not in decomp but it's in ITEM_RON.xml in chinese dataset ToDo: check if this exist in west data
 };
 
+// Used in STAGELIST.xml
+// values from decompile
+enum class GameModeType : i32
+{
+	GAME_MODE_INVALID = -1,
+	GAME_MODE_STAGE,
+	GAME_MODE_DEFENCE,
+	GAME_MODE_DEATH_MATCH,
+	GAME_MODE_GOT,
+	GAME_MODE_OCCUPY,
+	GAME_MODE_SPORTS,
+	GAME_MODE_TEST,
+	GAME_MODE_MASTER_TRAINING,
+	GAME_MODE_RANDOM_ARENA
+};
+
 // values from decompile
 enum class GamePingType : i32
 {
@@ -552,6 +568,31 @@ enum class WeaponSpecREF : i32
 	WEAPONSPEC_REF_STAT_AND_CRITICALDAMAGE,
 	WEAPONSPEC_REF_STAT_AND_CRITICALRATE,
 	WEAPONSPEC_REF_MAX
+};
+
+// STAGELIST.xml
+// values from decompile
+enum class WorldStageType : i32
+{
+	UNKNOWN_WORLD_STAGE_TYPE = -1,
+	WORLD_STAGE_TYPE_NONE = 0,
+	WORLD_STAGE_TYPE_PVE,
+	WORLD_STAGE_TYPE_PVP,
+	WORLD_STAGE_TYPES
+};
+
+// STAGELIST.xml
+// values from decompile
+enum class WorldStageDifficultType : i32
+{
+	UNKNOWN_WORLD_STAGE_DIFFICULT = -1,
+	WORLD_STAGE_DIFFICULT_INVALID = 0,
+	WORLD_STAGE_DIFFICULT_EASY,
+	WORLD_STAGE_DIFFICULT_NORMAL,
+	WORLD_STAGE_DIFFICULT_HARD,
+	WORLD_STAGE_DIFFICULT_EXTREME,
+	WORLD_STAGE_DIFFICULT_HELL,
+	WORLD_STAGE_DIFFICULT_MAX
 };
 
 constexpr i32 JUKEBOX_MAX_TRACKS = 8;

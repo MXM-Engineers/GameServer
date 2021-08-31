@@ -167,14 +167,14 @@ void WeaponSpec::setFiringMethodFiringStatMovementSpeed(float var)
 	_FiringMethodFiringStatMovementSpeed = var;
 }
 
-float WeaponSpec::getFiringMethodFiringGaugeLevel()
+float WeaponSpec::getFiringMethodGaugeLevel()
 {
-	return _FiringMethodFiringGaugeLevel;
+	return _FiringMethodGaugeLevel;
 }
 
-void WeaponSpec::setFiringMethodFiringGaugeLevel(float var)
+void WeaponSpec::setFiringMethodGaugeLevel(float var)
 {
-	_FiringMethodFiringGaugeLevel = var;
+	_FiringMethodGaugeLevel = var;
 }
 
 float WeaponSpec::getFiringMethodChargingLevel1CreateParallelMaxNum()

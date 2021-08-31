@@ -3,18 +3,15 @@
 #include "coordinator.h"
 #include <common/packet_serialize.h>
 
-struct ChannelHub
+// TODO: this should not send anything
+// This class is just used to validate and transform packets to server them to Game
+struct HubPacketHandler
 {
-	Time localTime;
 	Server* server;
-
 	GameHub* game;
-	ReplicationHub replication;
+	ReplicationHub* replication;
 
-	bool Init(Server* server_);
-	void Cleanup();
-
-	void Update();
+	bool Init(GameHub* game_);
 
 	void OnNewClientsConnected(const eastl::pair<i32,const AccountData*>* clientList, const i32 count);
 	void OnNewClientsDisconnected(const i32* clientList, const i32 count);

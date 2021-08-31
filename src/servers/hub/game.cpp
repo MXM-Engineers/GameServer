@@ -4,14 +4,12 @@
 #include "config.h"
 #include <EAStdC/EAString.h>
 
-
-void GameHub::Init(ReplicationHub* replication_)
+void GameHub::Init(Server* server_)
 {
-	replication = replication_;
+	replication.Init(server_);
+	world.Init(&replication);
 
-	memset(&playerActorUID, 0, sizeof(playerActorUID));
-
-	world.Init(replication);
+	playerActorUID.fill(ActorUID::INVALID);
 
 	foreach(it, playerClientIDMap) {
 		*it = playerList.end();
@@ -26,6 +24,7 @@ void GameHub::Update(Time localTime_)
 
 	localTime = localTime_;
 	world.Update(localTime);
+	replication.FrameEnd();
 }
 
 bool GameHub::JukeboxQueueSong(i32 clientID, SongID songID)
@@ -111,7 +110,8 @@ void GameHub::OnPlayerConnect(i32 clientID, const AccountData* accountData)
 	playerList.push_back(Player(clientID));
 	playerClientIDMap[clientID] = --playerList.end();
 
-	replication->SendAccountDataLobby(clientID, *accountData);
+	replication.SendAccountDataLobby(clientID, *accountData);
+	replication.EventPlayerConnect(clientID);
 }
 
 void GameHub::OnPlayerDisconnect(i32 clientID)
@@ -130,6 +130,8 @@ void GameHub::OnPlayerDisconnect(i32 clientID)
 	playerClientIDMap[clientID] = playerList.end();
 
 	playerAccountData[clientID] = nullptr;
+
+	replication.EventClientDisconnect(clientID);
 }
 
 void GameHub::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
@@ -137,7 +139,7 @@ void GameHub::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	// TODO: health
 	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientID == clientID);
-	replication->SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
+	replication.SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
 void GameHub::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
@@ -172,13 +174,13 @@ void GameHub::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, 
 	// TODO: Actual chat system
 
 	ASSERT(playerAccountData[clientID]);
-	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+	replication.SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
 void GameHub::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
 {
 	ASSERT(playerAccountData[clientID]);
-	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
+	replication.SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
 
 	i32 destClientID = -1;
 	for(int i = 0; i < playerAccountData.size(); i++) {
@@ -195,7 +197,7 @@ void GameHub::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wch
 		return;
 	}
 
-	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
+	replication.SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
 }
 
 void GameHub::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
@@ -234,7 +236,7 @@ void GameHub::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 	actor.clientID = clientID; // TODO: this is not useful right now
 	playerActorUID[clientID] = actor.UID;
 
-	replication->SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
+	replication.SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
 }
 
 void GameHub::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
@@ -243,7 +245,7 @@ void GameHub::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionSta
 	// connect to gameserver when jumping
 	if(state == ActionStateID::JUMP_START_MOVESTATE) {
 		const u8 ip[4] = { 127, 0, 0, 1 };
-		replication->SendConnectToServer(clientID, *playerAccountData[clientID], ip, 12900);
+		replication.SendConnectToServer(clientID, *playerAccountData[clientID], ip, 12900);
 	}
 
 	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
@@ -264,7 +266,7 @@ void GameHub::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
 
 void GameHub::OnPlayerReadyToLoad(i32 clientID)
 {
-	replication->SendLoadLobby(clientID, StageIndex::LOBBY_NORMAL);
+	replication.SendLoadLobby(clientID, StageIndex::LOBBY_NORMAL);
 }
 
 bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
@@ -384,7 +386,7 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 void GameHub::SendDbgMsg(i32 clientID, const wchar* msg)
 {
-	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
+	replication.SendChatMessageToClient(clientID, L"System", 1, msg);
 }
 
 void GameHub::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)

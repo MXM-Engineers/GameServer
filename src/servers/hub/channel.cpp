@@ -4,49 +4,32 @@
 #include <mxm/game_content.h>
 #include "game.h"
 
-
-// TODO: replace listener type later on, this is just convenient for now
-bool ChannelHub::Init(Server* server_)
+bool HubPacketHandler::Init(GameHub* game_)
 {
-	server = server_;
-	replication.Init(server_);
-	game = new GameHub();
-	game->Init(&replication);
+	game = game_;
+	replication = &game->replication;
+	server = game->replication.server;
 	return true;
 }
 
-void ChannelHub::Cleanup()
-{
-	LOG("ChannelHub cleanup...");
-}
-
-void ChannelHub::Update()
-{
-	ProfileFunction();
-
-	game->Update(localTime);
-	replication.FrameEnd();
-}
-
-void ChannelHub::OnNewClientsConnected(const eastl::pair<i32, const AccountData*>* clientList, const i32 count)
+void HubPacketHandler::OnNewClientsConnected(const eastl::pair<i32, const AccountData*>* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		auto& it = clientList[i];
 		game->OnPlayerConnect(it.first, it.second);
-		replication.EventPlayerConnect(it.first);
+
 	}
 }
 
-void ChannelHub::OnNewClientsDisconnected(const i32* clientList, const i32 count)
+void HubPacketHandler::OnNewClientsDisconnected(const i32* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		i32 clientID = clientList[i];
 		game->OnPlayerDisconnect(clientID);
-		replication.EventClientDisconnect(clientID);
 	}
 }
 
-void ChannelHub::OnNewPacket(i32 clientID, const NetHeader& header, const u8* packetData)
+void HubPacketHandler::OnNewPacket(i32 clientID, const NetHeader& header, const u8* packetData)
 {
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
@@ -87,7 +70,7 @@ void ChannelHub::OnNewPacket(i32 clientID, const NetHeader& header, const u8* pa
 #undef HANDLE_CASE
 }
 
-void ChannelHub::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
 
@@ -167,7 +150,7 @@ void ChannelHub::HandlePacket_CQ_GetGuildProfile(i32 clientID, const NetHeader& 
 	}
 }
 
-void ChannelHub::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
 
@@ -228,7 +211,7 @@ void ChannelHub::HandlePacket_CQ_GetGuildMemberList(i32 clientID, const NetHeade
 	}
 }
 
-void ChannelHub::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
 
@@ -244,7 +227,7 @@ void ChannelHub::HandlePacket_CQ_GetGuildHistoryList(i32 clientID, const NetHead
 	}
 }
 
-void ChannelHub::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
@@ -262,7 +245,7 @@ void ChannelHub::HandlePacket_CQ_GetGuildRankingSeasonList(i32 clientID, const N
 	}
 }
 
-void ChannelHub::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
 
@@ -281,36 +264,36 @@ void ChannelHub::HandlePacket_CQ_TierRecord(i32 clientID, const NetHeader& heade
 	}
 }
 
-void ChannelHub::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_ReadyToLoadCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: CN_ReadyToLoadCharacter ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 
-void ChannelHub::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: CN_ReadyToLoadGame ::", clientID);
 	game->OnPlayerReadyToLoad(clientID);
 }
 
-void ChannelHub::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientID, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
-void ChannelHub::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_MapIsLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: CN_MapIsLoaded ::", clientID);
-	replication.SetPlayerAsInGame(clientID);
+	replication->SetPlayerAsInGame(clientID);
 }
 
-void ChannelHub::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_GetCharacterInfo :: characterID=%d", clientID, (u32)req.characterID);
 
-	ActorUID actorUID = replication.GetWorldActorUID(clientID, req.characterID);
+	ActorUID actorUID = replication->GetWorldActorUID(clientID, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
 		WARN("Client sent an invalid actor (localActorID=%d)", req.characterID);
 		return;
@@ -319,12 +302,12 @@ void ChannelHub::HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader&
 	game->OnPlayerGetCharacterInfo(clientID, actorUID);
 }
 
-void ChannelHub::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientID, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
-	ActorUID actorUID = replication.GetWorldActorUID(clientID, update.characterID);
+	ActorUID actorUID = replication->GetWorldActorUID(clientID, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
 		WARN("Client sent an invalid actor (localActorID=%d)", update.characterID);
 		return;
@@ -333,7 +316,7 @@ void ChannelHub::HandlePacket_CN_UpdatePosition(i32 clientID, const NetHeader& h
 	game->OnPlayerUpdatePosition(clientID, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), f2v(update.p3nEye), update.nRotate, update.nSpeed, update.nState, update.nActionIDX);
 }
 
-void ChannelHub::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	ConstBuffer buff(packetData, packetSize);
 	i32 chatType = buff.Read<i32>();
@@ -345,7 +328,7 @@ void ChannelHub::HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeade
 	game->OnPlayerChatMessage(clientID, chatType, msg, msgLen);
 }
 
-void ChannelHub::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientID, (u32)leader.characterID, (i32)leader.skinIndex);
@@ -353,7 +336,7 @@ void ChannelHub::HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeade
 	game->OnPlayerSetLeaderCharacter(clientID, leader.characterID, leader.skinIndex);
 }
 
-void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
@@ -374,7 +357,7 @@ void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 	NT_LOG("	upperRotate=%g", sync.upperRotate);
 	NT_LOG("}");
 
-	ActorUID actorUID = replication.GetWorldActorUID(clientID, sync.characterID);
+	ActorUID actorUID = replication->GetWorldActorUID(clientID, sync.characterID);
 	if(actorUID == ActorUID::INVALID) {
 		WARN("Client sent an invalid actor (localActorID=%d)", sync.characterID);
 		return;
@@ -383,7 +366,7 @@ void ChannelHub::HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, con
 	game->OnPlayerSyncActionState(clientID, actorUID, sync.state, sync.param1, sync.param2, sync.rotate, sync.upperRotate);
 }
 
-void ChannelHub::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientID, (i32)queue.songID);
@@ -391,7 +374,7 @@ void ChannelHub::HandlePacket_CQ_JukeboxQueueSong(i32 clientID, const NetHeader&
 	game->OnPlayerJukeboxQueueSong(clientID, queue.songID);
 }
 
-void ChannelHub::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	ConstBuffer buff(packetData, packetSize);
 	WideString destNick;
@@ -408,7 +391,7 @@ void ChannelHub::HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& head
 	game->OnPlayerChatWhisper(clientID, destNick.data(), msg.data());
 }
 
-void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientID, create.entrySysID, create.stageType);
@@ -425,7 +408,7 @@ void ChannelHub::HandlePacket_CQ_PartyCreate(i32 clientID, const NetHeader& head
 	SendPacket(clientID, packet);
 }
 
-void ChannelHub::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_RTT_Time :: { time=%u }", clientID, rtt.time);
@@ -436,29 +419,29 @@ void ChannelHub::HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header,
 	SendPacket(clientID, answer);
 }
 
-void ChannelHub::HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_LoadingProgressData :: { progress=%u }", clientID, loading.progress);
 }
 
-void ChannelHub::HandlePacket_CQ_RequestCalendar(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_RequestCalendar(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RequestCalendar& req = SafeCast<Cl::CQ_RequestCalendar>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_RequestCalendar :: { filetimeUTC=%llu }", clientID, req.filetimeUTC);
 
-	replication.SendCalendar(clientID);
+	replication->SendCalendar(clientID);
 }
 
-void ChannelHub::HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RequestAreaPopularity& req = SafeCast<Cl::CQ_RequestAreaPopularity>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientID, req.areaID);
 
-	replication.SendAreaPopularity(clientID, req.areaID);
+	replication->SendAreaPopularity(clientID, req.areaID);
 }
 
-void ChannelHub::HandlePacket_CQ_PartyModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_PartyModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
 
@@ -467,7 +450,7 @@ void ChannelHub::HandlePacket_CQ_PartyModify(i32 clientID, const NetHeader& head
 	SendPacket(clientID, packet);
 }
 
-void ChannelHub::HandlePacket_CQ_PartyOptionModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_PartyOptionModify(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_PartyOptionModify& req = SafeCast<Cl::CQ_PartyOptionModify>(packetData, packetSize);
 	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_PartyOptionModify>(packetData, packetSize));
@@ -479,7 +462,7 @@ void ChannelHub::HandlePacket_CQ_PartyOptionModify(i32 clientID, const NetHeader
 	SendPacket(clientID, packet);
 }
 
-void ChannelHub::HandlePacket_CQ_EnqueueGame(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CQ_EnqueueGame(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%03d] Client :: CQ_EnqueueGame :: { }", clientID);
 

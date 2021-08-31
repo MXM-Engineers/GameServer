@@ -173,8 +173,8 @@ void Coordinator::Update(f64 delta)
 	server->TransferAllReceivedData(&recvDataBuff);
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
-	while(buff.CanRead(sizeof(Server::ReceiveBufferHeader))) {
-		const Server::ReceiveBufferHeader& header = buff.Read<Server::ReceiveBufferHeader>();
+	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
+		const Server::RecvChunkHeader& header = buff.Read<Server::RecvChunkHeader>();
 		const u8* data = buff.ReadRaw(header.len);
 		ClientHandleReceivedChunk(header.clientID, data, header.len);
 	}

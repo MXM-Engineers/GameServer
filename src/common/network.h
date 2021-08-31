@@ -123,7 +123,7 @@ struct Server
 		u16 port;
 	};
 
-	struct ReceiveBufferHeader
+	struct RecvChunkHeader
 	{
 		i32 clientID;
 		i32 len;

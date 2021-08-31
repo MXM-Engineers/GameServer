@@ -221,6 +221,12 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
+struct Instance
+{
+	HubPacketHandler packetHandler;
+	GameHub game;
+};
+
 intptr_t ThreadLane(void* pData)
 {
 	Lane& lane = *(Lane*)pData;
@@ -272,8 +278,9 @@ void Lane::Init(Server* server_)
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
 
 	// TODO: several of these
-	instance = new ChannelHub();
-	instance->Init(server_);
+	instance = new Instance();
+	instance->game.Init(server);
+	instance->packetHandler.Init(&instance->game);
 }
 
 void Lane::Update()
@@ -300,8 +307,9 @@ void Lane::Update()
 		newPlayerQueue.clear();
 	}
 
-	instance->OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
-	instance->OnNewClientsConnected(newClientList.data(), newClientList.size());
+	// TODO: move this to game probably?
+	instance->packetHandler.OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
+	instance->packetHandler.OnNewClientsConnected(newClientList.data(), newClientList.size());
 
 	{ LOCK_MUTEX(mutexPacketDataQueue);
 		recvDataBuff.Append(packetDataQueue.data, packetDataQueue.size);
@@ -314,8 +322,8 @@ void Lane::Update()
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
-	while(buff.CanRead(sizeof(Server::ReceiveBufferHeader))) {
-		const Server::ReceiveBufferHeader& chunkInfo = buff.Read<Server::ReceiveBufferHeader>();
+	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
+		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
 		const u8* data = buff.ReadRaw(chunkInfo.len);
 
 		// handle each packet in chunk
@@ -337,19 +345,18 @@ void Lane::Update()
 			}
 
 			const u8* packetData = reader.ReadRaw(packetDataSize);
-			instance->OnNewPacket(chunkInfo.clientID, header, packetData);
+			instance->packetHandler.OnNewPacket(chunkInfo.clientID, header, packetData);
 		}
 	}
 
 	recvDataBuff.Clear();
 
-	instance->localTime = localTime;
-	instance->Update();
+	instance->game.Update(localTime);
 }
 
 void Lane::Cleanup()
 {
-	instance->Cleanup();
+	// instance->game.Cleanup();
 }
 
 void Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
@@ -364,7 +371,7 @@ void Lane::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, 
 {
 	LOCK_MUTEX(mutexPacketDataQueue);
 
-	Server::ReceiveBufferHeader chunkInfo;
+	Server::RecvChunkHeader chunkInfo;
 	chunkInfo.clientID = clientID;
 	chunkInfo.len = header.size;
 	packetDataQueue.Append(&chunkInfo, sizeof(chunkInfo));
@@ -491,8 +498,8 @@ void Coordinator::Update(f64 delta)
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
-	while(buff.CanRead(sizeof(Server::ReceiveBufferHeader))) {
-		const Server::ReceiveBufferHeader& header = buff.Read<Server::ReceiveBufferHeader>();
+	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
+		const Server::RecvChunkHeader& header = buff.Read<Server::RecvChunkHeader>();
 		const u8* data = buff.ReadRaw(header.len);
 		ClientHandleReceivedChunk(header.clientID, data, header.len);
 	}

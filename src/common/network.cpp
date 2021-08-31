@@ -201,7 +201,7 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 			LOCK_MUTEX(client.mutexRecv);
 
 			if(client.recvPendingProcessingBuff.size > 0) {
-				ReceiveBufferHeader header;
+				RecvChunkHeader header;
 				header.clientID = clientID;
 				header.len = client.recvPendingProcessingBuff.size;
 
@@ -226,7 +226,7 @@ void Server::TransferReceivedData(GrowableBuffer* out, const i32* clientList, co
 			LOCK_MUTEX(client.mutexRecv);
 
 			if(client.recvPendingProcessingBuff.size > 0) {
-				ReceiveBufferHeader header;
+				RecvChunkHeader header;
 				header.clientID = clientID;
 				header.len = client.recvPendingProcessingBuff.size;
 

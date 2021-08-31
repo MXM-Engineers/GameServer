@@ -21,7 +21,7 @@ struct AccountData
 	// TODO: add to this
 };
 
-struct ChannelHub;
+struct HubPacketHandler;
 
 struct InnerConnection
 {
@@ -90,6 +90,8 @@ enum class LaneID: i32
 };
 
 // Each lane is a separate thread hosting hub instances
+struct Instance;
+
 struct Lane
 {
 	struct EventOnClientConnect
@@ -119,7 +121,7 @@ struct Lane
 	// TODO: unique client ID
 	eastl::fixed_set<i32,Server::MAX_CLIENTS,false> clientSet;
 
-	ChannelHub* instance;
+	Instance* instance;
 
 	void Init(Server* server_);
 	void Update();

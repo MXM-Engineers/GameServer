@@ -33,7 +33,7 @@ struct GameHub
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
-	ReplicationHub* replication;
+	ReplicationHub replication;
 
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
@@ -43,7 +43,7 @@ struct GameHub
 
 	Time localTime;
 
-	void Init(ReplicationHub* replication_);
+	void Init(Server* server_);
 	void Update(Time localTime_);
 
 	bool JukeboxQueueSong(i32 clientID, SongID songID);

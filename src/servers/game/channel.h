@@ -3,15 +3,13 @@
 #include "coordinator.h"
 #include <eathread/eathread_thread.h>
 
-struct ChannelPvP
+struct GamePacketHandler
 {
-	i32 threadID;
 	Time localTime;
 	Server* server;
-	Coordinator::Lane* lane;
 
 	Game* game;
-	Replication replication;
+	Replication* replication;
 
 	struct ClientTime
 	{
@@ -21,32 +19,35 @@ struct ChannelPvP
 		i64 rttServer = 0;
 	};
 
-	eastl::array<ClientTime, Server::MAX_CLIENTS> clientTime;
+	eastl::array<ClientTime, MAX_CLIENTS> clientTime;
 
-	bool Init(Server* server_);
+	ClientLocalMapping plidMap;
+
+	bool Init(Game* game_);
 	void Cleanup();
 
-	void Update();
+	void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count);
+	void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count);
+	void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 
 private:
-	void ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData);
-	void HandlePacket_CN_ReadyToLoadGameMap(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CA_SetGameGvt(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CN_GameMapLoaded(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetCharacterInfo(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CN_GameUpdatePosition(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CN_GameUpdateRotation(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CN_ChannelChatMessage(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_SetLeaderCharacter(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CN_GamePlayerSyncActionStateOnly(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_WhisperSend(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_RTT_Time(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_LoadingProgressData(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_LoadingComplete(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GameIsReady(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GamePlayerTag(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_PlayerJump(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_PlayerCastSkill(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CA_SetGameGvt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_GameMapLoaded(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_LoadingProgressData(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_LoadingComplete(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GameIsReady(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_GamePlayerTag(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+	void HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
-	void ReadPacket(PlayerCastSkill* cast, i32 clientID, const u8* packetData, const i32 packetSize);
+	void ReadPacket(PlayerCastSkill* cast, ClientHandle clientHd, const u8* packetData, const i32 packetSize);
 };

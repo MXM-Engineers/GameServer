@@ -1,0 +1,28 @@
+#include "instance.h"
+
+bool HubInstance::Init(Server* server_)
+{
+	game.Init(server_);
+	packetHandler.Init(&game);
+	return true;
+}
+
+void HubInstance::Update(Time localTime_)
+{
+	game.Update(localTime_);
+}
+
+void HubInstance::OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count)
+{
+	packetHandler.OnNewClientsConnected(clientList, count);
+}
+
+void HubInstance::OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count)
+{
+	packetHandler.OnNewClientsDisconnected(clientList, count);
+}
+
+void HubInstance::OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+{
+	packetHandler.OnNewPacket(clientHd, header, packetData);
+}

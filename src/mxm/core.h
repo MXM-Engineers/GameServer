@@ -8,7 +8,7 @@ enum class ActorUID: u32
 	INVALID = 0,
 };
 
-enum class PlayerID: u32
+enum class UserID: u32
 {
 	INVALID = 0xFFFFFFFF
 };
@@ -47,14 +47,6 @@ enum class BotSkillStatustypeCategory : i32
 	BOT_SKILL_STATUSTYPE_CATEGORY_DEBUFF,
 	BOT_SKILL_STATUSTYPE_CATEGORY_INVINCIBLE,
 	BOT_SKILL_STATUSTYPE_CATEGORY_MAX
-};
-
-enum class CoreAffinity: i32
-{
-	MAIN = 0,
-	NETWORK = 1,
-	COORDINATOR = 2,
-	LANES = 3,
 };
 
 // used in CREATURE_MONSTER_BOT.xml, CREATURE_MONSTER_PVE.xml

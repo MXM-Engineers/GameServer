@@ -2,6 +2,8 @@
 #include "base.h"
 #include <EASTL/fixed_string.h>
 #include <EASTL/fixed_list.h>
+#include <EASTL/fixed_map.h>
+#include <EASTL/array.h>
 
 typedef eastl::fixed_string<wchar,64,true> WideString;
 typedef eastl::fixed_string<char,32,false> FixedStr32;
@@ -62,3 +64,69 @@ inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
 	if(len != sv.length()) return false;
 	return sv.compare(str) == 0;
 }
+
+// LOCAL_MIN: included
+// LOCAL_MAX: excluded
+template<typename LocalID, typename GlobalID, LocalID LOCAL_MIN, LocalID LOCAL_MAX, LocalID LOCAL_INVALID = LocalID::INVALID>
+struct LocalMapping
+{
+	enum {
+		LOCAL_CAPACITY = (i64)LOCAL_MAX - (i64)LOCAL_MIN
+	};
+
+	eastl::fixed_map<GlobalID,i32,LOCAL_CAPACITY,false> map;
+	eastl::array<u8,LOCAL_CAPACITY> occupied = {0};
+
+	LocalID Push(GlobalID globalID)
+	{
+		ASSERT_MSG(map.find(globalID) == map.end(), "GlobalID already in map");
+
+		for(i32 i = 0; i < LOCAL_CAPACITY; i++) {
+			if(!occupied[i]) {
+				occupied[i] = 1;
+				map.emplace(globalID, i);
+				return LocalID((i64)LOCAL_MIN + i);
+			}
+		}
+
+		ASSERT(0);
+		return LOCAL_INVALID;
+	}
+
+	LocalID GetOrPush(GlobalID globalID)
+	{
+		auto found = map.find(globalID);
+		if(found == map.end()) return Push(globalID);
+		return LocalID((i64)LOCAL_MIN + found->second);
+	}
+
+	LocalID Get(GlobalID globalID) const
+	{
+		auto found = map.find(globalID);
+		ASSERT_MSG(found != map.end(), "LocalID not found in map");
+		return LocalID((i64)LOCAL_MIN + found->second);
+	}
+
+	LocalID TryGet(GlobalID globalID) const
+	{
+		auto found = map.find(globalID);
+		if(found == map.end()) return LOCAL_INVALID;
+		return LocalID((i64)LOCAL_MIN + found->second);
+	}
+
+	void Pop(GlobalID globalID)
+	{
+		auto found = map.find(globalID);
+		ASSERT_MSG(found != map.end(), "GlobalID not found in map");
+		occupied[found->second] = 0;
+		map.erase(found);
+	}
+
+	void TryPop(GlobalID globalID)
+	{
+		auto found = map.find(globalID);
+		if(found == map.end()) return;
+		occupied[found->second] = 0;
+		map.erase(found);
+	}
+};

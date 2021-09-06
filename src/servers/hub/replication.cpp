@@ -51,13 +51,13 @@ void ReplicationHub::FrameEnd()
 	FrameDifference();
 
 	// send SN_ScanEnd if requested
-	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
 		if(playerLocalInfo[clientID].isFirstLoad) {
 			playerLocalInfo[clientID].isFirstLoad = false;
 
-			SendInitialFrame(clientID);
+			SendInitialFrame(playerClientHd[clientID]);
 		}
 	}
 
@@ -131,16 +131,19 @@ void ReplicationHub::FramePushJukebox(const ReplicationHub::ActorJukebox& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void ReplicationHub::EventPlayerConnect(i32 clientID)
+void ReplicationHub::EventPlayerConnect(ClientHandle clientHd)
 {
+	const i32 clientID = plidMap.Push(clientHd);
+
+	playerClientHd[clientID] = clientHd;
 	playerState[clientID] = PlayerState::CONNECTED;
 	playerLocalInfo[clientID].Reset();
 }
 
-void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
+void ReplicationHub::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
 {
 	// SN_LoadCharacterStart
-	SendPacketData<Sv::SN_LoadCharacterStart>(clientID, 0, nullptr);
+	SendPacketData<Sv::SN_LoadCharacterStart>(clientHd, 0, nullptr);
 
 	// SN_SetGameGvt
 	{
@@ -149,7 +152,7 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 		u32 time = (u32)TimeDiffMs(TimeRelNow());
 		gameGvt.sendTime = time;
 		gameGvt.virtualTime = time;
-		SendPacket(clientID, gameGvt);
+		SendPacket(clientHd, gameGvt);
 	}
 
 	// SN_SummaryInfoAll
@@ -158,7 +161,7 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.Write<u16>(0);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AvailableSummaryRewardCountList
@@ -180,7 +183,7 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(rewardCount, sizeof(rewardCount));
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 
@@ -205,7 +208,7 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.WriteRaw(infoList, sizeof(infoList));
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AchieveInfo
@@ -216,7 +219,7 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 		packet.Write<i32>(800); // achievementScore
 		packet.Write<u16>(0); // achList_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AchieveLatest
@@ -225,34 +228,35 @@ void ReplicationHub::SendLoadLobby(i32 clientID, StageIndex stageIndex)
 
 		packet.Write<u16>(0); // achList_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
 	cityMapInfo.cityMapID = (StageIndex)Config().LobbyMap;
-	SendPacket(clientID, cityMapInfo);
+	SendPacket(clientHd, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
-	SendPacketData<Sv::SQ_CityLobbyJoinCity>(clientID, 0, nullptr);
+	SendPacketData<Sv::SQ_CityLobbyJoinCity>(clientHd, 0, nullptr);
 
 	// SN_SetGameGvt
 	{
 		Sv::SN_SetGameGvt gameGvt;
 		gameGvt.sendTime = 0;
 		gameGvt.virtualTime = 0;
-		SendPacket(clientID, gameGvt);
+		SendPacket(clientHd, gameGvt);
 	}
 }
 
-void ReplicationHub::SetPlayerAsInGame(i32 clientID)
+void ReplicationHub::SetPlayerAsInGame(ClientHandle clientHd)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void ReplicationHub::SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
+void ReplicationHub::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
-	ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
+	const i32 clientID = plidMap.Get(clientHd);
 
 	if(playerState[clientID] != PlayerState::IN_GAME) {
 		LOG("WARNING(EventPlayerRequestCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, (i32)playerState[clientID]);
@@ -261,27 +265,28 @@ void ReplicationHub::SendCharacterInfo(i32 clientID, ActorUID actorUID, Creature
 
 	// SA_GetCharacterInfo
 	Sv::SA_GetCharacterInfo info;
-	info.characterID = GetLocalActorID(clientID, actorUID);
+	info.characterID = GetLocalActorID(clientHd, actorUID);
 	info.docIndex = docID;
 	info.classType = classType;
 	info.hp = health;
 	info.maxHp = healthMax;
-	SendPacket(clientID, info);
+	SendPacket(clientHd, info);
 }
 
-void ReplicationHub::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex)
+void ReplicationHub::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
 
-	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
+	PlayerForceLocalActorID(clientHd, masterActorUID, laiLeader);
 
+	const i32 clientID = plidMap.Get(clientHd);
 	if(playerState[clientID] < PlayerState::IN_GAME) {
 		// SN_LeaderCharacter
 		Sv::SN_LeaderCharacter leader;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		SendPacket(clientID, leader);
+		SendPacket(clientHd, leader);
 	}
 	else {
 		// NOTE: only seems to close the master window
@@ -290,7 +295,7 @@ void ReplicationHub::SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActo
 		leader.result = 0;
 		leader.leaderID = laiLeader;
 		leader.skinIndex = skinIndex;
-		SendPacket(clientID, leader);
+		SendPacket(clientHd, leader);
 	}
 }
 
@@ -305,17 +310,17 @@ void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+	for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-		SendPacket(clientID, packet);
+		SendPacket(playerClientHd[clientID], packet);
 	}
 }
 
-void ReplicationHub::SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void ReplicationHub::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
-	ASSERT(toClientID >= 0 && toClientID < Server::MAX_CLIENTS);
-	if(playerState[toClientID] != PlayerState::IN_GAME) return;
+	const i32 clientID = plidMap.Get(toClientHd);
+	if(playerState[clientID] != PlayerState::IN_GAME) return;
 
 	if(msgLen == -1) msgLen = EA::StdC::Strlen(msg);
 
@@ -326,10 +331,10 @@ void ReplicationHub::SendChatMessageToClient(i32 toClientID, const wchar* sender
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	SendPacket(toClientID, packet);
+	SendPacket(toClientHd, packet);
 }
 
-void ReplicationHub::SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg)
+void ReplicationHub::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
 {
 	PacketWriter<Sv::SA_WhisperSend> packet;
 
@@ -337,10 +342,10 @@ void ReplicationHub::SendChatWhisperConfirmToClient(i32 senderClientID, const wc
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
-	SendPacket(senderClientID, packet);
+	SendPacket(senderClientHd, packet);
 }
 
-void ReplicationHub::SendChatWhisperToClient(i32 destClientID, const wchar* senderName, const wchar* msg)
+void ReplicationHub::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
 {
 	PacketWriter<Sv::SN_WhisperReceive> packet;
 
@@ -348,10 +353,10 @@ void ReplicationHub::SendChatWhisperToClient(i32 destClientID, const wchar* send
 	packet.Write<u8>(0); // staffType
 	packet.WriteStringObj(msg); // msg
 
-	SendPacket(destClientID, packet);
+	SendPacket(destClientHd, packet);
 }
 
-void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& account)
+void ReplicationHub::SendAccountDataLobby(ClientHandle clientHd, const AccountData& account)
 {
 	// SN_RegionServicePolicy
 	{
@@ -389,7 +394,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u8>(1); // useFatigueSystem
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AllCharacterBaseData
@@ -441,7 +446,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(1); // cur
 		packet.Write<i32>(1); // max
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	const GameXmlContent& content = GetGameXmlContent();
@@ -469,7 +474,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			packet.Write(chara);
 		}
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// TODO: send weapons
@@ -518,7 +523,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i64>(0);
 		packet.Write<u8>(0);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ProfileMasterGears
@@ -527,7 +532,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // masterGears_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ProfileItems
@@ -548,7 +553,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i64>(0); // lifeEndTimeUTC
 		packet.Write<u16>(0); // properties_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ProfileSkills
@@ -575,7 +580,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			}
 		}
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ProfileTitles
@@ -585,7 +590,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<u16>(1); // titles_count
 		packet.Write<i32>(320080004); // titles[0]
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ProfileCharacterSkinList
@@ -610,7 +615,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 			}
 		}
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AccountInfo
@@ -633,7 +638,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(3600); // masterGearDurability
 		packet.Write<u8>(0); // badgeType
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AccountExtraInfo
@@ -654,7 +659,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(0); // activityPoint
 		packet.Write<u8>(0); // activityRewaredState
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AccountEquipmentList
@@ -663,7 +668,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<i32>(-1); // supportKitDocIndex
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_Unknown_62472
@@ -672,7 +677,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u8>(1);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_GuildChannelEnter
@@ -683,7 +688,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.WriteStringObj(account.nickname.data()); // nick
 		packet.Write<u8>(0); // onlineStatus
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_FriendList
@@ -692,7 +697,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // friendList_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_PveComradeInfo
@@ -702,7 +707,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i32>(5); // availableComradeCount
 		packet.Write<i32>(5); // maxComradeCount
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AchieveUpdate
@@ -717,7 +722,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<i64>(6); // progressInt64
 		packet.Write<i64>(6); // date
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_FriendRequestList
@@ -726,7 +731,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // friendRequestList_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_BlockList
@@ -735,7 +740,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // blocks_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_MailUnreadNotice
@@ -750,7 +755,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		packet.Write<u16>(16); // shopMailCount
 		packet.Write<u16>(0); // newAttachmentsPending_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_WarehouseItems
@@ -759,7 +764,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // items_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_MutualFriendList
@@ -768,7 +773,7 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // candidates_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_GuildMemberStatus
@@ -777,14 +782,14 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 
 		packet.Write<u16>(0); // guildMemberStatusList_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_Money
 	Sv::SN_Money money;
 	money.nMoney = 116472;
 	money.nReason = 1;
-	SendPacket(clientID, money);
+	SendPacket(clientHd, money);
 
 	// SN_UpdateEntrySystem
 	{
@@ -994,11 +999,11 @@ void ReplicationHub::SendAccountDataLobby(i32 clientID, const AccountData& accou
 		}
 
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port)
+void ReplicationHub::SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port)
 {
 	PacketWriter<Sv::SN_DoConnectGameServer> packet;
 
@@ -1009,29 +1014,29 @@ void ReplicationHub::SendConnectToServer(i32 clientID, const AccountData& accoun
 	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
 	packet.Write<i32>(340); // instantKey
 
-	SendPacket(clientID, packet);
+	SendPacket(clientHd, packet);
 
 	// NOTE: client will disconnect on reception
 }
 
-void ReplicationHub::SendGameReady(i32 clientID)
+void ReplicationHub::SendGameReady(ClientHandle clientHd)
 {
 	Sv::SA_GameReady ready;
 	ready.waitingTimeMs = 3000;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
 	ready.readyElapsedMs = 0;
-	SendPacket(clientID, ready);
+	SendPacket(clientHd, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
 	notify.userID = 1;
 	notify.skillPoint = 1;
-	SendPacket(clientID, notify);
+	SendPacket(clientHd, notify);
 
 	Sv::SN_NotifyTimestamp notifyTimestamp;
 	notifyTimestamp.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
 	notifyTimestamp.curCount = 4;
 	notifyTimestamp.maxCount = 5;
-	SendPacket(clientID, notifyTimestamp);
+	SendPacket(clientHd, notifyTimestamp);
 
 	/*
 	// Sv::SN_RunClientLevelEventSeq
@@ -1042,7 +1047,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
-		SendPacket(clientID, seq);
+		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEventSeq
 	{
@@ -1052,7 +1057,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
-		SendPacket(clientID, seq);
+		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEventSeq
 	{
@@ -1062,7 +1067,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
-		SendPacket(clientID, seq);
+		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEvent
 	{
@@ -1071,7 +1076,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		event.caller = 0;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
-		SendPacket(clientID, event);
+		SendPacket(clientHd, event);
 	}
 	// Sv::SN_RunClientLevelEventSeq
 	{
@@ -1081,7 +1086,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		seq.caller = 21035;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
-		SendPacket(clientID, seq);
+		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEvent
 	{
@@ -1090,7 +1095,7 @@ void ReplicationHub::SendGameReady(i32 clientID)
 		event.caller = 21035;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
-		SendPacket(clientID, event);
+		SendPacket(clientHd, event);
 	}
 	*/
 
@@ -1099,11 +1104,11 @@ void ReplicationHub::SendGameReady(i32 clientID)
 	safe.userID = 1;
 	safe.inSafeZone = 1;
 	LOG("[client%03d] Server :: SN_NotifyIsInSafeZone", clientID);
-	SendPacket(clientID, safe);
+	SendPacket(clientHd, safe);
 	*/
 }
 
-void ReplicationHub::SendCalendar(i32 clientID)
+void ReplicationHub::SendCalendar(ClientHandle clientHd)
 {
 	// SA_CalendarDetail
 	{
@@ -1552,17 +1557,17 @@ void ReplicationHub::SendCalendar(i32 clientID)
 
 		packet.WriteVec(events, ARRAY_COUNT(events));
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::SendAreaPopularity(i32 clientID, u32 areaID)
+void ReplicationHub::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 {
 	// SA_AreaPopularity
 	{
 		Sv::SA_AreaPopularity packet;
 		packet.errCode = 0;
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_AreaPopularity
@@ -1572,32 +1577,37 @@ void ReplicationHub::SendAreaPopularity(i32 clientID, u32 areaID)
 		packet.Write<u32>(areaID);
 		packet.WriteVec((Sv::SN_AreaPopularity*)nullptr, 0);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::EventClientDisconnect(i32 clientID)
+void ReplicationHub::EventClientDisconnect(ClientHandle clientHd)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	playerState[clientID] = PlayerState::DISCONNECTED;
+	playerClientHd[clientID] = ClientHandle::INVALID;
+	plidMap.Pop(clientHd);
 }
 
-void ReplicationHub::PlayerRegisterMasterActor(i32 clientID, ActorUID masterActorUID, ClassType classType)
+void ReplicationHub::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
 
-	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
+	PlayerForceLocalActorID(clientHd, masterActorUID, laiLeader);
 }
 
-void ReplicationHub::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID)
+void ReplicationHub::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID actorUID, LocalActorID localActorID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	auto& map = playerLocalInfo[clientID].localActorIDMap;
 	ASSERT(map.find(actorUID) == map.end());
 	map.emplace(actorUID, localActorID);
 }
 
-LocalActorID ReplicationHub::GetLocalActorID(i32 clientID, ActorUID actorUID)
+LocalActorID ReplicationHub::GetLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	auto found = map.find(actorUID);
 	if(found != map.end()) {
@@ -1606,8 +1616,9 @@ LocalActorID ReplicationHub::GetLocalActorID(i32 clientID, ActorUID actorUID)
 	return LocalActorID::INVALID;
 }
 
-ActorUID ReplicationHub::GetWorldActorUID(i32 clientID, LocalActorID localActorID)
+ActorUID ReplicationHub::GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	// TODO: second map, for this reverse lookup
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	foreach(it, map) {
@@ -1621,7 +1632,7 @@ ActorUID ReplicationHub::GetWorldActorUID(i32 clientID, LocalActorID localActorI
 
 void ReplicationHub::UpdatePlayersLocalState()
 {
-	for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
 		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
@@ -1631,6 +1642,8 @@ void ReplicationHub::UpdatePlayersLocalState()
 		eastl::fixed_vector<ActorUID,2048,true> addedList;
 		eastl::set_difference(playerActorUIDSet.begin(), playerActorUIDSet.end(), frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), eastl::back_inserter(removedList));
 		eastl::set_difference(frameCur->actorUIDSet.begin(), frameCur->actorUIDSet.end(), playerActorUIDSet.begin(), playerActorUIDSet.end(), eastl::back_inserter(addedList));
+
+		const ClientHandle clientHd = playerClientHd[clientID];
 
 		// send destroy entity for deleted actors
 		foreach(setIt, removedList) {
@@ -1660,10 +1673,10 @@ void ReplicationHub::UpdatePlayersLocalState()
 			}
 #endif
 
-			SendActorDestroy(clientID, actorUID);
+			SendActorDestroy(clientHd, actorUID);
 
 			// Remove LocalActorID link
-			DeleteLocalActorID(clientID, actorUID);
+			DeleteLocalActorID(clientHd, actorUID);
 		}
 
 		// send new spawns
@@ -1672,8 +1685,8 @@ void ReplicationHub::UpdatePlayersLocalState()
 
 			// Create a LocalActorID link if none exists already
 			// If one exists already, we have pre-allocated it (like with leader master)
-			if(GetLocalActorID(clientID, actorUID) == LocalActorID::INVALID) {
-				CreateLocalActorID(clientID, actorUID);
+			if(GetLocalActorID(clientHd, actorUID) == LocalActorID::INVALID) {
+				CreateLocalActorID(clientHd, actorUID);
 			}
 
 			auto type = frameCur->actorType.find(actorUID);
@@ -1684,19 +1697,19 @@ void ReplicationHub::UpdatePlayersLocalState()
 					const auto pm = frameCur->playerMap.find(actorUID);
 					ASSERT(pm != frameCur->playerMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
-					SendActorPlayerSpawn(clientID, *pm->second);
+					SendActorPlayerSpawn(clientHd, *pm->second);
 				} break;
 
 				case ActorType::NPC: {
 					const auto pm = frameCur->npcMap.find(actorUID);
 					ASSERT(pm != frameCur->npcMap.end());
 					ASSERT(pm->second->actorUID == actorUID);
-					SendActorNpcSpawn(clientID, *pm->second);
+					SendActorNpcSpawn(clientHd, *pm->second);
 				} break;
 
 				case ActorType::JUKEBOX: {
 					ASSERT(actorUID == frameCur->jukebox.actorUID);
-					SendJukeboxSpawn(clientID, frameCur->jukebox);
+					SendJukeboxSpawn(clientHd, frameCur->jukebox);
 				} break;
 
 				default: {
@@ -1785,10 +1798,10 @@ void ReplicationHub::FrameDifference()
 					if(cur.currentSong.songID != SongID::INVALID) {
 						if(prev.currentSong.songID != cur.currentSong.songID || prev.playStartTime != cur.playStartTime) {
 
-							for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+							for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
 								if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-								SendJukeboxPlay(clientID, cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
+								SendJukeboxPlay(playerClientHd[clientID], cur.currentSong.songID, cur.currentSong.requesterNick.data(), cur.playPosition);
 							}
 						}
 					}
@@ -1808,10 +1821,10 @@ void ReplicationHub::FrameDifference()
 					}
 
 					if(doSendTracks) {
-						for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+						for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
 							if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-							SendJukeboxQueue(clientID, cur.tracks.data(), cur.tracks.size());
+							SendJukeboxQueue(playerClientHd[clientID], cur.tracks.data(), cur.tracks.size());
 						}
 					}
 				}
@@ -1835,11 +1848,12 @@ void ReplicationHub::FrameDifference()
 		sync.nState = -1;
 		sync.nActionIDX = -1;
 
-		for(int clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 			if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-			sync.characterID = GetLocalActorID(clientID, e.first);
-			SendPacket(clientID, sync);
+			const ClientHandle clientHd = playerClientHd[clientID];
+			sync.characterID = GetLocalActorID(clientHd, e.first);
+			SendPacket(clientHd, sync);
 		}
 	}
 
@@ -1855,19 +1869,20 @@ void ReplicationHub::FrameDifference()
 		packet.rotate = at.rotate;
 		packet.upperRotate = at.upperRotate;
 
-		for(int clientID= 0; clientID < Server::MAX_CLIENTS; clientID++) {
+		for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
 			if(playerState[clientID] != PlayerState::IN_GAME) continue;
 
-			packet.characterID = GetLocalActorID(clientID, e.first);
-			SendPacket(clientID, packet);
+			const ClientHandle clientHd = playerClientHd[clientID];
+			packet.characterID = GetLocalActorID(clientHd, e.first);
+			SendPacket(clientHd, packet);
 		}
 	}
 }
 
-void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor)
+void ReplicationHub::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlayer& actor)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
-	const LocalActorID localActorID = GetLocalActorID(clientID, actor.actorUID);
+	const LocalActorID localActorID = GetLocalActorID(clientHd, actor.actorUID);
 	ASSERT(localActorID != LocalActorID::INVALID);
 
 	// this is the main actor
@@ -2010,12 +2025,12 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			SendPacket(clientID, packet);
+			SendPacket(clientHd, packet);
 		}
 	}
 	// this is the sub actor
 	else {
-		const LocalActorID parentLocalActorID = GetLocalActorID(clientID, actor.parentActorUID);
+		const LocalActorID parentLocalActorID = GetLocalActorID(clientHd, actor.parentActorUID);
 		ASSERT(parentLocalActorID != LocalActorID::INVALID);
 
 		// SN_GameCreateSubActor
@@ -2079,7 +2094,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
-			SendPacket(clientID, packet);
+			SendPacket(clientHd, packet);
 		}
 	}
 
@@ -2090,7 +2105,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_GamePlayerStock
@@ -2114,7 +2129,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 		packet.Write<u8>(0); // staffType
 		packet.Write<u8>(0); // isSubstituted
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_GamePlayerEquipWeapon
@@ -2126,7 +2141,7 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 		packet.Write<i32>(0); // additionnalOverHeatGauge
 		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	/*
@@ -2167,8 +2182,10 @@ void ReplicationHub::SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor
 	*/
 }
 
-void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
+void ReplicationHub::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
@@ -2225,7 +2242,7 @@ void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_SpawnPosForMinimap
@@ -2235,12 +2252,14 @@ void ReplicationHub::SendActorNpcSpawn(i32 clientID, const ActorNpc& actor)
 		packet.Write<LocalActorID>(localActorID); // objectID
 		packet.Write(actor.pos); // p3nPos
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::SendJukeboxSpawn(i32 clientID, const ReplicationHub::ActorJukebox& actor)
+void ReplicationHub::SendJukeboxSpawn(ClientHandle clientHd, const ReplicationHub::ActorJukebox& actor)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
@@ -2278,7 +2297,7 @@ void ReplicationHub::SendJukeboxSpawn(i32 clientID, const ReplicationHub::ActorJ
 
 		packet.Write<u16>(0); // meshChangeActionHistory_count
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	/*
@@ -2298,22 +2317,24 @@ void ReplicationHub::SendJukeboxSpawn(i32 clientID, const ReplicationHub::ActorJ
 		songID = SongID::Default; // send lobby song by default
 	}
 
-	SendJukeboxPlay(clientID, songID, actor.currentSong.requesterNick.data(), actor.playPosition);
-	SendJukeboxQueue(clientID, actor.tracks.data(), actor.tracks.size());
+	SendJukeboxPlay(clientHd, songID, actor.currentSong.requesterNick.data(), actor.playPosition);
+	SendJukeboxQueue(clientHd, actor.tracks.data(), actor.tracks.size());
 }
 
-void ReplicationHub::SendActorDestroy(i32 clientID, ActorUID actorUID)
+void ReplicationHub::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
 	const LocalActorID localActorID = found->second;
 
 	Sv::SN_DestroyEntity packet;
 	packet.characterID = localActorID;
-	SendPacket(clientID, packet);
+	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec)
+void ReplicationHub::SendJukeboxPlay(ClientHandle clientHd, SongID songID, const wchar* requesterNick, i32 playPosInSec)
 {
 	PacketWriter<Sv::SN_JukeboxPlay> packet;
 
@@ -2322,10 +2343,10 @@ void ReplicationHub::SendJukeboxPlay(i32 clientID, SongID songID, const wchar* r
 	packet.WriteStringObj(requesterNick); // nickname
 	packet.Write<u16>(playPosInSec); // playPositionSec
 
-	SendPacket(clientID, packet);
+	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount)
+void ReplicationHub::SendJukeboxQueue(ClientHandle clientHd, const ActorJukebox::Track* tracks, const i32 trackCount)
 {
 	PacketWriter<Sv::SN_JukeboxEnqueuedList> packet;
 
@@ -2335,13 +2356,13 @@ void ReplicationHub::SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* t
 		packet.WriteStringObj(tracks[i].requesterNick.data(), tracks[i].requesterNick.size());
 	}
 
-	SendPacket(clientID, packet);
+	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendMasterSkillSlots(i32 clientID, const ReplicationHub::ActorPlayer& actor)
+void ReplicationHub::SendMasterSkillSlots(ClientHandle clientHd, const ReplicationHub::ActorPlayer& actor)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
-	const LocalActorID localActorID = GetLocalActorID(clientID, actor.actorUID);
+	const LocalActorID localActorID = GetLocalActorID(clientHd, actor.actorUID);
 	ASSERT(localActorID != LocalActorID::INVALID);
 
 	const GameXmlContent& content = GetGameXmlContent();
@@ -2391,14 +2412,14 @@ void ReplicationHub::SendMasterSkillSlots(i32 clientID, const ReplicationHub::Ac
 		packet.Write<SkillID>(master.skillIDs[1]); // currentSkillSlot2
 		packet.Write<SkillID>(master.skillIDs.back()); // shirkSkillSlot
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::SendInitialFrame(i32 clientID)
+void ReplicationHub::SendInitialFrame(ClientHandle clientHd)
 {
 	// SN_ScanEnd
-	SendPacketData<Sv::SN_ScanEnd>(clientID, 0, nullptr);
+	SendPacketData<Sv::SN_ScanEnd>(clientHd, 0, nullptr);
 
 	// SN_TownHudStatistics
 	{
@@ -2413,12 +2434,14 @@ void ReplicationHub::SendInitialFrame(i32 clientID)
 		packet.Write<i32>(0);
 		packet.Write<i32>(16);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }
 
-void ReplicationHub::CreateLocalActorID(i32 clientID, ActorUID actorUID)
+void ReplicationHub::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
 	auto& localActorIDMap = localInfo.localActorIDMap;
 	localActorIDMap.emplace(actorUID, localInfo.nextPlayerLocalActorID);
@@ -2428,8 +2451,10 @@ void ReplicationHub::CreateLocalActorID(i32 clientID, ActorUID actorUID)
 	// TODO: start at 5000 for NPCs? Does it even matter?
 }
 
-void ReplicationHub::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
+void ReplicationHub::DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }

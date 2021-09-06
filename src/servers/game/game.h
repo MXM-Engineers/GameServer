@@ -14,7 +14,7 @@ struct AccountData;
 struct Game
 {
 	enum {
-		MAX_PLAYERS = Server::MAX_CLIENTS
+		MAX_PLAYERS = MAX_CLIENTS
 	};
 
 	struct SpawnPoint
@@ -24,20 +24,22 @@ struct Game
 
 	struct Player
 	{
-		const i32 clientID;
+		const ClientHandle clientHd;
 		ActorUID actorUID = ActorUID::INVALID;
 		ActorUID cloneActorUID = ActorUID::INVALID; // TODO: remove
 
-		Player(): clientID(-1) {}
+		Player(): clientHd(ClientHandle::INVALID) {}
 
-		Player(i32 clientID_):
-			clientID(clientID_) {}
+		Player(ClientHandle clientHd_):
+			clientHd(clientHd_) {}
 	};
 
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	World world;
-	Replication* replication;
+	Replication replication;
+
+	ClientLocalMapping plidMap;
 
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
 	typedef decltype(playerList) TypePlayerList; // just so it plays well with my tools...
@@ -57,30 +59,30 @@ struct Game
 	World::Player* clone = nullptr;
 
 
-	void Init(Replication* replication_);
+	void Init(Server* server_);
 	void Update(Time localTime_);
 
 	bool LoadMap();
 
-	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
-	void OnPlayerDisconnect(i32 clientID);
-	void OnPlayerReadyToLoad(i32 clientID);
-	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime);
-	void OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot);
-	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
-	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
-	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
-	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
-	void OnPlayerLoadingComplete(i32 clientID);
-	void OnPlayerGameIsReady(i32 clientID);
-	void OnPlayerGameMapLoaded(i32 clientID);
-	void OnPlayerTag(i32 clientID, LocalActorID toLocalActorID);
-	void OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast);
+	void OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData);
+	void OnPlayerDisconnect(ClientHandle clientHd);
+	void OnPlayerReadyToLoad(ClientHandle clientHd);
+	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
+	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime);
+	void OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot);
+	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
+	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
+	void OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex);
+	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
+	void OnPlayerLoadingComplete(ClientHandle clientHd);
+	void OnPlayerGameIsReady(ClientHandle clientHd);
+	void OnPlayerGameMapLoaded(ClientHandle clientHd);
+	void OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID);
+	void OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast);
 
-	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
-	void SendDbgMsg(i32 clientID, const wchar* msg);
+	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
+	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);
 
 	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };

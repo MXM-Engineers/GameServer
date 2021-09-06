@@ -3,6 +3,7 @@
 
 #include "coordinator.h"
 #include "config.h"
+#include "instance.h"
 
 Server* g_Server = nullptr;
 Listener* g_Listener = nullptr;
@@ -59,6 +60,7 @@ int main(int argc, char** argv)
 
 	static Coordinator coordinator;
 	r = coordinator.Init(&server);
+
 	if(!r) {
 		LOG("ERROR: Could not init coordinator");
 		return 1;

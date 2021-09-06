@@ -8,6 +8,7 @@
 #include "coordinator.h"
 #include "config.h"
 #include "channel.h"
+#include "instance.h"
 
 bool Matchmaker::Init()
 {
@@ -190,42 +191,45 @@ void Matchmaker::HandlePacket(InnerConnection& conn, u16 netID, const u8* packet
 	}
 }
 
-intptr_t ThreadCoordinator(void* pData)
+void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void *packetData)
 {
-	ProfileSetThreadName("Coordinator");
-	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+	const i32 packetTotalSize = packetSize + sizeof(NetHeader);
+	ASSERT(packetTotalSize + sendQ.size <= InnerConnection::SendQueue::QUEUE_CAPACITY);
 
-	Coordinator& coordinator = *(Coordinator*)pData;
+	NetHeader header;
+	header.size = packetTotalSize;
+	header.netID = netID;
 
-	const f64 UPDATE_RATE_MS = (1.0/120.0) * 1000.0;
-	const Time startTime = TimeNow();
-	Time t0 = startTime;
-
-	while(coordinator.server->running)
-	{
-		Time t1 = TimeNow();
-		coordinator.localTime = TimeDiff(startTime, t1);
-		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
-
-		if(delta > UPDATE_RATE_MS) {
-			ProfileNewFrame("Coordinator");
-			coordinator.Update(delta / 1000.0);
-			t0 = t1;
-		}
-		else {
-			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta)); // yield
-			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
-			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
-		}
-	}
-	return 0;
+	u8* at = sendQ.data + sendQ.size;
+	memmove(at, &header, sizeof(header));
+	memmove(at+sizeof(NetHeader), packetData, packetSize);
+	sendQ.size += packetTotalSize;
 }
 
-struct Instance
+void InnerConnection::SendPendingData()
 {
-	HubPacketHandler packetHandler;
-	GameHub game;
-};
+	NetPollResult r = async.PollSend();
+	if(r == NetPollResult::SUCCESS) {
+		async.PushSendData(sendQ.data, sendQ.size);
+		async.StartSending();
+		sendQ.size = 0;
+	}
+}
+
+void InnerConnection::RecvPendingData(u8* buff, const i32 buffCapacity, i32* size)
+{
+	*size = 0;
+
+	i32 len = 0;
+	NetPollResult r = async.PollReceive(&len);
+	if(r == NetPollResult::SUCCESS) {
+		ASSERT(len <= buffCapacity);
+		memmove(buff, async.GetReceivedData(), len);
+		*size = len;
+		async.StartReceiving();
+	}
+}
+
 
 intptr_t ThreadLane(void* pData)
 {
@@ -269,6 +273,37 @@ intptr_t ThreadLane(void* pData)
 	return 0;
 }
 
+intptr_t ThreadCoordinator(void* pData)
+{
+	ProfileSetThreadName("Coordinator");
+	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+
+	Coordinator& coordinator = *(Coordinator*)pData;
+
+	const f64 UPDATE_RATE_MS = (1.0/120.0) * 1000.0;
+	const Time startTime = TimeNow();
+	Time t0 = startTime;
+
+	while(coordinator.server->running)
+	{
+		Time t1 = TimeNow();
+		coordinator.localTime = TimeDiff(startTime, t1);
+		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
+
+		if(delta > UPDATE_RATE_MS) {
+			ProfileNewFrame("Coordinator");
+			coordinator.Update(delta / 1000.0);
+			t0 = t1;
+		}
+		else {
+			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta)); // yield
+			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
+			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
+		}
+	}
+	return 0;
+}
+
 void Lane::Init(Server* server_)
 {
 	server = server_;
@@ -278,17 +313,16 @@ void Lane::Init(Server* server_)
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
 
 	// TODO: several of these
-	instance = new Instance();
-	instance->game.Init(server);
-	instance->packetHandler.Init(&instance->game);
+	instance = new HubInstance();
+	instance->Init(server);
 }
 
 void Lane::Update()
 {
 	// TODO: handle multiple instances
 
-	eastl::fixed_vector<i32,Server::MAX_CLIENTS> disconnectedClientList;
-	eastl::fixed_vector<eastl::pair<i32, const AccountData*>,Server::MAX_CLIENTS> newClientList;
+	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> disconnectedClientList;
+	eastl::fixed_vector<eastl::pair<ClientHandle, const AccountData*>,MAX_CLIENTS> newClientList;
 
 	{ LOCK_MUTEX(mutexClientDisconnectedList);
 		foreach_const(n, clientDisconnectedList) {
@@ -300,23 +334,23 @@ void Lane::Update()
 
 	{ LOCK_MUTEX(mutexNewPlayerQueue);
 		foreach_const(n, newPlayerQueue) {
-			ASSERT(clientSet.find(n->clientID) == clientSet.end());
-			clientSet.insert(n->clientID);
-			newClientList.push_back({ n->clientID, n->accountData });
+			ASSERT(clientSet.find(n->clientHd) == clientSet.end());
+			clientSet.insert(n->clientHd);
+			newClientList.push_back({ n->clientHd, n->accountData });
 		}
 		newPlayerQueue.clear();
 	}
 
 	// TODO: move this to game probably?
-	instance->packetHandler.OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
-	instance->packetHandler.OnNewClientsConnected(newClientList.data(), newClientList.size());
+	instance->OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
+	instance->OnNewClientsConnected(newClientList.data(), newClientList.size());
 
 	{ LOCK_MUTEX(mutexPacketDataQueue);
 		recvDataBuff.Append(packetDataQueue.data, packetDataQueue.size);
 		packetDataQueue.Clear();
 	}
 
-	eastl::fixed_vector<i32,Server::MAX_CLIENTS> clientList;
+	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
 	eastl::copy(clientSet.begin(), clientSet.end(), eastl::back_inserter(clientList));
 
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
@@ -329,8 +363,8 @@ void Lane::Update()
 		// handle each packet in chunk
 		ConstBuffer reader(data, chunkInfo.len);
 		if(!reader.CanRead(sizeof(NetHeader))) {
-			WARN("Packet too small (clientID=%d size=%d)", chunkInfo.clientID, chunkInfo.len);
-			server->DisconnectClient(chunkInfo.clientID);
+			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
+			server->DisconnectClient(chunkInfo.clientHd);
 			continue;
 		}
 
@@ -339,19 +373,19 @@ void Lane::Update()
 			const i32 packetDataSize = header.size - sizeof(NetHeader);
 
 			if(!reader.CanRead(packetDataSize)) {
-				WARN("Packet header size differs from actual data size (clientID=%d size=%d)", chunkInfo.clientID, header.size);
-				server->DisconnectClient(chunkInfo.clientID);
+				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
+				server->DisconnectClient(chunkInfo.clientHd);
 				break;
 			}
 
 			const u8* packetData = reader.ReadRaw(packetDataSize);
-			instance->packetHandler.OnNewPacket(chunkInfo.clientID, header, packetData);
+			instance->OnNewPacket(chunkInfo.clientHd, header, packetData);
 		}
 	}
 
 	recvDataBuff.Clear();
 
-	instance->game.Update(localTime);
+	instance->Update(localTime);
 }
 
 void Lane::Cleanup()
@@ -359,69 +393,30 @@ void Lane::Cleanup()
 	// instance->game.Cleanup();
 }
 
-void Lane::CoordinatorRegisterNewPlayer(i32 clientID, const AccountData* accountData)
+void Lane::CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData)
 {
-	LOG("[Lane%d][client%03d] New player :: '%ls'", laneIndex, clientID, accountData->nickname.data());
+	LOG("[Lane%d][client%x] New player", laneIndex, clientHd);
 
 	LOCK_MUTEX(mutexNewPlayerQueue);
-	newPlayerQueue.push_back(EventOnClientConnect{ clientID, accountData });
+	newPlayerQueue.push_back(EventOnClientConnect{ clientHd, accountData });
 }
 
-void Lane::CoordinatorClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
+void Lane::CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
 {
 	LOCK_MUTEX(mutexPacketDataQueue);
 
 	Server::RecvChunkHeader chunkInfo;
-	chunkInfo.clientID = clientID;
+	chunkInfo.clientHd = clientHd;
 	chunkInfo.len = header.size;
 	packetDataQueue.Append(&chunkInfo, sizeof(chunkInfo));
 	packetDataQueue.Append(&header, sizeof(header));
 	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
 }
 
-void Lane::CoordinatorHandleDisconnectedClients(i32* clientIDList, const i32 count)
+void Lane::CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count)
 {
 	LOCK_MUTEX(mutexClientDisconnectedList);
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
-}
-
-void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void *packetData)
-{
-	const i32 packetTotalSize = packetSize + sizeof(NetHeader);
-	ASSERT(packetTotalSize + sendQ.size <= InnerConnection::SendQueue::QUEUE_CAPACITY);
-
-	NetHeader header;
-	header.size = packetTotalSize;
-	header.netID = netID;
-
-	u8* at = sendQ.data + sendQ.size;
-	memmove(at, &header, sizeof(header));
-	memmove(at+sizeof(NetHeader), packetData, packetSize);
-	sendQ.size += packetTotalSize;
-}
-
-void InnerConnection::SendPendingData()
-{
-	NetPollResult r = async.PollSend();
-	if(r == NetPollResult::SUCCESS) {
-		async.PushSendData(sendQ.data, sendQ.size);
-		async.StartSending();
-		sendQ.size = 0;
-	}
-}
-
-void InnerConnection::RecvPendingData(u8* buff, const i32 buffCapacity, i32* size)
-{
-	*size = 0;
-
-	i32 len = 0;
-	NetPollResult r = async.PollReceive(&len);
-	if(r == NetPollResult::SUCCESS) {
-		ASSERT(len <= buffCapacity);
-		memmove(buff, async.GetReceivedData(), len);
-		*size = len;
-		async.StartReceiving();
-	}
 }
 
 bool Coordinator::Init(Server* server_)
@@ -430,14 +425,17 @@ bool Coordinator::Init(Server* server_)
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
 	associatedLane.fill(LaneID::NONE);
-
-	foreach(it, lanes) {
-		it->Init(server);
-		it->thread.Begin(ThreadLane, &(*it));
-	}
+	clientHandle.fill(ClientHandle::INVALID);
 
 	bool r = matchmaker.Init();
 	if(!r) return false;
+
+	i32 laneIndex = 0;
+	foreach(it, lanes) {
+		it->Init(server);
+		it->laneIndex = laneIndex++;
+		it->thread.Begin(ThreadLane, &(*it));
+	}
 
 	thread.Begin(ThreadCoordinator, this);
 	return true;
@@ -450,7 +448,6 @@ void Coordinator::Cleanup()
 	foreach(it, lanes) {
 		it->thread.WaitForEnd();
 	}
-
 	thread.WaitForEnd();
 }
 
@@ -466,15 +463,25 @@ void Coordinator::Update(f64 delta)
 		// TODO: stop listenner as well
 	}
 
+	// handle client connections
+	eastl::fixed_vector<ClientHandle,128> clientConnectedList;
+	server->TransferConnectedClientList(&clientConnectedList);
+
+	foreach_const(cl, clientConnectedList) {
+		const i32 clientID = plidMap.Push(*cl);
+		associatedLane[clientID] = LaneID::NONE;
+		clientHandle[clientID] = *cl;
+	}
+
 	// handle client disconnections
-	eastl::fixed_vector<i32,128> clientDisconnectedList;
+	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
 
 	for(i32 i = (i32)LaneID::FIRST; i < (i32)LaneID::_COUNT; i++) {
-		eastl::fixed_vector<i32,128> chanDiscList;
+		eastl::fixed_vector<ClientHandle,128> chanDiscList;
 
-		foreach(cl, clientDisconnectedList) {
-			if(associatedLane[*cl] == (LaneID)i) {
+		foreach_const(cl, clientDisconnectedList) {
+			if(associatedLane[plidMap.Get(*cl)] == (LaneID)i) {
 				chanDiscList.push_back(*cl);
 			}
 		}
@@ -483,15 +490,19 @@ void Coordinator::Update(f64 delta)
 	}
 
 	// clear client data
-	foreach(cl, clientDisconnectedList) {
-		associatedLane[*cl] = LaneID::NONE;
+	foreach_const(cl, clientDisconnectedList) {
+		const i32 clientID = plidMap.Get(*cl);
+		plidMap.Pop(*cl);
+		associatedLane[clientID] = LaneID::NONE;
+		clientHandle[clientID] = ClientHandle::INVALID;
+
 	}
 
 	// handle received data
-	eastl::fixed_vector<i32,Server::MAX_CLIENTS> clientList;
-	for(i32 clientID = 0; clientID < Server::MAX_CLIENTS; clientID++) {
-		if(associatedLane[clientID] == LaneID::NONE) {
-			clientList.push_back(clientID);
+	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
+	for(i32 clientID = 0; clientID < MAX_CLIENTS; clientID++) {
+		if(clientHandle[clientID] != ClientHandle::INVALID && associatedLane[clientID] == LaneID::NONE) {
+			clientList.push_back(clientHandle[clientID]);
 		}
 	}
 
@@ -499,20 +510,46 @@ void Coordinator::Update(f64 delta)
 
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
 	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
-		const Server::RecvChunkHeader& header = buff.Read<Server::RecvChunkHeader>();
-		const u8* data = buff.ReadRaw(header.len);
-		ClientHandleReceivedChunk(header.clientID, data, header.len);
+		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
+		const u8* data = buff.ReadRaw(chunkInfo.len);
+
+		// handle each packet in chunk
+		ConstBuffer reader(data, chunkInfo.len);
+		if(!reader.CanRead(sizeof(NetHeader))) {
+			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
+			server->DisconnectClient(chunkInfo.clientHd);
+			continue;
+		}
+
+		while(reader.CanRead(sizeof(NetHeader))) {
+			const NetHeader& header = reader.Read<NetHeader>();
+			const i32 packetDataSize = header.size - sizeof(NetHeader);
+
+			if(!reader.CanRead(packetDataSize)) {
+				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
+				server->DisconnectClient(chunkInfo.clientHd);
+				break;
+			}
+
+			if(Config().TraceNetwork) {
+				fileSaveBuff(FormatPath(FMT("trace/hub_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				server->packetCounter++;
+			}
+
+			const u8* packetData = reader.ReadRaw(packetDataSize);
+			ClientHandlePacket(chunkInfo.clientHd, header, packetData);
+		}
 	}
 
 	recvDataBuff.Clear();
 }
 
-void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, const u8* packetData)
+void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
 {
-	DBG_ASSERT(clientID >= 0 && clientID < Server::MAX_CLIENTS);
+	const i32 clientID = plidMap.Get(clientHd);
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
-#define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientID, header, packetData, packetSize); } break
+#define HANDLE_CASE(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientHd, header, packetData, packetSize); } break
 
 	switch(header.netID) {
 		HANDLE_CASE(CQ_FirstHello);
@@ -521,42 +558,20 @@ void Coordinator::ClientHandlePacket(i32 clientID, const NetHeader& header, cons
 		default: {
 			WARN("Unhandled packet (netID=%x size=%d)", header.netID, header.size);
 			ASSERT(associatedLane[clientID] != LaneID::NONE);
-			lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientID, header, packetData);
+			lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientHd, header, packetData);
 		} break;
 	}
 
 #undef HANDLE_CASE
 }
 
-void Coordinator::ClientHandleReceivedChunk(i32 clientID, const u8* data, const i32 dataSize)
-{
-	if(dataSize < sizeof(NetHeader)) {
-		LOG("ERROR(ClientHandleReceivedChunk): received invalid data (%d < %d)", dataSize, (i32)sizeof(NetHeader));
-		server->DisconnectClient(clientID);
-		return;
-	}
-
-	ConstBuffer buff(data, dataSize);
-	while(buff.CanRead(sizeof(NetHeader))) {
-		const u8* data = buff.cursor;
-		const NetHeader& header = buff.Read<NetHeader>();
-		const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
-
-		if(Config().TraceNetwork) {
-			fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, header.netID)), data, header.size);
-			server->packetCounter++;
-		}
-
-		ClientHandlePacket(clientID, header, packetData);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
 	// TODO: verify version, protocol, etc
+	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
 	Sv::SA_FirstHello hello;
@@ -571,16 +586,17 @@ void Coordinator::HandlePacket_CQ_FirstHello(i32 clientID, const NetHeader& head
 	hello.clientPort = info.port;
 	hello.tqosWorldId = 1;
 
-	SendPacket(clientID, hello);
+	SendPacket(clientHd, hello);
 }
 
-void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
-	NT_LOG("[client%03d] Client :: %s", clientID, PacketSerialize<Cl::CQ_Authenticate>(packetData, packetSize));
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_Authenticate>(packetData, packetSize));
 
+	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
 	// TODO: check authentication
@@ -592,7 +608,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	// send authentication result
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
-	SendPacket(clientID, auth);
+	SendPacket(clientHd, auth);
 
 	// TODO: fetch account data
 	AccountData& account = accountData[clientID];
@@ -608,16 +624,17 @@ void Coordinator::HandlePacket_CQ_Authenticate(i32 clientID, const NetHeader& he
 	}
 
 	// send account data
-	ClientSendAccountData(clientID); // TODO: move this to hub instance
+	ClientSendAccountData(clientHd); // TODO: move this to hub instance
 
 	// register new player to the game
 	ASSERT(associatedLane[clientID] != LaneID::NONE);
-	lanes[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientID, &account);
+	lanes[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientHd, &account);
 }
 
-void Coordinator::ClientSendAccountData(i32 clientID)
+void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 {
 	// Send account data
+	const i32 clientID = plidMap.Get(clientHd);
 	const AccountData& account = accountData[clientID];
 
 	// SN_ClientSettings
@@ -745,7 +762,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ClientSettings
@@ -841,7 +858,7 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 
 	// SN_ClientSettings
@@ -971,6 +988,6 @@ void Coordinator::ClientSendAccountData(i32 clientID)
 		packet.Write<u16>(destLen);
 		packet.WriteRaw(dest, destLen);
 
-		SendPacket(clientID, packet);
+		SendPacket(clientHd, packet);
 	}
 }

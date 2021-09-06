@@ -150,8 +150,11 @@ struct ReplicationHub
 	// TODO: we propably do not need to store every possible client data here
 	// Use a fixed_vector?
 
-	eastl::array<PlayerState,Server::MAX_CLIENTS> playerState;
-	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
+	ClientLocalMapping plidMap;
+
+	eastl::array<ClientHandle,MAX_CLIENTS> playerClientHd;
+	eastl::array<PlayerState,MAX_CLIENTS> playerState;
+	eastl::array<PlayerLocalInfo,MAX_CLIENTS> playerLocalInfo;
 
 	void Init(Server* server_);
 
@@ -160,68 +163,68 @@ struct ReplicationHub
 	void FramePushNpcActor(const ActorNpc& actor);
 	void FramePushJukebox(const ActorJukebox& actor);
 
-	void EventPlayerConnect(i32 clientID);
-	void SendLoadLobby(i32 clientID, StageIndex stageIndex);
-	void SetPlayerAsInGame(i32 clientID);
-	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
-	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
+	void EventPlayerConnect(ClientHandle clientHd);
+	void SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex);
+	void SetPlayerAsInGame(ClientHandle clientHd);
+	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
+	void SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
-	void SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
-	void SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg);
-	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
+	void SendChatMessageToClient(ClientHandle toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
+	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
+	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
-	void SendAccountDataLobby(i32 clientID, const AccountData& account);
+	void SendAccountDataLobby(ClientHandle clientHd, const AccountData& account);
 
-	void SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port);
-	void SendGameReady(i32 clientID);
+	void SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port);
+	void SendGameReady(ClientHandle clientHd);
 
-	void SendCalendar(i32 clientID);
-	void SendAreaPopularity(i32 clientID, u32 areaID);
+	void SendCalendar(ClientHandle clientHd);
+	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
 
-	void EventClientDisconnect(i32 clientID);
+	void EventClientDisconnect(ClientHandle clientHd);
 
-	void PlayerRegisterMasterActor(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
+	void PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
 
-	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID); // Can return INVALID
-	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID); // Can return INVALID
+	LocalActorID GetLocalActorID(ClientHandle clientHd, ActorUID actorUID); // Can return INVALID
+	ActorUID GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID); // Can return INVALID
 
 private:
-	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
+	void PlayerForceLocalActorID(ClientHandle clientHd, ActorUID actorUID, LocalActorID localActorID);
 
 	void UpdatePlayersLocalState();
 	void FrameDifference();
 
-	void SendActorPlayerSpawn(i32 clientID, const ActorPlayer& actor);
-	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
-	void SendJukeboxSpawn(i32 clientID, const ActorJukebox& actor);
-	void SendActorDestroy(i32 clientID, ActorUID actorUID);
-	void SendJukeboxPlay(i32 clientID, SongID songID, const wchar* requesterNick, i32 playPosInSec);
-	void SendJukeboxQueue(i32 clientID, const ActorJukebox::Track* tracks, const i32 trackCount);
+	void SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlayer& actor);
+	void SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor);
+	void SendJukeboxSpawn(ClientHandle clientHd, const ActorJukebox& actor);
+	void SendActorDestroy(ClientHandle clientHd, ActorUID actorUID);
+	void SendJukeboxPlay(ClientHandle clientHd, SongID songID, const wchar* requesterNick, i32 playPosInSec);
+	void SendJukeboxQueue(ClientHandle clientHd, const ActorJukebox::Track* tracks, const i32 trackCount);
 
-	void SendMasterSkillSlots(i32 clientID, const ActorPlayer& actor);
+	void SendMasterSkillSlots(ClientHandle clientHd, const ActorPlayer& actor);
 
-	void SendInitialFrame(i32 clientID);
+	void SendInitialFrame(ClientHandle clientHd);
 
-	void CreateLocalActorID(i32 clientID, ActorUID actorUID);
-	void DeleteLocalActorID(i32 clientID, ActorUID actorUID);
+	void CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID);
+	void DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID);
 
 	template<typename Packet>
-	inline void SendPacket(i32 clientID, const Packet& packet)
+	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
 	{
-		SendPacketData<Packet>(clientID, sizeof(packet), &packet);
+		SendPacketData<Packet>(clientHd, sizeof(packet), &packet);
 	}
 
 	template<typename Packet, u32 CAPACITY>
-	inline void SendPacket(i32 clientID, const PacketWriter<Packet,CAPACITY>& writer)
+	inline void SendPacket(ClientHandle clientHd, const PacketWriter<Packet,CAPACITY>& writer)
 	{
-		SendPacketData<Packet>(clientID, writer.size, writer.data);
+		SendPacketData<Packet>(clientHd, writer.size, writer.data);
 	}
 
 	template<typename Packet>
-	inline void SendPacketData(i32 clientID, u16 packetSize, const void* packetData)
+	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
 	{
-		NT_LOG("[client%03d] Replication :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
-		server->SendPacketData(clientID, Packet::NET_ID, packetSize, packetData);
+		NT_LOG("[client%x] Replication :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 };

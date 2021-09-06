@@ -11,7 +11,7 @@
 struct WorldHub
 {
 	enum {
-		MAX_PLAYERS = Server::MAX_CLIENTS
+		MAX_PLAYERS = MAX_CLIENTS
 	};
 
 	struct ActorCore
@@ -38,7 +38,7 @@ struct WorldHub
 		const ActorUID parentActorUID;
 		ClassType classType;
 		SkinIndex skinIndex;
-		i32 clientID;
+		ClientHandle clientHd;
 		WideString name;
 		WideString guildTag;
 

@@ -11,9 +11,7 @@ void GameHub::Init(Server* server_)
 
 	playerActorUID.fill(ActorUID::INVALID);
 
-	foreach(it, playerClientIDMap) {
-		*it = playerList.end();
-	}
+	playerMap.fill(playerList.end());
 
 	LoadMap();
 }
@@ -27,23 +25,24 @@ void GameHub::Update(Time localTime_)
 	replication.FrameEnd();
 }
 
-bool GameHub::JukeboxQueueSong(i32 clientID, SongID songID)
+bool GameHub::JukeboxQueueSong(i32 userID, SongID songID)
 {
-	ASSERT(playerAccountData[clientID]);
+	ASSERT(playerAccountData[userID]);
+	const ClientHandle clientHd = playerMap[userID]->clientHd;
 
 	WorldHub::ActorJukebox& jukebox = world.jukebox;
 	ASSERT(jukebox.UID != ActorUID::INVALID);
 
 	if(jukebox.queue.full()) {
 		// TODO: send *actual* packet answer
-		SendDbgMsg(clientID, L"Jukebox queue is full");
+		SendDbgMsg(clientHd, L"Jukebox queue is full");
 		return false;
 	}
 
 	// limit reservation to 1 per player
 	// @Speed
 	// TODO: store the accountID (when we have it)
-	const WideString& nick = playerAccountData[clientID]->nickname;
+	const WideString& nick = playerAccountData[userID]->nickname;
 	bool found = false;
 	if(jukebox.currentSong.requesterNick.compare(nick) == 0) {
 		found = true;
@@ -59,18 +58,18 @@ bool GameHub::JukeboxQueueSong(i32 clientID, SongID songID)
 	}
 
 	if(found) {
-		SendDbgMsg(clientID, L"Song reservation is limited to 1 per player");
+		SendDbgMsg(clientHd, L"Song reservation is limited to 1 per player");
 		return false;
 	}
 
 	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
 	if(!xmlSong) {
-		SendDbgMsg(clientID, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
+		SendDbgMsg(clientHd, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
 		return false;
 	}
 
 	WorldHub::ActorJukebox::Song song;
-	song.requesterNick = playerAccountData[clientID]->nickname;
+	song.requesterNick = playerAccountData[userID]->nickname;
 	song.songID = songID;
 	song.lengthInSec = xmlSong->length;
 	jukebox.queue.push_back(song);
@@ -103,55 +102,63 @@ bool GameHub::LoadMap()
 	return true;
 }
 
-void GameHub::OnPlayerConnect(i32 clientID, const AccountData* accountData)
+void GameHub::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
 {
-	playerAccountData[clientID] = accountData;
+	i32 userID = plIDMap.Push(clientHd);
+	playerAccountData[userID] = accountData;
 
-	playerList.push_back(Player(clientID));
-	playerClientIDMap[clientID] = --playerList.end();
+	playerList.push_back(Player(clientHd));
+	playerMap[userID] = --playerList.end();
 
-	replication.SendAccountDataLobby(clientID, *accountData);
-	replication.EventPlayerConnect(clientID);
+	replication.SendAccountDataLobby(clientHd, *accountData);
+	replication.EventPlayerConnect(clientHd);
 }
 
-void GameHub::OnPlayerDisconnect(i32 clientID)
+void GameHub::OnPlayerDisconnect(ClientHandle clientHd)
 {
-	LOG("[client%03d] GameHub :: OnClientDisconnect :: actorUID=%u", clientID, (u32)playerActorUID[clientID]);
+	const i32 userID = plIDMap.Get(clientHd);
+	LOG("[client%x] GameHub :: OnClientDisconnect :: actorUID=%u", clientHd, (u32)playerActorUID[userID]);
 
 	// we can disconnect before spawning, so test if we have an actor associated
-	if(playerActorUID[clientID] != ActorUID::INVALID) {
-		world.DestroyPlayerActor(playerActorUID[clientID]);
+	if(playerActorUID[userID] != ActorUID::INVALID) {
+		world.DestroyPlayerActor(playerActorUID[userID]);
 	}
-	playerActorUID[clientID] = ActorUID::INVALID;
+	playerActorUID[userID] = ActorUID::INVALID;
 
-	if(playerClientIDMap[clientID] != playerList.end()) {
-		playerList.erase(playerClientIDMap[clientID]);
+	if(playerMap[userID] != playerList.end()) {
+		playerList.erase(playerMap[userID]);
 	}
-	playerClientIDMap[clientID] = playerList.end();
+	playerMap[userID] = playerList.end();
 
-	playerAccountData[clientID] = nullptr;
+	playerAccountData[userID] = nullptr;
 
-	replication.EventClientDisconnect(clientID);
+	plIDMap.Pop(clientHd);
+
+	replication.EventClientDisconnect(clientHd);
 }
 
-void GameHub::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
+void GameHub::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 userID = plIDMap.Get(clientHd);
+
 	// TODO: health
 	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
-	ASSERT(actor->clientID == clientID);
-	replication.SendCharacterInfo(clientID, actor->UID, actor->docID, actor->classType, 100, 100);
+	ASSERT(actor->clientHd == clientHd);
+	replication.SendCharacterInfo(clientHd, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void GameHub::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void GameHub::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
+	const i32 userID = plIDMap.Get(clientHd);
+
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
-	if(playerActorUID[clientID] != characterActorUID) {
-		WARN("Client sent an invalid characterID (clientID=%d characterID=%d)", clientID, (u32)characterActorUID);
+	if(playerActorUID[userID] != characterActorUID) {
+		WARN("Client sent an invalid characterID (userID=%d characterID=%d)", userID, (u32)characterActorUID);
 		return;
 	}
 
-	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[userID]);
 	ASSERT(actor);
 
 	// TODO: check for movement hacking
@@ -162,10 +169,10 @@ void GameHub::OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, c
 	actor->speed = speed;
 }
 
-void GameHub::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
+void GameHub::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
-	if(ParseChatCommand(clientID, msg, msgLen)) {
+	if(ParseChatCommand(clientHd, msg, msgLen)) {
 		return; // we're done here
 	}
 
@@ -173,14 +180,17 @@ void GameHub::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, 
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
-	ASSERT(playerAccountData[clientID]);
-	replication.SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+	const i32 userID = plIDMap.Get(clientHd);
+	ASSERT(playerAccountData[userID]);
+	replication.SendChatMessageToAll(playerAccountData[userID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void GameHub::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+void GameHub::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
-	ASSERT(playerAccountData[clientID]);
-	replication.SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
+	const i32 userID = plIDMap.Get(clientHd);
+
+	ASSERT(playerAccountData[userID]);
+	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
 	i32 destClientID = -1;
 	for(int i = 0; i < playerAccountData.size(); i++) {
@@ -193,15 +203,17 @@ void GameHub::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wch
 	}
 
 	if(destClientID == -1) {
-		SendDbgMsg(clientID, LFMT(L"Player '%s' not found", destNick));
+		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
 		return;
 	}
 
-	replication.SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
+	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[userID]->nickname.data(), msg);
 }
 
-void GameHub::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
+void GameHub::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
+	const i32 userID = plIDMap.Get(clientHd);
+
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
 	// select a spawn point at random
@@ -211,44 +223,46 @@ void GameHub::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID,
 	vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
-	if((playerActorUID[clientID] != ActorUID::INVALID)) {
-		WorldHub::ActorCore* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	if((playerActorUID[userID] != ActorUID::INVALID)) {
+		WorldHub::ActorCore* actor = world.FindPlayerActor(playerActorUID[userID]);
 		ASSERT(actor);
 
 		pos = actor->pos;
 		dir = actor->dir;
 		eye = actor->eye;
 
-		world.DestroyPlayerActor(playerActorUID[clientID]);
+		world.DestroyPlayerActor(playerActorUID[userID]);
 	}
 
-	ASSERT(playerAccountData[clientID]); // account data is not assigned
-	const AccountData* account = playerAccountData[clientID];
+	ASSERT(playerAccountData[userID]); // account data is not assigned
+	const AccountData* account = playerAccountData[userID];
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
 	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
 	ASSERT((i32)classType == leaderMasterContentID+1);
 
-	WorldHub::ActorPlayer& actor = world.SpawnPlayerActor(clientID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
+	WorldHub::ActorPlayer& actor = world.SpawnPlayerActor(userID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;
 	actor.dir = dir;
 	actor.eye = eye;
-	actor.clientID = clientID; // TODO: this is not useful right now
-	playerActorUID[clientID] = actor.UID;
+	actor.clientHd = clientHd; // TODO: this is not useful right now
+	playerActorUID[userID] = actor.UID;
 
-	replication.SendPlayerSetLeaderMaster(clientID, playerActorUID[clientID], classType, skinIndex);
+	replication.SendPlayerSetLeaderMaster(clientHd, playerActorUID[userID], classType, skinIndex);
 }
 
-void GameHub::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void GameHub::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
+	const i32 userID = plIDMap.Get(clientHd);
+
 	// FIXME: remove
 	// connect to gameserver when jumping
 	if(state == ActionStateID::JUMP_START_MOVESTATE) {
 		const u8 ip[4] = { 127, 0, 0, 1 };
-		replication.SendConnectToServer(clientID, *playerAccountData[clientID], ip, 12900);
+		replication.SendConnectToServer(clientHd, *playerAccountData[userID], ip, 12900);
 	}
 
-	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[clientID]);
+	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[userID]);
 	ASSERT(actor);
 
 	// TODO: check hacking
@@ -259,19 +273,23 @@ void GameHub::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionSta
 	actor->actionParam2 = param2;
 }
 
-void GameHub::OnPlayerJukeboxQueueSong(i32 clientID, SongID songID)
+void GameHub::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 {
-	JukeboxQueueSong(clientID, songID);
+	const i32 userID = plIDMap.Get(clientHd);
+
+	JukeboxQueueSong(userID, songID);
 }
 
-void GameHub::OnPlayerReadyToLoad(i32 clientID)
+void GameHub::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication.SendLoadLobby(clientID, StageIndex::LOBBY_NORMAL);
+	replication.SendLoadLobby(clientHd, StageIndex::LOBBY_NORMAL);
 }
 
-bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+bool GameHub::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
+
+	const i32 userID = plIDMap.Get(clientHd);
 
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 
@@ -279,7 +297,7 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 		msg++;
 
 		if(EA::StdC::Strncmp(msg, L"lego", 4) == 0) {
-			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
 
 			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)18, SkinIndex::DEFAULT, L"legomage15", L"MEME");
@@ -293,19 +311,19 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 
 			lastLegoActorUID = actor.UID;
 
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"delete", 6) == 0) {
 			world.DestroyPlayerActor(lastLegoActorUID);
 
-			SendDbgMsg(clientID, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
+			SendDbgMsg(clientHd, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"rozark", 6) == 0) {
-			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
 
 			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001200, SkinIndex::DEFAULT, L"rozark", L"MEME");
@@ -314,12 +332,12 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"tanian", 6) == 0) {
-			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
 
 			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5001040, SkinIndex::DEFAULT, L"rozark", L"MEME");
@@ -328,12 +346,12 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"fish", 4) == 0) {
-			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
 
 			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)5000800, SkinIndex::DEFAULT, L"rozark", L"MEME");
@@ -342,40 +360,40 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 			actor.eye = playerActor->eye;
 			lastLegoActorUID = actor.UID;
 
-			SendDbgMsg(clientID, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", actor.pos.x, actor.pos.y, actor.pos.z));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"smoke", 5) == 0) {
-			WorldHub::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[clientID]);
+			WorldHub::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
 
-			SendDbgMsg(clientID, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
+			SendDbgMsg(clientHd, LFMT(L"All you have to do was follow the damn train %s :(", playerActor->name.data()));
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"upsidedown", 10) == 0) {
-			JukeboxQueueSong(clientID, SongID::UpsideDown);
+			JukeboxQueueSong(userID, SongID::UpsideDown);
 			return true;
 		}
 		
 		if(EA::StdC::Strncmp(msg, L"scml", 4) == 0) {
-			JukeboxQueueSong(clientID, SongID::Scml);
+			JukeboxQueueSong(userID, SongID::Scml);
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"poharan", 7) == 0) {
-			JukeboxQueueSong(clientID, SongID::Poharan);
+			JukeboxQueueSong(userID, SongID::Poharan);
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"triangle", 8) == 0) {
-			JukeboxQueueSong(clientID, SongID::Triangle);
+			JukeboxQueueSong(userID, SongID::Triangle);
 			return true;
 		}
 		
 		if(EA::StdC::Strncmp(msg, L"arami", 5) == 0) {
-			JukeboxQueueSong(clientID, SongID::Arami);
+			JukeboxQueueSong(userID, SongID::Arami);
 			return true;
 		}
 
@@ -384,9 +402,9 @@ bool GameHub::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	return false;
 }
 
-void GameHub::SendDbgMsg(i32 clientID, const wchar* msg)
+void GameHub::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
-	replication.SendChatMessageToClient(clientID, L"System", 1, msg);
+	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
 }
 
 void GameHub::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)

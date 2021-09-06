@@ -8,10 +8,10 @@
 #include <mxm/game_content.h>
 #include "config.h"
 
-void Game::Init(Replication* replication_)
+void Game::Init(Server* server_)
 {
-	replication = replication_;
-	world.Init(replication);
+	replication.Init(server_);
+	world.Init(&replication);
 
 	// TODO: move OUT
 	MeshFile mfCollision;
@@ -40,8 +40,8 @@ void Game::Init(Replication* replication_)
 	vec3 dir = spawnPoint.dir;
 
 	// create players
-	World::Player& player = world.CreatePlayer(0, L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
-	clone = &world.CreatePlayer(-1, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
+	World::Player& player = world.CreatePlayer(ClientHandle(2), L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
+	clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
 
 	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
 
@@ -55,7 +55,7 @@ void Game::Update(Time localTime_)
 	Dbg::PushNewFrame(dbgGameUID);
 
 	// update clone
-	clone->input = world.FindPlayer((PlayerID)0)->input; // TODO: hardcoded hack
+	clone->input = world.FindPlayer((UserID)0)->input; // TODO: hardcoded hack
 	// TODO: maybe don't replicate cloned players, just their master?
 
 	if(lego) {
@@ -93,7 +93,7 @@ void Game::Update(Time localTime_)
 
 	foreach_const(player, world.players) {
 		Dbg::Entity e;
-		e.UID = (u32)player->playerID;
+		e.UID = (u32)player->userID;
 		e.name = player->name;
 		e.pos = player->body->pos;
 		e.rot = player->input.rot;
@@ -104,6 +104,8 @@ void Game::Update(Time localTime_)
 	}
 
 	Dbg::PushPhysics(dbgGameUID, world.physics);
+
+	replication.FrameEnd();
 }
 
 bool Game::LoadMap()
@@ -135,16 +137,21 @@ bool Game::LoadMap()
 	return true;
 }
 
-void Game::OnPlayerConnect(i32 clientID, const AccountData* accountData)
+void Game::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
 {
+	const i32 clientID = plidMap.Push(clientHd);
 	playerAccountData[clientID] = accountData;
 
-	playerList.push_back(Player(clientID));
+	playerList.push_back(Player(clientHd));
 	playerMap[clientID] = --playerList.end();
+
+	replication.OnPlayerConnect(clientHd, accountData);
 }
 
-void Game::OnPlayerDisconnect(i32 clientID)
+void Game::OnPlayerDisconnect(ClientHandle clientHd)
 {
+	const i32 clientID = plidMap.Get(clientHd);
+
 	if(playerMap[clientID] != playerList.end()) {
 		const Player& player = *playerMap[clientID];
 
@@ -156,32 +163,37 @@ void Game::OnPlayerDisconnect(i32 clientID)
 		playerList.erase(playerMap[clientID]);
 	}
 
+
+	plidMap.Pop(clientHd);
 	playerMap[clientID] = playerList.end();
 	playerAccountData[clientID] = nullptr;
+
+	replication.OnPlayerDisconnect(clientHd);
 }
 
-void Game::OnPlayerReadyToLoad(i32 clientID)
+void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication->SendLoadPvpMap(clientID, StageIndex::PVP_DEATHMATCH);
+	replication.SendLoadPvpMap(clientHd, StageIndex::PVP_DEATHMATCH);
 }
 
-void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
+void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	const World::Player* player = world.FindPlayer((PlayerID)0);
+	const World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	foreach_const(chit, player->characters) {
 		const World::ActorMaster& chara = **chit;
 
 		if(chara.UID == actorUID) {
 			// TODO: health
-			replication->SendCharacterInfo(clientID, chara.UID, (CreatureIndex)(100000000 + (i32)chara.classType), chara.classType, 2400, 2400);
+			replication.SendCharacterInfo(clientHd, chara.UID, (CreatureIndex)(100000000 + (i32)chara.classType), chara.classType, 2400, 2400);
 
 			return;
 		}
@@ -190,18 +202,19 @@ void Game::OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID)
 	WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
 }
 
-void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
+void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
 {
 	ProfileFunction();
 
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	bool found = false;
 	foreach_const(chit, player->characters) {
@@ -266,16 +279,17 @@ void Game::OnPlayerUpdatePosition(i32 clientID, ActorUID actorUID, const vec3& p
 	player->input.speed = speed;
 }
 
-void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const RotationHumanoid& rot)
+void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	bool found = false;
 	foreach_const(chit, player->characters) {
@@ -296,10 +310,10 @@ void Game::OnPlayerUpdateRotation(i32 clientID, ActorUID actorUID, const Rotatio
 	player->input.rot = rot;
 }
 
-void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msgLen)
+void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
-	if(ParseChatCommand(clientID, msg, msgLen)) {
+	if(ParseChatCommand(clientHd, msg, msgLen)) {
 		return; // we're done here
 	}
 
@@ -307,14 +321,16 @@ void Game::OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerAccountData[clientID]);
-	replication->SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+	replication.SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg)
+void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerAccountData[clientID]);
-	replication->SendChatWhisperConfirmToClient(clientID, destNick, msg); // TODO: send a fail when the client is not found
+	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
 	i32 destClientID = -1;
 	for(int i = 0; i < playerAccountData.size(); i++) {
@@ -327,28 +343,29 @@ void Game::OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar*
 	}
 
 	if(destClientID == -1) {
-		SendDbgMsg(clientID, LFMT(L"Player '%s' not found", destNick));
+		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
 		return;
 	}
 
-	replication->SendChatWhisperToClient(destClientID, playerAccountData[clientID]->nickname.data(), msg);
+	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[clientID]->nickname.data(), msg);
 }
 
-void Game::OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex)
+void Game::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
 
 }
 
-void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	bool found = false;
 	foreach_const(chit, player->characters) {
@@ -362,7 +379,7 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(!found) {
-		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientHd, (u32)actorUID);
 		return;
 	}
 
@@ -374,16 +391,17 @@ void Game::OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateI
 	player->input.actionParam2 = param2;
 }
 
-void Game::OnPlayerLoadingComplete(i32 clientID)
+void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
 {
-
+	replication.SetPlayerLoaded(clientHd);
 }
 
-void Game::OnPlayerGameMapLoaded(i32 clientID)
+void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 {
 	// map is loaded, spawn
 	// TODO: team, masters
 
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
 
@@ -406,54 +424,59 @@ void Game::OnPlayerGameMapLoaded(i32 clientID)
 	ASSERT(playerAccountData[clientID]); // account data is not assigned
 	const AccountData* account = playerAccountData[clientID];
 
-	World::Player& worldPlayer = world.GetPlayer((PlayerID)0);
+	World::Player& worldPlayer = world.GetPlayer((UserID)0);
 
 	//player.actorUID = actor.UID;
 
 	// force LocalActorID for both actors
 	// TODO: eventually get rid of this system
-	replication->PlayerRegisterMasterActor(clientID, worldPlayer.Main().UID, worldPlayer.mainClass);
-	replication->PlayerRegisterMasterActor(clientID, worldPlayer.Sub().UID, worldPlayer.subClass);
+	replication.PlayerRegisterMasterActor(clientHd, worldPlayer.Main().UID, worldPlayer.mainClass);
+	replication.PlayerRegisterMasterActor(clientHd, worldPlayer.Sub().UID, worldPlayer.subClass);
 
 	//player.cloneActorUID = clone.UID;
+
+	replication.SetPlayerAsInGame(clientHd);
 }
 
-void Game::OnPlayerTag(i32 clientID, LocalActorID toLocalActorID)
+void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	// TODO: cooldown
 	player->input.tag = 1;
 }
 
-void Game::OnPlayerJump(i32 clientID, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
+void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	player->input.jump = 1;
 }
 
-void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
+void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
 {
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
 
-	World::Player* player = world.FindPlayer((PlayerID)0);
+	World::Player* player = world.FindPlayer((UserID)0);
 	ASSERT(player);
-	ASSERT(player->clientID == clientID);
+	ASSERT(player->clientHd == clientHd);
 
 	player->input.castSkill = cast.skillID;
 	player->input.castPos = cast.p3nPos;
@@ -463,18 +486,19 @@ void Game::OnPlayerCastSkill(i32 clientID, const PlayerCastSkill& cast)
 	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
 }
 
-void Game::OnPlayerGameIsReady(i32 clientID)
+void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 {
-	replication->SendGameReady(clientID);
+	replication.SendGameReady(clientHd);
 
 	// TODO: after 5s
-	replication->SendGameStart(clientID);
+	replication.SendGameStart(clientHd);
 }
 
-bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
+bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
+	const i32 clientID = plidMap.Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
 
@@ -518,9 +542,9 @@ bool Game::ParseChatCommand(i32 clientID, const wchar* msg, const i32 len)
 	return false;
 }
 
-void Game::SendDbgMsg(i32 clientID, const wchar* msg)
+void Game::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
-	replication->SendChatMessageToClient(clientID, L"System", 1, msg);
+	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
 }
 
 World::ActorNpc& Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)

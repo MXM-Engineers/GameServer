@@ -145,6 +145,7 @@ project "Login"
 
 local server_common_includedirs = {
 	"src",
+	"src/servers/common",
 	zlib_includedir,
 	eastl_includedir,
 	eathread_includedir,
@@ -177,6 +178,9 @@ local server_common_files = {
 	"src/common/**.h",
 	"src/common/**.c",
 	"src/common/**.cpp",
+	"src/servers/common/**.h",
+	"src/servers/common/**.c",
+	"src/servers/common/**.cpp",
 	"src/mxm/**.h",
 	"src/mxm/**.c",
 	"src/mxm/**.cpp",

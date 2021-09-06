@@ -35,8 +35,8 @@ struct World
 			vec3 castPos;
 		};
 
-		const PlayerID playerID;
-		const i32 clientID;
+		const UserID userID;
+		const ClientHandle clientHd;
 		const WideString name;
 		const WideString guildTag;
 
@@ -69,8 +69,8 @@ struct World
 		} cast;
 
 		explicit Player(
-				PlayerID playerID_,
-				i32 clientID_,
+				UserID playerID_,
+				ClientHandle clientHd_,
 				const WideString& name_,
 				const WideString& guildTag_,
 				ClassType mainClass_,
@@ -78,8 +78,8 @@ struct World
 				ClassType subClass_,
 				SkinIndex subSkin_
 				):
-			playerID(playerID_),
-			clientID(clientID_),
+			userID(playerID_),
+			clientHd(clientHd_),
 			name(name_),
 			guildTag(guildTag_),
 			mainClass(mainClass_),
@@ -142,11 +142,11 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	Player& CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
+	Player& CreatePlayer(ClientHandle clientHd, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
-	Player* FindPlayer(PlayerID playerID);
-	Player& GetPlayer(PlayerID playerID);
+	Player* FindPlayer(UserID playerID);
+	Player& GetPlayer(UserID playerID);
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 

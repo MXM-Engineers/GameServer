@@ -42,6 +42,7 @@ bool Server::Init()
 	if(!NetworkInit()) return false;
 
 	clientIsConnected.fill(0);
+	clientDoDisconnect.fill(false);
 
 	for(int i = 0; i < MAX_CLIENTS; i++) {
 		clientSocket[i] = INVALID_SOCKET;
@@ -60,7 +61,7 @@ void Server::Cleanup()
 }
 
 // NOTE: this is called from listeners
-i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
+ClientHandle Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(clientIsConnected[clientID] == 0) {
@@ -88,7 +89,7 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 			// start receiving
 			bool r = ClientStartReceiving(clientID);
 			if(!r) {
-				return -1;
+				return ClientHandle::INVALID;
 			}
 
 			ClientInfo& info = clientInfo[clientID];
@@ -98,35 +99,32 @@ i32 Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 			//info.port = htons(sin.sin_port);
 			info.port = sin.sin_port;
 
+			ClientHandle clientHd = nextclientHd;
+			nextclientHd = ClientHandle((u32)nextclientHd + 1);
+			DBG_ASSERT(clientID2HandleMap.find(clientID) == clientID2HandleMap.end());
+			clientID2HandleMap[clientID] = clientHd;
+			clientHandle2IDMap[clientHd] = clientID;
+
+			clientDoDisconnect[clientID] = false;
+
 			clientIsConnected[clientID] = 1; // register the socket at the end, when everything is initialized
-			return clientID;
+
+			{
+				LOCK_MUTEX(mutexClientConnectedList);
+				clientConnectedList.push_back(clientHd);
+			}
+			return clientHd;
 		}
 	}
 
-	ASSERT(0); // no space
-	return -1;
+	ASSERT_MSG(0, "clients full"); // no space
+	return ClientHandle::INVALID;
 }
 
-void Server::DisconnectClient(i32 clientID)
+void Server::DisconnectClient(ClientHandle clientHd)
 {
-	ASSERT(clientID >= 0 && clientID < MAX_CLIENTS);
-	if(clientIsConnected[clientID] == 0) return;
-
-	ClientNet& client = clientNet[clientID];
-	LOCK_MUTEX(client.mutexConnect);
-
-	{
-		const LockGuard lock(mutexClientDisconnectedList);
-		clientDisconnectedList.push_back(clientID);
-	}
-
-	closesocket(clientSocket[clientID]);
-	clientSocket[clientID] = INVALID_SOCKET;
-
-	client.async.Reset();
-
-	clientIsConnected[clientID] = 0;
-	LOG("[client%03d] disconnected", clientID);
+	const i32 clientID = GetClientID(clientHd);
+	clientDoDisconnect[clientID] = true;
 }
 
 void Server::ClientSend(i32 clientID, const void* data, i32 dataSize)
@@ -151,6 +149,11 @@ void Server::Update()
 
 		SOCKET sock = clientSocket[clientID];
 		ASSERT(sock != INVALID_SOCKET);
+
+		if(clientDoDisconnect[clientID]) {
+			DisconnectClient(clientID);
+			continue;
+		}
 
 		i32 len = 0;
 		NetPollResult r = client.async.PollReceive(&len);
@@ -202,7 +205,7 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 
 			if(client.recvPendingProcessingBuff.size > 0) {
 				RecvChunkHeader header;
-				header.clientID = clientID;
+				header.clientHd = GetClientHd(clientID);
 				header.len = client.recvPendingProcessingBuff.size;
 
 				out->Append(&header, sizeof(header));
@@ -214,10 +217,11 @@ void Server::TransferAllReceivedData(GrowableBuffer* out)
 	}
 }
 
-void Server::TransferReceivedData(GrowableBuffer* out, const i32* clientList, const u32 clientCount)
+void Server::TransferReceivedData(GrowableBuffer* out, const ClientHandle* clientList, const u32 clientCount)
 {
 	for(int i = 0; i < clientCount; i++) {
-		i32 clientID = clientList[i];
+		const i32 clientID = TryGetClientID(clientList[i]);
+		if(clientID == -1) continue; // disconnected
 
 		if(clientSocket[clientID] == INVALID_SOCKET) continue;
 		ClientNet& client = clientNet[clientID];
@@ -227,7 +231,7 @@ void Server::TransferReceivedData(GrowableBuffer* out, const i32* clientList, co
 
 			if(client.recvPendingProcessingBuff.size > 0) {
 				RecvChunkHeader header;
-				header.clientID = clientID;
+				header.clientHd = GetClientHd(clientID);
 				header.len = client.recvPendingProcessingBuff.size;
 
 				out->Append(&header, sizeof(header));
@@ -271,7 +275,7 @@ void Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	client.recvPendingProcessingBuff.Append(client.async.GetReceivedData(), dataLen);
 }
 
-void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData)
+void Server::SendPacketData(ClientHandle clientID, u16 netID, u16 packetSize, const void* packetData)
 {
 	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
 	u8 sendBuff[8192];
@@ -283,7 +287,7 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 	memmove(sendBuff, &header, sizeof(header));
 	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 
-	ClientSend(clientID, sendBuff, packetTotalSize);
+	ClientSend(GetClientID(clientID), sendBuff, packetTotalSize);
 
 	if(doTraceNetwork) {
 		static Mutex mutexFile;
@@ -292,6 +296,32 @@ void Server::SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void*
 		packetCounter++;
 		mutexFile.Unlock();
 	}
+}
+
+void Server::DisconnectClient(i32 clientID)
+{
+	if(clientIsConnected[clientID] == 0) return;
+
+	ClientHandle clientHd = GetClientHd(clientID);
+
+	ClientNet& client = clientNet[clientID];
+	LOCK_MUTEX(client.mutexConnect);
+
+	{
+		LOCK_MUTEX(mutexClientDisconnectedList);
+		clientDisconnectedList.push_back(clientHd);
+	}
+
+	closesocket(clientSocket[clientID]);
+	clientSocket[clientID] = INVALID_SOCKET;
+
+	client.async.Reset();
+
+	clientHandle2IDMap.erase(clientHd);
+	clientID2HandleMap.erase(clientID);
+
+	clientIsConnected[clientID] = 0;
+	LOG("[client%03d] disconnected", clientID);
 }
 
 bool Listener::Init(i32 listenPort_)

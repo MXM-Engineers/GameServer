@@ -32,8 +32,8 @@ struct Replication
 
 	struct Player
 	{
-		i32 clientID;
-		PlayerID playerID = PlayerID::INVALID;
+		ClientHandle clientHd;
+		UserID userID = UserID::INVALID;
 		WideString name;
 		WideString guildTag;
 
@@ -49,8 +49,8 @@ struct Replication
 
 	struct ActorMaster: Actor<ActorType::Master>
 	{
-		i32 clientID; // useful to copy it here
-		PlayerID playerID;
+		ClientHandle clientHd; // useful to copy it here
+		UserID playerID;
 		ClassType classType;
 		SkinIndex skinIndex;
 
@@ -91,18 +91,18 @@ struct Replication
 		eastl::fixed_list<ActorMaster,2048,true> masterList;
 		eastl::fixed_list<ActorNpc,2048,true> npcList;
 
-		eastl::fixed_map<PlayerID,decltype(playerList)::iterator,2048,true> playerMap;
+		eastl::fixed_map<UserID,decltype(playerList)::iterator,2048,true> playerMap;
 		eastl::fixed_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
 		eastl::fixed_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
 
-		eastl::fixed_map<i32,PlayerID,10,false> clientPlayerMap;
+		eastl::fixed_map<i32,UserID,10,false> clientPlayerMap;
 
 		void Clear();
 
-		inline Player* FindPlayer(PlayerID playerID)
+		inline Player* FindPlayer(UserID playerID)
 		{
 			auto found = playerMap.find(playerID);
 			if(found == playerMap.end()) return nullptr;
@@ -156,10 +156,13 @@ struct Replication
 		PlayerState cur;
 	};
 
-	eastl::array<PlayerStatePair,Server::MAX_CLIENTS> playerState;
-	eastl::array<PlayerLocalInfo,Server::MAX_CLIENTS> playerLocalInfo;
+	ClientLocalMapping plidMap;
 
-	eastl::array<const AccountData*,Server::MAX_CLIENTS> playerAccountData;
+	eastl::array<ClientHandle,MAX_CLIENTS> clientHandle;
+	eastl::array<PlayerStatePair,MAX_CLIENTS> playerState;
+	eastl::array<PlayerLocalInfo,MAX_CLIENTS> playerLocalInfo;
+
+	eastl::array<const AccountData*,MAX_CLIENTS> playerAccountData;
 
 	void Init(Server* server_);
 
@@ -168,68 +171,67 @@ struct Replication
 	void FramePushMasterActor(const ActorMaster& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
-	void OnPlayerConnect(i32 clientID, const AccountData* account);
-	void SendLoadPvpMap(i32 clientID, StageIndex stageIndex);
-	void SetPlayerAsInGame(i32 clientID);
-	void SetPlayerLoaded(i32 clientID);
-	void SendCharacterInfo(i32 clientID, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
-	void SendPlayerSetLeaderMaster(i32 clientID, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
+	void OnPlayerConnect(ClientHandle clientHd, const AccountData* account);
+	void SendLoadPvpMap(ClientHandle clientHd, StageIndex stageIndex);
+	void SetPlayerAsInGame(ClientHandle clientHd);
+	void SetPlayerLoaded(ClientHandle clientHd);
+	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
+	void SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
-	void SendChatMessageToClient(i32 toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
-	void SendChatWhisperConfirmToClient(i32 senderClientID, const wchar* destNick, const wchar* msg);
-	void SendChatWhisperToClient(i32 destClientID, const wchar* destNick, const wchar* msg);
+	void SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
+	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
+	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
-	void SendAccountDataPvp(i32 clientID);
+	void SendAccountDataPvp(ClientHandle clientHd);
 
-	void SendConnectToServer(i32 clientID, const AccountData& account, const u8 ip[4], u16 port);
-	void SendPvpLoadingComplete(i32 clientID);
-	void SendGameReady(i32 clientID);
-	void SendGameStart(i32 clientID);
-	void SendPlayerTag(i32 clientID, ActorUID mainActorUID, ActorUID subActorUID);
-	void SendPlayerJump(i32 clientID, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void SendPlayerAcceptCast(i32 clientID, const PlayerCastSkill& cast);
+	void SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port);
+	void SendPvpLoadingComplete(ClientHandle clientHd);
+	void SendGameReady(ClientHandle clientHd);
+	void SendGameStart(ClientHandle clientHd);
+	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
+	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSkill& cast);
 
-	void EventClientDisconnect(i32 clientID);
+	void OnPlayerDisconnect(ClientHandle clientHd);
 
-	void PlayerRegisterMasterActor(i32 clientiD, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
+	void PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
 
-	LocalActorID GetLocalActorID(i32 clientID, ActorUID actorUID) const; // Can return INVALID
-	ActorUID GetWorldActorUID(i32 clientID, LocalActorID localActorID) const; // Can return INVALID
+	LocalActorID GetLocalActorID(ClientHandle clientHd, ActorUID actorUID) const; // Can return INVALID
+	ActorUID GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID) const; // Can return INVALID
 
 private:
-	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
-
 	void UpdatePlayersLocalState();
 	void FrameDifference();
 
-	void SendActorMasterSpawn(i32 clientID, const ActorMaster& actor, const Player& parent);
-	void SendActorNpcSpawn(i32 clientID, const ActorNpc& actor);
-	void SendActorDestroy(i32 clientID, ActorUID actorUID);
+	void SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster& actor, const Player& parent);
+	void SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor);
+	void SendActorDestroy(ClientHandle clientHd, ActorUID actorUID);
 
-	void SendMasterSkillSlots(i32 clientID, const ActorMaster& actor);
+	void SendMasterSkillSlots(ClientHandle clientHd, const ActorMaster& actor);
 
-	void SendInitialFrame(i32 clientID);
+	void SendInitialFrame(ClientHandle clientHd);
 
+	void PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, LocalActorID localActorID);
 	void CreateLocalActorID(i32 clientID, ActorUID actorUID);
 	void DeleteLocalActorID(i32 clientID, ActorUID actorUID);
 
 	template<typename Packet>
-	inline void SendPacket(i32 clientID, const Packet& packet)
+	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
 	{
-		SendPacketData<Packet>(clientID, sizeof(packet), &packet);
+		SendPacketData<Packet>(clientHd, sizeof(packet), &packet);
 	}
 
 	template<typename Packet, u32 CAPACITY>
-	inline void SendPacket(i32 clientID, const PacketWriter<Packet,CAPACITY>& writer)
+	inline void SendPacket(ClientHandle clientHd, const PacketWriter<Packet,CAPACITY>& writer)
 	{
-		SendPacketData<Packet>(clientID, writer.size, writer.data);
+		SendPacketData<Packet>(clientHd, writer.size, writer.data);
 	}
 
 	template<typename Packet>
-	inline void SendPacketData(i32 clientID, u16 packetSize, const void* packetData)
+	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
 	{
-		NT_LOG("[client%03d] Replication :: %s", clientID, PacketSerialize<Packet>(packetData, packetSize));
-		server->SendPacketData(clientID, Packet::NET_ID, packetSize, packetData);
+		NT_LOG("[client%x] Replication :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 };

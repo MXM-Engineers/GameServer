@@ -11,7 +11,7 @@ struct AccountData;
 struct GameHub
 {
 	enum {
-		MAX_PLAYERS = Server::MAX_CLIENTS
+		MAX_PLAYERS = MAX_CLIENTS
 	};
 
 	struct SpawnPoint
@@ -21,15 +21,16 @@ struct GameHub
 
 	struct Player
 	{
-		const i32 clientID;
+		const ClientHandle clientHd;
 		bool isJukeboxActorReplicated = false;
 
-		Player(): clientID(-1) {}
+		Player(): clientHd(ClientHandle::INVALID) {}
 
-		Player(i32 clientID_):
-			clientID(clientID_) {}
+		Player(ClientHandle clientHd_):
+			clientHd(clientHd_) {}
 	};
 
+	ClientLocalMapping plIDMap;
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
@@ -37,7 +38,7 @@ struct GameHub
 
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
-	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerClientIDMap;
+	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
 
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 
@@ -46,23 +47,23 @@ struct GameHub
 	void Init(Server* server_);
 	void Update(Time localTime_);
 
-	bool JukeboxQueueSong(i32 clientID, SongID songID);
+	bool JukeboxQueueSong(i32 userID, SongID songID);
 
 	bool LoadMap();
 
-	void OnPlayerConnect(i32 clientID, const AccountData* accountData);
-	void OnPlayerDisconnect(i32 clientID);
-	void OnPlayerGetCharacterInfo(i32 clientID, ActorUID actorUID);
-	void OnPlayerUpdatePosition(i32 clientID, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
-	void OnPlayerChatMessage(i32 clientID, i32 chatType, const wchar* msg, i32 msglen);
-	void OnPlayerChatWhisper(i32 clientID, const wchar* destNick, const wchar* msg);
-	void OnPlayerSetLeaderCharacter(i32 clientID, LocalActorID characterID, SkinIndex skinIndex);
-	void OnPlayerSyncActionState(i32 clientID, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
-	void OnPlayerJukeboxQueueSong(i32 clientID, SongID songID);
-	void OnPlayerReadyToLoad(i32 clientID);
+	void OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData);
+	void OnPlayerDisconnect(ClientHandle clientHd);
+	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
+	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
+	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
+	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
+	void OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex);
+	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
+	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
+	void OnPlayerReadyToLoad(ClientHandle clientHd);
 
-	bool ParseChatCommand(i32 clientID, const wchar* msg, const i32 len);
-	void SendDbgMsg(i32 clientID, const wchar* msg);
+	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
+	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);
 
 	void SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };

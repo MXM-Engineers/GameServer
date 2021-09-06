@@ -38,7 +38,7 @@
 * ✅ Make ghidra script to fix ALL flow override for function X (clear flow & repair at call site) [constbuffer_advance, _eh_prolog3]
 * ✅ Reverse SN_GameEnterActor packet, ✅ use it to tag other players
 
-* 🔥 Edit SKILL.xml in DOCUMENTS to make Sizuka's dodge not test terrain.
+* Edit SKILL.xml in DOCUMENTS to make Sizuka's dodge not test terrain.
 
 # Inner communication
 * 🔥🔥🔥 Send message from hub to game server to create a game (pvp 3v3) instance, then connect to it
@@ -48,8 +48,10 @@
 
 # Networking
 * Check packet length when parsing / receiving? And drop client instead of crashing (damn you russian bots)
-* Make a unique identifier for each client and a mapping between Local client ID and Unique client ID
-    - Everything except server uses unique client ID
+* ✅ Make a unique identifier for each client and a mapping between Local client ID and Unique client ID
+    - ✅ Everything except server uses unique client ID
+    - 🔥🔥🔥 Make only one local mapping per instance and pass it down to game and replication?
+* 🔥 De-duplicate coordinator/lane code
 
 # NavMesh
 * Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)

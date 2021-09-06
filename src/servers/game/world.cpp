@@ -137,8 +137,8 @@ void World::Replicate()
 		const Player& player = *it;
 
 		Replication::Player rep;
-		rep.playerID = player.playerID;
-		rep.clientID = player.clientID;
+		rep.userID = player.userID;
+		rep.clientHd = player.clientHd;
 		rep.name = player.name;
 		rep.guildTag = player.guildTag;
 
@@ -161,8 +161,8 @@ void World::Replicate()
 			const ActorMaster& chara = player.Main();
 			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
-			rch.clientID = player.clientID;
-			rch.playerID = player.playerID;
+			rch.clientHd = player.clientHd;
+			rch.playerID = player.userID;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
@@ -188,8 +188,8 @@ void World::Replicate()
 			const ActorMaster& chara = player.Sub();
 			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
-			rch.clientID = player.clientID;
-			rch.playerID = player.playerID;
+			rch.clientHd = player.clientHd;
+			rch.playerID = player.userID;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
@@ -221,9 +221,9 @@ void World::Replicate()
 	}
 }
 
-World::Player& World::CreatePlayer(i32 clientID, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
+World::Player& World::CreatePlayer(ClientHandle clientHd, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
 {
-	players.emplace_back((PlayerID)players.size(), clientID, name, guildTag, mainClass, mainSkin, subClass, subSkin);
+	players.emplace_back((UserID)players.size(), clientHd, name, guildTag, mainClass, mainSkin, subClass, subSkin);
 	Player& player = players.back();
 	player.level = 1;
 	player.experience = 0;
@@ -270,13 +270,13 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	return actor;
 }
 
-World::Player* World::FindPlayer(PlayerID playerID)
+World::Player* World::FindPlayer(UserID playerID)
 {
 	if((i32)playerID >= players.size()) return nullptr;
 	return &(players[(u32)playerID]);
 }
 
-World::Player& World::GetPlayer(PlayerID playerID)
+World::Player& World::GetPlayer(UserID playerID)
 {
 	return players[(u32)playerID];
 }

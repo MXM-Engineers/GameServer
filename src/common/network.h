@@ -1,7 +1,9 @@
 #pragma once
 #include "base.h"
+#include "utils.h"
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
+#include <EASTL/fixed_hash_map.h>
 #include <eathread/eathread_thread.h>
 
 enum class NetPollResult: int
@@ -100,11 +102,22 @@ bool NetworkInit();
 void NetworkCleanup();
 i32 NetworkGetLastError();
 
+enum
+{
+	MAX_CLIENTS = 256, // TODO: vastly increase this number
+};
+
+enum class ClientHandle: u32 {
+	INVALID = 0,
+};
+
+typedef LocalMapping<i32, ClientHandle, 0, MAX_CLIENTS, -1> ClientLocalMapping;
+
 struct Server
 {
-	enum {
-		MAX_CLIENTS=256, // TODO: vastly increase this number
-	};
+	// fixed non growing hash map
+	template<typename T1, typename T2, int CAPACITY>
+	using hash_map = eastl::fixed_hash_map<T1 ,T2, CAPACITY, CAPACITY+1, false>;
 
 	struct ClientNet
 	{
@@ -125,17 +138,24 @@ struct Server
 
 	struct RecvChunkHeader
 	{
-		i32 clientID;
+		ClientHandle clientHd;
 		i32 len;
 	};
 
 	bool running;
 	eastl::array<u8,MAX_CLIENTS> clientIsConnected; // is guarded by ClientNet.mutexConnect
+	eastl::array<u8,MAX_CLIENTS> clientDoDisconnect;
 	eastl::array<SOCKET,MAX_CLIENTS> clientSocket;
 	eastl::array<ClientNet,MAX_CLIENTS> clientNet;
 	eastl::array<ClientInfo,MAX_CLIENTS> clientInfo;
 
-	eastl::fixed_vector<i32,MAX_CLIENTS> clientDisconnectedList;
+	hash_map<ClientHandle,i32,MAX_CLIENTS*4> clientHandle2IDMap;
+	hash_map<i32,ClientHandle,MAX_CLIENTS*4> clientID2HandleMap;
+	ClientHandle nextclientHd = ClientHandle(1);
+
+	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientConnectedList;
+	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientDisconnectedList;
+	ProfileMutex(Mutex, mutexClientConnectedList);
 	ProfileMutex(Mutex, mutexClientDisconnectedList);
 
 	EA::Thread::Thread thread;
@@ -146,32 +166,64 @@ struct Server
 	bool Init();
 	void Cleanup();
 
-	i32 ListenerAddClient(SOCKET s, const sockaddr& addr_);
-	void DisconnectClient(i32 clientID);
+	ClientHandle ListenerAddClient(SOCKET s, const sockaddr& addr_);
+	void DisconnectClient(ClientHandle clientHd);
 
 	void Update();
 
 	void TransferAllReceivedData(GrowableBuffer* out);
-	void TransferReceivedData(GrowableBuffer* out, const i32* clientList, const u32 clientCount);
+	void TransferReceivedData(GrowableBuffer* out, const ClientHandle* clientList, const u32 clientCount);
+
+	template<class Array>
+	void TransferConnectedClientList(Array* out)
+	{
+		if(clientConnectedList.size() > 0) {
+			LOCK_MUTEX(mutexClientConnectedList);
+			eastl::copy(clientConnectedList.begin(), clientConnectedList.end(), eastl::back_inserter(*out));
+			clientConnectedList.clear();
+		}
+	}
 
 	template<class Array>
 	void TransferDisconnectedClientList(Array* out)
 	{
 		if(clientDisconnectedList.size() > 0) {
-			const LockGuard lock(mutexClientDisconnectedList);
+			LOCK_MUTEX(mutexClientDisconnectedList);
 			eastl::copy(clientDisconnectedList.begin(), clientDisconnectedList.end(), eastl::back_inserter(*out));
 			clientDisconnectedList.clear();
 		}
 	}
 
 	template<typename Packet>
-	inline void SendPacket(i32 clientID, const Packet& packet)
+	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
 	{
-		SendPacketData(clientID, Packet::NET_ID, sizeof(packet), &packet);
+		SendPacketData(clientHd, Packet::NET_ID, sizeof(packet), &packet);
 	}
-	void SendPacketData(i32 clientID, u16 netID, u16 packetSize, const void* packetData);
+	void SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, const void* packetData);
 
 private:
+	inline i32 GetClientID(ClientHandle clientHd) const
+	{
+		auto f = clientHandle2IDMap.find(clientHd);
+		ASSERT_MSG(f != clientHandle2IDMap.end(), "ClientID not found in map");
+		return f->second;
+	}
+
+	inline i32 TryGetClientID(ClientHandle clientHd) const
+	{
+		auto f = clientHandle2IDMap.find(clientHd);
+		if(f == clientHandle2IDMap.end()) return -1;
+		return f->second;
+	}
+
+	inline ClientHandle GetClientHd(i32 clientID) const
+	{
+		auto f = clientID2HandleMap.find(clientID);
+		ASSERT_MSG(f != clientID2HandleMap.end(), "ClientHandle not found in map");
+		return f->second;
+	}
+
+	void DisconnectClient(i32 clientID);
 
 	void ClientSend(i32 clientID, const void* data, i32 dataSize);
 	bool ClientStartReceiving(i32 clientID);

@@ -475,3 +475,11 @@ struct float3
 {
 	f32 x = 0, y = 0, z = 0;
 };
+
+enum class CoreAffinity: i32
+{
+	MAIN = 0,
+	NETWORK = 1,
+	COORDINATOR = 2,
+	LANES = 3,
+};

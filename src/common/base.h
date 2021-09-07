@@ -482,4 +482,6 @@ enum class CoreAffinity: i32
 	NETWORK = 1,
 	COORDINATOR = 2,
 	LANES = 3,
+
+	MATCHMAKER = 2,
 };

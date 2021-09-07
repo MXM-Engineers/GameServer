@@ -297,3 +297,48 @@ project "GameServer"
 		excludes {
 			"src/game/debug/*"
 		}
+
+project "MatchMaker"
+	kind "ConsoleApp"
+	targetname "mm_srv"
+
+	configuration {}
+
+	includedirs {
+		server_common_includedirs,
+		"src/servers/matchmaker",
+	}
+
+	links {
+		server_common_links
+	}
+	
+	files {
+		server_common_files,
+		"src/servers/matchmaker/**.h",
+		"src/servers/matchmaker/**.c",
+		"src/servers/matchmaker/**.cpp",
+		"src/servers/matchmaker/**.rc",
+	}
+
+	defines {
+		server_common_defines
+	}
+
+	configuration "Release"
+		defines {
+			PROFILE_DEFINE
+		}
+
+	configuration "windows"
+		buildoptions{ "/W2" }
+		linkoptions{ natvis }
+
+		links {
+			server_common_links_win
+		}
+
+	configuration "linux"
+		links {
+			server_common_links_linux
+		}

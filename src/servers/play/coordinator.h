@@ -78,19 +78,12 @@ struct Lane
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
-	enum class ClientType: u8 {
-		UNKNOWN = 0,
-		PLAYER = 1,
-		INNER = 2, // a server from our infrastructure
-	};
-
 	Server* server;
 	eastl::array<Lane, (i32)LaneID::_COUNT> lanes;
 	eastl::array<LaneID, MAX_CLIENTS> associatedLane;
 
 	ClientLocalMapping plidMap;
 	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
-	eastl::array<ClientType, MAX_CLIENTS> clientType;
 	eastl::array<AccountData, MAX_CLIENTS> accountData;
 
 	GrowableBuffer recvDataBuff;
@@ -114,8 +107,6 @@ private:
 	void HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
-	void HandlePacket_In_Q_Handshake(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-
 	void ClientSendAccountData(ClientHandle clientHd);
 
 	template<typename Packet>
@@ -133,7 +124,7 @@ private:
 	template<typename Packet>
 	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
 	{
-		NT_LOG("[client%x] Game :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
+		NT_LOG("[client%x] Play :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 };

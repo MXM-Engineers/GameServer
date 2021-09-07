@@ -21,35 +21,6 @@ struct AccountData
 	// TODO: add to this
 };
 
-struct InnerConnection
-{
-	AsyncConnection async;
-
-	struct SendQueue
-	{
-		enum {
-			QUEUE_CAPACITY = 1024 * 1024 // 1MB
-		};
-
-		u8 data[QUEUE_CAPACITY];
-		i32 size = 0;
-	};
-
-	i32 ID;
-	SendQueue sendQ;
-
-	template<typename Packet>
-	inline void SendPacket(const Packet& packet)
-	{
-		SendPacketData(Packet::NET_ID, sizeof(packet), &packet);
-	}
-
-	void SendPacketData(u16 netID, u16 packetSize, const void* packetData);
-
-	void SendPendingData();
-	void RecvPendingData(u8* buff, const i32 buffCapacity, i32* size);
-};
-
 struct MatchFindFilter
 {
 	// pvp: 3v3, 5v5
@@ -62,22 +33,13 @@ struct MatchFindFilter
 
 struct Matchmaker
 {
-	struct Match3v3
-	{
-		eastl::fixed_vector<AccountID,6,false> players;
-	};
-
-	eastl::fixed_vector<InnerConnection, 16, false> connGameSrv;
-	eastl::fixed_vector<AccountID, 2048> waitingQueue;
-	eastl::fixed_vector<Match3v3, 2048> pendingMatch3v3;
+	InnerConnection conn;
 
 	bool Init();
-	bool Update();
-
-	void PushPlayerToQueue(AccountID accountID, const MatchFindFilter& filter);
+	void Update();
 
 private:
-	void HandlePacket(InnerConnection& conn, u16 netID, const u8* packetData, const i32 packetSize);
+	void HandlePacket(const NetHeader& header, const u8* packetData);
 };
 
 struct AccountData;

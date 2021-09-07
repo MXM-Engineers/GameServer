@@ -392,3 +392,42 @@ void Listener::Listen()
 		server.ListenerAddClient(clientSocket, clientAddr);
 	}
 }
+
+void InnerConnection::SendPacketData(u16 netID, u16 packetSize, const void *packetData)
+{
+	const i32 packetTotalSize = packetSize + sizeof(NetHeader);
+	ASSERT(packetTotalSize + sendQ.size <= InnerConnection::SendQueue::QUEUE_CAPACITY);
+
+	NetHeader header;
+	header.size = packetTotalSize;
+	header.netID = netID;
+
+	u8* at = sendQ.data + sendQ.size;
+	memmove(at, &header, sizeof(header));
+	memmove(at+sizeof(NetHeader), packetData, packetSize);
+	sendQ.size += packetTotalSize;
+}
+
+void InnerConnection::SendPendingData()
+{
+	NetPollResult r = async.PollSend();
+	if(r == NetPollResult::SUCCESS) {
+		async.PushSendData(sendQ.data, sendQ.size);
+		async.StartSending();
+		sendQ.size = 0;
+	}
+}
+
+void InnerConnection::RecvPendingData(u8* buff, const i32 buffCapacity, i32* size)
+{
+	*size = 0;
+
+	i32 len = 0;
+	NetPollResult r = async.PollReceive(&len);
+	if(r == NetPollResult::SUCCESS) {
+		ASSERT(len <= buffCapacity);
+		memmove(buff, async.GetReceivedData(), len);
+		*size = len;
+		async.StartReceiving();
+	}
+}

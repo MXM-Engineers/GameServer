@@ -318,7 +318,6 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
 #define CASE_CL(PACKET) case Cl::PACKET::NET_ID: { HandlePacket_##PACKET(clientHd, header, packetData, packetSize); } break
-#define CASE_IN(PACKET) case In::PACKET::NET_ID: { HandlePacket_In_##PACKET(clientHd, header, packetData, packetSize); } break
 
 	switch(header.netID) {
 		CASE_CL(CQ_FirstHello);
@@ -329,28 +328,13 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 		CASE_CL(CQ_GetGuildRankingSeasonList);
 		CASE_CL(CQ_TierRecord);
 
-		CASE_IN(Q_Handshake);
-
 		default: {
-			switch(clientType[clientID]) {
-				case ClientType::INNER: {
-
-				} break;
-
-				case ClientType::PLAYER: {
-					ASSERT(associatedLane[clientID] != LaneID::NONE);
-					lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientHd, header, packetData);
-				} break;
-
-				default: {
-					ASSERT_MSG(false, "Client type not handled");
-				}
-			}
+				ASSERT(associatedLane[clientID] != LaneID::NONE);
+				lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientHd, header, packetData);
 		} break;
 	}
 
 #undef CASE_CL
-#undef CASE_IN
 }
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -361,9 +345,6 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	// TODO: verify version, protocol, etc
 	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
-
-	// client type
-	clientType[clientID] = ClientType::PLAYER;
 
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
@@ -616,29 +597,6 @@ void Coordinator::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHea
 		packet.Write<u16>(0); // stageRecordList_count
 
 		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::HandlePacket_In_Q_Handshake(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%x] Client :: In_Q_Handshake ::", clientHd);
-	const In::Q_Handshake& hand = SafeCast<In::Q_Handshake>(packetData, packetSize);
-
-	// client type
-	const i32 clientID = plidMap.Get(clientHd);
-	ASSERT(clientType[clientID] == ClientType::UNKNOWN);
-	clientType[clientID] = ClientType::INNER;
-
-	// TODO: check we are on the infrastructure ip list (white list)
-
-	if(hand.magic == In::MagicHandshake) {
-		In::R_Handshake response;
-		response.result = 1;
-		SendPacket(clientHd, response);
-	}
-	else {
-		LOG("ERROR: Client %d sent an incorrect handshake (%x)", clientID, hand.magic);
-		server->DisconnectClient(clientHd);
 	}
 }
 

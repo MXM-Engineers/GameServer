@@ -39,14 +39,17 @@ void AsyncConnection::Reset()
 
 bool AsyncConnection::ConnectTo(const u8* ip, u16 port)
 {
+	Init();
+
 	sockaddr_in addr = {0};
 	memmove(&addr.sin_addr.s_addr, ip, 4);
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
 	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	ASSERT(s != INVALID_SOCKET);
 
 	int r = connect(s, (sockaddr*)&addr, sizeof(addr));
-	if(r) return false;
+	if(r == SOCKET_ERROR) return false;
 
 	PostConnectionInit(s);
 	return true;
@@ -134,8 +137,9 @@ NetPollResult AsyncConnection::PollReceive(int* outRecvLen)
 	DWORD flags = 0;
 	i32 r = WSAGetOverlappedResult(sock, &recvOverlapped, &len, FALSE, &flags);
 	if(r == FALSE) {
-		if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-			LOG("ERROR(PollReceive): Recv WSAGetOverlappedResult failed (%d)", WSAGetLastError());
+		int err = WSAGetLastError();
+		if(err != WSA_IO_INCOMPLETE) {
+			LOG("ERROR(PollReceive): Recv WSAGetOverlappedResult failed (%d)", err);
 			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}
@@ -157,8 +161,9 @@ NetPollResult AsyncConnection::PollSend()
 	DWORD flags = 0;
 	DWORD r = WSAGetOverlappedResult(sock, &sendOverlapped, &len, FALSE, &flags);
 	if(r == FALSE) {
-		if(WSAGetLastError() != WSA_IO_INCOMPLETE) {
-			LOG("ERROR(PollSend): Send WSAGetOverlappedResult failed (%d)", WSAGetLastError());
+		int err = WSAGetLastError();
+		if(err != WSA_IO_INCOMPLETE) {
+			LOG("ERROR(PollSend): Send WSAGetOverlappedResult failed (%d)", err);
 			sock = INVALID_SOCKET;
 			return NetPollResult::POLL_ERROR;
 		}

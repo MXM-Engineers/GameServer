@@ -4,9 +4,11 @@
 #include "config.h"
 #include <EAStdC/EAString.h>
 
-void GameHub::Init(Server* server_)
+void GameHub::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
+	plidMap = plidMap_;
 	replication.Init(server_);
+	replication.plidMap = plidMap_;
 	world.Init(&replication);
 
 	playerActorUID.fill(ActorUID::INVALID);
@@ -104,19 +106,20 @@ bool GameHub::LoadMap()
 
 void GameHub::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
 {
-	i32 userID = plIDMap.Push(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 	playerAccountData[userID] = accountData;
 
 	playerList.push_back(Player(clientHd));
 	playerMap[userID] = --playerList.end();
 
 	replication.SendAccountDataLobby(clientHd, *accountData);
-	replication.EventPlayerConnect(clientHd);
+
+	replication.OnPlayerConnect(clientHd);
 }
 
 void GameHub::OnPlayerDisconnect(ClientHandle clientHd)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 	LOG("[client%x] GameHub :: OnClientDisconnect :: actorUID=%u", clientHd, (u32)playerActorUID[userID]);
 
 	// we can disconnect before spawning, so test if we have an actor associated
@@ -132,14 +135,12 @@ void GameHub::OnPlayerDisconnect(ClientHandle clientHd)
 
 	playerAccountData[userID] = nullptr;
 
-	plIDMap.Pop(clientHd);
-
-	replication.EventClientDisconnect(clientHd);
+	replication.OnClientDisconnect(clientHd);
 }
 
 void GameHub::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	// TODO: health
 	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
@@ -149,7 +150,7 @@ void GameHub::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 
 void GameHub::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
@@ -180,14 +181,14 @@ void GameHub::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wch
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 	ASSERT(playerAccountData[userID]);
 	replication.SendChatMessageToAll(playerAccountData[userID]->nickname.data(), chatType, msg, msgLen);
 }
 
 void GameHub::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	ASSERT(playerAccountData[userID]);
 	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
@@ -212,7 +213,7 @@ void GameHub::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 
 void GameHub::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
@@ -253,7 +254,7 @@ void GameHub::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 
 void GameHub::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	// FIXME: remove
 	// connect to gameserver when jumping
@@ -275,7 +276,7 @@ void GameHub::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, 
 
 void GameHub::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 {
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	JukeboxQueueSong(userID, songID);
 }
@@ -289,7 +290,7 @@ bool GameHub::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
-	const i32 userID = plIDMap.Get(clientHd);
+	const i32 userID = plidMap->Get(clientHd);
 
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 

@@ -39,7 +39,7 @@ struct Game
 	World world;
 	Replication replication;
 
-	ClientLocalMapping plidMap;
+	const ClientLocalMapping* plidMap;
 
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
 	typedef decltype(playerList) TypePlayerList; // just so it plays well with my tools...
@@ -59,7 +59,7 @@ struct Game
 	World::Player* clone = nullptr;
 
 
-	void Init(Server* server_);
+	void Init(Server* server_, const ClientLocalMapping* plidMap_);
 	void Update(Time localTime_);
 
 	bool LoadMap();

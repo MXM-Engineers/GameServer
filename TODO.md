@@ -50,7 +50,7 @@
 * Check packet length when parsing / receiving? And drop client instead of crashing (damn you russian bots)
 * ✅ Make a unique identifier for each client and a mapping between Local client ID and Unique client ID
     - ✅ Everything except server uses unique client ID
-    - 🔥🔥🔥 Make only one local mapping per instance and pass it down to game and replication?
+    - ✅ Make only one local mapping per instance and pass it down to game and replication?
 * 🔥 De-duplicate coordinator/lane code
 
 # NavMesh

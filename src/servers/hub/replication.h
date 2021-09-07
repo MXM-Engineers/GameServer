@@ -150,7 +150,7 @@ struct ReplicationHub
 	// TODO: we propably do not need to store every possible client data here
 	// Use a fixed_vector?
 
-	ClientLocalMapping plidMap;
+	const ClientLocalMapping* plidMap;
 
 	eastl::array<ClientHandle,MAX_CLIENTS> playerClientHd;
 	eastl::array<PlayerState,MAX_CLIENTS> playerState;
@@ -163,7 +163,7 @@ struct ReplicationHub
 	void FramePushNpcActor(const ActorNpc& actor);
 	void FramePushJukebox(const ActorJukebox& actor);
 
-	void EventPlayerConnect(ClientHandle clientHd);
+	void OnPlayerConnect(ClientHandle clientHd);
 	void SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex);
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
@@ -182,7 +182,7 @@ struct ReplicationHub
 	void SendCalendar(ClientHandle clientHd);
 	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
 
-	void EventClientDisconnect(ClientHandle clientHd);
+	void OnClientDisconnect(ClientHandle clientHd);
 
 	void PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType); // TODO: temp, find a better solution
 

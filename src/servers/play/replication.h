@@ -156,7 +156,7 @@ struct Replication
 		PlayerState cur;
 	};
 
-	ClientLocalMapping plidMap;
+	const ClientLocalMapping* plidMap;
 
 	eastl::array<ClientHandle,MAX_CLIENTS> clientHandle;
 	eastl::array<PlayerStatePair,MAX_CLIENTS> playerState;

@@ -8,9 +8,11 @@
 #include <mxm/game_content.h>
 #include "config.h"
 
-void Game::Init(Server* server_)
+void Game::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
+	plidMap = plidMap_;
 	replication.Init(server_);
+	replication.plidMap = plidMap_;
 	world.Init(&replication);
 
 	// TODO: move OUT
@@ -139,7 +141,7 @@ bool Game::LoadMap()
 
 void Game::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
 {
-	const i32 clientID = plidMap.Push(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	playerAccountData[clientID] = accountData;
 
 	playerList.push_back(Player(clientHd));
@@ -150,7 +152,7 @@ void Game::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData
 
 void Game::OnPlayerDisconnect(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	if(playerMap[clientID] != playerList.end()) {
 		const Player& player = *playerMap[clientID];
@@ -164,7 +166,6 @@ void Game::OnPlayerDisconnect(ClientHandle clientHd)
 	}
 
 
-	plidMap.Pop(clientHd);
 	playerMap[clientID] = playerList.end();
 	playerAccountData[clientID] = nullptr;
 
@@ -178,7 +179,7 @@ void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 
 void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
@@ -206,7 +207,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 {
 	ProfileFunction();
 
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
@@ -281,7 +282,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 
 void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
@@ -321,14 +322,14 @@ void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar*
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerAccountData[clientID]);
 	replication.SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
 }
 
 void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerAccountData[clientID]);
 	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
@@ -357,7 +358,7 @@ void Game::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID charac
 
 void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 
 	// TODO: associate clients to world players in some way
@@ -401,7 +402,7 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 	// map is loaded, spawn
 	// TODO: team, masters
 
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	Player& player = *playerMap[clientID];
 
@@ -440,7 +441,7 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 
 void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
@@ -455,7 +456,7 @@ void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 
 void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
@@ -469,7 +470,7 @@ void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 
 
 void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	// TODO: associate clients to world players in some way
 	// FIXME: hack
@@ -498,7 +499,7 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	ASSERT(playerMap[clientID] != playerList.end());
 	const Player& player = *playerMap[clientID];
 

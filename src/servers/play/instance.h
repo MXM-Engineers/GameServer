@@ -5,6 +5,7 @@
 
 struct PvpInstance: IInstance
 {
+	ClientLocalMapping plidMap;
 	GamePacketHandler packetHandler;
 	Game game;
 

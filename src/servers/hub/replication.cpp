@@ -131,9 +131,9 @@ void ReplicationHub::FramePushJukebox(const ReplicationHub::ActorJukebox& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void ReplicationHub::EventPlayerConnect(ClientHandle clientHd)
+void ReplicationHub::OnPlayerConnect(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap.Push(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	playerClientHd[clientID] = clientHd;
 	playerState[clientID] = PlayerState::CONNECTED;
@@ -250,13 +250,13 @@ void ReplicationHub::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
 
 void ReplicationHub::SetPlayerAsInGame(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
 void ReplicationHub::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	if(playerState[clientID] != PlayerState::IN_GAME) {
 		LOG("WARNING(EventPlayerRequestCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, (i32)playerState[clientID]);
@@ -280,7 +280,7 @@ void ReplicationHub::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID m
 
 	PlayerForceLocalActorID(clientHd, masterActorUID, laiLeader);
 
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	if(playerState[clientID] < PlayerState::IN_GAME) {
 		// SN_LeaderCharacter
 		Sv::SN_LeaderCharacter leader;
@@ -319,7 +319,7 @@ void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 
 void ReplicationHub::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
-	const i32 clientID = plidMap.Get(toClientHd);
+	const i32 clientID = plidMap->Get(toClientHd);
 	if(playerState[clientID] != PlayerState::IN_GAME) return;
 
 	if(msgLen == -1) msgLen = EA::StdC::Strlen(msg);
@@ -1581,12 +1581,11 @@ void ReplicationHub::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 	}
 }
 
-void ReplicationHub::EventClientDisconnect(ClientHandle clientHd)
+void ReplicationHub::OnClientDisconnect(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	playerState[clientID] = PlayerState::DISCONNECTED;
 	playerClientHd[clientID] = ClientHandle::INVALID;
-	plidMap.Pop(clientHd);
 }
 
 void ReplicationHub::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType)
@@ -1599,7 +1598,7 @@ void ReplicationHub::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID m
 
 void ReplicationHub::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID actorUID, LocalActorID localActorID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	auto& map = playerLocalInfo[clientID].localActorIDMap;
 	ASSERT(map.find(actorUID) == map.end());
 	map.emplace(actorUID, localActorID);
@@ -1607,7 +1606,7 @@ void ReplicationHub::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID act
 
 LocalActorID ReplicationHub::GetLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	auto found = map.find(actorUID);
 	if(found != map.end()) {
@@ -1618,7 +1617,7 @@ LocalActorID ReplicationHub::GetLocalActorID(ClientHandle clientHd, ActorUID act
 
 ActorUID ReplicationHub::GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 	// TODO: second map, for this reverse lookup
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	foreach(it, map) {
@@ -2184,7 +2183,7 @@ void ReplicationHub::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 
 void ReplicationHub::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
@@ -2258,7 +2257,7 @@ void ReplicationHub::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& ac
 
 void ReplicationHub::SendJukeboxSpawn(ClientHandle clientHd, const ReplicationHub::ActorJukebox& actor)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
@@ -2323,7 +2322,7 @@ void ReplicationHub::SendJukeboxSpawn(ClientHandle clientHd, const ReplicationHu
 
 void ReplicationHub::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
@@ -2440,7 +2439,7 @@ void ReplicationHub::SendInitialFrame(ClientHandle clientHd)
 
 void ReplicationHub::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
 	auto& localActorIDMap = localInfo.localActorIDMap;
@@ -2453,7 +2452,7 @@ void ReplicationHub::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID
 
 void ReplicationHub::DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap.Get(clientHd);
+	const i32 clientID = plidMap->Get(clientHd);
 
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));

@@ -5,6 +5,7 @@
 
 struct HubInstance: IInstance
 {
+	ClientLocalMapping plidMap;
 	HubPacketHandler packetHandler;
 	GameHub game;
 

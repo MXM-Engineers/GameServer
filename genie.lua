@@ -245,7 +245,7 @@ project "GameServer"
 
 	includedirs {
 		server_common_includedirs,
-		"src/servers/game",
+		"src/servers/play",
 	}
 
 	links {
@@ -254,10 +254,10 @@ project "GameServer"
 	
 	files {
 		server_common_files,
-		"src/servers/game/**.h",
-		"src/servers/game/**.c",
-		"src/servers/game/**.cpp",
-		"src/servers/game/**.rc",
+		"src/servers/play/**.h",
+		"src/servers/play/**.c",
+		"src/servers/play/**.cpp",
+		"src/servers/play/**.rc",
 	}
 
 	defines {

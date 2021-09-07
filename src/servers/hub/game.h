@@ -30,7 +30,7 @@ struct GameHub
 			clientHd(clientHd_) {}
 	};
 
-	ClientLocalMapping plIDMap;
+	const ClientLocalMapping* plidMap;
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
@@ -44,7 +44,7 @@ struct GameHub
 
 	Time localTime;
 
-	void Init(Server* server_);
+	void Init(Server* server_, const ClientLocalMapping* plidMap_);
 	void Update(Time localTime_);
 
 	bool JukeboxQueueSong(i32 userID, SongID songID);

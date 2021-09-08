@@ -44,6 +44,43 @@ private:
 
 struct AccountData;
 
+template<typename PacketHandler>
+void NetworkParseReceiveBuffer(PacketHandler* ph, Server* server, const u8* data, const u32 size, const char* handlerName)
+{
+	ConstBuffer buff(data, size);
+	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
+		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
+		const u8* data = buff.ReadRaw(chunkInfo.len);
+
+		// handle each packet in chunk
+		ConstBuffer reader(data, chunkInfo.len);
+		if(!reader.CanRead(sizeof(NetHeader))) {
+			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
+			server->DisconnectClient(chunkInfo.clientHd);
+			continue;
+		}
+
+		while(reader.CanRead(sizeof(NetHeader))) {
+			const NetHeader& header = reader.Read<NetHeader>();
+			const i32 packetDataSize = header.size - sizeof(NetHeader);
+
+			if(!reader.CanRead(packetDataSize)) {
+				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
+				server->DisconnectClient(chunkInfo.clientHd);
+				break;
+			}
+
+			if(Config().TraceNetwork) {
+				fileSaveBuff(FormatPath(FMT("trace/%s_%d_cl_%d.raw", handlerName, server->packetCounter, header.netID)), &header, header.size);
+				server->packetCounter++;
+			}
+
+			const u8* packetData = reader.ReadRaw(packetDataSize);
+			ph->ClientHandlePacket(chunkInfo.clientHd, header, packetData);
+		}
+	}
+}
+
 struct IInstance
 {
 	virtual bool Init(Server* server_) = 0;
@@ -101,6 +138,8 @@ struct Lane
 	void CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 	void CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count);
+
+	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 };
 
 // Responsible for managing Account data and dispatching client to game channels/instances
@@ -126,9 +165,8 @@ struct Coordinator
 
 	void Update(f64 delta);
 
-private:
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
-	void ClientHandleReceivedChunk(ClientHandle clientHd, const u8* data, const i32 dataSize);
+private:
 
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);

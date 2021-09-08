@@ -3,6 +3,7 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
+#include <common/inner_protocol.h>
 
 // TODO: move this
 struct AccountData
@@ -75,6 +76,23 @@ struct Lane
 	void CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count);
 };
 
+struct Matchmaker
+{
+	InnerConnection conn;
+
+	struct QueryCreateSession
+	{
+		eastl::array<In::MQ_CreatePlaySession::Player, 6> players;
+	};
+
+	eastl::fixed_vector<QueryCreateSession, 64> queueQueryCreateSession;
+
+	bool Init();
+	void Update();
+
+	void HandlePacket(const NetHeader& header, const u8* packetData);
+};
+
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
@@ -91,13 +109,15 @@ struct Coordinator
 	EA::Thread::Thread thread;
 	Time localTime;
 
+	Matchmaker matchmaker;
+
 	void Init(Server* server_);
 	void Cleanup();
 
 	void Update(f64 delta);
 
-private:
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
+private:
 
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);

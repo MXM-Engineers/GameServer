@@ -961,12 +961,12 @@ inline const char* PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(const void*
 }
 
 template<>
-inline const char* PacketSerialize<In::R_Handshake>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::MR_Handshake>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
 	ConstBuffer buff(packetData, packetSize);
 
-	SER("R_Handshake(%d, %d) :: {", In::R_Handshake::NET_ID, packetSize);
+	SER("MR_Handshake(%d, %d) :: {", In::MR_Handshake::NET_ID, packetSize);
 	SER("	result=%d", buff.Read<u8>());
 	SER("}");
 

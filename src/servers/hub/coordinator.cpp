@@ -23,8 +23,7 @@ bool Matchmaker::Init()
 
 	conn.async.StartReceiving(); // TODO: move this to ConnectTo()?
 
-	In::Q_Handshake handshake;
-	handshake.type = In::ConnType::HubServer;
+	In::HQ_Handshake handshake;
 	handshake.magic = In::MagicHandshake;
 	conn.SendPacket(handshake);
 	return true;
@@ -58,8 +57,8 @@ void Matchmaker::HandlePacket(const NetHeader& header, const u8* packetData)
 	const i32 packetSize = header.size - sizeof(NetHeader);
 
 	switch(header.netID) {
-		case In::R_Handshake::NET_ID: {
-			const In::R_Handshake resp = SafeCast<In::R_Handshake>(packetData, packetSize);
+		case In::MR_Handshake::NET_ID: {
+			const In::MR_Handshake resp = SafeCast<In::MR_Handshake>(packetData, packetSize);
 			if(resp.result == 1) {
 				LOG("[MM] Connected to Matchmaker server");
 			}
@@ -195,33 +194,7 @@ void Lane::Update()
 
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
-	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
-	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
-		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
-		const u8* data = buff.ReadRaw(chunkInfo.len);
-
-		// handle each packet in chunk
-		ConstBuffer reader(data, chunkInfo.len);
-		if(!reader.CanRead(sizeof(NetHeader))) {
-			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
-			server->DisconnectClient(chunkInfo.clientHd);
-			continue;
-		}
-
-		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
-			const i32 packetDataSize = header.size - sizeof(NetHeader);
-
-			if(!reader.CanRead(packetDataSize)) {
-				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
-				server->DisconnectClient(chunkInfo.clientHd);
-				break;
-			}
-
-			const u8* packetData = reader.ReadRaw(packetDataSize);
-			instance->OnNewPacket(chunkInfo.clientHd, header, packetData);
-		}
-	}
+	NetworkParseReceiveBuffer(this, server, recvDataBuff.data, recvDataBuff.size, "hub");
 
 	recvDataBuff.Clear();
 
@@ -257,6 +230,11 @@ void Lane::CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, cons
 {
 	LOCK_MUTEX(mutexClientDisconnectedList);
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
+}
+
+void Lane::ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+{
+	instance->OnNewPacket(clientHd, header, packetData);
 }
 
 bool Coordinator::Init(Server* server_)
@@ -343,38 +321,7 @@ void Coordinator::Update(f64 delta)
 
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
-	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
-	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
-		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
-		const u8* data = buff.ReadRaw(chunkInfo.len);
-
-		// handle each packet in chunk
-		ConstBuffer reader(data, chunkInfo.len);
-		if(!reader.CanRead(sizeof(NetHeader))) {
-			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
-			server->DisconnectClient(chunkInfo.clientHd);
-			continue;
-		}
-
-		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
-			const i32 packetDataSize = header.size - sizeof(NetHeader);
-
-			if(!reader.CanRead(packetDataSize)) {
-				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
-				server->DisconnectClient(chunkInfo.clientHd);
-				break;
-			}
-
-			if(Config().TraceNetwork) {
-				fileSaveBuff(FormatPath(FMT("trace/hub_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
-				server->packetCounter++;
-			}
-
-			const u8* packetData = reader.ReadRaw(packetDataSize);
-			ClientHandlePacket(chunkInfo.clientHd, header, packetData);
-		}
-	}
+	NetworkParseReceiveBuffer(this, server, recvDataBuff.data, recvDataBuff.size, "hub");
 
 	recvDataBuff.Clear();
 }

@@ -136,23 +136,31 @@ struct Matchmaker
 		switch(conn.type) {
 			case In::ConnType::Undecided: {
 				switch(header.netID) {
-					case In::Q_Handshake::NET_ID: {
+					case In::HQ_Handshake::NET_ID: {
 						// TODO: check white list
 						// TODO: validate args
-						const In::Q_Handshake& packet = SafeCast<In::Q_Handshake>(packetData, packetSize);
-						conn.type = packet.type;
+						const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
+						conn.type = In::ConnType::HubServer;
 
-						In::R_Handshake resp;
+						In::MR_Handshake resp;
 						resp.result = 1;
 						SendPacket(clientHd, resp);
 
-						const eastl::array<const char*, 3> ConnTypeStr = {
-							"Undecided",
-							"HubServer",
-							"PlayServer"
-						};
+						LOG("[client%x] New Hub connection", clientHd);
+						return; // accept packet
+					} break;
 
-						LOG("[client%x] New connection (type='%s')", clientHd, ConnTypeStr[(i32)conn.type]);
+					case In::PQ_Handshake::NET_ID: {
+						// TODO: check white list
+						// TODO: validate args
+						const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
+						conn.type = In::ConnType::PlayServer;
+
+						In::MR_Handshake resp;
+						resp.result = 1;
+						SendPacket(clientHd, resp);
+
+						LOG("[client%x] New Play connection", clientHd);
 						return; // accept packet
 					} break;
 				}

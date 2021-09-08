@@ -1,5 +1,11 @@
 #pragma once
 #include <common/base.h>
+#include <common/protocol.h>
+#include <EASTL/array.h>
+
+// MQ, MR: Matchmaker Query, Response
+// HQ, HR: Hub server Query, Response
+// PQ, PR: Play server Query, Response
 
 namespace In {
 
@@ -12,19 +18,44 @@ enum class ConnType: u8
 	PlayServer = 2
 };
 
-PUSH_PACKED
-struct Q_Handshake
+struct HQ_Handshake
 {
 	enum { NET_ID = 1001 };
 
-	ConnType type;
 	u32 magic;
 };
-POP_PACKED
 
-struct R_Handshake
+struct PQ_Handshake
+{
+	enum { NET_ID = 1002 };
+
+	u32 magic;
+};
+
+struct MQ_CreatePlaySession
+{
+	enum { NET_ID = 1003 };
+
+	struct Player
+	{
+		u32 accountID; // TODO: AccountID type
+		ClassType mainMaster;
+		ClassType subMaster;
+	};
+
+	eastl::array<Player, 6> players;
+};
+
+struct MR_Handshake
 {
 	enum { NET_ID = 2001 };
+
+	u8 result;
+};
+
+struct PR_CreatePlaySession
+{
+	enum { NET_ID = 2002 };
 
 	u8 result;
 };

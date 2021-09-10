@@ -4,11 +4,13 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
+
 #include "world.h"
+#include "matchmaker_connector.h"
 
 struct AccountData;
 
-struct GameHub
+struct HubGame
 {
 	enum {
 		MAX_PLAYERS = MAX_CLIENTS
@@ -30,11 +32,20 @@ struct GameHub
 			clientHd(clientHd_) {}
 	};
 
+	struct Party
+	{
+		PartyUID UID;
+		ClientHandle leader;
+		EntrySystemID entry;
+		StageType stageType;
+		// TODO: do fancy party stuff later on
+	};
+
 	const ClientLocalMapping* plidMap;
 	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
-	ReplicationHub replication;
+	HubReplication replication;
 
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
@@ -43,9 +54,11 @@ struct GameHub
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 
 	Time localTime;
+	MatchmakerConnector* matchmaker;
 
 	void Init(Server* server_, const ClientLocalMapping* plidMap_);
 	void Update(Time localTime_);
+	void ProcessMatchmakerUpdates();
 
 	bool JukeboxQueueSong(i32 userID, SongID songID);
 
@@ -61,6 +74,8 @@ struct GameHub
 	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
+	void OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType);
+	void OnEnqueueGame(ClientHandle clientHd);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

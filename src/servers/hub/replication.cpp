@@ -11,7 +11,7 @@
 #include <mxm/game_content.h>
 
 
-void ReplicationHub::Frame::Clear()
+void HubReplication::Frame::Clear()
 {
 	playerList.clear();
 	npcList.clear();
@@ -23,7 +23,7 @@ void ReplicationHub::Frame::Clear()
 	actionStateMap.clear();
 }
 
-void ReplicationHub::PlayerLocalInfo::Reset()
+void HubReplication::PlayerLocalInfo::Reset()
 {
 	localActorIDMap.clear();
 	actorUIDSet.clear();
@@ -33,7 +33,7 @@ void ReplicationHub::PlayerLocalInfo::Reset()
 	isFirstLoad = true;
 }
 
-void ReplicationHub::Init(Server* server_)
+void HubReplication::Init(Server* server_)
 {
 	server = server_;
 	memset(&playerState, 0, sizeof(playerState));
@@ -42,7 +42,7 @@ void ReplicationHub::Init(Server* server_)
 	frameCur = &frames[1];
 }
 
-void ReplicationHub::FrameEnd()
+void HubReplication::FrameEnd()
 {
 	ProfileFunction();
 
@@ -65,7 +65,7 @@ void ReplicationHub::FrameEnd()
 	frameCur->Clear(); // clear frame
 }
 
-void ReplicationHub::FramePushPlayerActor(const ActorPlayer& actor)
+void HubReplication::FramePushPlayerActor(const ActorPlayer& actor)
 {
 	ASSERT(frameCur->playerMap.find(actor.actorUID) == frameCur->playerMap.end());
 	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
@@ -92,7 +92,7 @@ void ReplicationHub::FramePushPlayerActor(const ActorPlayer& actor)
 	frameCur->actionStateMap.emplace(actor.actorUID, at);
 }
 
-void ReplicationHub::FramePushNpcActor(const ReplicationHub::ActorNpc& actor)
+void HubReplication::FramePushNpcActor(const HubReplication::ActorNpc& actor)
 {
 	ASSERT(frameCur->playerMap.find(actor.actorUID) == frameCur->playerMap.end());
 	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
@@ -121,7 +121,7 @@ void ReplicationHub::FramePushNpcActor(const ReplicationHub::ActorNpc& actor)
 	*/
 }
 
-void ReplicationHub::FramePushJukebox(const ReplicationHub::ActorJukebox& actor)
+void HubReplication::FramePushJukebox(const HubReplication::ActorJukebox& actor)
 {
 	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
 
@@ -131,7 +131,7 @@ void ReplicationHub::FramePushJukebox(const ReplicationHub::ActorJukebox& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void ReplicationHub::OnPlayerConnect(ClientHandle clientHd)
+void HubReplication::OnPlayerConnect(ClientHandle clientHd)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -140,7 +140,7 @@ void ReplicationHub::OnPlayerConnect(ClientHandle clientHd)
 	playerLocalInfo[clientID].Reset();
 }
 
-void ReplicationHub::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
+void HubReplication::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
 {
 	// SN_LoadCharacterStart
 	SendPacketData<Sv::SN_LoadCharacterStart>(clientHd, 0, nullptr);
@@ -248,13 +248,13 @@ void ReplicationHub::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
 	}
 }
 
-void ReplicationHub::SetPlayerAsInGame(ClientHandle clientHd)
+void HubReplication::SetPlayerAsInGame(ClientHandle clientHd)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	playerState[clientID] = PlayerState::IN_GAME;
 }
 
-void ReplicationHub::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
+void HubReplication::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -273,7 +273,7 @@ void ReplicationHub::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID,
 	SendPacket(clientHd, info);
 }
 
-void ReplicationHub::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex)
+void HubReplication::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
@@ -299,7 +299,7 @@ void ReplicationHub::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID m
 	}
 }
 
-void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void HubReplication::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// TODO: restrict message length
 
@@ -317,7 +317,7 @@ void ReplicationHub::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 	}
 }
 
-void ReplicationHub::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void HubReplication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	const i32 clientID = plidMap->Get(toClientHd);
 	if(playerState[clientID] != PlayerState::IN_GAME) return;
@@ -334,7 +334,7 @@ void ReplicationHub::SendChatMessageToClient(ClientHandle toClientHd, const wcha
 	SendPacket(toClientHd, packet);
 }
 
-void ReplicationHub::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
+void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
 {
 	PacketWriter<Sv::SA_WhisperSend> packet;
 
@@ -345,7 +345,7 @@ void ReplicationHub::SendChatWhisperConfirmToClient(ClientHandle senderClientHd,
 	SendPacket(senderClientHd, packet);
 }
 
-void ReplicationHub::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
+void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
 {
 	PacketWriter<Sv::SN_WhisperReceive> packet;
 
@@ -356,7 +356,7 @@ void ReplicationHub::SendChatWhisperToClient(ClientHandle destClientHd, const wc
 	SendPacket(destClientHd, packet);
 }
 
-void ReplicationHub::SendAccountDataLobby(ClientHandle clientHd, const AccountData& account)
+void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const AccountData& account)
 {
 	// SN_RegionServicePolicy
 	{
@@ -1003,7 +1003,7 @@ void ReplicationHub::SendAccountDataLobby(ClientHandle clientHd, const AccountDa
 	}
 }
 
-void ReplicationHub::SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port)
+void HubReplication::SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port)
 {
 	PacketWriter<Sv::SN_DoConnectGameServer> packet;
 
@@ -1019,7 +1019,7 @@ void ReplicationHub::SendConnectToServer(ClientHandle clientHd, const AccountDat
 	// NOTE: client will disconnect on reception
 }
 
-void ReplicationHub::SendGameReady(ClientHandle clientHd)
+void HubReplication::SendGameReady(ClientHandle clientHd)
 {
 	Sv::SA_GameReady ready;
 	ready.waitingTimeMs = 3000;
@@ -1108,7 +1108,7 @@ void ReplicationHub::SendGameReady(ClientHandle clientHd)
 	*/
 }
 
-void ReplicationHub::SendCalendar(ClientHandle clientHd)
+void HubReplication::SendCalendar(ClientHandle clientHd)
 {
 	// SA_CalendarDetail
 	{
@@ -1561,7 +1561,7 @@ void ReplicationHub::SendCalendar(ClientHandle clientHd)
 	}
 }
 
-void ReplicationHub::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
+void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 {
 	// SA_AreaPopularity
 	{
@@ -1581,14 +1581,41 @@ void ReplicationHub::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 	}
 }
 
-void ReplicationHub::OnClientDisconnect(ClientHandle clientHd)
+void HubReplication::SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType)
+{
+	PacketWriter<Sv::SA_PartyCreate> packet;
+
+	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
+	packet.Write<i32>(0); // retval: success
+	packet.Write<i32>(1); // ownerUserID
+	packet.Write<i32>(stageType); // stageType
+
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
+{
+	Sv::SA_EnqueueGame packet;
+	packet.retval = 0;
+	SendPacket(clientHd, packet);
+
+	Sv::SN_EnqueueMatchingQueue matching;
+	matching.stageIndex = 200020102;
+	matching.currentMatchingTimeMs = 0;
+	matching.avgMatchingTimeMs = 121634;
+	matching.disableMatchExpansion = 0;
+	matching.isMatchingExpanded = 0;
+	SendPacket(clientHd, matching);
+}
+
+void HubReplication::OnClientDisconnect(ClientHandle clientHd)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	playerState[clientID] = PlayerState::DISCONNECTED;
 	playerClientHd[clientID] = ClientHandle::INVALID;
 }
 
-void ReplicationHub::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType)
+void HubReplication::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType)
 {
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
@@ -1596,7 +1623,7 @@ void ReplicationHub::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID m
 	PlayerForceLocalActorID(clientHd, masterActorUID, laiLeader);
 }
 
-void ReplicationHub::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID actorUID, LocalActorID localActorID)
+void HubReplication::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID actorUID, LocalActorID localActorID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	auto& map = playerLocalInfo[clientID].localActorIDMap;
@@ -1604,7 +1631,7 @@ void ReplicationHub::PlayerForceLocalActorID(ClientHandle clientHd, ActorUID act
 	map.emplace(actorUID, localActorID);
 }
 
-LocalActorID ReplicationHub::GetLocalActorID(ClientHandle clientHd, ActorUID actorUID)
+LocalActorID HubReplication::GetLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
@@ -1615,7 +1642,7 @@ LocalActorID ReplicationHub::GetLocalActorID(ClientHandle clientHd, ActorUID act
 	return LocalActorID::INVALID;
 }
 
-ActorUID ReplicationHub::GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID)
+ActorUID HubReplication::GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	// TODO: second map, for this reverse lookup
@@ -1629,7 +1656,7 @@ ActorUID ReplicationHub::GetWorldActorUID(ClientHandle clientHd, LocalActorID lo
 	return ActorUID::INVALID;
 }
 
-void ReplicationHub::UpdatePlayersLocalState()
+void HubReplication::UpdatePlayersLocalState()
 {
 	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
@@ -1737,7 +1764,7 @@ void ReplicationHub::UpdatePlayersLocalState()
 	}
 }
 
-void ReplicationHub::FrameDifference()
+void HubReplication::FrameDifference()
 {
 	// send position update
 
@@ -1878,7 +1905,7 @@ void ReplicationHub::FrameDifference()
 	}
 }
 
-void ReplicationHub::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlayer& actor)
+void HubReplication::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlayer& actor)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	const LocalActorID localActorID = GetLocalActorID(clientHd, actor.actorUID);
@@ -2181,7 +2208,7 @@ void ReplicationHub::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 	*/
 }
 
-void ReplicationHub::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor)
+void HubReplication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -2255,7 +2282,7 @@ void ReplicationHub::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& ac
 	}
 }
 
-void ReplicationHub::SendJukeboxSpawn(ClientHandle clientHd, const ReplicationHub::ActorJukebox& actor)
+void HubReplication::SendJukeboxSpawn(ClientHandle clientHd, const HubReplication::ActorJukebox& actor)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -2320,7 +2347,7 @@ void ReplicationHub::SendJukeboxSpawn(ClientHandle clientHd, const ReplicationHu
 	SendJukeboxQueue(clientHd, actor.tracks.data(), actor.tracks.size());
 }
 
-void ReplicationHub::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
+void HubReplication::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -2333,7 +2360,7 @@ void ReplicationHub::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendJukeboxPlay(ClientHandle clientHd, SongID songID, const wchar* requesterNick, i32 playPosInSec)
+void HubReplication::SendJukeboxPlay(ClientHandle clientHd, SongID songID, const wchar* requesterNick, i32 playPosInSec)
 {
 	PacketWriter<Sv::SN_JukeboxPlay> packet;
 
@@ -2345,7 +2372,7 @@ void ReplicationHub::SendJukeboxPlay(ClientHandle clientHd, SongID songID, const
 	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendJukeboxQueue(ClientHandle clientHd, const ActorJukebox::Track* tracks, const i32 trackCount)
+void HubReplication::SendJukeboxQueue(ClientHandle clientHd, const ActorJukebox::Track* tracks, const i32 trackCount)
 {
 	PacketWriter<Sv::SN_JukeboxEnqueuedList> packet;
 
@@ -2358,7 +2385,7 @@ void ReplicationHub::SendJukeboxQueue(ClientHandle clientHd, const ActorJukebox:
 	SendPacket(clientHd, packet);
 }
 
-void ReplicationHub::SendMasterSkillSlots(ClientHandle clientHd, const ReplicationHub::ActorPlayer& actor)
+void HubReplication::SendMasterSkillSlots(ClientHandle clientHd, const HubReplication::ActorPlayer& actor)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	const LocalActorID localActorID = GetLocalActorID(clientHd, actor.actorUID);
@@ -2415,7 +2442,7 @@ void ReplicationHub::SendMasterSkillSlots(ClientHandle clientHd, const Replicati
 	}
 }
 
-void ReplicationHub::SendInitialFrame(ClientHandle clientHd)
+void HubReplication::SendInitialFrame(ClientHandle clientHd)
 {
 	// SN_ScanEnd
 	SendPacketData<Sv::SN_ScanEnd>(clientHd, 0, nullptr);
@@ -2437,7 +2464,7 @@ void ReplicationHub::SendInitialFrame(ClientHandle clientHd)
 	}
 }
 
-void ReplicationHub::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID)
+void HubReplication::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -2450,7 +2477,7 @@ void ReplicationHub::CreateLocalActorID(ClientHandle clientHd, ActorUID actorUID
 	// TODO: start at 5000 for NPCs? Does it even matter?
 }
 
-void ReplicationHub::DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID)
+void HubReplication::DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 
@@ -2458,7 +2485,7 @@ void ReplicationHub::DeleteLocalActorID(ClientHandle clientHd, ActorUID actorUID
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
 }
 
-bool ReplicationHub::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
+bool HubReplication::Frame::Transform::HasNotChanged(const Frame::Transform& other) const
 {
 	const f32 posEpsilon = 0.1f;
 	if(fabs(pos.x - other.pos.x) > posEpsilon) return false;
@@ -2477,7 +2504,7 @@ bool ReplicationHub::Frame::Transform::HasNotChanged(const Frame::Transform& oth
 	return true;
 }
 
-bool ReplicationHub::Frame::ActionState::HasNotChanged(const ReplicationHub::Frame::ActionState& other) const
+bool HubReplication::Frame::ActionState::HasNotChanged(const HubReplication::Frame::ActionState& other) const
 {
 	if(other.actionState == ActionStateID::INVALID) return true;
 	if(actionState != other.actionState) return false;

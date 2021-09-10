@@ -12,7 +12,7 @@
 
 struct AccountData;
 
-struct ReplicationHub
+struct HubReplication
 {
 	enum class ActorType: i32
 	{
@@ -81,6 +81,15 @@ struct ReplicationHub
 		ActorJukebox() {
 			actorUID = ActorUID::INVALID;
 		}
+	};
+
+	struct Party
+	{
+		PartyUID UID;
+		ClientHandle leader;
+		EntrySystemID entry;
+		StageType stageType;
+		// TODO: do fancy party stuff later on
 	};
 
 	struct Frame
@@ -181,6 +190,9 @@ struct ReplicationHub
 
 	void SendCalendar(ClientHandle clientHd);
 	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
+	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
+
+	void SendPartyEnqueue(ClientHandle clientHd);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

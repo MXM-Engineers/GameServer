@@ -4,7 +4,7 @@
 #include <mxm/game_content.h>
 #include "game.h"
 
-bool HubPacketHandler::Init(GameHub* game_)
+bool HubPacketHandler::Init(HubGame* game_)
 {
 	game = game_;
 	replication = &game->replication;
@@ -390,23 +390,6 @@ void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const 
 	game->OnPlayerChatWhisper(clientHd, destNick.data(), msg.data());
 }
 
-void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientHd, create.entrySysID, create.stageType);
-
-	// we don't support creating parties right now, send back an error
-
-	PacketWriter<Sv::SA_PartyCreate> packet;
-
-	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
-	packet.Write<i32>(0); // retval: success
-	packet.Write<i32>(1); // ownerUserID
-	packet.Write<i32>(create.stageType); // stageType
-
-	SendPacket(clientHd, packet);
-}
-
 void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
@@ -440,6 +423,14 @@ void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(ClientHandle client
 	replication->SendAreaPopularity(clientHd, req.areaID);
 }
 
+void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientHd, create.entrySysID, create.stageType);
+
+	game->OnCreateParty(clientHd, create.entrySysID, create.stageType);
+}
+
 void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
@@ -465,15 +456,5 @@ void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const 
 {
 	NT_LOG("[client%x] Client :: CQ_EnqueueGame :: { }", clientHd);
 
-	Sv::SA_EnqueueGame packet;
-	packet.retval = 0;
-	SendPacket(clientHd, packet);
-
-	Sv::SN_EnqueueMatchingQueue matching;
-	matching.stageIndex = 200020102;
-	matching.currentMatchingTimeMs = 0;
-	matching.avgMatchingTimeMs = 121634;
-	matching.disableMatchExpansion = 0;
-	matching.isMatchingExpanded = 0;
-	SendPacket(clientHd, matching);
+	game->OnEnqueueGame(clientHd);
 }

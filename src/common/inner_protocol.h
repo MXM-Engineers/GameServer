@@ -18,6 +18,10 @@ enum class ConnType: u8
 	PlayServer = 2
 };
 
+enum class PartyUID: u32 {
+	INVALID = 0
+};
+
 struct HQ_Handshake
 {
 	enum { NET_ID = 1001 };
@@ -25,16 +29,25 @@ struct HQ_Handshake
 	u32 magic;
 };
 
-struct PQ_Handshake
+struct HQ_PartyCreate
 {
 	enum { NET_ID = 1002 };
 
-	u32 magic;
+	// TODO: some useful stuff here
+	u32 dummy;
+};
+
+struct HQ_PartyEnqueue
+{
+	enum { NET_ID = 1003 };
+
+	// TODO: some useful stuff here
+	u32 dummy;
 };
 
 struct MQ_CreatePlaySession
 {
-	enum { NET_ID = 1003 };
+	enum { NET_ID = 3001 };
 
 	struct Player
 	{
@@ -48,9 +61,34 @@ struct MQ_CreatePlaySession
 
 struct MR_Handshake
 {
-	enum { NET_ID = 2001 };
+	enum { NET_ID = 3002 };
 
 	u8 result;
+};
+
+struct MR_PartyCreated
+{
+	enum { NET_ID = 3003 };
+
+	// TODO: some useful stuff here
+	u8 result;
+	PartyUID partyUID;
+};
+
+struct MR_PartyEnqueued
+{
+	enum { NET_ID = 3004 };
+
+	// TODO: some useful stuff here
+	u8 result;
+	PartyUID partyUID;
+};
+
+struct PQ_Handshake
+{
+	enum { NET_ID = 2001 };
+
+	u32 magic;
 };
 
 struct PR_CreatePlaySession

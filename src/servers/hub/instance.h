@@ -7,7 +7,7 @@ struct HubInstance: IInstance
 {
 	ClientLocalMapping plidMap;
 	HubPacketHandler packetHandler;
-	GameHub game;
+	HubGame game;
 
 	bool Init(Server* server_) override;
 	void Update(Time localTime_) override;

@@ -52,6 +52,8 @@ struct Matchmaker
 
 	GrowableBuffer recvDataBuff;
 
+	In::PartyUID nextPartyUID = In::PartyUID(1);
+
 	Matchmaker(Server& server_):
 		server(server_)
 	{
@@ -134,42 +136,89 @@ struct Matchmaker
 		Connection& conn = *connMap.at(clientHd);
 
 		switch(conn.type) {
-			case In::ConnType::Undecided: {
-				switch(header.netID) {
-					case In::HQ_Handshake::NET_ID: {
-						// TODO: check white list
-						// TODO: validate args
-						const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
-						conn.type = In::ConnType::HubServer;
+			case In::ConnType::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
+			case In::ConnType::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
 
-						In::MR_Handshake resp;
-						resp.result = 1;
-						SendPacket(clientHd, resp);
-
-						LOG("[client%x] New Hub connection", clientHd);
-						return; // accept packet
-					} break;
-
-					case In::PQ_Handshake::NET_ID: {
-						// TODO: check white list
-						// TODO: validate args
-						const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
-						conn.type = In::ConnType::PlayServer;
-
-						In::MR_Handshake resp;
-						resp.result = 1;
-						SendPacket(clientHd, resp);
-
-						LOG("[client%x] New Play connection", clientHd);
-						return; // accept packet
-					} break;
-				}
-			} break;
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
 		}
+	}
 
+	void OnPacketUndecided(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
+	{
+		switch(header.netID) {
+			case In::HQ_Handshake::NET_ID: {
+				NT_LOG("[client%x] HQ_Handshake", conn.clientHd);
 
-		WARN("[client%x] Unhandled packet (netID=%u size=%u)", clientHd, header.netID, header.size);
-		server.DisconnectClient(clientHd);
+				// TODO: check white list
+				// TODO: validate args
+				const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
+				conn.type = In::ConnType::HubServer;
+
+				In::MR_Handshake resp;
+				resp.result = 1;
+				SendPacket(conn.clientHd, resp);
+
+				LOG("[client%x] New Hub connection", conn.clientHd);
+			} break;
+
+			case In::PQ_Handshake::NET_ID: {
+				NT_LOG("[client%x] PQ_Handshake", conn.clientHd);
+
+				// TODO: check white list
+				// TODO: validate args
+				const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
+				conn.type = In::ConnType::PlayServer;
+
+				In::MR_Handshake resp;
+				resp.result = 1;
+				SendPacket(conn.clientHd, resp);
+
+				LOG("[client%x] New Play connection", conn.clientHd);
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+				WARN("[client%x] Unhandled packet (netID=%u size=%u)", conn.clientHd, header.netID, header.size);
+				server.DisconnectClient(conn.clientHd);
+			}
+		}
+	}
+
+	void OnPacketHub(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
+	{
+		switch(header.netID) {
+			case In::HQ_PartyCreate::NET_ID: {
+				NT_LOG("[hub%x] HQ_PartyCreate", conn.clientHd);
+
+				// TODO: validate args?
+
+				In::MR_PartyCreated resp;
+				resp.result = 1;
+				resp.partyUID = In::PartyUID(1); // TODO: actual party UID
+				SendPacket(conn.clientHd, resp);
+
+				// TODO: create party data
+			} break;
+
+			case In::HQ_PartyEnqueue::NET_ID: {
+				NT_LOG("[hub%x] HQ_EnqueueParty", conn.clientHd);
+
+				// TODO: validate args?
+
+				In::MR_PartyEnqueued resp;
+				resp.result = 1;
+				resp.partyUID = In::PartyUID(1); // TODO: actual party UID
+				SendPacket(conn.clientHd, resp);
+
+				// TODO: add party to matchmaking pool
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
+		}
 	}
 
 	void Cleanup()

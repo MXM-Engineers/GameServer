@@ -10,7 +10,12 @@ enum class ActorUID: u32
 
 enum class UserID: u32
 {
-	INVALID = 0xFFFFFFFF
+	INVALID = 0
+};
+
+enum class PartyUID: u32
+{
+	INVALID = 0
 };
 
 // used in skill.xml, botskillconditiondata.xml

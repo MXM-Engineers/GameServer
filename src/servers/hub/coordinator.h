@@ -7,6 +7,8 @@
 #include <EASTL/fixed_set.h>
 #include <EASTL/fixed_map.h>
 
+#include "matchmaker_connector.h"
+
 // TODO: move this
 enum class AccountID: u32 {
 	INVALID = 0
@@ -19,27 +21,6 @@ struct AccountData
 	i32 leaderMasterID;
 
 	// TODO: add to this
-};
-
-struct MatchFindFilter
-{
-	// pvp: 3v3, 5v5
-	// pve: map, level?
-	// mini game
-	// ?
-
-	u8 region;
-};
-
-struct Matchmaker
-{
-	InnerConnection conn;
-
-	bool Init();
-	void Update();
-
-private:
-	void HandlePacket(const NetHeader& header, const u8* packetData);
 };
 
 struct AccountData;
@@ -158,7 +139,7 @@ struct Coordinator
 	EA::Thread::Thread thread;
 	Time localTime;
 
-	Matchmaker matchmaker;
+	MatchmakerConnector matchmaker;
 
 	bool Init(Server* server_);
 	void Cleanup();

@@ -10,66 +10,6 @@
 #include "channel.h"
 #include "instance.h"
 
-bool Matchmaker::Init()
-{
-	// TODO: load this from somewhere
-	const u8 ip[4] = { 127, 0, 0, 1 };
-	const u16 port = 13900;
-	bool r = conn.async.ConnectTo(ip, port);
-	if(!r) {
-		LOG("ERROR: Failed to connect to matchmaker server");
-		return false;
-	}
-
-	conn.async.StartReceiving(); // TODO: move this to ConnectTo()?
-
-	In::HQ_Handshake handshake;
-	handshake.magic = In::MagicHandshake;
-	conn.SendPacket(handshake);
-	return true;
-}
-
-void Matchmaker::Update()
-{
-	// handle inner communication
-	conn.SendPendingData();
-
-	u8 recvBuff[8192];
-	i32 recvLen = 0;
-	conn.RecvPendingData(recvBuff, sizeof(recvBuff), &recvLen);
-
-	if(recvLen > 0) {
-		ConstBuffer reader(recvBuff, recvLen);
-
-		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
-			const i32 packetDataSize = header.size - sizeof(NetHeader);
-			ASSERT(reader.CanRead(packetDataSize));
-			const u8* packetData = reader.ReadRaw(packetDataSize);
-
-			HandlePacket(header, packetData);
-		}
-	}
-}
-
-void Matchmaker::HandlePacket(const NetHeader& header, const u8* packetData)
-{
-	const i32 packetSize = header.size - sizeof(NetHeader);
-
-	switch(header.netID) {
-		case In::MR_Handshake::NET_ID: {
-			const In::MR_Handshake resp = SafeCast<In::MR_Handshake>(packetData, packetSize);
-			if(resp.result == 1) {
-				LOG("[MM] Connected to Matchmaker server");
-			}
-			else {
-				WARN("[MM] handshake failed (%d)", resp.result);
-				ASSERT_MSG(0, "mm handshake failed"); // should not happen
-			}
-		} break;
-	}
-}
-
 intptr_t ThreadLane(void* pData)
 {
 	Lane& lane = *(Lane*)pData;

@@ -275,7 +275,7 @@ void Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 	client.recvPendingProcessingBuff.Append(client.async.GetReceivedData(), dataLen);
 }
 
-void Server::SendPacketData(ClientHandle clientID, u16 netID, u16 packetSize, const void* packetData)
+void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, const void* packetData)
 {
 	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
 	u8 sendBuff[8192];
@@ -287,7 +287,7 @@ void Server::SendPacketData(ClientHandle clientID, u16 netID, u16 packetSize, co
 	memmove(sendBuff, &header, sizeof(header));
 	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 
-	ClientSend(GetClientID(clientID), sendBuff, packetTotalSize);
+	ClientSend(GetClientID(clientHd), sendBuff, packetTotalSize);
 
 	if(doTraceNetwork) {
 		static Mutex mutexFile;
@@ -321,7 +321,7 @@ void Server::DisconnectClient(i32 clientID)
 	clientID2HandleMap.erase(clientID);
 
 	clientIsConnected[clientID] = 0;
-	LOG("[client%03d] disconnected", clientID);
+	LOG("[client%x] disconnected", clientHd);
 }
 
 bool Listener::Init(i32 listenPort_)

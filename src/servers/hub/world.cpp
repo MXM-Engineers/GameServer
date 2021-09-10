@@ -1,6 +1,6 @@
 #include "world.h"
 
-void WorldHub::Init(ReplicationHub* replication_)
+void WorldHub::Init(HubReplication* replication_)
 {
 	replication = replication_;
 	nextActorUID = 1;
@@ -29,7 +29,7 @@ void WorldHub::Update(Time localTime_)
 		}
 
 		// replicate
-		ReplicationHub::ActorJukebox rjb;
+		HubReplication::ActorJukebox rjb;
 		rjb.actorUID = jukebox.UID;
 		rjb.docID = jukebox.docID;
 		rjb.pos = jukebox.pos;
@@ -58,7 +58,7 @@ void WorldHub::Update(Time localTime_)
 	foreach(it, actorPlayerList) {
 		const ActorPlayer& actor = *it;
 
-		ReplicationHub::ActorPlayer rfl;
+		HubReplication::ActorPlayer rfl;
 		rfl.parentActorUID = actor.parentActorUID;
 		rfl.actorUID = actor.UID;
 		rfl.docID = actor.docID;
@@ -92,7 +92,7 @@ void WorldHub::Update(Time localTime_)
 	foreach(it, actorNpcList) {
 		const ActorNpc& actor = *it;
 
-		ReplicationHub::ActorNpc rfl;
+		HubReplication::ActorNpc rfl;
 		rfl.actorUID = actor.UID;
 		rfl.type = actor.type;
 		rfl.docID = actor.docID;

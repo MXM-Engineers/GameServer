@@ -1066,6 +1066,34 @@ inline const char* PacketSerialize<Sv::SN_EnqueueMatchingQueue>(const void* pack
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::MR_PartyCreated packet = SafeCast<In::MR_PartyCreated>(packetData, packetSize);
+
+	SER("MR_PartyCreated(%d, %d) :: {", In::MR_PartyCreated::NET_ID, packetSize);
+	SER("	result=%u", packet.result);
+	SER("	partyUID=%u", packet.partyUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MR_PartyEnqueued>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::MR_PartyEnqueued packet = SafeCast<In::MR_PartyEnqueued>(packetData, packetSize);
+
+	SER("MR_PartyEnqueued(%d, %d) :: {", In::MR_PartyEnqueued::NET_ID, packetSize);
+	SER("	result=%u", packet.result);
+	SER("	partyUID=%u", packet.partyUID);
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\

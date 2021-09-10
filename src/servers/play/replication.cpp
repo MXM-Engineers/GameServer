@@ -128,7 +128,7 @@ void Replication::SendLoadPvpMap(ClientHandle clientHd, StageIndex stageIndex)
 	SendPacket(clientHd, owner);
 
 	Sv::SN_LobbyStartGame lobby;
-	lobby.stageType = StageType::GAME_INSTANCE;
+	lobby.stageType = StageType::PLAY_INSTANCE;
 	SendPacket(clientHd, lobby);
 
 	// SN_CityMapInfo

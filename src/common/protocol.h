@@ -260,7 +260,7 @@ enum StageType: i32
 {
 	INVALID = 0,
 	CITY = 1, // LOBBY
-	GAME_INSTANCE = 2
+	PLAY_INSTANCE = 2
 };
 
 enum class EntrySystemID: i32

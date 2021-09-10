@@ -78,7 +78,7 @@ struct WorldHub
 		explicit ActorJukebox(ActorUID UID_): ActorNpc(UID_) {}
 	};
 
-	ReplicationHub* replication;
+	HubReplication* replication;
 
 	eastl::fixed_list<ActorPlayer,512,true> actorPlayerList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
@@ -97,7 +97,7 @@ struct WorldHub
 	u32 nextActorUID;
 	Time localTime;
 
-	void Init(ReplicationHub* replication_);
+	void Init(HubReplication* replication_);
 	void Update(Time localTime_);
 
 	ActorUID NewActorUID();

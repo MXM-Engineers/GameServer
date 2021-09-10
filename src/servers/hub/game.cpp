@@ -4,12 +4,14 @@
 #include "config.h"
 #include <EAStdC/EAString.h>
 
-void GameHub::Init(Server* server_, const ClientLocalMapping* plidMap_)
+void HubGame::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
 	plidMap = plidMap_;
 	replication.Init(server_);
 	replication.plidMap = plidMap_;
 	world.Init(&replication);
+
+	matchmaker = &Matchmaker();
 
 	playerActorUID.fill(ActorUID::INVALID);
 
@@ -18,16 +20,34 @@ void GameHub::Init(Server* server_, const ClientLocalMapping* plidMap_)
 	LoadMap();
 }
 
-void GameHub::Update(Time localTime_)
+void HubGame::Update(Time localTime_)
 {
 	ProfileFunction();
 
 	localTime = localTime_;
 	world.Update(localTime);
 	replication.FrameEnd();
+
+	ProcessMatchmakerUpdates();
 }
 
-bool GameHub::JukeboxQueueSong(i32 userID, SongID songID)
+void HubGame::ProcessMatchmakerUpdates()
+{
+	LOCK_MUTEX(matchmaker->mutexUpdates);
+
+	foreach_const(p, matchmaker->updatePartiesCreated) {
+		replication.SendPartyCreateSucess(ClientHandle(1), UserID(1), StageType::PLAY_INSTANCE);
+	}
+
+	foreach_const(p, matchmaker->updatePartiesEnqueued) {
+		replication.SendPartyEnqueue(ClientHandle(1));
+	}
+
+	matchmaker->updatePartiesCreated.clear();
+	matchmaker->updatePartiesEnqueued.clear();
+}
+
+bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
 {
 	ASSERT(playerAccountData[userID]);
 	const ClientHandle clientHd = playerMap[userID]->clientHd;
@@ -78,7 +98,7 @@ bool GameHub::JukeboxQueueSong(i32 userID, SongID songID)
 	return true;
 }
 
-bool GameHub::LoadMap()
+bool HubGame::LoadMap()
 {
 	const GameXmlContent& content = GetGameXmlContent();
 
@@ -104,7 +124,7 @@ bool GameHub::LoadMap()
 	return true;
 }
 
-void GameHub::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
+void HubGame::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	playerAccountData[userID] = accountData;
@@ -117,7 +137,7 @@ void GameHub::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountD
 	replication.OnPlayerConnect(clientHd);
 }
 
-void GameHub::OnPlayerDisconnect(ClientHandle clientHd)
+void HubGame::OnPlayerDisconnect(ClientHandle clientHd)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	LOG("[client%x] GameHub :: OnClientDisconnect :: actorUID=%u", clientHd, (u32)playerActorUID[userID]);
@@ -138,7 +158,7 @@ void GameHub::OnPlayerDisconnect(ClientHandle clientHd)
 	replication.OnClientDisconnect(clientHd);
 }
 
-void GameHub::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
+void HubGame::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
@@ -148,7 +168,7 @@ void GameHub::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 	replication.SendCharacterInfo(clientHd, actor->UID, actor->docID, actor->classType, 100, 100);
 }
 
-void GameHub::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
+void HubGame::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
@@ -170,7 +190,7 @@ void GameHub::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterAc
 	actor->speed = speed;
 }
 
-void GameHub::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
+void HubGame::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// command
 	if(ParseChatCommand(clientHd, msg, msgLen)) {
@@ -186,7 +206,7 @@ void GameHub::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wch
 	replication.SendChatMessageToAll(playerAccountData[userID]->nickname.data(), chatType, msg, msgLen);
 }
 
-void GameHub::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
+void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
@@ -211,7 +231,7 @@ void GameHub::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[userID]->nickname.data(), msg);
 }
 
-void GameHub::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
+void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
@@ -252,7 +272,7 @@ void GameHub::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 	replication.SendPlayerSetLeaderMaster(clientHd, playerActorUID[userID], classType, skinIndex);
 }
 
-void GameHub::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
+void HubGame::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
@@ -274,19 +294,31 @@ void GameHub::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, 
 	actor->actionParam2 = param2;
 }
 
-void GameHub::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
+void HubGame::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
 	JukeboxQueueSong(userID, songID);
 }
 
-void GameHub::OnPlayerReadyToLoad(ClientHandle clientHd)
+void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
 	replication.SendLoadLobby(clientHd, StageIndex::LOBBY_NORMAL);
 }
 
-bool GameHub::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
+void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)
+{
+	// TODO: validate args
+	matchmaker->QueryPartyCreate();
+}
+
+void HubGame::OnEnqueueGame(ClientHandle clientHd)
+{
+	// TODO: validate args
+	MMQueryUID queryUID = matchmaker->QueryPartyEnqueue();
+}
+
+bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
@@ -403,12 +435,12 @@ bool GameHub::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 	return false;
 }
 
-void GameHub::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
+void HubGame::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
 	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
 }
 
-void GameHub::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
+void HubGame::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
 {
 	WorldHub::ActorCore& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;

@@ -174,7 +174,7 @@ void Game::OnPlayerDisconnect(ClientHandle clientHd)
 
 void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication.SendLoadPvpMap(clientHd, StageIndex::PVP_DEATHMATCH);
+	replication.SendLoadPvpMap(clientHd, MapIndex::PVP_DEATHMATCH);
 }
 
 void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)

@@ -42,13 +42,18 @@ struct MatchmakerConnector
 		explicit Query(MMQueryUID UID_, Type type_): UID(UID_), type(type_) {}
 	};
 
-	struct PartyCreated
+	struct UpdatePartyCreated
 	{
 		PartyUID UID;
 		AccountUID leader;
 	};
 
-	struct PartyEnqueued
+	struct UpdatePartyEnqueued
+	{
+		PartyUID UID;
+	};
+
+	struct UpdateMatchFound
 	{
 		PartyUID UID;
 	};
@@ -61,8 +66,9 @@ struct MatchmakerConnector
 	MMQueryUID nextQueryUID = MMQueryUID(1);
 
 	ProfileMutex(Mutex, mutexUpdates); // TODO: this is lazy, but could be enough
-	eastl::fixed_vector<PartyCreated, 256> updatePartiesCreated;
-	eastl::fixed_vector<PartyEnqueued, 256> updatePartiesEnqueued;
+	eastl::fixed_vector<UpdatePartyCreated, 256> updatePartiesCreated;
+	eastl::fixed_vector<UpdatePartyEnqueued, 256> updatePartiesEnqueued;
+	eastl::fixed_vector<UpdateMatchFound, 256> updateMatchFound;
 
 	MatchmakerConnector();
 

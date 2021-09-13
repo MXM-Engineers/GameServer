@@ -173,7 +173,7 @@ struct HubReplication
 	void FramePushJukebox(const ActorJukebox& actor);
 
 	void OnPlayerConnect(ClientHandle clientHd);
-	void SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex);
+	void SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex);
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
@@ -193,6 +193,7 @@ struct HubReplication
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
 	void SendPartyEnqueue(ClientHandle clientHd);
+	void SendMatchFound(ClientHandle clientHd);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

@@ -19,14 +19,9 @@ inline void ShutdownServer()
 
 intptr_t ThreadMatchmaker(void* pData);
 
-// TODO: move this and merge with the other AccountID
-enum class AccountID: u32 {
-	INVALID = 0
-};
-
 // fixed hash map
 template<typename T1, typename T2, int CAPACITY, bool Growing = false>
-using hash_map = eastl::fixed_hash_map<T1 ,T2, CAPACITY, CAPACITY+1, Growing>;
+using hash_map = eastl::fixed_hash_map<T1 ,T2, CAPACITY, CAPACITY*4, Growing>;
 
 struct Matchmaker
 {
@@ -36,19 +31,38 @@ struct Matchmaker
 
 	struct Match3v3
 	{
-		eastl::fixed_vector<AccountID,6,false> players;
+		eastl::fixed_vector<AccountUID,6,false> players;
 	};
 
 	struct Connection
 	{
-		In::ConnType type; // TODO: timeout when undecided for a while
+		enum class Type: u8
+		{
+			Undecided = 0,
+			HubServer = 1,
+			PlayServer = 2
+		};
+
+		Type type; // TODO: timeout when undecided for a while
 		ClientHandle clientHd;
+	};
+
+	struct Party
+	{
+		const PartyUID UID;
+		ClientHandle instanceChd; // TODO: this should be associated with each member along with an instance UID
+		eastl::fixed_vector<AccountUID,6> memberList;
+
+		Party(PartyUID UID_): UID(UID_) {}
 	};
 
 	eastl::fixed_list<Connection, 32> connList;
 	hash_map<ClientHandle, decltype(connList)::iterator, 32> connMap;
-	eastl::fixed_vector<AccountID, 2048> waitingQueue;
 	eastl::fixed_vector<Match3v3, 2048> pendingMatch3v3;
+
+	eastl::fixed_list<Party,2048> partyList;
+	hash_map<PartyUID, decltype(partyList)::iterator, 2048> partyMap;
+	eastl::fixed_vector<PartyUID,2048> matchingPartyList;
 
 	GrowableBuffer recvDataBuff;
 
@@ -74,7 +88,7 @@ struct Matchmaker
 
 		foreach_const(cl, clientConnectedList) {
 			Connection conn;
-			conn.type = In::ConnType::Undecided;
+			conn.type = Connection::Type::Undecided;
 			conn.clientHd = *cl;
 			connList.push_back(conn);
 			connMap.emplace(*cl, --connList.end());
@@ -127,6 +141,8 @@ struct Matchmaker
 		}
 
 		recvDataBuff.Clear();
+
+		MatchParties();
 	}
 
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
@@ -136,8 +152,8 @@ struct Matchmaker
 		Connection& conn = *connMap.at(clientHd);
 
 		switch(conn.type) {
-			case In::ConnType::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
-			case In::ConnType::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
+			case Connection::Type::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
+			case Connection::Type::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
 
 			default: {
 				ASSERT_MSG(0, "case not handled");
@@ -154,7 +170,7 @@ struct Matchmaker
 				// TODO: check white list
 				// TODO: validate args
 				const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
-				conn.type = In::ConnType::HubServer;
+				conn.type = Connection::Type::HubServer;
 
 				In::MR_Handshake resp;
 				resp.result = 1;
@@ -169,7 +185,7 @@ struct Matchmaker
 				// TODO: check white list
 				// TODO: validate args
 				const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
-				conn.type = In::ConnType::PlayServer;
+				conn.type = Connection::Type::PlayServer;
 
 				In::MR_Handshake resp;
 				resp.result = 1;
@@ -195,13 +211,20 @@ struct Matchmaker
 
 				// TODO: validate args?
 
+				// create party
+				Party party(nextPartyUID);
+				nextPartyUID = PartyUID((u32)nextPartyUID + 1);
+				party.instanceChd = conn.clientHd;
+				party.memberList.push_back(packet.leader);
+				partyList.push_back(party);
+				partyMap.emplace(party.UID, --partyList.end());
+
+				// send confirmation
 				In::MR_PartyCreated resp;
 				resp.result = 1;
 				resp.leader = packet.leader;
-				resp.partyUID = PartyUID(1); // TODO: actual party UID
+				resp.partyUID = party.UID;
 				SendPacket(conn.clientHd, resp);
-
-				// TODO: create party data
 			} break;
 
 			case In::HQ_PartyEnqueue::NET_ID: {
@@ -209,21 +232,30 @@ struct Matchmaker
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
 				// TODO: validate args?
+				matchingPartyList.push_back(packet.partyUID);
 
 				// TODO: for each member, send to their instance
-
 				In::MR_PartyEnqueued resp;
 				resp.result = 1;
 				resp.partyUID = packet.partyUID;
 				SendPacket(conn.clientHd, resp);
-
-				// TODO: add party to matchmaking pool
 			} break;
 
 			default: {
 				ASSERT_MSG(0, "case not handled");
 			}
 		}
+	}
+
+	void MatchParties()
+	{
+		foreach_const(p, matchingPartyList) {
+			// send 'match found' packet to all instances
+			In::MR_MatchFound resp;
+			resp.partyUID = *p;
+			SendPacket(partyMap.at(*p)->instanceChd, resp);
+		}
+		matchingPartyList.clear();
 	}
 
 	void Cleanup()

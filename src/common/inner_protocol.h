@@ -19,13 +19,6 @@ namespace In {
 
 constexpr u32 MagicHandshake = 0xaedf45;
 
-enum class ConnType: u8
-{
-	Undecided = 0,
-	HubServer = 1,
-	PlayServer = 2
-};
-
 struct HQ_Handshake
 {
 	enum { NET_ID = 1001 };
@@ -47,6 +40,20 @@ struct HQ_PartyEnqueue
 
 	// TODO: some useful stuff here
 	PartyUID partyUID;
+};
+
+struct PQ_Handshake
+{
+	enum { NET_ID = 2001 };
+
+	u32 magic;
+};
+
+struct PR_CreatePlaySession
+{
+	enum { NET_ID = 2002 };
+
+	u8 result;
 };
 
 struct MQ_CreatePlaySession
@@ -89,18 +96,12 @@ struct MR_PartyEnqueued
 	PartyUID partyUID;
 };
 
-struct PQ_Handshake
+struct MR_MatchFound
 {
-	enum { NET_ID = 2001 };
+	enum { NET_ID = 3005 };
 
-	u32 magic;
-};
-
-struct PR_CreatePlaySession
-{
-	enum { NET_ID = 2002 };
-
-	u8 result;
+	// TODO: some useful stuff here
+	PartyUID partyUID;
 };
 
 }

@@ -63,8 +63,19 @@ void HubGame::ProcessMatchmakerUpdates()
 		}
 	}
 
+	foreach_const(p, matchmaker->updatePartiesEnqueued) {
+		// TODO: find and error out if not found
+		Party& party = *partyMap.at(p->UID);
+		foreach_const(m, party.memberList) {
+			// TODO: check if on this hub
+			const ClientHandle clientHd = accountClientHandleMap.at(*m);
+			replication.SendMatchFound(clientHd);
+		}
+	}
+
 	matchmaker->updatePartiesCreated.clear();
 	matchmaker->updatePartiesEnqueued.clear();
+	matchmaker->updateMatchFound.clear();
 }
 
 bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
@@ -325,7 +336,7 @@ void HubGame::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 
 void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication.SendLoadLobby(clientHd, StageIndex::LOBBY_NORMAL);
+	replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
 }
 
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)

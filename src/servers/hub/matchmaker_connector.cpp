@@ -126,7 +126,7 @@ void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packet
 		case In::MR_PartyCreated::NET_ID: {
 			const In::MR_PartyCreated resp = SafeCast<In::MR_PartyCreated>(packetData, packetSize);
 
-			PartyCreated created;
+			UpdatePartyCreated created;
 			created.UID = resp.partyUID;
 			created.leader = resp.leader;
 			LOCK_MUTEX(mutexUpdates);
@@ -137,7 +137,13 @@ void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packet
 		case In::MR_PartyEnqueued::NET_ID: {
 			const In::MR_PartyEnqueued resp = SafeCast<In::MR_PartyEnqueued>(packetData, packetSize);
 			LOCK_MUTEX(mutexUpdates);
-			updatePartiesEnqueued.push_back(PartyEnqueued{ resp.partyUID });
+			updatePartiesEnqueued.push_back(UpdatePartyEnqueued{ resp.partyUID });
+		} break;
+
+		case In::MR_MatchFound::NET_ID: {
+			const In::MR_MatchFound resp = SafeCast<In::MR_MatchFound>(packetData, packetSize);
+			LOCK_MUTEX(mutexUpdates);
+			updateMatchFound.push_back(UpdateMatchFound{ resp.partyUID });
 		} break;
 
 		default: {

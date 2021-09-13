@@ -1067,6 +1067,20 @@ inline const char* PacketSerialize<Sv::SN_EnqueueMatchingQueue>(const void* pack
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SQ_MatchingPartyFound>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SQ_MatchingPartyFound(%d, %d) :: {", Sv::SQ_MatchingPartyFound::NET_ID, packetSize);
+	SER("	sortieID=%lld", buff.Read<i64>());
+	SER("	...");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1114,6 +1128,19 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 	In::HQ_PartyEnqueue packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
 	SER("HQ_PartyEnqueue(%d, %d) :: {", In::HQ_PartyEnqueue::NET_ID, packetSize);
+	SER("	partyUID=%u", packet.partyUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MR_MatchFound>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::MR_MatchFound packet = SafeCast<In::MR_MatchFound>(packetData, packetSize);
+
+	SER("MR_MatchFound(%d, %d) :: {", In::MR_MatchFound::NET_ID, packetSize);
 	SER("	partyUID=%u", packet.partyUID);
 	SER("}");
 

@@ -121,7 +121,7 @@ void Replication::OnPlayerConnect(ClientHandle clientHd, const AccountData* acco
 	clientHandle[clientID] = clientHd;
 }
 
-void Replication::SendLoadPvpMap(ClientHandle clientHd, StageIndex stageIndex)
+void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 {
 	Sv::SN_UpdateGameOwner owner;
 	owner.userID = 1;

@@ -140,7 +140,7 @@ void HubReplication::OnPlayerConnect(ClientHandle clientHd)
 	playerLocalInfo[clientID].Reset();
 }
 
-void HubReplication::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
+void HubReplication::SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex)
 {
 	// SN_LoadCharacterStart
 	SendPacketData<Sv::SN_LoadCharacterStart>(clientHd, 0, nullptr);
@@ -233,7 +233,7 @@ void HubReplication::SendLoadLobby(ClientHandle clientHd, StageIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = (StageIndex)Config().LobbyMap;
+	cityMapInfo.cityMapID = (MapIndex)Config().LobbyMap;
 	SendPacket(clientHd, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
@@ -1600,12 +1600,54 @@ void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
 	SendPacket(clientHd, packet);
 
 	Sv::SN_EnqueueMatchingQueue matching;
-	matching.stageIndex = 200020102;
+	matching.stageIndex = StageIndex::CombatArena;
 	matching.currentMatchingTimeMs = 0;
 	matching.avgMatchingTimeMs = 121634;
 	matching.disableMatchExpansion = 0;
 	matching.isMatchingExpanded = 0;
 	SendPacket(clientHd, matching);
+}
+
+void HubReplication::SendMatchFound(ClientHandle clientHd)
+{
+	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
+
+	packet.Write<i64>(1); // sortieID
+	packet.Write<StageIndex>(StageIndex::CombatArena); // stageIndex
+	packet.Write<i32>(6); // gametype
+	packet.Write<i32>(1); // gameDefinitionType
+	packet.Write<i32>(0); // stageRule
+
+	// allies
+	packet.Write<u16>(1);
+	// 0
+	packet.Write<UserID>(UserID(1)); // userID
+	packet.WriteStringObj(L"LordSk"); // nickname
+	packet.Write<u8>(0); // isBot
+	packet.Write<i32>(0); // tier
+	packet.Write<i32>(0); // tierGroupRanking
+	packet.Write<i32>(0); // tierSeriesFlag
+	packet.Write<i32>(0); // pvpRate
+
+	// enemies
+	packet.Write<u16>(1);
+	// 0
+	packet.Write<UserID>(UserID(2)); // userID
+	packet.WriteStringObj(L"NCSoft"); // nickname
+	packet.Write<u8>(1); // isBot
+	packet.Write<i32>(1); // tier
+	packet.Write<i32>(0); // tierGroupRanking
+	packet.Write<i32>(0); // tierSeriesFlag
+	packet.Write<i32>(1); // pvpRate
+
+	// spectators
+	packet.Write<u16>(0);
+
+	packet.Write<i32>(0); // timeToWaitInSec
+	packet.Write<u8>(0); // elementMain
+	packet.Write<u8>(0); // elementSub
+
+	SendPacket(clientHd, packet);
 }
 
 void HubReplication::OnClientDisconnect(ClientHandle clientHd)

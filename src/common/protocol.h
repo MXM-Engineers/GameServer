@@ -255,10 +255,15 @@ enum class ActionStateID: i32
 
 const char* ActionStateString(ActionStateID state);
 
-enum class StageIndex: i32
+enum class MapIndex: i32
 {
 	LOBBY_NORMAL = 160000042,
 	PVP_DEATHMATCH = 160000094,
+};
+
+enum class StageIndex: i32
+{
+	CombatArena = 200020102,
 };
 
 enum StageType: i32
@@ -1306,7 +1311,7 @@ struct SN_CityMapInfo
 {
 	enum { NET_ID = 62091 };
 
-	StageIndex cityMapID;
+	MapIndex cityMapID;
 };
 ASSERT_SIZE(SN_CityMapInfo, 4);
 
@@ -1714,7 +1719,7 @@ struct SN_EnqueueMatchingQueue
 {
 	enum { NET_ID = 62201 };
 
-	i32 stageIndex;
+	StageIndex stageIndex;
 	i32 currentMatchingTimeMs;
 	i32 avgMatchingTimeMs;
 	u8 disableMatchExpansion;
@@ -1722,6 +1727,42 @@ struct SN_EnqueueMatchingQueue
 };
 POP_PACKED
 ASSERT_SIZE(SN_EnqueueMatchingQueue, 14);
+
+struct SQ_MatchingPartyFound
+{
+	enum { NET_ID = 62204 };
+
+	struct Player
+	{
+		UserID userID;
+		u16 nickname_len;
+		wchar nickname[1];
+		u8 isBot;
+		i32 tier;
+		i32 tierGroupRanking;
+		i32 tierSeriesFlag;
+		i32 pvpRate;
+	};
+
+	i64 sortieID;
+	StageIndex stageIndex;
+	i32 gameType;
+	i32 gameDefinitionType;
+	i32 stageRule;
+
+	u16 allies_count;
+	Player allies[1];
+
+	u16 enemies_count;
+	Player enemies[1];
+
+	u16 spectator_count;
+	Player spectator[1];
+
+	i32 timeToWaitInSec;
+	u8 elementMain;
+	u8 elementSub;
+};
 
 struct SN_UpdateGameOwner
 {

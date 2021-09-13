@@ -172,7 +172,7 @@ struct Replication
 	void FramePushNpcActor(const ActorNpc& actor);
 
 	void OnPlayerConnect(ClientHandle clientHd, const AccountData* account);
-	void SendLoadPvpMap(ClientHandle clientHd, StageIndex stageIndex);
+	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SetPlayerLoaded(ClientHandle clientHd);
 	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);

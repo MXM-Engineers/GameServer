@@ -30,7 +30,13 @@ struct MatchmakerConnector
 		const Type type;
 
 		union {
+			struct {
+				AccountUID leader;
+			} PartyCreate;
 
+			struct {
+				PartyUID partyUID;
+			} PartyEnqueue;
 		};
 
 		explicit Query(MMQueryUID UID_, Type type_): UID(UID_), type(type_) {}
@@ -38,12 +44,13 @@ struct MatchmakerConnector
 
 	struct PartyCreated
 	{
-		In::PartyUID UID;
+		PartyUID UID;
+		AccountUID leader;
 	};
 
 	struct PartyEnqueued
 	{
-		In::PartyUID UID;
+		PartyUID UID;
 	};
 
 	InnerConnection conn;
@@ -62,8 +69,8 @@ struct MatchmakerConnector
 	bool Init();
 	void Update();
 
-	MMQueryUID QueryPartyCreate();
-	MMQueryUID QueryPartyEnqueue();
+	void QueryPartyCreate(AccountUID leader);
+	void QueryPartyEnqueue(PartyUID partyUID);
 
 private:
 	void HandlePacket(const NetHeader& header, const u8* packetData);

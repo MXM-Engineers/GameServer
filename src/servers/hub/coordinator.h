@@ -9,13 +9,9 @@
 
 #include "matchmaker_connector.h"
 
-// TODO: move this
-enum class AccountID: u32 {
-	INVALID = 0
-};
-
 struct AccountData
 {
+	AccountUID accountUID;
 	WideString nickname;
 	WideString guildTag;
 	i32 leaderMasterID;

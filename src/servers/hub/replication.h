@@ -85,7 +85,7 @@ struct HubReplication
 
 	struct Party
 	{
-		PartyUID UID;
+		u32 UID;
 		ClientHandle leader;
 		EntrySystemID entry;
 		StageType stageType;

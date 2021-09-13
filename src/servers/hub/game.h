@@ -1,9 +1,11 @@
 #pragma once
 #include <common/base.h>
 #include <common/protocol.h>
+#include <common/inner_protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
 #include <EASTL/fixed_list.h>
+#include <EASTL/fixed_hash_map.h>
 
 #include "world.h"
 #include "matchmaker_connector.h"
@@ -12,6 +14,10 @@ struct AccountData;
 
 struct HubGame
 {
+	// fixed non growing hash map
+	template<typename T1, typename T2, int EXPECTED_CAPACITY>
+	using hash_map = eastl::fixed_hash_map<T1 ,T2, EXPECTED_CAPACITY, EXPECTED_CAPACITY*4, false>;
+
 	enum {
 		MAX_PLAYERS = MAX_CLIENTS
 	};
@@ -24,7 +30,7 @@ struct HubGame
 	struct Player
 	{
 		const ClientHandle clientHd;
-		bool isJukeboxActorReplicated = false;
+		PartyUID partyUID = PartyUID::INVALID;
 
 		Player(): clientHd(ClientHandle::INVALID) {}
 
@@ -34,11 +40,14 @@ struct HubGame
 
 	struct Party
 	{
-		PartyUID UID;
-		ClientHandle leader;
+		const PartyUID UID;
 		EntrySystemID entry;
 		StageType stageType;
+
+		eastl::fixed_vector<AccountUID,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on
+
+		Party(PartyUID UID_): UID(UID_) {}
 	};
 
 	const ClientLocalMapping* plidMap;
@@ -50,6 +59,12 @@ struct HubGame
 	eastl::array<ActorUID,MAX_PLAYERS> playerActorUID;
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
 	eastl::array<decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
+
+	hash_map<AccountUID, ClientHandle, MAX_PLAYERS> accountClientHandleMap;
+
+	// NOTE: we use MAX_PLAYERS as base capacity because each player can create their own party
+	eastl::fixed_list<Party,MAX_PLAYERS> partyList;
+	hash_map<PartyUID, decltype(partyList)::iterator, MAX_PLAYERS> partyMap;
 
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 

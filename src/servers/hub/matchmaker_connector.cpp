@@ -59,11 +59,13 @@ void MatchmakerConnector::Update()
 			switch(q->type) {
 				case Query::Type::PartyCreate: {
 					In::HQ_PartyCreate packet;
+					packet.leader = q->PartyCreate.leader;
 					conn.SendPacket(packet);
 				} break;
 
 				case Query::Type::PartyEnqueue: {
 					In::HQ_PartyEnqueue packet;
+					packet.partyUID = q->PartyEnqueue.partyUID;
 					conn.SendPacket(packet);
 				} break;
 
@@ -78,29 +80,31 @@ void MatchmakerConnector::Update()
 }
 
 // Thread: Any Lane
-MMQueryUID MatchmakerConnector::QueryPartyCreate()
+void MatchmakerConnector::QueryPartyCreate(AccountUID leader)
 {
 	MMQueryUID queryUID = nextQueryUID;
 	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
 
 	Query query(queryUID, Query::Type::PartyCreate);
+	query.PartyCreate.leader = leader;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);
-	return queryUID;
 }
 
 // Thread: Any Lane
-MMQueryUID MatchmakerConnector::QueryPartyEnqueue()
+void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
 {
+	DBG_ASSERT(partyUID != PartyUID::INVALID);
+
 	MMQueryUID queryUID = nextQueryUID;
 	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
 
 	Query query(queryUID, Query::Type::PartyEnqueue);
+	query.PartyEnqueue.partyUID = partyUID;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);
-	return queryUID;
 }
 
 void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packetData)
@@ -120,10 +124,14 @@ void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packet
 		} break;
 
 		case In::MR_PartyCreated::NET_ID: {
-
 			const In::MR_PartyCreated resp = SafeCast<In::MR_PartyCreated>(packetData, packetSize);
+
+			PartyCreated created;
+			created.UID = resp.partyUID;
+			created.leader = resp.leader;
 			LOCK_MUTEX(mutexUpdates);
-			updatePartiesCreated.push_back(PartyCreated{ resp.partyUID });
+
+			updatePartiesCreated.push_back(created);
 		} break;
 
 		case In::MR_PartyEnqueued::NET_ID: {

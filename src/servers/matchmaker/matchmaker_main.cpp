@@ -52,7 +52,7 @@ struct Matchmaker
 
 	GrowableBuffer recvDataBuff;
 
-	In::PartyUID nextPartyUID = In::PartyUID(1);
+	PartyUID nextPartyUID = PartyUID(1);
 
 	Matchmaker(Server& server_):
 		server(server_)
@@ -190,26 +190,31 @@ struct Matchmaker
 	{
 		switch(header.netID) {
 			case In::HQ_PartyCreate::NET_ID: {
-				NT_LOG("[hub%x] HQ_PartyCreate", conn.clientHd);
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyCreate>(packetData, packetSize));
+				const In::HQ_PartyCreate& packet = SafeCast<In::HQ_PartyCreate>(packetData, packetSize);
 
 				// TODO: validate args?
 
 				In::MR_PartyCreated resp;
 				resp.result = 1;
-				resp.partyUID = In::PartyUID(1); // TODO: actual party UID
+				resp.leader = packet.leader;
+				resp.partyUID = PartyUID(1); // TODO: actual party UID
 				SendPacket(conn.clientHd, resp);
 
 				// TODO: create party data
 			} break;
 
 			case In::HQ_PartyEnqueue::NET_ID: {
-				NT_LOG("[hub%x] HQ_EnqueueParty", conn.clientHd);
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyEnqueue>(packetData, packetSize));
+				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
 				// TODO: validate args?
 
+				// TODO: for each member, send to their instance
+
 				In::MR_PartyEnqueued resp;
 				resp.result = 1;
-				resp.partyUID = In::PartyUID(1); // TODO: actual party UID
+				resp.partyUID = packet.partyUID;
 				SendPacket(conn.clientHd, resp);
 
 				// TODO: add party to matchmaking pool

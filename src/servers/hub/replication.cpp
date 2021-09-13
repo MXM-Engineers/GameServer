@@ -1587,7 +1587,7 @@ void HubReplication::SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUs
 
 	//packet.Write<i32>(175); // retval (ERROR_TYPE_PARTY_CREATE_PENALTY_TIME) <- this one is silent
 	packet.Write<i32>(0); // retval: success
-	packet.Write<i32>(1); // ownerUserID
+	packet.Write<UserID>(ownerUserID); // ownerUserID
 	packet.Write<i32>(stageType); // stageType
 
 	SendPacket(clientHd, packet);

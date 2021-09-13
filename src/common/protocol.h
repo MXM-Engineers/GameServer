@@ -25,6 +25,11 @@ enum class LocalActorID: u32
 	- Force link LocalActorID so it matches the profile one
 */
 
+enum class UserID: u32
+{
+	INVALID = 0
+};
+
 // TODO: move those?
 // TODO: populate those everywhere
 enum class CreatureIndex: i32

@@ -33,14 +33,34 @@ void HubGame::Update(Time localTime_)
 
 void HubGame::ProcessMatchmakerUpdates()
 {
+	// FIXME: very inefficient locking
 	LOCK_MUTEX(matchmaker->mutexUpdates);
 
 	foreach_const(p, matchmaker->updatePartiesCreated) {
-		replication.SendPartyCreateSucess(ClientHandle(1), UserID(1), StageType::PLAY_INSTANCE);
+		// TODO: find and error out if not found
+		const ClientHandle clientHd = accountClientHandleMap.at(p->leader);
+		const i32 userID = plidMap->Get(clientHd);
+		playerMap[userID]->partyUID = p->UID;
+
+		// create party
+		ASSERT(partyMap.find(p->UID) == partyMap.end());
+		partyList.emplace_back(p->UID);
+		Party& party = *(--partyList.end());
+		party.memberList.push_back(p->leader);
+
+		partyMap.emplace(p->UID, --partyList.end());
+
+		replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PLAY_INSTANCE);
 	}
 
 	foreach_const(p, matchmaker->updatePartiesEnqueued) {
-		replication.SendPartyEnqueue(ClientHandle(1));
+		// TODO: find and error out if not found
+		Party& party = *partyMap.at(p->UID);
+		foreach_const(m, party.memberList) {
+			// TODO: check if on this hub
+			const ClientHandle clientHd = accountClientHandleMap.at(*m);
+			replication.SendPartyEnqueue(clientHd);
+		}
 	}
 
 	matchmaker->updatePartiesCreated.clear();
@@ -128,6 +148,7 @@ void HubGame::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountD
 {
 	const i32 userID = plidMap->Get(clientHd);
 	playerAccountData[userID] = accountData;
+	accountClientHandleMap.emplace(accountData->accountUID, clientHd);
 
 	playerList.push_back(Player(clientHd));
 	playerMap[userID] = --playerList.end();
@@ -153,6 +174,7 @@ void HubGame::OnPlayerDisconnect(ClientHandle clientHd)
 	}
 	playerMap[userID] = playerList.end();
 
+	accountClientHandleMap.erase(playerAccountData[userID]->accountUID);
 	playerAccountData[userID] = nullptr;
 
 	replication.OnClientDisconnect(clientHd);
@@ -308,14 +330,18 @@ void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)
 {
+	const i32 userID = plidMap->Get(clientHd);
+
 	// TODO: validate args
-	matchmaker->QueryPartyCreate();
+	matchmaker->QueryPartyCreate(playerAccountData[userID]->accountUID);
 }
 
 void HubGame::OnEnqueueGame(ClientHandle clientHd)
 {
+	const i32 userID = plidMap->Get(clientHd);
+
 	// TODO: validate args
-	MMQueryUID queryUID = matchmaker->QueryPartyEnqueue();
+	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID);
 }
 
 bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)

@@ -335,6 +335,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 	// TODO: fetch account data
 	AccountData& account = accountData[clientID];
 	account = {};
+	account.accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
 	account.nickname.assign(nick, nickLen);
 	account.guildTag = L"Alpha";
 	account.leaderMasterID = 0; // Lua

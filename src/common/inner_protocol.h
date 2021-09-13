@@ -7,6 +7,14 @@
 // HQ, HR: Hub server Query, Response
 // PQ, PR: Play server Query, Response
 
+enum class AccountUID: u32 {
+	INVALID = 0
+};
+
+enum class PartyUID: u32 {
+	INVALID = 0
+};
+
 namespace In {
 
 constexpr u32 MagicHandshake = 0xaedf45;
@@ -16,10 +24,6 @@ enum class ConnType: u8
 	Undecided = 0,
 	HubServer = 1,
 	PlayServer = 2
-};
-
-enum class PartyUID: u32 {
-	INVALID = 0
 };
 
 struct HQ_Handshake
@@ -34,7 +38,7 @@ struct HQ_PartyCreate
 	enum { NET_ID = 1002 };
 
 	// TODO: some useful stuff here
-	u32 dummy;
+	AccountUID leader;
 };
 
 struct HQ_PartyEnqueue
@@ -42,7 +46,7 @@ struct HQ_PartyEnqueue
 	enum { NET_ID = 1003 };
 
 	// TODO: some useful stuff here
-	u32 dummy;
+	PartyUID partyUID;
 };
 
 struct MQ_CreatePlaySession
@@ -73,6 +77,7 @@ struct MR_PartyCreated
 	// TODO: some useful stuff here
 	u8 result;
 	PartyUID partyUID;
+	AccountUID leader;
 };
 
 struct MR_PartyEnqueued

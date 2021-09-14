@@ -20,7 +20,7 @@ void Logger::Init(const char* filepath_, int flags_)
 
 void Logger::Vlogf(const char* fmt, va_list list)
 {
-	char fmtBuff[8192];
+	eastl::fixed_string<char,8192> fmtBuff;
 
 	// this one is faster but gives a big number
 	/*
@@ -29,20 +29,19 @@ void Logger::Vlogf(const char* fmt, va_list list)
 	*/
 	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
 
-	const int headerLen = EA::StdC::Snprintf(fmtBuff, sizeof(fmtBuff), "[%x] ", (int)(intptr_t)threadID);
-	EA::StdC::Vsnprintf(fmtBuff + headerLen, sizeof(fmtBuff) - headerLen, fmt, list);
-
-	const int len = EA::StdC::Strlen(fmtBuff);
+	fmtBuff.sprintf("[%x] ", (int)(intptr_t)threadID);
+	fmtBuff.append_sprintf_va_list(fmt, list);
+	const int len = fmtBuff.length();
 
 	mutex.Lock();
 	{
-		if(flags & LoggerFlags::PrintToStdout) fwrite(fmtBuff, 1, len, stdout);
-		fwrite(fmtBuff, 1, len, file);
+		if(flags & LoggerFlags::PrintToStdout) fwrite(fmtBuff.data(), 1, len, stdout);
+		fwrite(fmtBuff.data(), 1, len, file);
 
 	#ifdef CONF_WINDOWS
 	#ifdef CONF_DEBUG
 		if(IsDebuggerPresent()) {
-			OutputDebugStringA(fmtBuff);
+			OutputDebugStringA(fmtBuff.data());
 		}
 	#endif
 	#endif

@@ -63,19 +63,27 @@ void HubGame::ProcessMatchmakerUpdates()
 		}
 	}
 
-	foreach_const(p, matchmaker->updatePartiesEnqueued) {
+	foreach_const(p, matchmaker->updateMatchFound) {
 		// TODO: find and error out if not found
 		Party& party = *partyMap.at(p->UID);
 		foreach_const(m, party.memberList) {
-			// TODO: check if on this hub
 			const ClientHandle clientHd = accountClientHandleMap.at(*m);
+			const i32 userID = plidMap->Get(clientHd);
+			playerMap[userID]->sortieUID = p->sortieUID;
+
+			// TODO: check if on this hub
 			replication.SendMatchFound(clientHd);
 		}
+	}
+
+	foreach_const(p, matchmaker->updateSortieBegin) {
+		replication.SendNewSortiePickingPhase(ClientHandle(1));
 	}
 
 	matchmaker->updatePartiesCreated.clear();
 	matchmaker->updatePartiesEnqueued.clear();
 	matchmaker->updateMatchFound.clear();
+	matchmaker->updateSortieBegin.clear();
 }
 
 bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
@@ -353,6 +361,21 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 
 	// TODO: validate args
 	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID);
+}
+
+void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
+{
+	// This indicates the client has received the 'match found' packet
+	// When waiting time is 0 this is like accepting the match
+
+	const i32 userID = plidMap->Get(clientHd);
+	matchmaker->QueryPlayerNotifyRoomFound(playerAccountData[userID]->accountUID, sortieID);
+}
+
+void HubGame::OnSortieRoomConfirm(ClientHandle clientHd, bool confirm)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	matchmaker->QueryPlayerRoomConfirm(playerAccountData[userID]->accountUID, playerMap[userID]->sortieUID, confirm);
 }
 
 bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)

@@ -60,6 +60,8 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CQ_PartyModify);
 		HANDLE_CASE(CQ_PartyOptionModify);
 		HANDLE_CASE(CQ_EnqueueGame);
+		HANDLE_CASE(CA_SortieRoomFound);
+		HANDLE_CASE(CN_SortieRoomConfirm);
 
 		default: {
 			NT_LOG("[client%x] Client :: Unknown packet :: size=%d netID=%d", clientHd, header.size, header.netID);
@@ -457,4 +459,20 @@ void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const 
 	NT_LOG("[client%x] Client :: CQ_EnqueueGame :: { }", clientHd);
 
 	game->OnEnqueueGame(clientHd);
+}
+
+void HubPacketHandler::HandlePacket_CA_SortieRoomFound(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CA_SortieRoomFound& packet = SafeCast<Cl::CA_SortieRoomFound>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CA_SortieRoomFound>(packetData, packetSize));
+
+	game->OnSortieRoomFound(clientHd, packet.sortieID);
+}
+
+void HubPacketHandler::HandlePacket_CN_SortieRoomConfirm(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CN_SortieRoomConfirm& packet = SafeCast<Cl::CN_SortieRoomConfirm>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_SortieRoomConfirm>(packetData, packetSize));
+
+	game->OnSortieRoomConfirm(clientHd, packet.confirm);
 }

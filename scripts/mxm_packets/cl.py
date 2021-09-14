@@ -136,6 +136,11 @@ class ClientSerializer:
     def serialize_60081(netid, p: common.PacketReader):
         print('CQ_PartyFillWithBots {}')
 
+    def serialize_60089(netid, p: common.PacketReader):
+        print('CA_SortieRoomFound {')
+        print('	sortieID=%d' % p.read_i64())
+        print('}')
+
     def serialize_60097(netid, p: common.PacketReader):
         print('CQ_EnqueueGame {}')
 

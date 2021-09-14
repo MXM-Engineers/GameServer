@@ -69,6 +69,21 @@ void MatchmakerConnector::Update()
 					conn.SendPacket(packet);
 				} break;
 
+				case Query::Type::PlayerNotifyRoomFound: {
+					In::HN_PlayerNotifyRoomFound packet;
+					packet.accountUID = q->PlayerNotifyRoomFound.playerAccountUID;
+					packet.sortieUID = q->PlayerNotifyRoomFound.sortieUID;
+					conn.SendPacket(packet);
+				} break;
+
+				case Query::Type::PlayerRoomConfirm: {
+					In::HN_PlayerRoomConfirm packet;
+					packet.accountUID = q->PlayerRoomConfirm.playerAccountUID;
+					packet.confirm = q->PlayerRoomConfirm.confirm;
+					packet.sortieUID = q->PlayerRoomConfirm.sortieUID;
+					conn.SendPacket(packet);
+				} break;
+
 				default: {
 					ASSERT_MSG(0, "case not handled");
 				}
@@ -107,6 +122,37 @@ void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
 	queries.push_back(query);
 }
 
+void MatchmakerConnector::QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID)
+{
+	DBG_ASSERT(sortieUID != SortieUID::INVALID);
+
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::PlayerNotifyRoomFound);
+	query.PlayerNotifyRoomFound.playerAccountUID = playerAccountUID;
+	query.PlayerNotifyRoomFound.sortieUID = sortieUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
+void MatchmakerConnector::QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm)
+{
+	DBG_ASSERT(sortieUID != SortieUID::INVALID);
+
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::PlayerRoomConfirm);
+	query.PlayerRoomConfirm.playerAccountUID = playerAccountUID;
+	query.PlayerRoomConfirm.confirm = confirm;
+	query.PlayerRoomConfirm.sortieUID = sortieUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
 void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packetData)
 {
 	const i32 packetSize = header.size - sizeof(NetHeader);
@@ -140,10 +186,25 @@ void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packet
 			updatePartiesEnqueued.push_back(UpdatePartyEnqueued{ resp.partyUID });
 		} break;
 
-		case In::MR_MatchFound::NET_ID: {
-			const In::MR_MatchFound resp = SafeCast<In::MR_MatchFound>(packetData, packetSize);
+		case In::MN_MatchFound::NET_ID: {
+			const In::MN_MatchFound resp = SafeCast<In::MN_MatchFound>(packetData, packetSize);
 			LOCK_MUTEX(mutexUpdates);
-			updateMatchFound.push_back(UpdateMatchFound{ resp.partyUID });
+			updateMatchFound.push_back(UpdateMatchFound{ resp.partyUID, resp.sortieUID });
+		} break;
+
+		case In::MN_SortieBegin::NET_ID: {
+			const In::MN_SortieBegin packet = SafeCast<In::MN_SortieBegin>(packetData, packetSize);
+
+			UpdateSortieBegin update;
+			update.sortieUID = packet.sortieUID;
+
+			foreach_const(p, packet.playerList) {
+				if(*p == AccountUID::INVALID) break;
+				update.playerList.push_back(*p);
+			}
+
+			LOCK_MUTEX(mutexUpdates);
+			updateSortieBegin.push_back(update);
 		} break;
 
 		default: {

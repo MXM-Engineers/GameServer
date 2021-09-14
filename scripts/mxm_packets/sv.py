@@ -1065,6 +1065,11 @@ class ServerSerializer:
         print('    elementSub=%d' % p.read_u8())
         print('}')
 
+    def serialize_62205(netid, p: common.PacketReader):
+        print('SN_MatchingPartyGathered {')
+        print('    allConfirmed=%u' % p.read_u8())
+        print('}')
+
     def serialize_62208(netid, p: common.PacketReader):
         print('SA_MasterPick {')
         print('    retval=%d' % p.read_i32())
@@ -1816,7 +1821,25 @@ class ServerSerializer:
         print('SN_SortieMasterPickPhaseEnd {')
         print('}')
 
+    def serialize_62467(netid, p: common.PacketReader):
+        print('SN_SortieMasterPickPhaseStepStart {')
+        print('    timeSec=%d' % p.read_i32())
 
+        print('    alliesTeamUserIds=[')
+        count = p.read_u16()
+        while count > 0:
+            print('     %d,' % p.read_i32())
+            count -= 1
+        print('    ]')
+
+        print('    enemiesTeamUserIds=[')
+        count = p.read_u16()
+        while count > 0:
+            print('     %d,' % p.read_i32())
+            count -= 1
+        print('    ]')
+
+        print('}')
 
     def serialize_62468(netid, p: common.PacketReader):
         print('SN_SortieMasterPickPhaseStep {')

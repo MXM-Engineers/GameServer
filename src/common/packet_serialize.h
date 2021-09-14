@@ -1050,6 +1050,32 @@ inline const char* PacketSerialize<Cl::CQ_PartyOptionModify>(const void* packetD
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CA_SortieRoomFound>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CA_SortieRoomFound(%d, %d) :: {", Cl::CA_SortieRoomFound::NET_ID, packetSize);
+	SER("	sortieID=%lld", buff.Read<i64>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_SortieRoomConfirm>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CN_SortieRoomConfirm(%d, %d) :: {", Cl::CN_SortieRoomConfirm::NET_ID, packetSize);
+	SER("	confirm=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_EnqueueMatchingQueue>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1075,6 +1101,95 @@ inline const char* PacketSerialize<Sv::SQ_MatchingPartyFound>(const void* packet
 	SER("SQ_MatchingPartyFound(%d, %d) :: {", Sv::SQ_MatchingPartyFound::NET_ID, packetSize);
 	SER("	sortieID=%lld", buff.Read<i64>());
 	SER("	...");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MatchingPartyGathered>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_MatchingPartyGathered(%d, %d) :: {", Sv::SN_MatchingPartyGathered::NET_ID, packetSize);
+	SER("	allConfirmed=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseStart>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortieMasterPickPhaseStart(%d, %d) :: {", Sv::SN_SortieMasterPickPhaseStart::NET_ID, packetSize);
+	SER("	isRandomPick=%u", buff.Read<u8>());
+	SER("	...");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MasterRotationInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_MasterRotationInfo(%d, %d) :: {", Sv::SN_MasterRotationInfo::NET_ID, packetSize);
+	SER("	refreshCount=%d", buff.Read<i32>());
+	const u16 count = buff.Read<u16>();
+	SER("	freeRotation(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+
+	const u16 count2 = buff.Read<u16>();
+	SER("	pccafeRotation(%d)=[", count2);
+	for(int i = 0; i < count2; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+
+	const u16 count3 = buff.Read<u16>();
+	SER("	pccafeRotation(%d)=[", count3);
+	for(int i = 0; i < count3; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseStepStart>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortieMasterPickPhaseStepStart(%d, %d) :: {", Sv::SN_SortieMasterPickPhaseStepStart::NET_ID, packetSize);
+	SER("	timeSec=%d", buff.Read<i32>());
+
+	const u16 count = buff.Read<u16>();
+	SER("	alliesTeamUserIds(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+
+	const u16 count2 = buff.Read<u16>();
+	SER("	enemiesTeamUserIds(%d)=[", count2);
+	for(int i = 0; i < count2; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+
 	SER("}");
 
 	return str.data();
@@ -1135,13 +1250,56 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 }
 
 template<>
-inline const char* PacketSerialize<In::MR_MatchFound>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::MN_MatchFound>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::MR_MatchFound packet = SafeCast<In::MR_MatchFound>(packetData, packetSize);
+	In::MN_MatchFound packet = SafeCast<In::MN_MatchFound>(packetData, packetSize);
 
-	SER("MR_MatchFound(%d, %d) :: {", In::MR_MatchFound::NET_ID, packetSize);
+	SER("MN_MatchFound(%d, %d) :: {", In::MN_MatchFound::NET_ID, packetSize);
 	SER("	partyUID=%u", packet.partyUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::HN_PlayerNotifyRoomFound>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::HN_PlayerNotifyRoomFound packet = SafeCast<In::HN_PlayerNotifyRoomFound>(packetData, packetSize);
+
+	SER("HN_PlayerNotifyRoomFound(%d, %d) :: {", In::HN_PlayerNotifyRoomFound::NET_ID, packetSize);
+	SER("	accountUID=%u", packet.accountUID);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::HN_PlayerRoomConfirm>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::HN_PlayerRoomConfirm packet = SafeCast<In::HN_PlayerRoomConfirm>(packetData, packetSize);
+
+	SER("HN_PlayerRoomConfirm(%d, %d) :: {", In::HN_PlayerRoomConfirm::NET_ID, packetSize);
+	SER("	accountUID=%u", packet.accountUID);
+	SER("	confirm=%u", packet.confirm);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MN_SortieBegin>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	In::MN_SortieBegin packet = SafeCast<In::MN_SortieBegin>(packetData, packetSize);
+
+	SER("MN_SortieBegin(%d, %d) :: {", In::MN_SortieBegin::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("	...");
 	SER("}");
 
 	return str.data();

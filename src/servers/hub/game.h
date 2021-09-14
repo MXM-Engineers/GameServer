@@ -31,6 +31,7 @@ struct HubGame
 	{
 		const ClientHandle clientHd;
 		PartyUID partyUID = PartyUID::INVALID;
+		SortieUID sortieUID = SortieUID::INVALID;
 
 		Player(): clientHd(ClientHandle::INVALID) {}
 
@@ -91,6 +92,8 @@ struct HubGame
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType);
 	void OnEnqueueGame(ClientHandle clientHd);
+	void OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID);
+	void OnSortieRoomConfirm(ClientHandle clientHd, bool confirm);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

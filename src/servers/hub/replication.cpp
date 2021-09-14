@@ -1615,7 +1615,8 @@ void HubReplication::SendMatchFound(ClientHandle clientHd)
 	packet.Write<i64>(1); // sortieID
 	packet.Write<StageIndex>(StageIndex::CombatArena); // stageIndex
 	packet.Write<i32>(6); // gametype
-	packet.Write<i32>(1); // gameDefinitionType
+	// 1: AI Match
+	packet.Write<i32>(3); // gameDefinitionType
 	packet.Write<i32>(0); // stageRule
 
 	// allies
@@ -1643,11 +1644,85 @@ void HubReplication::SendMatchFound(ClientHandle clientHd)
 	// spectators
 	packet.Write<u16>(0);
 
-	packet.Write<i32>(0); // timeToWaitInSec
+	// NOTE: if timeToWaitInSec is 0 there is no popup to accept
+	packet.Write<i32>(30); // timeToWaitInSec
 	packet.Write<u8>(0); // elementMain
 	packet.Write<u8>(0); // elementSub
 
 	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendNewSortiePickingPhase(ClientHandle clientHd)
+{
+	Sv::SN_MatchingPartyGathered gathered;
+	gathered.allConfirmed = 1;
+	SendPacket(clientHd, gathered);
+
+	const GameXmlContent& content = GetGameXmlContent();
+
+	// SN_ProfileCharacters
+	{
+		PacketWriter<Sv::SN_ProfileCharacters,2048> packet;
+
+		packet.Write<u16>(content.masters.size()); // charaList_count
+
+		foreach(it, content.masters) {
+			Sv::SN_ProfileCharacters::Character chara;
+			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
+			chara.creatureIndex = it->ID;
+			chara.skillShot1 = it->skillIDs[0];
+			chara.skillShot2 = it->skillIDs[1];
+			chara.classType = it->classType;
+			chara.x = 0;
+			chara.y = 0;
+			chara.z = 0;
+			chara.characterType = 1;
+			chara.skinIndex = SkinIndex::DEFAULT;
+			chara.weaponIndex = it->weaponIDs[0];
+			chara.masterGearNo = 1;
+			packet.Write(chara);
+		}
+
+		SendPacket(clientHd, packet);
+	}
+
+	{
+		PacketWriter<Sv::SN_MasterRotationInfo> packet;
+		packet.Write<i32>(0); // refreshCount
+
+		eastl::fixed_vector<CreatureIndex,200,false> freeList;
+		foreach_const(m, content.masters) {
+			freeList.push_back(m->ID);
+		}
+
+		packet.WriteVec(freeList.data(), freeList.size()); // freeRotation
+		packet.WriteVec((CreatureIndex*)nullptr, 0); // pccafeRotation
+		packet.WriteVec((CreatureIndex*)nullptr, 0); // vipRotation
+
+		SendPacket(clientHd, packet);
+	}
+
+	{
+		PacketWriter<Sv::SN_SortieMasterPickPhaseStart> packet;
+		packet.Write<u8>(0); // isRandomPick
+		packet.Write<u16>(0); // alliesSlot_count
+
+		SendPacket(clientHd, packet);
+	}
+
+	{
+		PacketWriter<Sv::SN_SortieMasterPickPhaseStepStart> packet;
+		packet.Write<i32>(60); // timeSec
+
+		UserID alliesTeamUserIds[1] = {
+			UserID(1),
+		};
+
+		packet.WriteVec(alliesTeamUserIds, ARRAY_COUNT(alliesTeamUserIds)); // alliesTeamUserIds
+		packet.WriteVec((UserID*)nullptr, 0); // enemiesTeamUserIds
+
+		SendPacket(clientHd, packet);
+	}
 }
 
 void HubReplication::OnClientDisconnect(ClientHandle clientHd)

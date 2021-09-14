@@ -73,6 +73,11 @@ enum class SongID: i32
 	Arami = 7770012,
 };
 
+enum class SortieUID: u64
+{
+	INVALID = 0
+};
+
 enum class ActionStateID: i32
 {
 	INVALID = -1,
@@ -517,14 +522,6 @@ struct CQ_GamePlayerTag
 	LocalActorID characterID;
 };
 
-struct CQ_EnqueuePvpQueue
-{
-	enum { NET_ID = 60073 };
-
-	i32 arenaID;
-};
-ASSERT_SIZE(CQ_EnqueuePvpQueue, 4);
-
 struct CQ_RequestAreaPopularity
 {
 	enum { NET_ID = 60073 };
@@ -561,6 +558,22 @@ struct CQ_PartyOptionModify
 	u8 enable;
 };
 ASSERT_SIZE(CQ_PartyOptionModify, 2);
+
+struct CA_SortieRoomFound
+{
+	enum { NET_ID = 60089 };
+
+	SortieUID sortieID;
+};
+ASSERT_SIZE(CA_SortieRoomFound, 8);
+
+struct CN_SortieRoomConfirm
+{
+	enum { NET_ID = 60090 };
+
+	u8 confirm;
+};
+ASSERT_SIZE(CN_SortieRoomConfirm, 1);
 
 struct CQ_EnqueueGame
 {
@@ -1764,6 +1777,14 @@ struct SQ_MatchingPartyFound
 	u8 elementSub;
 };
 
+struct SN_MatchingPartyGathered
+{
+	enum { NET_ID = 62205 };
+
+	u8 allConfirmed;
+};
+ASSERT_SIZE(SN_MatchingPartyGathered, 1);
+
 struct SN_UpdateGameOwner
 {
 	enum { NET_ID = 62224 };
@@ -2386,6 +2407,39 @@ struct SN_RunClientLevelEventSeq
 };
 POP_PACKED
 ASSERT_SIZE(SN_RunClientLevelEventSeq, 20);
+
+struct SN_MasterRotationInfo
+{
+	enum { NET_ID = 62455 };
+
+	i32 refreshCount;
+
+	u16 freeRotation_count;
+	CreatureIndex freeRotation[1];
+	u16 pccafeRotation_count;
+	CreatureIndex pccafeRotation[1];
+	u16 vipRotation_count;
+	CreatureIndex vipRotation[1];
+};
+
+struct SN_SortieMasterPickPhaseStart
+{
+	enum { NET_ID = 62465 };
+
+	u8 isRandomPick;
+	u16 alliesSlotInfos_count;
+};
+
+struct SN_SortieMasterPickPhaseStepStart
+{
+	enum { NET_ID = 62467 };
+
+	i32 timeSec;
+	u16 alliesTeamUserIds_count;
+	UserID alliesTeamUserIds[1];
+	u16 enemiesTeamUserIds_count;
+	UserID enemiesTeamUserIds[1];
+};
 
 struct SA_TierRecord
 {

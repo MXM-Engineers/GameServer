@@ -51,9 +51,37 @@ struct Matchmaker
 	{
 		const PartyUID UID;
 		ClientHandle instanceChd; // TODO: this should be associated with each member along with an instance UID
-		eastl::fixed_vector<AccountUID,6> memberList;
+		eastl::fixed_vector<AccountUID,6,false> memberList;
 
 		Party(PartyUID UID_): UID(UID_) {}
+	};
+
+	struct Room
+	{
+		enum class PlayerStatus: u8 {
+			Unknown = 0,
+			RoomFoundAck,
+			Accepted,
+			Refused,
+			InLobby
+		};
+
+		struct Player
+		{
+			const AccountUID accountUID;
+			const ClientHandle instanceChd;
+			PlayerStatus status = PlayerStatus::Unknown;
+
+			Player(AccountUID accountUID_, ClientHandle instanceChd_):
+				accountUID(accountUID_),
+				instanceChd(instanceChd_)
+			{}
+		};
+
+		const SortieUID UID;
+		eastl::fixed_vector<Player,16,false> playerList;
+
+		Room(SortieUID UID_): UID(UID_) {}
 	};
 
 	eastl::fixed_list<Connection, 32> connList;
@@ -64,9 +92,13 @@ struct Matchmaker
 	hash_map<PartyUID, decltype(partyList)::iterator, 2048> partyMap;
 	eastl::fixed_vector<PartyUID,2048> matchingPartyList;
 
+	eastl::fixed_list<Room,2048> roomList;
+	hash_map<SortieUID, decltype(roomList)::iterator, 2048> roomMap;
+
 	GrowableBuffer recvDataBuff;
 
 	PartyUID nextPartyUID = PartyUID(1);
+	SortieUID nextSortieUID = SortieUID(1); // TODO: load from database
 
 	Matchmaker(Server& server_):
 		server(server_)
@@ -143,6 +175,7 @@ struct Matchmaker
 		recvDataBuff.Clear();
 
 		MatchParties();
+		UpdateRooms();
 	}
 
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
@@ -241,6 +274,52 @@ struct Matchmaker
 				SendPacket(conn.clientHd, resp);
 			} break;
 
+			case In::HN_PlayerNotifyRoomFound::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HN_PlayerNotifyRoomFound>(packetData, packetSize));
+				const In::HN_PlayerNotifyRoomFound& packet = SafeCast<In::HN_PlayerNotifyRoomFound>(packetData, packetSize);
+
+				// TODO: validate args?
+
+				bool found = false;
+				Room& room = *roomMap.at(packet.sortieUID);
+				foreach(pl, room.playerList) {
+					if(pl->accountUID == packet.accountUID) {
+						pl->status = Room::PlayerStatus::RoomFoundAck;
+						found = true;
+					}
+				}
+
+				if(!found) {
+					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+				}
+			} break;
+
+			case In::HN_PlayerRoomConfirm::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HN_PlayerRoomConfirm>(packetData, packetSize));
+				const In::HN_PlayerRoomConfirm& packet = SafeCast<In::HN_PlayerRoomConfirm>(packetData, packetSize);
+
+				// TODO: validate args?
+
+				bool found = false;
+				Room& room = *roomMap.at(packet.sortieUID);
+				foreach(pl, room.playerList) {
+					if(pl->accountUID == packet.accountUID) {
+						if(packet.confirm) {
+							pl->status = Room::PlayerStatus::Accepted;
+						}
+						else {
+							pl->status = Room::PlayerStatus::Refused;
+						}
+
+						found = true;
+					}
+				}
+
+				if(!found) {
+					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+				}
+			} break;
+
 			default: {
 				ASSERT_MSG(0, "case not handled");
 			}
@@ -249,13 +328,43 @@ struct Matchmaker
 
 	void MatchParties()
 	{
-		foreach_const(p, matchingPartyList) {
+		foreach_const(puid, matchingPartyList) {
+			// create room
+			roomList.emplace_back(nextSortieUID);
+			Room& room = *(--roomList.end());
+			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
+
+			const Party& party = *partyMap.at(*puid);
+			foreach_const(pl, party.memberList) {
+				room.playerList.push_back(Room::Player(*pl, party.instanceChd));
+			}
+
+			roomMap.emplace(room.UID, --roomList.end());
+
 			// send 'match found' packet to all instances
-			In::MR_MatchFound resp;
-			resp.partyUID = *p;
-			SendPacket(partyMap.at(*p)->instanceChd, resp);
+			In::MN_MatchFound resp;
+			resp.partyUID = *puid;
+			resp.sortieUID = room.UID;
+			SendPacket(partyMap.at(*puid)->instanceChd, resp);
 		}
 		matchingPartyList.clear();
+	}
+
+	void UpdateRooms()
+	{
+		foreach(r, roomList) {
+			foreach(pl, r->playerList) {
+				if(pl->status == Room::PlayerStatus::Accepted) {
+					In::MN_SortieBegin packet;
+					packet.sortieUID = r->UID;
+					packet.playerList.fill(AccountUID::INVALID);
+					packet.playerList[0] = pl->accountUID; // FIXME: hack, fill all player info
+					SendPacket(pl->instanceChd, packet);
+
+					pl->status = Room::PlayerStatus::InLobby;
+				}
+			}
+		}
 	}
 
 	void Cleanup()

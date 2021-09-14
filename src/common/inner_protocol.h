@@ -42,6 +42,27 @@ struct HQ_PartyEnqueue
 	PartyUID partyUID;
 };
 
+PUSH_PACKED
+struct HN_PlayerNotifyRoomFound
+{
+	enum { NET_ID = 1004 };
+
+	AccountUID accountUID;
+	SortieUID sortieUID;
+};
+POP_PACKED
+
+PUSH_PACKED
+struct HN_PlayerRoomConfirm
+{
+	enum { NET_ID = 1005 };
+
+	AccountUID accountUID;
+	u8 confirm;
+	SortieUID sortieUID;
+};
+POP_PACKED
+
 struct PQ_Handshake
 {
 	enum { NET_ID = 2001 };
@@ -96,12 +117,21 @@ struct MR_PartyEnqueued
 	PartyUID partyUID;
 };
 
-struct MR_MatchFound
+struct MN_MatchFound
 {
 	enum { NET_ID = 3005 };
 
 	// TODO: some useful stuff here
 	PartyUID partyUID;
+	SortieUID sortieUID;
+};
+
+struct MN_SortieBegin
+{
+	enum { NET_ID = 3006 };
+
+	SortieUID sortieUID;
+	eastl::array<AccountUID,16> playerList;
 };
 
 }

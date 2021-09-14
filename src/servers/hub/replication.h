@@ -194,6 +194,7 @@ struct HubReplication
 
 	void SendPartyEnqueue(ClientHandle clientHd);
 	void SendMatchFound(ClientHandle clientHd);
+	void SendNewSortiePickingPhase(ClientHandle clientHd);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

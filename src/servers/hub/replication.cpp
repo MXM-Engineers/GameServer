@@ -1615,8 +1615,8 @@ void HubReplication::SendMatchFound(ClientHandle clientHd)
 	packet.Write<i64>(1); // sortieID
 	packet.Write<StageIndex>(StageIndex::CombatArena); // stageIndex
 	packet.Write<i32>(6); // gametype
-	// 1: AI Match
-	packet.Write<i32>(3); // gameDefinitionType
+	// 1: AI Match, 2: Custom match
+	packet.Write<i32>(0); // gameDefinitionType
 	packet.Write<i32>(0); // stageRule
 
 	// allies

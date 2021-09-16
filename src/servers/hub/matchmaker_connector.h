@@ -55,27 +55,47 @@ struct MatchmakerConnector
 		explicit Query(MMQueryUID UID_, Type type_): UID(UID_), type(type_) {}
 	};
 
-	struct UpdatePartyCreated
+	struct UpdateEvent
 	{
-		PartyUID UID;
-		AccountUID leader;
-	};
+		enum class Type: u8 {
+			Invalid = 0,
+			PartyCreated,
+			PartyEnqueued,
+			MatchFound,
+			MatchCreated
+		};
 
-	struct UpdatePartyEnqueued
-	{
-		PartyUID UID;
-	};
+		Type type;
+		InstanceUID instanceUID;
 
-	struct UpdateMatchFound
-	{
-		PartyUID UID;
-		SortieUID sortieUID;
-	};
+		union {
+			struct {
+				PartyUID UID;
+				AccountUID leader;
+			} PartyCreated;
 
-	struct UpdateSortieBegin
-	{
-		SortieUID sortieUID;
-		eastl::fixed_vector<AccountUID,16,false> playerList;
+			struct {
+				PartyUID UID;
+			} PartyEnqueued;
+
+			struct {
+				PartyUID UID;
+				SortieUID sortieUID;
+			} MatchFound;
+
+			struct {
+				SortieUID sortieUID;
+				u16 playerCount;
+				eastl::array<AccountUID,16> playerList;
+			} MatchCreated;
+		};
+
+		UpdateEvent(Type type_, InstanceUID instanceUID_):
+			type(type_),
+			instanceUID(instanceUID_)
+		{
+
+		}
 	};
 
 	InnerConnection conn;
@@ -86,11 +106,7 @@ struct MatchmakerConnector
 	MMQueryUID nextQueryUID = MMQueryUID(1);
 
 	ProfileMutex(Mutex, mutexUpdates); // TODO: this is lazy, but could be enough
-	// TODO: union?
-	eastl::fixed_vector<UpdatePartyCreated, 256> updatePartiesCreated;
-	eastl::fixed_vector<UpdatePartyEnqueued, 256> updatePartiesEnqueued;
-	eastl::fixed_vector<UpdateMatchFound, 256> updateMatchFound;
-	eastl::fixed_vector<UpdateSortieBegin, 256> updateSortieBegin;
+	eastl::fixed_vector<UpdateEvent, 1024> updateQueue;
 
 	MatchmakerConnector();
 
@@ -101,6 +117,22 @@ struct MatchmakerConnector
 	void QueryPartyEnqueue(PartyUID partyUID);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);
+
+	template<class OutputIterator>
+	void ExtractInstanceUpdates(InstanceUID instUID, OutputIterator out)
+	{
+		LOCK_MUTEX(mutexUpdates);
+
+		for(auto u = updateQueue.cbegin(); u != updateQueue.cend();) {
+			if(u->instanceUID == instUID) {
+				*out++ = *u;
+				u = updateQueue.erase(u);
+			}
+			else {
+				++u;
+			}
+		}
+	}
 
 private:
 	void HandlePacket(const NetHeader& header, const u8* packetData);

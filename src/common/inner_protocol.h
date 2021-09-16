@@ -15,6 +15,10 @@ enum class PartyUID: u32 {
 	INVALID = 0
 };
 
+enum class InstanceUID: u32 {
+	INVALID = 0
+};
+
 namespace In {
 
 constexpr u32 MagicHandshake = 0xaedf45;

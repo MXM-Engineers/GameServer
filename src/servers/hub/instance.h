@@ -5,9 +5,12 @@
 
 struct HubInstance: IInstance
 {
+	const InstanceUID UID;
 	ClientLocalMapping plidMap;
 	HubPacketHandler packetHandler;
 	HubGame game;
+
+	HubInstance(InstanceUID UID_): UID(UID_) {}
 
 	bool Init(Server* server_) override;
 	void Update(Time localTime_) override;

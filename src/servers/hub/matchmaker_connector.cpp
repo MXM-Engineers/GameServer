@@ -172,39 +172,49 @@ void MatchmakerConnector::HandlePacket(const NetHeader& header, const u8* packet
 		case In::MR_PartyCreated::NET_ID: {
 			const In::MR_PartyCreated resp = SafeCast<In::MR_PartyCreated>(packetData, packetSize);
 
-			UpdatePartyCreated created;
-			created.UID = resp.partyUID;
-			created.leader = resp.leader;
-			LOCK_MUTEX(mutexUpdates);
+			UpdateEvent created(UpdateEvent::Type::PartyCreated, InstanceUID(1));
+			created.PartyCreated.UID = resp.partyUID;
+			created.PartyCreated.leader = resp.leader;
 
-			updatePartiesCreated.push_back(created);
+			LOCK_MUTEX(mutexUpdates);
+			updateQueue.push_back(created);
 		} break;
 
 		case In::MR_PartyEnqueued::NET_ID: {
 			const In::MR_PartyEnqueued resp = SafeCast<In::MR_PartyEnqueued>(packetData, packetSize);
+
+			UpdateEvent update(UpdateEvent::Type::PartyEnqueued, InstanceUID(1));
+			update.PartyEnqueued.UID = resp.partyUID;
+
 			LOCK_MUTEX(mutexUpdates);
-			updatePartiesEnqueued.push_back(UpdatePartyEnqueued{ resp.partyUID });
+			updateQueue.push_back(update);
 		} break;
 
 		case In::MN_MatchFound::NET_ID: {
 			const In::MN_MatchFound resp = SafeCast<In::MN_MatchFound>(packetData, packetSize);
+
+			UpdateEvent update(UpdateEvent::Type::MatchFound, InstanceUID(1));
+			update.MatchFound.UID = resp.partyUID;
+			update.MatchFound.sortieUID = resp.sortieUID;
+
 			LOCK_MUTEX(mutexUpdates);
-			updateMatchFound.push_back(UpdateMatchFound{ resp.partyUID, resp.sortieUID });
+			updateQueue.push_back(update);
 		} break;
 
 		case In::MN_SortieBegin::NET_ID: {
 			const In::MN_SortieBegin packet = SafeCast<In::MN_SortieBegin>(packetData, packetSize);
 
-			UpdateSortieBegin update;
-			update.sortieUID = packet.sortieUID;
+			UpdateEvent update(UpdateEvent::Type::MatchCreated, InstanceUID(1));
+			update.MatchCreated.sortieUID = packet.sortieUID;
+			update.MatchCreated.playerCount = 0;
 
 			foreach_const(p, packet.playerList) {
 				if(*p == AccountUID::INVALID) break;
-				update.playerList.push_back(*p);
+				update.MatchCreated.playerList[update.MatchCreated.playerCount++] = *p;
 			}
 
 			LOCK_MUTEX(mutexUpdates);
-			updateSortieBegin.push_back(update);
+			updateQueue.push_back(update);
 		} break;
 
 		default: {

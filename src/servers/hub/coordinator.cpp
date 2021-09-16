@@ -92,7 +92,7 @@ void Lane::Init(Server* server_)
 	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
 
 	// TODO: several of these
-	instance = new HubInstance();
+	instance = new HubInstance(InstanceUID(1));
 	instance->Init(server);
 }
 

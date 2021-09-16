@@ -53,6 +53,8 @@ public:
 	float getTagHealthRegenValue();
 	void setTagHealthRegenValue(float var);
 
+	void Print();
+
 private:
 	float _Health = 0.0f;
 	float _Skill = 0.0f;
@@ -77,5 +79,4 @@ private:
 	float _SkillDefencePenetration = 0.0f;
 	float _PickupRadius = 0.0f;
 	float _TagHealthRegenValue = 0.0f;
-
 };

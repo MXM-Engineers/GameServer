@@ -17,4 +17,5 @@ struct HubInstance: IInstance
 	void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count) override;
 	void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count) override;
 	void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData) override;
+	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData) override;
 };

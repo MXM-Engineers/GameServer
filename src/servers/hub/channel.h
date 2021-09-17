@@ -15,6 +15,7 @@ struct HubPacketHandler
 	void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count);
 	void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
+	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
 
 private:
 	void HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);

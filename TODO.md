@@ -52,6 +52,7 @@
     - ✅ Everything except server uses unique client ID
     - ✅ Make only one local mapping per instance and pass it down to game and replication?
 * 🔥 De-duplicate coordinator/lane code
+* Move players to a Room instance when a room is created (pull them out of hubs, destroy all entities)
 
 # NavMesh
 * Make a nav mesh representing all the possible movement positions and interpolate between them (linked nodes, see navmesh.png)

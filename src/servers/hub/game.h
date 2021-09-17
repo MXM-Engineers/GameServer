@@ -41,11 +41,16 @@ struct HubGame
 
 	struct Party
 	{
+		struct Member {
+			AccountUID accountUID;
+			InstanceUID instanceUID;
+		};
+
 		const PartyUID UID;
 		EntrySystemID entry;
 		StageType stageType;
 
-		eastl::fixed_vector<AccountUID,5> memberList; // NOTE: first is leader
+		eastl::fixed_vector<Member,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on
 
 		Party(PartyUID UID_): UID(UID_) {}
@@ -74,7 +79,6 @@ struct HubGame
 
 	void Init(Server* server_, const ClientLocalMapping* plidMap_);
 	void Update(Time localTime_);
-	void ProcessMatchmakerUpdates();
 
 	bool JukeboxQueueSong(i32 userID, SongID songID);
 
@@ -94,6 +98,17 @@ struct HubGame
 	void OnEnqueueGame(ClientHandle clientHd);
 	void OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID);
 	void OnSortieRoomConfirm(ClientHandle clientHd, bool confirm);
+
+	struct MmNewRoom
+	{
+		SortieUID sortieUID;
+		eastl::fixed_vector<AccountUID,16,false> playerList;
+	};
+
+	void MmOnPartyCreated(PartyUID partyUID, AccountUID leader);
+	void MmOnPartyEnqueued(PartyUID partyUID);
+	void MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID);
+	void MmOnRoomCreated(const MmNewRoom& newRoom);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

@@ -34,3 +34,8 @@ void HubInstance::OnNewPacket(ClientHandle clientHd, const NetHeader& header, co
 {
 	packetHandler.OnNewPacket(clientHd, header, packetData);
 }
+
+void HubInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetData)
+{
+	packetHandler.OnMatchmakerPacket(header, packetData);
+}

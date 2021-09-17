@@ -71,6 +71,55 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 #undef HANDLE_CASE
 }
 
+void HubPacketHandler::OnMatchmakerPacket(const NetHeader& header, const u8* packetData)
+{
+	const i32 packetSize = header.size - sizeof(NetHeader);
+
+	switch(header.netID) {
+		// TODO: move this one to connector
+		case In::MR_Handshake::NET_ID: {
+			const In::MR_Handshake resp = SafeCast<In::MR_Handshake>(packetData, packetSize);
+			if(resp.result == 1) {
+				LOG("[MM] Connected to Matchmaker server");
+			}
+			else {
+				WARN("[MM] handshake failed (%d)", resp.result);
+				ASSERT_MSG(0, "mm handshake failed"); // should not happen
+			}
+		} break;
+
+		case In::MR_PartyCreated::NET_ID: {
+			const In::MR_PartyCreated resp = SafeCast<In::MR_PartyCreated>(packetData, packetSize);
+			game->MmOnPartyCreated(resp.partyUID, resp.leader);
+		} break;
+
+		case In::MR_PartyEnqueued::NET_ID: {
+			const In::MR_PartyEnqueued resp = SafeCast<In::MR_PartyEnqueued>(packetData, packetSize);
+			game->MmOnPartyEnqueued(resp.partyUID);
+		} break;
+
+		case In::MN_MatchFound::NET_ID: {
+			const In::MN_MatchFound resp = SafeCast<In::MN_MatchFound>(packetData, packetSize);
+			game->MmOnMatchFound(resp.partyUID, resp.sortieUID);
+		} break;
+
+		case In::MN_RoomCreated::NET_ID: {
+			const In::MN_RoomCreated packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
+
+			HubGame::MmNewRoom newRoom;
+			newRoom.sortieUID = packet.sortieUID;
+			for(int i = 0; i < packet.playerCount; i++) {
+				newRoom.playerList.push_back(packet.playerList[i]);
+			}
+			game->MmOnRoomCreated(newRoom);
+		} break;
+
+		default: {
+			ASSERT_MSG(0, "case not handled");
+		}
+	}
+}
+
 void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));

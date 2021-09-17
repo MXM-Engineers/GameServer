@@ -1702,8 +1702,8 @@ struct SA_PartyCreate
 	enum { NET_ID = 62175 };
 
 	i32 retval;
-	i32 ownerUserID;
-	i32 stageType;
+	UserID ownerUserID;
+	StageType stageType;
 };
 ASSERT_SIZE(SA_PartyCreate, 12);
 

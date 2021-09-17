@@ -1204,6 +1204,8 @@ inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, 
 	SER("MR_PartyCreated(%d, %d) :: {", In::MR_PartyCreated::NET_ID, packetSize);
 	SER("	result=%u", packet.result);
 	SER("	partyUID=%u", packet.partyUID);
+	SER("	leader=%u", packet.leader);
+	SER("	instanceUID=%u", packet.instanceUID);
 	SER("}");
 
 	return str.data();
@@ -1231,6 +1233,7 @@ inline const char* PacketSerialize<In::HQ_PartyCreate>(const void* packetData, c
 
 	SER("HQ_PartyCreate(%d, %d) :: {", In::HQ_PartyCreate::NET_ID, packetSize);
 	SER("	leader=%u", packet.leader);
+	SER("	instanceUID=%u", packet.instanceUID);
 	SER("}");
 
 	return str.data();
@@ -1263,12 +1266,12 @@ inline const char* PacketSerialize<In::MN_MatchFound>(const void* packetData, co
 }
 
 template<>
-inline const char* PacketSerialize<In::HN_PlayerNotifyRoomFound>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::HN_PlayerRoomFound>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::HN_PlayerNotifyRoomFound packet = SafeCast<In::HN_PlayerNotifyRoomFound>(packetData, packetSize);
+	In::HN_PlayerRoomFound packet = SafeCast<In::HN_PlayerRoomFound>(packetData, packetSize);
 
-	SER("HN_PlayerNotifyRoomFound(%d, %d) :: {", In::HN_PlayerNotifyRoomFound::NET_ID, packetSize);
+	SER("HN_PlayerNotifyRoomFound(%d, %d) :: {", In::HN_PlayerRoomFound::NET_ID, packetSize);
 	SER("	accountUID=%u", packet.accountUID);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("}");
@@ -1292,12 +1295,12 @@ inline const char* PacketSerialize<In::HN_PlayerRoomConfirm>(const void* packetD
 }
 
 template<>
-inline const char* PacketSerialize<In::MN_SortieBegin>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::MN_SortieBegin packet = SafeCast<In::MN_SortieBegin>(packetData, packetSize);
+	In::MN_RoomCreated packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
 
-	SER("MN_SortieBegin(%d, %d) :: {", In::MN_SortieBegin::NET_ID, packetSize);
+	SER("MN_SortieBegin(%d, %d) :: {", In::MN_RoomCreated::NET_ID, packetSize);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	...");
 	SER("}");

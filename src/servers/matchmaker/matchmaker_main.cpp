@@ -50,8 +50,15 @@ struct Matchmaker
 	struct Party
 	{
 		const PartyUID UID;
-		ClientHandle instanceChd; // TODO: this should be associated with each member along with an instance UID
-		eastl::fixed_vector<AccountUID,6,false> memberList;
+
+		struct Member
+		{
+			AccountUID accountUID;
+			ClientHandle instanceChd;
+			InstanceUID instanceUID;
+		};
+
+		eastl::fixed_vector<Member,5,false> memberList;
 
 		Party(PartyUID UID_): UID(UID_) {}
 	};
@@ -247,16 +254,22 @@ struct Matchmaker
 				// create party
 				Party party(nextPartyUID);
 				nextPartyUID = PartyUID((u32)nextPartyUID + 1);
-				party.instanceChd = conn.clientHd;
-				party.memberList.push_back(packet.leader);
+
+				Party::Member member;
+				member.accountUID = packet.leader;
+				member.instanceChd = conn.clientHd;
+				member.instanceUID = packet.instanceUID;
+				party.memberList.push_back(member);
+
 				partyList.push_back(party);
 				partyMap.emplace(party.UID, --partyList.end());
 
 				// send confirmation
 				In::MR_PartyCreated resp;
 				resp.result = 1;
-				resp.leader = packet.leader;
 				resp.partyUID = party.UID;
+				resp.leader = packet.leader;
+				resp.instanceUID = packet.instanceUID;
 				SendPacket(conn.clientHd, resp);
 			} break;
 
@@ -267,16 +280,24 @@ struct Matchmaker
 				// TODO: validate args?
 				matchingPartyList.push_back(packet.partyUID);
 
-				// TODO: for each member, send to their instance
-				In::MR_PartyEnqueued resp;
-				resp.result = 1;
-				resp.partyUID = packet.partyUID;
-				SendPacket(conn.clientHd, resp);
+				const Party& party = *partyMap.at(packet.partyUID);
+				eastl::fixed_set<eastl::pair<ClientHandle,InstanceUID>,5,false> setInstance;
+				foreach_const(mem, party.memberList) {
+					setInstance.insert({ mem->instanceChd, mem->instanceUID });
+				}
+
+				foreach_const(it, setInstance) {
+					In::MR_PartyEnqueued resp;
+					resp.result = 1;
+					resp.instanceUID = it->second;
+					resp.partyUID = packet.partyUID;
+					SendPacket(it->first, resp);
+				}
 			} break;
 
-			case In::HN_PlayerNotifyRoomFound::NET_ID: {
-				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HN_PlayerNotifyRoomFound>(packetData, packetSize));
-				const In::HN_PlayerNotifyRoomFound& packet = SafeCast<In::HN_PlayerNotifyRoomFound>(packetData, packetSize);
+			case In::HN_PlayerRoomFound::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HN_PlayerRoomFound>(packetData, packetSize));
+				const In::HN_PlayerRoomFound& packet = SafeCast<In::HN_PlayerRoomFound>(packetData, packetSize);
 
 				// TODO: validate args?
 
@@ -329,23 +350,33 @@ struct Matchmaker
 	void MatchParties()
 	{
 		foreach_const(puid, matchingPartyList) {
+			const Party& party = *partyMap.at(*puid);
+
 			// create room
 			roomList.emplace_back(nextSortieUID);
 			Room& room = *(--roomList.end());
 			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
-
-			const Party& party = *partyMap.at(*puid);
-			foreach_const(pl, party.memberList) {
-				room.playerList.push_back(Room::Player(*pl, party.instanceChd));
-			}
-
 			roomMap.emplace(room.UID, --roomList.end());
 
+			foreach_const(pl, party.memberList) {
+				Room::Player player(pl->accountUID, pl->instanceChd);
+				room.playerList.push_back(player);
+			}
+
 			// send 'match found' packet to all instances
-			In::MN_MatchFound resp;
-			resp.partyUID = *puid;
-			resp.sortieUID = room.UID;
-			SendPacket(partyMap.at(*puid)->instanceChd, resp);
+			eastl::fixed_set<eastl::pair<ClientHandle,InstanceUID>,16,false> setInstance;
+			foreach_const(pl, party.memberList) {
+				setInstance.insert({ pl->instanceChd, pl->instanceUID });
+			}
+
+
+			foreach_const(chd, setInstance) {
+				In::MN_MatchFound resp;
+				resp.instanceUID = chd->second;
+				resp.partyUID = *puid;
+				resp.sortieUID = room.UID;
+				SendPacket(chd->first, resp);
+			}
 		}
 		matchingPartyList.clear();
 	}
@@ -355,10 +386,10 @@ struct Matchmaker
 		foreach(r, roomList) {
 			foreach(pl, r->playerList) {
 				if(pl->status == Room::PlayerStatus::Accepted) {
-					In::MN_SortieBegin packet;
+					In::MN_RoomCreated packet;
 					packet.sortieUID = r->UID;
-					packet.playerList.fill(AccountUID::INVALID);
-					packet.playerList[0] = pl->accountUID; // FIXME: hack, fill all player info
+					packet.playerCount = 0;
+					packet.playerList[packet.playerCount++] = pl->accountUID; // FIXME: hack, fill all player info
 					SendPacket(pl->instanceChd, packet);
 
 					pl->status = Room::PlayerStatus::InLobby;

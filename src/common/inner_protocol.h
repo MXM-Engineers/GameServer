@@ -36,6 +36,7 @@ struct HQ_PartyCreate
 
 	// TODO: some useful stuff here
 	AccountUID leader;
+	InstanceUID instanceUID;
 };
 
 struct HQ_PartyEnqueue
@@ -47,7 +48,7 @@ struct HQ_PartyEnqueue
 };
 
 PUSH_PACKED
-struct HN_PlayerNotifyRoomFound
+struct HN_PlayerRoomFound
 {
 	enum { NET_ID = 1004 };
 
@@ -110,6 +111,7 @@ struct MR_PartyCreated
 	u8 result;
 	PartyUID partyUID;
 	AccountUID leader;
+	InstanceUID instanceUID;
 };
 
 struct MR_PartyEnqueued
@@ -118,6 +120,7 @@ struct MR_PartyEnqueued
 
 	// TODO: some useful stuff here
 	u8 result;
+	InstanceUID instanceUID;
 	PartyUID partyUID;
 };
 
@@ -126,15 +129,18 @@ struct MN_MatchFound
 	enum { NET_ID = 3005 };
 
 	// TODO: some useful stuff here
+	InstanceUID instanceUID;
 	PartyUID partyUID;
 	SortieUID sortieUID;
 };
 
-struct MN_SortieBegin
+struct MN_RoomCreated
 {
 	enum { NET_ID = 3006 };
 
+	InstanceUID instanceUID;
 	SortieUID sortieUID;
+	u8 playerCount;
 	eastl::array<AccountUID,16> playerList;
 };
 

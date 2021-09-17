@@ -65,6 +65,7 @@ struct IInstance
 	virtual void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count) = 0;
 	virtual void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count) = 0;
 	virtual void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData) = 0;
+	virtual void OnMatchmakerPacket(const NetHeader& header, const u8* packetData) = 0;
 };
 
 typedef IInstance* (*fn_InstanceAllocate)();
@@ -93,14 +94,18 @@ struct Lane
 
 	GrowableBuffer recvDataBuff;
 
-	ProfileMutex(Mutex, mutexNewPlayerQueue);
+	ProfileMutex(Mutex, mutexPacketDataQueue);
 	GrowableBuffer packetDataQueue;
-	GrowableBuffer processPacketQueue;
+
+	// TODO: dual buffer tech is probably overkill
+	GrowableBuffer mmPacketQueues[2];
+	EA::Thread::AtomicInt32 mmPacketQueueFront = 0; // being pushed to by coordinator
 
 	ProfileMutex(Mutex, mutexClientDisconnectedList);
 	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
 
-	ProfileMutex(Mutex, mutexPacketDataQueue);
+
+	ProfileMutex(Mutex, mutexNewPlayerQueue);
 	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
 
 	eastl::fixed_set<ClientHandle,MAX_CLIENTS,false> clientSet;
@@ -115,6 +120,7 @@ struct Lane
 	void CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData);
 	void CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 	void CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count);
+	void CoordinatorPushMatchmakerPackets(const u8* buffer, u32 bufferSize);
 
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 };

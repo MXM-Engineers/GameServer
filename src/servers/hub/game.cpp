@@ -27,76 +27,6 @@ void HubGame::Update(Time localTime_)
 	localTime = localTime_;
 	world.Update(localTime);
 	replication.FrameEnd();
-
-	ProcessMatchmakerUpdates();
-}
-
-void HubGame::ProcessMatchmakerUpdates()
-{
-	eastl::fixed_vector<MatchmakerConnector::UpdateEvent, 1024> updates;
-	matchmaker->ExtractInstanceUpdates(InstanceUID(1), eastl::back_inserter(updates));
-
-	using UpdateType = MatchmakerConnector::UpdateEvent::Type;
-
-	foreach_const(up, updates) {
-		switch(up->type) {
-			case UpdateType::PartyCreated: {
-				const auto& p = up->PartyCreated;
-
-				// TODO: find and error out if not found
-				const ClientHandle clientHd = accountClientHandleMap.at(p.leader);
-				const i32 userID = plidMap->Get(clientHd);
-				playerMap[userID]->partyUID = p.UID;
-
-				// create party
-				ASSERT(partyMap.find(p.UID) == partyMap.end());
-				partyList.emplace_back(p.UID);
-				Party& party = *(--partyList.end());
-				party.memberList.push_back(p.leader);
-
-				partyMap.emplace(p.UID, --partyList.end());
-
-				replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PLAY_INSTANCE);
-			} break;
-
-			case UpdateType::PartyEnqueued: {
-				const auto& p = up->PartyEnqueued;
-
-				// TODO: find and error out if not found
-				Party& party = *partyMap.at(p.UID);
-				foreach_const(m, party.memberList) {
-					// TODO: check if on this hub
-					const ClientHandle clientHd = accountClientHandleMap.at(*m);
-					replication.SendPartyEnqueue(clientHd);
-				}
-			} break;
-
-			case UpdateType::MatchFound: {
-				const auto& p = up->MatchFound;
-
-				// TODO: find and error out if not found
-				Party& party = *partyMap.at(p.UID);
-				foreach_const(m, party.memberList) {
-					const ClientHandle clientHd = accountClientHandleMap.at(*m);
-					const i32 userID = plidMap->Get(clientHd);
-					playerMap[userID]->sortieUID = p.sortieUID;
-
-					// TODO: check if on this hub
-					replication.SendMatchFound(clientHd);
-				}
-			} break;
-
-			case UpdateType::MatchCreated: {
-				const auto& p = up->MatchCreated;
-
-				replication.SendNewSortiePickingPhase(ClientHandle(1));
-			} break;
-
-			default: {
-				ASSERT_MSG(0, "case not handled");
-			}
-		}
-	}
 }
 
 bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
@@ -365,7 +295,7 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 	const i32 userID = plidMap->Get(clientHd);
 
 	// TODO: validate args
-	matchmaker->QueryPartyCreate(playerAccountData[userID]->accountUID);
+	matchmaker->QueryPartyCreate(InstanceUID(1), playerAccountData[userID]->accountUID);
 }
 
 void HubGame::OnEnqueueGame(ClientHandle clientHd)
@@ -389,6 +319,56 @@ void HubGame::OnSortieRoomConfirm(ClientHandle clientHd, bool confirm)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	matchmaker->QueryPlayerRoomConfirm(playerAccountData[userID]->accountUID, playerMap[userID]->sortieUID, confirm);
+}
+
+void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
+{
+	// TODO: find and skip if not found
+	const ClientHandle clientHd = accountClientHandleMap.at(leader);
+	const i32 userID = plidMap->Get(clientHd);
+	playerMap[userID]->partyUID = partyUID;
+
+	// create party
+	ASSERT(partyMap.find(partyUID) == partyMap.end());
+	partyList.emplace_back(partyUID);
+	Party& party = *(--partyList.end());
+	Party::Member member;
+	member.accountUID = leader;
+	party.memberList.push_back(member);
+
+	partyMap.emplace(partyUID, --partyList.end());
+
+	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PLAY_INSTANCE);
+}
+
+void HubGame::MmOnPartyEnqueued(PartyUID partyUID)
+{
+	// TODO: find and skip if not found
+	Party& party = *partyMap.at(partyUID);
+	foreach_const(m, party.memberList) {
+		// TODO: check if on this hub
+		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
+		replication.SendPartyEnqueue(clientHd);
+	}
+}
+
+void HubGame::MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID)
+{
+	// TODO: find and error out if not found
+	Party& party = *partyMap.at(partyUID);
+	foreach_const(m, party.memberList) {
+		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
+		const i32 userID = plidMap->Get(clientHd);
+		playerMap[userID]->sortieUID = sortieUID;
+
+		// TODO: check if on this hub
+		replication.SendMatchFound(clientHd);
+	}
+}
+
+void HubGame::MmOnRoomCreated(const MmNewRoom& newRoom)
+{
+	replication.SendNewSortiePickingPhase(ClientHandle(1));
 }
 
 bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)

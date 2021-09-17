@@ -89,7 +89,9 @@ void Lane::Init(Server* server_)
 
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
-	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
+
+	mmPacketQueues[0].Init(10 * (1024*1024)); // 10 MB
+	mmPacketQueues[1].Init(10 * (1024*1024)); // 10 MB
 
 	// TODO: several of these
 	instance = new HubInstance(InstanceUID(1));
@@ -138,6 +140,22 @@ void Lane::Update()
 
 	recvDataBuff.Clear();
 
+	// matchmaker packets
+	GrowableBuffer& backQueue = mmPacketQueues[!mmPacketQueueFront];
+	if(backQueue.size > 0) {
+		ConstBuffer reader(backQueue.data, backQueue.size);
+		while(reader.CanRead(sizeof(NetHeader))) {
+			const NetHeader& header = reader.Read<NetHeader>();
+			const i32 packetDataSize = header.size - sizeof(NetHeader);
+			ASSERT(reader.CanRead(packetDataSize));
+			const u8* packetData = reader.ReadRaw(packetDataSize);
+
+			instance->OnMatchmakerPacket(header, packetData);
+		}
+		backQueue.Clear();
+	}
+	mmPacketQueueFront = mmPacketQueueFront ^ 1;
+
 	instance->Update(localTime);
 }
 
@@ -170,6 +188,11 @@ void Lane::CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, cons
 {
 	LOCK_MUTEX(mutexClientDisconnectedList);
 	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
+}
+
+void Lane::CoordinatorPushMatchmakerPackets(const u8* buffer, u32 bufferSize)
+{
+	mmPacketQueues[mmPacketQueueFront].Append(buffer, bufferSize);
 }
 
 void Lane::ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
@@ -213,8 +236,12 @@ void Coordinator::Update(f64 delta)
 {
 	ProfileFunction();
 
-	// inline match maker update, in the future this will be a separate server
 	matchmaker.Update();
+	foreach(l, lanes) {
+		l->CoordinatorPushMatchmakerPackets(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+	}
+	matchmaker.packetQueue.Clear();
+
 
 	// handle client connections
 	eastl::fixed_vector<ClientHandle,128> clientConnectedList;

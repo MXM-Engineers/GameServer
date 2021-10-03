@@ -106,11 +106,11 @@ bool HubGame::LoadMap()
 	return true;
 }
 
-void HubGame::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
+void HubGame::OnPlayerConnect(ClientHandle clientHd, const Account* accountData)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	playerAccountData[userID] = accountData;
-	accountClientHandleMap.emplace(accountData->accountUID, clientHd);
+	accountClientHandleMap.emplace(accountData->UID, clientHd);
 
 	playerList.push_back(Player(clientHd));
 	playerMap[userID] = --playerList.end();
@@ -136,7 +136,7 @@ void HubGame::OnPlayerDisconnect(ClientHandle clientHd)
 	}
 	playerMap[userID] = playerList.end();
 
-	accountClientHandleMap.erase(playerAccountData[userID]->accountUID);
+	accountClientHandleMap.erase(playerAccountData[userID]->UID);
 	playerAccountData[userID] = nullptr;
 
 	replication.OnClientDisconnect(clientHd);
@@ -240,7 +240,7 @@ void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 	}
 
 	ASSERT(playerAccountData[userID]); // account data is not assigned
-	const AccountData* account = playerAccountData[userID];
+	const Account* account = playerAccountData[userID];
 
 	// TODO: tie in account->leaderMasterID,skinIndex with class and model
 	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
@@ -295,7 +295,7 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 	const i32 userID = plidMap->Get(clientHd);
 
 	// TODO: validate args
-	matchmaker->QueryPartyCreate(InstanceUID(1), playerAccountData[userID]->accountUID);
+	matchmaker->QueryPartyCreate(playerAccountData[userID]->UID);
 }
 
 void HubGame::OnEnqueueGame(ClientHandle clientHd)
@@ -312,13 +312,13 @@ void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
 	// When waiting time is 0 this is like accepting the match
 
 	const i32 userID = plidMap->Get(clientHd);
-	matchmaker->QueryPlayerNotifyRoomFound(playerAccountData[userID]->accountUID, sortieID);
+	matchmaker->QueryPlayerNotifyRoomFound(playerAccountData[userID]->UID, sortieID);
 }
 
 void HubGame::OnSortieRoomConfirm(ClientHandle clientHd, bool confirm)
 {
 	const i32 userID = plidMap->Get(clientHd);
-	matchmaker->QueryPlayerRoomConfirm(playerAccountData[userID]->accountUID, playerMap[userID]->sortieUID, confirm);
+	matchmaker->QueryPlayerRoomConfirm(playerAccountData[userID]->UID, playerMap[userID]->sortieUID, confirm);
 }
 
 void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
@@ -364,11 +364,6 @@ void HubGame::MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID)
 		// TODO: check if on this hub
 		replication.SendMatchFound(clientHd);
 	}
-}
-
-void HubGame::MmOnRoomCreated(const MmNewRoom& newRoom)
-{
-	replication.SendNewSortiePickingPhase(ClientHandle(1));
 }
 
 bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)

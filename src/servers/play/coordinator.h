@@ -38,7 +38,7 @@ enum class LaneID: i32
 // Each lane is a separate thread hosting instances
 struct Lane
 {
-	struct EventOnClientConnect
+	struct PlayerTransit
 	{
 		ClientHandle clientHd;
 		const AccountData* accountData;
@@ -60,7 +60,7 @@ struct Lane
 	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
 
 	ProfileMutex(Mutex, mutexPacketDataQueue);
-	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
+	eastl::fixed_vector<PlayerTransit,128> newPlayerQueue;
 
 	eastl::fixed_set<ClientHandle,MAX_CLIENTS,false> clientSet;
 

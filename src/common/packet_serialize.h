@@ -1205,7 +1205,6 @@ inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, 
 	SER("	result=%u", packet.result);
 	SER("	partyUID=%u", packet.partyUID);
 	SER("	leader=%u", packet.leader);
-	SER("	instanceUID=%u", packet.instanceUID);
 	SER("}");
 
 	return str.data();
@@ -1233,7 +1232,6 @@ inline const char* PacketSerialize<In::HQ_PartyCreate>(const void* packetData, c
 
 	SER("HQ_PartyCreate(%d, %d) :: {", In::HQ_PartyCreate::NET_ID, packetSize);
 	SER("	leader=%u", packet.leader);
-	SER("	instanceUID=%u", packet.instanceUID);
 	SER("}");
 
 	return str.data();

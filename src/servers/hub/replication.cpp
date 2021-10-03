@@ -356,7 +356,7 @@ void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wc
 	SendPacket(destClientHd, packet);
 }
 
-void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const AccountData& account)
+void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& account)
 {
 	// SN_RegionServicePolicy
 	{
@@ -1003,7 +1003,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const AccountDa
 	}
 }
 
-void HubReplication::SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port)
+void HubReplication::SendConnectToServer(ClientHandle clientHd, const Account& account, const u8 ip[4], u16 port)
 {
 	PacketWriter<Sv::SN_DoConnectGameServer> packet;
 

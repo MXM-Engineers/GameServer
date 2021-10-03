@@ -12,7 +12,7 @@
 
 intptr_t ThreadLane(void* pData)
 {
-	Lane& lane = *(Lane*)pData;
+	InstancePool::Lane& lane = *(InstancePool::Lane*)pData;
 	ProfileSetThreadName(FMT("Lane_%d", lane.laneIndex));
 	const i32 cpuID = (i32)CoreAffinity::LANES + lane.laneIndex;
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
@@ -83,60 +83,217 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
-void Lane::Init(Server* server_)
+static EA::Thread::AtomicUint32 g_NextInstanceUID = 1;
+
+void InstancePool::Lane::Update()
 {
-	server = server_;
-
-	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
-	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
-
-	mmPacketQueues[0].Init(10 * (1024*1024)); // 10 MB
-	mmPacketQueues[1].Init(10 * (1024*1024)); // 10 MB
-
-	// TODO: several of these
-	instance = new HubInstance(InstanceUID(1));
-	instance->Init(server);
-}
-
-void Lane::Update()
-{
-	// TODO: handle multiple instances
-
-	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> disconnectedClientList;
-	eastl::fixed_vector<eastl::pair<ClientHandle, const AccountData*>,MAX_CLIENTS> newClientList;
-
-	{ LOCK_MUTEX(mutexClientDisconnectedList);
-		foreach_const(n, clientDisconnectedList) {
-			clientSet.erase(*n);
-			disconnectedClientList.push_back(*n);
-		}
-		clientDisconnectedList.clear();
+	// on disconnected clients
+	decltype(clientDisconnectQueue) disconnectedList;
+	{ LOCK_MUTEX(mutexClientDisconnectQueue);
+		disconnectedList = clientDisconnectQueue;
+		clientDisconnectQueue.clear();
 	}
 
-	{ LOCK_MUTEX(mutexNewPlayerQueue);
-		foreach_const(n, newPlayerQueue) {
-			ASSERT(clientSet.find(n->clientHd) == clientSet.end());
-			clientSet.insert(n->clientHd);
-			newClientList.push_back({ n->clientHd, n->accountData });
+	foreach_const(tr, disconnectedList) {
+		auto client = clientMap.at(*tr);
+
+		switch(client->instanceType) {
+			case InstanceType::HUB: {
+				HubInstance& instance = *instanceHubMap.at(client->instanceUID);
+				instance.OnClientsDisconnected(&client->clientHd, 1); // TODO: group client handles by instance
+			} break;
+
+			case InstanceType::ROOM: {
+				// TODO: we can probably transfer out of a room when a match is canceled (someone leaves)
+				ASSERT_MSG(0, "can't transfer out from room");
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
 		}
-		newPlayerQueue.clear();
+
+		clientList.erase(client);
+		clientMap.erase(*tr);
+		clientHandleSet.erase(*tr);
+		LOG("[Lane_%d][client%x] client disconnected", laneIndex, *tr);
 	}
 
-	// TODO: move this to game probably?
-	instance->OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
-	instance->OnNewClientsConnected(newClientList.data(), newClientList.size());
+	// transfer clients out of instances
+	decltype(clientTransferOutQueue) transferOutList;
+	{ LOCK_MUTEX(mutexClientTransferOutQueue);
+		transferOutList = clientTransferOutQueue;
+		clientTransferOutQueue.clear();
+	}
 
-	{ LOCK_MUTEX(mutexPacketDataQueue);
-		recvDataBuff.Append(packetDataQueue.data, packetDataQueue.size);
-		packetDataQueue.Clear();
+	foreach_const(tr, transferOutList) {
+		auto client = clientMap.at(*tr);
+
+		switch(client->instanceType) {
+			case InstanceType::HUB: {
+				HubInstance& instance = *instanceHubMap.at(client->instanceUID);
+				instance.OnClientsTransferOut(&client->clientHd, 1); // TODO: group client handles by instance
+			} break;
+
+			case InstanceType::ROOM: {
+				// TODO: we can probably transfer out of a room when a match is canceled (someone leaves)
+				ASSERT_MSG(0, "can't transfer out from room");
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
+		}
+
+		clientList.erase(client);
+		clientMap.erase(*tr);
+		clientHandleSet.erase(*tr);
+		LOG("[Lane_%d][client%x] client transfered out", laneIndex, *tr);
+	}
+
+	// create rooms
+	decltype(createRoomQueue) createRoomList;
+	{ LOCK_MUTEX(mutexCreateRoomQueue);
+		createRoomList = createRoomQueue;
+		createRoomQueue.clear();
+	}
+
+	foreach_const(cr, createRoomList) {
+		InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		instanceRoomList.emplace_back(instUID, cr->sortieUID);
+		instanceRoomMap.emplace(instUID, --instanceRoomList.end());
+		RoomInstance& room = *(--instanceRoomList.end());
+
+		eastl::fixed_vector<RoomInstance::NewUser,16,false> newUsers;
+		foreach_const(cu, cr->users) {
+			RoomInstance::NewUser nu;
+			nu.clientHd = cu->clientHd;
+			nu.accountUID = cu->accountUID;
+			nu.team = cu->team;
+			nu.userID = cu->userID;
+			newUsers.push_back(nu);
+		}
+
+		room.Init(server, newUsers.data(), newUsers.size());
+	}
+
+	// push players to hubs
+	decltype(hubPushPlayerQueue) hubPlayerList;
+	{ LOCK_MUTEX(mutexHubPushPlayerQueue);
+		hubPlayerList = hubPushPlayerQueue;
+		hubPushPlayerQueue.clear();
+	}
+
+	// TODO: only one hub ever?
+	if(instanceHubList.empty()) {
+		InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		instanceHubList.emplace_back(instUID);
+		instanceHubMap.emplace(instUID, --instanceHubList.end());
+
+		HubInstance& hub = *(--instanceHubList.end());
+		hub.Init(server);
+	}
+
+	HubInstance& hub = *(--instanceHubList.end());
+
+	eastl::fixed_vector<HubInstance::NewUser,128> hubNewUsers;
+	foreach_const(hp, hubPlayerList) {
+		// create client entry
+		clientList.push_back();
+		Client& client = *(--clientList.end());
+		client.clientHd = hp->clientHd;
+		client.accountUID = hp->accountUID;
+		client.instanceType = InstanceType::HUB;
+		client.instanceUID = hub.UID;
+		clientMap.emplace(client.clientHd, --clientList.end());
+		clientHandleSet.insert(client.clientHd);
+
+		HubInstance::NewUser nu;
+		nu.clientHd = hp->clientHd;
+		nu.accountUID = hp->accountUID;
+		hubNewUsers.push_back(nu);
+
+		LOG("[Lande_%d][client%x] client joins hub", laneIndex, client.clientHd);
+	}
+	hub.OnClientsConnected(hubNewUsers.data(), hubNewUsers.size());
+
+	// handle client packets
+	{ LOCK_MUTEX(mutexRoguePacketsQueue);
+		recvDataBuff.Append(roguePacketsQueue.data, roguePacketsQueue.size);
+		roguePacketsQueue.Clear();
 	}
 
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
-	eastl::copy(clientSet.begin(), clientSet.end(), eastl::back_inserter(clientList));
+	eastl::copy(clientHandleSet.begin(), clientHandleSet.end(), eastl::back_inserter(clientList));
 
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
-	NetworkParseReceiveBuffer(this, server, recvDataBuff.data, recvDataBuff.size, "hub");
+	ClientHandle curClientHd = ClientHandle::INVALID;
+	HubInstance* curHubInstance = nullptr;
+	RoomInstance* curRoomInstance = nullptr;
+
+	// TODO: move base packet validation to server
+	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
+	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
+		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
+		const u8* data = buff.ReadRaw(chunkInfo.len);
+
+		// handle each packet in chunk
+		ConstBuffer reader(data, chunkInfo.len);
+		if(!reader.CanRead(sizeof(NetHeader))) {
+			WARN("Packet too small (clientHd=%u size=%d)", chunkInfo.clientHd, chunkInfo.len);
+			server->DisconnectClient(chunkInfo.clientHd);
+			continue;
+		}
+
+		while(reader.CanRead(sizeof(NetHeader))) {
+			const NetHeader& header = reader.Read<NetHeader>();
+			const i32 packetDataSize = header.size - sizeof(NetHeader);
+
+			if(!reader.CanRead(packetDataSize)) {
+				WARN("Packet header size differs from actual data size (clientHd=%u size=%d)", chunkInfo.clientHd, header.size);
+				server->DisconnectClient(chunkInfo.clientHd);
+				break;
+			}
+
+			if(Config().TraceNetwork) {
+				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				server->packetCounter++;
+			}
+
+			const u8* packetData = reader.ReadRaw(packetDataSize);
+
+			if(curClientHd != chunkInfo.clientHd) {
+				curClientHd = chunkInfo.clientHd;
+				curHubInstance = nullptr;
+				curRoomInstance = nullptr;
+				const Client& client = *clientMap.at(curClientHd);
+				switch(client.instanceType) {
+					case InstanceType::HUB: {
+						curHubInstance = &*instanceHubMap.at(client.instanceUID);
+					} break;
+
+					case InstanceType::ROOM: {
+						curRoomInstance = &*instanceRoomMap.at(client.instanceUID);
+					} break;
+
+					default: {
+						ASSERT_MSG(0, "case not handled");
+					}
+				}
+			}
+
+			if(curHubInstance) {
+				curHubInstance->OnClientPacket(curClientHd, header, packetData);
+			}
+			else if(curRoomInstance) {
+				curRoomInstance->OnClientPacket(curClientHd, header, packetData);
+			}
+			else {
+				ASSERT_MSG(0, "case not handled");
+			}
+		}
+	}
 
 	recvDataBuff.Clear();
 
@@ -150,54 +307,158 @@ void Lane::Update()
 			ASSERT(reader.CanRead(packetDataSize));
 			const u8* packetData = reader.ReadRaw(packetDataSize);
 
-			instance->OnMatchmakerPacket(header, packetData);
+			// TODO: filter packets so we don't send everything everywhere
+			foreach(hub, instanceHubList) {
+				hub->OnMatchmakerPacket(header, packetData);
+			}
+			foreach(room, instanceRoomList) {
+				room->OnMatchmakerPacket(header, packetData);
+			}
 		}
 		backQueue.Clear();
 	}
-	mmPacketQueueFront = mmPacketQueueFront ^ 1;
 
-	instance->Update(localTime);
+	{ LOCK_MUTEX(mutexMatchmakerPacketsQueue);
+		mmPacketQueueFront ^= 1;
+	}
+
+	// update instances
+	foreach(hub, instanceHubList) {
+		hub->Update(localTime);
+	}
+	foreach(room, instanceRoomList) {
+		room->Update(localTime);
+	}
 }
 
-void Lane::Cleanup()
+void InstancePool::Lane::Cleanup()
 {
-	// instance->game.Cleanup();
+
 }
 
-void Lane::CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData)
+bool InstancePool::Init(Server* server_)
 {
-	LOG("[Lane%d][client%x] New player", laneIndex, clientHd);
+	server = server_;
 
-	LOCK_MUTEX(mutexNewPlayerQueue);
-	newPlayerQueue.push_back(EventOnClientConnect{ clientHd, accountData });
+	int laneIndex = 0;
+	foreach(l, lanes) {
+		l->server = server_;
+		l->laneIndex = laneIndex++;
+		l->mmPacketQueues[0].Init(1 * (1024*1024)); // 1 MB
+		l->mmPacketQueues[1].Init(1 * (1024*1024)); // 1 MB
+		l->recvDataBuff.Init(10 * (1024*1024)); // 10MB
+		l->thread.Begin(ThreadLane, &*l);
+	}
+
+	return true;
 }
 
-void Lane::CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+void InstancePool::Cleanup()
 {
-	LOCK_MUTEX(mutexPacketDataQueue);
-
-	Server::RecvChunkHeader chunkInfo;
-	chunkInfo.clientHd = clientHd;
-	chunkInfo.len = header.size;
-	packetDataQueue.Append(&chunkInfo, sizeof(chunkInfo));
-	packetDataQueue.Append(&header, sizeof(header));
-	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
+	foreach(l, lanes) {
+		l->thread.WaitForEnd();
+	}
 }
 
-void Lane::CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count)
+void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID)
 {
-	LOCK_MUTEX(mutexClientDisconnectedList);
-	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
+	// TODO: choose a lane based on capacity
+	Lane& l = lanes.front();
+
+	const i32 clientID = plidMap.Push(clientHd);
+	clientHandle[clientID] = clientHd;
+	clientLocation[clientID].lane = l.laneIndex;
+
+	Lane::HubPlayerEntry player;
+	player.clientHd = clientHd;
+	player.accountUID = accountUID;
+
+	LOCK_MUTEX(l.mutexHubPushPlayerQueue);
+	l.hubPushPlayerQueue.push_back(player);
 }
 
-void Lane::CoordinatorPushMatchmakerPackets(const u8* buffer, u32 bufferSize)
+void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount)
 {
-	mmPacketQueues[mmPacketQueueFront].Append(buffer, bufferSize);
+	// TODO: choose a lane based on capacity
+	Lane& roomLane = lanes.front();
+
+	for(i32 i = 0; i < userCount; i++) {
+		const RoomUser& user = userList[i];
+		const i32 clientID = plidMap.TryGet(user.clientHd);
+		if(clientID == -1) {
+			WARN("ClientID not found in local mapping (clientHd=%u)", user.clientHd);
+			continue;
+		}
+
+		ClientLocation& loc = clientLocation[clientID];
+
+		Lane& l = lanes[loc.lane];
+		loc.lane = roomLane.laneIndex;
+
+		// TODO: very inneficient locking, we lock for EVERY client
+		LOCK_MUTEX(l.mutexClientTransferOutQueue);
+		l.clientTransferOutQueue.push_back(user.clientHd);
+	}
+
+	Lane::CreateRoomEntry create;
+	create.sortieUID = sortieUID;
+
+	for(i32 i = 0; i < userCount; i++) {
+		const RoomUser& user = userList[i];
+		const i32 clientID = plidMap.TryGet(user.clientHd);
+		if(clientID == -1) {
+			WARN("ClientID not found in local mapping (clientHd=%u)", user.clientHd);
+			continue;
+		}
+
+		create.users.push_back(user);
+	}
+
+	LOCK_MUTEX(roomLane.mutexCreateRoomQueue);
+	roomLane.createRoomQueue.push_back(create);
 }
 
-void Lane::ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+void InstancePool::QueuePopPlayers(const ClientHandle* clientList, const i32 count)
 {
-	instance->OnNewPacket(clientHd, header, packetData);
+	for(int i = 0; i < count; i++) {
+		const ClientHandle clientHd = clientList[i];
+		const i32 clientID = plidMap.Get(clientHd);
+		plidMap.Pop(clientHd);
+
+		clientHandle[clientID] = ClientHandle::INVALID;
+		Lane& l = lanes[clientLocation[clientID].lane];
+		clientLocation[clientID] = ClientLocation::Null();
+
+		// TODO: very bad locking
+		LOCK_MUTEX(l.mutexClientDisconnectQueue);
+		l.clientDisconnectQueue.push_back(clientHd);
+	}
+}
+
+void InstancePool::QueueRogueCoordinatorPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+{
+	const i32 clientID = plidMap.Get(clientHd);
+	const ClientLocation& loc = clientLocation[clientID];
+	Lane& l = lanes[loc.lane];
+
+	LOCK_MUTEX(l.mutexRoguePacketsQueue);
+	Server::RecvChunkHeader ch;
+	ch.clientHd = clientHd;
+	ch.len = header.size;
+	l.roguePacketsQueue.Append(&ch, sizeof(ch));
+	l.roguePacketsQueue.Append(&header, sizeof(header));
+	l.roguePacketsQueue.Append(packetData, header.size - sizeof(header));
+}
+
+void InstancePool::QueueMatchmakerPackets(const u8* buffer, u32 bufferSize)
+{
+	// TODO: filter packets here as well?
+
+	foreach(l, lanes) {
+		Lane& lane = *l;
+		LOCK_MUTEX(lane.mutexMatchmakerPacketsQueue);
+		lane.mmPacketQueues[lane.mmPacketQueueFront].Append(buffer, bufferSize);
+	}
 }
 
 bool Coordinator::Init(Server* server_)
@@ -205,18 +466,13 @@ bool Coordinator::Init(Server* server_)
 	server = server_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	associatedLane.fill(LaneID::NONE);
 	clientHandle.fill(ClientHandle::INVALID);
 
 	bool r = matchmaker.Init();
 	if(!r) return false;
 
-	i32 laneIndex = 0;
-	foreach(it, lanes) {
-		it->Init(server);
-		it->laneIndex = laneIndex++;
-		it->thread.Begin(ThreadLane, &(*it));
-	}
+	r = instancePool.Init(server);
+	if(!r) return false;
 
 	thread.Begin(ThreadCoordinator, this);
 	return true;
@@ -226,9 +482,7 @@ void Coordinator::Cleanup()
 {
 	LOG("Coordinator cleanup...");
 
-	foreach(it, lanes) {
-		it->thread.WaitForEnd();
-	}
+	instancePool.Cleanup();
 	thread.WaitForEnd();
 }
 
@@ -237,11 +491,38 @@ void Coordinator::Update(f64 delta)
 	ProfileFunction();
 
 	matchmaker.Update();
-	foreach(l, lanes) {
-		l->CoordinatorPushMatchmakerPackets(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+	instancePool.QueueMatchmakerPackets(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+
+	// parse some matchmaker packets
+	ConstBuffer reader(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+	while(reader.CanRead(sizeof(NetHeader))) {
+		const NetHeader& header = reader.Read<NetHeader>();
+		const i32 packetDataSize = header.size - sizeof(NetHeader);
+		ASSERT(reader.CanRead(packetDataSize));
+		const u8* packetData = reader.ReadRaw(packetDataSize);
+
+		// A room has been created, detach clients from their lane & hub instance
+		// We then push them all to the same room instance
+		if(header.netID == In::MN_RoomCreated::NET_ID) {
+			const In::MN_RoomCreated packet = SafeCast<In::MN_RoomCreated>(packetData, packetDataSize);
+
+			eastl::fixed_vector<InstancePool::RoomUser,128> roomClientList;
+			for(int i = 0; i < packet.playerCount; i++) {
+				auto it = accChdMap.find(packet.playerList[i].accountUID);
+				if(it != accChdMap.end()) {
+					const ClientHandle clientHd = it->second;
+					InstancePool::RoomUser ru;
+					ru.clientHd = clientHd;
+					ru.team = packet.playerList[i].team;
+					ru.userID = i;
+					roomClientList.push_back(ru);
+				}
+			}
+
+			instancePool.QueueCreateRoom(packet.sortieUID, roomClientList.data(), roomClientList.size());
+		}
 	}
 	matchmaker.packetQueue.Clear();
-
 
 	// handle client connections
 	eastl::fixed_vector<ClientHandle,128> clientConnectedList;
@@ -249,39 +530,29 @@ void Coordinator::Update(f64 delta)
 
 	foreach_const(cl, clientConnectedList) {
 		const i32 clientID = plidMap.Push(*cl);
-		associatedLane[clientID] = LaneID::NONE;
 		clientHandle[clientID] = *cl;
+		clientAccountUID[clientID] = AccountUID::INVALID;
 	}
 
 	// handle client disconnections
 	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
 
-	for(i32 i = (i32)LaneID::FIRST; i < (i32)LaneID::_COUNT; i++) {
-		eastl::fixed_vector<ClientHandle,128> chanDiscList;
-
-		foreach_const(cl, clientDisconnectedList) {
-			if(associatedLane[plidMap.Get(*cl)] == (LaneID)i) {
-				chanDiscList.push_back(*cl);
-			}
-		}
-
-		lanes[i].CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
-	}
-
 	// clear client data
 	foreach_const(cl, clientDisconnectedList) {
 		const i32 clientID = plidMap.Get(*cl);
 		plidMap.Pop(*cl);
-		associatedLane[clientID] = LaneID::NONE;
 		clientHandle[clientID] = ClientHandle::INVALID;
-
+		if(clientAccountUID[clientID] != AccountUID::INVALID) {
+			accChdMap.erase(clientAccountUID[clientID]);
+		}
+		clientAccountUID[clientID] = AccountUID::INVALID;
 	}
 
 	// handle received data
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
 	for(i32 clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-		if(clientHandle[clientID] != ClientHandle::INVALID && associatedLane[clientID] == LaneID::NONE) {
+		if(clientHandle[clientID] != ClientHandle::INVALID && !instancePool.IsClientInsideAnInstance(clientHandle[clientID])) {
 			clientList.push_back(clientHandle[clientID]);
 		}
 	}
@@ -305,13 +576,19 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 		HANDLE_CASE(CQ_Authenticate);
 
 		default: {
-			WARN("Unhandled packet (netID=%x size=%d)", header.netID, header.size);
-			ASSERT(associatedLane[clientID] != LaneID::NONE);
-			lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientHd, header, packetData);
+			WARN("Unhandled packet (netID=%d size=%d)", header.netID, header.size);
+			ASSERT(instancePool.IsClientInsideAnInstance(clientHd));
+			instancePool.QueueRogueCoordinatorPacket(clientHd, header, packetData);
 		} break;
 	}
 
 #undef HANDLE_CASE
+}
+
+void Coordinator::PushClientToHubInstance(ClientHandle clientHd)
+{
+	const i32 clientID = plidMap.Get(clientHd);
+	instancePool.QueuePushPlayerToHub(clientHd, clientAccountUID[clientID]);
 }
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -350,19 +627,18 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 	// TODO: check authentication
 
-	// assign to a channel
-	ASSERT(associatedLane[clientID] == LaneID::NONE);
-	associatedLane[clientID] = LaneID::FIRST;
-
 	// send authentication result
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
 	SendPacket(clientHd, auth);
 
 	// TODO: fetch account data
-	AccountData& account = accountData[clientID];
-	account = {};
-	account.accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
+	AccountManager& am = GetAccountManager();
+	const AccountUID accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
+	am.accountList.emplace_back(accountUID);
+	am.accountMap.emplace(accountUID, --am.accountList.end());
+
+	Account& account = *(--am.accountList.end());
 	account.nickname.assign(nick, nickLen);
 	account.guildTag = L"Alpha";
 	account.leaderMasterID = 0; // Lua
@@ -373,20 +649,17 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		account.nickname = account.nickname.left(f);
 	}
 
+	accChdMap.emplace(accountUID, clientHd);
+	clientAccountUID[clientID] = accountUID;
+
 	// send account data
 	ClientSendAccountData(clientHd); // TODO: move this to hub instance
 
-	// register new player to the game
-	ASSERT(associatedLane[clientID] != LaneID::NONE);
-	lanes[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientHd, &account);
+	PushClientToHubInstance(clientHd);
 }
 
 void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 {
-	// Send account data
-	const i32 clientID = plidMap.Get(clientHd);
-	const AccountData& account = accountData[clientID];
-
 	// SN_ClientSettings
 	{
 		PacketWriter<Sv::SN_ClientSettings,2048> packet;

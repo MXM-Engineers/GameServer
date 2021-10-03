@@ -175,7 +175,7 @@ void Lane::CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData
 	LOG("[Lane%d][client%x] New player", laneIndex, clientHd);
 
 	LOCK_MUTEX(mutexNewPlayerQueue);
-	newPlayerQueue.push_back(EventOnClientConnect{ clientHd, accountData });
+	newPlayerQueue.push_back(PlayerTransit{ clientHd, accountData });
 }
 
 void Lane::CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)

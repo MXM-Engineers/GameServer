@@ -33,12 +33,10 @@ struct MatchmakerConnector
 
 		union {
 			struct {
-				InstanceUID instanceUID;
 				AccountUID leader;
 			} PartyCreate;
 
 			struct {
-				InstanceUID instanceUID;
 				PartyUID partyUID;
 			} PartyEnqueue;
 
@@ -71,7 +69,7 @@ struct MatchmakerConnector
 	bool Init();
 	void Update();
 
-	void QueryPartyCreate(InstanceUID instanceUID, AccountUID leader);
+	void QueryPartyCreate(AccountUID leader);
 	void QueryPartyEnqueue(PartyUID partyUID);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);

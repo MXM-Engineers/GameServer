@@ -12,7 +12,7 @@ bool HubPacketHandler::Init(HubGame* game_)
 	return true;
 }
 
-void HubPacketHandler::OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count)
+void HubPacketHandler::OnClientsConnected(const eastl::pair<ClientHandle, const Account*>* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		auto& it = clientList[i];
@@ -20,7 +20,7 @@ void HubPacketHandler::OnNewClientsConnected(const eastl::pair<ClientHandle, con
 	}
 }
 
-void HubPacketHandler::OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count)
+void HubPacketHandler::OnClientsDisconnected(const ClientHandle* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		ClientHandle clientHd = clientList[i];
@@ -102,21 +102,6 @@ void HubPacketHandler::OnMatchmakerPacket(const NetHeader& header, const u8* pac
 			const In::MN_MatchFound resp = SafeCast<In::MN_MatchFound>(packetData, packetSize);
 			game->MmOnMatchFound(resp.partyUID, resp.sortieUID);
 		} break;
-
-		case In::MN_RoomCreated::NET_ID: {
-			const In::MN_RoomCreated packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
-
-			HubGame::MmNewRoom newRoom;
-			newRoom.sortieUID = packet.sortieUID;
-			for(int i = 0; i < packet.playerCount; i++) {
-				newRoom.playerList.push_back(packet.playerList[i]);
-			}
-			game->MmOnRoomCreated(newRoom);
-		} break;
-
-		default: {
-			ASSERT_MSG(0, "case not handled");
-		}
 	}
 }
 

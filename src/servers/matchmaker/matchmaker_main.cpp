@@ -55,7 +55,6 @@ struct Matchmaker
 		{
 			AccountUID accountUID;
 			ClientHandle instanceChd;
-			InstanceUID instanceUID;
 		};
 
 		eastl::fixed_vector<Member,5,false> memberList;
@@ -258,7 +257,6 @@ struct Matchmaker
 				Party::Member member;
 				member.accountUID = packet.leader;
 				member.instanceChd = conn.clientHd;
-				member.instanceUID = packet.instanceUID;
 				party.memberList.push_back(member);
 
 				partyList.push_back(party);
@@ -269,7 +267,6 @@ struct Matchmaker
 				resp.result = 1;
 				resp.partyUID = party.UID;
 				resp.leader = packet.leader;
-				resp.instanceUID = packet.instanceUID;
 				SendPacket(conn.clientHd, resp);
 			} break;
 
@@ -281,17 +278,16 @@ struct Matchmaker
 				matchingPartyList.push_back(packet.partyUID);
 
 				const Party& party = *partyMap.at(packet.partyUID);
-				eastl::fixed_set<eastl::pair<ClientHandle,InstanceUID>,5,false> setInstance;
+				eastl::fixed_set<ClientHandle,5,false> setInstance;
 				foreach_const(mem, party.memberList) {
-					setInstance.insert({ mem->instanceChd, mem->instanceUID });
+					setInstance.insert(mem->instanceChd);
 				}
 
 				foreach_const(it, setInstance) {
 					In::MR_PartyEnqueued resp;
 					resp.result = 1;
-					resp.instanceUID = it->second;
 					resp.partyUID = packet.partyUID;
-					SendPacket(it->first, resp);
+					SendPacket(*it, resp);
 				}
 			} break;
 
@@ -364,18 +360,17 @@ struct Matchmaker
 			}
 
 			// send 'match found' packet to all instances
-			eastl::fixed_set<eastl::pair<ClientHandle,InstanceUID>,16,false> setInstance;
+			eastl::fixed_set<ClientHandle,16,false> setInstance;
 			foreach_const(pl, party.memberList) {
-				setInstance.insert({ pl->instanceChd, pl->instanceUID });
+				setInstance.insert(pl->instanceChd);
 			}
 
 
 			foreach_const(chd, setInstance) {
 				In::MN_MatchFound resp;
-				resp.instanceUID = chd->second;
 				resp.partyUID = *puid;
 				resp.sortieUID = room.UID;
-				SendPacket(chd->first, resp);
+				SendPacket(*chd, resp);
 			}
 		}
 		matchingPartyList.clear();
@@ -389,7 +384,10 @@ struct Matchmaker
 					In::MN_RoomCreated packet;
 					packet.sortieUID = r->UID;
 					packet.playerCount = 0;
-					packet.playerList[packet.playerCount++] = pl->accountUID; // FIXME: hack, fill all player info
+					In::MN_RoomCreated::Player player;
+					player.accountUID = pl->accountUID;
+					player.team = 0;
+					packet.playerList[packet.playerCount++] = player; // FIXME: hack, fill all player info
 					SendPacket(pl->instanceChd, packet);
 
 					pl->status = Room::PlayerStatus::InLobby;

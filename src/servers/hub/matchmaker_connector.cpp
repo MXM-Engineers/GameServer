@@ -53,7 +53,6 @@ void MatchmakerConnector::Update()
 				case Query::Type::PartyCreate: {
 					In::HQ_PartyCreate packet;
 					packet.leader = q->PartyCreate.leader;
-					packet.instanceUID = q->PartyCreate.instanceUID;
 					conn.SendPacket(packet);
 				} break;
 
@@ -89,13 +88,12 @@ void MatchmakerConnector::Update()
 }
 
 // Thread: Any Lane
-void MatchmakerConnector::QueryPartyCreate(InstanceUID instanceUID, AccountUID leader)
+void MatchmakerConnector::QueryPartyCreate(AccountUID leader)
 {
 	MMQueryUID queryUID = nextQueryUID;
 	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
 
 	Query query(queryUID, Query::Type::PartyCreate);
-	query.PartyCreate.instanceUID = instanceUID;
 	query.PartyCreate.leader = leader;
 
 	LOCK_MUTEX(mutexQueries);

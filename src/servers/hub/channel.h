@@ -12,8 +12,8 @@ struct HubPacketHandler
 
 	bool Init(HubGame* game_);
 
-	void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count);
-	void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count);
+	void OnClientsConnected(const eastl::pair<ClientHandle, const Account*>* clientList, const i32 count);
+	void OnClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
 

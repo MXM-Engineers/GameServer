@@ -14,10 +14,6 @@ struct AccountData;
 
 struct HubGame
 {
-	// fixed non growing hash map
-	template<typename T1, typename T2, int EXPECTED_CAPACITY>
-	using hash_map = eastl::fixed_hash_map<T1 ,T2, EXPECTED_CAPACITY, EXPECTED_CAPACITY*4, false>;
-
 	enum {
 		MAX_PLAYERS = MAX_CLIENTS
 	};
@@ -43,7 +39,6 @@ struct HubGame
 	{
 		struct Member {
 			AccountUID accountUID;
-			InstanceUID instanceUID;
 		};
 
 		const PartyUID UID;
@@ -57,7 +52,7 @@ struct HubGame
 	};
 
 	const ClientLocalMapping* plidMap;
-	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
+	eastl::array<const Account*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
 	HubReplication replication;
@@ -84,7 +79,7 @@ struct HubGame
 
 	bool LoadMap();
 
-	void OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData);
+	void OnPlayerConnect(ClientHandle clientHd, const Account* accountData);
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
 	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
@@ -108,7 +103,6 @@ struct HubGame
 	void MmOnPartyCreated(PartyUID partyUID, AccountUID leader);
 	void MmOnPartyEnqueued(PartyUID partyUID);
 	void MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID);
-	void MmOnRoomCreated(const MmNewRoom& newRoom);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

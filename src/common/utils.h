@@ -3,12 +3,12 @@
 #include <EASTL/fixed_string.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_map.h>
+#include <EASTL/fixed_hash_map.h>
 #include <EASTL/array.h>
 
 typedef eastl::fixed_string<wchar,64,true> WideString;
 typedef eastl::fixed_string<char,32,false> FixedStr32;
 typedef eastl::fixed_string<char,64,false> FixedStr64;
-
 
 typedef eastl::fixed_string<wchar,512,true> Path;
 
@@ -65,6 +65,9 @@ inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
 	return sv.compare(str) == 0;
 }
 
+template<typename T1, typename T2, int EXPECTED_CAPACITY, bool GrowOnOverflow = false>
+using hash_map = eastl::fixed_hash_map<T1 ,T2, EXPECTED_CAPACITY, EXPECTED_CAPACITY*4, GrowOnOverflow>;
+
 // LOCAL_MIN: included
 // LOCAL_MAX: excluded
 template<typename LocalID, typename GlobalID, LocalID LOCAL_MIN, LocalID LOCAL_MAX, LocalID LOCAL_INVALID = LocalID::INVALID>
@@ -74,7 +77,7 @@ struct LocalMapping
 		LOCAL_CAPACITY = (i64)LOCAL_MAX - (i64)LOCAL_MIN
 	};
 
-	eastl::fixed_map<GlobalID,i32,LOCAL_CAPACITY,false> map;
+	hash_map<GlobalID,i32,LOCAL_CAPACITY> map;
 	eastl::array<u8,LOCAL_CAPACITY> occupied = {0};
 
 	LocalID Push(GlobalID globalID)

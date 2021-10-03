@@ -10,7 +10,7 @@
 #include <EASTL/fixed_list.h>
 #include <mxm/core.h>
 
-struct AccountData;
+struct Account;
 
 struct HubReplication
 {
@@ -183,9 +183,9 @@ struct HubReplication
 	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
-	void SendAccountDataLobby(ClientHandle clientHd, const AccountData& account);
+	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);
 
-	void SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port);
+	void SendConnectToServer(ClientHandle clientHd, const Account& account, const u8 ip[4], u16 port);
 	void SendGameReady(ClientHandle clientHd);
 
 	void SendCalendar(ClientHandle clientHd);

@@ -3,23 +3,11 @@
 #include <common/network.h>
 #include <common/utils.h>
 #include <common/protocol.h>
-#include <EASTL/queue.h>
 #include <EASTL/fixed_set.h>
-#include <EASTL/fixed_map.h>
 
 #include "matchmaker_connector.h"
-
-struct AccountData
-{
-	AccountUID accountUID;
-	WideString nickname;
-	WideString guildTag;
-	i32 leaderMasterID;
-
-	// TODO: add to this
-};
-
-struct AccountData;
+#include "instance.h"
+#include "account.h"
 
 template<typename PacketHandler>
 void NetworkParseReceiveBuffer(PacketHandler* ph, Server* server, const u8* data, const u32 size, const char* handlerName)
@@ -68,73 +56,138 @@ struct IInstance
 	virtual void OnMatchmakerPacket(const NetHeader& header, const u8* packetData) = 0;
 };
 
-typedef IInstance* (*fn_InstanceAllocate)();
-
-enum class LaneID: i32
+enum class InstanceType: u8
 {
-	NONE = -1,
-	FIRST = 0,
-	_COUNT // TODO: fetch core count instead and fill them that way
+	NONE = 0,
+	HUB,
+	ROOM
 };
 
-// Each lane is a separate thread hosting instances
-struct Lane
+const int CPU_COUNT = 1;
+
+struct InstancePool
 {
-	struct EventOnClientConnect
+	struct RoomUser
 	{
 		ClientHandle clientHd;
-		const AccountData* accountData;
+		AccountUID accountUID;
+		u8 team;
+		u8 userID;
 	};
 
-	u32 laneIndex;
-	Time localTime;
+	struct Lane
+	{
+		struct Client
+		{
+			ClientHandle clientHd;
+			AccountUID accountUID;
+			InstanceType instanceType;
+			InstanceUID instanceUID;
+		};
 
-	EA::Thread::Thread thread;
+		Server* server;
+		EA::Thread::Thread thread;
+		i32 laneIndex;
+		Time localTime = Time::ZERO;
+
+		GrowableBuffer recvDataBuff;
+
+		eastl::fixed_list<Client, MAX_CLIENTS, false> clientList;
+		hash_map<ClientHandle, decltype(clientList)::iterator, MAX_CLIENTS> clientMap;
+		eastl::fixed_set<ClientHandle,MAX_CLIENTS> clientHandleSet;
+
+		ProfileMutex(Mutex, mutexMatchmakerPacketsQueue);
+		GrowableBuffer mmPacketQueues[2];
+		u8 mmPacketQueueFront = 0; // being pushed to by coordinator
+
+		ProfileMutex(Mutex, mutexRoguePacketsQueue);
+		GrowableBuffer roguePacketsQueue;
+
+		ProfileMutex(Mutex, mutexClientDisconnectQueue);
+		eastl::fixed_vector<ClientHandle,128> clientDisconnectQueue;
+
+		ProfileMutex(Mutex, mutexClientTransferOutQueue);
+		eastl::fixed_vector<ClientHandle,128> clientTransferOutQueue;
+
+		ProfileMutex(Mutex, mutexCreateRoomQueue);
+		struct CreateRoomEntry {
+			SortieUID sortieUID;
+			eastl::fixed_vector<RoomUser,16> users;
+		};
+		eastl::fixed_vector<CreateRoomEntry,128> createRoomQueue;
+
+		ProfileMutex(Mutex, mutexHubPushPlayerQueue);
+		struct HubPlayerEntry {
+			ClientHandle clientHd;
+			AccountUID accountUID;
+		};
+		eastl::fixed_vector<HubPlayerEntry,128> hubPushPlayerQueue;
+
+		eastl::list<HubInstance> instanceHubList;
+		eastl::list<RoomInstance> instanceRoomList;
+
+		hash_map<InstanceUID,decltype(instanceHubList)::iterator,128> instanceHubMap;
+		hash_map<InstanceUID,decltype(instanceRoomList)::iterator,128> instanceRoomMap;
+
+		// Thread: Lane
+		void Update();
+		void Cleanup();
+
+		void ClientHandlePacket();
+	};
+
+	union ClientLocation
+	{
+		u8 whole;
+
+		struct {
+			u8 lane;
+		};
+
+		static ClientLocation Null() {
+			return {0x0};
+		}
+
+		inline bool IsNull() const { return whole == 0x0; }
+	};
+
 	Server* server;
+	eastl::array<Lane,CPU_COUNT> lanes;
 
-	GrowableBuffer recvDataBuff;
+	ClientLocalMapping plidMap;
+	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
+	eastl::array<ClientLocation, MAX_CLIENTS> clientLocation;
 
-	ProfileMutex(Mutex, mutexPacketDataQueue);
-	GrowableBuffer packetDataQueue;
-
-	// TODO: dual buffer tech is probably overkill
-	GrowableBuffer mmPacketQueues[2];
-	EA::Thread::AtomicInt32 mmPacketQueueFront = 0; // being pushed to by coordinator
-
-	ProfileMutex(Mutex, mutexClientDisconnectedList);
-	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
-
-
-	ProfileMutex(Mutex, mutexNewPlayerQueue);
-	eastl::fixed_vector<EventOnClientConnect,128> newPlayerQueue;
-
-	eastl::fixed_set<ClientHandle,MAX_CLIENTS,false> clientSet;
-
-	fn_InstanceAllocate allocInstance;
-	IInstance* instance;
-
-	void Init(Server* server_);
-	void Update();
+	// Thread: Coordinator
+	bool Init(Server* server_);
 	void Cleanup();
 
-	void CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData);
-	void CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
-	void CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count);
-	void CoordinatorPushMatchmakerPackets(const u8* buffer, u32 bufferSize);
+	// Thread: Coordinator
+	void QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID);
+	void QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount);
 
-	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
+	void QueuePopPlayers(const ClientHandle* clientList, const i32 count); // on disconnect
+
+	// packets piped to coordinator before player is assigned to an instance
+	void QueueRogueCoordinatorPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
+	void QueueMatchmakerPackets(const u8* buffer, u32 bufferSize);
+
+	inline bool IsClientInsideAnInstance(ClientHandle clientHd) const {
+		return plidMap.TryGet(clientHd) != -1;
+	}
 };
 
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
 	Server* server;
-	eastl::array<Lane, (i32)LaneID::_COUNT> lanes;
-	eastl::array<LaneID, MAX_CLIENTS> associatedLane;
+	InstancePool instancePool;
 
 	ClientLocalMapping plidMap;
 	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
-	eastl::array<AccountData, MAX_CLIENTS> accountData;
+	eastl::array<AccountUID, MAX_CLIENTS> clientAccountUID;
+
+	hash_map<AccountUID,ClientHandle,MAX_CLIENTS> accChdMap;
 
 	GrowableBuffer recvDataBuff;
 
@@ -150,6 +203,8 @@ struct Coordinator
 
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 private:
+
+	void PushClientToHubInstance(ClientHandle clientHd);
 
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);

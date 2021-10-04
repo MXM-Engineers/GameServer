@@ -46,16 +46,6 @@ void NetworkParseReceiveBuffer(PacketHandler* ph, Server* server, const u8* data
 	}
 }
 
-struct IInstance
-{
-	virtual bool Init(Server* server_) = 0;
-	virtual void Update(Time localTime_) = 0;
-	virtual void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count) = 0;
-	virtual void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count) = 0;
-	virtual void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData) = 0;
-	virtual void OnMatchmakerPacket(const NetHeader& header, const u8* packetData) = 0;
-};
-
 enum class InstanceType: u8
 {
 	NONE = 0,

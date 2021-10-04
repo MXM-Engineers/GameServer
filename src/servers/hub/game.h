@@ -10,8 +10,6 @@
 #include "world.h"
 #include "matchmaker_connector.h"
 
-struct AccountData;
-
 struct HubGame
 {
 	enum {
@@ -94,15 +92,9 @@ struct HubGame
 	void OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID);
 	void OnSortieRoomConfirm(ClientHandle clientHd, bool confirm);
 
-	struct MmNewRoom
-	{
-		SortieUID sortieUID;
-		eastl::fixed_vector<AccountUID,16,false> playerList;
-	};
-
 	void MmOnPartyCreated(PartyUID partyUID, AccountUID leader);
 	void MmOnPartyEnqueued(PartyUID partyUID);
-	void MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID);
+	void MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

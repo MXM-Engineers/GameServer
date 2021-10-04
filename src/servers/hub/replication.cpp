@@ -1608,38 +1608,56 @@ void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
 	SendPacket(clientHd, matching);
 }
 
-void HubReplication::SendMatchingPartyFound(ClientHandle clientHd)
+void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty)
 {
 	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
 
-	packet.Write<i64>(1); // sortieID
-	packet.Write<StageIndex>(StageIndex::CombatArena); // stageIndex
+	packet.Write(matchingParty.sortieUID); // sortieID
+	packet.Write(StageIndex::CombatArena); // stageIndex
 	packet.Write<i32>(6); // gametype
 	// 1: AI Match, 2: Custom match
 	packet.Write<i32>(0); // gameDefinitionType
 	packet.Write<i32>(0); // stageRule
 
 	// allies
-	packet.Write<u16>(1);
-	// 0
-	packet.Write<UserID>(UserID(1)); // userID
-	packet.WriteStringObj(L"LordSk"); // nickname
-	packet.Write<u8>(0); // isBot
-	packet.Write<i32>(0); // tier
-	packet.Write<i32>(0); // tierGroupRanking
-	packet.Write<i32>(0); // tierSeriesFlag
-	packet.Write<i32>(0); // pvpRate
+	i32 alliesCount = 0;
+	for(int i = 0; i < matchingParty.playerCount; i++) {
+		if(matchingParty.playerList[i].team == 0) alliesCount++;
+	}
+	packet.Write<u16>(alliesCount);
+
+	for(int i = 0; i < matchingParty.playerCount; i++) {
+		const auto& p = matchingParty.playerList[i];
+		if(p.team == 0) {
+			packet.Write(UserID(i + 1)); // userID
+			packet.WriteStringObj(p.name.data, p.name.len); // nickname
+			packet.Write<u8>(p.isBot); // isBot
+			packet.Write<i32>(0); // tier
+			packet.Write<i32>(0); // tierGroupRanking
+			packet.Write<i32>(0); // tierSeriesFlag
+			packet.Write<i32>(0); // pvpRate
+		}
+	}
 
 	// enemies
-	packet.Write<u16>(1);
-	// 0
-	packet.Write<UserID>(UserID(2)); // userID
-	packet.WriteStringObj(L"NCSoft"); // nickname
-	packet.Write<u8>(1); // isBot
-	packet.Write<i32>(1); // tier
-	packet.Write<i32>(0); // tierGroupRanking
-	packet.Write<i32>(0); // tierSeriesFlag
-	packet.Write<i32>(1); // pvpRate
+	i32 enemiesCount = 0;
+	for(int i = 0; i < matchingParty.playerCount; i++) {
+		if(matchingParty.playerList[i].team == 1) enemiesCount++;
+	}
+	packet.Write<u16>(enemiesCount);
+
+	for(int i = 0; i < matchingParty.playerCount; i++) {
+		const auto& p = matchingParty.playerList[i];
+		if(p.team == 1) {
+			packet.Write(UserID(i + 1)); // userID
+			packet.WriteStringObj(p.name.data, p.name.len); // nickname
+			packet.Write<u8>(p.isBot); // isBot
+			packet.Write<i32>(0); // tier
+			packet.Write<i32>(0); // tierGroupRanking
+			packet.Write<i32>(0); // tierSeriesFlag
+			packet.Write<i32>(0); // pvpRate
+		}
+	}
 
 	// spectators
 	packet.Write<u16>(0);

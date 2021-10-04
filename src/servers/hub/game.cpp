@@ -295,7 +295,8 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 	const i32 userID = plidMap->Get(clientHd);
 
 	// TODO: validate args
-	matchmaker->QueryPartyCreate(playerAccountData[userID]->UID);
+	const Account& acc = *playerAccountData[userID];
+	matchmaker->QueryPartyCreate(acc.nickname, acc.UID);
 }
 
 void HubGame::OnEnqueueGame(ClientHandle clientHd)
@@ -352,17 +353,17 @@ void HubGame::MmOnPartyEnqueued(PartyUID partyUID)
 	}
 }
 
-void HubGame::MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID)
+void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 {
 	// TODO: find and error out if not found
-	Party& party = *partyMap.at(partyUID);
+	Party& party = *partyMap.at(matchingParty.partyUID);
 	foreach_const(m, party.memberList) {
 		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
 		const i32 userID = plidMap->Get(clientHd);
-		playerMap[userID]->sortieUID = sortieUID;
+		playerMap[userID]->sortieUID = matchingParty.sortieUID;
 
 		// TODO: check if on this hub
-		replication.SendMatchingPartyFound(clientHd);
+		replication.SendMatchingPartyFound(clientHd, matchingParty);
 	}
 }
 

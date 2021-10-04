@@ -98,9 +98,9 @@ void HubPacketHandler::OnMatchmakerPacket(const NetHeader& header, const u8* pac
 			game->MmOnPartyEnqueued(resp.partyUID);
 		} break;
 
-		case In::MN_MatchFound::NET_ID: {
-			const In::MN_MatchFound resp = SafeCast<In::MN_MatchFound>(packetData, packetSize);
-			game->MmOnMatchFound(resp.partyUID, resp.sortieUID);
+		case In::MN_MatchingPartyFound::NET_ID: {
+			const In::MN_MatchingPartyFound resp = SafeCast<In::MN_MatchingPartyFound>(packetData, packetSize);
+			game->MmOnMatchFound(resp);
 		} break;
 	}
 }

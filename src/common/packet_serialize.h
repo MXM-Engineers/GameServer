@@ -1251,13 +1251,22 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 }
 
 template<>
-inline const char* PacketSerialize<In::MN_MatchFound>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::MN_MatchingPartyFound>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::MN_MatchFound packet = SafeCast<In::MN_MatchFound>(packetData, packetSize);
+	const In::MN_MatchingPartyFound& packet = SafeCast<In::MN_MatchingPartyFound>(packetData, packetSize);
 
-	SER("MN_MatchFound(%d, %d) :: {", In::MN_MatchFound::NET_ID, packetSize);
+	SER("MN_MatchingPartyFound(%d, %d) :: {", In::MN_MatchingPartyFound::NET_ID, packetSize);
 	SER("	partyUID=%u", packet.partyUID);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("	playerList(%d)=[", packet.playerCount);
+	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
+		SER("	name='.*ws'", p->name.len, p->name.data);
+		SER("	accountUID=%u", p->accountUID);
+		SER("	team=%u", p->team);
+		SER("	isBot=%u", p->isBot);
+	}
+	SER("	]");
 	SER("}");
 
 	return str.data();
@@ -1267,7 +1276,7 @@ template<>
 inline const char* PacketSerialize<In::HN_PlayerRoomFound>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::HN_PlayerRoomFound packet = SafeCast<In::HN_PlayerRoomFound>(packetData, packetSize);
+	const In::HN_PlayerRoomFound& packet = SafeCast<In::HN_PlayerRoomFound>(packetData, packetSize);
 
 	SER("HN_PlayerNotifyRoomFound(%d, %d) :: {", In::HN_PlayerRoomFound::NET_ID, packetSize);
 	SER("	accountUID=%u", packet.accountUID);
@@ -1281,7 +1290,7 @@ template<>
 inline const char* PacketSerialize<In::HN_PlayerRoomConfirm>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::HN_PlayerRoomConfirm packet = SafeCast<In::HN_PlayerRoomConfirm>(packetData, packetSize);
+	const In::HN_PlayerRoomConfirm& packet = SafeCast<In::HN_PlayerRoomConfirm>(packetData, packetSize);
 
 	SER("HN_PlayerRoomConfirm(%d, %d) :: {", In::HN_PlayerRoomConfirm::NET_ID, packetSize);
 	SER("	accountUID=%u", packet.accountUID);
@@ -1296,11 +1305,18 @@ template<>
 inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	In::MN_RoomCreated packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
+	const In::MN_RoomCreated& packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
 
 	SER("MN_SortieBegin(%d, %d) :: {", In::MN_RoomCreated::NET_ID, packetSize);
 	SER("	sortieUID=%llu", packet.sortieUID);
-	SER("	...");
+	SER("	playerList(%d)=[", packet.playerCount);
+	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
+		SER("	name='.*ws'", p->name.len, p->name.data);
+		SER("	accountUID=%u", p->accountUID);
+		SER("	team=%u", p->team);
+		SER("	isBot=%u", p->isBot);
+	}
+	SER("	]");
 	SER("}");
 
 	return str.data();

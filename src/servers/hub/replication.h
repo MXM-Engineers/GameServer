@@ -3,6 +3,7 @@
 #include <common/vector_math.h>
 #include <common/utils.h>
 #include <common/protocol.h>
+#include <common/inner_protocol.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>
@@ -11,6 +12,21 @@
 #include <mxm/core.h>
 
 struct Account;
+
+struct MatchingParty
+{
+	struct Player
+	{
+		WideString& name;
+		u8 userID;
+		u8 team;
+		u8 isBot;
+		// TODO: more useful stuff
+	};
+
+	SortieUID sortieUID;
+	eastl::fixed_vector<Player,16,false> players;
+};
 
 struct HubReplication
 {
@@ -193,7 +209,7 @@ struct HubReplication
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
 	void SendPartyEnqueue(ClientHandle clientHd);
-	void SendMatchingPartyFound(ClientHandle clientHd);
+	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

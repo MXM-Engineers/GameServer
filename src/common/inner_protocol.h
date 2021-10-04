@@ -23,6 +23,25 @@ namespace In {
 
 constexpr u32 MagicHandshake = 0xaedf45;
 
+template<u16 CAPACITY>
+struct FixedWideString
+{
+	u16 len;
+	wchar data[CAPACITY];
+
+	FixedWideString() = default;
+
+	// convenient copy function
+	template<i32 CAP, bool Overflow>
+	inline void Copy(const eastl::fixed_string<wchar,CAP,Overflow>& str) {
+		ASSERT(str.size() <= CAPACITY);
+		len = str.size();
+		memmove(data, str.data(), sizeof(wchar) * len);
+	}
+};
+
+typedef FixedWideString<32> StrName;
+
 struct HQ_Handshake
 {
 	enum { NET_ID = 1001 };
@@ -35,6 +54,7 @@ struct HQ_PartyCreate
 	enum { NET_ID = 1002 };
 
 	// TODO: some useful stuff here
+	StrName name;
 	AccountUID leader;
 };
 
@@ -121,13 +141,23 @@ struct MR_PartyEnqueued
 	PartyUID partyUID;
 };
 
-struct MN_MatchFound
+struct MN_MatchingPartyFound
 {
 	enum { NET_ID = 3005 };
+
+	struct Player
+	{
+		StrName name;
+		AccountUID accountUID;
+		u8 team; // 0: red, 1: blue, 2: spectators
+		u8 isBot;
+	};
 
 	// TODO: some useful stuff here
 	PartyUID partyUID;
 	SortieUID sortieUID;
+	u8 playerCount;
+	eastl::array<Player,16> playerList;
 };
 
 struct MN_RoomCreated
@@ -136,8 +166,10 @@ struct MN_RoomCreated
 
 	struct Player
 	{
+		StrName name;
 		AccountUID accountUID;
 		u8 team; // 0: red, 1: blue, 2: spectators
+		u8 isBot;
 	};
 
 	SortieUID sortieUID;

@@ -19,9 +19,12 @@ inline void ShutdownServer()
 
 intptr_t ThreadMatchmaker(void* pData);
 
-// fixed hash map
-template<typename T1, typename T2, int CAPACITY, bool Growing = false>
-using hash_map = eastl::fixed_hash_map<T1 ,T2, CAPACITY, CAPACITY*4, Growing>;
+enum class Team: u8
+{
+	RED = 0,
+	BLUE,
+	SPECTATOR
+};
 
 struct Matchmaker
 {
@@ -53,6 +56,7 @@ struct Matchmaker
 
 		struct Member
 		{
+			WideString name;
 			AccountUID accountUID;
 			ClientHandle instanceChd;
 		};
@@ -74,18 +78,24 @@ struct Matchmaker
 
 		struct Player
 		{
+			const WideString name;
 			const AccountUID accountUID;
 			const ClientHandle instanceChd;
 			PlayerStatus status = PlayerStatus::Unknown;
+			Team team;
 
-			Player(AccountUID accountUID_, ClientHandle instanceChd_):
+			Player(const WideString& name_, AccountUID accountUID_, ClientHandle instanceChd_):
+				name(name_),
 				accountUID(accountUID_),
 				instanceChd(instanceChd_)
 			{}
 		};
 
 		const SortieUID UID;
-		eastl::fixed_vector<Player,16,false> playerList;
+		eastl::fixed_list<Player,16,false> playerList;
+		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
+		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
+		eastl::fixed_vector<decltype(playerList)::iterator,6> teamSpectators;
 
 		Room(SortieUID UID_): UID(UID_) {}
 	};
@@ -255,6 +265,7 @@ struct Matchmaker
 				nextPartyUID = PartyUID((u32)nextPartyUID + 1);
 
 				Party::Member member;
+				member.name.assign(packet.name.data, packet.name.len);
 				member.accountUID = packet.leader;
 				member.instanceChd = conn.clientHd;
 				party.memberList.push_back(member);
@@ -355,8 +366,25 @@ struct Matchmaker
 			roomMap.emplace(room.UID, --roomList.end());
 
 			foreach_const(pl, party.memberList) {
-				Room::Player player(pl->accountUID, pl->instanceChd);
+				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
+				player.team = Team::RED;
 				room.playerList.push_back(player);
+				room.teamRed.push_back(--room.playerList.end());
+			}
+
+			// fill empty slots with bots
+			i32 botID = 1;
+			while(room.teamRed.size() < 3) {
+				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
+				player.team = Team::RED;
+				room.playerList.push_back(player);
+				room.teamRed.push_back(--room.playerList.end());
+			}
+			while(room.teamBlue.size() < 3) {
+				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
+				player.team = Team::BLUE;
+				room.playerList.push_back(player);
+				room.teamBlue.push_back(--room.playerList.end());
 			}
 
 			// send 'match found' packet to all instances
@@ -365,11 +393,21 @@ struct Matchmaker
 				setInstance.insert(pl->instanceChd);
 			}
 
-
 			foreach_const(chd, setInstance) {
-				In::MN_MatchFound resp;
+				In::MN_MatchingPartyFound resp;
 				resp.partyUID = *puid;
 				resp.sortieUID = room.UID;
+
+				resp.playerCount = 0;
+				foreach(pl, room.playerList) {
+					In::MN_MatchingPartyFound::Player player;
+					player.name.Copy(pl->name);
+					player.accountUID = pl->accountUID;
+					player.team = (u8)pl->team;
+					player.isBot = pl->accountUID == AccountUID::INVALID;
+					resp.playerList[resp.playerCount++] = player;
+				}
+
 				SendPacket(*chd, resp);
 			}
 		}
@@ -384,6 +422,7 @@ struct Matchmaker
 					In::MN_RoomCreated packet;
 					packet.sortieUID = r->UID;
 					packet.playerCount = 0;
+
 					In::MN_RoomCreated::Player player;
 					player.accountUID = pl->accountUID;
 					player.team = 0;

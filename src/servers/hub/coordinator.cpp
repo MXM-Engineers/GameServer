@@ -509,10 +509,12 @@ void Coordinator::Update(f64 delta)
 			eastl::fixed_vector<InstancePool::RoomUser,128> roomClientList;
 			for(int i = 0; i < packet.playerCount; i++) {
 				auto it = accChdMap.find(packet.playerList[i].accountUID);
+				ASSERT(clientAccountUID[i] == packet.playerList[i].accountUID);
 				if(it != accChdMap.end()) {
 					const ClientHandle clientHd = it->second;
 					InstancePool::RoomUser ru;
 					ru.clientHd = clientHd;
+					ru.accountUID = clientAccountUID[i];
 					ru.team = packet.playerList[i].team;
 					ru.userID = i;
 					roomClientList.push_back(ru);

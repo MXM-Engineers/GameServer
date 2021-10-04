@@ -36,10 +36,40 @@ struct RoomInstance
 		u8 userID;
 	};
 
+	struct User
+	{
+		const ClientHandle clientHd;
+		const AccountUID accountUID;
+		const u8 userID;
+
+		// picking phase related stuff
+
+		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_):
+			clientHd(clientHd_),
+			accountUID(accountUID_),
+			userID(userID_)
+		{
+
+		}
+	};
+
+	enum Team {
+		RED = 0,
+		BLUE,
+		SPECTATORS,
+		COUNT
+	};
+
 	Server* server;
 	const InstanceUID UID;
 	const SortieUID sortieUID;
 	ClientLocalMapping plidMap;
+
+	eastl::fixed_list<User,16,false> userList;
+	eastl::fixed_vector<decltype(userList)::iterator,5 ,false> teamRed;
+	eastl::fixed_vector<decltype(userList)::iterator,5 ,false> teamBlue;
+	eastl::fixed_vector<decltype(userList)::iterator,6 ,false> teamSpectator;
+	eastl::fixed_vector<decltype(userList)::iterator,16,false> connectedUsers;
 
 	RoomInstance(InstanceUID UID_, SortieUID sortieUID_):
 		UID(UID_),
@@ -54,4 +84,25 @@ struct RoomInstance
 	void OnClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
+
+private:
+
+	template<typename Packet>
+	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
+	{
+		SendPacketData<Packet>(clientHd, sizeof(packet), &packet);
+	}
+
+	template<typename Packet, u32 CAPACITY>
+	inline void SendPacket(ClientHandle clientHd, const PacketWriter<Packet,CAPACITY>& writer)
+	{
+		SendPacketData<Packet>(clientHd, writer.size, writer.data);
+	}
+
+	template<typename Packet>
+	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
+	{
+		NT_LOG("[client%x] Room(%llx) :: %s", clientHd, sortieUID, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
+	}
 };

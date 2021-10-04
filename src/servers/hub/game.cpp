@@ -362,7 +362,7 @@ void HubGame::MmOnMatchFound(PartyUID partyUID, SortieUID sortieUID)
 		playerMap[userID]->sortieUID = sortieUID;
 
 		// TODO: check if on this hub
-		replication.SendMatchFound(clientHd);
+		replication.SendMatchingPartyFound(clientHd);
 	}
 }
 

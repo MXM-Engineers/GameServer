@@ -193,8 +193,7 @@ struct HubReplication
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
 	void SendPartyEnqueue(ClientHandle clientHd);
-	void SendMatchFound(ClientHandle clientHd);
-	void SendNewSortiePickingPhase(ClientHandle clientHd);
+	void SendMatchingPartyFound(ClientHandle clientHd);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

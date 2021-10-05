@@ -1076,6 +1076,21 @@ class ServerSerializer:
         print('    characterID=%d' % p.read_i32())
         print('}')
 
+    def serialize_62209(netid, p: common.PacketReader):
+        print('SN_MasterPick {')
+        print('    userID=%d' % p.read_i32())
+        print('    characterSelectInfos=[')
+        count = p.read_u16()
+        while count > 0:
+            print('    {')
+            print('      characterID=%d' % p.read_i32())
+            print('      creatureIndex=%d' % p.read_i32())
+            print('      skillSlot1=%d' % p.read_i32())
+            print('      skillSlot2=%d' % p.read_i32())
+            print('    },')
+            count -= 1
+        print('    ]')
+
     def serialize_62214(netid, p: common.PacketReader):
         print('SN_ReadySortieRoom{')
         print('    userId=%d' % p.read_i32())

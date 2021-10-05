@@ -141,40 +141,32 @@ struct MR_PartyEnqueued
 	PartyUID partyUID;
 };
 
+struct RoomUser
+{
+	StrName name;
+	AccountUID accountUID;
+	u8 team; // 0: red, 1: blue, 2: spectators
+	u8 isBot;
+};
+
 struct MN_MatchingPartyFound
 {
 	enum { NET_ID = 3005 };
-
-	struct Player
-	{
-		StrName name;
-		AccountUID accountUID;
-		u8 team; // 0: red, 1: blue, 2: spectators
-		u8 isBot;
-	};
 
 	// TODO: some useful stuff here
 	PartyUID partyUID;
 	SortieUID sortieUID;
 	u8 playerCount;
-	eastl::array<Player,16> playerList;
+	eastl::array<RoomUser,16> playerList;
 };
 
 struct MN_RoomCreated
 {
 	enum { NET_ID = 3006 };
 
-	struct Player
-	{
-		StrName name;
-		AccountUID accountUID;
-		u8 team; // 0: red, 1: blue, 2: spectators
-		u8 isBot;
-	};
-
 	SortieUID sortieUID;
 	u8 playerCount;
-	eastl::array<Player,16> playerList;
+	eastl::array<RoomUser,16> playerList;
 };
 
 }

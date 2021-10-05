@@ -144,6 +144,16 @@ class ClientSerializer:
     def serialize_60097(netid, p: common.PacketReader):
         print('CQ_EnqueueGame {}')
 
+    def serialize_60100(netid, p: common.PacketReader):
+        print('CQ_MasterPick {')
+        print('	localMasterID=%d' % p.read_u32())
+        print('}')
+
+    def serialize_60101(netid, p: common.PacketReader):
+        print('CQ_MasterUnpick {')
+        print('	localMasterID=%d' % p.read_u32())
+        print('}')
+
     def serialize_60113(netid, p: common.PacketReader):
         print('CQ_PlayerJump {')
         excludedFieldBits = p.read_u8()

@@ -145,9 +145,8 @@ void InstancePool::Lane::Update()
 			}
 		}
 
-		clientList.erase(client);
-		clientMap.erase(*tr);
-		clientHandleSet.erase(*tr);
+		client->instanceType = InstanceType::NONE;
+		client->instanceUID = InstanceUID::INVALID;
 		LOG("[Lane_%d][client%x] client transfered out", laneIndex, *tr);
 	}
 
@@ -159,22 +158,20 @@ void InstancePool::Lane::Update()
 	}
 
 	foreach_const(cr, createRoomList) {
-		InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		const InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
 		instanceRoomList.emplace_back(instUID, cr->sortieUID);
 		instanceRoomMap.emplace(instUID, --instanceRoomList.end());
 		RoomInstance& room = *(--instanceRoomList.end());
 
-		eastl::fixed_vector<RoomInstance::NewUser,16,false> newUsers;
-		foreach_const(cu, cr->users) {
-			RoomInstance::NewUser nu;
-			nu.clientHd = cu->clientHd;
-			nu.accountUID = cu->accountUID;
-			nu.team = cu->team;
-			nu.userID = cu->userID;
-			newUsers.push_back(nu);
+		foreach_const(u, cr->users) {
+			if(u->clientHd != ClientHandle::INVALID) {
+				Client& client = *clientMap.at(u->clientHd);
+				client.instanceType = InstanceType::ROOM;
+				client.instanceUID = instUID;
+			}
 		}
 
-		room.Init(server, newUsers.data(), newUsers.size());
+		room.Init(server, cr->users.data(), cr->users.size());
 	}
 
 	// push players to hubs
@@ -186,7 +183,7 @@ void InstancePool::Lane::Update()
 
 	// TODO: only one hub ever?
 	if(instanceHubList.empty()) {
-		InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		const InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
 		instanceHubList.emplace_back(instUID);
 		instanceHubMap.emplace(instUID, --instanceHubList.end());
 
@@ -384,6 +381,8 @@ void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList
 
 	for(i32 i = 0; i < userCount; i++) {
 		const RoomUser& user = userList[i];
+		if(user.clientHd == ClientHandle::INVALID) continue;
+
 		const i32 clientID = plidMap.TryGet(user.clientHd);
 		if(clientID == -1) {
 			WARN("ClientID not found in local mapping (clientHd=%u)", user.clientHd);
@@ -405,10 +404,12 @@ void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList
 
 	for(i32 i = 0; i < userCount; i++) {
 		const RoomUser& user = userList[i];
-		const i32 clientID = plidMap.TryGet(user.clientHd);
-		if(clientID == -1) {
-			WARN("ClientID not found in local mapping (clientHd=%u)", user.clientHd);
-			continue;
+		if(user.clientHd != ClientHandle::INVALID) {
+			const i32 clientID = plidMap.TryGet(user.clientHd);
+			if(clientID == -1) {
+				WARN("ClientID not found in local mapping (clientHd=%u)", user.clientHd);
+				continue;
+			}
 		}
 
 		create.users.push_back(user);
@@ -508,15 +509,32 @@ void Coordinator::Update(f64 delta)
 
 			eastl::fixed_vector<InstancePool::RoomUser,128> roomClientList;
 			for(int i = 0; i < packet.playerCount; i++) {
-				auto it = accChdMap.find(packet.playerList[i].accountUID);
-				ASSERT(clientAccountUID[i] == packet.playerList[i].accountUID);
-				if(it != accChdMap.end()) {
-					const ClientHandle clientHd = it->second;
+				const In::RoomUser& pl = packet.playerList[i];
+
+				if(pl.isBot) {
+					InstancePool::RoomUser ru;
+					ru.clientHd = ClientHandle::INVALID;
+					ru.accountUID = AccountUID::INVALID;
+					ru.team = pl.team;
+					ru.userID = i;
+					ru.isBot = true;
+					roomClientList.push_back(ru);
+				}
+				else {
+					auto it = accChdMap.find(pl.accountUID);
+
+					ClientHandle clientHd = ClientHandle::INVALID;
+					if(it != accChdMap.end()) { // on this server
+						ASSERT(clientAccountUID[plidMap.Get(it->second)] == pl.accountUID); // sanity check
+						clientHd = it->second;
+					}
+
 					InstancePool::RoomUser ru;
 					ru.clientHd = clientHd;
-					ru.accountUID = clientAccountUID[i];
-					ru.team = packet.playerList[i].team;
+					ru.accountUID = pl.accountUID;
+					ru.team = pl.team;
 					ru.userID = i;
+					ru.isBot = false;
 					roomClientList.push_back(ru);
 				}
 			}

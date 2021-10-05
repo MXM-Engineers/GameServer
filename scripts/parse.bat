@@ -1,0 +1,1 @@
+python wireshark_to_raw.py packets_%1\%1.pcapng packets_%1 > capture_%1.log

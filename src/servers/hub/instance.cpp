@@ -66,10 +66,11 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	LOG("[Room(%llx)] room created (userCount=%d)", sortieUID, userCount);
 
 	for(const NewUser* nu = userlist; nu != userlist+userCount; ++nu) {
-		userList.emplace_back(nu->clientHd, nu->accountUID, nu->userID);
+		userList.emplace_back(nu->clientHd, nu->accountUID, nu->userID, nu->isBot);
 		auto user = --userList.end();
 
-		ASSERT(nu->clientHd == ClientHandle::INVALID || nu->accountUID != AccountUID::INVALID); // has account when client is connected
+		// has account when client is connected
+		ASSERT(nu->clientHd == ClientHandle::INVALID || nu->accountUID != AccountUID::INVALID);
 
 		switch(nu->team) {
 			case Team::RED: { teamRed.push_back(user); } break;
@@ -86,6 +87,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	foreach_const(u, connectedUsers) {
 		const User& user = **u;
 
+		// is this for when all players accepted or just our own party?
 		Sv::SN_MatchingPartyGathered gathered;
 		gathered.allConfirmed = 1;
 		SendPacket(user.clientHd, gathered);
@@ -142,16 +144,23 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			SendPacket(user.clientHd, packet);
 		}
 
+		// allow everyone to pick at once
 		{
 			PacketWriter<Sv::SN_SortieMasterPickPhaseStepStart> packet;
 			packet.Write<i32>(60); // timeSec
 
-			UserID alliesTeamUserIds[1] = {
-				UserID(1),
-			};
+			eastl::fixed_vector<UserID,5> allyTeamUserIds;
+			eastl::fixed_vector<UserID,5> enemyTeamUserIds;
 
-			packet.WriteVec(alliesTeamUserIds, ARRAY_COUNT(alliesTeamUserIds)); // alliesTeamUserIds
-			packet.WriteVec((UserID*)nullptr, 0); // enemiesTeamUserIds
+			foreach_const(u, teamRed) {
+				allyTeamUserIds.push_back(UserID((*u)->userID + 1));
+			}
+			foreach_const(u, teamBlue) {
+				enemyTeamUserIds.push_back(UserID((*u)->userID + 1));
+			}
+
+			packet.WriteVec(allyTeamUserIds.data(), allyTeamUserIds.size()); // alliesTeamUserIds
+			packet.WriteVec(enemyTeamUserIds.data(), enemyTeamUserIds.size()); // enemiesTeamUserIds
 
 			SendPacket(user.clientHd, packet);
 		}
@@ -165,10 +174,57 @@ void RoomInstance::Update(Time localTime_)
 
 void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
 {
+	const i32 packetSize = header.size - sizeof(header);
 
+	switch(header.netID) {
+		case Cl::CQ_MasterPick::NET_ID: {
+			const Cl::CQ_MasterPick& packet = SafeCast<Cl::CQ_MasterPick>(packetData, packetSize);
+			User* user = FindUser(clientHd);
+			ASSERT(user);
+
+			ClassType selected = ClassType((u32)packet.localMasterID - (u32)LocalActorID::FIRST_SELF_MASTER);
+
+			if(user->masterMain == ClassType::NONE) {
+				user->masterMain = selected;
+			}
+			else {
+				user->masterSub = selected;
+			}
+		} break;
+
+		case Cl::CQ_MasterUnpick::NET_ID: {
+			const Cl::CQ_MasterUnpick& packet = SafeCast<Cl::CQ_MasterUnpick>(packetData, packetSize);
+			User* user = FindUser(clientHd);
+			ASSERT(user);
+
+			ClassType selected = ClassType((u32)packet.localMasterID - (u32)LocalActorID::FIRST_SELF_MASTER);
+
+			if(user->masterMain == selected) {
+				user->masterMain = ClassType::NONE;
+			}
+			else if(user->masterSub == selected) {
+				user->masterSub = ClassType::NONE;
+			}
+		} break;
+
+		default: {
+			WARN("Unknown packet (netID=%d size=%d)", header.netID, header.size);
+		}
+	}
 }
 
 void RoomInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetData)
 {
 
+}
+
+RoomInstance::User* RoomInstance::FindUser(ClientHandle clientHd)
+{
+	foreach_const(u, connectedUsers) {
+		if((*u)->clientHd == clientHd) {
+			return &**u;
+		}
+	}
+
+	return nullptr;
 }

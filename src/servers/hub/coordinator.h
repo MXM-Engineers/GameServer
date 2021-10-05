@@ -57,13 +57,7 @@ const int CPU_COUNT = 1;
 
 struct InstancePool
 {
-	struct RoomUser
-	{
-		ClientHandle clientHd;
-		AccountUID accountUID;
-		u8 team;
-		u8 userID;
-	};
+	typedef RoomInstance::NewUser RoomUser;
 
 	struct Lane
 	{
@@ -144,7 +138,7 @@ struct InstancePool
 	Server* server;
 	eastl::array<Lane,CPU_COUNT> lanes;
 
-	ClientLocalMapping plidMap;
+	ClientLocalMapping plidMap; // only modified on Coordinator Thread
 	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
 	eastl::array<ClientLocation, MAX_CLIENTS> clientLocation;
 

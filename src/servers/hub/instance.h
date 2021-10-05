@@ -34,6 +34,7 @@ struct RoomInstance
 		AccountUID accountUID;
 		u8 team;
 		u8 userID;
+		u8 isBot;
 	};
 
 	struct User
@@ -41,13 +42,17 @@ struct RoomInstance
 		const ClientHandle clientHd;
 		const AccountUID accountUID;
 		const u8 userID;
+		const u8 isBot;
 
 		// picking phase related stuff
+		ClassType masterMain = ClassType::NONE;
+		ClassType masterSub = ClassType::NONE;
 
-		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_):
+		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_, u8 isBot_):
 			clientHd(clientHd_),
 			accountUID(accountUID_),
-			userID(userID_)
+			userID(userID_),
+			isBot(isBot_)
 		{
 
 		}
@@ -105,4 +110,6 @@ private:
 		NT_LOG("[client%x] Room(%llx) :: %s", clientHd, sortieUID, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
+
+	User* FindUser(ClientHandle clientHd);
 };

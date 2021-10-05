@@ -580,6 +580,22 @@ struct CQ_EnqueueGame
 	enum { NET_ID = 60097 };
 };
 
+struct CQ_MasterPick
+{
+	enum { NET_ID = 60100 };
+
+	LocalActorID localMasterID;
+};
+ASSERT_SIZE(CQ_MasterPick, 4);
+
+struct CQ_MasterUnpick
+{
+	enum { NET_ID = 60101 };
+
+	LocalActorID localMasterID;
+};
+ASSERT_SIZE(CQ_MasterUnpick, 4);
+
 struct CQ_PlayerJump
 {
 	enum { NET_ID = 60113 };

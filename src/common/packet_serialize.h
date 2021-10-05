@@ -1261,7 +1261,7 @@ inline const char* PacketSerialize<In::MN_MatchingPartyFound>(const void* packet
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	playerList(%d)=[", packet.playerCount);
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
-		SER("	name='.*ws'", p->name.len, p->name.data);
+		SER("	name='%.*ls'", p->name.len, p->name.data);
 		SER("	accountUID=%u", p->accountUID);
 		SER("	team=%u", p->team);
 		SER("	isBot=%u", p->isBot);
@@ -1307,11 +1307,11 @@ inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, c
 	SER_BEGIN();
 	const In::MN_RoomCreated& packet = SafeCast<In::MN_RoomCreated>(packetData, packetSize);
 
-	SER("MN_SortieBegin(%d, %d) :: {", In::MN_RoomCreated::NET_ID, packetSize);
+	SER("MN_RoomCreated(%d, %d) :: {", In::MN_RoomCreated::NET_ID, packetSize);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	playerList(%d)=[", packet.playerCount);
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
-		SER("	name='.*ws'", p->name.len, p->name.data);
+		SER("	name='%.*ls'", p->name.len, p->name.data);
 		SER("	accountUID=%u", p->accountUID);
 		SER("	team=%u", p->team);
 		SER("	isBot=%u", p->isBot);

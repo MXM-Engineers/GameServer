@@ -83,6 +83,7 @@ struct Matchmaker
 			const ClientHandle instanceChd;
 			PlayerStatus status = PlayerStatus::Unknown;
 			Team team;
+			u8 isBot = false;
 
 			Player(const WideString& name_, AccountUID accountUID_, ClientHandle instanceChd_):
 				name(name_),
@@ -377,20 +378,26 @@ struct Matchmaker
 			while(room.teamRed.size() < 3) {
 				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 				player.team = Team::RED;
+				player.isBot = true;
+
 				room.playerList.push_back(player);
 				room.teamRed.push_back(--room.playerList.end());
 			}
 			while(room.teamBlue.size() < 3) {
 				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 				player.team = Team::BLUE;
+				player.isBot = true;
+
 				room.playerList.push_back(player);
 				room.teamBlue.push_back(--room.playerList.end());
 			}
 
 			// send 'match found' packet to all instances
 			eastl::fixed_set<ClientHandle,16,false> setInstance;
-			foreach_const(pl, party.memberList) {
-				setInstance.insert(pl->instanceChd);
+			foreach_const(pl, room.playerList) {
+				if(pl->instanceChd != ClientHandle::INVALID) {
+					setInstance.insert(pl->instanceChd);
+				}
 			}
 
 			foreach_const(chd, setInstance) {
@@ -400,11 +407,11 @@ struct Matchmaker
 
 				resp.playerCount = 0;
 				foreach(pl, room.playerList) {
-					In::MN_MatchingPartyFound::Player player;
+					In::RoomUser player;
 					player.name.Copy(pl->name);
 					player.accountUID = pl->accountUID;
 					player.team = (u8)pl->team;
-					player.isBot = pl->accountUID == AccountUID::INVALID;
+					player.isBot = pl->isBot;
 					resp.playerList[resp.playerCount++] = player;
 				}
 
@@ -417,19 +424,39 @@ struct Matchmaker
 	void UpdateRooms()
 	{
 		foreach(r, roomList) {
-			foreach(pl, r->playerList) {
-				if(pl->status == Room::PlayerStatus::Accepted) {
-					In::MN_RoomCreated packet;
-					packet.sortieUID = r->UID;
-					packet.playerCount = 0;
+			// check if all players have accepted the match
+			bool allAccepted = true;
 
-					In::MN_RoomCreated::Player player;
-					player.accountUID = pl->accountUID;
-					player.team = 0;
-					packet.playerList[packet.playerCount++] = player; // FIXME: hack, fill all player info
-					SendPacket(pl->instanceChd, packet);
+			foreach_const(pl, r->playerList) {
+				if(!pl->isBot && pl->status != Room::PlayerStatus::Accepted) {
+					allAccepted = false;
+					break;
+				}
+			}
 
+			if(allAccepted) {
+				foreach(pl, r->playerList) {
 					pl->status = Room::PlayerStatus::InLobby;
+				}
+
+				In::MN_RoomCreated packet;
+				packet.sortieUID = r->UID;
+				packet.playerCount = 0;
+
+
+				foreach_const(pl, r->playerList) {
+					In::RoomUser player;
+					player.name.Copy(pl->name);
+					player.accountUID = pl->accountUID;
+					player.team = (u8)pl->team;
+					player.isBot = pl->isBot;
+					packet.playerList[packet.playerCount++] = player;
+				}
+
+				foreach(pl, r->playerList) {
+					if(!pl->isBot) {
+						SendPacket(pl->instanceChd, packet);
+					}
 				}
 			}
 		}

@@ -112,4 +112,5 @@ private:
 	}
 
 	User* FindUser(ClientHandle clientHd);
+	void ReplicateMasterPick(const User& user);
 };

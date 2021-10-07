@@ -34,7 +34,7 @@ enum class UserID: u32
 // TODO: populate those everywhere
 enum class CreatureIndex: i32
 {
-	Invalid = 0,
+	Invalid = -1,
 	MasterStriker = 100000001, // taejin?
 	Jukebox = 100036777,
 	HalloweenJukebox = 100036778
@@ -59,7 +59,7 @@ enum class ClassType: i32
 
 enum class SkillID: i32
 {
-	INVALID = 0,
+	INVALID = -1,
 };
 
 enum class SongID: i32
@@ -595,6 +595,11 @@ struct CQ_MasterUnpick
 	LocalActorID localMasterID;
 };
 ASSERT_SIZE(CQ_MasterUnpick, 4);
+
+struct CQ_MasterReset
+{
+	enum { NET_ID = 60102 };
+};
 
 struct CQ_PlayerJump
 {
@@ -1800,6 +1805,35 @@ struct SN_MatchingPartyGathered
 	u8 allConfirmed;
 };
 ASSERT_SIZE(SN_MatchingPartyGathered, 1);
+
+struct SA_MasterPick
+{
+	enum { NET_ID = 62208 };
+
+	i32 retval;
+	LocalActorID localMasterID;
+};
+ASSERT_SIZE(SA_MasterPick, 8);
+
+PUSH_PACKED
+struct SN_MasterPick
+{
+	enum { NET_ID = 62209 };
+
+	struct CharacterSelectInfo
+	{
+		LocalActorID localMasterID;
+		CreatureIndex creatureIndex; // can be different when bots are picking (creature index specifically for bot variants)
+		SkillID skillSlot1;
+		SkillID skillSlot2;
+	};
+
+	UserID userID;
+	u16 characterSelectInfos_count;
+	CharacterSelectInfo characterSelectInfos[2];
+};
+POP_PACKED
+ASSERT_SIZE(SN_MasterPick, 38);
 
 struct SN_UpdateGameOwner
 {

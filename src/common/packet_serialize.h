@@ -1196,6 +1196,44 @@ inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseStepStart>(const 
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SA_MasterPick>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_MasterPick(%d, %d) :: {", Sv::SA_MasterPick::NET_ID, packetSize);
+	SER("	retval=%d", buff.Read<i32>());
+	SER("	localMasterID=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MasterPick>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_MasterPick(%d, %d) :: {", Sv::SN_MasterPick::NET_ID, packetSize);
+	SER("	userID=%d", buff.Read<UserID>());
+	const u16 count = buff.Read<u16>();
+	SER("	characterSelectInfos(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		{");
+		SER("			localMasterID=%d", buff.Read<LocalActorID>());
+		SER("			creatureIndex=%d", buff.Read<CreatureIndex>());
+		SER("			skillSlot1=%d", buff.Read<SkillID>());
+		SER("			skillSlot2=%d", buff.Read<SkillID>());
+		SER("		},");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1261,10 +1299,12 @@ inline const char* PacketSerialize<In::MN_MatchingPartyFound>(const void* packet
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	playerList(%d)=[", packet.playerCount);
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
-		SER("	name='%.*ls'", p->name.len, p->name.data);
-		SER("	accountUID=%u", p->accountUID);
-		SER("	team=%u", p->team);
-		SER("	isBot=%u", p->isBot);
+		SER("	{");
+		SER("		name='%.*ls'", p->name.len, p->name.data);
+		SER("		accountUID=%u", p->accountUID);
+		SER("		team=%u", p->team);
+		SER("		isBot=%u", p->isBot);
+		SER("	},");
 	}
 	SER("	]");
 	SER("}");
@@ -1311,10 +1351,12 @@ inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, c
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	playerList(%d)=[", packet.playerCount);
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
-		SER("	name='%.*ls'", p->name.len, p->name.data);
-		SER("	accountUID=%u", p->accountUID);
-		SER("	team=%u", p->team);
-		SER("	isBot=%u", p->isBot);
+		SER("	{");
+		SER("		name='%.*ls'", p->name.len, p->name.data);
+		SER("		accountUID=%u", p->accountUID);
+		SER("		team=%u", p->team);
+		SER("		isBot=%u", p->isBot);
+		SER("	},");
 	}
 	SER("	]");
 	SER("}");

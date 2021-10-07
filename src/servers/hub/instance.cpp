@@ -165,6 +165,17 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			SendPacket(user.clientHd, packet);
 		}
 	}
+
+	// make bots pick random masters
+	const GameXmlContent& content = GetGameXmlContent();
+
+	foreach(u, userList) {
+		if(u->isBot) {
+			u->masterMain = content.masters[RandUint() % content.masters.size()].classType;
+			u->masterSub = content.masters[RandUint() % content.masters.size()].classType;
+			ReplicateMasterPick(*u);
+		}
+	}
 }
 
 void RoomInstance::Update(Time localTime_)
@@ -182,6 +193,7 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
+			// TODO: check if able to pick
 			ClassType selected = ClassType((u32)packet.localMasterID - (u32)LocalActorID::FIRST_SELF_MASTER);
 
 			if(user->masterMain == ClassType::NONE) {
@@ -190,6 +202,13 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			else {
 				user->masterSub = selected;
 			}
+
+			Sv::SA_MasterPick answer;
+			answer.retval = 0;
+			answer.localMasterID = packet.localMasterID;
+			SendPacket(clientHd, answer);
+
+			ReplicateMasterPick(*user);
 		} break;
 
 		case Cl::CQ_MasterUnpick::NET_ID: {
@@ -205,6 +224,18 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			else if(user->masterSub == selected) {
 				user->masterSub = ClassType::NONE;
 			}
+
+			ReplicateMasterPick(*user);
+		} break;
+
+		case Cl::CQ_MasterReset::NET_ID: {
+			User* user = FindUser(clientHd);
+			ASSERT(user);
+
+			user->masterMain = ClassType::NONE;
+			user->masterSub = ClassType::NONE;
+
+			ReplicateMasterPick(*user);
 		} break;
 
 		default: {
@@ -227,4 +258,41 @@ RoomInstance::User* RoomInstance::FindUser(ClientHandle clientHd)
 	}
 
 	return nullptr;
+}
+
+void RoomInstance::ReplicateMasterPick(const User& user)
+{
+	Sv::SN_MasterPick pick;
+	pick.userID = UserID(user.userID + 1);
+	pick.characterSelectInfos_count = 2;
+
+	if(user.masterMain != ClassType::NONE) {
+		pick.characterSelectInfos[0].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterMain);
+		pick.characterSelectInfos[0].creatureIndex = CreatureIndex(100000000 + (i32)user.masterMain);
+		pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID; // TODO: skill
+		pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
+	}
+	else {
+		pick.characterSelectInfos[0].localMasterID = LocalActorID::INVALID;
+		pick.characterSelectInfos[0].creatureIndex = CreatureIndex::Invalid;
+		pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID;
+		pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
+	}
+
+	if(user.masterSub != ClassType::NONE) {
+		pick.characterSelectInfos[1].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterSub);
+		pick.characterSelectInfos[1].creatureIndex = CreatureIndex(100000000 + (i32)user.masterSub);
+		pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
+		pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
+	}
+	else {
+		pick.characterSelectInfos[1].localMasterID = LocalActorID::INVALID;
+		pick.characterSelectInfos[1].creatureIndex = CreatureIndex::Invalid;
+		pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
+		pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
+	}
+
+	foreach_const(u, connectedUsers) {
+		SendPacket((*u)->clientHd, pick);
+	}
 }

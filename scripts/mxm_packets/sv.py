@@ -1079,8 +1079,8 @@ class ServerSerializer:
     def serialize_62209(netid, p: common.PacketReader):
         print('SN_MasterPick {')
         print('    userID=%d' % p.read_i32())
-        print('    characterSelectInfos=[')
         count = p.read_u16()
+        print('    characterSelectInfos(%d)=[' % count)
         while count > 0:
             print('    {')
             print('      characterID=%d' % p.read_i32())
@@ -1098,7 +1098,7 @@ class ServerSerializer:
         print('}')
 
     def serialize_62217(netid, p: common.PacketReader):
-        print('SN_StartCountdownSrtieRoom {')
+        print('SN_StartCountdownSortieRoom {')
         print('    stageType=%d' % p.read_i32())
         print('    timeToWaitSec=%d' % p.read_i32())
         print('}')
@@ -1830,6 +1830,44 @@ class ServerSerializer:
             count -= 1
 
         print('    vipRotation=[%s]' %s)
+        print('}')
+
+    def serialize_62462(netid, p: common.PacketReader):
+        print('SN_SortieCharacterSlotInfo {')
+        count = p.read_u16()
+        print('    slotInfos(%d)=[' % count)
+        while count > 0:
+            print('    {')
+            print('     creatureIndex=%d' % p.read_i32())
+            slotStatesCount = p.read_u16()
+            s = ''
+            while slotStatesCount > 0:
+                s += '%d, ' % p.read_i32() 
+                slotStatesCount -= 1
+            print('     slotStates=[%s]' % s)
+            print('    },')
+            count -= 1
+        print('    ]')
+        print('}')
+
+    def serialize_62465(netid, p: common.PacketReader):
+        print('SN_SortieMasterPickPhaseStart {')
+        print('    isRandomPick=%d' % p.read_u8())
+
+        count = p.read_u16()
+        print('    alliesSlotInfos(%d)=[' % count)
+        while count > 0:
+            print('    {')
+            print('     creatureIndex=%d' % p.read_i32())
+            slotStatesCount = p.read_u16()
+            s = ''
+            while slotStatesCount > 0:
+                s += '%d, ' % p.read_i32() 
+                slotStatesCount -= 1
+            print('     slotStates=[%s]' % s)
+            print('    },')
+            count -= 1
+        print('    ]')
         print('}')
 
     def serialize_62466(netid, p: common.PacketReader):

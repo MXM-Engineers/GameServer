@@ -1234,6 +1234,32 @@ inline const char* PacketSerialize<Sv::SN_MasterPick>(const void* packetData, co
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_SortieCharacterSlotInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortieCharacterSlotInfo(%d, %d) :: {", Sv::SN_SortieCharacterSlotInfo::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	slotInfos(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		{");
+		SER("			creatureIndex=%d", buff.Read<CreatureIndex>());
+		const u16 slotStates_count = buff.Read<u16>();
+		SER("			slotSlates(%d)=[", slotStates_count);
+		for(int j = 0; j < slotStates_count; j++) {
+			SER("				%d,", buff.Read<i32>());
+		}
+		SER("			]");
+		SER("		},");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

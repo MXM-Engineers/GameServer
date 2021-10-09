@@ -28,6 +28,13 @@ struct HubInstance
 
 struct RoomInstance
 {
+	enum Team: u8 {
+		RED = 0,
+		BLUE,
+		SPECTATORS,
+		COUNT
+	};
+
 	struct NewUser
 	{
 		ClientHandle clientHd;
@@ -43,26 +50,25 @@ struct RoomInstance
 		const AccountUID accountUID;
 		const u8 userID;
 		const u8 isBot;
+		const Team team;
 
 		// picking phase related stuff
-		ClassType masterMain = ClassType::NONE;
-		ClassType masterSub = ClassType::NONE;
+		ClassType masterMain = ClassType::INVALID;
+		ClassType masterSub = ClassType::INVALID;
 
-		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_, u8 isBot_):
+		struct {
+			u8 masterPick: 1;
+			// TODO: add other stuff
+		} replicate = {0};
+
+		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_, u8 isBot_, Team team_):
 			clientHd(clientHd_),
 			accountUID(accountUID_),
 			userID(userID_),
-			isBot(isBot_)
+			isBot(isBot_),
+			team(team_)
 		{
-
 		}
-	};
-
-	enum Team {
-		RED = 0,
-		BLUE,
-		SPECTATORS,
-		COUNT
 	};
 
 	Server* server;
@@ -70,11 +76,14 @@ struct RoomInstance
 	const SortieUID sortieUID;
 	ClientLocalMapping plidMap;
 
-	eastl::fixed_list<User,16,false> userList;
-	eastl::fixed_vector<decltype(userList)::iterator,5 ,false> teamRed;
-	eastl::fixed_vector<decltype(userList)::iterator,5 ,false> teamBlue;
-	eastl::fixed_vector<decltype(userList)::iterator,6 ,false> teamSpectator;
-	eastl::fixed_vector<decltype(userList)::iterator,16,false> connectedUsers;
+	eastl::fixed_vector<User,16,false> userList;
+	eastl::fixed_vector<User*,5 ,false> teamRed;
+	eastl::fixed_vector<User*,5 ,false> teamBlue;
+	eastl::fixed_vector<User*,6 ,false> teamSpectator;
+	eastl::fixed_vector<User*,16,false> connectedUsers;
+
+	eastl::fixed_set<ClassType,100,false> implementedMastersSet;
+	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
 
 	RoomInstance(InstanceUID UID_, SortieUID sortieUID_):
 		UID(UID_),
@@ -112,5 +121,7 @@ private:
 	}
 
 	User* FindUser(ClientHandle clientHd);
-	void ReplicateMasterPick(const User& user);
+	bool TryPickMaster(User* user, ClassType master);
+	void UnpickMaster(User* user, ClassType master);
+	void ResetMasters(User* user);
 };

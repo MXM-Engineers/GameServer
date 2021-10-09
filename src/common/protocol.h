@@ -35,7 +35,7 @@ enum class UserID: u32
 enum class CreatureIndex: i32
 {
 	Invalid = -1,
-	MasterStriker = 100000001, // taejin?
+	MasterStriker = 100000001, // taejin
 	Jukebox = 100036777,
 	HalloweenJukebox = 100036778
 };
@@ -52,9 +52,14 @@ enum class WeaponIndex: i32
 
 enum class ClassType: i32
 {
-	NONE = -1,
-	SIZUKA = 3,
-	LUA = 35,
+	INVALID = -1,
+	Taejin = 1,
+	MBA_07 = 2,
+	Sizuka = 3,
+	Demenos = 4,
+	Koom = 5,
+	Innowin = 6,
+	Lua = 35,
 };
 
 enum class SkillID: i32
@@ -2470,6 +2475,20 @@ struct SN_MasterRotationInfo
 	CreatureIndex pccafeRotation[1];
 	u16 vipRotation_count;
 	CreatureIndex vipRotation[1];
+};
+
+struct SN_SortieCharacterSlotInfo
+{
+	enum { NET_ID = 62462 };
+
+	struct SlotInfo {
+		CreatureIndex creatureIndex;
+		u16 slotStates_count;
+		i32 slotSlates[1];
+	};
+
+	u16 slotInfos_count;
+	SlotInfo slotInfos[1];
 };
 
 struct SN_SortieMasterPickPhaseStart

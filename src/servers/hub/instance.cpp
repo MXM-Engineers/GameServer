@@ -63,11 +63,24 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 {
 	server = server_;
 
+	teamMasterPickCount[Team::RED].fill(0);
+	teamMasterPickCount[Team::BLUE].fill(0);
+
+	implementedMastersSet = {
+		ClassType::Taejin,
+		ClassType::MBA_07,
+		ClassType::Sizuka,
+		ClassType::Demenos,
+		ClassType::Koom,
+		ClassType::Innowin,
+		ClassType::Lua,
+	};
+
 	LOG("[Room(%llx)] room created (userCount=%d)", sortieUID, userCount);
 
 	for(const NewUser* nu = userlist; nu != userlist+userCount; ++nu) {
-		userList.emplace_back(nu->clientHd, nu->accountUID, nu->userID, nu->isBot);
-		auto user = --userList.end();
+		userList.emplace_back(nu->clientHd, nu->accountUID, nu->userID, nu->isBot, Team(nu->team));
+		User* user = &userList.back();
 
 		// has account when client is connected
 		ASSERT(nu->clientHd == ClientHandle::INVALID || nu->accountUID != AccountUID::INVALID);
@@ -98,21 +111,23 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		{
 			PacketWriter<Sv::SN_ProfileCharacters,2048> packet;
 
-			packet.Write<u16>(content.masters.size()); // charaList_count
+			packet.Write<u16>(implementedMastersSet.size()); // charaList_count
 
-			foreach(it, content.masters) {
+			foreach(it, implementedMastersSet) {
+				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
+
 				Sv::SN_ProfileCharacters::Character chara;
-				chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
-				chara.creatureIndex = it->ID;
-				chara.skillShot1 = it->skillIDs[0];
-				chara.skillShot2 = it->skillIDs[1];
-				chara.classType = it->classType;
+				chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+				chara.creatureIndex = master.ID;
+				chara.skillShot1 = master.skillIDs[0];
+				chara.skillShot2 = master.skillIDs[1];
+				chara.classType = master.classType;
 				chara.x = 0;
 				chara.y = 0;
 				chara.z = 0;
 				chara.characterType = 1;
 				chara.skinIndex = SkinIndex::DEFAULT;
-				chara.weaponIndex = it->weaponIDs[0];
+				chara.weaponIndex = master.weaponIDs[0];
 				chara.masterGearNo = 1;
 				packet.Write(chara);
 			}
@@ -124,9 +139,9 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			PacketWriter<Sv::SN_MasterRotationInfo> packet;
 			packet.Write<i32>(0); // refreshCount
 
-			eastl::fixed_vector<CreatureIndex,200,false> freeList;
-			foreach_const(m, content.masters) {
-				freeList.push_back(m->ID);
+			eastl::fixed_vector<CreatureIndex,100,false> freeList;
+			foreach_const(m, implementedMastersSet) {
+				freeList.push_back(CreatureIndex(100000000 + (i32)*m));
 			}
 
 			packet.WriteVec(freeList.data(), freeList.size()); // freeRotation
@@ -167,20 +182,103 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	}
 
 	// make bots pick random masters
-	const GameXmlContent& content = GetGameXmlContent();
-
 	foreach(u, userList) {
 		if(u->isBot) {
-			u->masterMain = content.masters[RandUint() % content.masters.size()].classType;
-			u->masterSub = content.masters[RandUint() % content.masters.size()].classType;
-			ReplicateMasterPick(*u);
+			for(int attempts = 0; attempts < 1000; attempts++) {
+				u32 r0 = RandUint() % implementedMastersSet.size();
+
+				u32 i = 0;
+				foreach_const(m, implementedMastersSet) {
+					if(i == r0) {
+						TryPickMaster(u, *m);
+						break;
+					}
+					i++;
+				}
+
+				if(u->masterSub != ClassType::INVALID) {
+					break;
+				}
+			}
+			u->replicate.masterPick = true;
 		}
 	}
 }
 
 void RoomInstance::Update(Time localTime_)
 {
+	bool doReplicateMasterCount = false;
 
+	foreach(u, userList) {
+		User& user = *u;
+		if(user.replicate.masterPick) {
+			user.replicate.masterPick = false;
+			doReplicateMasterCount = true;
+
+			Sv::SN_MasterPick pick;
+			pick.userID = UserID(user.userID + 1);
+			pick.characterSelectInfos_count = 2;
+
+			if(user.masterMain != ClassType::INVALID) {
+				pick.characterSelectInfos[0].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterMain);
+				pick.characterSelectInfos[0].creatureIndex = CreatureIndex(100000000 + (i32)user.masterMain);
+				pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID; // TODO: skill
+				pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
+			}
+			else {
+				pick.characterSelectInfos[0].localMasterID = LocalActorID::INVALID;
+				pick.characterSelectInfos[0].creatureIndex = CreatureIndex::Invalid;
+				pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID;
+				pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
+			}
+
+			if(user.masterSub != ClassType::INVALID) {
+				pick.characterSelectInfos[1].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterSub);
+				pick.characterSelectInfos[1].creatureIndex = CreatureIndex(100000000 + (i32)user.masterSub);
+				pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
+				pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
+			}
+			else {
+				pick.characterSelectInfos[1].localMasterID = LocalActorID::INVALID;
+				pick.characterSelectInfos[1].creatureIndex = CreatureIndex::Invalid;
+				pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
+				pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
+			}
+
+			foreach_const(u, connectedUsers) {
+				SendPacket((*u)->clientHd, pick);
+			}
+		}
+	}
+
+	if(doReplicateMasterCount) {
+		PacketWriter<Sv::SN_SortieCharacterSlotInfo> packet[2];
+		u16 slotInfos_count[2] = {0};
+
+		for(int team = 0; team < 2; team++) {
+			// TODO: we *only* need to send which one have been updated, might need to do frame differential after all...
+			// right now we send everything, which is not a LOT but still
+			slotInfos_count[team] = implementedMastersSet.size();
+			packet[team].Write<u16>(slotInfos_count[team]);
+
+			foreach_const(m, implementedMastersSet) {
+				u8 c = teamMasterPickCount[team][(i32)*m];
+				DBG_ASSERT(c <= 2);
+
+				packet[team].Write(CreatureIndex(100000000 + (i32)*m));
+				packet[team].Write<u16>(2);
+				for(int s = 0; s < c; s++) packet[team].Write<i32>(1);
+				if(c < 2) {
+					for(int s = 0; s < (2-c); s++) packet[team].Write<i32>(0);
+				}
+			}
+		}
+
+		foreach_const(u, connectedUsers) {
+			if((*u)->team != Team::RED && (*u)->team != Team::BLUE) continue;
+			SendPacket((*u)->clientHd, packet[(*u)->team]);
+		}
+	}
 }
 
 void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
@@ -193,22 +291,13 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
-			// TODO: check if able to pick
 			ClassType selected = ClassType((u32)packet.localMasterID - (u32)LocalActorID::FIRST_SELF_MASTER);
-
-			if(user->masterMain == ClassType::NONE) {
-				user->masterMain = selected;
-			}
-			else {
-				user->masterSub = selected;
-			}
+			bool r = TryPickMaster(user, selected);
 
 			Sv::SA_MasterPick answer;
-			answer.retval = 0;
+			answer.retval = r ? 0:1; // TODO: actual error message
 			answer.localMasterID = packet.localMasterID;
 			SendPacket(clientHd, answer);
-
-			ReplicateMasterPick(*user);
 		} break;
 
 		case Cl::CQ_MasterUnpick::NET_ID: {
@@ -217,25 +306,13 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			ASSERT(user);
 
 			ClassType selected = ClassType((u32)packet.localMasterID - (u32)LocalActorID::FIRST_SELF_MASTER);
-
-			if(user->masterMain == selected) {
-				user->masterMain = ClassType::NONE;
-			}
-			else if(user->masterSub == selected) {
-				user->masterSub = ClassType::NONE;
-			}
-
-			ReplicateMasterPick(*user);
+			UnpickMaster(user, selected);
 		} break;
 
 		case Cl::CQ_MasterReset::NET_ID: {
 			User* user = FindUser(clientHd);
 			ASSERT(user);
-
-			user->masterMain = ClassType::NONE;
-			user->masterSub = ClassType::NONE;
-
-			ReplicateMasterPick(*user);
+			ResetMasters(user);
 		} break;
 
 		default: {
@@ -260,39 +337,79 @@ RoomInstance::User* RoomInstance::FindUser(ClientHandle clientHd)
 	return nullptr;
 }
 
-void RoomInstance::ReplicateMasterPick(const User& user)
+bool RoomInstance::TryPickMaster(User* user, ClassType master)
 {
-	Sv::SN_MasterPick pick;
-	pick.userID = UserID(user.userID + 1);
-	pick.characterSelectInfos_count = 2;
+	if(teamMasterPickCount[user->team][(i32)master] < 2) {
+		if(user->masterMain == ClassType::INVALID) {
+			user->masterMain = master;
+		}
+		else if(user->masterMain != master) { // no duplicate masters
+			user->masterSub = master;
+		}
+		else {
+			return false;
+		}
 
-	if(user.masterMain != ClassType::NONE) {
-		pick.characterSelectInfos[0].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterMain);
-		pick.characterSelectInfos[0].creatureIndex = CreatureIndex(100000000 + (i32)user.masterMain);
-		pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID; // TODO: skill
-		pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
-	}
-	else {
-		pick.characterSelectInfos[0].localMasterID = LocalActorID::INVALID;
-		pick.characterSelectInfos[0].creatureIndex = CreatureIndex::Invalid;
-		pick.characterSelectInfos[0].skillSlot1 = SkillID::INVALID;
-		pick.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
-	}
+		teamMasterPickCount[user->team][(i32)master]++;
+		user->replicate.masterPick = true;
 
-	if(user.masterSub != ClassType::NONE) {
-		pick.characterSelectInfos[1].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masterSub);
-		pick.characterSelectInfos[1].creatureIndex = CreatureIndex(100000000 + (i32)user.masterSub);
-		pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
-		pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
-	}
-	else {
-		pick.characterSelectInfos[1].localMasterID = LocalActorID::INVALID;
-		pick.characterSelectInfos[1].creatureIndex = CreatureIndex::Invalid;
-		pick.characterSelectInfos[1].skillSlot1 = SkillID::INVALID; // TODO: skill
-		pick.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
+		return true;
 	}
 
-	foreach_const(u, connectedUsers) {
-		SendPacket((*u)->clientHd, pick);
+	return false;
+}
+
+void RoomInstance::UnpickMaster(User* user, ClassType master)
+{
+	u8& masterPickCount = teamMasterPickCount[user->team][(i32)master];
+
+	if(user->masterMain == master) {
+		user->masterMain = ClassType::INVALID;
+
+		DBG_ASSERT(masterPickCount > 0);
+		if(masterPickCount > 0) {
+			masterPickCount--;
+		}
+
+		user->replicate.masterPick = true;
+	}
+	else if(user->masterSub == master) {
+		user->masterSub = ClassType::INVALID;
+
+		DBG_ASSERT(masterPickCount > 0);
+		if(masterPickCount > 0) {
+			masterPickCount--;
+		}
+
+		user->replicate.masterPick = true;
+	}
+}
+
+void RoomInstance::ResetMasters(User* user)
+{
+	bool changed = false;
+	if(user->masterMain != ClassType::INVALID) {
+		u8& masterPickCount = teamMasterPickCount[user->team][(i32)user->masterMain];
+		DBG_ASSERT(masterPickCount > 0);
+		if(masterPickCount > 0) {
+			masterPickCount--;
+		}
+
+		user->masterMain = ClassType::INVALID;
+		changed = true;
+	}
+	if(user->masterSub != ClassType::INVALID) {
+		u8& masterPickCount = teamMasterPickCount[user->team][(i32)user->masterSub];
+		DBG_ASSERT(masterPickCount > 0);
+		if(masterPickCount > 0) {
+			masterPickCount--;
+		}
+
+		user->masterSub = ClassType::INVALID;
+		changed = true;
+	}
+
+	if(changed) {
+		user->replicate.masterPick = true;
 	}
 }

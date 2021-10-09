@@ -2298,7 +2298,7 @@ void HubReplication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& ac
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
+		packet.Write<ClassType>(ClassType::INVALID); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
 
@@ -2372,7 +2372,7 @@ void HubReplication::SendJukeboxSpawn(ClientHandle clientHd, const HubReplicatio
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(-1); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
+		packet.Write<ClassType>(ClassType::INVALID); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
 

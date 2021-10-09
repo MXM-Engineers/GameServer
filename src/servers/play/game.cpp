@@ -42,10 +42,10 @@ void Game::Init(Server* server_, const ClientLocalMapping* plidMap_)
 	vec3 dir = spawnPoint.dir;
 
 	// create players
-	World::Player& player = world.CreatePlayer(ClientHandle(2), L"LordSk", L"Alpha", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
-	clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::LUA, SkinIndex::DEFAULT, ClassType::SIZUKA, SkinIndex::DEFAULT, pos);
+	World::Player& player = world.CreatePlayer(ClientHandle(2), L"LordSk", L"Alpha", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
+	clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
 
-	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
+	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::Lua, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
@@ -515,7 +515,7 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 			ASSERT(playerActor);
 			const vec3 pos = playerActor->Main().body->pos;
 
-			World::Player& actor = world.SpawnPlayerMasters(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::LUA, SkinIndex::DEFAULT, pos);
+			World::Player& actor = world.SpawnPlayerMasters(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::Lua, SkinIndex::DEFAULT, pos);
 			actor.input.rot = playerActor->input.rot;
 
 			// trigger second emote

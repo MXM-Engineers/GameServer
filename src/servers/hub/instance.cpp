@@ -95,6 +95,10 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		if(nu->clientHd != ClientHandle::INVALID) {
 			connectedUsers.push_back(user);
 		}
+
+		if(user->isBot) {
+			user->isReady;
+		}
 	}
 
 	foreach_const(u, connectedUsers) {
@@ -345,6 +349,18 @@ void RoomInstance::Update(Time localTime_)
 				}
 			}
 		}
+
+		if(user.replicate.ready) {
+			user.replicate.ready = false;
+
+			Sv::SN_ReadySortieRoom packet;
+			packet.userID = UserID(user.userID + 1);
+			packet.ready = 1;
+
+			foreach_const(cu, connectedUsers) {
+				SendPacket((*cu)->clientHd, packet);
+			}
+		}
 	}
 
 	if(doReplicateMasterCount) {
@@ -409,6 +425,22 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 			ResetMasters(user);
+		} break;
+
+		case Cl::CQ_ReadySortieRoom::NET_ID: {
+			User* user = FindUser(clientHd);
+			ASSERT(user);
+			SetReady(user);
+		} break;
+
+		case Cl::CQ_RoomEquipSkill::NET_ID:
+		case Cl::CQ_RoomSwapSkill::NET_ID:
+		case Cl::CQ_RoomEquipWeapon::NET_ID: {
+			SendDbgMsg(clientHd, L"Feature not implemented right now sorry :(");
+		} break;
+
+		case Cl::CN_ChannelChatMessage::NET_ID: {
+			// TODO: replicate chat messages
 		} break;
 
 		default: {
@@ -499,4 +531,22 @@ void RoomInstance::ResetMasters(User* user)
 	if(changed) {
 		user->replicate.masterPick = true;
 	}
+}
+
+void RoomInstance::SetReady(User* user)
+{
+	user->isReady = true;
+	user->replicate.ready = true;
+}
+
+void RoomInstance::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
+{
+	PacketWriter<Sv::SN_ChatChannelMessage> packet;
+
+	packet.Write<i32>(1); // chatType
+	packet.WriteStringObj(L"System");
+	packet.Write<u8>(0); // senderStaffType
+	packet.WriteStringObj(msg);
+
+	SendPacket(clientHd, packet);
 }

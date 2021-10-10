@@ -294,7 +294,7 @@ enum class StageRule: i32
 enum class GameType: i32
 {
 	INVALID = 0,
-	PvP_Normal = 1,
+	PvP_Normal = 1, // not PvP?
 	PvP_NormalFFA = 2,
 	PVP_AI = 3,
 	PVP_Rank = 4,
@@ -555,6 +555,27 @@ struct CQ_GamePlayerTag
 	LocalActorID characterID;
 };
 
+struct CQ_RoomEquipWeapon
+{
+	enum { NET_ID = 60059 };
+
+	// TODO: fill this
+};
+
+struct CQ_RoomEquipSkill
+{
+	enum { NET_ID = 60071 };
+
+	// TODO: fill this
+};
+
+struct CQ_RoomSwapSkill
+{
+	enum { NET_ID = 60072 };
+
+	// TODO: fill this
+};
+
 struct CQ_RequestAreaPopularity
 {
 	enum { NET_ID = 60073 };
@@ -633,6 +654,14 @@ struct CQ_MasterReset
 {
 	enum { NET_ID = 60102 };
 };
+
+struct CQ_ReadySortieRoom
+{
+	enum { NET_ID = 60103 };
+
+	u8 ready;
+};
+ASSERT_SIZE(CQ_ReadySortieRoom, 1);
 
 struct CQ_PlayerJump
 {
@@ -1867,6 +1896,17 @@ struct SN_MasterPick
 };
 POP_PACKED
 ASSERT_SIZE(SN_MasterPick, 38);
+
+PUSH_PACKED
+struct SN_ReadySortieRoom
+{
+	enum { NET_ID = 62214 };
+
+	UserID userID;
+	u8 ready;
+};
+POP_PACKED
+ASSERT_SIZE(SN_ReadySortieRoom, 5);
 
 struct SN_UpdateGameOwner
 {

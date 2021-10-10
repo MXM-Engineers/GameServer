@@ -1260,6 +1260,20 @@ inline const char* PacketSerialize<Sv::SN_SortieCharacterSlotInfo>(const void* p
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_ReadySortieRoom>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ReadySortieRoom(%d, %d) :: {", Sv::SN_ReadySortieRoom::NET_ID, packetSize);
+	SER("	userID=%d", buff.Read<UserID>());
+	SER("	ready=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

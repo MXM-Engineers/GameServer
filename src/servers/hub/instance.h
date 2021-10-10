@@ -66,9 +66,11 @@ struct RoomInstance
 
 		// picking phase related stuff
 		eastl::array<Master,2> masters;
+		bool isReady = false;
 
 		struct {
 			u8 masterPick: 1;
+			u8 ready: 1;
 			// TODO: add other stuff
 		} replicate = {0};
 
@@ -138,4 +140,6 @@ private:
 	bool TryPickMaster(User* user, ClassType classType);
 	void UnpickMaster(User* user, ClassType classType);
 	void ResetMasters(User* user);
+	void SetReady(User* user);
+	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);
 };

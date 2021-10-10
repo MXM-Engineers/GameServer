@@ -477,43 +477,34 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		SendPacket(clientHd, packet);
 	}
 
-	// TODO: send weapons
-	/*
 	// SN_ProfileWeapons
 	{
-		PacketWriter<> packet;
+		PacketWriter<Sv::SN_ProfileWeapons,4096> packet;
 
-		packet.Write<u16>(3); // weaponList_count
+		u16 weaponCount = content.masters.size() * 3;
+		packet.Write<u16>(weaponCount); // weaponList_count
 
-		Sv::SN_ProfileWeapons::Weapon weap;
-		weap.characterID = LocalActorID::FIRST_SELF_MASTER;
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
+		foreach_const(it, content.masters) {
+			const GameXmlContent::Master& master = *it;
 
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 1);
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
+			Sv::SN_ProfileWeapons::Weapon weapon;
+			weapon.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
 
-		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + 2);
-		weap.weaponType = 1;
-		weap.weaponIndex = 131135012;
-		weap.grade = 1;
-		weap.isUnlocked = 1;
-		weap.isActivated = 1;
-		packet.Write(weap);
+			for(int wi = 0; wi < 3; wi++) {
+				weapon.weaponType = wi+1;
+				// FIXME: because we load weapons from WEAPON.xml instead of CREATURE_CHARACTER.xml
+				// we don't get the default weapons. This can be fixed later when we have a real unlock system.
+				// - LordSk (10/10/2021)
+				weapon.weaponIndex = master.weaponIDs[1 + wi*4];
+				weapon.grade = 0;
+				weapon.isUnlocked = wi == 0;
+				weapon.isActivated = wi == 0;
+				packet.Write(weapon);
+			}
+		}
 
-		LOG("[client%03d] Server :: SN_ProfileWeapons :: ", clientID);
-		SendPacket<>(clientID, Sv::SN_ProfileWeaponspacket);
+		SendPacket(clientHd, packet);
 	}
-	*/
 
 	// SN_MyGuild
 	{
@@ -558,25 +549,27 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 	// SN_ProfileSkills
 	{
-		PacketWriter<Sv::SN_ProfileSkills,4096> packet;
+		PacketWriter<Sv::SN_ProfileSkills,8192> packet;
 
 		packet.Write<u8>(1); // packetNum
 
 		i32 skillCount = 0;
-		foreach(it, content.masters) {
-			foreach(skill, it->skillIDs) {
+		foreach_const(it, content.masters) {
+			foreach_const(skill, it->skillIDs) {
 				skillCount++;
 			}
 		}
 		packet.Write<u16>(skillCount); // skills_count
 
-		foreach(it, content.masters) {
-			foreach(skill, it->skillIDs) {
+		foreach_const(it, content.masters) {
+			int si = 0;
+			foreach_const(skill, it->skillIDs) {
 				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
 				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(1); // isUnlocked
-				packet.Write<u8>(1); // isActivated
+				packet.Write<u8>(si != 2 && si != 3); // isUnlocked
+				packet.Write<u8>(si != 2 && si != 3); // isActivated
 				packet.Write<u16>(0); // properties_count
+				si++;
 			}
 		}
 
@@ -1614,10 +1607,9 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 
 	packet.Write(matchingParty.sortieUID); // sortieID
 	packet.Write(StageIndex::CombatArena); // stageIndex
-	packet.Write<i32>(6); // gametype
-	// 1: AI Match, 2: Custom match
-	packet.Write<i32>(0); // gameDefinitionType
-	packet.Write<i32>(0); // stageRule
+	packet.Write(GameType::PVP_Rank); // gametype
+	packet.Write(GameDefinition::System); // gameDefinitionType
+	packet.Write(StageRule::Unfair); // stageRule
 
 	// allies
 	i32 alliesCount = 0;
@@ -2298,7 +2290,7 @@ void HubReplication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& ac
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::INVALID); // classType
+		packet.Write<ClassType>(ClassType::NONE); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
 
@@ -2372,7 +2364,7 @@ void HubReplication::SendJukeboxSpawn(ClientHandle clientHd, const HubReplicatio
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(-1); // faction
-		packet.Write<ClassType>(ClassType::INVALID); // classType
+		packet.Write<ClassType>(ClassType::NONE); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
 

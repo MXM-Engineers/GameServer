@@ -35,6 +35,12 @@ struct RoomInstance
 		COUNT
 	};
 
+	enum {
+		MASTER_MAIN = 0,
+		MASTER_SUB,
+		_MASTER_COUNT,
+	};
+
 	struct NewUser
 	{
 		ClientHandle clientHd;
@@ -46,6 +52,12 @@ struct RoomInstance
 
 	struct User
 	{
+		struct Master
+		{
+			ClassType classType = ClassType::NONE;
+			eastl::array<SkillID,2> skills = { SkillID::INVALID, SkillID::INVALID };
+		};
+
 		const ClientHandle clientHd;
 		const AccountUID accountUID;
 		const u8 userID;
@@ -53,8 +65,7 @@ struct RoomInstance
 		const Team team;
 
 		// picking phase related stuff
-		ClassType masterMain = ClassType::INVALID;
-		ClassType masterSub = ClassType::INVALID;
+		eastl::array<Master,2> masters;
 
 		struct {
 			u8 masterPick: 1;
@@ -69,6 +80,9 @@ struct RoomInstance
 			team(team_)
 		{
 		}
+
+		inline Master& Main() { return masters[MASTER_MAIN]; }
+		inline Master& Sub() { return masters[MASTER_SUB]; }
 	};
 
 	Server* server;
@@ -121,7 +135,7 @@ private:
 	}
 
 	User* FindUser(ClientHandle clientHd);
-	bool TryPickMaster(User* user, ClassType master);
-	void UnpickMaster(User* user, ClassType master);
+	bool TryPickMaster(User* user, ClassType classType);
+	void UnpickMaster(User* user, ClassType classType);
 	void ResetMasters(User* user);
 };

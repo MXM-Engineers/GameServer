@@ -52,7 +52,7 @@ enum class WeaponIndex: i32
 
 enum class ClassType: i32
 {
-	INVALID = -1,
+	NONE = -1,
 	Taejin = 1,
 	MBA_07 = 2,
 	Sizuka = 3,
@@ -276,11 +276,39 @@ enum class StageIndex: i32
 	CombatArena = 200020102,
 };
 
-enum StageType: i32
+enum class StageType: i32
 {
 	INVALID = 0,
 	CITY = 1, // LOBBY
 	PLAY_INSTANCE = 2
+};
+
+enum class StageRule: i32
+{
+	INVALID = -1,
+	Unfair = 0,
+	Fair = 1,
+	Max = 2
+};
+
+enum class GameType: i32
+{
+	INVALID = 0,
+	PvP_Normal = 1,
+	PvP_NormalFFA = 2,
+	PVP_AI = 3,
+	PVP_Rank = 4,
+	PVP_Custom = 5,
+	PVP_Tutorial = 6,
+	PVP_GuildPvp = 7,
+	PVP_FakeAi = 8,
+};
+
+enum class GameDefinition: i32
+{
+	INVALID = 0,
+	System = 1,
+	User = 2,
 };
 
 enum class EntrySystemID: i32
@@ -1783,10 +1811,10 @@ struct SQ_MatchingPartyFound
 		i32 pvpRate;
 	};
 
-	i64 sortieID;
+	SortieUID sortieUID;
 	StageIndex stageIndex;
-	i32 gameType;
-	i32 gameDefinitionType;
+	GameType gameType;
+	GameDefinition gameDefinitionType;
 	i32 stageRule;
 
 	u16 allies_count;

@@ -1773,7 +1773,7 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
 		packet.Write<i32>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::INVALID); // classType
+		packet.Write<ClassType>(ClassType::NONE); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
 

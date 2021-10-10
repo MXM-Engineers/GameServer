@@ -66,7 +66,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	teamMasterPickCount[Team::RED].fill(0);
 	teamMasterPickCount[Team::BLUE].fill(0);
 
-	implementedMastersSet = {
+	allowedMastersSet = {
 		ClassType::Taejin,
 		ClassType::MBA_07,
 		ClassType::Sizuka,
@@ -111,9 +111,9 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		{
 			PacketWriter<Sv::SN_ProfileCharacters,2048> packet;
 
-			packet.Write<u16>(implementedMastersSet.size()); // charaList_count
+			packet.Write<u16>(allowedMastersSet.size()); // charaList_count
 
-			foreach(it, implementedMastersSet) {
+			foreach_const(it, allowedMastersSet) {
 				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
 
 				Sv::SN_ProfileCharacters::Character chara;
@@ -135,12 +135,95 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			SendPacket(user.clientHd, packet);
 		}
 
+		// SN_ProfileWeapons
+		{
+			PacketWriter<Sv::SN_ProfileWeapons,4096> packet;
+
+			u16 weaponCount = 0;
+			foreach_const(it, allowedMastersSet) {
+				weaponCount += 1;
+			}
+
+			packet.Write<u16>(weaponCount); // weaponList_count
+
+			foreach_const(it, allowedMastersSet) {
+				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
+
+				Sv::SN_ProfileWeapons::Weapon weapon;
+				weapon.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+				weapon.weaponType = 1;
+				weapon.weaponIndex = master.weaponIDs[0];
+				weapon.grade = 0;
+				weapon.isUnlocked = 1;
+				weapon.isActivated = 1;
+				packet.Write(weapon);
+			}
+
+			SendPacket(user.clientHd, packet);
+		}
+
+		// SN_ProfileMasterGears
+		{
+			PacketWriter<Sv::SN_ProfileMasterGears,2048> packet;
+
+			// NOTE: we send one empty gear page for now
+
+			packet.Write<u16>(1); // masterGears_count
+
+			// 0
+			packet.Write<u8>(1); // masterGearNo
+			packet.WriteStringObj(L"Default");
+			const Sv::SN_ProfileMasterGears::Slot slots[] = {
+				{ -1, 0 },
+				{ -1, 0 },
+				{ -1, 0 },
+				{ -1, 0 },
+				{ -1, 0 },
+				{ -1, 0 },
+			};
+			packet.WriteVec(slots, ARRAY_COUNT(slots));
+
+			SendPacket(user.clientHd, packet);
+		}
+
+		// SN_ProfileSkills
+		{
+			PacketWriter<Sv::SN_ProfileSkills,8192> packet;
+			// TODO: split in several packets?
+			packet.Write<u8>(1); // packetNum
+
+			u16 skillCount = 0;
+			foreach_const(it, allowedMastersSet) {
+				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
+				skillCount += master.skillIDs.size();
+			}
+
+			packet.Write<u16>(skillCount); // skills_count
+
+			foreach_const(it, allowedMastersSet) {
+				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
+
+				LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+
+				foreach_const(s, master.skillIDs) {
+					packet.Write(characterID); // characterID
+					packet.Write(*s); // skillIndex
+					packet.Write<u8>(1); // isUnlocked
+					packet.Write<u8>(1); // isActivated
+					packet.Write<u16>(0); // properties_count
+				}
+			}
+
+			SendPacket(user.clientHd, packet);
+		}
+
+		// SN_MasterRotationInfo
 		{
 			PacketWriter<Sv::SN_MasterRotationInfo> packet;
 			packet.Write<i32>(0); // refreshCount
 
 			eastl::fixed_vector<CreatureIndex,100,false> freeList;
-			foreach_const(m, implementedMastersSet) {
+			foreach_const(m, allowedMastersSet) {
 				freeList.push_back(CreatureIndex(100000000 + (i32)*m));
 			}
 
@@ -185,10 +268,10 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	foreach(u, userList) {
 		if(u->isBot) {
 			for(int attempts = 0; attempts < 1000; attempts++) {
-				u32 r0 = RandUint() % implementedMastersSet.size();
+				u32 r0 = RandUint() % allowedMastersSet.size();
 
 				u32 i = 0;
-				foreach_const(m, implementedMastersSet) {
+				foreach_const(m, allowedMastersSet) {
 					if(i == r0) {
 						TryPickMaster(u, *m);
 						break;
@@ -258,10 +341,10 @@ void RoomInstance::Update(Time localTime_)
 		for(int team = 0; team < 2; team++) {
 			// TODO: we *only* need to send which one have been updated, might need to do frame differential after all...
 			// right now we send everything, which is not a LOT but still
-			slotInfos_count[team] = implementedMastersSet.size();
+			slotInfos_count[team] = allowedMastersSet.size();
 			packet[team].Write<u16>(slotInfos_count[team]);
 
-			foreach_const(m, implementedMastersSet) {
+			foreach_const(m, allowedMastersSet) {
 				u8 c = teamMasterPickCount[team][(i32)*m];
 				DBG_ASSERT(c <= 2);
 

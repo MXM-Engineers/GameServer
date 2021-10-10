@@ -82,7 +82,7 @@ struct RoomInstance
 	eastl::fixed_vector<User*,6 ,false> teamSpectator;
 	eastl::fixed_vector<User*,16,false> connectedUsers;
 
-	eastl::fixed_set<ClassType,100,false> implementedMastersSet;
+	eastl::fixed_set<ClassType,100,false> allowedMastersSet;
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
 
 	RoomInstance(InstanceUID UID_, SortieUID sortieUID_):

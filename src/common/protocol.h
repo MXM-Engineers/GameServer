@@ -1645,7 +1645,7 @@ struct SN_ProfileSkills
 	struct Skill
 	{
 		LocalActorID characterID;
-		i32 skillIndex;
+		SkillID skillIndex;
 		u8 isUnlocked;
 		u8 isActivated;
 
@@ -1673,7 +1673,7 @@ struct SN_ProfileMasterGears
 	struct Slot
 	{
 		i32 gearType;
-		i32 gearItemID;
+		u32 gearItemID;
 	};
 
 	struct Gear

@@ -916,7 +916,7 @@ class ServerSerializer:
         while count > 0:
             print('    {')
             print('      masterGearNo=%d' % p.read_u8())
-            print('      name=%s' % p.read_wstr())
+            print('      name="%s"' % p.read_wstr())
 
             slot_count = p.read_u16()
             s = ''

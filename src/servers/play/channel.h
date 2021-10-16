@@ -1,7 +1,5 @@
 #pragma once
 #include "game.h"
-#include "coordinator.h"
-#include <eathread/eathread_thread.h>
 
 struct GamePacketHandler
 {
@@ -26,8 +24,8 @@ struct GamePacketHandler
 	bool Init(Game* game_);
 	void Cleanup();
 
-	void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count);
-	void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count);
+	void OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>* clientList, const i32 count);
+	void OnClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 
 private:

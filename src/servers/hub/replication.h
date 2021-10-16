@@ -201,7 +201,6 @@ struct HubReplication
 
 	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);
 
-	void SendConnectToServer(ClientHandle clientHd, const Account& account, const u8 ip[4], u16 port);
 	void SendGameReady(ClientHandle clientHd);
 
 	void SendCalendar(ClientHandle clientHd);

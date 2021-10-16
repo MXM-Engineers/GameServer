@@ -65,8 +65,9 @@ inline bool StringViewEquals(const eastl::string_view& sv, const char* str)
 	return sv.compare(str) == 0;
 }
 
+// TODO: benchmark to find optimal bucket count
 template<typename T1, typename T2, int EXPECTED_CAPACITY, bool GrowOnOverflow = false>
-using hash_map = eastl::fixed_hash_map<T1 ,T2, EXPECTED_CAPACITY, EXPECTED_CAPACITY*4, GrowOnOverflow>;
+using hash_map = eastl::fixed_hash_map<T1 ,T2, EXPECTED_CAPACITY, 2, GrowOnOverflow>;
 
 // LOCAL_MIN: included
 // LOCAL_MAX: excluded

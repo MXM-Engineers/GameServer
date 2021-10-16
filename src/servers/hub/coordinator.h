@@ -66,7 +66,7 @@ struct InstancePool
 			ClientHandle clientHd;
 			AccountUID accountUID;
 			InstanceType instanceType;
-			InstanceUID instanceUID;
+			HubInstanceUID instanceUID;
 		};
 
 		Server* server;
@@ -110,8 +110,8 @@ struct InstancePool
 		eastl::list<HubInstance> instanceHubList;
 		eastl::list<RoomInstance> instanceRoomList;
 
-		hash_map<InstanceUID,decltype(instanceHubList)::iterator,128> instanceHubMap;
-		hash_map<InstanceUID,decltype(instanceRoomList)::iterator,128> instanceRoomMap;
+		hash_map<HubInstanceUID,decltype(instanceHubList)::iterator,128> instanceHubMap;
+		hash_map<HubInstanceUID,decltype(instanceRoomList)::iterator,128> instanceRoomMap;
 
 		// Thread: Lane
 		void Update();

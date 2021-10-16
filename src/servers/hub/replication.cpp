@@ -996,22 +996,6 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	}
 }
 
-void HubReplication::SendConnectToServer(ClientHandle clientHd, const Account& account, const u8 ip[4], u16 port)
-{
-	PacketWriter<Sv::SN_DoConnectGameServer> packet;
-
-	packet.Write<u16>(port);
-	packet.WriteRaw(ip, 4);
-	packet.Write<i32>(449); // gameID
-	packet.Write<u32>(3490298546); // idcHash
-	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
-	packet.Write<i32>(340); // instantKey
-
-	SendPacket(clientHd, packet);
-
-	// NOTE: client will disconnect on reception
-}
-
 void HubReplication::SendGameReady(ClientHandle clientHd)
 {
 	Sv::SA_GameReady ready;

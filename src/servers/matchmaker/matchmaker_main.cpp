@@ -32,11 +32,6 @@ struct Matchmaker
 	Time localTime;
 	EA::Thread::Thread thread;
 
-	struct Match3v3
-	{
-		eastl::fixed_vector<AccountUID,6,false> players;
-	};
-
 	struct Connection
 	{
 		enum class Type: u8
@@ -48,6 +43,8 @@ struct Matchmaker
 
 		Type type; // TODO: timeout when undecided for a while
 		ClientHandle clientHd;
+		eastl::array<u8,4> ip;
+		u16 listenPort;
 	};
 
 	struct Party
@@ -78,12 +75,24 @@ struct Matchmaker
 
 		struct Player
 		{
+			struct Master
+			{
+				ClassType classType = ClassType::NONE;
+				SkinIndex skin = SkinIndex::DEFAULT;
+				eastl::array<SkillID,2> skills = {
+					SkillID::INVALID,
+					SkillID::INVALID
+				};
+			};
+
 			const WideString name;
 			const AccountUID accountUID;
 			const ClientHandle instanceChd;
 			PlayerStatus status = PlayerStatus::Unknown;
 			Team team;
 			u8 isBot = false;
+
+			eastl::array<Master,2> masters;
 
 			Player(const WideString& name_, AccountUID accountUID_, ClientHandle instanceChd_):
 				name(name_),
@@ -103,7 +112,6 @@ struct Matchmaker
 
 	eastl::fixed_list<Connection, 32> connList;
 	hash_map<ClientHandle, decltype(connList)::iterator, 32> connMap;
-	eastl::fixed_vector<Match3v3, 2048> pendingMatch3v3;
 
 	eastl::fixed_list<Party,2048> partyList;
 	hash_map<PartyUID, decltype(partyList)::iterator, 2048> partyMap;
@@ -132,15 +140,18 @@ struct Matchmaker
 	void Update()
 	{
 		// handle client connections
-		eastl::fixed_vector<ClientHandle,128> clientConnectedList;
-		server.TransferConnectedClientList(&clientConnectedList);
+		eastl::fixed_vector<eastl::pair<ClientHandle,Server::ClientInfo>,128> clientConnectedList;
+		server.TransferConnectedClientListEx(&clientConnectedList);
 
 		foreach_const(cl, clientConnectedList) {
 			Connection conn;
 			conn.type = Connection::Type::Undecided;
-			conn.clientHd = *cl;
+			conn.clientHd = cl->first;
+			conn.ip = cl->second.ip;
+			conn.listenPort = 0;
+
 			connList.push_back(conn);
-			connMap.emplace(*cl, --connList.end());
+			connMap.emplace(conn.clientHd, --connList.end());
 		}
 
 		// handle client disconnections
@@ -204,6 +215,7 @@ struct Matchmaker
 		switch(conn.type) {
 			case Connection::Type::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
 			case Connection::Type::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
+			case Connection::Type::PlayServer: OnPacketPlay(conn, header, packetData, packetSize); break;
 
 			default: {
 				ASSERT_MSG(0, "case not handled");
@@ -234,8 +246,9 @@ struct Matchmaker
 
 				// TODO: check white list
 				// TODO: validate args
-				const In::HQ_Handshake& packet = SafeCast<In::HQ_Handshake>(packetData, packetSize);
+				const In::PQ_Handshake& packet = SafeCast<In::PQ_Handshake>(packetData, packetSize);
 				conn.type = Connection::Type::PlayServer;
+				conn.listenPort = packet.listenPort;
 
 				In::MR_Handshake resp;
 				resp.result = 1;
@@ -349,6 +362,78 @@ struct Matchmaker
 				}
 			} break;
 
+			case In::HQ_RoomCreateGame::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_RoomCreateGame>(packetData, packetSize));
+				const In::HQ_RoomCreateGame& packet = SafeCast<In::HQ_RoomCreateGame>(packetData, packetSize);
+
+				// TODO: validate args?
+
+				Room& room = *roomMap.at(packet.sortieUID);
+				for(int i = 0; i < packet.playerCount; i++) {
+					const In::HQ_RoomCreateGame::Player pp = packet.players[i];
+
+					bool found = false;
+					foreach(p, room.playerList) {
+						if(p->accountUID == pp.accountUID) {
+							found = true;
+							p->masters[0].classType = pp.masters[0];
+							p->masters[1].classType = pp.masters[1];
+							p->masters[0].skin = pp.skins[0];
+							p->masters[1].skin = pp.skins[1];
+							p->masters[0].skills[0] = pp.skills[0];
+							p->masters[0].skills[1] = pp.skills[1];
+							p->masters[1].skills[0] = pp.skills[2];
+							p->masters[1].skills[1] = pp.skills[3];
+						}
+					}
+
+					ASSERT_MSG(found, "player not found in room");
+				}
+
+				RoomCreateGame(room);
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
+		}
+	}
+
+	void OnPacketPlay(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
+	{
+		switch(header.netID) {
+			case In::PR_GameCreated::NET_ID: {
+				NT_LOG("[play%x] %s", conn.clientHd, PacketSerialize<In::PR_GameCreated>(packetData, packetSize));
+				const In::PR_GameCreated& packet = SafeCast<In::PR_GameCreated>(packetData, packetSize);
+
+				// TODO: validate args?
+
+				Room& room = *roomMap.at(packet.sortieUID);
+
+				// send 'match created' packet to all instances
+				eastl::fixed_set<ClientHandle,16,false> setInstance;
+				foreach_const(pl, room.playerList) {
+					if(pl->instanceChd != ClientHandle::INVALID) {
+						setInstance.insert(pl->instanceChd);
+					}
+				}
+
+				foreach_const(chd, setInstance) {
+					In::MN_MatchCreated resp;
+					resp.sortieUID = room.UID;
+					resp.serverIp = conn.ip;
+					resp.serverPort = conn.listenPort;
+					SendPacket(*chd, resp);
+				}
+
+				// done with the room, remove it
+				auto r = roomMap.find(room.UID);
+				roomList.erase(r->second);
+				roomMap.erase(r);
+
+				// TODO: retry if this packet is never received
+			} break;
+
 			default: {
 				ASSERT_MSG(0, "case not handled");
 			}
@@ -423,6 +508,8 @@ struct Matchmaker
 
 	void UpdateRooms()
 	{
+		eastl::fixed_vector<SortieUID,128> removeList;
+
 		foreach(r, roomList) {
 			// check if all players have accepted the match
 			bool allAccepted = true;
@@ -460,6 +547,51 @@ struct Matchmaker
 				}
 			}
 		}
+	}
+
+	void RoomCreateGame(Room& room)
+	{
+		In::MQ_CreateGame packet;
+		packet.sortieUID = room.UID;
+		packet.playerCount = 0;
+		packet.spectatorCount = 0;
+
+		foreach_const(p, room.playerList) {
+			if(p->team == Team::SPECTATOR) {
+				packet.spectators[packet.spectatorCount++] = p->accountUID;
+			}
+			else {
+				In::MQ_CreateGame::Player player;
+				player.name.Copy(p->name);
+				player.accountUID = p->accountUID;
+				player.team = (u8)p->team;
+				player.isBot = p->isBot;
+				player.masters[0] = p->masters[0].classType;
+				player.masters[1] = p->masters[1].classType;
+				player.skins[0] = p->masters[0].skin;
+				player.skins[1] = p->masters[1].skin;
+				player.skills[0] = p->masters[0].skills[0];
+				player.skills[1] = p->masters[0].skills[1];
+				player.skills[2] = p->masters[1].skills[0];
+				player.skills[3] = p->masters[1].skills[1];
+				packet.players[packet.playerCount++] = player;
+			}
+		}
+
+		// TODO: choose game server based on load
+		Connection* conn = GetAvailablePlayServer();
+		ASSERT(conn);
+		SendPacket(conn->clientHd, packet);
+	}
+
+	Connection* GetAvailablePlayServer()
+	{
+		foreach(c, connList) {
+			if(c->type == Connection::Type::PlayServer) {
+				return &*c;
+			}
+		}
+		return nullptr; // TODO: return nothing when all servers are under heavy load and wait?
 	}
 
 	void Cleanup()

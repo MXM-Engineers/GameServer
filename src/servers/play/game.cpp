@@ -4,15 +4,12 @@
 #include <EAStdC/EAScanf.h>
 #include <common/utils.h>
 
-#include "coordinator.h" // account data
 #include <mxm/game_content.h>
 #include "config.h"
 
-void Game::Init(Server* server_, const ClientLocalMapping* plidMap_)
+void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo)
 {
-	plidMap = plidMap_;
 	replication.Init(server_);
-	replication.plidMap = plidMap_;
 	world.Init(&replication);
 
 	// TODO: move OUT
@@ -31,8 +28,6 @@ void Game::Init(Server* server_, const ClientLocalMapping* plidMap_)
 	ASSERT(r);
 	world.physics.PushStaticMeshes(shape, 2);
 	// --------------------------
-
-	playerMap.fill(playerList.end());
 
 	LoadMap();
 
@@ -57,7 +52,7 @@ void Game::Update(Time localTime_)
 	Dbg::PushNewFrame(dbgGameUID);
 
 	// update clone
-	clone->input = world.FindPlayer((UserID)0)->input; // TODO: hardcoded hack
+	clone->input = world.GetPlayer(0).input; // TODO: hardcoded hack
 	// TODO: maybe don't replicate cloned players, just their master?
 
 	if(lego) {
@@ -139,36 +134,29 @@ bool Game::LoadMap()
 	return true;
 }
 
-void Game::OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData)
+void Game::OnPlayerConnect(ClientHandle clientHd, AccountUID accountUID)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	playerAccountData[clientID] = accountData;
+	ASSERT(playerMap.find(clientHd) == playerMap.end());
 
-	playerList.push_back(Player(clientHd));
-	playerMap[clientID] = --playerList.end();
+	bool found = false;
+	foreach(p, playerList) {
+		if(p->accountUID == accountUID) {
+			p->clientHd = clientHd;
+			playerMap.emplace(clientHd, p);
+			found = true;
+			break;
+		}
+	}
+	ASSERT_MSG(found, "could not associate client to player");
 
-	replication.OnPlayerConnect(clientHd, accountData);
+	replication.OnPlayerConnect(clientHd);
 }
 
 void Game::OnPlayerDisconnect(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	Player& player = *playerMap.at(clientHd);
 
-	if(playerMap[clientID] != playerList.end()) {
-		const Player& player = *playerMap[clientID];
-
-		LOG("[client%03d] Game :: OnClientDisconnect :: actorUID=%u", clientID, (u32)player.actorUID);
-
-		// we can disconnect before spawning, so test if we have an actor associated
-		// TODO: KILL MASTERS
-
-		playerList.erase(playerMap[clientID]);
-	}
-
-
-	playerMap[clientID] = playerList.end();
-	playerAccountData[clientID] = nullptr;
-
+	// TODO: KILL MASTERS
 	replication.OnPlayerDisconnect(clientHd);
 }
 
@@ -179,17 +167,11 @@ void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 
 void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
+	Player& p = *playerMap.at(clientHd);
+	const World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
-
-	const World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
-
-	foreach_const(chit, player->characters) {
+	foreach_const(chit, player.characters) {
 		const World::ActorMaster& chara = **chit;
 
 		if(chara.UID == actorUID) {
@@ -200,25 +182,19 @@ void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 		}
 	}
 
-	WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+	WARN("Client sent an invalid actorUID (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
 }
 
 void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
 {
 	ProfileFunction();
 
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
-
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
-	foreach_const(chit, player->characters) {
+	foreach_const(chit, player.characters) {
 		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
@@ -229,7 +205,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(!found) {
-		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+		WARN("Client sent an invalid actorUID (clientID=%x actorUID=%u)", clientHd, (u32)actorUID);
 		return;
 	}
 
@@ -248,9 +224,9 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		f64 clientDelta = clientTime - prevClientTime;
 		f64 serverDelta = serverTime - prevServerTime;
 		vec3 posDelta = prevPos - pos;
-		vec3 posBodyDelta = prevBodyPos - player->body->pos;
+		vec3 posBodyDelta = prevBodyPos - player.body->pos;
 
-		vec2 delta = vec2(pos - player->body->pos);
+		vec2 delta = vec2(pos - player.body->pos);
 		f64 speedClient = glm::length(posDelta) / clientDelta;
 		f64 speedServer = glm::length(posBodyDelta) / serverDelta;
 		if(speedClient - speedServer > 0) {
@@ -266,34 +242,28 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	prevClientTime = clientTime;
 	prevServerTime = serverTime;
 	prevPos = pos;
-	prevBodyPos = player->body->pos;
+	prevBodyPos = player.body->pos;
 
 
 	// TODO: check for movement hacking
 	if(dir.x == 0 && dir.y == 0) {
-		player->input.moveTo = pos;
+		player.input.moveTo = pos;
 	}
 	else {
-		player->input.moveTo = pos + vec3(glm::normalize(vec2(dir)) * speed, 0);
+		player.input.moveTo = pos + vec3(glm::normalize(vec2(dir)) * speed, 0);
 	}
-	player->input.rot = rot;
-	player->input.speed = speed;
+	player.input.rot = rot;
+	player.input.speed = speed;
 }
 
 void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
-
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
-	foreach_const(chit, player->characters) {
+	foreach_const(chit, player.characters) {
 		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
@@ -304,11 +274,11 @@ void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, cons
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(!found) {
-		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientID, (u32)actorUID);
+		WARN("Client sent an invalid actorUID (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
 		return;
 	}
 
-	player->input.rot = rot;
+	player.input.rot = rot;
 }
 
 void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
@@ -322,33 +292,29 @@ void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar*
 	// TODO: senderStaffType
 	// TODO: Actual chat system
 
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerAccountData[clientID]);
-	replication.SendChatMessageToAll(playerAccountData[clientID]->nickname.data(), chatType, msg, msgLen);
+	Player& p = *playerMap.at(clientHd);
+	replication.SendChatMessageToAll(p.name.data(), chatType, msg, msgLen);
 }
 
 void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerAccountData[clientID]);
 	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
-	i32 destClientID = -1;
-	for(int i = 0; i < playerAccountData.size(); i++) {
-		if(playerAccountData[i]) {
-			if(playerAccountData[i]->nickname.compare(destNick) == 0) {
-				destClientID = i;
-				break;
-			}
+	const Player* destPlayer = nullptr;
+	foreach_const(pl, playerList) {
+		if(pl->name.compare(destNick) == 0) {
+			destPlayer = &*pl;
+			break;
 		}
 	}
 
-	if(destClientID == -1) {
+	if(!destPlayer) {
 		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
 		return;
 	}
 
-	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[clientID]->nickname.data(), msg);
+	Player& p = *playerMap.at(clientHd);
+	replication.SendChatWhisperToClient(destPlayer->clientHd, p.name.data(), msg);
 }
 
 void Game::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
@@ -358,18 +324,12 @@ void Game::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID charac
 
 void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
-
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
-	foreach_const(chit, player->characters) {
+	foreach_const(chit, player.characters) {
 		const World::ActorMaster& chara = **chit;
 		if(chara.UID == actorUID) {
 			found = true;
@@ -380,16 +340,16 @@ void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, Act
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(!found) {
-		WARN("Client sent an invalid actorUID (clientID=%d actorUID=%u)", clientHd, (u32)actorUID);
+		WARN("Client sent an invalid actorUID (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
 		return;
 	}
 
 	// TODO: check hacking
-	player->input.rot.bodyYaw = rotate;
-	player->input.rot.upperYaw = upperRotate;
-	player->input.actionState = state;
-	player->input.actionParam1 = param1;
-	player->input.actionParam2 = param2;
+	player.input.rot.bodyYaw = rotate;
+	player.input.rot.upperYaw = upperRotate;
+	player.input.actionState = state;
+	player.input.actionParam1 = param1;
+	player.input.actionParam2 = param2;
 }
 
 void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
@@ -402,9 +362,7 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 	// map is loaded, spawn
 	// TODO: team, masters
 
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-	Player& player = *playerMap[clientID];
+	Player& p = *playerMap.at(clientHd);
 
 	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
 
@@ -415,17 +373,14 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 	RotationHumanoid rot;
 
 	// TODO: check if already leader character
-	DBG_ASSERT(player.actorUID == ActorUID::INVALID);
-	if((player.actorUID != ActorUID::INVALID)) {
+	DBG_ASSERT(p.actorUID == ActorUID::INVALID);
+	if((p.actorUID != ActorUID::INVALID)) {
 
 		//world.DestroyPlayerActor(player.actorUID);
 		//world.DestroyPlayerActor(player.cloneActorUID);
 	}
 
-	ASSERT(playerAccountData[clientID]); // account data is not assigned
-	const AccountData* account = playerAccountData[clientID];
-
-	World::Player& worldPlayer = world.GetPlayer((UserID)0);
+	World::Player& worldPlayer = world.GetPlayer(p.index);
 
 	//player.actorUID = actor.UID;
 
@@ -441,48 +396,33 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 
 void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
-
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
 	// TODO: cooldown
-	player->input.tag = 1;
+	player.input.tag = 1;
 }
 
 void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
-
-	player->input.jump = 1;
+	player.input.jump = 1;
 }
 
 void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-	// TODO: associate clients to world players in some way
-	// FIXME: hack
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.index);
+	ASSERT(player.clientHd == clientHd);
 
-	World::Player* player = world.FindPlayer((UserID)0);
-	ASSERT(player);
-	ASSERT(player->clientHd == clientHd);
-
-	player->input.castSkill = cast.skillID;
-	player->input.castPos = cast.p3nPos;
+	player.input.castSkill = cast.skillID;
+	player.input.castPos = cast.p3nPos;
 	float3 r = cast.posStruct.rotateStruct;
-	player->input.rot = RotConvertToWorld({ r.x, r.y, r.z });
+	player.input.rot = RotConvertToWorld({ r.x, r.y, r.z });
 
 	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
 }
@@ -499,9 +439,7 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
-	const i32 clientID = plidMap->Get(clientHd);
-	ASSERT(playerMap[clientID] != playerList.end());
-	const Player& player = *playerMap[clientID];
+	Player& p = *playerMap.at(clientHd);
 
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
 

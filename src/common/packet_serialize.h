@@ -52,6 +52,22 @@ inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, co
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_AuthenticateGameServer>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_AuthenticateGameServer(%d, %d) :: {", Cl::CQ_AuthenticateGameServer::NET_ID, packetSize);
+	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("	instantKey=%u", buff.Read<u32>());
+	SER("	var1=%u", buff.Read<u32>());
+	SER("	b1=%d", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Cl::CQ_PlayerCastSkill>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -89,12 +105,12 @@ inline const char* PacketSerialize<Sv::SN_DoConnectGameServer>(const void* packe
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_DoConnectGameServer(%d, %d) :: {", Sv::SN_DoConnectGameServer::NET_ID, packetSize);
-	SER("	port=%x", buff.Read<u16>());
-	SER("	ip=(%d.%d.%d.%d)", buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>());
+	SER("	port=%u", buff.Read<u16>());
+	SER("	ip=(%u.%u.%u.%u)", buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>());
 	SER("	gameID=%d", buff.Read<i32>());
 	SER("	idcHash=%u", buff.Read<u32>());
-	SER("	nickname='%s'", buff.ReadWideStringObj().data());
-	SER("	instantKey=%d", buff.Read<i32>());
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	instantKey=%u", buff.Read<u32>());
 	SER("}");
 
 	return str.data();
@@ -1404,6 +1420,106 @@ inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, c
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<In::HQ_RoomCreateGame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::HQ_RoomCreateGame& packet = SafeCast<In::HQ_RoomCreateGame>(packetData, packetSize);
+
+	SER("HQ_RoomCreateGame(%d, %d) :: {", In::HQ_RoomCreateGame::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("	players(%d)=[", packet.playerCount);
+	for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
+		SER("	{");
+		SER("		accountUID=%u", p->accountUID);
+		SER("		team=%u", p->team);
+		SER("		isBot=%u", p->isBot);
+		SER("		masters[0]=%d", p->masters[0]);
+		SER("		masters[1]=%d", p->masters[1]);
+		SER("		skins[0]=%d", p->skins[0]);
+		SER("		skins[1]=%d", p->skins[1]);
+		SER("		skills[0]=%d", p->skills[0]);
+		SER("		skills[1]=%d", p->skills[1]);
+		SER("		skills[2]=%d", p->skills[2]);
+		SER("		skills[3]=%d", p->skills[3]);
+		SER("	},");
+	}
+
+	SER("	spectators(%d)=[", packet.playerCount);
+	for(auto* p = packet.spectators.begin(); p != packet.spectators.begin()+packet.spectatorCount; ++p) {
+		SER("	accountUID=%u,", *p);
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::MQ_CreateGame& packet = SafeCast<In::MQ_CreateGame>(packetData, packetSize);
+
+	SER("MQ_CreateGame(%d, %d) :: {", In::MQ_CreateGame::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("	players(%d)=[", packet.playerCount);
+	for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
+		SER("	{");
+		SER("		name='%.*ls'", p->name.len, p->name.data);
+		SER("		accountUID=%u", p->accountUID);
+		SER("		team=%u", p->team);
+		SER("		isBot=%u", p->isBot);
+		SER("		masters[0]=%d", p->masters[0]);
+		SER("		masters[1]=%d", p->masters[1]);
+		SER("		skins[0]=%d", p->skins[0]);
+		SER("		skins[1]=%d", p->skins[1]);
+		SER("		skills[0]=%d", p->skills[0]);
+		SER("		skills[1]=%d", p->skills[1]);
+		SER("		skills[2]=%d", p->skills[2]);
+		SER("		skills[3]=%d", p->skills[3]);
+		SER("	},");
+	}
+	SER("	]");
+
+	SER("	spectators(%d)=[", packet.playerCount);
+	for(auto* p = packet.spectators.begin(); p != packet.spectators.begin()+packet.spectatorCount; ++p) {
+		SER("	accountUID=%u,", *p);
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::PR_GameCreated>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::PR_GameCreated& packet = SafeCast<In::PR_GameCreated>(packetData, packetSize);
+
+	SER("PR_GameCreated(%d, %d) :: {", In::PR_GameCreated::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MN_MatchCreated>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::MN_MatchCreated& packet = SafeCast<In::MN_MatchCreated>(packetData, packetSize);
+
+	SER("MN_MatchCreated(%d, %d) :: {", In::MN_MatchCreated::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("	serverIp=(%u.%u.%u.%u)", packet.serverIp[0], packet.serverIp[1], packet.serverIp[2], packet.serverIp[3]);
+	SER("	serverPort=%u", packet.serverPort);
+	SER("}");
+
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\
@@ -1478,7 +1594,6 @@ DEFAULT_SERIALIZE(Sv::SA_GetGuildHistoryList);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildRankingSeasonList);
 DEFAULT_SERIALIZE(Sv::SA_TierRecord);
 DEFAULT_SERIALIZE(Sv::SN_ClientSettings);
-DEFAULT_SERIALIZE(Cl::CQ_AuthenticateGameServer);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildProfile);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildMemberList);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildHistoryList);

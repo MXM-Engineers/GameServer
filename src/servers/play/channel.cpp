@@ -20,7 +20,7 @@ void GamePacketHandler::Cleanup()
 	LOG("Channel cleanup...");
 }
 
-void GamePacketHandler::OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count)
+void GamePacketHandler::OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		auto& it = clientList[i];
@@ -29,7 +29,7 @@ void GamePacketHandler::OnNewClientsConnected(const eastl::pair<ClientHandle, co
 	}
 }
 
-void GamePacketHandler::OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count)
+void GamePacketHandler::OnClientsDisconnected(const ClientHandle* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		const ClientHandle clientHd = clientList[i];

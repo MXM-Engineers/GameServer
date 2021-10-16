@@ -146,7 +146,7 @@ void InstancePool::Lane::Update()
 		}
 
 		client->instanceType = InstanceType::NONE;
-		client->instanceUID = InstanceUID::INVALID;
+		client->instanceUID = HubInstanceUID::INVALID;
 		LOG("[Lane_%d][client%x] client transfered out", laneIndex, *tr);
 	}
 
@@ -158,7 +158,7 @@ void InstancePool::Lane::Update()
 	}
 
 	foreach_const(cr, createRoomList) {
-		const InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		const HubInstanceUID instUID = HubInstanceUID(g_NextInstanceUID++);
 		instanceRoomList.emplace_back(instUID, cr->sortieUID);
 		instanceRoomMap.emplace(instUID, --instanceRoomList.end());
 		RoomInstance& room = *(--instanceRoomList.end());
@@ -183,7 +183,7 @@ void InstancePool::Lane::Update()
 
 	// TODO: only one hub ever?
 	if(instanceHubList.empty()) {
-		const InstanceUID instUID = InstanceUID(g_NextInstanceUID++);
+		const HubInstanceUID instUID = HubInstanceUID(g_NextInstanceUID++);
 		instanceHubList.emplace_back(instUID);
 		instanceHubMap.emplace(instUID, --instanceHubList.end());
 
@@ -515,6 +515,7 @@ void Coordinator::Update(f64 delta)
 					InstancePool::RoomUser ru;
 					ru.clientHd = ClientHandle::INVALID;
 					ru.accountUID = AccountUID::INVALID;
+					ru.name.assign(pl.name.data, pl.name.len);
 					ru.team = pl.team;
 					ru.userID = i;
 					ru.isBot = true;
@@ -532,6 +533,7 @@ void Coordinator::Update(f64 delta)
 					InstancePool::RoomUser ru;
 					ru.clientHd = clientHd;
 					ru.accountUID = pl.accountUID;
+					ru.name.assign(pl.name.data, pl.name.len);
 					ru.team = pl.team;
 					ru.userID = i;
 					ru.isBot = false;

@@ -1,5 +1,6 @@
 #pragma once
 #include <common/base.h>
+#include <EASTL/array.h>
 
 enum class LocalActorID: u32
 {
@@ -407,7 +408,7 @@ struct CQ_AuthenticateGameServer
 
 	u16 nickLen;
 	wchar nick[1]; // length is nickLen
-	i32 var;
+	u32 instantKey;
 	i32 var2;
 	u8 b1;
 };
@@ -923,15 +924,15 @@ struct SN_DoConnectGameServer
 	enum { NET_ID = 62010 };
 
 	u16 port;
-	u8 ip[4];
+	eastl::array<u8,4> ip;
 
 	i32 gameID;
-	u32 idcHash;
+	u32 idcHash; // not sure what this is used for
 
 	u16 nickLen;
 	wchar nick[1]; // length is nickLen
 
-	i32 instantKey;
+	u32 instantKey;
 };
 
 struct SN_DoConnectChannelServer

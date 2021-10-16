@@ -67,7 +67,11 @@ int main(int argc, char** argv)
 #endif
 
 	static Coordinator coordinator;
-	coordinator.Init(&server);
+	r = coordinator.Init(&server);
+	if(!r) {
+		LOG("ERROR: Could not init coordinator");
+		return 1;
+	}
 
 	// listen on main thread
 	listen.Listen();

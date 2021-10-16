@@ -270,15 +270,9 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	return actor;
 }
 
-World::Player* World::FindPlayer(UserID playerID)
+World::Player& World::GetPlayer(u32 playerIndex)
 {
-	if((i32)playerID >= players.size()) return nullptr;
-	return &(players[(u32)playerID]);
-}
-
-World::Player& World::GetPlayer(UserID playerID)
-{
-	return players[(u32)playerID];
+	return players[playerIndex];
 }
 
 World::ActorNpc* World::FindNpcActor(ActorUID actorUID) const

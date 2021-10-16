@@ -4,7 +4,6 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EAStdC/EAString.h>
-#include "coordinator.h" // AccountData
 #include <mxm/game_content.h>
 #include "config.h"
 
@@ -112,12 +111,11 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void Replication::OnPlayerConnect(ClientHandle clientHd, const AccountData* account)
+void Replication::OnPlayerConnect(ClientHandle clientHd)
 {
 	const i32 clientID = plidMap->Get(clientHd);
 	playerState[clientID].cur = PlayerState::CONNECTED;
 	playerLocalInfo[clientID].Reset();
-	playerAccountData[clientID] = account;
 	clientHandle[clientID] = clientHd;
 }
 
@@ -544,22 +542,6 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 		SendPacket(clientHd, packet);
 	}
-}
-
-void Replication::SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port)
-{
-	PacketWriter<Sv::SN_DoConnectGameServer> packet;
-
-	packet.Write<u16>(port);
-	packet.WriteRaw(ip, 4);
-	packet.Write<i32>(449); // gameID
-	packet.Write<u32>(3490298546); // idcHash
-	packet.WriteStringObj(account.nickname.data(), account.nickname.size());
-	packet.Write<i32>(340); // instantKey
-
-	SendPacket(clientHd, packet);
-
-	// NOTE: client will disconnect on reception
 }
 
 void Replication::SendPvpLoadingComplete(ClientHandle clientHd)

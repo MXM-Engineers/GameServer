@@ -95,7 +95,7 @@ ClientHandle Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 			ClientInfo& info = clientInfo[clientID];
 			struct sockaddr_in& sin = *(struct sockaddr_in*)&client.addr;
 			const u8* clIp = (u8*)&sin.sin_addr;
-			SetIp(info.ip, clIp[0], clIp[1], clIp[2], clIp[3]);
+			SetIp(info.ip.data(), clIp[0], clIp[1], clIp[2], clIp[3]);
 			//info.port = htons(sin.sin_port);
 			info.port = sin.sin_port;
 

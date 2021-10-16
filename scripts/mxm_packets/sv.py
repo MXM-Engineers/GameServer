@@ -119,7 +119,7 @@ class ServerSerializer:
         print('    gameID=%d' % p.read_i32())
         print('    idcHash=%u' % p.read_u32())
         print('    nickname="%s"' % p.read_wstr())
-        print('    instantKey=%d' % p.read_i32())
+        print('    instantKey=%d' % p.read_u32())
         print('}')
 
     def serialize_62018(netid, p: common.PacketReader):

@@ -25,8 +25,8 @@ class ClientSerializer:
     def serialize_60009(netid, p: common.PacketReader):
         print('CQ_AuthenticateGameServer {')
         print('    name="%s"' % p.read_wstr())
-        print('    instantKey=%d' % p.read_i32())
-        print('    var=%d' % p.read_u32())
+        print('    instantKey=%d' % p.read_u32())
+        print('    var=%u' % p.read_u32())
         print('    b1=%d' % p.read_u8())
         print('}')
 

@@ -2,6 +2,10 @@
 #include "channel.h"
 #include "game.h"
 
+enum class HubInstanceUID: u32 {
+	INVALID = 0
+};
+
 struct HubInstance
 {
 	struct NewUser
@@ -10,12 +14,12 @@ struct HubInstance
 		AccountUID accountUID;
 	};
 
-	const InstanceUID UID;
+	const HubInstanceUID UID;
 	ClientLocalMapping plidMap;
 	HubPacketHandler packetHandler;
 	HubGame game;
 
-	HubInstance(InstanceUID UID_): UID(UID_) {}
+	HubInstance(HubInstanceUID UID_): UID(UID_) {}
 
 	bool Init(Server* server_);
 	void Update(Time localTime_);
@@ -45,6 +49,7 @@ struct RoomInstance
 	{
 		ClientHandle clientHd;
 		AccountUID accountUID;
+		WideString name;
 		u8 team;
 		u8 userID;
 		u8 isBot;
@@ -55,11 +60,13 @@ struct RoomInstance
 		struct Master
 		{
 			ClassType classType = ClassType::NONE;
+			SkinIndex skin = SkinIndex::DEFAULT;
 			eastl::array<SkillID,2> skills = { SkillID::INVALID, SkillID::INVALID };
 		};
 
 		const ClientHandle clientHd;
 		const AccountUID accountUID;
+		const WideString name;
 		const u8 userID;
 		const u8 isBot;
 		const Team team;
@@ -74,13 +81,15 @@ struct RoomInstance
 			// TODO: add other stuff
 		} replicate = {0};
 
-		User(ClientHandle clientHd_, AccountUID accountUID_, u8 userID_, u8 isBot_, Team team_):
+		User(ClientHandle clientHd_, AccountUID accountUID_, const WideString& name_, u8 userID_, u8 isBot_, Team team_):
 			clientHd(clientHd_),
 			accountUID(accountUID_),
+			name(name_),
 			userID(userID_),
 			isBot(isBot_),
 			team(team_)
 		{
+			if(isBot) isReady = true;
 		}
 
 		inline Master& Main() { return masters[MASTER_MAIN]; }
@@ -88,7 +97,7 @@ struct RoomInstance
 	};
 
 	Server* server;
-	const InstanceUID UID;
+	const HubInstanceUID UID;
 	const SortieUID sortieUID;
 	ClientLocalMapping plidMap;
 
@@ -101,7 +110,12 @@ struct RoomInstance
 	eastl::fixed_set<ClassType,100,false> allowedMastersSet;
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
 
-	RoomInstance(InstanceUID UID_, SortieUID sortieUID_):
+	Time startTime = Time::ZERO;
+	Time localTime = Time::ZERO;
+
+	bool hasInitiatedMatchStart = false;
+
+	RoomInstance(HubInstanceUID UID_, SortieUID sortieUID_):
 		UID(UID_),
 		sortieUID(sortieUID_)
 	{
@@ -110,6 +124,7 @@ struct RoomInstance
 
 	void Init(Server* server_, const NewUser* userlist, const i32 userCount);
 	void Update(Time localTime_);
+	void Replicate();
 
 	void OnClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);

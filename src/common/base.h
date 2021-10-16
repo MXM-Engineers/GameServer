@@ -485,3 +485,16 @@ enum class CoreAffinity: i32
 
 	MATCHMAKER = 2,
 };
+
+inline u32 hash_fnv1a(const void* data, const u32 dataSize)
+{
+	u32 h = 0x811c9dc5;
+
+	const u8* d = (u8*)data;
+	for(u32 i = 0; i < dataSize; i++) {
+		h ^= d[i];
+		h *= 0x01000193;
+	}
+
+	return h;
+}

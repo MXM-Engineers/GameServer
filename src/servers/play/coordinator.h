@@ -5,129 +5,151 @@
 #include <common/protocol.h>
 #include <common/inner_protocol.h>
 
-// TODO: move this
-struct AccountData
-{
-	WideString nickname;
-	WideString guildTag;
-	i32 leaderMasterID;
+#include "instance.h"
+#include "matchmaker_connector.h"
 
-	// TODO: add to this
+enum class InstanceType: u8
+{
+	NONE = 0,
+	PVP_3V3,
 };
 
-struct AccountData;
+const int CPU_COUNT = 1;
 
-struct IInstance
+struct InstancePool
 {
-	virtual bool Init(Server* server_) = 0;
-	virtual void Update(Time localTime_) = 0;
-	virtual void OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count) = 0;
-	virtual void OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count) = 0;
-	virtual void OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData) = 0;
-};
-
-typedef IInstance* (*fn_InstanceAllocate)();
-
-enum class LaneID: i32
-{
-	NONE = -1,
-	FIRST = 0,
-	_COUNT // TODO: fetch core count instead and fill them that way
-};
-
-// Each lane is a separate thread hosting instances
-struct Lane
-{
-	struct PlayerTransit
+	struct Lane
 	{
-		ClientHandle clientHd;
-		const AccountData* accountData;
+		struct Client
+		{
+			ClientHandle clientHd;
+			InstanceType instanceType;
+			SortieUID sortieUID;
+		};
+
+		Server* server;
+		EA::Thread::Thread thread;
+		i32 laneIndex;
+		Time localTime = Time::ZERO;
+
+		GrowableBuffer recvDataBuff;
+
+		eastl::fixed_list<Client, MAX_CLIENTS, false> clientList;
+		hash_map<ClientHandle, decltype(clientList)::iterator, MAX_CLIENTS> clientMap;
+		eastl::fixed_set<ClientHandle,MAX_CLIENTS> clientHandleSet;
+
+		ProfileMutex(Mutex, mutexMatchmakerPacketsQueue);
+		GrowableBuffer mmPacketQueues[2];
+		u8 mmPacketQueueFront = 0; // being pushed to by coordinator
+
+		ProfileMutex(Mutex, mutexRoguePacketsQueue);
+		GrowableBuffer roguePacketsQueue;
+
+		ProfileMutex(Mutex, mutexClientDisconnectQueue);
+		eastl::fixed_vector<ClientHandle,128> clientDisconnectQueue;
+
+		ProfileMutex(Mutex, mutexClientConnectQueue);
+		struct ClientConnectEntry {
+			ClientHandle clientHd;
+			AccountUID accountUID;
+			SortieUID sortieUID;
+		};
+		eastl::fixed_vector<ClientConnectEntry,128> clientConnectQueue;
+
+		ProfileMutex(Mutex, mutexCreateGameQueue);
+		eastl::fixed_vector<In::MQ_CreateGame,128> createGameQueue;
+
+		eastl::list<PvpInstance> instancePvpList;
+		hash_map<SortieUID,decltype(instancePvpList)::iterator,128> instancePvpMap;
+
+		// Thread: Lane
+		void Update();
+		void Cleanup();
+
+		void ClientHandlePacket();
 	};
 
-	u32 laneIndex;
-	Time localTime;
+	union ClientLocation
+	{
+		u8 whole;
 
-	EA::Thread::Thread thread;
+		struct {
+			u8 lane;
+		};
+
+		static ClientLocation Null() {
+			return {0x0};
+		}
+
+		inline bool IsNull() const { return whole == 0x0; }
+	};
+
 	Server* server;
+	eastl::array<Lane,CPU_COUNT> lanes;
 
-	GrowableBuffer recvDataBuff;
+	ClientLocalMapping plidMap; // only modified on Coordinator Thread
+	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
+	eastl::array<ClientLocation, MAX_CLIENTS> clientLocation;
 
-	ProfileMutex(Mutex, mutexNewPlayerQueue);
-	GrowableBuffer packetDataQueue;
-	GrowableBuffer processPacketQueue;
+	// FIXME: pop when game is destroyed
+	hash_map<SortieUID,u8,4096> sortieLocation;
 
-	ProfileMutex(Mutex, mutexClientDisconnectedList);
-	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
-
-	ProfileMutex(Mutex, mutexPacketDataQueue);
-	eastl::fixed_vector<PlayerTransit,128> newPlayerQueue;
-
-	eastl::fixed_set<ClientHandle,MAX_CLIENTS,false> clientSet;
-
-	fn_InstanceAllocate allocInstance;
-	IInstance* instance;
-
-	void Init(Server* server_);
-	void Update();
+	// Thread: Coordinator
+	bool Init(Server* server_);
 	void Cleanup();
 
-	void CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData);
-	void CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
-	void CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count);
-};
+	// Thread: Coordinator
+	void QueuePushPlayerToGame(ClientHandle clientHd, AccountUID accountUID, SortieUID sortieUID);
+	void QueuePopPlayers(const ClientHandle* clientList, const i32 count); // on disconnect
+	void QueueCreateGame(const In::MQ_CreateGame& gameInfo);
 
-struct Matchmaker
-{
-	InnerConnection conn;
+	// packets piped to coordinator before player is assigned to an instance
+	void QueueRogueCoordinatorPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
+	void QueueMatchmakerPackets(const u8* buffer, u32 bufferSize);
 
-	struct QueryCreateSession
-	{
-		eastl::array<In::MQ_CreatePlaySession::Player, 6> players;
-	};
-
-	eastl::fixed_vector<QueryCreateSession, 64> queueQueryCreateSession;
-
-	bool Init();
-	void Update();
-
-	void HandlePacket(const NetHeader& header, const u8* packetData);
+	inline bool IsClientInsideAnInstance(ClientHandle clientHd) const {
+		return plidMap.TryGet(clientHd) != -1;
+	}
 };
 
 // Responsible for managing Account data and dispatching client to game channels/instances
 struct Coordinator
 {
 	Server* server;
-	eastl::array<Lane, (i32)LaneID::_COUNT> lanes;
-	eastl::array<LaneID, MAX_CLIENTS> associatedLane;
+	MatchmakerConnector matchmaker;
+	InstancePool instancePool;
 
 	ClientLocalMapping plidMap;
 	eastl::array<ClientHandle, MAX_CLIENTS> clientHandle;
-	eastl::array<AccountData, MAX_CLIENTS> accountData;
 
 	GrowableBuffer recvDataBuff;
 
 	EA::Thread::Thread thread;
 	Time localTime;
 
-	Matchmaker matchmaker;
-
-	void Init(Server* server_);
+	bool Init(Server* server_);
 	void Cleanup();
 
-	void Update(f64 delta);
+	void Update();
 
 	void ClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 private:
 
+	struct PendingClientEntry
+	{
+		AccountUID accountUID;
+		u32 instantKey;
+		SortieUID sortieUID;
+		Time time;
+	};
+
+	eastl::fixed_vector<PendingClientEntry,2048> pendingClientQueue; // TODO: timeout entries eventually if client does not connect
+
+	void ProcessMatchmakerPackets();
+	void HandleMatchmakerPacket(const NetHeader& header, const u8* packetData, const i32 packetSize);
+
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-	void HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-
-	void ClientSendAccountData(ClientHandle clientHd);
 
 	template<typename Packet>
 	inline void SendPacket(ClientHandle clientHd, const Packet& packet)

@@ -78,6 +78,33 @@ void MatchmakerConnector::Update()
 					conn.SendPacket(packet);
 				} break;
 
+				case Query::Type::RoomCreateGame: {
+					const auto& qq = q->RoomCreateGame;
+
+					In::HQ_RoomCreateGame packet;
+					packet.sortieUID = qq.sortieUID;
+					packet.playerCount = 0;
+					packet.spectatorCount = 0;
+
+					for(int i = 0; i < qq.playerCount; i++) {
+						const RoomPlayer& rp = qq.players[i];
+						if(rp.team == 2) { // spectator
+							packet.spectators[packet.spectatorCount++] = rp.accountUID;
+						}
+						else {
+							In::HQ_RoomCreateGame::Player player;
+							player.accountUID = rp.accountUID;
+							player.team = rp.team;
+							player.isBot = rp.isBot;
+							player.masters = rp.masters;
+							player.skins = rp.skins;
+							player.skills = rp.skills;
+							packet.players[packet.playerCount++] = player;
+						}
+					}
+					conn.SendPacket(packet);
+				} break;
+
 				default: {
 					ASSERT_MSG(0, "case not handled");
 				}
@@ -145,6 +172,25 @@ void MatchmakerConnector::QueryPlayerRoomConfirm(AccountUID playerAccountUID, So
 	query.PlayerRoomConfirm.playerAccountUID = playerAccountUID;
 	query.PlayerRoomConfirm.confirm = confirm;
 	query.PlayerRoomConfirm.sortieUID = sortieUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
+void MatchmakerConnector::QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount)
+{
+	DBG_ASSERT(sortieUID != SortieUID::INVALID);
+
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::RoomCreateGame);
+	query.RoomCreateGame.sortieUID = sortieUID;
+	ASSERT(playerCount < query.RoomCreateGame.players.size());
+	query.RoomCreateGame.playerCount = playerCount;
+	for(int i = 0; i < playerCount; i++) {
+		query.RoomCreateGame.players[i] = playerList[i];
+	}
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);

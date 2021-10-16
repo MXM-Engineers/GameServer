@@ -14,7 +14,7 @@ struct AccountData;
 struct Game
 {
 	enum {
-		MAX_PLAYERS = MAX_CLIENTS
+		MAX_PLAYERS = 16
 	};
 
 	struct SpawnPoint
@@ -24,26 +24,27 @@ struct Game
 
 	struct Player
 	{
-		const ClientHandle clientHd;
+		const AccountUID accountUID;
+		const WideString& name;
+		const u32 index;
+		ClientHandle clientHd = ClientHandle::INVALID;
 		ActorUID actorUID = ActorUID::INVALID;
 		ActorUID cloneActorUID = ActorUID::INVALID; // TODO: remove
 
-		Player(): clientHd(ClientHandle::INVALID) {}
+		Player(AccountUID accountUID_, const WideString& name_, u32 index_):
+			accountUID(accountUID_),
+			name(name_),
+			index(index_)
+		{
 
-		Player(ClientHandle clientHd_):
-			clientHd(clientHd_) {}
+		}
 	};
-
-	eastl::array<const AccountData*,MAX_PLAYERS> playerAccountData;
 
 	World world;
 	Replication replication;
 
-	const ClientLocalMapping* plidMap;
-
 	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
-	typedef decltype(playerList) TypePlayerList; // just so it plays well with my tools...
-	eastl::array<TypePlayerList::iterator,MAX_PLAYERS> playerMap;
+	hash_map<ClientHandle, decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
 
 	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
 
@@ -58,13 +59,12 @@ struct Game
 
 	World::Player* clone = nullptr;
 
-
-	void Init(Server* server_, const ClientLocalMapping* plidMap_);
+	void Init(Server* server_, const In::MQ_CreateGame& gameInfo);
 	void Update(Time localTime_);
 
 	bool LoadMap();
 
-	void OnPlayerConnect(ClientHandle clientHd, const AccountData* accountData);
+	void OnPlayerConnect(ClientHandle clientHd, AccountUID accountUID);
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);

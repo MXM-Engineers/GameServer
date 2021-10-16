@@ -145,8 +145,7 @@ struct World
 	Player& CreatePlayer(ClientHandle clientHd, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
-	Player* FindPlayer(UserID playerID);
-	Player& GetPlayer(UserID playerID);
+	Player& GetPlayer(u32 playerIndex);
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 

@@ -1,6 +1,7 @@
+#include <mxm/game_content.h>
 #include "instance.h"
 #include "account.h"
-#include <mxm/game_content.h>
+#include "matchmaker_connector.h"
 
 bool HubInstance::Init(Server* server_)
 {
@@ -59,6 +60,8 @@ void HubInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetDa
 	packetHandler.OnMatchmakerPacket(header, packetData);
 }
 
+const i32 PICKING_TIME = 60;
+
 void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 userCount)
 {
 	server = server_;
@@ -76,10 +79,12 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		ClassType::Lua,
 	};
 
+	startTime = TimeNow();
+
 	LOG("[Room(%llx)] room created (userCount=%d)", sortieUID, userCount);
 
 	for(const NewUser* nu = userlist; nu != userlist+userCount; ++nu) {
-		userList.emplace_back(nu->clientHd, nu->accountUID, nu->userID, nu->isBot, Team(nu->team));
+		userList.emplace_back(nu->clientHd, nu->accountUID, nu->name, nu->userID, nu->isBot, Team(nu->team));
 		User* user = &userList.back();
 
 		// has account when client is connected
@@ -259,7 +264,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		// allow everyone to pick at once
 		{
 			PacketWriter<Sv::SN_SortieMasterPickPhaseStepStart> packet;
-			packet.Write<i32>(60); // timeSec
+			packet.Write<i32>(PICKING_TIME); // timeSec
 
 			eastl::fixed_vector<UserID,5> allyTeamUserIds;
 			eastl::fixed_vector<UserID,5> enemyTeamUserIds;
@@ -303,6 +308,57 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 }
 
 void RoomInstance::Update(Time localTime_)
+{
+	localTime = localTime_;
+	if(startTime == Time::ZERO) startTime = localTime_;
+
+	if(!hasInitiatedMatchStart) {
+		bool allReady = true;
+		foreach_const(u, userList) {
+			if(!u->isReady) {
+				allReady = false;
+				break;
+			}
+		}
+
+		if(TimeDurationSec(startTime, localTime) > PICKING_TIME) {
+			allReady = true;
+		}
+
+		// when every player is ready, create a game
+		if(allReady) {
+			hasInitiatedMatchStart = true;
+			MatchmakerConnector& mm = Matchmaker();
+
+			eastl::fixed_vector<MatchmakerConnector::RoomPlayer,16,false> rpList;
+			foreach_const(u, userList) {
+				MatchmakerConnector::RoomPlayer rp;
+				rp.accountUID = u->accountUID;
+				rp.team = u->team;
+				rp.isBot = u->isBot;
+				rp.masters[0] = u->masters[0].classType;
+				rp.masters[1] = u->masters[1].classType;
+				rp.skins[0] = u->masters[0].skin;
+				rp.skins[1] = u->masters[1].skin;
+				rp.skills[0] = u->masters[0].skills[0];
+				rp.skills[1] = u->masters[0].skills[1];
+				rp.skills[2] = u->masters[1].skills[0];
+				rp.skills[3] = u->masters[1].skills[1];
+				rpList.push_back(rp);
+			}
+
+			mm.QueryRoomCreateGame(sortieUID, rpList.data(), rpList.size());
+
+			foreach_const(cu, connectedUsers) {
+				SendDbgMsg((*cu)->clientHd, L"Game will start momentarily...");
+			}
+		}
+	}
+
+	Replicate();
+}
+
+void RoomInstance::Replicate()
 {
 	bool doReplicateMasterCount = false;
 
@@ -451,11 +507,35 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 
 void RoomInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetData)
 {
+	const i32 packetSize = header.size - sizeof(header);
 
+	switch(header.netID) {
+		case In::MN_MatchCreated::NET_ID: {
+			const In::MN_MatchCreated& created = SafeCast<In::MN_MatchCreated>(packetData, packetSize);
+			if(created.sortieUID == sortieUID) {
+				NT_LOG("[MM] %s", PacketSerialize<In::MN_MatchCreated>(packetData, packetSize));
+
+				foreach_const(u, connectedUsers) {
+					const User& user = **u;
+					PacketWriter<Sv::SN_DoConnectGameServer> packet;
+					packet.Write(created.serverPort); // port
+					packet.Write(created.serverIp); // ip
+					packet.Write<i32>((u64)created.sortieUID & 0xFFFFFFFF); // gameID
+					packet.Write<u32>(0x0); // idcHash
+					packet.WriteStringObj(user.name.data(), user.name.size());
+					packet.Write<u32>(In::ProduceInstantKey(user.accountUID, created.sortieUID));
+					SendPacket(user.clientHd, packet);
+				}
+
+				// TODO: delete room
+			}
+		} break;
+	}
 }
 
 RoomInstance::User* RoomInstance::FindUser(ClientHandle clientHd)
 {
+	// slow but good enough
 	foreach_const(u, connectedUsers) {
 		if((*u)->clientHd == clientHd) {
 			return &**u;

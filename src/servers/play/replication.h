@@ -162,8 +162,6 @@ struct Replication
 	eastl::array<PlayerStatePair,MAX_CLIENTS> playerState;
 	eastl::array<PlayerLocalInfo,MAX_CLIENTS> playerLocalInfo;
 
-	eastl::array<const AccountData*,MAX_CLIENTS> playerAccountData;
-
 	void Init(Server* server_);
 
 	void FrameEnd();
@@ -171,7 +169,7 @@ struct Replication
 	void FramePushMasterActor(const ActorMaster& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
-	void OnPlayerConnect(ClientHandle clientHd, const AccountData* account);
+	void OnPlayerConnect(ClientHandle clientHd);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SetPlayerLoaded(ClientHandle clientHd);
@@ -185,7 +183,6 @@ struct Replication
 
 	void SendAccountDataPvp(ClientHandle clientHd);
 
-	void SendConnectToServer(ClientHandle clientHd, const AccountData& account, const u8 ip[4], u16 port);
 	void SendPvpLoadingComplete(ClientHandle clientHd);
 	void SendGameReady(ClientHandle clientHd);
 	void SendGameStart(ClientHandle clientHd);

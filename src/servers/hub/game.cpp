@@ -260,13 +260,6 @@ void HubGame::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, 
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// FIXME: remove
-	// connect to gameserver when jumping
-	if(state == ActionStateID::JUMP_START_MOVESTATE) {
-		const u8 ip[4] = { 127, 0, 0, 1 };
-		replication.SendConnectToServer(clientHd, *playerAccountData[userID], ip, 12900);
-	}
-
 	WorldHub::ActorPlayer* actor = world.FindPlayerActor(playerActorUID[userID]);
 	ASSERT(actor);
 

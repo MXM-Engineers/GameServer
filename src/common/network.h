@@ -132,7 +132,7 @@ struct Server
 
 	struct ClientInfo
 	{
-		u8 ip[4];
+		eastl::array<u8,4> ip;
 		u16 port;
 	};
 
@@ -180,6 +180,20 @@ struct Server
 		if(clientConnectedList.size() > 0) {
 			LOCK_MUTEX(mutexClientConnectedList);
 			eastl::copy(clientConnectedList.begin(), clientConnectedList.end(), eastl::back_inserter(*out));
+			clientConnectedList.clear();
+		}
+	}
+
+	// has client info as well
+	template<class Array>
+	void TransferConnectedClientListEx(Array* out)
+	{
+		if(clientConnectedList.size() > 0) {
+			LOCK_MUTEX(mutexClientConnectedList);
+			foreach_const(cl, clientConnectedList) {
+				eastl::pair<ClientHandle,ClientInfo> pair(*cl, clientInfo[clientHandle2IDMap.at(*cl)]);
+				out->push_back(pair);
+			}
 			clientConnectedList.clear();
 		}
 	}

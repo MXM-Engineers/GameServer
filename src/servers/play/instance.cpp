@@ -1,36 +1,44 @@
 #include "instance.h"
 
-bool PvpInstance::Init(Server* server_)
-{
-	game.Init(server_, &plidMap);
-	packetHandler.Init(&game);
-	return true;
-}
-
 void PvpInstance::Update(Time localTime_)
 {
-	game.Update(localTime_);
-}
-
-void PvpInstance::OnNewClientsConnected(const eastl::pair<ClientHandle, const AccountData*>* clientList, const i32 count)
-{
-	for(int i = 0; i < count; i++) {
-		plidMap.Push(clientList[i].first);
-	}
-
-	packetHandler.OnNewClientsConnected(clientList, count);
-}
-
-void PvpInstance::OnNewClientsDisconnected(const ClientHandle* clientList, const i32 count)
-{
-	packetHandler.OnNewClientsDisconnected(clientList, count);
-
-	for(int i = 0; i < count; i++) {
-		plidMap.Pop(clientList[i]);
+	if(phase == Phase::PlayingGame) {
+		game.Update(localTime_);
 	}
 }
 
-void PvpInstance::OnNewPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+void PvpInstance::OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>* clientList, const i32 count)
 {
-	packetHandler.OnNewPacket(clientHd, header, packetData);
+	if(phase == Phase::PlayingGame) {
+		packetHandler.OnClientsConnected(clientList, count);
+	}
+}
+
+void PvpInstance::OnClientsDisconnected(const ClientHandle* clientList, const i32 count)
+{
+	if(phase == Phase::PlayingGame) {
+		packetHandler.OnClientsDisconnected(clientList, count);
+	}
+}
+
+void PvpInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+{
+	if(phase == Phase::PlayerLoading) {
+		const i32 packetSize = header.size - sizeof(NetHeader);
+
+		switch(header.netID) {
+
+			default: {
+				NT_LOG("[client%x] Client :: Unknown packet :: size=%d netID=%d", clientHd, header.size, header.netID);
+			} break;
+		}
+	}
+	else if(phase == Phase::PlayingGame) {
+		packetHandler.OnNewPacket(clientHd, header, packetData);
+	}
+}
+
+void PvpInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetData)
+{
+
 }

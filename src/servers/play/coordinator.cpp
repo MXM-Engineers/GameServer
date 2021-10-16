@@ -10,7 +10,7 @@
 
 intptr_t ThreadLane(void* pData)
 {
-	Lane& lane = *(Lane*)pData;
+	InstancePool::Lane& lane = *(InstancePool::Lane*)pData;
 	ProfileSetThreadName(FMT("Lane_%d", lane.laneIndex));
 	const i32 cpuID = (i32)CoreAffinity::LANES + lane.laneIndex;
 	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
@@ -69,7 +69,7 @@ intptr_t ThreadCoordinator(void* pData)
 
 		if(delta > UPDATE_RATE_MS) {
 			ProfileNewFrame("Coordinator");
-			coordinator.Update(delta / 1000.0);
+			coordinator.Update();
 			t0 = t1;
 		}
 		else {
@@ -81,57 +81,92 @@ intptr_t ThreadCoordinator(void* pData)
 	return 0;
 }
 
-void Lane::Init(Server* server_)
+static EA::Thread::AtomicUint32 g_NextInstanceUID = 1;
+
+void InstancePool::Lane::Update()
 {
-	server = server_;
-
-	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
-	packetDataQueue.Init(10 * (1024*1024)); // 10 MB
-	processPacketQueue.Init(10 * (1024*1024)); // 10 MB
-
-	// TODO: several of these
-	instance = new PvpInstance();
-	instance->Init(server);
-}
-
-void Lane::Update()
-{
-	// TODO: handle multiple instances
-
-	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> disconnectedClientList;
-	eastl::fixed_vector<eastl::pair<ClientHandle, const AccountData*>,MAX_CLIENTS> newClientList;
-
-	{ LOCK_MUTEX(mutexClientDisconnectedList);
-		foreach_const(n, clientDisconnectedList) {
-			clientSet.erase(*n);
-			disconnectedClientList.push_back(*n);
-		}
-		clientDisconnectedList.clear();
+	// create games
+	decltype(createGameQueue) gameList;
+	{ LOCK_MUTEX(mutexCreateGameQueue);
+		gameList = createGameQueue;
+		createGameQueue.clear();
 	}
 
-	{ LOCK_MUTEX(mutexNewPlayerQueue);
-		foreach_const(n, newPlayerQueue) {
-			ASSERT(clientSet.find(n->clientHd) == clientSet.end());
-			clientSet.insert(n->clientHd);
-			newClientList.push_back({ n->clientHd, n->accountData });
-		}
-		newPlayerQueue.clear();
+	foreach_const(g, gameList) {
+		instancePvpList.emplace_back(g->sortieUID, *g, server);
+		auto inst = --instancePvpList.end();
+		instancePvpMap.emplace(inst->sortieUID, inst);
+
+		LOG("[Lane_%d] Created game (sortieUID=%llu)", laneIndex, inst->sortieUID);
 	}
 
-	// TODO: move this to game probably?
-	instance->OnNewClientsDisconnected(disconnectedClientList.data(), disconnectedClientList.size());
-	instance->OnNewClientsConnected(newClientList.data(), newClientList.size());
+	// on disconnected clients
+	decltype(clientDisconnectQueue) disconnectedList;
+	{ LOCK_MUTEX(mutexClientDisconnectQueue);
+		disconnectedList = clientDisconnectQueue;
+		clientDisconnectQueue.clear();
+	}
 
-	{ LOCK_MUTEX(mutexPacketDataQueue);
-		recvDataBuff.Append(packetDataQueue.data, packetDataQueue.size);
-		packetDataQueue.Clear();
+	foreach_const(tr, disconnectedList) {
+		auto client = clientMap.at(*tr);
+
+		switch(client->instanceType) {
+			case InstanceType::PVP_3V3: {
+				PvpInstance& instance = *instancePvpMap.at(client->sortieUID);
+				instance.OnClientsDisconnected(&client->clientHd, 1); // TODO: group client handles by instance
+			} break;
+
+			default: {
+				ASSERT_MSG(0, "case not handled");
+			}
+		}
+
+		clientList.erase(client);
+		clientMap.erase(*tr);
+		clientHandleSet.erase(*tr);
+		LOG("[Lane_%d][client%x] client disconnected", laneIndex, *tr);
+	}
+
+	// on connected clients
+	decltype(clientConnectQueue) connectedList;
+	{ LOCK_MUTEX(mutexClientConnectQueue);
+		connectedList = clientConnectQueue;
+		clientConnectQueue.clear();
+	}
+
+	foreach_const(e, connectedList) {
+		clientList.push_back();
+		auto cit = --clientList.end();
+		Client& client = *cit;
+		clientMap.emplace(e->clientHd, cit);
+		clientHandleSet.insert(e->clientHd);
+
+		client.clientHd = e->clientHd;
+		client.instanceType = InstanceType::PVP_3V3;
+		client.sortieUID = e->sortieUID;
+
+		PvpInstance& instance = *instancePvpMap.at(client.sortieUID);
+		eastl::pair<ClientHandle,AccountUID> list(e->clientHd, e->accountUID);
+		instance.OnClientsConnected(&list, 1); // TODO: group by instance
+
+		LOG("[Lane_%d][client%x] client connected to sortie (sortieUID=%llu)", laneIndex, client.clientHd, client.sortieUID);
+	}
+
+	// handle client packets
+	{ LOCK_MUTEX(mutexRoguePacketsQueue);
+		recvDataBuff.Append(roguePacketsQueue.data, roguePacketsQueue.size);
+		roguePacketsQueue.Clear();
 	}
 
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
-	eastl::copy(clientSet.begin(), clientSet.end(), eastl::back_inserter(clientList));
+	eastl::copy(clientHandleSet.begin(), clientHandleSet.end(), eastl::back_inserter(clientList));
 
 	server->TransferReceivedData(&recvDataBuff, clientList.data(), clientList.size());
 
+	ClientHandle curClientHd = ClientHandle::INVALID;
+	PvpInstance* curPvpInstance = nullptr;
+
+	// TODO: move base packet validation to server
 	ConstBuffer buff(recvDataBuff.data, recvDataBuff.size);
 	while(buff.CanRead(sizeof(Server::RecvChunkHeader))) {
 		const Server::RecvChunkHeader& chunkInfo = buff.Read<Server::RecvChunkHeader>();
@@ -155,155 +190,200 @@ void Lane::Update()
 				break;
 			}
 
+			if(Config().TraceNetwork) {
+				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				server->packetCounter++;
+			}
+
 			const u8* packetData = reader.ReadRaw(packetDataSize);
-			instance->OnNewPacket(chunkInfo.clientHd, header, packetData);
+
+			if(curClientHd != chunkInfo.clientHd) {
+				curClientHd = chunkInfo.clientHd;
+				curPvpInstance = nullptr;
+				const Client& client = *clientMap.at(curClientHd);
+				switch(client.instanceType) {
+					case InstanceType::PVP_3V3: {
+						curPvpInstance = &*instancePvpMap.at(client.sortieUID);
+					} break;
+
+					default: {
+						ASSERT_MSG(0, "case not handled");
+					}
+				}
+			}
+
+			if(curPvpInstance) {
+				curPvpInstance->OnClientPacket(curClientHd, header, packetData);
+			}
+			else {
+				ASSERT_MSG(0, "case not handled");
+			}
 		}
 	}
 
 	recvDataBuff.Clear();
 
-	instance->Update(localTime);
-}
-
-void Lane::Cleanup()
-{
-	// instance->game.Cleanup();
-}
-
-void Lane::CoordinatorRegisterNewPlayer(ClientHandle clientHd, const AccountData* accountData)
-{
-	LOG("[Lane%d][client%x] New player", laneIndex, clientHd);
-
-	LOCK_MUTEX(mutexNewPlayerQueue);
-	newPlayerQueue.push_back(PlayerTransit{ clientHd, accountData });
-}
-
-void Lane::CoordinatorClientHandlePacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
-{
-	LOCK_MUTEX(mutexPacketDataQueue);
-
-	Server::RecvChunkHeader chunkInfo;
-	chunkInfo.clientHd = clientHd;
-	chunkInfo.len = header.size;
-	packetDataQueue.Append(&chunkInfo, sizeof(chunkInfo));
-	packetDataQueue.Append(&header, sizeof(header));
-	packetDataQueue.Append(packetData, header.size - sizeof(NetHeader));
-}
-
-void Lane::CoordinatorHandleDisconnectedClients(ClientHandle* clientIDList, const i32 count)
-{
-	LOCK_MUTEX(mutexClientDisconnectedList);
-	eastl::copy(clientIDList, clientIDList+count, eastl::back_inserter(clientDisconnectedList));
-}
-
-bool Matchmaker::Init()
-{
-	// TODO: load this from somewhere
-	const u8 ip[4] = { 127, 0, 0, 1 };
-	const u16 port = 13900;
-	bool r = conn.async.ConnectTo(ip, port);
-	if(!r) {
-		LOG("ERROR: Failed to connect to matchmaker server");
-		return false;
-	}
-
-	conn.async.StartReceiving(); // TODO: move this to ConnectTo()?
-
-	In::PQ_Handshake handshake;
-	handshake.magic = In::MagicHandshake;
-	conn.SendPacket(handshake);
-	return true;
-}
-
-void Matchmaker::Update()
-{
-	// handle inner communication
-	conn.SendPendingData();
-
-	u8 recvBuff[8192];
-	i32 recvLen = 0;
-	conn.RecvPendingData(recvBuff, sizeof(recvBuff), &recvLen);
-
-	if(recvLen > 0) {
-		ConstBuffer reader(recvBuff, recvLen);
-
+	// matchmaker packets
+	GrowableBuffer& backQueue = mmPacketQueues[!mmPacketQueueFront];
+	if(backQueue.size > 0) {
+		ConstBuffer reader(backQueue.data, backQueue.size);
 		while(reader.CanRead(sizeof(NetHeader))) {
 			const NetHeader& header = reader.Read<NetHeader>();
 			const i32 packetDataSize = header.size - sizeof(NetHeader);
 			ASSERT(reader.CanRead(packetDataSize));
 			const u8* packetData = reader.ReadRaw(packetDataSize);
 
-			HandlePacket(header, packetData);
+			// TODO: filter packets so we don't send everything everywhere
+			foreach(room, instancePvpList) {
+				room->OnMatchmakerPacket(header, packetData);
+			}
 		}
+		backQueue.Clear();
+	}
+
+	{ LOCK_MUTEX(mutexMatchmakerPacketsQueue);
+		mmPacketQueueFront ^= 1;
+	}
+
+	// update instances
+	foreach(room, instancePvpList) {
+		room->Update(localTime);
 	}
 }
 
-void Matchmaker::HandlePacket(const NetHeader& header, const u8* packetData)
+void InstancePool::Lane::Cleanup()
 {
-	const i32 packetSize = header.size - sizeof(NetHeader);
 
-	switch(header.netID) {
-		case In::MR_Handshake::NET_ID: {
-			const In::MR_Handshake resp = SafeCast<In::MR_Handshake>(packetData, packetSize);
-			if(resp.result == 1) {
-				LOG("[MM] Connected to Matchmaker server");
-			}
-			else {
-				WARN("[MM] handshake failed (%d)", resp.result);
-				ASSERT_MSG(0, "mm handshake failed"); // should not happen
-			}
-		} break;
+}
 
-		case In::MQ_CreatePlaySession::NET_ID: {
-			const In::MQ_CreatePlaySession& packet = SafeCast<In::MQ_CreatePlaySession>(packetData, packetSize);
-			QueryCreateSession query;
-			query.players = packet.players;
-			queueQueryCreateSession.push_back(query);
-		} break;
+bool InstancePool::Init(Server* server_)
+{
+	server = server_;
 
-		default: {
-			WARN("Unknown packet (netID=%u size=%u)", header.netID, header.size);
-			ASSERT_MSG(0, "packet not handled");
-		} break;
+	int laneIndex = 0;
+	foreach(l, lanes) {
+		l->server = server_;
+		l->laneIndex = laneIndex++;
+		l->mmPacketQueues[0].Init(1 * (1024*1024)); // 1 MB
+		l->mmPacketQueues[1].Init(1 * (1024*1024)); // 1 MB
+		l->recvDataBuff.Init(10 * (1024*1024)); // 10MB
+		l->thread.Begin(ThreadLane, &*l);
+	}
+
+	return true;
+}
+
+void InstancePool::Cleanup()
+{
+	foreach(l, lanes) {
+		l->thread.WaitForEnd();
 	}
 }
 
-void Coordinator::Init(Server* server_)
+void InstancePool::QueuePushPlayerToGame(ClientHandle clientHd, AccountUID accountUID, SortieUID sortieUID)
 {
-	matchmaker.Init();
+	const i32 clientID = plidMap.Push(clientHd);
+	clientHandle[clientID] = clientHd;
 
+	u8 laneID = sortieLocation.at(sortieUID);
+	clientLocation[clientID].lane = laneID;
+
+	Lane& l = lanes[laneID];
+
+	Lane::ClientConnectEntry entry;
+	entry.clientHd = clientHd;
+	entry.accountUID = accountUID;
+	entry.sortieUID = sortieUID;
+
+	LOCK_MUTEX(l.mutexClientConnectQueue);
+	l.clientConnectQueue.push_back(entry);
+}
+
+void InstancePool::QueuePopPlayers(const ClientHandle* clientList, const i32 count)
+{
+	for(int i = 0; i < count; i++) {
+		const ClientHandle clientHd = clientList[i];
+		const i32 clientID = plidMap.Get(clientHd);
+		plidMap.Pop(clientHd);
+
+		clientHandle[clientID] = ClientHandle::INVALID;
+		Lane& l = lanes[clientLocation[clientID].lane];
+		clientLocation[clientID] = ClientLocation::Null();
+
+		// TODO: very bad locking
+		LOCK_MUTEX(l.mutexClientDisconnectQueue);
+		l.clientDisconnectQueue.push_back(clientHd);
+	}
+}
+
+void InstancePool::QueueCreateGame(const In::MQ_CreateGame& gameInfo)
+{
+	// TODO: choose lane based on load
+	Lane& l = lanes.front();
+
+	sortieLocation.emplace(gameInfo.sortieUID, 0);
+
+	LOCK_MUTEX(l.mutexCreateGameQueue);
+	l.createGameQueue.push_back(gameInfo);
+}
+
+void InstancePool::QueueRogueCoordinatorPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
+{
+	const i32 clientID = plidMap.Get(clientHd);
+	const ClientLocation& loc = clientLocation[clientID];
+	Lane& l = lanes[loc.lane];
+
+	LOCK_MUTEX(l.mutexRoguePacketsQueue);
+	Server::RecvChunkHeader ch;
+	ch.clientHd = clientHd;
+	ch.len = header.size;
+	l.roguePacketsQueue.Append(&ch, sizeof(ch));
+	l.roguePacketsQueue.Append(&header, sizeof(header));
+	l.roguePacketsQueue.Append(packetData, header.size - sizeof(header));
+}
+
+void InstancePool::QueueMatchmakerPackets(const u8* buffer, u32 bufferSize)
+{
+	// TODO: filter packets here as well?
+
+	foreach(l, lanes) {
+		Lane& lane = *l;
+		LOCK_MUTEX(lane.mutexMatchmakerPacketsQueue);
+		lane.mmPacketQueues[lane.mmPacketQueueFront].Append(buffer, bufferSize);
+	}
+}
+
+bool Coordinator::Init(Server* server_)
+{
 	server = server_;
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
-	associatedLane.fill(LaneID::NONE);
 	clientHandle.fill(ClientHandle::INVALID);
 
-	i32 laneIndex = 0;
-	foreach(it, lanes) {
-		it->Init(server);
-		it->laneIndex = laneIndex++;
-		it->thread.Begin(ThreadLane, &(*it));
-	}
+	bool r = matchmaker.Init();
+	if(!r) return false;
+
+	r = instancePool.Init(server);
+	if(!r) return false;
 
 	thread.Begin(ThreadCoordinator, this);
+	return true;
 }
 
 void Coordinator::Cleanup()
 {
 	LOG("Coordinator cleanup...");
 
-	foreach(it, lanes) {
-		it->thread.WaitForEnd();
-	}
-
+	instancePool.Cleanup();
 	thread.WaitForEnd();
 }
 
-void Coordinator::Update(f64 delta)
+void Coordinator::Update()
 {
 	ProfileFunction();
 
 	matchmaker.Update();
+	ProcessMatchmakerPackets();
 
 	// handle client connections
 	eastl::fixed_vector<ClientHandle,128> clientConnectedList;
@@ -311,7 +391,6 @@ void Coordinator::Update(f64 delta)
 
 	foreach_const(cl, clientConnectedList) {
 		const i32 clientID = plidMap.Push(*cl);
-		associatedLane[clientID] = LaneID::NONE;
 		clientHandle[clientID] = *cl;
 	}
 
@@ -320,31 +399,17 @@ void Coordinator::Update(f64 delta)
 	eastl::fixed_vector<ClientHandle,128> clientDisconnectedList;
 	server->TransferDisconnectedClientList(&clientDisconnectedList);
 
-	for(i32 i = (i32)LaneID::FIRST; i < (i32)LaneID::_COUNT; i++) {
-		eastl::fixed_vector<ClientHandle,128> chanDiscList;
-
-		foreach_const(cl, clientDisconnectedList) {
-			if(associatedLane[plidMap.Get(*cl)] == (LaneID)i) {
-				chanDiscList.push_back(*cl);
-			}
-		}
-
-		lanes[i].CoordinatorHandleDisconnectedClients(chanDiscList.data(), chanDiscList.size());
-	}
-
 	// clear client data
 	foreach_const(cl, clientDisconnectedList) {
 		const i32 clientID = plidMap.Get(*cl);
 		plidMap.Pop(*cl);
-		associatedLane[clientID] = LaneID::NONE;
 		clientHandle[clientID] = ClientHandle::INVALID;
-
 	}
 
 	// handle received data
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
 	for(i32 clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-		if(clientHandle[clientID] != ClientHandle::INVALID && associatedLane[clientID] == LaneID::NONE) {
+		if(clientHandle[clientID] != ClientHandle::INVALID && !instancePool.IsClientInsideAnInstance(clientHandle[clientID])) {
 			clientList.push_back(clientHandle[clientID]);
 		}
 	}
@@ -398,19 +463,71 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 	switch(header.netID) {
 		CASE_CL(CQ_FirstHello);
 		CASE_CL(CQ_AuthenticateGameServer);
-		CASE_CL(CQ_GetGuildProfile);
-		CASE_CL(CQ_GetGuildMemberList);
-		CASE_CL(CQ_GetGuildHistoryList);
-		CASE_CL(CQ_GetGuildRankingSeasonList);
-		CASE_CL(CQ_TierRecord);
 
 		default: {
-				ASSERT(associatedLane[clientID] != LaneID::NONE);
-				lanes[(i32)associatedLane[clientID]].CoordinatorClientHandlePacket(clientHd, header, packetData);
+			WARN("Unhandled packet (netID=%d size=%d)", header.netID, header.size);
+			ASSERT(instancePool.IsClientInsideAnInstance(clientHd));
+			instancePool.QueueRogueCoordinatorPacket(clientHd, header, packetData);
 		} break;
 	}
 
 #undef CASE_CL
+}
+
+void Coordinator::ProcessMatchmakerPackets()
+{
+	instancePool.QueueMatchmakerPackets(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+
+	// parse some matchmaker packets
+	ConstBuffer reader(matchmaker.packetQueue.data, matchmaker.packetQueue.size);
+	while(reader.CanRead(sizeof(NetHeader))) {
+		const NetHeader& header = reader.Read<NetHeader>();
+		const i32 packetDataSize = header.size - sizeof(NetHeader);
+		ASSERT(reader.CanRead(packetDataSize));
+		const u8* packetData = reader.ReadRaw(packetDataSize);
+
+		HandleMatchmakerPacket(header, packetData, packetDataSize);
+	}
+	matchmaker.packetQueue.Clear();
+}
+
+void Coordinator::HandleMatchmakerPacket(const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	switch(header.netID) {
+		case In::MR_Handshake::NET_ID: {
+			NT_LOG("[MM] %s", PacketSerialize<In::MR_Handshake>(packetData, packetSize));
+			const In::MR_Handshake resp = SafeCast<In::MR_Handshake>(packetData, packetSize);
+			if(resp.result == 1) {
+				LOG("[MM] Connected to Matchmaker server");
+			}
+			else {
+				WARN("[MM] handshake failed (%d)", resp.result);
+				ASSERT_MSG(0, "mm handshake failed"); // should not happen
+			}
+		} break;
+
+		case In::MQ_CreateGame::NET_ID: {
+			NT_LOG("[MM] %s", PacketSerialize<In::MQ_CreateGame>(packetData, packetSize));
+			const In::MQ_CreateGame& packet = SafeCast<In::MQ_CreateGame>(packetData, packetSize);
+
+			for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
+				PendingClientEntry entry;
+				entry.accountUID = p->accountUID;
+				entry.sortieUID = packet.sortieUID;
+				entry.time = localTime;
+				entry.instantKey = In::ProduceInstantKey(p->accountUID, packet.sortieUID);
+				pendingClientQueue.push_back(entry);
+			}
+
+			instancePool.QueueCreateGame(packet);
+			matchmaker.QueryGameCreated(packet.sortieUID);
+		} break;
+
+		default: {
+			WARN("Unknown packet (netID=%u size=%u)", header.netID, header.size);
+			DBG_ASSERT(0); // packet not handled;
+		} break;
+	}
 }
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -439,600 +556,43 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 
 void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_AuthenticateGameServer>(packetData, packetSize));
+
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
-	i32 var = request.Read<i32>();
-	i32 var2 = request.Read<i32>();
-	u8 b1 = request.Read<u8>();
-	NT_LOG("[client%x] Client :: CQ_AuthenticateGameServer :: %.*ls var=%d var2=%d b1=%d", clientHd, nickLen, nick, var, var2, b1);
+	const u32 instantKey = request.Read<u32>();
+	//i32 var2 = request.Read<i32>();
+	//u8 b1 = request.Read<u8>();
 
-	const i32 clientID = plidMap.Get(clientHd);
-	const Server::ClientInfo& info = server->clientInfo[clientID];
+	// check authentication
+	AccountUID accountUID = AccountUID::INVALID;
+	SortieUID sortieUID = SortieUID::INVALID;
+	foreach(e, pendingClientQueue) {
+		if(e->instantKey == instantKey) {
+			accountUID = e->accountUID;
+			sortieUID = e->sortieUID;
+			pendingClientQueue.erase(e);
+			break;
+		}
+	}
 
-	// TODO: check authentication
+	// failed to authenticate
+	if(accountUID == AccountUID::INVALID) {
+		WARN("[client%x] Client failed to auhtenticate", clientHd);
 
-	// assign to a channel
-	ASSERT(associatedLane[clientID] == LaneID::NONE);
-	associatedLane[clientID] = LaneID::FIRST;
+		Sv::SA_AuthResult auth;
+		auth.result = 0;
+		SendPacket(clientHd, auth);
+		server->DisconnectClient(clientHd);
+		return;
+	}
 
-	// send authentication result
+	// authentication success
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
 	SendPacket(clientHd, auth);
 
-
-	// TODO: fetch account data
-	AccountData& account = accountData[clientID];
-	account = {};
-	account.nickname.assign(nick, nickLen);
-	account.guildTag = L"Alpha";
-	account.leaderMasterID = 0; // Lua
-
-	// remove the @plaync... part
-	i64 f = account.nickname.find(L'@');
-	if(f != -1) {
-		account.nickname = account.nickname.left(f);
-	}
-
-	// send account data
-	ClientSendAccountData(clientHd);
-
-	// register new player to the game
-	ASSERT(associatedLane[clientID] != LaneID::NONE);
-	lanes[(i32)associatedLane[clientID]].CoordinatorRegisterNewPlayer(clientHd, &account);
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%x] Client :: CQ_GetGuildProfile ::", clientHd);
-
-	// SA_GetGuildProfile
-	{
-		PacketWriter<Sv::SA_GetGuildProfile,1024> packet;
-
-		packet.Write<i32>(0); // result;
-		packet.WriteStringObj(L"Alpha testers"); // guildName
-		packet.WriteStringObj(L"Alpha"); // guildTag
-		packet.Write<i32>(100203); // emblemIndex
-		packet.Write<u8>(10); // guildLvl
-		packet.Write<u8>(120); // memberMax
-		packet.WriteStringObj(L"Malachi"); // ownerNickname
-		packet.Write<i64>(131474874000000000); // createdDate
-		packet.Write<i64>(0); // dissolutionDate
-		packet.Write<u8>(0); // joinType
-
-		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
-		guildInterest.likePveStage = 1;
-		guildInterest.likeDefence = 1;
-		guildInterest.likePvpNormal = 1;
-		guildInterest.likePvpOccupy = 1;
-		guildInterest.likePvpGot = 1;
-		guildInterest.likePvpRank = 1;
-		guildInterest.likeOlympic = 1;
-		packet.Write(guildInterest);
-
-		packet.WriteStringObj(L"This is a great intro"); // guildIntro
-		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
-		packet.Write<i32>(460281); // guildPoint
-		packet.Write<i32>(9999); // guildFund
-
-		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
-		guildPvpRecord.rp = 5;
-		guildPvpRecord.win = 4;
-		guildPvpRecord.draw = 3;
-		guildPvpRecord.lose = 2;
-		packet.Write(guildPvpRecord);
-
-		packet.Write<i32>(-1); // guildRankNo
-
-		packet.Write<u16>(1); // guildMemberClassList_count
-		// guildMemberClassList[0]
-		packet.Write<i32>(12456); // id
-		packet.Write<u8>(3); // type
-		packet.Write<u8>(2); // iconIndex
-		packet.WriteStringObj(L"Malachi");
-
-		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
-		rights.hasInviteRight = 1;
-		rights.hasExpelRight = 1;
-		rights.hasMembershipChgRight = 1;
-		rights.hasClassAssignRight = 1;
-		rights.hasNoticeChgRight = 1;
-		rights.hasIntroChgRight = 1;
-		rights.hasInterestChgRight = 1;
-		rights.hasFundManageRight = 1;
-		rights.hasJoinTypeRight = 1;
-		rights.hasEmblemRight = 1;
-		packet.Write(rights);
-
-		packet.Write<u16>(1); // guildSkills_count
-		// guildSkills[0]
-		packet.Write<u8>(1); // type
-		packet.Write<u8>(9); // level
-		packet.Write<i64>(0); // expiryDate
-		packet.Write<u16>(0); // extensionCount
-
-		packet.Write<i32>(7); // curDailyStageGuildPoint
-		packet.Write<i32>(500); // maxDailyStageGuildPoint
-		packet.Write<i32>(2); // curDailyArenaGuildPoint
-		packet.Write<i32>(450); // maxDailyArenaGuildPoint
-		packet.Write<u8>(1); // todayRollCallCount
-
-		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%x] Client :: CQ_GetGuildMemberList ::", clientHd);
-
-	// SA_GetGuildMemberList
-	{
-		PacketWriter<Sv::SA_GetGuildMemberList,512> packet;
-
-		packet.Write<i32>(0); // result
-
-		packet.Write<u16>(3); // guildMemberProfileList_count
-
-		// guildMemberProfileList[0]
-		packet.WriteStringObj(L"Malachi");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[1]
-		packet.WriteStringObj(L"Delta-47");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[2]
-		packet.WriteStringObj(L"LordSk");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%x] Client :: CQ_GetGuildHistoryList ::", clientHd);
-
-	// SA_GetGuildMemberList
-	{
-		PacketWriter<Sv::SA_GetGuildHistoryList> packet;
-
-		packet.Write<i32>(0); // result
-		packet.Write<u16>(0); // guildHistories_count
-
-		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_GetGuildRankingSeasonList :: rankingType=%d", clientHd, rank.rankingType);
-
-	// SA_GetGuildRankingSeasonList
-	{
-		PacketWriter<Sv::SA_GetGuildRankingSeasonList> packet;
-
-		packet.Write<i32>(0); // result
-		packet.Write<u8>(rank.rankingType); // result
-		packet.Write<u16>(0); // rankingSeasonList_count
-
-
-		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
-{
-	NT_LOG("[client%x] Client :: CQ_TierRecord ::", clientHd);
-
-	// SA_TierRecord
-	{
-		PacketWriter<Sv::SA_TierRecord> packet;
-
-		packet.Write<u8>(1); // seasonId
-		packet.Write<i32>(0); // allTierWin
-		packet.Write<i32>(0); // allTierDraw
-		packet.Write<i32>(0); // allTierLose
-		packet.Write<i32>(0); // allTierLeave
-		packet.Write<u16>(0); // stageRecordList_count
-
-		SendPacket(clientHd, packet);
-	}
-}
-
-void Coordinator::ClientSendAccountData(ClientHandle clientHd)
-{
-	// Send account data
-	const i32 clientID = plidMap.Get(clientHd);
-	const AccountData& account = accountData[clientID];
-
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,4096> packet;
-
-		const char* src = R"foo(
-						  <?xml version="1.0" encoding="utf-8"?>
-						  <KEY_DATA highDateTime="30633031" lowDateTime="3986680182" isCustom="0" keyboardLayoutName="00000813">
-						  <data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_SHIRK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
-						  <data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
-						  </KEY_DATA>
-						  )foo";
-
-		u8 dest[2048];
-		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
-		if(r != Z_OK) {
-			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
-			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
-			ASSERT_MSG(0, "compress failed");
-		}
-
-		packet.Write<u8>(0); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,4096> packet;
-
-		const char* src =
-				R"foo(
-				<?xml version="1.0" encoding="utf-8"?>
-				<userdata
-				version="2">
-				<useroption>
-				<displayUserName
-				version="0"
-				value="1" />
-				<displayNameOfUserTeam
-				version="0"
-				value="1" />
-				<displayNameOfOtherTeam
-				version="0"
-				value="1" />
-				<displayMonsterName
-				version="0"
-				value="1" />
-				<displayNpcName
-				version="0"
-				value="1" />
-				<displayUserTitle
-				version="0"
-				value="1" />
-				<displayOtherTitle
-				version="0"
-				value="1" />
-				<displayUserStatusBar
-				version="0"
-				value="1" />
-				<displayStatusBarOfOtherTeam
-				version="0"
-				value="1" />
-				<displayStatusBarOfUserTeam
-				version="0"
-				value="1" />
-				<displayMonsterStatusBar
-				version="0"
-				value="1" />
-				<displayDamage
-				version="0"
-				value="1" />
-				<displayStatus
-				version="0"
-				value="1" />
-				<displayMasterBigImageType
-				version="0"
-				value="0" />
-				<displayCursorSFX
-				version="0"
-				value="1" />
-				<displayTutorialInfos
-				version="0"
-				value="1" />
-				<displayUserStat
-				version="0"
-				value="0" />
-				<chatFiltering
-				version="0"
-				value="1" />
-				<chatTimstamp
-				version="0"
-				value="0" />
-				<useSmartCast
-				version="0"
-				value="0" />
-				<useMouseSight
-				version="0"
-				value="0" />
-				<alwaysActivateHUD
-				version="0"
-				value="1" />
-				</useroption>
-				</userdata>
-				)foo";
-
-		u8 dest[2048];
-		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
-		if(r != Z_OK) {
-			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
-			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
-			ASSERT_MSG(0, "compress failed");
-		}
-
-		packet.Write<u8>(1); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,4096> packet;
-
-		const char* src =
-				R"foo(
-				<?xml version="1.0" encoding="utf-8"?>
-				<KEY_DATA highDateTime="30633030" lowDateTime="3827081041" isCustom="0" keyboardLayoutName="00000813">
-				<data input="INPUT_SHIRK" key="MKC_NOKEY" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
-				<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="1" />
-				<data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
-				</KEY_DATA>
-				)foo";
-
-		u8 dest[2048];
-		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
-		if(r != Z_OK) {
-			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
-			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
-			ASSERT_MSG(0, "compress failed");
-		}
-
-		packet.Write<u8>(2); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
-	}
+	LOG("[client%x] Client authenticated (accountuID=%u sortieUID=%llu)", clientHd, accountUID, sortieUID);
+	instancePool.QueuePushPlayerToGame(clientHd, accountUID, sortieUID);
 }

@@ -102,7 +102,7 @@ struct Matchmaker
 		};
 
 		const SortieUID UID;
-		eastl::fixed_list<Player,16,false> playerList;
+		eastl::fixed_vector<Player,16,false> playerList;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
 		eastl::fixed_vector<decltype(playerList)::iterator,6> teamSpectators;
@@ -367,27 +367,22 @@ struct Matchmaker
 				const In::HQ_RoomCreateGame& packet = SafeCast<In::HQ_RoomCreateGame>(packetData, packetSize);
 
 				// TODO: validate args?
+				// FIXME: hacky? can we guarantee that the player arrays match?
 
 				Room& room = *roomMap.at(packet.sortieUID);
 				for(int i = 0; i < packet.playerCount; i++) {
 					const In::HQ_RoomCreateGame::Player pp = packet.players[i];
+					Room::Player& p = room.playerList[i];
+					ASSERT(pp.accountUID == p.accountUID);
 
-					bool found = false;
-					foreach(p, room.playerList) {
-						if(p->accountUID == pp.accountUID) {
-							found = true;
-							p->masters[0].classType = pp.masters[0];
-							p->masters[1].classType = pp.masters[1];
-							p->masters[0].skin = pp.skins[0];
-							p->masters[1].skin = pp.skins[1];
-							p->masters[0].skills[0] = pp.skills[0];
-							p->masters[0].skills[1] = pp.skills[1];
-							p->masters[1].skills[0] = pp.skills[2];
-							p->masters[1].skills[1] = pp.skills[3];
-						}
-					}
-
-					ASSERT_MSG(found, "player not found in room");
+					p.masters[0].classType = pp.masters[0];
+					p.masters[1].classType = pp.masters[1];
+					p.masters[0].skin = pp.skins[0];
+					p.masters[1].skin = pp.skins[1];
+					p.masters[0].skills[0] = pp.skills[0];
+					p.masters[0].skills[1] = pp.skills[1];
+					p.masters[1].skills[0] = pp.skills[2];
+					p.masters[1].skills[1] = pp.skills[3];
 				}
 
 				RoomCreateGame(room);
@@ -455,7 +450,7 @@ struct Matchmaker
 				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
 				player.team = Team::RED;
 				room.playerList.push_back(player);
-				room.teamRed.push_back(--room.playerList.end());
+				room.teamRed.push_back(&room.playerList.back());
 			}
 
 			// fill empty slots with bots
@@ -466,7 +461,7 @@ struct Matchmaker
 				player.isBot = true;
 
 				room.playerList.push_back(player);
-				room.teamRed.push_back(--room.playerList.end());
+				room.teamRed.push_back(&room.playerList.back());
 			}
 			while(room.teamBlue.size() < 3) {
 				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
@@ -474,7 +469,7 @@ struct Matchmaker
 				player.isBot = true;
 
 				room.playerList.push_back(player);
-				room.teamBlue.push_back(--room.playerList.end());
+				room.teamBlue.push_back(&room.playerList.back());
 			}
 
 			// send 'match found' packet to all instances

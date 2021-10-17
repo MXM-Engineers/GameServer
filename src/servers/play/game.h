@@ -24,17 +24,16 @@ struct Game
 
 	struct Player
 	{
+		const ClientHandle clientHd;
 		const AccountUID accountUID;
 		const WideString& name;
-		const u32 index;
-		ClientHandle clientHd = ClientHandle::INVALID;
-		ActorUID actorUID = ActorUID::INVALID;
-		ActorUID cloneActorUID = ActorUID::INVALID; // TODO: remove
+		const u32 playerIndex;
 
-		Player(AccountUID accountUID_, const WideString& name_, u32 index_):
+		Player(ClientHandle clientHd_, AccountUID accountUID_, const WideString& name_, u32 playerIndex_):
+			clientHd(clientHd_),
 			accountUID(accountUID_),
 			name(name_),
-			index(index_)
+			playerIndex(playerIndex_)
 		{
 
 		}
@@ -59,12 +58,11 @@ struct Game
 
 	World::Player* clone = nullptr;
 
-	void Init(Server* server_, const In::MQ_CreateGame& gameInfo);
+	void Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle,MAX_PLAYERS>& playerClientHdList);
 	void Update(Time localTime_);
 
 	bool LoadMap();
 
-	void OnPlayerConnect(ClientHandle clientHd, AccountUID accountUID);
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);

@@ -1290,6 +1290,87 @@ inline const char* PacketSerialize<Sv::SN_ReadySortieRoom>(const void* packetDat
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_LoadingProgressData>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_LoadingProgressData(%d, %d) :: {", Sv::SN_LoadingProgressData::NET_ID, packetSize);
+	SER("	userID=%u", buff.Read<UserID>());
+	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("	progressData=%u", buff.Read<u8>());
+	SER("	activeCreatureIndex=%u", buff.Read<CreatureIndex>());
+	SER("	inactiveCreatureIndex=%u", buff.Read<CreatureIndex>());
+	SER("	isSpectator=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_StartCountdownSortieRoom>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_StartCountdownSortieRoom(%d, %d) :: {", Sv::SN_StartCountdownSortieRoom::NET_ID, packetSize);
+	SER("	stageType=%d", buff.Read<StageType>());
+	SER("	timeToWaitSec=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortiePrepare>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortiePrepare(%d, %d) :: {", Sv::SN_SortiePrepare::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	skinList(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		const auto& s = buff.Read<Sv::SN_SortiePrepare::Skin>();
+		SER("		{");
+		SER("			classType=%d", s.classType);
+		SER("			skinIndex=%d", s.skinIndex);
+		SER("			bufCount=%d", s.bufCount);
+		SER("			expireTime=%lld", s.expireTime);
+		SER("		},");
+	}
+	SER("	]");
+
+	const u16 count1 = buff.Read<u16>();
+	SER("	skillList(%d)=[", count1);
+	for(int i = 0; i < count1; i++) {
+		SER("		%d,", buff.Read<SkillID>());
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortiePrepareBotInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortiePrepareBotInfo(%d, %d) :: {", Sv::SN_SortiePrepareBotInfo::NET_ID, packetSize);
+	const u16 count1 = buff.Read<u16>();
+	SER("	botIndexes(%d)=[", count1);
+	for(int i = 0; i < count1; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

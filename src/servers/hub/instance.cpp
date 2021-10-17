@@ -84,7 +84,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	LOG("[Room(%llx)] room created (userCount=%d)", sortieUID, userCount);
 
 	for(const NewUser* nu = userlist; nu != userlist+userCount; ++nu) {
-		userList.emplace_back(nu->clientHd, nu->accountUID, nu->name, nu->userID, nu->isBot, Team(nu->team));
+		userList.emplace_back(nu->clientHd, nu->accountUID, nu->name, UserID(nu->userID+1), nu->isBot, Team(nu->team));
 		User* user = &userList.back();
 
 		// has account when client is connected
@@ -99,10 +99,6 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 
 		if(nu->clientHd != ClientHandle::INVALID) {
 			connectedUsers.push_back(user);
-		}
-
-		if(user->isBot) {
-			user->isReady;
 		}
 	}
 
@@ -270,10 +266,10 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			eastl::fixed_vector<UserID,5> enemyTeamUserIds;
 
 			foreach_const(u, teamRed) {
-				allyTeamUserIds.push_back(UserID((*u)->userID + 1));
+				allyTeamUserIds.push_back((*u)->userID);
 			}
 			foreach_const(u, teamBlue) {
-				enemyTeamUserIds.push_back(UserID((*u)->userID + 1));
+				enemyTeamUserIds.push_back((*u)->userID);
 			}
 
 			packet.WriteVec(allyTeamUserIds.data(), allyTeamUserIds.size()); // alliesTeamUserIds
@@ -369,7 +365,7 @@ void RoomInstance::Replicate()
 			doReplicateMasterCount = true;
 
 			Sv::SN_MasterPick pickTeam;
-			pickTeam.userID = UserID(user.userID + 1);
+			pickTeam.userID = user.userID;
 			pickTeam.characterSelectInfos_count = 2;
 
 			for(int mi = 0; mi < _MASTER_COUNT; mi++) {
@@ -410,7 +406,7 @@ void RoomInstance::Replicate()
 			user.replicate.ready = false;
 
 			Sv::SN_ReadySortieRoom packet;
-			packet.userID = UserID(user.userID + 1);
+			packet.userID = user.userID;
 			packet.ready = 1;
 
 			foreach_const(cu, connectedUsers) {
@@ -517,14 +513,70 @@ void RoomInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetD
 
 				foreach_const(u, connectedUsers) {
 					const User& user = **u;
-					PacketWriter<Sv::SN_DoConnectGameServer> packet;
-					packet.Write(created.serverPort); // port
-					packet.Write(created.serverIp); // ip
-					packet.Write<i32>((u64)created.sortieUID & 0xFFFFFFFF); // gameID
-					packet.Write<u32>(0x0); // idcHash
-					packet.WriteStringObj(user.name.data(), user.name.size());
-					packet.Write<u32>(In::ProduceInstantKey(user.accountUID, created.sortieUID));
-					SendPacket(user.clientHd, packet);
+
+					{
+						Sv::SN_StartCountdownSortieRoom packet;
+						packet.stageType = StageType::PLAY_INSTANCE;
+						packet.timeToWaitSec = 1;
+						SendPacket(user.clientHd, packet);
+					}
+
+					{
+						PacketWriter<Sv::SN_SortiePrepareBotInfo> packet;
+
+						u16 botCount = 0;
+						foreach_const(u, userList) {
+							if(u->isBot) {
+								botCount++;
+							}
+						}
+
+						packet.Write<u16>(botCount);
+						foreach_const(u, userList) {
+							if(u->isBot) {
+								packet.Write<UserID>(u->userID);
+							}
+						}
+
+						SendPacket(user.clientHd, packet);
+					}
+
+					{
+						PacketWriter<Sv::SN_SortiePrepare> packet;
+
+						packet.Write<u16>(2); // skinList
+
+						Sv::SN_SortiePrepare::Skin skin;
+						skin.classType = user.masters[0].classType;
+						skin.skinIndex = user.masters[0].skin;
+						skin.bufCount = 0;
+						skin.expireTime = 0;
+						packet.Write(skin);
+
+						skin.classType = user.masters[1].classType;
+						skin.skinIndex = user.masters[1].skin;
+						skin.bufCount = 0;
+						skin.expireTime = 0;
+						packet.Write(skin);
+
+						packet.Write<u16>(4); // skillList
+						packet.Write(user.masters[0].skills[0]);
+						packet.Write(user.masters[0].skills[1]);
+						packet.Write(user.masters[1].skills[0]);
+						packet.Write(user.masters[1].skills[1]);
+						SendPacket(user.clientHd, packet);
+					}
+
+					{
+						PacketWriter<Sv::SN_DoConnectGameServer> packet;
+						packet.Write(created.serverPort); // port
+						packet.Write(created.serverIp); // ip
+						packet.Write<i32>((u64)created.sortieUID & 0xFFFFFFFF); // gameID
+						packet.Write<u32>(0x0); // idcHash
+						packet.WriteStringObj(user.name.data(), user.name.size());
+						packet.Write<u32>(In::ProduceInstantKey(user.accountUID, created.sortieUID));
+						SendPacket(user.clientHd, packet);
+					}
 				}
 
 				// TODO: delete room

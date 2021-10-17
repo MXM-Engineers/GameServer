@@ -7,7 +7,7 @@
 #include <mxm/game_content.h>
 #include "config.h"
 
-void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo)
+void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle, MAX_PLAYERS>& playerClientHdList)
 {
 	replication.Init(server_);
 	world.Init(&replication);
@@ -31,15 +31,41 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo)
 
 	LoadMap();
 
-	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
-	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
-	vec3 pos = spawnPoint.pos;
-	vec3 dir = spawnPoint.dir;
-
 	// create players
-	World::Player& player = world.CreatePlayer(ClientHandle(2), L"LordSk", L"Alpha", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
-	clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
+	i32 spawnPointIndex[2] = { 0 };
 
+	for(int pi = 0; pi < gameInfo.playerCount; pi++) {
+		const In::MQ_CreateGame::Player& p = gameInfo.players[pi];
+		if(p.team != 0 && p.team != 1) continue; // skip spectators
+
+		World::PlayerDescription desc;
+		desc.userID = UserID(pi+1);
+		desc.clientHd = playerClientHdList[pi];
+		desc.name.assign(p.name.data, p.name.len);
+		desc.guildTag = L"Alpha";
+		desc.team = p.team;
+		desc.masters = p.masters;
+		desc.skins = p.skins;
+		desc.skills = p.skills;
+
+		const auto& spawnPoints = mapSpawnPoints[p.team];
+		const SpawnPoint& spawnPoint = spawnPoints[spawnPointIndex[p.team]++ % spawnPoints.size()];
+		vec3 pos = spawnPoint.pos;
+		vec3 dir = spawnPoint.dir;
+
+		World::Player& worldPlayer = world.CreatePlayer(desc, pos);
+
+		playerList.emplace_back(desc.clientHd, p.accountUID, desc.name, worldPlayer.index);
+		if(desc.clientHd != ClientHandle::INVALID) {
+			playerMap.emplace(desc.clientHd, --playerList.end());
+
+			replication.OnPlayerConnect(desc.clientHd, worldPlayer.index);
+			replication.PlayerRegisterMasterActor(desc.clientHd, worldPlayer.Main().UID, worldPlayer.mainClass);
+			replication.PlayerRegisterMasterActor(desc.clientHd, worldPlayer.Sub().UID, worldPlayer.subClass);
+		}
+	}
+
+	//clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
 	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::Lua, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
@@ -52,8 +78,10 @@ void Game::Update(Time localTime_)
 	Dbg::PushNewFrame(dbgGameUID);
 
 	// update clone
-	clone->input = world.GetPlayer(0).input; // TODO: hardcoded hack
-	// TODO: maybe don't replicate cloned players, just their master?
+	if(clone) {
+		clone->input = world.GetPlayer(0).input; // TODO: hardcoded hack
+		// TODO: maybe don't replicate cloned players, just their master?
+	}
 
 	if(lego) {
 		enum Step {
@@ -84,7 +112,6 @@ void Game::Update(Time localTime_)
 
 		legoLastStep = step;
 	}
-
 
 	world.Update(localTime);
 
@@ -134,24 +161,6 @@ bool Game::LoadMap()
 	return true;
 }
 
-void Game::OnPlayerConnect(ClientHandle clientHd, AccountUID accountUID)
-{
-	ASSERT(playerMap.find(clientHd) == playerMap.end());
-
-	bool found = false;
-	foreach(p, playerList) {
-		if(p->accountUID == accountUID) {
-			p->clientHd = clientHd;
-			playerMap.emplace(clientHd, p);
-			found = true;
-			break;
-		}
-	}
-	ASSERT_MSG(found, "could not associate client to player");
-
-	replication.OnPlayerConnect(clientHd);
-}
-
 void Game::OnPlayerDisconnect(ClientHandle clientHd)
 {
 	Player& player = *playerMap.at(clientHd);
@@ -168,7 +177,7 @@ void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
 	Player& p = *playerMap.at(clientHd);
-	const World::Player& player = world.GetPlayer(p.index);
+	const World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	foreach_const(chit, player.characters) {
@@ -190,7 +199,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	ProfileFunction();
 
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
@@ -259,7 +268,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
 {
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
@@ -325,7 +334,7 @@ void Game::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID charac
 void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate)
 {
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	bool found = false;
@@ -359,45 +368,13 @@ void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
 
 void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 {
-	// map is loaded, spawn
-	// TODO: team, masters
-
-	Player& p = *playerMap.at(clientHd);
-
-	const auto& redSpawnPoints = mapSpawnPoints[(i32)TeamID::RED];
-
-	// select a spawn point at random
-	const SpawnPoint& spawnPoint = redSpawnPoints[RandUint() % redSpawnPoints.size()];
-	vec3 pos = spawnPoint.pos;
-	vec3 dir = spawnPoint.dir;
-	RotationHumanoid rot;
-
-	// TODO: check if already leader character
-	DBG_ASSERT(p.actorUID == ActorUID::INVALID);
-	if((p.actorUID != ActorUID::INVALID)) {
-
-		//world.DestroyPlayerActor(player.actorUID);
-		//world.DestroyPlayerActor(player.cloneActorUID);
-	}
-
-	World::Player& worldPlayer = world.GetPlayer(p.index);
-
-	//player.actorUID = actor.UID;
-
-	// force LocalActorID for both actors
-	// TODO: eventually get rid of this system
-	replication.PlayerRegisterMasterActor(clientHd, worldPlayer.Main().UID, worldPlayer.mainClass);
-	replication.PlayerRegisterMasterActor(clientHd, worldPlayer.Sub().UID, worldPlayer.subClass);
-
-	//player.cloneActorUID = clone.UID;
-
 	replication.SetPlayerAsInGame(clientHd);
 }
 
 void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 {
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	// TODO: cooldown
@@ -407,7 +384,7 @@ void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	player.input.jump = 1;
@@ -416,7 +393,7 @@ void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 
 void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
 {
 	Player& p = *playerMap.at(clientHd);
-	World::Player& player = world.GetPlayer(p.index);
+	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
 	player.input.castSkill = cast.skillID;
@@ -491,5 +468,6 @@ World::ActorNpc& Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& po
 	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
 	actor.pos = pos;
 	actor.dir = dir;
+	actor.faction = 2;
 	return actor;
 }

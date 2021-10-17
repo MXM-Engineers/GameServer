@@ -5,23 +5,27 @@
 struct PvpInstance
 {
 	enum class Phase: u8 {
-		PlayerLoading = 0,
+		PlayerConnecting = 0,
 		PlayingGame
+	};
+
+	struct AccountLink {
+		AccountUID accountUID;
+		ClientHandle clientHd;
 	};
 
 	const SortieUID sortieUID;
 	const In::MQ_CreateGame gameInfo;
 	Server* server;
 
-	Phase phase = Phase::PlayerLoading;
+	Phase phase = Phase::PlayerConnecting;
+	eastl::array<ClientHandle, Game::MAX_PLAYERS> clientAccountLink;
+	i32 remainingLinks;
+
 	GamePacketHandler packetHandler;
 	Game game;
 
-	PvpInstance(SortieUID sortieUID_, const In::MQ_CreateGame& gameInfo_, Server* server_):
-		sortieUID(sortieUID_),
-		gameInfo(gameInfo_),
-		server(server_)
-	{}
+	PvpInstance(SortieUID sortieUID_, const In::MQ_CreateGame& gameInfo_, Server* server_);
 
 	void Update(Time localTime_);
 	void OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>* clientList, const i32 count);

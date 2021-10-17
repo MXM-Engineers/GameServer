@@ -24,7 +24,6 @@ void GamePacketHandler::OnClientsConnected(const eastl::pair<ClientHandle,Accoun
 {
 	for(int i = 0; i < count; i++) {
 		auto& it = clientList[i];
-		game->OnPlayerConnect(it.first, it.second);
 		plidMap.Push(it.first);
 	}
 }
@@ -127,6 +126,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 		return;
 	}
 
+	/*
 	const f64 serverTime = TimeDiffSec(TimeRelNow());
 	const i32 clientID = plidMap.Get(clientHd);
 	f64 clientDelta = (f64)update.localTimeS - clientTime[clientID].posClient;
@@ -136,6 +136,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 	clientTime[clientID].posServer = serverTime;
 
 	LOG("clientDelta=%g serverDelta=%g", clientDelta, serverDelta);
+	*/
 
 	// transform rotation for our coordinate system
 	RotationHumanoid rot = RotConvertToWorld({ update.upperYaw, update.upperPitch, update.bodyYaw });
@@ -238,20 +239,21 @@ void GamePacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const Ne
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RTT_Time :: { time=%u }", clientHd, rtt.time);
 
+
 	const i64 serverTime = (i64)TimeDiffMs(TimeRelNow());
-	const i32 clientID = plidMap.Get(clientHd);
+	/*const i32 clientID = plidMap.Get(clientHd);
 	i64 clientDelta = (i64)rtt.time - (i64)clientTime[clientID].rttClient;
 	i64 serverDelta = serverTime - clientTime[clientID].rttServer;
 
 	clientTime[clientID].rttClient = rtt.time;
 	clientTime[clientID].rttServer = serverTime;
 
-	LOG("clientDelta=%lld serverDelta=%lld", clientDelta, serverDelta);
+	LOG("clientDelta=%lld serverDelta=%lld", clientDelta, serverDelta);*/
 
 	Sv::SA_RTT_Time answer;
 	answer.clientTimestamp = rtt.time;
 	answer.serverTimestamp = serverTime;
-	LOG("[client%03d] Server :: %s", clientID, PacketSerialize<Sv::SA_RTT_Time>(&answer, sizeof(answer)));
+	LOG("[client%x] Server :: %s", clientHd, PacketSerialize<Sv::SA_RTT_Time>(&answer, sizeof(answer)));
 	server->SendPacket(clientHd, answer);
 }
 

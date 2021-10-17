@@ -137,17 +137,19 @@ void World::Replicate()
 		const Player& player = *it;
 
 		Replication::Player rep;
+		rep.index = player.index;
 		rep.userID = player.userID;
 		rep.clientHd = player.clientHd;
 		rep.name = player.name;
 		rep.guildTag = player.guildTag;
+		rep.team = player.team;
 
 		rep.mainClass = player.mainClass;
 		rep.mainSkin = player.mainSkin;
 		rep.subClass = player.subClass;
 		rep.subSkin = player.subSkin;
 
-		rep.characters = {
+		rep.masters = {
 			player.characters[0]->UID,
 			player.characters[1]->UID
 		};
@@ -162,7 +164,7 @@ void World::Replicate()
 			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
 			rch.clientHd = player.clientHd;
-			rch.playerID = player.userID;
+			rch.playerIndex = player.index;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
@@ -189,9 +191,23 @@ void World::Replicate()
 			Replication::ActorMaster rch;
 			rch.actorUID = chara.UID;
 			rch.clientHd = player.clientHd;
-			rch.playerID = player.userID;
+			rch.playerIndex = player.index;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
+
+			rch.pos = player.body->pos;
+			rch.moveDir = player.movement.moveDir;
+			rch.speed = player.input.speed;
+			rch.rotation = player.movement.rot;
+
+			rch.actionState = chara.actionState;
+			rch.actionParam1 = chara.actionParam1;
+			rch.actionParam2 = chara.actionParam2;
+
+			rch.castSkill = player.cast.skill;
+			rch.skillStartPos = player.cast.startPos;
+			rch.skillEndPos = player.cast.endPos;
+			rch.skillMoveDurationS = player.cast.moveDurationS;
 
 			replication->FramePushMasterActor(rch);
 		}
@@ -221,9 +237,9 @@ void World::Replicate()
 	}
 }
 
-World::Player& World::CreatePlayer(ClientHandle clientHd, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos)
+World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& pos)
 {
-	players.emplace_back((UserID)players.size(), clientHd, name, guildTag, mainClass, mainSkin, subClass, subSkin);
+	players.emplace_back(players.size(), desc);
 	Player& player = players.back();
 	player.level = 1;
 	player.experience = 0;

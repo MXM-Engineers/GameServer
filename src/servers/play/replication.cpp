@@ -13,14 +13,12 @@ void Replication::Frame::Clear()
 	masterList.clear();
 	npcList.clear();
 
-	playerMap.clear();
+	playerMap.fill(playerList.end());
 	masterMap.clear();
 	npcMap.clear();
 
 	actorUIDSet.clear();
 	actorType.clear();
-
-	clientPlayerMap.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -35,12 +33,16 @@ void Replication::PlayerLocalInfo::Reset()
 void Replication::Init(Server* server_)
 {
 	server = server_;
-	memset(&playerState, 0, sizeof(playerState));
 
 	clientHandle.fill(ClientHandle::INVALID);
+	playerState.fill({ PlayerState::DISCONNECTED, PlayerState::DISCONNECTED });
+	foreach(p, playerLocalInfo) p->Reset();
 
 	framePrev = &frames[0];
 	frameCur = &frames[1];
+
+	framePrev->Clear();
+	frameCur->Clear();
 }
 
 void Replication::FrameEnd()
@@ -51,10 +53,10 @@ void Replication::FrameEnd()
 
 	FrameDifference();
 
-	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-		PlayerStatePair& state = playerState[clientID];
+	for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+		PlayerStatePair& state = playerState[pi];
 
-		const ClientHandle clienHd = clientHandle[clientID];
+		const ClientHandle clienHd = clientHandle[pi];
 		if(state.prev == PlayerState::DISCONNECTED && state.cur == PlayerState::CONNECTED) {
 			SendAccountDataPvp(clienHd);
 		}
@@ -74,18 +76,16 @@ void Replication::FrameEnd()
 
 void Replication::FramePushPlayer(const Player& player)
 {
-	ASSERT(frameCur->playerMap.find(player.userID) == frameCur->playerMap.end());
+	ASSERT(frameCur->playerMap[player.index] == frameCur->playerList.end());
 
 	frameCur->playerList.emplace_back(player);
-	frameCur->playerMap.emplace(player.userID, --frameCur->playerList.end());
+	frameCur->playerMap[player.index] = --frameCur->playerList.end();
 
+#ifdef CONF_DEBUG
 	if(player.clientHd != ClientHandle::INVALID) {
-		const i32 clientID = plidMap->TryGet(player.clientHd); // associated client might not be connected yet
-		if(clientID != -1) {
-			ASSERT(frameCur->clientPlayerMap.find(clientID) == frameCur->clientPlayerMap.end());
-			frameCur->clientPlayerMap[clientID] = player.userID;
-		}
+		ASSERT(playerMap.at(player.clientHd) == player.index);
 	}
+#endif
 }
 
 void Replication::FramePushMasterActor(const Replication::ActorMaster& actor)
@@ -111,12 +111,12 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
-void Replication::OnPlayerConnect(ClientHandle clientHd)
+void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
 {
-	const i32 clientID = plidMap->Get(clientHd);
-	playerState[clientID].cur = PlayerState::CONNECTED;
-	playerLocalInfo[clientID].Reset();
-	clientHandle[clientID] = clientHd;
+	playerMap[clientHd] = playerIndex;
+	playerState[playerIndex].cur = PlayerState::CONNECTED;
+	playerLocalInfo[playerIndex].Reset();
+	clientHandle[playerIndex] = clientHd;
 }
 
 void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
@@ -154,19 +154,19 @@ void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 
 void Replication::SetPlayerAsInGame(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	playerState[clientID].cur = PlayerState::IN_GAME;
 }
 
 void Replication::SetPlayerLoaded(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	playerState[clientID].cur = PlayerState::LOADED;
 }
 
 void Replication::SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 
 	if(playerState[clientID].cur < PlayerState::IN_GAME) {
 		LOG("WARNING(SendCharacterInfo): player not in game (clientID=%d, state=%d)", clientID, (i32)playerState[clientID].cur);
@@ -188,7 +188,7 @@ void Replication::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID mast
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
 
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
 
 	if(playerState[clientID].cur < PlayerState::IN_GAME) {
@@ -219,7 +219,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
-	for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
+	for(int clientID= 0; clientID < MAX_PLAYERS; clientID++) {
 		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
 
 		SendPacket(clientHandle[clientID], packet);
@@ -228,7 +228,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 
 void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
-	const i32 toClientID = plidMap->Get(toClientHd);
+	const i32 toClientID = playerMap.at(toClientHd);
 	if(playerState[toClientID].cur < PlayerState::IN_GAME) return;
 
 	if(msgLen == -1) msgLen = EA::StdC::Strlen(msg);
@@ -279,16 +279,44 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 	const GameXmlContent& content = GetGameXmlContent();
 
-	// FIXME: hack, get player associated with accountID?
-	const Player* player = &frameCur->playerList.front();
+	const u32 playerIndex = playerMap.at(clientHd);
+	const Player* player = frameCur->FindPlayer(playerIndex);
 	ASSERT(player);
 
 	const GameXmlContent::Master& masterMain = content.GetMaster(player->mainClass);
 	const GameXmlContent::Master& masterSub = content.GetMaster(player->subClass);
 
+	// SN_AccountInfo
+	{
+		PacketWriter<Sv::SN_AccountInfo> packet;
+
+		packet.WriteStringObj(player->name.data()); // nick
+		packet.Write<i32>(4); // inventoryLineCountTab0
+		packet.Write<i32>(4); // inventoryLineCountTab1
+		packet.Write<i32>(4); // inventoryLineCountTab2
+#if 0
+		packet.Write<i32>(320080005); // displayTitlteIndex
+		packet.Write<i32>(320080005); // statTitleIndex
+#else // disable title
+		packet.Write<i32>(-1); // displayTitlteIndex
+		packet.Write<i32>(-1); // statTitleIndex
+#endif
+		packet.Write<i32>(1); // warehouseLineCount
+		packet.Write<i32>(-1); // tutorialState
+		packet.Write<i32>(3600); // masterGearDurability
+		packet.Write<u8>(0); // badgeType
+
+		SendPacket(clientHd, packet);
+	}
+
 	// SN_ProfileCharacters
 	{
-		PacketWriter<Sv::SN_ProfileCharacters,4096> packet;
+		const ActorMaster* actorMain = frameCur->FindMaster(player->masters[0]);
+		const ActorMaster* actorSub = frameCur->FindMaster(player->masters[1]);
+		ASSERT(actorMain);
+		ASSERT(actorSub);
+
+		PacketWriter<Sv::SN_ProfileCharacters> packet;
 
 		packet.Write<u16>(2); // charaList_count
 
@@ -299,9 +327,9 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 			chara.skillShot1 = masterMain.skillIDs[0];
 			chara.skillShot2 = masterMain.skillIDs[1];
 			chara.classType = player->mainClass;
-			chara.x = 0;
-			chara.y = 0;
-			chara.z = 0;
+			chara.x = actorMain->pos.x;
+			chara.y = actorMain->pos.y;
+			chara.z = actorMain->pos.z;
 			chara.characterType = 1;
 			chara.skinIndex = player->mainSkin;
 			chara.weaponIndex = masterMain.weaponIDs[1];
@@ -316,9 +344,9 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 			chara.skillShot1 = masterSub.skillIDs[0];
 			chara.skillShot2 = masterSub.skillIDs[1];
 			chara.classType = player->subClass;
-			chara.x = 0;
-			chara.y = 0;
-			chara.z = 0;
+			chara.x = actorSub->pos.x;
+			chara.y = actorSub->pos.y;
+			chara.z = actorSub->pos.z;
 			chara.characterType = 1;
 			chara.skinIndex = player->subSkin;
 			chara.weaponIndex = masterSub.weaponIDs[1];
@@ -440,54 +468,55 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		SendPacket(clientHd, packet);
 	}
 
-
-	// SN_AccountInfo
-	{
-		PacketWriter<Sv::SN_AccountInfo> packet;
-
-		packet.WriteStringObj(player->name.data()); // nick
-		packet.Write<i32>(4); // inventoryLineCountTab0
-		packet.Write<i32>(4); // inventoryLineCountTab1
-		packet.Write<i32>(4); // inventoryLineCountTab2
-#if 0
-		packet.Write<i32>(320080005); // displayTitlteIndex
-		packet.Write<i32>(320080005); // statTitleIndex
-#else // disable title
-		packet.Write<i32>(-1); // displayTitlteIndex
-		packet.Write<i32>(-1); // statTitleIndex
-#endif
-		packet.Write<i32>(1); // warehouseLineCount
-		packet.Write<i32>(-1); // tutorialState
-		packet.Write<i32>(3600); // masterGearDurability
-		packet.Write<u8>(0); // badgeType
-
-		SendPacket(clientHd, packet);
-	}
-
 	// SN_AccountEquipmentList
 	{
 		PacketWriter<Sv::SN_AccountEquipmentList,4096> packet;
-
 		packet.Write<i32>(-1); // supportKitDocIndex
-
 		SendPacket(clientHd, packet);
 	}
 
 	// SN_Money
-	Sv::SN_Money money;
-	money.nMoney = 666;
-	money.nReason = 1;
-	SendPacket(clientHd, money);
+	{
+		Sv::SN_Money money;
+		money.nMoney = 666;
+		money.nReason = 1;
+		SendPacket(clientHd, money);
+	}
+
+	// SN_LoadingProgressData
+	{
+		foreach_const(pit, frameCur->playerList) {
+			if(pit->clientHd == clientHd) continue; // skip self
+
+			PacketWriter<Sv::SN_LoadingProgressData> packet;
+			packet.Write(pit->userID); //userID
+			packet.WriteStringObj(pit->name.data()); // nickname
+
+			// bot
+			if(pit->clientHd == ClientHandle::INVALID) {
+				packet.Write<u8>(0); // progressData
+			}
+			else {
+				packet.Write<u8>(0); // progressData
+			}
+
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)pit->mainClass)); //activeCreatureIndex
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)pit->subClass)); //inactiveCreatureIndex
+			packet.Write<u8>(pit->team == 2); // isSpectator
+			SendPacket(clientHd, packet);
+		}
+	}
 
 	// SN_GameFieldReady
 	{
 		PacketWriter<Sv::SN_GameFieldReady,4096> packet;
 
 		packet.Write<i32>(449); // InGameID=449
-		packet.Write<i32>(6); // GameType=6
+		packet.Write(GameType::PVP_Rank); // GameType=
 		packet.Write<i32>(190002202); // AreaIndex=190002202
-		packet.Write<i32>(200020104); // StageIndex=200020104
-		packet.Write<i32>(1); // GameDefinitionType=1
+		//packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex // FIXME: wrong stage index?
+		packet.Write<StageIndex>(StageIndex::CombatArena); // StageIndex
+		packet.Write(GameDefinition::System); // GameDefinitionType=
 		packet.Write<u8>(6); // initPlayerCount=6
 		packet.Write<u8>(1); // CanEscape=1
 		packet.Write<u8>(0); // IsTrespass=0
@@ -496,26 +525,23 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		// InGameUsers
 		packet.Write<u16>(frameCur->playerList.size());
 
-		int i = 0;
 		foreach_const(pit, frameCur->playerList) {
-			packet.Write<i32>(i); //userID
+			packet.Write(pit->userID); //userID
 			packet.WriteStringObj(pit->name.data()); // nickname
-			packet.Write<u8>(3 + i/3); // team
+			packet.Write<u8>(3 + pit->team); // team
 			packet.Write<u8>(pit->clientHd == ClientHandle::INVALID); // isBot
-			i++;
 		}
 
 		// IngamePlayers
 		packet.Write<u16>(frameCur->playerList.size());
 
-		i = 0;
 		foreach_const(pit, frameCur->playerList) {
 			const Player& p = *pit;
 
 			const GameXmlContent::Master& pmmain = content.GetMaster(p.mainClass);
 			const GameXmlContent::Master& pmsub = content.GetMaster(p.subClass);
 
-			packet.Write<i32>(i); //userID
+			packet.Write(pit->userID); //userID
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.mainClass)); //mainCreatureIndex
 			packet.Write<SkinIndex>(p.mainSkin); //mainSkinIndex
 
@@ -532,8 +558,6 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 			packet.Write<i32>(-1); //stageSkillIndex2
 			packet.Write<i32>(-1); //supportKitIndex
 			packet.Write<u8>(pit->clientHd == ClientHandle::INVALID); //isBot
-
-			i++;
 		}
 
 		// IngameGuilds
@@ -546,38 +570,49 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 void Replication::SendPvpLoadingComplete(ClientHandle clientHd)
 {
-	const i32 playerCount = frameCur->playerList.size();
+	const u32 playerIndex = playerMap.at(clientHd);
+	const Player* player = frameCur->FindPlayer(playerIndex);
+	ASSERT(player);
 
 	// SN_NotifyPcDetailInfos
 	{
-		PacketWriter<Sv::SN_NotifyPcDetailInfos,4096> packet;
+		PacketWriter<Sv::SN_NotifyPcDetailInfos,1024> packet;
+
+		u16 playerCount = 0;
+		foreach_const(pl, frameCur->playerList) {
+			const Player& p = *pl;
+			if(p.team == player->team) {
+				playerCount++;
+			}
+		}
+
 		packet.Write<u16>(playerCount); // pcList_count
 
-		int i = 0;
 		foreach_const(pl, frameCur->playerList) {
-			const Player& player = *pl;
-			const ActorMaster* main = frameCur->FindMaster(player.characters[0]);
-			const ActorMaster* sub = frameCur->FindMaster(player.characters[1]);
-			ASSERT(main);
-			ASSERT(sub);
+			const Player& p = *pl;
+			if(p.team == player->team) {
+				const ActorMaster* main = frameCur->FindMaster(p.masters[0]);
+				const ActorMaster* sub = frameCur->FindMaster(p.masters[1]);
+				ASSERT(main);
+				ASSERT(sub);
 
-			packet.Write<i32>(i); // userID
-			// mainPC
-			packet.Write<LocalActorID>(GetLocalActorID(clientHd, main->actorUID)); // characterID
-			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType)); // docID
-			packet.Write<ClassType>(main->classType); // classType
-			packet.Write<i32>(2400); // hp
-			packet.Write<i32>(2400); // maxHp
-			// subPC
-			packet.Write<LocalActorID>(GetLocalActorID(clientHd, sub->actorUID)); // characterID
-			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType)); // docID
-			packet.Write<ClassType>(sub->classType); // classType
-			packet.Write<i32>(2400); // hp
-			packet.Write<i32>(2400); // maxHp
+				packet.Write<UserID>(p.userID); // userID
+				// mainPC
+				packet.Write<LocalActorID>(GetLocalActorID(clientHd, main->actorUID)); // characterID
+				packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType)); // docID
+				packet.Write<ClassType>(main->classType); // classType
+				packet.Write<i32>(2400); // hp
+				packet.Write<i32>(2400); // maxHp
+				// subPC
+				packet.Write<LocalActorID>(GetLocalActorID(clientHd, sub->actorUID)); // characterID
+				packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType)); // docID
+				packet.Write<ClassType>(sub->classType); // classType
+				packet.Write<i32>(2400); // hp
+				packet.Write<i32>(2400); // maxHp
 
-			packet.Write<i32>(0); // remainTagCooltimeMS
-			packet.Write<u8>(0); // canCastSkillSlotUG
-			i++;
+				packet.Write<i32>(0); // remainTagCooltimeMS
+				packet.Write<u8>(0); // canCastSkillSlotUG
+			}
 		}
 
 
@@ -588,22 +623,20 @@ void Replication::SendPvpLoadingComplete(ClientHandle clientHd)
 	{
 		PacketWriter<Sv::SN_InitScoreBoard,4096> packet;
 
-		packet.Write<u16>(playerCount); // userInfos_count
+		packet.Write<u16>(frameCur->playerList.size()); // userInfos_count
 
-		int i = 0;
 		foreach_const(pl, frameCur->playerList) {
 			const Player& player = *pl;
-			const ActorMaster* main = frameCur->FindMaster(player.characters[0]);
-			const ActorMaster* sub = frameCur->FindMaster(player.characters[1]);
+			const ActorMaster* main = frameCur->FindMaster(player.masters[0]);
+			const ActorMaster* sub = frameCur->FindMaster(player.masters[1]);
 			ASSERT(main);
 			ASSERT(sub);
 
-			packet.Write<i32>(i); // usn
+			packet.Write<UserID>(player.userID); // usn
 			packet.WriteStringObj(player.name.data());
-			packet.Write<i32>(3 + i/3); // teamType | TODO: team
+			packet.Write<i32>(3 + player.team); // teamType | TODO: team
 			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType)); // mainCreatureIndex
 			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType)); // subCreatureIndex
-			i++;
 		}
 
 
@@ -870,7 +903,7 @@ void Replication::SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSk
 
 void Replication::OnPlayerDisconnect(ClientHandle clientHd)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	playerState[clientID].cur = PlayerState::DISCONNECTED;
 	clientHandle[clientID] = ClientHandle::INVALID;
 }
@@ -880,7 +913,7 @@ void Replication::PlayerRegisterMasterActor(ClientHandle clientHd, ActorUID mast
 	LocalActorID laiLeader = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)classType);
 	ASSERT(laiLeader >= LocalActorID::FIRST_SELF_MASTER && laiLeader < LocalActorID::LAST_SELF_MASTER);
 
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	PlayerForceLocalActorID(clientID, masterActorUID, laiLeader);
 }
 
@@ -895,7 +928,7 @@ void Replication::PlayerForceLocalActorID(i32 clientID, ActorUID actorUID, Local
 
 LocalActorID Replication::GetLocalActorID(ClientHandle clientHd, ActorUID actorUID) const
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	auto found = map.find(actorUID);
 	if(found != map.end()) {
@@ -909,7 +942,7 @@ ActorUID Replication::GetWorldActorUID(ClientHandle clientHd, LocalActorID local
 	ProfileFunction();
 
 	// TODO: second map, for this reverse lookup
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	const auto& map = playerLocalInfo[clientID].localActorIDMap;
 	foreach(it, map) {
 		if(it->second == localActorID) {
@@ -922,11 +955,11 @@ ActorUID Replication::GetWorldActorUID(ClientHandle clientHd, LocalActorID local
 
 void Replication::UpdatePlayersLocalState()
 {
-	for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+	for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+		if(playerState[pi].cur < PlayerState::IN_GAME) continue;
 
-		PlayerLocalInfo& localInfo = playerLocalInfo[clientID];
-		const ClientHandle clientHd = clientHandle[clientID];
+		PlayerLocalInfo& localInfo = playerLocalInfo[pi];
+		const ClientHandle clientHd = clientHandle[pi];
 		auto& playerActorUIDSet = localInfo.actorUIDSet; // replicated actors UID set
 
 		eastl::fixed_vector<ActorUID,2048,true> removedList;
@@ -965,7 +998,7 @@ void Replication::UpdatePlayersLocalState()
 			SendActorDestroy(clientHd, actorUID);
 
 			// Remove LocalActorID link
-			DeleteLocalActorID(clientID, actorUID);
+			DeleteLocalActorID(pi, actorUID);
 		}
 
 		// send new spawns
@@ -975,7 +1008,7 @@ void Replication::UpdatePlayersLocalState()
 			// Create a LocalActorID link if none exists already
 			// If one exists already, we have pre-allocated it (like with leader master)
 			if(GetLocalActorID(clientHd, actorUID) == LocalActorID::INVALID) {
-				CreateLocalActorID(clientID, actorUID);
+				CreateLocalActorID(pi, actorUID);
 			}
 
 			auto type = frameCur->actorType.find(actorUID);
@@ -985,7 +1018,7 @@ void Replication::UpdatePlayersLocalState()
 				case ActorType::Master: {
 					const ActorMaster* chara = frameCur->FindMaster(actorUID);
 					ASSERT(chara);
-					const Player* parent = frameCur->FindPlayer(chara->playerID);
+					const Player* parent = frameCur->FindPlayer(chara->playerIndex);
 					ASSERT(parent);
 					SendActorMasterSpawn(clientHd, *chara, *parent);
 				} break;
@@ -1082,7 +1115,7 @@ void Replication::FrameDifference()
 
 	foreach_const(it, frameCur->playerList) {
 		const Player& cur = *it;
-		const Player* found = framePrev->FindPlayer(cur.userID);
+		const Player* found = framePrev->FindPlayer(cur.index);
 		if(!found) continue;
 		const Player& prev = *found;
 
@@ -1090,9 +1123,9 @@ void Replication::FrameDifference()
 		if(cur.mainCharaID != prev.mainCharaID) {
 			UpdateTag update;
 			update.clientHd = cur.clientHd;
-			update.mainUID = cur.characters[cur.mainCharaID];
-			update.subUID = cur.characters[cur.mainCharaID ^ 1];
-			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]); // @Speed
+			update.mainUID = cur.masters[cur.mainCharaID];
+			update.subUID = cur.masters[cur.mainCharaID ^ 1];
+			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]); // @Speed
 			ASSERT(chara);
 			update.pos = chara->pos;
 			listUpdateTag.push_back(update);
@@ -1100,8 +1133,8 @@ void Replication::FrameDifference()
 
 		if(cur.hasJumped && !prev.hasJumped) {
 			UpdateJump update;
-			update.actorUID = cur.characters[cur.mainCharaID];
-			const ActorMaster* chara = frameCur->FindMaster(cur.characters[cur.mainCharaID]);  // @Speed
+			update.actorUID = cur.masters[cur.mainCharaID];
+			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]);  // @Speed
 			ASSERT(chara);
 			update.rotate = chara->rotation.bodyYaw;
 			update.moveDir = chara->moveDir;
@@ -1195,9 +1228,9 @@ void Replication::FrameDifference()
 		sync.flags = 0;
 		sync.state = up->action;
 
-		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[clientID];
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
 			if(clientHd == up->clientHd) continue; // ignore self
 
 			ProfileBlock("Send Sv::SN_PlayerSyncMove");
@@ -1212,9 +1245,9 @@ void Replication::FrameDifference()
 		sync.upperDir = { WorldYawToMxmYaw(up->rot.upperYaw), WorldPitchToMxmPitch(up->rot.upperPitch) };
 		sync.nRotate = WorldYawToMxmYaw(up->rot.bodyYaw);
 
-		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[clientID];
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
 			if(clientHd == up->clientHd) continue; // ignore self
 
 			sync.characterID = GetLocalActorID(clientHd, up->actorUID);
@@ -1227,9 +1260,9 @@ void Replication::FrameDifference()
 		tag.result = 128;
 		tag.attackerID = LocalActorID::INVALID;
 
-		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[clientID];
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
 
 			tag.mainID = GetLocalActorID(clientHd, up->mainUID);
 			tag.subID = GetLocalActorID(clientHd, up->subUID);
@@ -1297,9 +1330,9 @@ void Replication::FrameDifference()
 	}
 
 	foreach_const(up, listUpdateJump) {
-		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[clientID];
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
 
 			PacketWriter<Sv::SA_ResultSpAction> packet;
 
@@ -1330,9 +1363,9 @@ void Replication::FrameDifference()
 			}
 		}
 
-		for(int clientID = 0; clientID < MAX_CLIENTS; clientID++) {
-			if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[clientID];
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
 
 			LocalActorID localActorID = GetLocalActorID(clientHd, up->actorUID);
 
@@ -1440,7 +1473,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 	LOG("[client%03d] Replication :: SendActorSpawn :: actorUID=%u localActorID=%u", clientHd, (u32)actor.actorUID, (u32)localActorID);
 
 	// this is the main actor
-	if(actor.actorUID == parent.characters[0]) {
+	if(actor.actorUID == parent.masters[0]) {
 		// SN_GameCreateActor
 		{
 			PacketWriter<Sv::SN_GameCreateActor,512> packet;
@@ -1586,7 +1619,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 	}
 	// this is the sub actor
 	else {
-		const LocalActorID parentLocalActorID = GetLocalActorID(clientHd, parent.characters[0]);
+		const LocalActorID parentLocalActorID = GetLocalActorID(clientHd, parent.masters[0]);
 		ASSERT(parentLocalActorID != LocalActorID::INVALID);
 
 		// SN_GameCreateSubActor
@@ -1729,7 +1762,7 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
 
@@ -1803,7 +1836,7 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 
 void Replication::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 {
-	const i32 clientID = plidMap->Get(clientHd);
+	const i32 clientID = playerMap.at(clientHd);
 	auto found = playerLocalInfo[clientID].localActorIDMap.find(actorUID);
 	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
 	const LocalActorID localActorID = found->second;
@@ -1898,7 +1931,7 @@ void Replication::SendInitialFrame(ClientHandle clientHd)
 
 	// SN_LoadClearedStages
 	{
-		PacketWriter<Sv::SN_NotifyPcDetailInfos> packet;
+		PacketWriter<Sv::SN_LoadClearedStages> packet;
 
 		packet.Write<u16>(0); // count
 		SendPacket(clientHd, packet);

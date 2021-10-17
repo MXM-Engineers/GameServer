@@ -67,7 +67,7 @@ struct RoomInstance
 		const ClientHandle clientHd;
 		const AccountUID accountUID;
 		const WideString name;
-		const u8 userID;
+		const UserID userID;
 		const u8 isBot;
 		const Team team;
 
@@ -81,7 +81,7 @@ struct RoomInstance
 			// TODO: add other stuff
 		} replicate = {0};
 
-		User(ClientHandle clientHd_, AccountUID accountUID_, const WideString& name_, u8 userID_, u8 isBot_, Team team_):
+		User(ClientHandle clientHd_, AccountUID accountUID_, const WideString& name_, UserID userID_, u8 isBot_, Team team_):
 			clientHd(clientHd_),
 			accountUID(accountUID_),
 			name(name_),

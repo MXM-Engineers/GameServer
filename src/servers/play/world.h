@@ -16,6 +16,19 @@ struct World
 
 	typedef ListItT<ActorMaster> ActorMasterHandle;
 
+	struct PlayerDescription
+	{
+		UserID userID;
+		ClientHandle clientHd;
+		WideString name;
+		WideString guildTag;
+		u8 team;
+
+		eastl::array<ClassType,2> masters;
+		eastl::array<SkinIndex,2> skins;
+		eastl::array<SkillID,4> skills;
+	};
+
 	struct Player
 	{
 		struct Input
@@ -35,10 +48,12 @@ struct World
 			vec3 castPos;
 		};
 
+		const u32 index;
 		const UserID userID;
 		const ClientHandle clientHd;
 		const WideString name;
 		const WideString guildTag;
+		const u8 team;
 
 		const ClassType mainClass;
 		const SkinIndex mainSkin;
@@ -68,24 +83,17 @@ struct World
 			f32 moveDurationS;
 		} cast;
 
-		explicit Player(
-				UserID playerID_,
-				ClientHandle clientHd_,
-				const WideString& name_,
-				const WideString& guildTag_,
-				ClassType mainClass_,
-				SkinIndex mainSkin_,
-				ClassType subClass_,
-				SkinIndex subSkin_
-				):
-			userID(playerID_),
-			clientHd(clientHd_),
-			name(name_),
-			guildTag(guildTag_),
-			mainClass(mainClass_),
-			mainSkin(mainSkin_),
-			subClass(subClass_),
-			subSkin(subSkin_)
+		explicit Player(u32 index_, const PlayerDescription& desc):
+			index(index_),
+			userID(desc.userID),
+			clientHd(desc.clientHd),
+			name(desc.name),
+			guildTag(desc.guildTag),
+			team(desc.team),
+			mainClass(desc.masters[0]),
+			mainSkin(desc.skins[0]),
+			subClass(desc.masters[1]),
+			subSkin(desc.skins[1])
 		{
 
 		}
@@ -142,7 +150,7 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	Player& CreatePlayer(ClientHandle clientHd, const wchar* name, const wchar* guildTag, ClassType mainClass, SkinIndex mainSkin, ClassType subClass, SkinIndex subSkin, const vec3& pos);
+	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
 	Player& GetPlayer(u32 playerIndex);

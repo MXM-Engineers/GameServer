@@ -1103,6 +1103,37 @@ class ServerSerializer:
         print('    timeToWaitSec=%d' % p.read_i32())
         print('}')
 
+    def serialize_62218(netid, p: common.PacketReader):
+        print('SN_SortiePrepare {')
+        count = p.read_u16()
+        print('    skinList(%d)=[' % count)
+        while count > 0:
+            print('    {')
+            print('      classType=%d' % p.read_i32())
+            print('      skinIndex=%d' % p.read_i32())
+            print('      bufCount=%d' % p.read_i32())
+            print('      expireTime=%d' % p.read_i64())
+            print('    },')
+            count -= 1
+        print('    ]')
+        count = p.read_u16()
+        print('    skillList(%d)=[' % count)
+        while count > 0:
+            print('     %d,' % p.read_i32())
+            count -= 1
+        print('    ]')
+        print('}')
+
+    def serialize_62219(netid, p: common.PacketReader):
+        print('SN_SortiePrepareBotInfo {')
+        count = p.read_u16()
+        print('    botIndexes(%d)=[' % count)
+        while count > 0:
+            print('     %d,' % p.read_i32())
+            count -= 1
+        print('    ]')
+        print('}')
+
     def serialize_62224(netid, p: common.PacketReader):
         print('SN_UpdateGameOwner {')
         print('    userID=%d' % p.read_i32())

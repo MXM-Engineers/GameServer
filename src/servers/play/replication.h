@@ -15,6 +15,11 @@ struct AccountData;
 
 struct Replication
 {
+	enum
+	{
+		MAX_PLAYERS = 16
+	};
+
 	enum class ActorType: i32
 	{
 		INVALID = 0,
@@ -32,17 +37,19 @@ struct Replication
 
 	struct Player
 	{
+		u32 index;
 		ClientHandle clientHd;
-		UserID userID = UserID::INVALID;
+		UserID userID;
 		WideString name;
 		WideString guildTag;
+		u8 team;
 
 		ClassType mainClass;
 		SkinIndex mainSkin;
 		ClassType subClass;
 		SkinIndex subSkin;
 
-		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> characters;
+		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> masters;
 		u8 mainCharaID;
 		bool hasJumped;
 	};
@@ -50,7 +57,7 @@ struct Replication
 	struct ActorMaster: Actor<ActorType::Master>
 	{
 		ClientHandle clientHd; // useful to copy it here
-		UserID playerID;
+		u32 playerIndex;
 		ClassType classType;
 		SkinIndex skinIndex;
 
@@ -86,34 +93,24 @@ struct Replication
 
 	struct Frame
 	{
-		// TODO: replace fixed_map with fixed_hash_map
 		eastl::fixed_list<Player,10,false> playerList;
 		eastl::fixed_list<ActorMaster,2048,true> masterList;
 		eastl::fixed_list<ActorNpc,2048,true> npcList;
 
-		eastl::fixed_map<UserID,decltype(playerList)::iterator,2048,true> playerMap;
-		eastl::fixed_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
-		eastl::fixed_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
+		eastl::array<decltype(playerList)::iterator,10> playerMap;
+		hash_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
+		hash_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
-		eastl::fixed_map<ActorUID,ActorType,2048,true> actorType;
-
-		eastl::fixed_map<i32,UserID,10,false> clientPlayerMap;
+		hash_map<ActorUID,ActorType,2048,true> actorType;
 
 		void Clear();
 
-		inline Player* FindPlayer(UserID playerID)
+		inline Player* FindPlayer(u32 playerIndex)
 		{
-			auto found = playerMap.find(playerID);
-			if(found == playerMap.end()) return nullptr;
-			return &(*found->second);
-		}
-
-		inline Player* FindClientPlayer(i32 clientID)
-		{
-			auto found = clientPlayerMap.find(clientID);
-			if(found == clientPlayerMap.end()) return nullptr;
-			return FindPlayer(found->second);
+			auto found = playerMap[playerIndex];
+			if(found == playerList.end()) return nullptr;
+			return &(*found);
 		}
 
 		inline ActorMaster* FindMaster(ActorUID actorUID)
@@ -156,11 +153,11 @@ struct Replication
 		PlayerState cur;
 	};
 
-	const ClientLocalMapping* plidMap;
+	eastl::array<ClientHandle,MAX_PLAYERS> clientHandle;
+	eastl::array<PlayerStatePair,MAX_PLAYERS> playerState;
+	eastl::array<PlayerLocalInfo,MAX_PLAYERS> playerLocalInfo;
 
-	eastl::array<ClientHandle,MAX_CLIENTS> clientHandle;
-	eastl::array<PlayerStatePair,MAX_CLIENTS> playerState;
-	eastl::array<PlayerLocalInfo,MAX_CLIENTS> playerLocalInfo;
+	hash_map<ClientHandle, i32, MAX_PLAYERS> playerMap;
 
 	void Init(Server* server_);
 
@@ -169,7 +166,7 @@ struct Replication
 	void FramePushMasterActor(const ActorMaster& actor);
 	void FramePushNpcActor(const ActorNpc& actor);
 
-	void OnPlayerConnect(ClientHandle clientHd);
+	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SetPlayerLoaded(ClientHandle clientHd);

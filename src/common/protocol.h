@@ -1320,10 +1320,10 @@ struct SN_GameFieldReady
 	};
 
 	i32 gameID;
-	i32 gameType;
+	GameType gameType;
 	i32 areaIndex;
-	i32 stageIndex;
-	i32 gameDefinitionType;
+	StageIndex stageIndex;
+	GameDefinition gameDefinitionType;
 	u8 initPlayerCount;
 	u8 canEscape;
 	u8 isTrespass;
@@ -1908,6 +1908,43 @@ struct SN_ReadySortieRoom
 };
 POP_PACKED
 ASSERT_SIZE(SN_ReadySortieRoom, 5);
+
+struct SN_StartCountdownSortieRoom
+{
+	enum { NET_ID = 62217 };
+
+	StageType stageType;
+	i32 timeToWaitSec;
+};
+ASSERT_SIZE(SN_StartCountdownSortieRoom, 8);
+
+struct SN_SortiePrepare
+{
+	enum { NET_ID = 62218 };
+
+	PUSH_PACKED
+	struct Skin
+	{
+		ClassType classType;
+		SkinIndex skinIndex;
+		i32 bufCount;
+		i64 expireTime;
+	};
+	POP_PACKED
+
+	u16 skinList_count;
+	Skin skinList[1];
+	u16 skillList_count;
+	SkillID skillList[1];
+};
+
+struct SN_SortiePrepareBotInfo
+{
+	enum { NET_ID = 62219 };
+
+	u16 botIndexes_count;
+	i32 botindexes[1];
+};
 
 struct SN_UpdateGameOwner
 {
@@ -2531,6 +2568,19 @@ struct SN_RunClientLevelEventSeq
 };
 POP_PACKED
 ASSERT_SIZE(SN_RunClientLevelEventSeq, 20);
+
+struct SN_LoadingProgressData
+{
+	enum { NET_ID = 62450 };
+
+	UserID usn;
+	u16 nick_len;
+	wchar nick[1];
+	u8 progressData;
+	CreatureIndex activeCreatureIndex;
+	CreatureIndex inactiveCreatureIndex;
+	u8 isSpectator;
+};
 
 struct SN_MasterRotationInfo
 {

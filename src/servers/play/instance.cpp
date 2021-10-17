@@ -1,5 +1,20 @@
 #include "instance.h"
 
+PvpInstance::PvpInstance(SortieUID sortieUID_, const In::MQ_CreateGame& gameInfo_, Server* server_):
+	sortieUID(sortieUID_),
+	gameInfo(gameInfo_),
+	server(server_)
+{
+	clientAccountLink.fill(ClientHandle::INVALID);
+	remainingLinks = 0;
+
+	for(int i = 0; i < gameInfo.playerCount; i++) {
+		if(!gameInfo.players[i].isBot) {
+			remainingLinks++;
+		}
+	}
+}
+
 void PvpInstance::Update(Time localTime_)
 {
 	if(phase == Phase::PlayingGame) {
@@ -9,8 +24,25 @@ void PvpInstance::Update(Time localTime_)
 
 void PvpInstance::OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>* clientList, const i32 count)
 {
-	if(phase == Phase::PlayingGame) {
-		packetHandler.OnClientsConnected(clientList, count);
+	for(int ci = 0; ci < count; ci++) {
+		bool found = false;
+		for(int p = 0; p < gameInfo.playerCount; p++) {
+			if(gameInfo.players[p].accountUID == clientList[ci].second) {
+				clientAccountLink[p] = clientList[ci].first;
+				found = true;
+			}
+		}
+		ASSERT(found);
+		remainingLinks--;
+	}
+
+	// create game
+	if(remainingLinks <= 0) {
+		LOG("[Inst_%llu] All client connected, starting game...", sortieUID);
+		phase = Phase::PlayingGame;
+
+		game.Init(server, gameInfo, clientAccountLink);
+		packetHandler.Init(&game);
 	}
 }
 
@@ -23,7 +55,7 @@ void PvpInstance::OnClientsDisconnected(const ClientHandle* clientList, const i3
 
 void PvpInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData)
 {
-	if(phase == Phase::PlayerLoading) {
+	if(phase == Phase::PlayerConnecting) {
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {

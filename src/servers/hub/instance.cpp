@@ -308,7 +308,7 @@ void RoomInstance::Update(Time localTime_)
 	localTime = localTime_;
 	if(startTime == Time::ZERO) startTime = localTime_;
 
-	if(!hasInitiatedMatchStart) {
+	if(phase == Phase::Picking) {
 		bool allReady = true;
 		foreach_const(u, userList) {
 			if(!u->isReady) {
@@ -323,7 +323,9 @@ void RoomInstance::Update(Time localTime_)
 
 		// when every player is ready, create a game
 		if(allReady) {
-			hasInitiatedMatchStart = true;
+			phase = Phase::StartingMatch;
+			matchWaitTime = localTime;
+
 			MatchmakerConnector& mm = Matchmaker();
 
 			eastl::fixed_vector<MatchmakerConnector::RoomPlayer,16,false> rpList;
@@ -345,10 +347,79 @@ void RoomInstance::Update(Time localTime_)
 
 			mm.QueryRoomCreateGame(sortieUID, rpList.data(), rpList.size());
 
+			Sv::SN_StartCountdownSortieRoom packet;
+			packet.stageType = StageType::PLAY_INSTANCE;
+			packet.timeToWaitSec = 10;
 			foreach_const(cu, connectedUsers) {
-				SendDbgMsg((*cu)->clientHd, L"Game will start momentarily...");
+				SendPacket((*cu)->clientHd, packet);
 			}
 		}
+	}
+
+	if(phase == Phase::MatchReady && TimeDurationSec(matchWaitTime, localTime) > 10) {
+		foreach_const(u, connectedUsers) {
+			const User& user = **u;
+
+			{
+				PacketWriter<Sv::SN_SortiePrepareBotInfo> packet;
+
+				u16 botCount = 0;
+				foreach_const(u, userList) {
+					if(u->isBot) {
+						botCount++;
+					}
+				}
+
+				packet.Write<u16>(botCount);
+				foreach_const(u, userList) {
+					if(u->isBot) {
+						packet.Write<UserID>(u->userID);
+					}
+				}
+
+				SendPacket(user.clientHd, packet);
+			}
+
+			{
+				PacketWriter<Sv::SN_SortiePrepare> packet;
+
+				packet.Write<u16>(2); // skinList
+
+				Sv::SN_SortiePrepare::Skin skin;
+				skin.classType = user.masters[0].classType;
+				skin.skinIndex = user.masters[0].skin;
+				skin.bufCount = 0;
+				skin.expireTime = 0;
+				packet.Write(skin);
+
+				skin.classType = user.masters[1].classType;
+				skin.skinIndex = user.masters[1].skin;
+				skin.bufCount = 0;
+				skin.expireTime = 0;
+				packet.Write(skin);
+
+				packet.Write<u16>(4); // skillList
+				packet.Write(user.masters[0].skills[0]);
+				packet.Write(user.masters[0].skills[1]);
+				packet.Write(user.masters[1].skills[0]);
+				packet.Write(user.masters[1].skills[1]);
+				SendPacket(user.clientHd, packet);
+			}
+
+			{
+				PacketWriter<Sv::SN_DoConnectGameServer> packet;
+				packet.Write(matchServerPort); // port
+				packet.Write(matchServerIp); // ip
+				packet.Write<i32>((u64)sortieUID & 0xFFFFFFFF); // gameID
+				packet.Write<u32>(0x0); // idcHash
+				packet.WriteStringObj(user.name.data(), user.name.size());
+				packet.Write<u32>(In::ProduceInstantKey(user.accountUID, sortieUID));
+				SendPacket(user.clientHd, packet);
+			}
+		}
+
+		// delete room
+		markedAsRemove = true;
 	}
 
 	Replicate();
@@ -511,75 +582,9 @@ void RoomInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetD
 			if(created.sortieUID == sortieUID) {
 				NT_LOG("[MM] %s", PacketSerialize<In::MN_MatchCreated>(packetData, packetSize));
 
-				foreach_const(u, connectedUsers) {
-					const User& user = **u;
-
-					{
-						Sv::SN_StartCountdownSortieRoom packet;
-						packet.stageType = StageType::PLAY_INSTANCE;
-						packet.timeToWaitSec = 1;
-						SendPacket(user.clientHd, packet);
-					}
-
-					{
-						PacketWriter<Sv::SN_SortiePrepareBotInfo> packet;
-
-						u16 botCount = 0;
-						foreach_const(u, userList) {
-							if(u->isBot) {
-								botCount++;
-							}
-						}
-
-						packet.Write<u16>(botCount);
-						foreach_const(u, userList) {
-							if(u->isBot) {
-								packet.Write<UserID>(u->userID);
-							}
-						}
-
-						SendPacket(user.clientHd, packet);
-					}
-
-					{
-						PacketWriter<Sv::SN_SortiePrepare> packet;
-
-						packet.Write<u16>(2); // skinList
-
-						Sv::SN_SortiePrepare::Skin skin;
-						skin.classType = user.masters[0].classType;
-						skin.skinIndex = user.masters[0].skin;
-						skin.bufCount = 0;
-						skin.expireTime = 0;
-						packet.Write(skin);
-
-						skin.classType = user.masters[1].classType;
-						skin.skinIndex = user.masters[1].skin;
-						skin.bufCount = 0;
-						skin.expireTime = 0;
-						packet.Write(skin);
-
-						packet.Write<u16>(4); // skillList
-						packet.Write(user.masters[0].skills[0]);
-						packet.Write(user.masters[0].skills[1]);
-						packet.Write(user.masters[1].skills[0]);
-						packet.Write(user.masters[1].skills[1]);
-						SendPacket(user.clientHd, packet);
-					}
-
-					{
-						PacketWriter<Sv::SN_DoConnectGameServer> packet;
-						packet.Write(created.serverPort); // port
-						packet.Write(created.serverIp); // ip
-						packet.Write<i32>((u64)created.sortieUID & 0xFFFFFFFF); // gameID
-						packet.Write<u32>(0x0); // idcHash
-						packet.WriteStringObj(user.name.data(), user.name.size());
-						packet.Write<u32>(In::ProduceInstantKey(user.accountUID, created.sortieUID));
-						SendPacket(user.clientHd, packet);
-					}
-				}
-
-				// TODO: delete room
+				phase = Phase::MatchReady;
+				matchServerIp = created.serverIp;
+				matchServerPort = created.serverPort;
 			}
 		} break;
 	}

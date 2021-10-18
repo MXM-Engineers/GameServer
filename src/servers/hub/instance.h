@@ -96,6 +96,12 @@ struct RoomInstance
 		inline Master& Sub() { return masters[MASTER_SUB]; }
 	};
 
+	enum class Phase: u8 {
+		Picking = 0,
+		StartingMatch,
+		MatchReady
+	};
+
 	Server* server;
 	const HubInstanceUID UID;
 	const SortieUID sortieUID;
@@ -112,8 +118,14 @@ struct RoomInstance
 
 	Time startTime = Time::ZERO;
 	Time localTime = Time::ZERO;
+	Time matchWaitTime = Time::ZERO;
 
-	bool hasInitiatedMatchStart = false;
+	bool markedAsRemove = false;
+	Phase phase = Phase::Picking;
+
+	eastl::array<u8,4> matchServerIp = {0};
+	u16 matchServerPort = 0x0;
+
 
 	RoomInstance(HubInstanceUID UID_, SortieUID sortieUID_):
 		UID(UID_),

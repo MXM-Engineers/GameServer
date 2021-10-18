@@ -41,7 +41,7 @@
 * Edit SKILL.xml in DOCUMENTS to make Sizuka's dodge not test terrain.
 
 # Inner communication
-* 🔥🔥🔥 Send message from hub to game server to create a game (pvp 3v3) instance, then connect to it
+* ✅ Send message from hub to game server to create a game (pvp 3v3) instance, then connect to it
     - ✅ Need an inner communication protocol
     - ✅ Need to connect to game servers (make a game_servers.txt list)
     - Have a timeout for each request in case a game server goes down (crash, network, whatever else). The request needs to be resent elsewhere then.
@@ -61,14 +61,13 @@
 # Matchmaking
 * ✅ matchmaker connector for play servers
 * ✅ create game when matchmaker requests it
-    - 🔥 Actually create game when everyone is connected to the instance
-    - Send account / game info and start loading
+    - ✅ Actually create game when everyone is connected to the instance
+    - ✅ Send account / game info and start loading
 * ✅ coordinator: player connect queue (AccountUID, SortieUID)
 * ✅ coordinator: send player to instance pool
-* Delete room on matchmaker and instances when match is created
-
-* When 6 players are in queue, consume them.
-    - Ask a game server to create a match instance.
-    - When created, send packet to players to connect to said server.
-    - When all players are connected, start the picking phase
-    - When picking phase is done, send load map
+* ✅ Delete room on matchmaker and instances when match is created
+* ⚠️ When 6 players are in queue, consume them.
+    - ✅ Ask a game server to create a match instance.
+    - ✅ When created, send packet to players to connect to said server.
+    - ✅ When all players are connected, start the picking phase
+    - ✅ When picking phase is done, send load map

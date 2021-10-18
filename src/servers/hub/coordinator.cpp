@@ -323,6 +323,19 @@ void InstancePool::Lane::Update()
 	foreach(hub, instanceHubList) {
 		hub->Update(localTime);
 	}
+
+	// delete rooms
+	for(auto room = instanceRoomList.begin(); room != instanceRoomList.end(); ) {
+		if(room->markedAsRemove) {
+			LOG("[InstancePool] deleting room (sortieUID=%llu)", room->sortieUID);
+			room = instanceRoomList.erase(room);
+		}
+		else {
+			++room;
+		}
+	}
+
+	// update rooms
 	foreach(room, instanceRoomList) {
 		room->Update(localTime);
 	}

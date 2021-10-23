@@ -150,7 +150,7 @@ struct World
 	void Update(Time localTime_);
 	void Replicate();
 
-	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos);
+	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
 
 	Player& GetPlayer(u32 playerIndex);

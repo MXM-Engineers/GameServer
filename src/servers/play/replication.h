@@ -78,6 +78,8 @@ struct Replication
 		vec3 skillStartPos;
 		vec3 skillEndPos;
 		f32 skillMoveDurationS;
+
+		u8 taggedOut = false;
 	};
 
 	struct ActorNpc: Actor<ActorType::Npc>
@@ -163,7 +165,7 @@ struct Replication
 
 	void FrameEnd();
 	void FramePushPlayer(const Player& player);
-	void FramePushMasterActor(const ActorMaster& actor);
+	void FramePushMasterActors(const ActorMaster* actorList, const i32 count);
 	void FramePushNpcActor(const ActorNpc& actor);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);

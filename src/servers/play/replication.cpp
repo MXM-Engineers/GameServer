@@ -88,16 +88,18 @@ void Replication::FramePushPlayer(const Player& player)
 #endif
 }
 
-void Replication::FramePushMasterActor(const Replication::ActorMaster& actor)
+void Replication::FramePushMasterActors(const Replication::ActorMaster* actorList, const i32 count)
 {
-	ASSERT(frameCur->masterMap.find(actor.actorUID) == frameCur->masterMap.end());
-	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
+	forarr(actor, actorList, count) {
+		ASSERT(frameCur->masterMap.find(actor->actorUID) == frameCur->masterMap.end());
+		ASSERT(frameCur->actorUIDSet.find(actor->actorUID) == frameCur->actorUIDSet.end());
 
-	frameCur->masterList.emplace_back(actor);
-	frameCur->masterMap.emplace(actor.actorUID, --frameCur->masterList.end());
+		frameCur->masterList.emplace_back(*actor);
+		frameCur->masterMap.emplace(actor->actorUID, --frameCur->masterList.end());
 
-	frameCur->actorUIDSet.insert(actor.actorUID);
-	frameCur->actorType.emplace(actor.actorUID, actor.Type());
+		frameCur->actorUIDSet.insert(actor->actorUID);
+		frameCur->actorType.emplace(actor->actorUID, actor->Type());
+	}
 }
 
 void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
@@ -511,7 +513,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 	{
 		PacketWriter<Sv::SN_GameFieldReady,4096> packet;
 
-		packet.Write<i32>(449); // InGameID=449
+		packet.Write<i32>(1); // InGameID=449
 		packet.Write(GameType::PVP_Rank); // GameType=
 		packet.Write<i32>(190002202); // AreaIndex=190002202
 		//packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex // FIXME: wrong stage index?
@@ -1146,6 +1148,8 @@ void Replication::FrameDifference()
 	// find if the position has changed since last frame
 	foreach_const(it, frameCur->masterList) {
 		const ActorMaster& cur = *it;
+		if(cur.taggedOut) continue;
+
 		auto found = framePrev->masterMap.find(cur.actorUID);
 		if(found == framePrev->masterMap.end()) continue; // previous not found, can't diff
 		const ActorMaster& prev = *found->second;
@@ -1494,7 +1498,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 			packet.Write<u8>(0); // bDirectionToNearPC
 			packet.Write<i32>(-1); // AiWanderDistOverride
 			packet.Write<i32>(-1); // tagID
-			packet.Write<i32>(3); // faction
+			packet.Write<i32>(3 + parent.team); // faction
 			packet.Write<ClassType>(actor.classType); // classType
 			packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
 			packet.Write<i32>(0); // seed

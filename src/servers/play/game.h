@@ -19,7 +19,8 @@ struct Game
 
 	struct SpawnPoint
 	{
-		vec3 pos, dir;
+		vec3 pos;
+		vec3 rot;
 	};
 
 	struct Player

@@ -132,6 +132,8 @@ void World::Update(Time localTime_)
 
 void World::Replicate()
 {
+	eastl::fixed_vector<Replication::ActorMaster, 64, false> repMasterList;
+
 	// players
 	foreach_const(it, players) {
 		const Player& player = *it;
@@ -161,7 +163,7 @@ void World::Replicate()
 		// main
 		{
 			const ActorMaster& chara = player.Main();
-			Replication::ActorMaster rch;
+			Replication::ActorMaster& rch = repMasterList.push_back();
 			rch.actorUID = chara.UID;
 			rch.clientHd = player.clientHd;
 			rch.playerIndex = player.index;
@@ -182,13 +184,13 @@ void World::Replicate()
 			rch.skillEndPos = player.cast.endPos;
 			rch.skillMoveDurationS = player.cast.moveDurationS;
 
-			replication->FramePushMasterActor(rch);
+			rch.taggedOut = false;
 		}
 
 		// sub
 		{
 			const ActorMaster& chara = player.Sub();
-			Replication::ActorMaster rch;
+			Replication::ActorMaster& rch = repMasterList.push_back();
 			rch.actorUID = chara.UID;
 			rch.clientHd = player.clientHd;
 			rch.playerIndex = player.index;
@@ -209,9 +211,11 @@ void World::Replicate()
 			rch.skillEndPos = player.cast.endPos;
 			rch.skillMoveDurationS = player.cast.moveDurationS;
 
-			replication->FramePushMasterActor(rch);
+			rch.taggedOut = true;
 		}
 	}
+
+	replication->FramePushMasterActors(repMasterList.data(), repMasterList.size());
 
 	// clear action state
 	foreach(it, actorMasterList) {
@@ -237,13 +241,23 @@ void World::Replicate()
 	}
 }
 
-World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& pos)
+World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot)
 {
 	players.emplace_back(players.size(), desc);
+
 	Player& player = players.back();
+	player.mainCharaID = 0;
 	player.level = 1;
 	player.experience = 0;
 	player.body = physics.CreateBody(90, 270, pos); // radius 100 is found in files but 90 matches better
+
+	// clear input
+	player.input.moveTo = pos;
+	player.input.speed = 0;
+	player.input.rot = rot;
+	player.input.tag = 0;
+	player.input.jump = 0;
+	player.input.actionState = ActionStateID::INVALID;
 
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();

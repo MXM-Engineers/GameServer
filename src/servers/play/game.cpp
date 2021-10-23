@@ -27,9 +27,9 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &shape[1]);
 	ASSERT(r);
 	world.physics.PushStaticMeshes(shape, 2);
-	// --------------------------
 
 	LoadMap();
+	// --------------------------
 
 	// create players
 	i32 spawnPointIndex[2] = { 0 };
@@ -50,10 +50,8 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 
 		const auto& spawnPoints = mapSpawnPoints[p.team];
 		const SpawnPoint& spawnPoint = spawnPoints[spawnPointIndex[p.team]++ % spawnPoints.size()];
-		vec3 pos = spawnPoint.pos;
-		vec3 dir = spawnPoint.dir;
 
-		World::Player& worldPlayer = world.CreatePlayer(desc, pos);
+		World::Player& worldPlayer = world.CreatePlayer(desc, spawnPoint.pos, RotationHumanoid{0.f, 0.f, MxmYawToWorldYaw(spawnPoint.rot.z)});
 
 		playerList.emplace_back(desc.clientHd, p.accountUID, desc.name, worldPlayer.index);
 		if(desc.clientHd != ClientHandle::INVALID) {
@@ -64,9 +62,6 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 			replication.PlayerRegisterMasterActor(desc.clientHd, worldPlayer.Sub().UID, worldPlayer.subClass);
 		}
 	}
-
-	//clone = &world.CreatePlayer(ClientHandle::INVALID, L"Clone", L"BeepBoop", ClassType::Lua, SkinIndex::DEFAULT, ClassType::Sizuka, SkinIndex::DEFAULT, pos);
-	//lego = &world.CreatePlayer(-1, L"legomage15", L"MEME", (ClassType)18, SkinIndex::DEFAULT, ClassType::Lua, SkinIndex::DEFAULT, vec3(2800, 3532, 1000)));
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }

@@ -2618,6 +2618,11 @@ struct SN_SortieMasterPickPhaseStart
 	u16 alliesSlotInfos_count;
 };
 
+struct SN_SortieMasterPickPhaseEnd
+{
+	enum { NET_ID = 62466 };
+};
+
 struct SN_SortieMasterPickPhaseStepStart
 {
 	enum { NET_ID = 62467 };
@@ -2628,6 +2633,14 @@ struct SN_SortieMasterPickPhaseStepStart
 	u16 enemiesTeamUserIds_count;
 	UserID enemiesTeamUserIds[1];
 };
+
+struct SN_SortieMasterPickPhaseStep
+{
+	enum { NET_ID = 62468 };
+
+	u8 isRandomPick;
+};
+ASSERT_SIZE(SN_SortieMasterPickPhaseStep, 1);
 
 struct SA_TierRecord
 {

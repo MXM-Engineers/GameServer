@@ -427,6 +427,8 @@ typedef EA::Thread::AutoFutex LockGuard;
 #define foreach_const(IT,CONTAINER) for(auto IT = CONTAINER.cbegin(), IT##End = CONTAINER.cend(); IT != IT##End; ++IT)
 #define foreach_mut(IT,CONTAINER) for(auto IT = CONTAINER.begin(); IT != CONTAINER.end(); ++IT)
 
+#define forarr(IT,ARRAY,COUNT) for(auto IT = ARRAY; IT != ARRAY+COUNT; ++IT)
+
 // time API
 enum class Time: u64
 {

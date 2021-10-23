@@ -71,3 +71,11 @@
     - ✅ When created, send packet to players to connect to said server.
     - ✅ When all players are connected, start the picking phase
     - ✅ When picking phase is done, send load map
+
+# Game
+* ✅ Fix movement replication
+    - ✅ it was the input structure not being initialized properly so the player would 'tag' at the start
+* ✅ Fix dodge replication (especially while moving)
+    - Still needs fixing while moving
+* ⚠️ Spawn a clone for actual clients
+* Replace inhouse physics with PhysX

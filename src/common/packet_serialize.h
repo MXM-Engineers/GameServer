@@ -651,9 +651,9 @@ inline const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetD
 		SER("		skillShot1=%d", chara.skillShot1);
 		SER("		skillShot2=%d", chara.skillShot2);
 		SER("		classType=%d", chara.classType);
-		SER("		x=%d", chara.x);
-		SER("		y=%d", chara.y);
-		SER("		z=%d", chara.z);
+		SER("		x=%f", chara.x);
+		SER("		y=%f", chara.y);
+		SER("		z=%f", chara.z);
 		SER("		characterType=%d", chara.characterType);
 		SER("		skinIndex=%d", chara.skinIndex);
 		SER("		weaponIndex=%d", chara.weaponIndex);
@@ -1366,6 +1366,30 @@ inline const char* PacketSerialize<Sv::SN_SortiePrepareBotInfo>(const void* pack
 	}
 	SER("	]");
 	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseStep>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortieMasterPickPhaseStep(%d, %d) :: {", Sv::SN_SortieMasterPickPhaseStep::NET_ID, packetSize);
+	SER("	isRandomPick=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseEnd>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_SortieMasterPickPhaseEnd(%d, %d) :: {}", Sv::SN_SortieMasterPickPhaseEnd::NET_ID, packetSize);
 
 	return str.data();
 }

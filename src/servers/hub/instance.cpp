@@ -61,6 +61,7 @@ void HubInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetDa
 }
 
 const i32 PICKING_TIME = 60;
+const i32 MATCH_WAIT_TIME = 10;
 
 void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 userCount)
 {
@@ -308,6 +309,8 @@ void RoomInstance::Update(Time localTime_)
 	localTime = localTime_;
 	if(startTime == Time::ZERO) startTime = localTime_;
 
+	Replicate();
+
 	if(phase == Phase::Picking) {
 		bool allReady = true;
 		foreach_const(u, userList) {
@@ -347,16 +350,23 @@ void RoomInstance::Update(Time localTime_)
 
 			mm.QueryRoomCreateGame(sortieUID, rpList.data(), rpList.size());
 
-			Sv::SN_StartCountdownSortieRoom packet;
-			packet.stageType = StageType::PLAY_INSTANCE;
-			packet.timeToWaitSec = 10;
+			// update clients
+			Sv::SN_SortieMasterPickPhaseStep packetStep;
+			packetStep.isRandomPick = 0;
+
+			Sv::SN_StartCountdownSortieRoom packetCountdown;
+			packetCountdown.stageType = StageType::PLAY_INSTANCE;
+			packetCountdown.timeToWaitSec = MATCH_WAIT_TIME;
+
 			foreach_const(cu, connectedUsers) {
-				SendPacket((*cu)->clientHd, packet);
+				SendPacket((*cu)->clientHd, packetStep);
+				SendPacketData<Sv::SN_SortieMasterPickPhaseEnd>((*cu)->clientHd, 0, nullptr);
+				SendPacket((*cu)->clientHd, packetCountdown);
 			}
 		}
 	}
 
-	if(phase == Phase::MatchReady && TimeDurationSec(matchWaitTime, localTime) > 10) {
+	if(phase == Phase::MatchReady && TimeDurationSec(matchWaitTime, localTime) > MATCH_WAIT_TIME) {
 		foreach_const(u, connectedUsers) {
 			const User& user = **u;
 
@@ -421,8 +431,6 @@ void RoomInstance::Update(Time localTime_)
 		// delete room
 		markedAsRemove = true;
 	}
-
-	Replicate();
 }
 
 void RoomInstance::Replicate()

@@ -38,16 +38,27 @@ struct Game
 		{
 
 		}
+
+		inline bool IsBot() const { return clientHd == ClientHandle::INVALID; }
+	};
+
+	struct Bot
+	{
+		const u32 playerIndex;
+		Time tNextAction = Time::ZERO;
+
+		explicit Bot(u32 playerIndex_): playerIndex(playerIndex_) {}
 	};
 
 	World world;
 	Replication replication;
 
-	eastl::fixed_list<Player,MAX_PLAYERS> playerList;
+	eastl::fixed_list<Player,MAX_PLAYERS,false> playerList;
 	hash_map<ClientHandle, decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
 
 	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
 
+	Time startTime;
 	Time localTime;
 
 	Dbg::GameUID dbgGameUID;
@@ -58,6 +69,8 @@ struct Game
 	u32 legoLastStep = 0;
 
 	World::Player* clone = nullptr;
+
+	eastl::fixed_list<Bot,MAX_PLAYERS,false> botList;
 
 	void Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle,MAX_PLAYERS>& playerClientHdList);
 	void Update(Time localTime_);

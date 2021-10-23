@@ -17,8 +17,10 @@ PvpInstance::PvpInstance(SortieUID sortieUID_, const In::MQ_CreateGame& gameInfo
 
 void PvpInstance::Update(Time localTime_)
 {
+	localTime = localTime_;
+
 	if(phase == Phase::PlayingGame) {
-		game.Update(localTime_);
+		game.Update(localTime);
 	}
 }
 
@@ -42,6 +44,7 @@ void PvpInstance::OnClientsConnected(const eastl::pair<ClientHandle,AccountUID>*
 		phase = Phase::PlayingGame;
 
 		game.Init(server, gameInfo, clientAccountLink);
+		game.startTime = localTime;
 		packetHandler.Init(&game);
 	}
 }

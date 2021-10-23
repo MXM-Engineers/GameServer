@@ -61,6 +61,9 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 			replication.PlayerRegisterMasterActor(desc.clientHd, worldPlayer.Main().UID, worldPlayer.mainClass);
 			replication.PlayerRegisterMasterActor(desc.clientHd, worldPlayer.Sub().UID, worldPlayer.subClass);
 		}
+		else {
+			botList.emplace_back(worldPlayer.index);
+		}
 	}
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
@@ -106,6 +109,66 @@ void Game::Update(Time localTime_)
 		}
 
 		legoLastStep = step;
+	}
+
+	// bot random actions
+	if(TimeDiffSec(TimeDiff(startTime, localTime)) > 10) {
+		foreach(bot, botList) {
+			if(localTime > bot->tNextAction) {
+				bot->tNextAction = TimeAdd(localTime, TimeMsToTime(randf01() * 5 * 1000));
+				World::Player& wpl = world.GetPlayer(bot->playerIndex);
+
+				struct Action {
+					enum Enum: i32 {
+						Move = 0,
+						Tag,
+						Jump,
+						_Count
+					};
+				};
+
+				eastl::array<f32,Action::_Count> actionWeight = {0.f};
+				actionWeight[Action::Move] = 8;
+				actionWeight[Action::Tag] = 2;
+				actionWeight[Action::Jump] = 2;
+
+				f32 actionSpace = 0;
+				foreach_const(w, actionWeight) actionSpace += *w;
+
+				Action::Enum actionID = Action::Move;
+
+				f32 rs = randf01() * actionSpace;
+				actionSpace = 0;
+				for(int wi = 0; wi < Action::_Count; wi++) {
+					if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
+						actionID = (Action::Enum)wi;
+						break;
+					}
+					actionSpace += actionWeight[wi];
+				}
+
+				switch(actionID) {
+					case Action::Move: {
+						f32 angle = randf01() * 2*PI;
+						f32 dist = (f32)RandInt(250, 1000);
+						vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
+						wpl.input.moveTo = wpl.body->pos + vec3(off, 0);
+						wpl.input.rot.upperYaw = angle;
+						wpl.input.rot.upperPitch = 0;
+						wpl.input.rot.bodyYaw = angle;
+						wpl.input.speed = 600;
+					} break;
+
+					case Action::Tag: {
+						wpl.input.tag = true;
+					} break;
+
+					case Action::Jump: {
+						wpl.input.jump = true;
+					} break;
+				}
+			}
+		}
 	}
 
 	world.Update(localTime);

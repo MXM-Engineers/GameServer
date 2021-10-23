@@ -447,6 +447,11 @@ f64 TimeDurationSinceSec(Time t0);
 f64 TimeDurationSinceMs(Time t0);
 Time TimeMsToTime(f64 ms);
 
+inline Time TimeAdd(Time a, Time b)
+{
+	return Time((u64)a + (u64)b);
+}
+
 
 template<typename T>
 T clamp(T val, T min, T max)

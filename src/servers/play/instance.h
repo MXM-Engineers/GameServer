@@ -17,6 +17,7 @@ struct PvpInstance
 	const SortieUID sortieUID;
 	const In::MQ_CreateGame gameInfo;
 	Server* server;
+	Time localTime;
 
 	Phase phase = Phase::PlayerConnecting;
 	eastl::array<ClientHandle, Game::MAX_PLAYERS> clientAccountLink;

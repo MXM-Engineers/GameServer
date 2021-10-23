@@ -277,6 +277,9 @@ void Server::ClientHandleReceivedData(i32 clientID, i32 dataLen)
 
 void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, const void* packetData)
 {
+	const i32 clientID = TryGetClientID(clientHd);
+	if(clientID == -1) return;
+
 	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
 	u8 sendBuff[8192];
 	ASSERT(packetTotalSize <= sizeof(sendBuff));
@@ -287,7 +290,7 @@ void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, co
 	memmove(sendBuff, &header, sizeof(header));
 	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 
-	ClientSend(GetClientID(clientHd), sendBuff, packetTotalSize);
+	ClientSend(clientID, sendBuff, packetTotalSize);
 
 	if(doTraceNetwork) {
 		static Mutex mutexFile;

@@ -19,6 +19,7 @@ u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize);
 
 u32 RandUint();
 f64 randf01();
+i32 RandInt(i32 vmin, i32 vmax);
 
 template<int DEST_CAP, int SRC_CAP>
 inline void StrConv(eastl::fixed_string<char,DEST_CAP,false>* dest, const eastl::fixed_string<wchar, SRC_CAP>& src)

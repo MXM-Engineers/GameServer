@@ -91,3 +91,8 @@ f64 randf01()
 {
 	return (f64)RandUint() / 0xFFFFFFFF;
 }
+
+i32 RandInt(i32 vmin, i32 vmax)
+{
+	return vmin + (RandUint() % (vmax + 1 - vmin));
+}

@@ -1085,6 +1085,7 @@ void Replication::FrameDifference()
 		ActorUID mainUID;
 		ActorUID subUID;
 		vec3 pos;
+		RotationHumanoid rot;
 	};
 
 	struct UpdateJump
@@ -1130,6 +1131,7 @@ void Replication::FrameDifference()
 			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]); // @Speed
 			ASSERT(chara);
 			update.pos = chara->pos;
+			update.rot = chara->rotation;
 			listUpdateTag.push_back(update);
 		}
 
@@ -1286,9 +1288,9 @@ void Replication::FrameDifference()
 					packet.Write<u8>(0x1); // excludedBits
 					packet.Write<LocalActorID>(tag.mainID); // objectID
 					packet.Write<float3>(v2f(up->pos)); //  p3nPos
-					packet.Write<float3>(v2f(vec3(1, 0, 0))); //  p3nDir
-					packet.Write<float2>(v2f(vec2(1, 0))); //  p2nMoveDir
-					packet.Write<float2>(v2f(vec2(1, 0))); //  p2nMoveUpperDir
+					packet.Write<RotationHumanoid>(RotConvertToMxm(up->rot)); //  p3nDir
+					packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveDir
+					packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveUpperDir
 					packet.Write<float3>(v2f(vec3(0))); //  p3nMoveTargetPos
 					packet.Write<u8>(0); //  isBattleState
 					packet.Write<f32>(620.0f); //  baseMoveSpeed

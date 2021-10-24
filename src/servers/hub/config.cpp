@@ -6,6 +6,7 @@ bool CConfigHub::ParseLine(const char* line)
 {
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
 	return false;
@@ -63,6 +64,7 @@ bool CConfigHub::SaveConfigFile()
 	eastl::fixed_string<char,4096,false> out;
 	out.append_sprintf("ListenPort=%d\n", ListenPort);
 	out.append_sprintf("DevMode=%d\n", DevMode);
+	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("LobbyMap=%d\n", LobbyMap);
 
@@ -79,6 +81,7 @@ void CConfigHub::Print() const
 	LOG("Config = {");
 	LOG("	ListenPort=%d", ListenPort);
 	LOG("	DevMode=%d", DevMode);
+	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
 	LOG("}");

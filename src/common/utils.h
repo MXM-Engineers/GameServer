@@ -18,7 +18,7 @@ void PathAppend(Path& path, const wchar* app);
 u8* FileOpenAndReadAll(const wchar* filename, i32* pOutSize);
 
 u32 RandUint();
-f64 randf01();
+f64 Randf01();
 i32 RandInt(i32 vmin, i32 vmax);
 
 template<int DEST_CAP, int SRC_CAP>

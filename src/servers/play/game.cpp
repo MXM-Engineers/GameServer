@@ -91,7 +91,7 @@ void Game::Update(Time localTime_)
 		u32 step = ((u64)localTimeSec % 5) == 0;
 
 		if(legoLastStep == Step::Stop && step == Step::Move) {
-			f32 a = randf01() * 2 * PI;
+			f32 a = Randf01() * 2 * PI;
 			legoDir = vec2(cosf(a), sinf(a));
 			legoAngle = (legoAngle+1) % 4;
 		}
@@ -115,7 +115,7 @@ void Game::Update(Time localTime_)
 	if(TimeDiffSec(TimeDiff(startTime, localTime)) > 10) {
 		foreach(bot, botList) {
 			if(localTime > bot->tNextAction) {
-				bot->tNextAction = TimeAdd(localTime, TimeMsToTime(randf01() * 5 * 1000));
+				bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
 				World::Player& wpl = world.GetPlayer(bot->playerIndex);
 
 				struct Action {
@@ -137,7 +137,7 @@ void Game::Update(Time localTime_)
 
 				Action::Enum actionID = Action::Move;
 
-				f32 rs = randf01() * actionSpace;
+				f32 rs = Randf01() * actionSpace;
 				actionSpace = 0;
 				for(int wi = 0; wi < Action::_Count; wi++) {
 					if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
@@ -149,7 +149,7 @@ void Game::Update(Time localTime_)
 
 				switch(actionID) {
 					case Action::Move: {
-						f32 angle = randf01() * 2*PI;
+						f32 angle = Randf01() * 2*PI;
 						f32 dist = (f32)RandInt(250, 1000);
 						vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
 						wpl.input.moveTo = wpl.body->pos + vec3(off, 0);

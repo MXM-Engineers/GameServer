@@ -151,6 +151,8 @@ private:
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 
+	void CreateDevGame();
+
 	template<typename Packet>
 	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
 	{

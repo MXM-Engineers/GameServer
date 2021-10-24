@@ -87,7 +87,7 @@ u32 RandUint()
 	return x;
 }
 
-f64 randf01()
+f64 Randf01()
 {
 	return (f64)RandUint() / 0xFFFFFFFF;
 }

@@ -6,6 +6,7 @@ bool CConfigGame::ParseLine(const char* line)
 {
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
@@ -71,6 +72,7 @@ bool CConfigGame::SaveConfigFile()
 	eastl::fixed_string<char,4096,false> out;
 	out.append_sprintf("ListenPort=%d\n", ListenPort);
 	out.append_sprintf("DevMode=%d\n", DevMode);
+	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("WindowWidth=%d\n", WindowWidth);
 	out.append_sprintf("WindowHeight=%d\n", WindowHeight);
@@ -94,6 +96,7 @@ void CConfigGame::Print() const
 	LOG("Config = {");
 	LOG("	ListenPort=%d", ListenPort);
 	LOG("	DevMode=%d", DevMode);
+	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	WindowWidth=%d", WindowWidth);
 	LOG("	WindowHeight=%d", WindowHeight);

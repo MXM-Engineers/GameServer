@@ -5,6 +5,7 @@ struct CConfigGame
 {
 	i32 ListenPort = 12900;
 	i32 DevMode = false;
+	i32 DevQuickConnect = false;
 	i32 TraceNetwork = false;
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;

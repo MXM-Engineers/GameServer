@@ -669,7 +669,12 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 	// TODO: fetch account data
 	AccountManager& am = GetAccountManager();
-	const AccountUID accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
+	AccountUID accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
+
+#ifdef CONF_DEBUG
+	if(Config().DevMode && Config().DevQuickConnect) accountUID = AccountUID(0x1337);
+#endif
+
 	am.accountList.emplace_back(accountUID);
 	am.accountMap.emplace(accountUID, --am.accountList.end());
 

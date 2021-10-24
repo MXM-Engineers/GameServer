@@ -366,6 +366,10 @@ bool Coordinator::Init(Server* server_)
 	r = instancePool.Init(server);
 	if(!r) return false;
 
+	if(Config().DevMode && Config().DevQuickConnect) {
+		CreateDevGame();
+	}
+
 	thread.Begin(ThreadCoordinator, this);
 	return true;
 }
@@ -595,4 +599,93 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 
 	LOG("[client%x] Client authenticated (accountuID=%u sortieUID=%llu)", clientHd, accountUID, sortieUID);
 	instancePool.QueuePushPlayerToGame(clientHd, accountUID, sortieUID);
+}
+
+void Coordinator::CreateDevGame()
+{
+	// create a game to quickly connect to
+	const GameXmlContent& content = GetGameXmlContent();
+
+	const eastl::fixed_set<ClassType,100,false> allowedMastersSet = {
+		ClassType::Taejin,
+		ClassType::MBA_07,
+		ClassType::Sizuka,
+		ClassType::Demenos,
+		ClassType::Koom,
+		ClassType::Innowin,
+		ClassType::Lua,
+	};
+
+	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
+	memset(&teamMasterPickCount, 0x0, sizeof(teamMasterPickCount));
+
+	In::MQ_CreateGame game;
+	game.sortieUID = SortieUID(1);
+	game.playerCount = 6;
+	game.spectatorCount = 0;
+
+	auto& p = game.players[0];
+	p.name.Copy(WideString(L"LordSk")); // TODO: we really need an account system (sorry Delta)
+	p.accountUID = AccountUID(0x1337);
+	p.team = 0;
+	p.isBot = 0;
+	p.masters[0] = ClassType::Lua;
+	p.masters[1] = ClassType::Sizuka;
+	teamMasterPickCount[0][(i32)ClassType::Lua] = 1;
+	teamMasterPickCount[0][(i32)ClassType::Sizuka] = 1;
+	p.skins.fill(SkinIndex::DEFAULT);
+	p.skills[0] = SkillID(180350010);
+	p.skills[1] = SkillID(180350030);
+	p.skills[2] = SkillID(180030020);
+	p.skills[3] = SkillID(180030030);
+
+	for(int bi = 1; bi < game.playerCount; bi++) {
+		auto& bot = game.players[bi];
+		bot.name.Copy(WideString(LFMT(L"Bot%d", bi)));
+		bot.accountUID = AccountUID::INVALID;
+		bot.team = bi > 2;
+		bot.isBot = true;
+		bot.masters[0] = ClassType::NONE;
+		bot.masters[1] = ClassType::NONE;
+		bot.skins.fill(SkinIndex::DEFAULT);
+
+		for(int attempts = 0; attempts < 10000; attempts++) {
+			u32 r0 = RandUint() % allowedMastersSet.size();
+
+			u32 i = 0;
+			foreach_const(m, allowedMastersSet) {
+				ClassType classType = *m;
+
+				if(i == r0) {
+					if(teamMasterPickCount[bot.team][(i32)classType] < 2) {
+						teamMasterPickCount[bot.team][(i32)classType]++;
+
+						const GameXmlContent::Master& master = *content.masterClassTypeMap.at(classType);
+						if(bot.masters[0] == ClassType::NONE) {
+							bot.masters[0] = classType;
+							bot.skills[0] = master.skillIDs[0];
+							bot.skills[1] = master.skillIDs[1];
+						}
+						else {
+							bot.masters[1] = classType;
+							bot.skills[2] = master.skillIDs[0];
+							bot.skills[3] = master.skillIDs[1];
+						}
+					}
+					break;
+				}
+				i++;
+			}
+
+			if(bot.masters[0] != ClassType::NONE && bot.masters[1] != ClassType::NONE) {
+				break;
+			}
+		}
+	}
+
+	NetHeader header;
+	header.size = sizeof(NetHeader) + sizeof(game);
+	header.netID = decltype(game)::NET_ID;
+	matchmaker.packetQueue.Append(&header, sizeof(header));
+	matchmaker.packetQueue.Append(&game, sizeof(game));
 }

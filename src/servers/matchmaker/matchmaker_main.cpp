@@ -403,6 +403,11 @@ struct Matchmaker
 
 				// TODO: validate args?
 
+				if(roomMap.find(packet.sortieUID) == roomMap.end()) {
+					WARN("Room not found (sortieUID=%llu) // if you run dev mode this is normal", packet.sortieUID);
+					return;
+				}
+
 				Room& room = *roomMap.at(packet.sortieUID);
 
 				// send 'match created' packet to all instances

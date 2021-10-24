@@ -289,7 +289,22 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 
 	// TODO: validate args
 	const Account& acc = *playerAccountData[userID];
-	matchmaker->QueryPartyCreate(acc.nickname, acc.UID);
+
+	if(Config().DevMode && Config().DevQuickConnect) {
+		PacketWriter<Sv::SN_DoConnectGameServer> packet;
+		packet.Write<u16>(12900); // port
+		eastl::array<u8,4> ip = { 127, 0, 0, 1 };
+		packet.Write(ip); // ip
+		packet.Write<i32>(1); // gameID
+		packet.Write<u32>(0x0); // idcHash
+		packet.WriteStringObj(acc.nickname.data(), acc.nickname.size());
+		packet.Write<u32>(In::ProduceInstantKey(acc.UID, SortieUID(1)));
+		NT_LOG("[client%x] HubGame :: %s", clientHd, PacketSerialize<Sv::SN_DoConnectGameServer>(packet.data, packet.size));
+		replication.server->SendPacket(clientHd, packet);
+	}
+	else {
+		matchmaker->QueryPartyCreate(acc.nickname, acc.UID);
+	}
 }
 
 void HubGame::OnEnqueueGame(ClientHandle clientHd)

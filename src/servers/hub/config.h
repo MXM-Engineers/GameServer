@@ -5,6 +5,7 @@ struct CConfigHub
 {
 	i32 ListenPort = 11900;
 	i32 DevMode = false;
+	i32 DevQuickConnect = false;
 	i32 TraceNetwork = false;
 	i32 LobbyMap = 160000042; // TODO: restore
 

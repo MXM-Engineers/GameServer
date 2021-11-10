@@ -5,7 +5,6 @@
 #include "core.h"
 #include "physics.h"
 #include "game_content.h"
-#include <mxm/model/weapon_spec.h>
 
 using namespace tinyxml2;
 
@@ -391,6 +390,35 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 	return true;
 }
 
+bool GameXmlContent::LoadWeaponModelDefinitions()
+{
+	// Parse WEAPON.xml once
+	LoadXMLFile(L"/WEAPON.xml", xmlWEAPON);
+
+	//get weapon IDS
+	XMLElement* pNodeWeapon = xmlWEAPON.FirstChildElement()->FirstChildElement();
+	do {
+		//weaponModel.push_back();
+		//WeaponModel& weapon = weaponModel.back();
+
+		i32 weaponID;
+		pNodeWeapon->QueryAttribute("ID", &weaponID);
+
+		// WeaponComData
+		XMLElement* pWeaponComData = pNodeWeapon->FirstChildElement("WeaponComData");
+		float attack, pvpattack;
+		
+		pWeaponComData->QueryFloatAttribute("_Attack", &attack);
+		pWeaponComData->QueryFloatAttribute("_PvPAttack", &pvpattack);
+
+		// save weapon data
+		//weapon.setAttack(attack);
+
+	} while (pNodeWeapon);
+
+	return true;
+}
+
 void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel)
 {
 	f32 _temp;
@@ -453,8 +481,11 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 //Todo make this loop and finish it
 void GameXmlContent::SetWeaponSpecRef(XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec)
 {
-	const char* weaponSpecREF;
+	const char *weaponSpecREF;
 	float _temp = 0.0f;
+
+	pNodeWeaponSpecRef.QueryStringAttribute("ref", &weaponSpecREF);
+	pNodeWeaponSpecRef.QueryFloatAttribute("value", &_temp);
 
 	if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL1", weaponSpecREF) == 0)
 	{

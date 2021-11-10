@@ -6,6 +6,8 @@ class ItemModel :
 	public EntityModel {
 public:
 	ItemModel();
+	ItemModel(i32 ID, EntityType entityType, float NormalMoveSpeed, float MoveSpeed, float RotateSpeed,
+		float Scale);
 	~ItemModel();
 
 private:

@@ -24,26 +24,11 @@
 #include <sokol_glue.h>
 #include <sokol_imgui.h>
 
-#include <mxm/physics.h>
+#include "physics.h"
 #include "collision_tests.h"
 
-#include <PxPhysicsAPI.h>
-using namespace physx;
 
-PxDefaultAllocator		gAllocator;
-PxDefaultErrorCallback	gErrorCallback;
 
-PxFoundation*			gFoundation = NULL;
-PxPhysics*				gPhysics	= NULL;
-
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxScene*				gScene		= NULL;
-
-PxMaterial*				gMaterial	= NULL;
-
-PxPvd*                  gPvd        = NULL;
-
-PxReal stackZ = 10.0f;
 
 struct GameState
 {
@@ -190,6 +175,7 @@ bool Window::Init()
 	foreach_const(it, mfEnv.meshList) {
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
+
 
 	r = MakeMapCollisionMesh(mshCol, &mapCollision);
 	if(!r) return false;

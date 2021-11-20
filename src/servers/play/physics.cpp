@@ -1,8 +1,70 @@
 #include "physics.h"
 #include <EASTL/sort.h>
 #include <glm/gtx/vector_angle.hpp>
+#include <PxPhysicsAPI.h> // lazy but oh well
+#include <pvd/PxPvd.h>
+
+#define PVD_HOST "127.0.0.1"
 
 #define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
+
+bool PhysicsContext::Init()
+{
+	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocatorCallback, errorCallback);
+	if(!foundation) {
+		LOG("[PhysX] ERROR: PxCreateFoundation failed");
+		return false;
+	}
+
+	bool recordMemoryAllocations = true;
+
+	pvd = PxCreatePvd(*foundation);
+	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+
+	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), recordMemoryAllocations, pvd);
+	if(!physics) {
+		LOG("[PhysX] ERROR: PxCreatePhysics failed");
+		return false;
+	}
+
+	// TODO: does this work to make the simulation be executed on the same thread??
+	dispatcher = PxDefaultCpuDispatcherCreate(0);
+	if(!dispatcher) {
+		LOG("[PhysX] ERROR: PxDefaultCpuDispatcherCreate failed");
+		return false;
+	}
+	return true;
+}
+
+void PhysicsContext::Shutdown()
+{
+	physics->release();
+	foundation->release();
+}
+
+void PhysicsContext::CreateScene(PhysicsScene* out)
+{
+	PxSceneDesc desc{PxTolerancesScale()};
+	desc.cpuDispatcher = dispatcher;
+
+	LOCK_MUTEX(mutexSceneCreate);
+	out->scene = physics->createScene(desc);
+}
+
+void PhysicsScene::Tick()
+{
+	// FIXME: find out how to simulate on the same thread
+	scene->simulate(UPDATE_RATE);
+	// here we do nothing but wait...
+	scene->fetchResults(true);
+}
+
+void PhysicsScene::Destroy()
+{
+	scene->release();
+}
+
 
 bool SegmentPlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint)
 {
@@ -985,4 +1047,25 @@ vec3 PhysWorld::SnapToGround(const ShapeCylinder& shape, vec3 pos)
 
 	pos.z = maxZ;
 	return pos;
+}
+
+bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out)
+{
+	out->triangleList.reserve(mesh.indexCount/3);
+
+	// triangles
+	for(int i = 0; i < mesh.indexCount; i += 3) {
+		const MeshFile::Vertex& vert0 = mesh.vertices[mesh.indices[i]];
+		const MeshFile::Vertex& vert1 = mesh.vertices[mesh.indices[i+1]];
+		const MeshFile::Vertex& vert2 = mesh.vertices[mesh.indices[i+2]];
+		const vec3 v0(vert0.px, vert0.py, vert0.pz);
+		const vec3 v1(vert1.px, vert1.py, vert1.pz);
+		const vec3 v2(vert2.px, vert2.py, vert2.pz);
+
+		ShapeTriangle tri;
+		tri.p = { v0, v2, v1 };
+		out->triangleList.push_back(tri);
+	}
+
+	return true;
 }

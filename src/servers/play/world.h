@@ -2,12 +2,14 @@
 #include <common/base.h>
 #include <common/network.h>
 #include <common/vector_math.h>
+#include <mxm/core.h>
+
 #include <EASTL/array.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_vector.h>
+
 #include "replication.h"
-#include <mxm/core.h>
-#include <mxm/physics.h>
+#include "physics.h"
 
 struct World
 {

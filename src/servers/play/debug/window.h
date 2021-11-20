@@ -3,7 +3,7 @@
 #include <common/base.h>
 #include <common/utils.h>
 #include <mxm/core.h>
-#include <mxm/physics.h>
+#include "physics.h"
 
 void WindowCreate();
 intptr_t ThreadWindow(void* pData);

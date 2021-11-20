@@ -1,10 +1,13 @@
 #pragma once
 #include <common/base.h>
+#include <EASTL/fixed_string.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
+
+typedef eastl::fixed_string<char,64,false> FixedStr64;
 
 typedef glm::vec2 vec2;
 typedef glm::vec3 vec3;
@@ -35,3 +38,29 @@ inline float2 v2f(const vec2& v2)
 {
 	return float2{ (f32)v2.x, (f32)v2.y };
 }
+
+struct MeshFile
+{
+	const u8* fileData;
+
+	struct Vertex
+	{
+		f32 px, py, pz;
+		f32 nx, ny, nz;
+	};
+
+	struct Mesh
+	{
+		FixedStr64 name;
+		u32 vertexCount;
+		u32 indexCount;
+		const Vertex* vertices;
+		const u16* indices;
+	};
+
+	eastl::fixed_vector<Mesh,16> meshList;
+
+	~MeshFile() {
+		memFree((void*)fileData);
+	}
+};

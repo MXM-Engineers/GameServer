@@ -4,6 +4,80 @@
 #include <EASTL/array.h>
 #include <EASTL/fixed_list.h>
 
+#include <foundation/PxAllocatorCallback.h>
+#include <foundation/PxErrorCallback.h>
+#include <PxFoundation.h>
+#include <PxPhysics.h>
+#include <task/PxCpuDispatcher.h>
+using namespace physx;
+
+// TODO: actual allocator
+struct PhysicsAllocatorCallback: PxAllocatorCallback
+{
+	virtual ~PhysicsAllocatorCallback() override
+	{
+
+	}
+
+	virtual void* allocate(size_t size, const char* typeName, const char* filename, int line) override
+	{
+		void* ptr = memAlloc(size);
+		DBG_ASSERT((((intptr_t)ptr) & 15) == 0); // 16 aligned
+	}
+
+	virtual void deallocate(void* ptr) override
+	{
+		memFree(ptr);
+	}
+};
+
+struct PhysicsErrorCallback: PxErrorCallback
+{
+	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override
+	{
+		const char* errorCode = "UNKNOWN";
+		switch(code) {
+			case PxErrorCode::eNO_ERROR: { errorCode = "NO_ERROR"; } break;
+			case PxErrorCode::eDEBUG_INFO: { errorCode = "DEBUG_INFO"; } break;
+			case PxErrorCode::eDEBUG_WARNING: { errorCode = "DEBUG_WARNING"; } break;
+			case PxErrorCode::eINVALID_PARAMETER: { errorCode = "INVALID_PARAMETER"; } break;
+			case PxErrorCode::eINVALID_OPERATION: { errorCode = "INVALID_OPERATION"; } break;
+			case PxErrorCode::eOUT_OF_MEMORY: { errorCode = "OUT_OF_MEMORY"; } break;
+			case PxErrorCode::eINTERNAL_ERROR: { errorCode = "INTERNAL_ERROR"; } break;
+			case PxErrorCode::eABORT: { errorCode = "ABORT"; } break;
+			case PxErrorCode::ePERF_WARNING: { errorCode = "PERF_WARNING"; } break;
+			case PxErrorCode::eMASK_ALL: { errorCode = "MASK_ALL"; } break;
+		}
+
+		LOG("[PhysX] ERROR(%s) '%s' @(%s : %d)", errorCode, message, file, line);
+	}
+};
+
+struct PhysicsScene
+{
+	PxScene* scene;
+
+	void Tick();
+	void Destroy();
+};
+
+struct PhysicsContext
+{
+	PhysicsAllocatorCallback allocatorCallback;
+	PhysicsErrorCallback errorCallback;
+	PxFoundation* foundation;
+	PxCpuDispatcher* dispatcher;
+	PxPhysics* physics;
+	PxPvd* pvd;
+
+	ProfileMutex(Mutex, mutexSceneCreate);
+
+	bool Init();
+	void Shutdown();
+
+	void CreateScene(PhysicsScene* out);
+};
+
 constexpr f32 PHYS_EPSILON = 0.0001f; // Warning: NEVER change this value
 
 struct ShapeSphere
@@ -414,3 +488,5 @@ struct PhysWorld
 	vec3 FixCollision(const ShapeCylinder& shape, vec3 pos);
 	vec3 SnapToGround(const ShapeCylinder& shape, vec3 pos);
 };
+
+bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out);

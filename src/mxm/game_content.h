@@ -73,6 +73,9 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
+	FileBuffer filePvpDeathmatch01Collision;
+	FileBuffer filePvpDeathmatch01CollisionWalls;
+
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
@@ -85,6 +88,7 @@ struct GameXmlContent
 	bool LoadLobby(i32 index);
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
+	bool LoadCollisionMeshes();
 	bool Load();
 
 	const MapList* FindMapListByID(i32 index) const;

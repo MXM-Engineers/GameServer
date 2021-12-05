@@ -23,6 +23,7 @@ struct PhysicsAllocatorCallback: PxAllocatorCallback
 	{
 		void* ptr = memAlloc(size);
 		DBG_ASSERT((((intptr_t)ptr) & 15) == 0); // 16 aligned
+		return ptr;
 	}
 
 	virtual void deallocate(void* ptr) override
@@ -57,12 +58,19 @@ struct PhysicsScene
 {
 	PxScene* scene;
 
-	void Tick();
+	void Step();
 	void Destroy();
 };
 
 struct PhysicsContext
 {
+	struct CollisionMesh
+	{
+		PxTriangleMesh* mesh;
+		PxTriangleMeshGeometry geometry;
+		PxShape* shape;
+	};
+
 	PhysicsAllocatorCallback allocatorCallback;
 	PhysicsErrorCallback errorCallback;
 	PxFoundation* foundation;
@@ -72,11 +80,19 @@ struct PhysicsContext
 
 	ProfileMutex(Mutex, mutexSceneCreate);
 
+	CollisionMesh pvpCollision1;
+	CollisionMesh pvpCollision2;
+	PxMaterial* matMapSurface;
+
 	bool Init();
 	void Shutdown();
 
+	bool LoadCollisionMesh(CollisionMesh* out, const FileBuffer& file);
 	void CreateScene(PhysicsScene* out);
 };
+
+bool PhysicsInit();
+PhysicsContext& PhysContext();
 
 constexpr f32 PHYS_EPSILON = 0.0001f; // Warning: NEVER change this value
 

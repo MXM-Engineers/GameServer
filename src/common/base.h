@@ -419,7 +419,7 @@ typedef LockGuardT<tracy::Lockable<Mutex>> LockGuard;
 typedef EA::Thread::Futex Mutex;
 typedef EA::Thread::AutoFutex LockGuard;
 
-#define LOCK_MUTEX(MUTEX) const LockGuard lock(MUTEX)
+#define LOCK_MUTEX(MUTEX) const LockGuard __lock##__LINE__(MUTEX)
 #endif
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
@@ -505,3 +505,9 @@ inline u32 hash_fnv1a(const void* data, const u32 dataSize)
 
 	return h;
 }
+
+struct FileBuffer
+{
+	u8* data;
+	i32 size;
+};

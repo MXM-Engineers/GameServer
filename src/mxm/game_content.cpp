@@ -723,6 +723,32 @@ bool GameXmlContent::LoadJukeboxSongs()
 	return true;
 }
 
+static bool FileLoad(FileBuffer* out, const wchar* path)
+{
+	out->data = FileOpenAndReadAll(path, &out->size);
+	if(!out->data) {
+		LOG("ERROR(FileLoad): failed to open '%ls'", path);
+		return false;
+	}
+
+	return true;
+}
+
+bool GameXmlContent::LoadCollisionMeshes()
+{
+	Path path = gameDataDir;
+	PathAppend(path, L"/PVP_DeathMatch01_Collision.cooked");
+	bool r = FileLoad(&filePvpDeathmatch01Collision, path.data());
+	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/PVP_DeathMatch01_CollisionWalls.cooked");
+	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
+	if(!r) return false;
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	LOG("Loading GameContent...");
@@ -749,6 +775,9 @@ bool GameXmlContent::Load()
 	if (!r) return false;
 
 	r = LoadJukeboxSongs();
+	if(!r) return false;
+
+	r = LoadCollisionMeshes();
 	if(!r) return false;
 
 	/*

@@ -44,6 +44,13 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	r = PhysicsInit();
+	if(!r) {
+		LOG("ERROR: failed to init physics");
+		return 1;
+	}
+	defer(PhysContext().Shutdown());
+
 	static Server server;
 	r = server.Init();
 	if(!r) {

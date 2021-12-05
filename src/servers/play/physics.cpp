@@ -1,4 +1,5 @@
 #include "physics.h"
+#include <mxm/game_content.h>
 #include <EASTL/sort.h>
 #include <glm/gtx/vector_angle.hpp>
 #include <PxPhysicsAPI.h> // lazy but oh well
@@ -7,6 +8,29 @@
 #define PVD_HOST "127.0.0.1"
 
 #define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
+
+class PhysxReadBuffer: public PxInputStream
+{
+	const void* data;
+	const u32 size;
+	i32 cur = 0;
+
+public:
+	PhysxReadBuffer(void* data_, u32 size_):
+		data(data_),
+		size(size_)
+	{
+
+	}
+
+	virtual uint32_t read(void* dest, uint32_t count) override
+	{
+		ASSERT(cur + count <= size);
+		memmove(dest, (u8*)data + cur, count);
+		cur += count;
+		return count;
+	}
+};
 
 bool PhysicsContext::Init()
 {
@@ -20,7 +44,10 @@ bool PhysicsContext::Init()
 
 	pvd = PxCreatePvd(*foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	bool connected = pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	if(!connected) {
+		LOG("[PhysX] WARNING: failed to connect to PVD Client");
+	}
 
 	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), recordMemoryAllocations, pvd);
 	if(!physics) {
@@ -34,28 +61,102 @@ bool PhysicsContext::Init()
 		LOG("[PhysX] ERROR: PxDefaultCpuDispatcherCreate failed");
 		return false;
 	}
+
+	// collision meshes
+	matMapSurface = physics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	const GameXmlContent& gc = GetGameXmlContent();
+	bool r = LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
+	if(!r) {
+		LOG("[PhysicsContext] ERROR: LoadCollisionMesh failed (pvpCollision1)");
+		return false;
+	}
+	r = LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
+	if(!r) {
+		LOG("[PhysicsContext] ERROR: LoadCollisionMesh failed (pvpCollision2)");
+		return false;
+	}
+
+	LOG("PhysicsContext initialised");
 	return true;
 }
 
 void PhysicsContext::Shutdown()
 {
 	physics->release();
+
+	PxPvdTransport* transport = pvd->getTransport();
+	pvd->release();
+	transport->release();
+
 	foundation->release();
+	LOG("PhysicsContext shutdown");
+}
+
+bool PhysicsContext::LoadCollisionMesh(CollisionMesh* out, const FileBuffer& file)
+{
+	// TODO: actually properly read this file instead of skipping the header
+	PhysxReadBuffer readBuff(file.data + 12 , file.size - 12);
+
+	out->mesh = physics->createTriangleMesh(readBuff);
+	if(!out->mesh) {
+		LOG("[PhysX] ERROR: createTriangleMesh failed");
+		return false;
+	}
+
+	out->geometry = PxTriangleMeshGeometry(out->mesh);
+
+	out->shape = physics->createShape(out->geometry, *matMapSurface);
+	if(!out->shape) {
+		LOG("[PhysX] ERROR: createShape failed");
+		return false;
+	}
+
+	return true;
 }
 
 void PhysicsContext::CreateScene(PhysicsScene* out)
 {
 	PxSceneDesc desc{PxTolerancesScale()};
 	desc.cpuDispatcher = dispatcher;
+	desc.filterShader = PxDefaultSimulationFilterShader;
 
-	LOCK_MUTEX(mutexSceneCreate);
-	out->scene = physics->createScene(desc);
+	PxScene* scene;
+	{ LOCK_MUTEX(mutexSceneCreate);
+		scene = physics->createScene(desc);
+		if(!scene) {
+			LOG("[PhysX] ERROR: Creating scene failed");
+		}
+		ASSERT(scene);
+
+		out->scene = scene;
+		PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
+		if(pvdClient) {
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+		}
+
+		PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.6f);
+
+		// ground plane to aid with visualization (pvd)
+		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
+		scene->addActor(*groundPlane);
+
+		PxRigidStatic* ground = physics->createRigidStatic(PxTransform{PxIdentity});
+		ground->attachShape(*pvpCollision1.shape);
+		scene->addActor(*ground);
+
+		PxRigidStatic* walls = physics->createRigidStatic(PxTransform{PxIdentity});
+		walls->attachShape(*pvpCollision2.shape);
+		scene->addActor(*walls);
+	}
 }
 
-void PhysicsScene::Tick()
+void PhysicsScene::Step()
 {
 	// FIXME: find out how to simulate on the same thread
-	scene->simulate(UPDATE_RATE);
+	scene->simulate((f32)UPDATE_RATE);
 	// here we do nothing but wait...
 	scene->fetchResults(true);
 }
@@ -64,6 +165,21 @@ void PhysicsScene::Destroy()
 {
 	scene->release();
 }
+
+static PhysicsContext* g_Context;
+
+bool PhysicsInit()
+{
+	static PhysicsContext context;
+	g_Context = &context;
+	return context.Init();
+}
+
+PhysicsContext& PhysContext()
+{
+	return *g_Context;
+}
+
 
 
 bool SegmentPlaneIntersection(const vec3& s0, const vec3& s1, const vec3& planeNorm, const vec3& planePoint, vec3* intersPoint)

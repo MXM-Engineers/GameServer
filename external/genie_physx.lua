@@ -19,4 +19,5 @@ physx_libs_win64 = {
 	"PhysXPvdSDK_static_64",
 	"PhysXCommon_64",
 	"PhysXFoundation_64",
+	"PhysXCooking_64",
 }

@@ -27,9 +27,6 @@
 #include "physics.h"
 #include "collision_tests.h"
 
-
-
-
 struct GameState
 {
 	eastl::fixed_vector<Dbg::Entity,2048,true> entityList;
@@ -84,6 +81,7 @@ struct Window
 	ShapeMesh mapWalls;
 
 	PhysWorld physicsTest;
+	PhysicsScene testScene;
 
 	struct TestSubject
 	{
@@ -113,7 +111,7 @@ struct Window
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
-	bool ui_bPhysicsTest = false;
+	bool ui_bPhysicsTest = true;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -187,6 +185,8 @@ bool Window::Init()
 
 	testSubject.body = physicsTest.CreateBody(45, 210, vec3(2800, 3532, 530));
 	testSubject.Reset();
+
+	PhysContext().CreateScene(&testScene);
 	return true;
 }
 
@@ -522,8 +522,7 @@ void Window::WindowPhysicsTest()
 // WARNING: Threaded call
 void Window::NewFrame(Dbg::GameUID gameUID)
 {
-	{
-		const LockGuard lock(gameStateMutex);
+	{ LOCK_MUTEX(gameStateMutex);
 		eastl::swap(gameStateFront, gameStateBack);
 	}
 
@@ -531,12 +530,11 @@ void Window::NewFrame(Dbg::GameUID gameUID)
 
 	if(bGameStateRecording) {
 		static GameState gameState;
-		{
-			const LockGuard lock(gameStateMutex);
+		{ LOCK_MUTEX(gameStateMutex);
 			gameState = *gameStateBack;
 		}
 
-		const LockGuard lock(gsRecording.mutex);
+		LOCK_MUTEX(gsRecording.mutex);
 		eastl::copy(gameState.physics.lastStepEvents.begin(), gameState.physics.lastStepEvents.end(), eastl::back_inserter(gsRecording.events));
 	}
 }
@@ -633,6 +631,8 @@ void Window::UpdatePhysics()
 	testSubject.body->vel = dir * speed;
 
 	physicsTest.Step();
+
+	testScene.Step();
 }
 
 void Window::Frame()

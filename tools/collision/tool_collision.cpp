@@ -1,6 +1,14 @@
 #include <common/base.h>
 #include <EAStdC/EAString.h>
 #include <EASTL/fixed_map.h>
+#include <PxFoundation.h>
+#include <PxPhysicsVersion.h>
+#include <cooking/PxCooking.h>
+#include <extensions/PxDefaultAllocator.h>
+#include <extensions/PxDefaultErrorCallback.h>
+#include <extensions/PxDefaultStreams.h>
+
+using namespace physx;
 
 #ifdef CONF_DEBUG
 	#define DBG LOG
@@ -23,7 +31,7 @@ inline u32 littleToBigEndian(u32 in)
 	u32 b0 = (in & 0x000000ff) << 24u;
 	u32 b1 = (in & 0x0000ff00) << 8u;
 	u32 b2 = (in & 0x00ff0000) >> 8u;
-	u32 b3 = (in & 0xff000000) >> 24u;;
+	u32 b3 = (in & 0xff000000) >> 24u;
 	return b0 | b1 | b2 | b3;
 }
 
@@ -482,6 +490,20 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
+	static PxDefaultErrorCallback gDefaultErrorCallback;
+	static PxDefaultAllocator gDefaultAllocatorCallback;
+	PxFoundation* foundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
+	if(!foundation) {
+		LOG("ERROR: PxCreateFoundation failed");
+		return false;
+	}
+
+	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(PxTolerancesScale{}));
+	if(!foundation) {
+		LOG("ERROR: PxCreateCooking failed");
+		return false;
+	}
+
 	// mesh file
 	GrowableBuffer outMesh(1024*1024);
 	outMesh.Append("MESH", 4);
@@ -489,6 +511,9 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	outMesh.Append(&version, sizeof(version));
 	const u16 meshCount = nif.meshList.size();
 	outMesh.Append(&meshCount, sizeof(meshCount));
+
+	GrowableBuffer outCooked(1024*1024);
+	outCooked.Append(outMesh.data, outMesh.size); // copy
 
 	int vertOffset = 1;
 
@@ -631,6 +656,29 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 			outMesh.Append(&indices[i+2], sizeof(u16));
 			outMesh.Append(&indices[i+1], sizeof(u16));
 		}
+
+		PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = verticesBlock.numIndices;
+		meshDesc.points.stride = sizeof(Vertex);
+		meshDesc.points.data = vertices;
+
+		meshDesc.triangles.count = indexBlock.numIndices/3;
+		meshDesc.triangles.stride = 3*sizeof(u16);
+		meshDesc.triangles.data = indices;
+
+		meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
+
+		PxDefaultMemoryOutputStream writeBuffer;
+		PxTriangleMeshCookingResult::Enum result;
+		bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+		if(!status) {
+			LOG("ERROR: cookTriangleMesh failed");
+			return false;
+		}
+
+		const u32 cookedMeshSize = writeBuffer.getSize();
+		outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
+		outCooked.Append(writeBuffer.getData(), cookedMeshSize);
 	}
 
 	bool r = fileSaveBuff(FMT("%s.obj", outPath), out.data(), out.size());
@@ -642,6 +690,12 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	r = fileSaveBuff(FMT("%s.msh", outPath), outMesh.data, outMesh.size);
 	if(!r) {
 		LOG("ERROR: could not write '%s.msh'", outPath);
+		return false;
+	}
+
+	r = fileSaveBuff(FMT("%s.cooked", outPath), outCooked.data, outCooked.size);
+	if(!r) {
+		LOG("ERROR: could not write '%s.cooked'", outPath);
 		return false;
 	}
 
@@ -682,5 +736,6 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	LOG("Success!");
 	return 0;
 }

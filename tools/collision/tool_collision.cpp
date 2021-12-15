@@ -507,13 +507,16 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	// mesh file
 	GrowableBuffer outMesh(1024*1024);
 	outMesh.Append("MESH", 4);
-	const u16 version = 2;
-	outMesh.Append(&version, sizeof(version));
+	const u16 meshVersion = 2;
+	outMesh.Append(&meshVersion, sizeof(meshVersion));
 	const u16 meshCount = nif.meshList.size();
 	outMesh.Append(&meshCount, sizeof(meshCount));
 
 	GrowableBuffer outCooked(1024*1024);
-	outCooked.Append(outMesh.data, outMesh.size); // copy
+	outCooked.Append("PHYX", 4);
+	const u16 phyxVersion = 1;
+	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
+	outCooked.Append(&meshCount, sizeof(meshCount));
 
 	int vertOffset = 1;
 
@@ -702,12 +705,207 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	return true;
 }
 
+struct ObjReader
+{
+	const u8* fileData;
+	const i32 fileSize;
+
+	struct Vertex
+	{
+		f32 x, y, z;
+		f32 nx, ny, nz;
+	};
+
+	eastl::fixed_vector<Vertex, 4096> vertices;
+	eastl::fixed_vector<u16, 4096> indices;
+
+	bool ConsumeLine(ConstBuffer& buff, eastl::string_view* out)
+	{
+		if(!buff.CanRead(1)) return false;
+
+		const char* str = &buff.Read<char>();
+
+		for(int i = 0; i < 1024; i++) {
+			if(!buff.CanRead(1)) return false;
+
+			if(buff.Read<char>() == '\n') {
+				*out = eastl::string_view(str, i);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool ReadFile()
+	{
+		ConstBuffer buff(fileData, fileSize);
+
+		eastl::string_view line;
+		i32 lineNum = 0;
+		i32 vertID = 0;
+		while(ConsumeLine(buff, &line)) {
+			// LOG("%.*s", (int)line.size(), line.data());
+
+			switch(line[0]) {
+				case 'v': {
+					if(line[1] == 'n') {
+						Vertex& v = vertices[vertID];
+						if(sscanf(line.data(), "vn %f %f %f", &v.nx, &v.ny, &v.nz) == 3) {
+							vertID++;
+						}
+						else {
+							LOG("ERROR: failed to parse line %d '%.*s'", lineNum, (int)line.size(), line.data());
+						}
+					}
+					else {
+						Vertex v;
+						if(sscanf(line.data(), "v %f %f %f", &v.x, &v.y, &v.z) == 3) {
+							vertices.push_back(v);
+						}
+						else {
+							LOG("ERROR: failed to parse line %d '%.*s'", lineNum, (int)line.size(), line.data());
+						}
+					}
+				} break;
+
+				case 'f': {
+					i32 triangle[3];
+					i32 dummy[3];
+					if(sscanf(line.data(), "f %d//%d %d//%d %d//%d", &triangle[0], &dummy[0], &triangle[1], &dummy[1], &triangle[2], &dummy[2]) == 6) {
+						indices.push_back(triangle[0]-1);
+						indices.push_back(triangle[1]-1);
+						indices.push_back(triangle[2]-1);
+					}
+					else {
+						LOG("ERROR: failed to parse line %d '%.*s'", lineNum, (int)line.size(), line.data());
+					}
+				} break;
+			}
+
+			lineNum++;
+		}
+
+		return true;
+	}
+};
+
+bool CookMesh(const ObjReader& obj, const char* outputFilePath)
+{
+	static PxDefaultErrorCallback gDefaultErrorCallback;
+	static PxDefaultAllocator gDefaultAllocatorCallback;
+	PxFoundation* foundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
+	if(!foundation) {
+		LOG("ERROR: PxCreateFoundation failed");
+		return false;
+	}
+
+	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(PxTolerancesScale{}));
+	if(!foundation) {
+		LOG("ERROR: PxCreateCooking failed");
+		return false;
+	}
+
+	// physx file
+	GrowableBuffer outCooked(1024*1024);
+	outCooked.Append("PHYX", 4);
+	const u16 phyxVersion = 1;
+	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
+	const u16 meshCount = 1;
+	outCooked.Append(&meshCount, sizeof(meshCount));
+
+	PxTriangleMeshDesc meshDesc;
+	meshDesc.points.count = obj.vertices.size();
+	meshDesc.points.stride = sizeof(ObjReader::Vertex);
+	meshDesc.points.data = obj.vertices.data();
+
+	meshDesc.triangles.count = obj.indices.size()/3;
+	meshDesc.triangles.stride = 3*sizeof(u16);
+	meshDesc.triangles.data = obj.indices.data();
+
+	meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
+
+	PxDefaultMemoryOutputStream writeBuffer;
+	PxTriangleMeshCookingResult::Enum result;
+	bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+	if(!status) {
+		LOG("ERROR: cookTriangleMesh failed");
+		return false;
+	}
+
+	const u32 cookedMeshSize = writeBuffer.getSize();
+	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
+	outCooked.Append(writeBuffer.getData(), cookedMeshSize);
+
+	bool r = fileSaveBuff(FMT("%s.cooked", outputFilePath), outCooked.data, outCooked.size);
+	if(!r) {
+		LOG("ERROR: could not write '%s.cooked'", outputFilePath);
+		return false;
+	}
+
+	// mesh
+	GrowableBuffer outMesh(1024*1024);
+	outMesh.Append("MESH", 4);
+	const u16 meshVersion = 2;
+	outMesh.Append(&meshVersion, sizeof(meshVersion));
+	outMesh.Append(&meshCount, sizeof(meshCount));
+
+	// name
+	const char* name = "AnObjMesh";
+	const i32 nameLen = strlen(name);
+	outMesh.Append(&nameLen, sizeof(nameLen));
+	outMesh.Append(name, nameLen);
+
+	// vertexCount
+	const i32 vertexCount = obj.vertices.size();
+	outMesh.Append(&vertexCount, sizeof(vertexCount));
+	// indexCount
+	const i32 indexCount = obj.indices.size();
+	outMesh.Append(&indexCount, sizeof(indexCount));
+
+	for(int i = 0; i < vertexCount; i++) {
+		const ObjReader::Vertex& v = obj.vertices[i];
+		Vector3 p = { v.x, v.y, v.z };
+		outMesh.Append(&p, sizeof(p));
+		Vector3 n = { v.nx, v.ny, v.nz };
+		outMesh.Append(&n, sizeof(n));
+	}
+
+	// make it so back is culled
+	for(int i = 0; i < indexCount; i += 3) {
+		outMesh.Append(&obj.indices[i], sizeof(u16));
+		outMesh.Append(&obj.indices[i+2], sizeof(u16));
+		outMesh.Append(&obj.indices[i+1], sizeof(u16));
+	}
+
+	r = fileSaveBuff(FMT("%s.msh", outputFilePath), outMesh.data, outMesh.size);
+	if(!r) {
+		LOG("ERROR: could not write '%s.msh'", outputFilePath);
+		return false;
+	}
+	return true;
+}
+
+// WARNING: not safe
+inline bool StrEndsWidth(const char* str, const char* end)
+{
+	const int strLen = strlen(str);
+	const int endLen = strlen(end);
+
+	for(int i = 0; i < endLen; i++) {
+		if(str[strLen-endLen+i] != end[i]) return false;
+	}
+
+	return true;
+}
+
 int main(int argc, char** argv)
 {
 	LogInit("col.log");
 
 	if(argc < 3) {
-		LOG("Usage: col 'input.nif' 'output/path'");
+		LOG("Usage: col 'inputfile' 'output/path'");
+		LOG("	Supports nif and obj");
 		return 1;
 	}
 
@@ -724,18 +922,38 @@ int main(int argc, char** argv)
 	LOG("'%s'", inputFilename);
 	LOG("fileSize = %d", fileSize);
 
-	CollisionNifReader reader = { fileData, fileSize };
-	if(!reader.ReadFile()) {
-		LOG("ERROR: failed to process '%s'", inputFilename);
-		return 1;
+	if(StrEndsWidth(inputFilename, ".nif")) {
+		CollisionNifReader reader = { fileData, fileSize };
+		if(!reader.ReadFile()) {
+			LOG("ERROR: failed to process '%s'", inputFilename);
+			return 1;
+		}
+
+		bool r = ExtractCollisionMesh(reader, outputFilePath);
+		if(!r) {
+			LOG("ERROR: failed to extract '%s'", inputFilename);
+			return 1;
+		}
+
+		LOG("Success!");
+	}
+	else if(StrEndsWidth(inputFilename, ".obj")) {
+		ObjReader reader = { fileData, fileSize };
+		if(!reader.ReadFile()) {
+			LOG("ERROR: failed to process '%s'", inputFilename);
+			return 1;
+		}
+
+		bool r = CookMesh(reader, outputFilePath);
+		if(!r) {
+			LOG("ERROR: failed to cook mesh");
+			return 1;
+		}
+		LOG("Success!");
+	}
+	else {
+		LOG("ERROR: Unrecognized file format");
 	}
 
-	bool r = ExtractCollisionMesh(reader, outputFilePath);
-	if(!r) {
-		LOG("ERROR: failed to extract '%s'", inputFilename);
-		return 1;
-	}
-
-	LOG("Success!");
 	return 0;
 }

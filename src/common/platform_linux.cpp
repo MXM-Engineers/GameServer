@@ -44,4 +44,10 @@ void PlatformInit()
 {
 	prctl(PR_SET_DUMPABLE, 1); // enable generating dump when program crashes.
 }
+
+uint64_t CurrentFiletimeTimestampUTC()
+{
+	LOG("WARNING: Implement CurrentFiletimeTimestampUTC correctly");
+	return 0;
+}
 #endif

@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "platform.h"
 #include <EASTL/array.h>
 #include <EAStdC/EASprintf.h>
 #include <EAStdC/EAString.h>
@@ -15,7 +16,7 @@ void Logger::Init(const char* filepath_, int flags_)
 	flags = flags_;
 	filepath = filepath_;
 	file = fopen(filepath, "wb");
-	if(!file) DebugBreak();
+	if(!file) DbgBreak();
 }
 
 void Logger::Vlogf(const char* fmt, va_list list)

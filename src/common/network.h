@@ -45,7 +45,9 @@ enum {
 
 		void Init();
 		void Reset();
-		void PrepareForNewConnection(SOCKET s);
+
+		bool ConnectTo(const u8* ip, u16 port);
+		void PostConnectionInit(SOCKET s);
 
 		bool StartReceiving();
 		bool StartSending();
@@ -54,6 +56,8 @@ enum {
 		NetPollResult PollReceive(int* outRecvLen);
 		NetPollResult PollSend();
 		void CropPartialPackets();
+
+		inline bool IsConnected() const { return sock != INVALID_SOCKET; }
 	};
 
 	inline void closesocket(SOCKET s) { close(s); }

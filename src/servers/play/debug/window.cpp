@@ -80,8 +80,8 @@ struct Window
 	ShapeMesh mapCollision;
 	ShapeMesh mapWalls;
 
-	PhysWorld physicsTest;
 	PhysicsScene testScene;
+	bool bFreezeTestPhysics = false;
 
 	struct TestSubject
 	{
@@ -162,11 +162,15 @@ bool Window::Init()
 
 	MeshFile mfCollision;
 	MeshFile mfEnv;
+	MeshFile mfCylinder;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
 	if(!r) return false;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
 	if(!r) return false;
+	r = OpenMeshFile("gamedata/cylinder.msh", &mfCylinder);
+	if(!r) return false;
 
+	// drawable meshes
 	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
 	rdr.LoadMeshFile("PVP_DeathMatchCollision", mshCol);
 
@@ -174,19 +178,36 @@ bool Window::Init()
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
 
+	rdr.LoadMeshFile("cylinder", mfCylinder.meshList.front());
+
 
 	r = MakeMapCollisionMesh(mshCol, &mapCollision);
 	if(!r) return false;
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
 	if(!r) return false;
 
-	physicsTest.PushStaticMeshes(&mapCollision, 1);
-	physicsTest.PushStaticMeshes(&mapWalls, 1);
 
-	testSubject.body = physicsTest.CreateBody(45, 210, vec3(2800, 3532, 530));
-	testSubject.Reset();
-
+	// create map scene, add ground and wall static meshes
 	PhysContext().CreateScene(&testScene);
+
+	PhysicsCollisionMesh pvpCollision1;
+	PhysicsCollisionMesh pvpCollision2;
+
+	const GameXmlContent& gc = GetGameXmlContent();
+	r = PhysContext().LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
+		return false;
+	}
+	r = PhysContext().LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
+		return false;
+	}
+
+	testScene.AddStaticMesh(&pvpCollision1);
+	testScene.AddStaticMesh(&pvpCollision2);
+
 	return true;
 }
 
@@ -422,8 +443,12 @@ void Window::WindowGameStates()
 
 void Window::WindowPhysicsTest()
 {
+	if(!bFreezeTestPhysics) {
+		UpdatePhysics();
+	}
+
 	if(ImGui::Begin("Physics")) {
-		ImGui::Checkbox("Freeze", &physicsTest.bFreezeStep);
+		ImGui::Checkbox("Freeze", &bFreezeTestPhysics);
 
 		if(ImGui::Button("Step")) {
 			UpdatePhysics();
@@ -433,6 +458,7 @@ void Window::WindowPhysicsTest()
 			testSubject.Reset();
 		}
 
+		/*
 		ImGui::Checkbox("Subject", &physicsTest.bShowSubject); ImGui::SameLine();
 		ImGui::Checkbox("Fixed", &physicsTest.bShowFixed); ImGui::SameLine();
 		ImGui::Checkbox("Pen", &physicsTest.bShowPen);
@@ -472,15 +498,11 @@ void Window::WindowPhysicsTest()
 		ImGui::Text("%.2f", pos.z);
 
 		ImGui::EndTable();
-
-
+		*/
 	}
 	ImGui::End();
 
-	if(!physicsTest.bFreezeStep) {
-		UpdatePhysics();
-	}
-
+	/*
 	if(physicsTest.bShowSubject) {
 		Draw(testSubject.body, vec3(1, 0, 1));
 	}
@@ -517,6 +539,8 @@ void Window::WindowPhysicsTest()
 		rdr.PushLine(tri.p[1], tri.p[2], color);
 		rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
 	}
+
+	*/
 }
 
 // WARNING: Threaded call
@@ -628,9 +652,7 @@ void Window::UpdatePhysics()
 		dir = glm::normalize(dir);
 	}
 
-	testSubject.body->vel = dir * speed;
-
-	physicsTest.Step();
+	// testSubject.body->vel = dir * speed;
 
 	testScene.Step();
 }
@@ -658,7 +680,7 @@ void Window::OnEvent(const sapp_event& event)
 			return;
 		}
 
-		if(!physicsTest.bFreezeStep) {
+		if(!bFreezeTestPhysics) {
 			switch(event.key_code) {
 				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 1; break;
 				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 1; break;
@@ -669,7 +691,7 @@ void Window::OnEvent(const sapp_event& event)
 	}
 
 	if(event.type == SAPP_EVENTTYPE_KEY_UP) {
-		if(!physicsTest.bFreezeStep) {
+		if(!bFreezeTestPhysics) {
 			switch(event.key_code) {
 				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 0; break;
 				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 0; break;

@@ -746,6 +746,11 @@ bool GameXmlContent::LoadCollisionMeshes()
 	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
 	if(!r) return false;
 
+	path = gameDataDir;
+	PathAppend(path, L"/cylinder.cooked");
+	r = FileLoad(&fileCylinderCollision, path.data());
+	if(!r) return false;
+
 	return true;
 }
 

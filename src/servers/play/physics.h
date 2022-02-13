@@ -54,23 +54,24 @@ struct PhysicsErrorCallback: PxErrorCallback
 	}
 };
 
+struct PhysicsCollisionMesh
+{
+	PxTriangleMesh* mesh;
+	PxTriangleMeshGeometry geometry;
+	PxShape* shape;
+};
+
 struct PhysicsScene
 {
 	PxScene* scene;
 
 	void Step();
 	void Destroy();
+	void AddStaticMesh(PhysicsCollisionMesh* mesh);
 };
 
 struct PhysicsContext
 {
-	struct CollisionMesh
-	{
-		PxTriangleMesh* mesh;
-		PxTriangleMeshGeometry geometry;
-		PxShape* shape;
-	};
-
 	PhysicsAllocatorCallback allocatorCallback;
 	PhysicsErrorCallback errorCallback;
 	PxFoundation* foundation;
@@ -80,14 +81,12 @@ struct PhysicsContext
 
 	ProfileMutex(Mutex, mutexSceneCreate);
 
-	CollisionMesh pvpCollision1;
-	CollisionMesh pvpCollision2;
 	PxMaterial* matMapSurface;
 
 	bool Init();
 	void Shutdown();
 
-	bool LoadCollisionMesh(CollisionMesh* out, const FileBuffer& file);
+	bool LoadCollisionMesh(PhysicsCollisionMesh* out, const FileBuffer& file);
 	void CreateScene(PhysicsScene* out);
 };
 

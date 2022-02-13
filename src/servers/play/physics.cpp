@@ -65,18 +65,6 @@ bool PhysicsContext::Init()
 	// collision meshes
 	matMapSurface = physics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	const GameXmlContent& gc = GetGameXmlContent();
-	bool r = LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
-	if(!r) {
-		LOG("[PhysicsContext] ERROR: LoadCollisionMesh failed (pvpCollision1)");
-		return false;
-	}
-	r = LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
-	if(!r) {
-		LOG("[PhysicsContext] ERROR: LoadCollisionMesh failed (pvpCollision2)");
-		return false;
-	}
-
 	LOG("PhysicsContext initialised");
 	return true;
 }
@@ -93,7 +81,7 @@ void PhysicsContext::Shutdown()
 	LOG("PhysicsContext shutdown");
 }
 
-bool PhysicsContext::LoadCollisionMesh(CollisionMesh* out, const FileBuffer& file)
+bool PhysicsContext::LoadCollisionMesh(PhysicsCollisionMesh* out, const FileBuffer& file)
 {
 	// TODO: actually properly read this file instead of skipping the header
 	PhysxReadBuffer readBuff(file.data + 12 , file.size - 12);
@@ -142,14 +130,6 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 		// ground plane to aid with visualization (pvd)
 		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
 		scene->addActor(*groundPlane);
-
-		PxRigidStatic* ground = physics->createRigidStatic(PxTransform{PxIdentity});
-		ground->attachShape(*pvpCollision1.shape);
-		scene->addActor(*ground);
-
-		PxRigidStatic* walls = physics->createRigidStatic(PxTransform{PxIdentity});
-		walls->attachShape(*pvpCollision2.shape);
-		scene->addActor(*walls);
 	}
 }
 
@@ -164,6 +144,13 @@ void PhysicsScene::Step()
 void PhysicsScene::Destroy()
 {
 	scene->release();
+}
+
+void PhysicsScene::AddStaticMesh(PhysicsCollisionMesh* mesh)
+{
+	PxRigidStatic* ground = PhysContext().physics->createRigidStatic(PxTransform{PxIdentity});
+	ground->attachShape(*mesh->shape);
+	scene->addActor(*ground);
 }
 
 static PhysicsContext* g_Context;

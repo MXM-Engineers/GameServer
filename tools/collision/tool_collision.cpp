@@ -814,14 +814,30 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	const u16 meshCount = 1;
 	outCooked.Append(&meshCount, sizeof(meshCount));
 
+	ObjReader::Vertex* fixedVertices = (ObjReader::Vertex*)memAlloc(sizeof(ObjReader::Vertex) * obj.vertices.size());
+	defer(memFree(fixedVertices));
+	u16* fixedIndices = (u16*)memAlloc(sizeof(u16) * obj.indices.size());
+	defer(memFree(fixedIndices));
+
+	for(int i = 0; i < obj.vertices.size(); i++) {
+		fixedVertices[i] = obj.vertices[i];
+		eastl::swap(fixedVertices[i].y, fixedVertices[i].z);
+		eastl::swap(fixedVertices[i].ny, fixedVertices[i].nz);
+	}
+
+	memmove(fixedIndices, obj.indices.data(), sizeof(u16) * obj.indices.size());
+	for(int i = 1; i < obj.indices.size(); i += 3) {
+		eastl::swap(fixedIndices[i], fixedIndices[i+1]);
+	}
+
 	PxTriangleMeshDesc meshDesc;
 	meshDesc.points.count = obj.vertices.size();
 	meshDesc.points.stride = sizeof(ObjReader::Vertex);
-	meshDesc.points.data = obj.vertices.data();
+	meshDesc.points.data = fixedVertices;
 
 	meshDesc.triangles.count = obj.indices.size()/3;
 	meshDesc.triangles.stride = 3*sizeof(u16);
-	meshDesc.triangles.data = obj.indices.data();
+	meshDesc.triangles.data = fixedIndices;
 
 	meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
 
@@ -863,20 +879,8 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	const i32 indexCount = obj.indices.size();
 	outMesh.Append(&indexCount, sizeof(indexCount));
 
-	for(int i = 0; i < vertexCount; i++) {
-		const ObjReader::Vertex& v = obj.vertices[i];
-		Vector3 p = { v.x, v.y, v.z };
-		outMesh.Append(&p, sizeof(p));
-		Vector3 n = { v.nx, v.ny, v.nz };
-		outMesh.Append(&n, sizeof(n));
-	}
-
-	// make it so back is culled
-	for(int i = 0; i < indexCount; i += 3) {
-		outMesh.Append(&obj.indices[i], sizeof(u16));
-		outMesh.Append(&obj.indices[i+2], sizeof(u16));
-		outMesh.Append(&obj.indices[i+1], sizeof(u16));
-	}
+	outMesh.Append(fixedVertices, vertexCount * sizeof(ObjReader::Vertex));
+	outMesh.Append(obj.indices.data(), indexCount * sizeof(u16));
 
 	r = fileSaveBuff(FMT("%s.msh", outputFilePath), outMesh.data, outMesh.size);
 	if(!r) {

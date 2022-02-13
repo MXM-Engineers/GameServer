@@ -192,6 +192,7 @@ bool Window::Init()
 
 	PhysicsCollisionMesh pvpCollision1;
 	PhysicsCollisionMesh pvpCollision2;
+	PhysicsCollisionMesh cylinder;
 
 	const GameXmlContent& gc = GetGameXmlContent();
 	r = PhysContext().LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
@@ -204,9 +205,15 @@ bool Window::Init()
 		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
 		return false;
 	}
+	r = PhysContext().LoadCollisionMesh(&cylinder, gc.fileCylinderCollision);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (cylinder)");
+		return false;
+	}
 
 	testScene.AddStaticMesh(&pvpCollision1);
 	testScene.AddStaticMesh(&pvpCollision2);
+	testScene.AddStaticMesh(&cylinder);
 
 	return true;
 }
@@ -541,6 +548,8 @@ void Window::WindowPhysicsTest()
 	}
 
 	*/
+
+	rdr.PushMesh(Pipeline::Unlit, "cylinder", vec3(0), vec3(0), vec3(10), vec3(1, 0, 1));
 }
 
 // WARNING: Threaded call

@@ -67,7 +67,9 @@ struct PhysicsScene
 
 	void Step();
 	void Destroy();
-	void AddStaticMesh(PhysicsCollisionMesh* mesh);
+
+	void CreateStaticCollider(PxTriangleMesh* mesh);
+	void CreateEntityCollider(f32 radius, f32 height);
 };
 
 struct PhysicsContext
@@ -82,11 +84,13 @@ struct PhysicsContext
 	ProfileMutex(Mutex, mutexSceneCreate);
 
 	PxMaterial* matMapSurface;
+	PxConvexMesh* cylinderMesh;
 
 	bool Init();
 	void Shutdown();
 
-	bool LoadCollisionMesh(PhysicsCollisionMesh* out, const FileBuffer& file);
+	bool LoadCollisionMesh(PxTriangleMesh** out, const FileBuffer& file);
+	bool LoadCollisionMesh(PxConvexMesh** out, const FileBuffer& file);
 	void CreateScene(PhysicsScene* out);
 };
 

@@ -737,17 +737,17 @@ static bool FileLoad(FileBuffer* out, const wchar* path)
 bool GameXmlContent::LoadCollisionMeshes()
 {
 	Path path = gameDataDir;
-	PathAppend(path, L"/PVP_DeathMatch01_Collision.cooked");
+	PathAppend(path, L"/PVP_DeathMatch01_Collision.physx_static");
 	bool r = FileLoad(&filePvpDeathmatch01Collision, path.data());
 	if(!r) return false;
 
 	path = gameDataDir;
-	PathAppend(path, L"/PVP_DeathMatch01_CollisionWalls.cooked");
+	PathAppend(path, L"/PVP_DeathMatch01_CollisionWalls.physx_static");
 	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
 	if(!r) return false;
 
 	path = gameDataDir;
-	PathAppend(path, L"/cylinder.cooked");
+	PathAppend(path, L"/cylinder.physx_dynamic");
 	r = FileLoad(&fileCylinderCollision, path.data());
 	if(!r) return false;
 

@@ -65,6 +65,13 @@ bool PhysicsContext::Init()
 	// collision meshes
 	matMapSurface = physics->createMaterial(0.5f, 0.5f, 0.6f);
 
+	const GameXmlContent& gc = GetGameXmlContent();
+	bool r = LoadCollisionMesh(&cylinderMesh, gc.fileCylinderCollision);
+	if(!r) {
+		LOG("[PhysX] ERROR: LoadCollisionMesh(cylinder) failed");
+		return false;
+	}
+
 	LOG("PhysicsContext initialised");
 	return true;
 }
@@ -81,22 +88,28 @@ void PhysicsContext::Shutdown()
 	LOG("PhysicsContext shutdown");
 }
 
-bool PhysicsContext::LoadCollisionMesh(PhysicsCollisionMesh* out, const FileBuffer& file)
+bool PhysicsContext::LoadCollisionMesh(PxTriangleMesh** out, const FileBuffer& file)
 {
 	// TODO: actually properly read this file instead of skipping the header
 	PhysxReadBuffer readBuff(file.data + 12 , file.size - 12);
 
-	out->mesh = physics->createTriangleMesh(readBuff);
-	if(!out->mesh) {
+	*out = physics->createTriangleMesh(readBuff);
+	if(!*out) {
 		LOG("[PhysX] ERROR: createTriangleMesh failed");
 		return false;
 	}
 
-	out->geometry = PxTriangleMeshGeometry(out->mesh);
+	return true;
+}
 
-	out->shape = physics->createShape(out->geometry, *matMapSurface);
-	if(!out->shape) {
-		LOG("[PhysX] ERROR: createShape failed");
+bool PhysicsContext::LoadCollisionMesh(PxConvexMesh** out, const FileBuffer& file)
+{
+	// TODO: actually properly read this file instead of skipping the header
+	PhysxReadBuffer readBuff(file.data + 12 , file.size - 12);
+
+	*out = physics->createConvexMesh(readBuff);
+	if(!*out) {
+		LOG("[PhysX] ERROR: createConvexMesh failed");
 		return false;
 	}
 
@@ -146,11 +159,35 @@ void PhysicsScene::Destroy()
 	scene->release();
 }
 
-void PhysicsScene::AddStaticMesh(PhysicsCollisionMesh* mesh)
+void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)
 {
-	PxRigidStatic* ground = PhysContext().physics->createRigidStatic(PxTransform{PxIdentity});
-	ground->attachShape(*mesh->shape);
+	auto& ctx = PhysContext();
+
+	PxTriangleMeshGeometry geometry = PxTriangleMeshGeometry(mesh);
+
+	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface);
+	ASSERT(shape); // createShape failed
+
+	PxRigidStatic* ground = ctx.physics->createRigidStatic(PxTransform{PxIdentity});
+	ground->attachShape(*shape);
 	scene->addActor(*ground);
+}
+
+void PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
+{
+	auto& ctx = PhysContext();
+
+	PxConvexMeshGeometry geometry = PxConvexMeshGeometry(ctx.cylinderMesh, PxMeshScale({radius, radius, height}));
+
+	// TODO: we create a shape here every time, which is inneficient
+	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface, true);
+	ASSERT(shape); // createShape failed
+
+	PxRigidDynamic* actor = ctx.physics->createRigidDynamic(PxTransform{PxIdentity});
+	ASSERT(actor); // createRigidDynamic failed
+	bool r = actor->attachShape(*shape);
+	ASSERT(r); // attachShape failed
+	scene->addActor(*actor);
 }
 
 static PhysicsContext* g_Context;

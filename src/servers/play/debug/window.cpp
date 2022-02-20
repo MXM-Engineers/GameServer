@@ -186,35 +186,29 @@ bool Window::Init()
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
 	if(!r) return false;
 
+	auto& phys = PhysContext();
 
 	// create map scene, add ground and wall static meshes
-	PhysContext().CreateScene(&testScene);
+	phys.CreateScene(&testScene);
 
-	PhysicsCollisionMesh pvpCollision1;
-	PhysicsCollisionMesh pvpCollision2;
-	PhysicsCollisionMesh cylinder;
+	PxTriangleMesh* pvpCollision1;
+	PxTriangleMesh* pvpCollision2;
 
 	const GameXmlContent& gc = GetGameXmlContent();
-	r = PhysContext().LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
+	r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
 	if(!r) {
 		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
 		return false;
 	}
-	r = PhysContext().LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
+	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
 	if(!r) {
 		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
 		return false;
 	}
-	r = PhysContext().LoadCollisionMesh(&cylinder, gc.fileCylinderCollision);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (cylinder)");
-		return false;
-	}
 
-	testScene.AddStaticMesh(&pvpCollision1);
-	testScene.AddStaticMesh(&pvpCollision2);
-	testScene.AddStaticMesh(&cylinder);
-
+	testScene.CreateStaticCollider(pvpCollision1);
+	testScene.CreateStaticCollider(pvpCollision2);
+	testScene.CreateEntityCollider(100, 200);
 	return true;
 }
 

@@ -696,7 +696,7 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	r = fileSaveBuff(FMT("%s.cooked", outPath), outCooked.data, outCooked.size);
+	r = fileSaveBuff(FMT("%s.physx_static", outPath), outCooked.data, outCooked.size);
 	if(!r) {
 		LOG("ERROR: could not write '%s.cooked'", outPath);
 		return false;
@@ -790,6 +790,55 @@ struct ObjReader
 	}
 };
 
+// Cooks a unit (radius: 1, height: 1) cylinder convex mesh
+bool CookConvexCylinder(PxCooking* cooking)
+{
+	PxVec3 verts[64];
+	const f32 add = 2*PxTwoPi/32;;
+
+	for(int i = 0; i < 32; i++) {
+		f32 a = add * i;
+		verts[i] = PxVec3(cosf(a), sinf(a), 0);
+	}
+	for(int i = 0; i < 32; i++) {
+		f32 a = add * i;
+		verts[i+32] = PxVec3(cosf(a), sinf(a), 1);
+	}
+
+	PxConvexMeshDesc convexDesc;
+	convexDesc.points.count = 64;
+	convexDesc.points.stride = sizeof(PxVec3);
+	convexDesc.points.data = verts;
+	convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+
+	PxDefaultMemoryOutputStream writeBuffer;
+	PxConvexMeshCookingResult::Enum result;
+	bool status = cooking->cookConvexMesh(convexDesc, writeBuffer, &result);
+	if(!status) {
+		LOG("ERROR: cookConvexMesh failed");
+		return false;
+	}
+
+	GrowableBuffer outCooked(1024*1024);
+	outCooked.Append("PHYX", 4);
+	const u16 phyxVersion = 1;
+	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
+	const u16 meshCount = 1;
+	outCooked.Append(&meshCount, sizeof(meshCount));
+
+	const u32 cookedMeshSize = writeBuffer.getSize();
+	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
+	outCooked.Append(writeBuffer.getData(), cookedMeshSize);
+
+	bool r = fileSaveBuff("cylinder.physx_dynamic", outCooked.data, outCooked.size);
+	if(!r) {
+		LOG("ERROR: could not write '%s.cooked'", "cylinder.physx_dynamic");
+		return false;
+	}
+
+	return true;
+}
+
 bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 {
 	static PxDefaultErrorCallback gDefaultErrorCallback;
@@ -858,6 +907,12 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 		LOG("ERROR: could not write '%s.cooked'", outputFilePath);
 		return false;
 	}
+
+	// TODO: remove
+	// test convex
+	r = CookConvexCylinder(cooking);
+	if(!r) return false;
+
 
 	// mesh
 	GrowableBuffer outMesh(1024*1024);

@@ -173,13 +173,13 @@ void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)
 	scene->addActor(*ground);
 }
 
-void PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
+PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 {
 	auto& ctx = PhysContext();
 
 	PxConvexMeshGeometry geometry = PxConvexMeshGeometry(ctx.cylinderMesh, PxMeshScale({radius, radius, height}));
 
-	// TODO: we create a shape here every time, which is inneficient
+	// TODO: we create a shape here every time, which is inneficient (probably?)
 	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface, true);
 	ASSERT(shape); // createShape failed
 
@@ -188,6 +188,12 @@ void PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 	bool r = actor->attachShape(*shape);
 	ASSERT(r); // attachShape failed
 	scene->addActor(*actor);
+
+	PhysicsEntityCollider collider;
+	collider.actor = actor;
+	collider.radius = radius;
+	collider.height = height;
+	return collider;
 }
 
 static PhysicsContext* g_Context;

@@ -8,8 +8,15 @@
 #include <foundation/PxErrorCallback.h>
 #include <PxFoundation.h>
 #include <PxPhysics.h>
+#include <PxRigidDynamic.h>
 #include <task/PxCpuDispatcher.h>
 using namespace physx;
+
+// should be no-op
+inline vec3 toVec3(const PxVec3& v)
+{
+	return { v.x, v.y, v.z };
+}
 
 // TODO: actual allocator
 struct PhysicsAllocatorCallback: PxAllocatorCallback
@@ -61,6 +68,20 @@ struct PhysicsCollisionMesh
 	PxShape* shape;
 };
 
+struct PhysicsEntityCollider
+{
+	PxRigidDynamic* actor = nullptr;
+
+	inline vec3 GetWorldPos() const { return toVec3(actor->getGlobalPose().p); }
+	inline vec2 GetSize() const { return { radius, height }; }
+
+private:
+	f32 radius;
+	f32 height;
+
+	friend struct PhysicsScene;
+};
+
 struct PhysicsScene
 {
 	PxScene* scene;
@@ -69,7 +90,7 @@ struct PhysicsScene
 	void Destroy();
 
 	void CreateStaticCollider(PxTriangleMesh* mesh);
-	void CreateEntityCollider(f32 radius, f32 height);
+	PhysicsEntityCollider CreateEntityCollider(f32 radius, f32 height);
 };
 
 struct PhysicsContext

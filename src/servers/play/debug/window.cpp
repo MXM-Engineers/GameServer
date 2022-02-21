@@ -85,7 +85,7 @@ struct Window
 
 	struct TestSubject
 	{
-		PhysWorld::BodyHandle body;
+		PhysicsEntityCollider collider;
 		vec3 facing;
 
 		enum Input {
@@ -100,7 +100,7 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			body->pos = vec3(5469, 3945, 1000);
+			collider.actor->setGlobalPose(PxTransform(PxVec3(5469, 3945, 1000)));
 			//body->pos = vec3(5820, 3795, 1000);
 			facing = vec3(1, 0, 0);
 			input = {0};
@@ -122,15 +122,12 @@ struct Window
 
 	}
 
-	inline void Draw(const PhysWorld::BodyHandle& body, vec3 color)
+	inline void Draw(const PhysicsEntityCollider& col, vec3 color)
 	{
-		vec3 pos = body->pos;
-		ShapeCapsule shape;
-		shape.radius = body->radius;
-		shape.base = pos;
-		shape.tip = pos + vec3(0, 0, body->height);
+		vec3 pos = col.GetWorldPos();
+		vec2 size = col.GetSize();
 
-		collisionTest.Draw(shape, color);
+		rdr.PushCylinder(Pipeline::Wireframe, pos, vec3(0), size.x, size.y, vec3(1, 0, 1));
 	}
 
 	bool Init();
@@ -208,7 +205,9 @@ bool Window::Init()
 
 	testScene.CreateStaticCollider(pvpCollision1);
 	testScene.CreateStaticCollider(pvpCollision2);
-	testScene.CreateEntityCollider(100, 200);
+
+	testSubject.collider = testScene.CreateEntityCollider(100, 200);
+	testSubject.Reset();
 	return true;
 }
 
@@ -459,29 +458,6 @@ void Window::WindowPhysicsTest()
 			testSubject.Reset();
 		}
 
-		/*
-		ImGui::Checkbox("Subject", &physicsTest.bShowSubject); ImGui::SameLine();
-		ImGui::Checkbox("Fixed", &physicsTest.bShowFixed); ImGui::SameLine();
-		ImGui::Checkbox("Pen", &physicsTest.bShowPen);
-
-
-		ImGui::Text("LastFrameEvents = %d", physicsTest.lastStepEvents.size());
-		if(ImGui::BeginListBox("Events")) {
-			for(int n = 0; n < physicsTest.lastStepEvents.size(); n++) {
-				const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[n];
-
-				const bool isSelected = (physicsTest.iSelectedEvent == n);
-				if(ImGui::Selectable(FMT("#%d capsule=%d ssi=%d cri=%d len=%g", n, event.capsuleID, event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
-					physicsTest.iSelectedEvent = n;
-				}
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if(isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndListBox();
-		}
 
 		ImGui::BeginTable("testsubject_postable", 3);
 		ImGui::TableSetupColumn("PosX");
@@ -489,7 +465,7 @@ void Window::WindowPhysicsTest()
 		ImGui::TableSetupColumn("PosZ");
 		ImGui::TableHeadersRow();
 
-		vec3 pos = testSubject.body->pos;
+		vec3 pos = testSubject.collider.GetWorldPos();
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 		ImGui::Text("%.2f", pos.x);
@@ -499,51 +475,11 @@ void Window::WindowPhysicsTest()
 		ImGui::Text("%.2f", pos.z);
 
 		ImGui::EndTable();
-		*/
 	}
 	ImGui::End();
 
-	/*
-	if(physicsTest.bShowSubject) {
-		Draw(testSubject.body, vec3(1, 0, 1));
-	}
 
-	if(physicsTest.iSelectedEvent >= 0 && physicsTest.iSelectedEvent < physicsTest.lastStepEvents.size()) {
-		const PhysWorld::CollisionEvent& event = physicsTest.lastStepEvents[physicsTest.iSelectedEvent];
-		const ShapeTriangle& tri = event.triangle;
-
-		collisionTest.Draw(event.cylinder, vec3(0, 0, 1));
-
-
-		const vec3 vorg = event.cylinder.base + vec3(0, 0, event.cylinder.radius);
-
-		if(physicsTest.bShowPen) {
-			collisionTest.DrawVec(event.pen.slide * 10.0f, vorg, vec3(0.5, 1, 0.5));
-		}
-
-		if(physicsTest.bShowFixed) {
-			ShapeCylinder fixed = event.cylinder;
-			fixed.base += event.fix2;
-			collisionTest.Draw(fixed, vec3(1, 1, 0));
-
-			collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
-			collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
-			collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
-			collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
-			//vec3 rv = ProjectVec(event.vel, tri.Normal());
-			//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
-		}
-
-		const vec3 color = vec3(1, 1, 1);
-		rdr.PushLine(tri.p[0], tri.p[1], color);
-		rdr.PushLine(tri.p[0], tri.p[2], color);
-		rdr.PushLine(tri.p[1], tri.p[2], color);
-		rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
-	}
-
-	*/
-
-	rdr.PushMesh(Pipeline::Unlit, "cylinder", vec3(0), vec3(0), vec3(10), vec3(1, 0, 1));
+	Draw(testSubject.collider, vec3(1, 0, 1));
 }
 
 // WARNING: Threaded call

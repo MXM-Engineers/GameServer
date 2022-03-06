@@ -9,6 +9,14 @@
 
 #define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
 
+inline PxTolerancesScale TolerancesScale()
+{
+	PxTolerancesScale s;
+	s.length = 100.f;
+	s.speed = 100.f;
+	return s;
+}
+
 class PhysxReadBuffer: public PxInputStream
 {
 	const void* data;
@@ -49,7 +57,7 @@ bool PhysicsContext::Init()
 		LOG("[PhysX] WARNING: failed to connect to PVD Client");
 	}
 
-	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), recordMemoryAllocations, pvd);
+	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, TolerancesScale(), recordMemoryAllocations, pvd);
 	if(!physics) {
 		LOG("[PhysX] ERROR: PxCreatePhysics failed");
 		return false;
@@ -63,7 +71,7 @@ bool PhysicsContext::Init()
 	}
 
 	// collision meshes
-	matMapSurface = physics->createMaterial(0.5f, 0.5f, 0.6f);
+	matMapSurface = physics->createMaterial(1.0f, 1.0f, 0.0f);
 
 	const GameXmlContent& gc = GetGameXmlContent();
 	bool r = LoadCollisionMesh(&cylinderMesh, gc.fileCylinderCollision);
@@ -118,9 +126,10 @@ bool PhysicsContext::LoadCollisionMesh(PxConvexMesh** out, const FileBuffer& fil
 
 void PhysicsContext::CreateScene(PhysicsScene* out)
 {
-	PxSceneDesc desc{PxTolerancesScale()};
+	PxSceneDesc desc{TolerancesScale()};
 	desc.cpuDispatcher = dispatcher;
 	desc.filterShader = PxDefaultSimulationFilterShader;
+	desc.gravity = PxVec3(0.0f, 0.0f, -9.81f);
 
 	PxScene* scene;
 	{ LOCK_MUTEX(mutexSceneCreate);
@@ -138,7 +147,7 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 		}
 
-		PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.6f);
+		PxMaterial* material = physics->createMaterial(1.0f, 1.0f, 0.0f);
 
 		// ground plane to aid with visualization (pvd)
 		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
@@ -177,7 +186,7 @@ PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 {
 	auto& ctx = PhysContext();
 
-	PxConvexMeshGeometry geometry = PxConvexMeshGeometry(ctx.cylinderMesh, PxMeshScale({radius, radius, height}));
+	PxConvexMeshGeometry geometry = PxConvexMeshGeometry(ctx.cylinderMesh/*, PxMeshScale({radius, radius, height})*/);
 
 	// TODO: we create a shape here every time, which is inneficient (probably?)
 	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface, true);
@@ -188,6 +197,9 @@ PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 	bool r = actor->attachShape(*shape);
 	ASSERT(r); // attachShape failed
 	scene->addActor(*actor);
+
+	actor->setMass(1.f);
+	//actor->setMassSpaceInertiaTensor(PxVec3(0.f));
 
 	PhysicsEntityCollider collider;
 	collider.actor = actor;

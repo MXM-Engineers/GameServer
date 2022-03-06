@@ -50,6 +50,25 @@ struct Matrix3x3
 	f32 data[9];
 };
 
+inline PxTolerancesScale TolerancesScale()
+{
+	PxTolerancesScale s;
+	s.length = 100.f;
+	s.speed = 100.f;
+	return s;
+}
+
+inline const char* ToString(PxTriangleMeshCookingResult::Enum e)
+{
+	switch(e) {
+		case PxTriangleMeshCookingResult::Enum::eFAILURE: return "FAILURE";
+		case PxTriangleMeshCookingResult::Enum::eLARGE_TRIANGLE: return "LARGE_TRIANGLE";
+		case PxTriangleMeshCookingResult::Enum::eSUCCESS: return "SUCCESS";
+	}
+	ASSERT(0); // case not handled
+	return "";
+}
+
 struct CollisionNifReader
 {
 	const u8* fileData;
@@ -498,7 +517,7 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(PxTolerancesScale{}));
+	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(TolerancesScale()));
 	if(!foundation) {
 		LOG("ERROR: PxCreateCooking failed");
 		return false;
@@ -679,6 +698,8 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 			return false;
 		}
 
+		LOG("cook result = %d(%s)", result, ToString(result));
+
 		const u32 cookedMeshSize = writeBuffer.getSize();
 		outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
 		outCooked.Append(writeBuffer.getData(), cookedMeshSize);
@@ -791,18 +812,18 @@ struct ObjReader
 };
 
 // Cooks a unit (radius: 1, height: 1) cylinder convex mesh
-bool CookConvexCylinder(PxCooking* cooking)
+bool CookConvexCylinder(PxCooking* cooking, const char* outputFilePath)
 {
 	PxVec3 verts[64];
-	const f32 add = 2*PxTwoPi/32;;
+	const f32 add = 2*PxTwoPi/32;
 
 	for(int i = 0; i < 32; i++) {
 		f32 a = add * i;
-		verts[i] = PxVec3(cosf(a), sinf(a), 0);
+		verts[i] = PxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 0);
 	}
 	for(int i = 0; i < 32; i++) {
 		f32 a = add * i;
-		verts[i+32] = PxVec3(cosf(a), sinf(a), 1);
+		verts[i+32] = PxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 100.0f);
 	}
 
 	PxConvexMeshDesc convexDesc;
@@ -830,9 +851,9 @@ bool CookConvexCylinder(PxCooking* cooking)
 	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
 	outCooked.Append(writeBuffer.getData(), cookedMeshSize);
 
-	bool r = fileSaveBuff("cylinder.physx_dynamic", outCooked.data, outCooked.size);
+	bool r = fileSaveBuff(FMT("%s.physx_dynamic", outputFilePath), outCooked.data, outCooked.size);
 	if(!r) {
-		LOG("ERROR: could not write '%s.cooked'", "cylinder.physx_dynamic");
+		LOG("ERROR: could not write '%s.physx_dynamic'", outputFilePath);
 		return false;
 	}
 
@@ -849,7 +870,7 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 		return false;
 	}
 
-	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(PxTolerancesScale{}));
+	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(TolerancesScale()));
 	if(!foundation) {
 		LOG("ERROR: PxCreateCooking failed");
 		return false;
@@ -910,7 +931,7 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 
 	// TODO: remove
 	// test convex
-	r = CookConvexCylinder(cooking);
+	r = CookConvexCylinder(cooking, outputFilePath);
 	if(!r) return false;
 
 

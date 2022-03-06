@@ -159,12 +159,9 @@ bool Window::Init()
 
 	MeshFile mfCollision;
 	MeshFile mfEnv;
-	MeshFile mfCylinder;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
 	if(!r) return false;
-	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
-	if(!r) return false;
-	r = OpenMeshFile("gamedata/cylinder.msh", &mfCylinder);
+	r = OpenMeshFile("gamedata/PVP_DeathMatch01_CollisionWalls.msh", &mfEnv);
 	if(!r) return false;
 
 	// drawable meshes
@@ -174,9 +171,6 @@ bool Window::Init()
 	foreach_const(it, mfEnv.meshList) {
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
-
-	rdr.LoadMeshFile("cylinder", mfCylinder.meshList.front());
-
 
 	r = MakeMapCollisionMesh(mshCol, &mapCollision);
 	if(!r) return false;

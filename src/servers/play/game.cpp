@@ -19,7 +19,7 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 
 	bool r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
 	ASSERT(r);
-	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
+	r = OpenMeshFile("gamedata/PVP_DeathMatch01_CollisionWalls.msh", &mfEnv);
 	ASSERT(r);
 	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
 	r = MakeMapCollisionMesh(mshCol, &shape[0]);

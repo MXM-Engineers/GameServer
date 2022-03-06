@@ -100,7 +100,7 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			collider.actor->setGlobalPose(PxTransform(PxVec3(5469, 3945, 1000)));
+			collider.actor->setPosition(PxExtendedVec3(5469, 3945, 1000));
 			//body->pos = vec3(5820, 3795, 1000);
 			facing = vec3(1, 0, 0);
 			input = {0};
@@ -124,7 +124,7 @@ struct Window
 
 	inline void Draw(const PhysicsEntityCollider& col, vec3 color)
 	{
-		vec3 pos = col.GetWorldPos();
+		vec3 pos = col.GetWorldPos() + vec3(0, 0, -col.GetSize().y / 2.f);
 		vec2 size = col.GetSize();
 
 		rdr.PushCylinder(Pipeline::Wireframe, pos, vec3(0), size.x, size.y, vec3(1, 0, 1));

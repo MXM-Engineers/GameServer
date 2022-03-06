@@ -152,11 +152,22 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 		// ground plane to aid with visualization (pvd)
 		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
 		scene->addActor(*groundPlane);
+
+		out->controllerMngr = PxCreateControllerManager(*scene);
+		if(!out->controllerMngr) {
+			LOG("[PhysX] ERROR: Creating controller manager failed");
+		}
+		ASSERT(out->controllerMngr);
 	}
 }
 
 void PhysicsScene::Step()
 {
+	foreach(c, colliderList) {
+		PxControllerFilters filter;
+		PxControllerCollisionFlags collisionFlags = c->actor->move(PxVec3(0.f, 0.f, -10.f), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
+	}
+
 	// FIXME: find out how to simulate on the same thread
 	scene->simulate((f32)UPDATE_RATE);
 	// here we do nothing but wait...
@@ -186,25 +197,22 @@ PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 {
 	auto& ctx = PhysContext();
 
-	PxConvexMeshGeometry geometry = PxConvexMeshGeometry(ctx.cylinderMesh/*, PxMeshScale({radius, radius, height})*/);
+	PxBoxControllerDesc desc;
+	desc.halfHeight = height/2.f;
+	desc.halfForwardExtent = radius;
+	desc.halfSideExtent = radius;
+	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
+	desc.material = ctx.matMapSurface;
 
-	// TODO: we create a shape here every time, which is inneficient (probably?)
-	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface, true);
-	ASSERT(shape); // createShape failed
-
-	PxRigidDynamic* actor = ctx.physics->createRigidDynamic(PxTransform{PxIdentity});
-	ASSERT(actor); // createRigidDynamic failed
-	bool r = actor->attachShape(*shape);
-	ASSERT(r); // attachShape failed
-	scene->addActor(*actor);
-
-	actor->setMass(1.f);
-	//actor->setMassSpaceInertiaTensor(PxVec3(0.f));
+	PxBoxController* box = (PxBoxController*)controllerMngr->createController(desc);
+	ASSERT(box);
 
 	PhysicsEntityCollider collider;
-	collider.actor = actor;
-	collider.radius = radius;
+	collider.actor = box;
 	collider.height = height;
+	collider.radius = radius;
+
+	colliderList.push_back(collider);
 	return collider;
 }
 

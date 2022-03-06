@@ -10,10 +10,16 @@
 #include <PxPhysics.h>
 #include <PxRigidDynamic.h>
 #include <task/PxCpuDispatcher.h>
+#include <characterkinematic/PxBoxController.h>
+#include <characterkinematic/PxControllerManager.h>
 using namespace physx;
 
 // should be no-op
-inline vec3 toVec3(const PxVec3& v)
+inline vec3 tov3(const PxVec3& v)
+{
+	return { v.x, v.y, v.z };
+}
+inline vec3 tov3(const PxExtendedVec3& v)
 {
 	return { v.x, v.y, v.z };
 }
@@ -70,9 +76,9 @@ struct PhysicsCollisionMesh
 
 struct PhysicsEntityCollider
 {
-	PxRigidDynamic* actor = nullptr;
+	PxBoxController* actor = nullptr;
 
-	inline vec3 GetWorldPos() const { return toVec3(actor->getGlobalPose().p); }
+	inline vec3 GetWorldPos() const { return tov3(actor->getPosition()); }
 	inline vec2 GetSize() const { return { radius, height }; }
 
 private:
@@ -85,6 +91,8 @@ private:
 struct PhysicsScene
 {
 	PxScene* scene;
+	PxControllerManager* controllerMngr;
+	eastl::fixed_vector<PhysicsEntityCollider,256> colliderList;
 
 	void Step();
 	void Destroy();

@@ -85,7 +85,7 @@ struct Window
 
 	struct TestSubject
 	{
-		PhysicsEntityCollider collider;
+		PhysicsEntityActor* actor;
 		vec3 facing;
 
 		enum Input {
@@ -100,8 +100,7 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			collider.actor->setPosition(PxExtendedVec3(5469, 3945, 1000));
-			//body->pos = vec3(5820, 3795, 1000);
+			actor->collider->setPosition(PxExtendedVec3(5469, 3945, 1000));
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -122,7 +121,7 @@ struct Window
 
 	}
 
-	inline void Draw(const PhysicsEntityCollider& col, vec3 color)
+	inline void Draw(const PhysicsEntityActor& col, vec3 color)
 	{
 		vec3 pos = col.GetWorldPos() + vec3(0, 0, -col.GetSize().y / 2.f);
 		vec2 size = col.GetSize();
@@ -200,7 +199,7 @@ bool Window::Init()
 	testScene.CreateStaticCollider(pvpCollision1);
 	testScene.CreateStaticCollider(pvpCollision2);
 
-	testSubject.collider = testScene.CreateEntityCollider(100, 200);
+	testSubject.actor = testScene.CreateEntityCollider(100, 200);
 	testSubject.Reset();
 	return true;
 }
@@ -459,7 +458,7 @@ void Window::WindowPhysicsTest()
 		ImGui::TableSetupColumn("PosZ");
 		ImGui::TableHeadersRow();
 
-		vec3 pos = testSubject.collider.GetWorldPos();
+		vec3 pos = testSubject.actor->GetWorldPos();
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 		ImGui::Text("%.2f", pos.x);
@@ -473,7 +472,7 @@ void Window::WindowPhysicsTest()
 	ImGui::End();
 
 
-	Draw(testSubject.collider, vec3(1, 0, 1));
+	Draw(*testSubject.actor, vec3(1, 0, 1));
 }
 
 // WARNING: Threaded call
@@ -585,8 +584,7 @@ void Window::UpdatePhysics()
 		dir = glm::normalize(dir);
 	}
 
-	// testSubject.body->vel = dir * speed;
-
+	testSubject.actor->vel = dir * speed;
 	testScene.Step();
 }
 
@@ -615,10 +613,10 @@ void Window::OnEvent(const sapp_event& event)
 
 		if(!bFreezeTestPhysics) {
 			switch(event.key_code) {
-				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward]  = 1; break;
 				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 1; break;
-				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right] = 1; break;
-				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left] = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right]    = 1; break;
+				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left]     = 1; break;
 			}
 		}
 	}
@@ -626,10 +624,10 @@ void Window::OnEvent(const sapp_event& event)
 	if(event.type == SAPP_EVENTTYPE_KEY_UP) {
 		if(!bFreezeTestPhysics) {
 			switch(event.key_code) {
-				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_I: testSubject.input[TestSubject::Input::Forward]  = 0; break;
 				case sapp_keycode::SAPP_KEYCODE_K: testSubject.input[TestSubject::Input::Backward] = 0; break;
-				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right] = 0; break;
-				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left] = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_L: testSubject.input[TestSubject::Input::Right]    = 0; break;
+				case sapp_keycode::SAPP_KEYCODE_J: testSubject.input[TestSubject::Input::Left]     = 0; break;
 			}
 		}
 	}

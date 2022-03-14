@@ -9,6 +9,12 @@
 
 #define DBG_ASSERT_NONNAN(X) DBG_ASSERT(!isnan(X))
 
+//const f32 GRAVITY = 1800;
+// FIXME: remove
+#include <mxm/core.h>
+#define GRAVITY GetGlobalTweakableVars().gravity
+#define STEP_HEIGHT GetGlobalTweakableVars().stepHeight
+
 inline PxTolerancesScale TolerancesScale()
 {
 	PxTolerancesScale s;
@@ -165,13 +171,17 @@ void PhysicsScene::Step()
 {
 	foreach(c, colliderList) {
 		PxControllerFilters filter;
-		PxControllerCollisionFlags collisionFlags = c->actor->move(PxVec3(0.f, 0.f, -10.f), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
+		vec3 vel = c->vel * (f32)UPDATE_RATE + (vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE);
+		PxControllerCollisionFlags collisionFlags = c->collider->move(PxVec3(vel.x, vel.y, vel.z), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
 	}
 
+	// we don't need to actually *simulate* anything?
+#if 0
 	// FIXME: find out how to simulate on the same thread
 	scene->simulate((f32)UPDATE_RATE);
 	// here we do nothing but wait...
 	scene->fetchResults(true);
+#endif
 }
 
 void PhysicsScene::Destroy()
@@ -193,7 +203,7 @@ void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)
 	scene->addActor(*ground);
 }
 
-PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
+PhysicsEntityActor* PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 {
 	auto& ctx = PhysContext();
 
@@ -207,13 +217,13 @@ PhysicsEntityCollider PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
 	PxBoxController* box = (PxBoxController*)controllerMngr->createController(desc);
 	ASSERT(box);
 
-	PhysicsEntityCollider collider;
-	collider.actor = box;
+	PhysicsEntityActor collider;
+	collider.collider = box;
 	collider.height = height;
 	collider.radius = radius;
 
 	colliderList.push_back(collider);
-	return collider;
+	return &colliderList.back();
 }
 
 static PhysicsContext* g_Context;
@@ -804,12 +814,6 @@ bool TestIntersection(const ShapeSphere& A, const PhysRect& B, PhysPenetrationVe
 
 	return false;
 }
-
-//const f32 GRAVITY = 1800;
-// FIXME: remove
-#include <mxm/core.h>
-#define GRAVITY GetGlobalTweakableVars().gravity
-#define STEP_HEIGHT GetGlobalTweakableVars().stepHeight
 
 const int SUB_STEP_COUNT = 1;
 const int COLLISION_RESOLUTION_STEP_COUNT = 4;

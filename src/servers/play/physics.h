@@ -74,11 +74,12 @@ struct PhysicsCollisionMesh
 	PxShape* shape;
 };
 
-struct PhysicsEntityCollider
+struct PhysicsEntityActor
 {
-	PxBoxController* actor = nullptr;
+	PxBoxController* collider = nullptr;
+	vec3 vel = vec3(0);
 
-	inline vec3 GetWorldPos() const { return tov3(actor->getPosition()); }
+	inline vec3 GetWorldPos() const { return tov3(collider->getPosition()); }
 	inline vec2 GetSize() const { return { radius, height }; }
 
 private:
@@ -92,13 +93,13 @@ struct PhysicsScene
 {
 	PxScene* scene;
 	PxControllerManager* controllerMngr;
-	eastl::fixed_vector<PhysicsEntityCollider,256> colliderList;
+	eastl::fixed_vector<PhysicsEntityActor,256,false> colliderList; // doesn't grow so we don't invalidate pointer
 
 	void Step();
 	void Destroy();
 
 	void CreateStaticCollider(PxTriangleMesh* mesh);
-	PhysicsEntityCollider CreateEntityCollider(f32 radius, f32 height);
+	PhysicsEntityActor* CreateEntityCollider(f32 radius, f32 height);
 };
 
 struct PhysicsContext

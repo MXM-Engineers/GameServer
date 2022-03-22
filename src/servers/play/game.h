@@ -73,6 +73,8 @@ struct Game
 	eastl::fixed_list<Bot,MAX_PLAYERS,false> botList;
 
 	void Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle,MAX_PLAYERS>& playerClientHdList);
+	void Cleanup();
+
 	void Update(Time localTime_);
 
 	bool LoadMap();

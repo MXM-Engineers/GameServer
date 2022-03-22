@@ -171,12 +171,20 @@ void PhysicsScene::Step()
 {
 	foreach(c, colliderList) {
 		PxControllerFilters filter;
-		vec3 vel = c->vel * (f32)UPDATE_RATE + (vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE);
-		PxControllerCollisionFlags collisionFlags = c->collider->move(PxVec3(vel.x, vel.y, vel.z), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
+		filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
+
+		c->vel += vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE;
+		const vec3 disp = c->vel * (f32)UPDATE_RATE;
+		PxControllerCollisionFlags collisionFlags = c->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
+
+		// grounded
+		if(collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN) {
+			c->vel.z = 0;
+		}
 	}
 
 	// we don't need to actually *simulate* anything?
-#if 0
+#if 1
 	// FIXME: find out how to simulate on the same thread
 	scene->simulate((f32)UPDATE_RATE);
 	// here we do nothing but wait...
@@ -203,27 +211,36 @@ void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)
 	scene->addActor(*ground);
 }
 
-PhysicsEntityActor* PhysicsScene::CreateEntityCollider(f32 radius, f32 height)
+PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, const vec3& pos)
 {
 	auto& ctx = PhysContext();
 
-	PxBoxControllerDesc desc;
-	desc.halfHeight = height/2.f;
-	desc.halfForwardExtent = radius;
-	desc.halfSideExtent = radius;
+	PxCapsuleControllerDesc desc;
+	desc.height = height - radius*2;
+	desc.radius = radius;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
 	desc.material = ctx.matMapSurface;
 
-	PxBoxController* box = (PxBoxController*)controllerMngr->createController(desc);
-	ASSERT(box);
+	PxCapsuleController* ctrl = (PxCapsuleController*)controllerMngr->createController(desc);
+	ASSERT(ctrl);
 
-	PhysicsEntityActor collider;
-	collider.collider = box;
+	ctrl->setPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
+
+	PhysicsDynamicBody collider;
+	collider.collider = ctrl;
 	collider.height = height;
 	collider.radius = radius;
 
 	colliderList.push_back(collider);
 	return &colliderList.back();
+}
+
+vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
+{
+	PxControllerFilters filter;
+	filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
+	PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter, nullptr /* obstacles? */);
+	return body->GetWorldPos();
 }
 
 static PhysicsContext* g_Context;

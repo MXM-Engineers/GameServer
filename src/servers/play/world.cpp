@@ -4,6 +4,14 @@ void World::Init(Replication* replication_)
 {
 	replication = replication_;
 	nextActorUID = 1;
+
+	auto& ctx = PhysContext();
+	ctx.CreateScene(&physics);
+}
+
+void World::Cleanup()
+{
+	physics.Destroy();
 }
 
 void World::Update(Time localTime_)
@@ -13,13 +21,13 @@ void World::Update(Time localTime_)
 	const f64 delta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
 
-	vec3 prevPos = players.front().body->pos;
+	vec3 prevPos = players.front().body->GetWorldPos();
 
 	// players: handle input
 	foreach(it, players) {
 		Player& p = *it;
 
-		PhysWorld::Body& body = *p.body;
+		PhysicsDynamicBody& body = *p.body;
 
 		p.movement.rot = p.input.rot;
 
@@ -64,12 +72,10 @@ void World::Update(Time localTime_)
 			}
 
 			if(distance > 0) {
-				p.cast.startPos = body.pos;
+				p.cast.startPos = body.GetWorldPos();
 				const f32 angle = p.input.rot.upperYaw;
 				vec2 dir = vec2(cosf(angle), sinf(angle));
-				vec3 endPos = physics.MoveUntilWall(p.body, body.pos + vec3(dir * distance, 0));
-
-				body.pos = endPos;
+				const vec3 endPos = physics.Move(p.body, vec3(dir * distance, 0), moveDuration);
 
 				p.cast.endPos = endPos;
 				p.input.moveTo = endPos;
@@ -83,7 +89,7 @@ void World::Update(Time localTime_)
 		}
 
 		// move
-		vec2 delta = vec2(p.input.moveTo - body.pos);
+		vec2 delta = vec2(p.input.moveTo - body.GetWorldPos());
 		f32 deltaLen = glm::length(delta);
 		if(deltaLen > 1.0f && p.input.speed > 0.f) {
 			vec2 dir = NormalizeSafe(delta);
@@ -91,15 +97,15 @@ void World::Update(Time localTime_)
 
 			// we're close enough that we might miss the point by going full speed in a step, slow down
 			if(deltaLen < (p.input.speed * UPDATE_RATE)) {
-				body.force = vec3(dir.x, dir.y, 0) * f32(deltaLen/UPDATE_RATE);
+				p.movement.moveSpeed = f32(deltaLen/UPDATE_RATE);
 			}
 			else {
-				body.force = vec3(dir.x, dir.y, 0) * p.input.speed;
+				p.movement.moveSpeed = p.input.speed;
 			}
 		}
 		else {
 			p.movement.moveDir = vec2(0);
-			body.force = vec3(0);
+			p.movement.moveSpeed = 0.0f;
 		}
 
 		// jump
@@ -107,8 +113,13 @@ void World::Update(Time localTime_)
 		if(p.input.jump) {
 			p.input.jump = 0;
 			p.movement.hasJumped = true;
-			body.force.z = GetGlobalTweakableVars().jumpForce;
+			body.vel.z = GetGlobalTweakableVars().jumpForce;
 		}
+
+		// apply 2D velocity
+		const f32 s = p.movement.moveSpeed;
+		body.vel.x = p.movement.moveDir.x * s;
+		body.vel.y = p.movement.moveDir.y * s;
 	}
 
 	physics.Step();
@@ -170,7 +181,7 @@ void World::Replicate()
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
-			rch.pos = player.body->pos;
+			rch.pos = player.body->GetWorldPos();
 			rch.moveDir = player.movement.moveDir;
 			rch.speed = player.input.speed;
 			rch.rotation = player.movement.rot;
@@ -197,7 +208,7 @@ void World::Replicate()
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
 
-			rch.pos = player.body->pos;
+			rch.pos = player.body->GetWorldPos();
 			rch.moveDir = player.movement.moveDir;
 			rch.speed = player.input.speed;
 			rch.rotation = player.movement.rot;
@@ -249,7 +260,7 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 	player.mainCharaID = 0;
 	player.level = 1;
 	player.experience = 0;
-	player.body = physics.CreateBody(90, 270, pos); // radius 100 is found in files but 90 matches better
+	player.body = physics.CreateDynamicBody(90, 270, pos); // radius 100 is found in files but 90 matches better
 
 	// clear input
 	player.input.moveTo = pos;

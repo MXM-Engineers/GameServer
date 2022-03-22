@@ -31,7 +31,7 @@ struct Entity
 GameUID PushNewGame(const FixedStr32& mapName);
 void PushNewFrame(GameUID gameUID);
 void PushEntity(GameUID gameUID, const Entity& entity);
-void PushPhysics(GameUID gameUID, const PhysWorld& world);
+void PushPhysics(GameUID gameUID, const PhysicsScene& scene);
 void PopGame(GameUID gameUID);
 
 }

@@ -253,7 +253,9 @@ void InstancePool::Lane::Update()
 
 void InstancePool::Lane::Cleanup()
 {
-
+	foreach(inst, instancePvpList) {
+		inst->game.Cleanup();
+	}
 }
 
 bool InstancePool::Init(Server* server_)

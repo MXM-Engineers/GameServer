@@ -13,20 +13,23 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	world.Init(&replication);
 
 	// TODO: move OUT
-	MeshFile mfCollision;
-	MeshFile mfEnv;
-	ShapeMesh shape[2];
+	auto& phys = PhysContext();
+	PxTriangleMesh* pvpCollision1;
+	PxTriangleMesh* pvpCollision2;
 
-	bool r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
-	ASSERT(r);
-	r = OpenMeshFile("gamedata/PVP_DeathMatch01_CollisionWalls.msh", &mfEnv);
-	ASSERT(r);
-	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
-	r = MakeMapCollisionMesh(mshCol, &shape[0]);
-	ASSERT(r);
-	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &shape[1]);
-	ASSERT(r);
-	world.physics.PushStaticMeshes(shape, 2);
+	const GameXmlContent& gc = GetGameXmlContent();
+	bool r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
+		return;
+	}
+	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
+		return;
+	}
+	world.physics.CreateStaticCollider(pvpCollision1);
+	world.physics.CreateStaticCollider(pvpCollision2);
 
 	LoadMap();
 	// --------------------------
@@ -69,6 +72,11 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
 }
 
+void Game::Cleanup()
+{
+	world.Cleanup();
+}
+
 void Game::Update(Time localTime_)
 {
 	ProfileFunction();
@@ -100,7 +108,7 @@ void Game::Update(Time localTime_)
 			f32 a = legoAngle * PI/2;
 			lego->input.rot.upperYaw = a;
 			lego->input.rot.bodyYaw = a;
-			lego->input.moveTo = lego->body->pos + vec3(legoDir * 1000.f, 0);
+			lego->input.moveTo = lego->body->GetWorldPos() + vec3(legoDir * 1000.f, 0);
 			lego->input.speed = 626;
 		}
 		else { // stop
@@ -152,7 +160,7 @@ void Game::Update(Time localTime_)
 						f32 angle = Randf01() * 2*PI;
 						f32 dist = (f32)RandInt(250, 1000);
 						vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
-						wpl.input.moveTo = wpl.body->pos + vec3(off, 0);
+						wpl.input.moveTo = wpl.body->GetWorldPos() + vec3(off, 0);
 						wpl.input.rot.upperYaw = angle;
 						wpl.input.rot.upperPitch = 0;
 						wpl.input.rot.bodyYaw = angle;
@@ -177,9 +185,9 @@ void Game::Update(Time localTime_)
 		Dbg::Entity e;
 		e.UID = (u32)player->userID;
 		e.name = player->name;
-		e.pos = player->body->pos;
+		e.pos = player->body->GetWorldPos();
 		e.rot = player->input.rot;
-		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->pos);
+		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->GetWorldPos());
 		e.moveDest = player->input.moveTo;
 		e.color = vec3(1, 0, 1);
 		Dbg::PushEntity(dbgGameUID, e);
@@ -291,9 +299,9 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		f64 clientDelta = clientTime - prevClientTime;
 		f64 serverDelta = serverTime - prevServerTime;
 		vec3 posDelta = prevPos - pos;
-		vec3 posBodyDelta = prevBodyPos - player.body->pos;
+		vec3 posBodyDelta = prevBodyPos - player.body->GetWorldPos();
 
-		vec2 delta = vec2(pos - player.body->pos);
+		vec2 delta = vec2(pos - player.body->GetWorldPos());
 		f64 speedClient = glm::length(posDelta) / clientDelta;
 		f64 speedServer = glm::length(posBodyDelta) / serverDelta;
 		if(speedClient - speedServer > 0) {
@@ -309,7 +317,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	prevClientTime = clientTime;
 	prevServerTime = serverTime;
 	prevPos = pos;
-	prevBodyPos = player.body->pos;
+	prevBodyPos = player.body->GetWorldPos();
 
 
 	// TODO: check for movement hacking

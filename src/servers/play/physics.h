@@ -11,6 +11,7 @@
 #include <PxRigidDynamic.h>
 #include <task/PxCpuDispatcher.h>
 #include <characterkinematic/PxBoxController.h>
+#include <characterkinematic/PxCapsuleController.h>
 #include <characterkinematic/PxControllerManager.h>
 using namespace physx;
 
@@ -74,10 +75,10 @@ struct PhysicsCollisionMesh
 	PxShape* shape;
 };
 
-struct PhysicsEntityActor
+struct PhysicsDynamicBody
 {
-	PxBoxController* collider = nullptr;
-	vec3 vel = vec3(0);
+	PxCapsuleController* collider = nullptr;
+	vec3 vel = vec3(0); // actual velocity
 
 	inline vec3 GetWorldPos() const { return tov3(collider->getPosition()); }
 	inline vec2 GetSize() const { return { radius, height }; }
@@ -93,13 +94,14 @@ struct PhysicsScene
 {
 	PxScene* scene;
 	PxControllerManager* controllerMngr;
-	eastl::fixed_vector<PhysicsEntityActor,256,false> colliderList; // doesn't grow so we don't invalidate pointer
+	eastl::fixed_vector<PhysicsDynamicBody,256,false> colliderList; // doesn't grow so we don't invalidate pointer
 
 	void Step();
 	void Destroy();
 
 	void CreateStaticCollider(PxTriangleMesh* mesh);
-	PhysicsEntityActor* CreateEntityCollider(f32 radius, f32 height);
+	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
+	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };
 
 struct PhysicsContext

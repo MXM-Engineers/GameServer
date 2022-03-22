@@ -30,7 +30,7 @@
 struct GameState
 {
 	eastl::fixed_vector<Dbg::Entity,2048,true> entityList;
-	PhysWorld physics;
+	PhysicsScene scene;
 
 	void NewFrame()
 	{
@@ -42,9 +42,9 @@ struct GameState
 		entityList.push_back(entity);
 	}
 
-	void PushPhysics(const PhysWorld& world)
+	void PushPhysicsScene(const PhysicsScene& scene_)
 	{
-		physics = world;
+		scene = scene_;
 	}
 };
 
@@ -85,7 +85,7 @@ struct Window
 
 	struct TestSubject
 	{
-		PhysicsEntityActor* actor;
+		PhysicsDynamicBody* actor;
 		vec3 facing;
 
 		enum Input {
@@ -121,17 +121,16 @@ struct Window
 
 	}
 
-	inline void Draw(const PhysicsEntityActor& col, vec3 color)
+	inline void Draw(const PhysicsDynamicBody& col, vec3 color)
 	{
-		vec3 pos = col.GetWorldPos() + vec3(0, 0, -col.GetSize().y / 2.f);
 		vec2 size = col.GetSize();
-
-		rdr.PushCylinder(Pipeline::Wireframe, pos, vec3(0), size.x, size.y, vec3(1, 0, 1));
+		vec3 pos = col.GetWorldPos() + vec3(0, 0, -size.y/2.f);
+		rdr.PushCapsule(Pipeline::Wireframe, pos, vec3(0), size.x, size.y, vec3(1, 0, 1));
 	}
 
 	bool Init();
 
-	void WindowPhysicsWorld(PhysWorld& physicsTest, const char* name);
+	void WindowPhysicsScene(PhysicsScene& scene, const char* name);
 	void WindowGameStates();
 	void WindowPhysicsTest();
 
@@ -199,12 +198,12 @@ bool Window::Init()
 	testScene.CreateStaticCollider(pvpCollision1);
 	testScene.CreateStaticCollider(pvpCollision2);
 
-	testSubject.actor = testScene.CreateEntityCollider(100, 200);
+	testSubject.actor = testScene.CreateDynamicBody(100, 300, vec3(0));
 	testSubject.Reset();
 	return true;
 }
 
-void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
+void Window::WindowPhysicsScene(PhysicsScene& scene, const char* name)
 {
 	if(ImGui::Begin(name)) {
 		const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
@@ -220,9 +219,9 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 		ImGui::TableHeadersRow();
 
 		int uid = 0;
-		foreach_const(it, physics.dynBodyList) {
-			vec3 pos = it->pos;
-			vec3 vel = it->vel;
+		foreach_const(it, scene.colliderList) {
+			const vec3 pos = it->GetWorldPos();
+			const vec3 vel = it->vel;
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
 			ImGui::Text("%d", uid);
@@ -243,20 +242,15 @@ void Window::WindowPhysicsWorld(PhysWorld& physics, const char* name)
 
 		ImGui::EndTable();
 
-		foreach_const(b, physics.dynBodyList) {
-			vec3 pos = b->pos;
+		foreach_const(b, scene.colliderList) {
+			vec3 pos = b->GetWorldPos();
 			vec3 vel = b->vel;
 
-			ShapeCylinder shape;
-			shape.radius = b->radius;
-			shape.height = b->height;
-			shape.base = pos;
-
 			vec3 color = vec3(1, 0, 1);
-			if(b->flags & PhysWorld::Flags::Disabled) color = vec3(0.5);
+			//if(b->flags & PhysWorld::Flags::Disabled) color = vec3(0.5);
 
-			collisionTest.Draw(shape, color);
-			collisionTest.DrawVec(vel, shape.base + vec3(0, 0, shape.radius), vec3(1, 0.5, 0.8));
+			Draw(*b, color);
+			collisionTest.DrawVec(vel, pos, vec3(1, 0.5, 0.8));
 		}
 	}
 	ImGui::End();
@@ -270,7 +264,7 @@ void Window::WindowGameStates()
 		gameState = *gameStateBack;
 	}
 
-	WindowPhysicsWorld(gameState.physics, "GameState :: Physics");
+	WindowPhysicsScene(gameState.scene, "GameState :: Physics");
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
@@ -316,17 +310,17 @@ void Window::WindowGameStates()
 
 		foreach_const(ent, gameState.entityList) {
 			const Dbg::Entity& e = *ent;
-			//rdr.PushCapsule(Pipeline::Shaded, e.pos, vec3(0), 45, 210, e.color);
+			//rdr.PushCylinder(Pipeline::Shaded, e.pos + vec3(0, 0, -270/2.f), vec3(0), 50, 270, e.color);
 			//rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
 
 			// this is updated when the player moves
-			const vec3 upperStart = e.pos + vec3(0, 0, 200);
+			const vec3 upperStart = e.pos + vec3(0, 0, 120);
 			const vec3 upperDir = glm::normalize(vec3(cosf(e.rot.upperYaw), sinf(e.rot.upperYaw), sinf(e.rot.upperPitch)));
 			rdr.PushArrow(Pipeline::Unlit, upperStart, upperStart + upperDir * 150.f, vec3(1, 0.4, 0.1), 10);
 
-			const vec3 bodyRotStart = e.pos + vec3(0, 0, 150);
+			const vec3 bodyRotStart = e.pos + vec3(0, 0, 70);
 			rdr.PushArrow(Pipeline::Unlit, bodyRotStart, bodyRotStart + vec3(cosf(e.rot.bodyYaw), sinf(e.rot.bodyYaw), 0) * 150.f, vec3(1, 0.4, 0.1), 10);
-			const vec3 dirStart = e.pos + vec3(0, 0, 80);
+			const vec3 dirStart = e.pos + vec3(0, 0, 0);
 			rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 
 			rdr.PushArrow(Pipeline::Unlit, e.moveDest + vec3(0, 0, 15), e.moveDest, ColorV3(0x3405b5), 5);
@@ -490,8 +484,10 @@ void Window::NewFrame(Dbg::GameUID gameUID)
 			gameState = *gameStateBack;
 		}
 
+		/*
 		LOCK_MUTEX(gsRecording.mutex);
 		eastl::copy(gameState.physics.lastStepEvents.begin(), gameState.physics.lastStepEvents.end(), eastl::back_inserter(gsRecording.events));
+		*/
 	}
 }
 
@@ -737,9 +733,9 @@ void PopGame(GameUID gameUID)
 	// does nothing for now
 }
 
-void PushPhysics(GameUID gameUID, const PhysWorld& world)
+void PushPhysics(GameUID gameUID, const PhysicsScene& scene)
 {
-	g_pWindow->gameStateFront->PushPhysics(world);
+	g_pWindow->gameStateFront->PushPhysicsScene(scene);
 }
 
 }

@@ -69,11 +69,12 @@ struct World
 		u8 mainCharaID = 0;
 
 		Input input;
-		PhysWorld::BodyHandle body;
+		PhysicsDynamicBody* body = nullptr;
 
 		// book keeping
 		struct {
-			vec2 moveDir;
+			vec2 moveDir = vec2(0);
+			f32 moveSpeed = 0;
 			RotationHumanoid rot;
 			bool hasJumped = false;
 		} movement;
@@ -146,9 +147,11 @@ struct World
 	u32 nextActorUID;
 	Time localTime;
 
-	PhysWorld physics;
+	PhysicsScene physics;
 
 	void Init(Replication* replication_);
+	void Cleanup();
+
 	void Update(Time localTime_);
 	void Replicate();
 

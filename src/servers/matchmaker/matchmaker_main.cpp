@@ -1,5 +1,6 @@
 #include <common/platform.h>
 #include <common/base.h>
+#include <common/utils.h>
 #include <common/network.h>
 #include <common/inner_protocol.h>
 #include <common/protocol.h>
@@ -622,7 +623,7 @@ struct Matchmaker
 intptr_t ThreadMatchmaker(void* pData)
 {
 	ProfileSetThreadName("Matchmaker");
-	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::MATCHMAKER);
+    ThreadSetCoreAffinity((i32)CoreAffinity::MATCHMAKER);
 
 	Matchmaker& mm = *(Matchmaker*)pData;
 	bool r = mm.Init();

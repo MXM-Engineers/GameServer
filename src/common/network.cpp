@@ -25,8 +25,7 @@ const char* GetIpString(const sockaddr& addr)
 intptr_t ThreadNetwork(void* pData)
 {
 	ProfileSetThreadName("NetworkPoller");
-	const i32 cpuID = 1;
-	EA::Thread::SetThreadAffinityMask(1 << cpuID);
+    ThreadSetCoreAffinity((i32)CoreAffinity::NETWORK);
 
 	Server& server = *(Server*)pData;
 

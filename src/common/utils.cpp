@@ -96,3 +96,10 @@ i32 RandInt(i32 vmin, i32 vmax)
 {
 	return vmin + (RandUint() % (vmax + 1 - vmin));
 }
+
+void ThreadSetCoreAffinity(i32 coreID)
+{
+    // loop around by default
+    const i32 count = EA::Thread::GetProcessorCount();
+    EA::Thread::SetThreadAffinityMask(1 << (coreID % count));
+}

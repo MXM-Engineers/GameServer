@@ -55,7 +55,7 @@ intptr_t ThreadLane(void* pData)
 intptr_t ThreadCoordinator(void* pData)
 {
 	ProfileSetThreadName("Coordinator");
-	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+	ThreadSetCoreAffinity((i32)CoreAffinity::COORDINATOR);
 
 	Coordinator& coordinator = *(Coordinator*)pData;
 

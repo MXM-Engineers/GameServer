@@ -92,8 +92,8 @@ private:
 
 struct PhysicsScene
 {
-	PxScene* scene;
-	PxControllerManager* controllerMngr;
+    PxScene* scene = nullptr;
+    PxControllerManager* controllerMngr = nullptr;
 	eastl::fixed_vector<PhysicsDynamicBody,256,false> colliderList; // doesn't grow so we don't invalidate pointer
 
 	void Step();

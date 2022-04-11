@@ -135,3 +135,5 @@ struct LocalMapping
 		map.erase(found);
 	}
 };
+
+void ThreadSetCoreAffinity(i32 coreID);

@@ -1,7 +1,18 @@
 #include "renderer.h"
-#include "shaders.h"
 #include "sokol_imgui.h"
 #include "config.h"
+
+namespace shaded {
+#include "shader_shaded.h"
+}
+
+namespace unlit {
+#include "shader_unlit.h"
+}
+
+namespace line {
+#include "shader_line.h"
+}
 
 sg_buffer LineBuffer::GetUpdatedBuffer()
 {
@@ -714,9 +725,9 @@ bool Renderer::Init()
 	genVertList.clear();
 	genIndList.clear();
 
-	shaderMeshShaded = sg_make_shader(&ShaderBaseMeshShaded());
-	shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
-	shaderLine = sg_make_shader(&ShaderLine());
+    shaderMeshShaded = sg_make_shader(shaded::shaded_shader_desc(sg_query_backend()));
+    shaderMeshUnlit = sg_make_shader(unlit::unlit_shader_desc(sg_query_backend()));
+    shaderLine = sg_make_shader(line::line_shader_desc(sg_query_backend()));
 
 	// basic mesh pipeline
 	{
@@ -922,11 +933,13 @@ void Renderer::Render(f64 delta)
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
+			shaded::vs_params_t vsUni0 = { proj * view, model, normalMat };
+			shaded::fs_params_t fsUni0; 
+			fsUni0.color = it->color; 
+			fsUni0.lightPos = sunPos;
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(vsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, SG_RANGE(fsUni0));
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -939,11 +952,13 @@ void Renderer::Render(f64 delta)
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
+			shaded::vs_params_t vsUni0 = { proj * view, model, normalMat };
+			shaded::fs_params_t fsUni0; 
+			fsUni0.color = it->color; 
+			fsUni0.lightPos = sunPos;
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(vsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, SG_RANGE(fsUni0));
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -955,15 +970,11 @@ void Renderer::Render(f64 delta)
 		foreach_const(it, drawQueue[(i32)Pipeline::Unlit]) {
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
-			struct Uniform0
-			{
-				mat4 mvp;
-			};
+            unlit::vs_params_t uni0;
+			uni0.mvp = proj * view * model;
+            uni0.color = it->color;
 
-			Uniform0 uni0 = { proj * view * model };
-
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(uni0));
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -975,15 +986,11 @@ void Renderer::Render(f64 delta)
 		foreach_const(it, drawQueue[(i32)Pipeline::Wireframe]) {
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
-			struct Uniform0
-			{
-				mat4 mvp;
-			};
+			unlit::vs_params_t uni0;
+			uni0.mvp = proj * view * model;
+			uni0.color = it->color;
 
-			Uniform0 uni0 = { proj * view * model };
-
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(uni0));
 
 			meshBuffer.DrawMesh(it->meshName);
 		}
@@ -998,7 +1005,7 @@ void Renderer::Render(f64 delta)
 
 		sg_apply_pipeline(pipeLine);
 		sg_apply_bindings(&bindsLine);
-		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &mvp, sizeof(mvp) });
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(mvp));
 		sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
 	}
 

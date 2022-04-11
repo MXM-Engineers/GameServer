@@ -13,7 +13,7 @@ intptr_t ThreadLane(void* pData)
 	InstancePool::Lane& lane = *(InstancePool::Lane*)pData;
 	ProfileSetThreadName(FMT("Lane_%d", lane.laneIndex));
 	const i32 cpuID = (i32)CoreAffinity::LANES + lane.laneIndex;
-	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
+    ThreadSetCoreAffinity(cpuID);
 
 	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
 	const Time startTime = TimeNow();
@@ -53,7 +53,7 @@ intptr_t ThreadLane(void* pData)
 intptr_t ThreadCoordinator(void* pData)
 {
 	ProfileSetThreadName("Coordinator");
-	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+    ThreadSetCoreAffinity((i32)CoreAffinity::COORDINATOR);
 
 	Coordinator& coordinator = *(Coordinator*)pData;
 

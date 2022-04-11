@@ -146,7 +146,7 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 		ASSERT(scene);
 
 		out->scene = scene;
-		PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
+        PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
 		if(pvdClient) {
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
@@ -194,7 +194,10 @@ void PhysicsScene::Step()
 
 void PhysicsScene::Destroy()
 {
-	scene->release();
+    if(scene) {
+        scene->release();
+        scene = nullptr;
+    }
 }
 
 void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)

@@ -1,6 +1,7 @@
 #pragma once
 
 #define SOKOL_D3D11
+//#define SOKOL_GLCORE33
 
 #include <common/vector_math.h>
 #include <common/utils.h>

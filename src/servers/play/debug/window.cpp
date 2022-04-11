@@ -8,6 +8,7 @@
 
 #define SOKOL_NO_ENTRY
 #define SOKOL_D3D11
+//#define SOKOL_GLCORE33
 
 #define SG_DEFAULT_CLEAR_RED 0.2f
 #define SG_DEFAULT_CLEAR_GREEN 0.2f

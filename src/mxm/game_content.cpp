@@ -13,24 +13,8 @@ static Path gameDataDir = L"gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {
-	Path creatureCharacterXml = gameDataDir;
-	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", doc)) return false;
 
 	// get master IDs
 	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
@@ -72,24 +56,8 @@ bool GameXmlContent::LoadMasterDefinitions()
 
 bool GameXmlContent::LoadMasterSkinsDefinitions()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/CHARACTERSKIN.XML");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/CHARACTERSKIN.xml", doc)) return false;
 
 	XMLElement* pSkinElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
@@ -116,26 +84,10 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 
 bool GameXmlContent::LoadMasterWeaponDefinitions()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/WEAPON.xml");
+	// Parse WEAPON.xml once
+	if(!LoadXMLFile(L"/WEAPON.xml", xmlWEAPON)) return false;
 
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
-
-	XMLElement* pWeapElt = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pWeapElt = xmlWEAPON.FirstChildElement()->FirstChildElement();
 	do {
 		i32 ID;
 		pWeapElt->QueryAttribute("ID", &ID);
@@ -156,6 +108,11 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 		pWeapElt = pWeapElt->NextSiblingElement();
 	} while(pWeapElt);
+
+	if(!LoadWeaponModelDefinitions()) {
+		LOG("ERROR(LoadWeaponModelDefinitions): failed");
+		return false;
+	}
 
 	return true;
 }
@@ -179,18 +136,20 @@ bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& x
 		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
 		return false;
 	}
+
+	return true;
 }
 
 bool GameXmlContent::LoadMasterDefinitionsModel()
 {
 	// Parse SKILLS.xml once
-	LoadXMLFile(L"/SKILL.xml", xmlSKILL);
+	if(!LoadXMLFile(L"/SKILL.xml", xmlSKILL)) return false;
 
 	// Parse SKILL_PROPERTY.xml once
-	LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY);
+	if(!LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY)) return false;
 
 	// Parse CREATURE_CHARACTER.xml once
-	LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER);
+	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER)) return false;
 
 	// get master IDs
 	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
@@ -391,9 +350,6 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 
 bool GameXmlContent::LoadWeaponModelDefinitions()
 {
-	// Parse WEAPON.xml once
-	LoadXMLFile(L"/WEAPON.xml", xmlWEAPON);
-
 	//get weapon IDS
 	XMLElement* pNodeWeapon = xmlWEAPON.FirstChildElement()->FirstChildElement();
 	do {
@@ -413,6 +369,7 @@ bool GameXmlContent::LoadWeaponModelDefinitions()
 		// save weapon data
 		//weapon.setAttack(attack);
 
+		pNodeWeapon = pNodeWeapon->NextSiblingElement();
 	} while (pNodeWeapon);
 
 	return true;
@@ -686,24 +643,8 @@ void GameXmlContent::SetWeaponSpecRef(XMLElement& pNodeWeaponSpecRef, WeaponSpec
 
 bool GameXmlContent::LoadMapList()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/MAPLIST.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if (!fileData) {
-		LOG("ERROR(LoadMapList): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMapList): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/MAPLIST.xml", doc)) return false;
 
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
@@ -806,32 +747,14 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		return false;
 	}
 
-	Path xmlPath = gameDataDir;
-
 	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
 	wchar_t* tempPath = tempPathData;
 	const char* levelFileString = mapList->levelFile.data();
 
 	eastl::DecodePart(levelFileString, mapList->levelFile.data() + EA::StdC::Strlen(mapList->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
-	PathAppend(xmlPath, L"/");
-	PathAppend(xmlPath, tempPathData);
-	PathAppend(xmlPath, L"/Spawn.xml");
 
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if (!fileData) {
-		LOG("ERROR(LoadMapByID): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMapByID): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(LFMT(L"/%s/Spawn.xml", tempPathData), doc)) return false;
 
 	XMLElement* pMapInfo = doc.FirstChildElement();
 	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
@@ -919,24 +842,8 @@ bool GameXmlContent::LoadPvpDeathmach()
 
 bool GameXmlContent::LoadJukeboxSongs()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/JUKEBOX.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadJukeboxSongs): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadJukeboxSongs): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/JUKEBOX.xml", doc)) return false;
 
 	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
 	XMLElement* pSongElt = doc.FirstChildElement()->FirstChildElement();

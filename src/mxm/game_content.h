@@ -80,10 +80,18 @@ struct GameXmlContent
 	FileBuffer filePvpDeathmatch01CollisionWalls;
 	FileBuffer fileCylinderCollision;
 
+	bool Load();
+
+	const MapList* FindMapListByID(i32 index) const;
+	const Song* FindJukeboxSongByID(SongID songID) const;
+	const Master& GetMaster(ClassType classType) const;
+
+private:
+	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
+
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
-	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
@@ -96,18 +104,12 @@ struct GameXmlContent
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();
-	bool Load();
-
-	const MapList* FindMapListByID(i32 index) const;
-	const Song* FindJukeboxSongByID(SongID songID) const;
-	const Master& GetMaster(ClassType classType) const;
 
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
 	EntityType StringToEntityType(const char* s);
 	SkillType StringToSkillType(const char* s);
 
-private:
 	tinyxml2::XMLDocument xmlSKILL;
 	tinyxml2::XMLDocument xmlSKILLPROPERTY;
 	tinyxml2::XMLDocument xmlCREATURECHARACTER;

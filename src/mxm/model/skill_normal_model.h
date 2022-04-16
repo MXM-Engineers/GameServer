@@ -15,6 +15,6 @@ public:
 	void Print();
 
 private:
-	i32 _ID;
+	i32 _ID = 0;
 	SkillNormalLevelModel _skillNormalLevelModel[6];
 };

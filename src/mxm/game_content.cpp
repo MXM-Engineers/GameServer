@@ -160,74 +160,40 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 	return true;
 }
 
-bool GameXmlContent::LoadMasterDefinitionsModel()
+bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData)
 {
-	return true; // TODO: remove
-
-	// Parse SKILLS.xml once
-	{
-		Path SkillXml = gameDataDir;
-		PathAppend(SkillXml, L"/SKILL.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILL.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), xmlSKILL.ErrorStr());
-			return false;
-		}
-	}
-
-	// Parse SKILL_PROPERTY.xml once
-	{
-		Path SkillPropertyXml = gameDataDir;
-		PathAppend(SkillPropertyXml, L"/SKILL_PROPERTY.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillPropertyXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillPropertyXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILLPROPERTY.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillPropertyXml.data(), xmlSKILLPROPERTY.ErrorStr());
-			return false;
-		}
-	}
-
-	Path creatureCharacterXml = gameDataDir;
-	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
+	Path filePath = gameDataDir;
+	PathAppend(filePath, fileName);
 
 	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
+	u8* fileData = FileOpenAndReadAll(filePath.data(), &fileSize);
 	if (!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
+		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", filePath.data());
 		return false;
 	}
 	defer(memFree(fileData));
 
 	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
+	XMLError error = xmlData.Parse((char*)fileData, fileSize);
 	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
 		return false;
 	}
+}
 
+bool GameXmlContent::LoadMasterDefinitionsModel()
+{
+	// Parse SKILLS.xml once
+	LoadXMLFile(L"/SKILL.xml", xmlSKILL);
+
+	// Parse SKILL_PROPERTY.xml once
+	LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY);
+
+	// Parse CREATURE_CHARACTER.xml once
+	LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER);
 
 	// get master IDs
-	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
 	do {
 		mastersModel.push_back();
 		CharacterModel &character = mastersModel.back();
@@ -256,6 +222,18 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 
 		const char* creatureTypeTemp;
 		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
+
+		XMLElement* pMoveControllerComData = pNodeMaster->FirstChildElement("MoveController_ComData");
+
+		i32 actorRadius, actorHeight;
+		pMoveControllerComData->QueryIntAttribute("ActorRadius", &actorRadius);
+		pMoveControllerComData->QueryIntAttribute("ActorHeight", &actorHeight);
+
+		XMLElement* pPhysxMeshComData = pNodeMaster->FirstChildElement("PhysXMeshComData");
+
+		i32 colliderRadius, colliderHeight;
+		pPhysxMeshComData->QueryIntAttribute("_ColliderRadius", &colliderRadius);
+		pPhysxMeshComData->QueryIntAttribute("_ColliderHeight", &colliderHeight);
 
 		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
 
@@ -301,6 +279,18 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			{
 
 			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_BREAK_FALL", skillSlot) == 0)
+			{
+
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_COMBOSET", skillSlot) == 0)
+			{
+
+			}
+			else
+			{
+				LOG("UNSUPPORTED skillslot: %s\n", skillSlot);
+			}
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while (pSkillElt);
@@ -314,6 +304,12 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		character.setMoveSpeed(moveSpeed);
 		character.setRotateSpeed(rotateSpeed);
 		character.setScale(scale);
+		//MoveController data
+		character.setActorHeight(actorHeight);
+		character.setActorRadius(actorRadius);
+		//Physx data
+		character.setColliderHeight(colliderHeight);
+		character.setColliderRadius(colliderRadius);
 		
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 
@@ -393,6 +389,35 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 	return true;
 }
 
+bool GameXmlContent::LoadWeaponModelDefinitions()
+{
+	// Parse WEAPON.xml once
+	LoadXMLFile(L"/WEAPON.xml", xmlWEAPON);
+
+	//get weapon IDS
+	XMLElement* pNodeWeapon = xmlWEAPON.FirstChildElement()->FirstChildElement();
+	do {
+		//weaponModel.push_back();
+		//WeaponModel& weapon = weaponModel.back();
+
+		i32 weaponID;
+		pNodeWeapon->QueryAttribute("ID", &weaponID);
+
+		// WeaponComData
+		XMLElement* pWeaponComData = pNodeWeapon->FirstChildElement("WeaponComData");
+		float attack, pvpattack;
+		
+		pWeaponComData->QueryFloatAttribute("_Attack", &attack);
+		pWeaponComData->QueryFloatAttribute("_PvPAttack", &pvpattack);
+
+		// save weapon data
+		//weapon.setAttack(attack);
+
+	} while (pNodeWeapon);
+
+	return true;
+}
+
 void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel)
 {
 	f32 _temp;
@@ -449,6 +474,213 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 	if (pNodeCommonSkill.QueryFloatAttribute("_TargetRangeLengthY", &_temp) == XML_SUCCESS)
 	{
 		_skillNormalLevelModel.setTargetRangeLengthY(_temp);
+	}
+}
+
+//Todo make this loop and finish it
+void GameXmlContent::SetWeaponSpecRef(XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec)
+{
+	const char *weaponSpecREF;
+	float _temp = 0.0f;
+
+	pNodeWeaponSpecRef.QueryStringAttribute("ref", &weaponSpecREF);
+	pNodeWeaponSpecRef.QueryFloatAttribute("value", &_temp);
+
+	if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL1", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel1(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL2", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel2(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL3", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel3(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_FIREDELAY", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboFireDelay(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_VALIDTIME", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboValidTime(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodConsumption(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION_BY_CHARGING", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodConsumptionByCharging(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_ERRORANGLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodErrorAngle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIREDELAY", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboFireDelay(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MAXDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodMaxDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MINDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodMinDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1CreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2CreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXANGBLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodCreateRadiateMaxAngBle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodCreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIRINGSTAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodFiringStatMovementSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_LEVEL", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodGaugeLevel(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1CreateParallelMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2CreateParallelMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1AnimationMoveHorizon(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2AnimationMoveHorizon(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_AUTOREGEN", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodGaugeAutoRegen(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ANGLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteAngle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ATTACKMULTIPLIER", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteAttackMultiplier(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_DAMAGEONBOUND", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteDamageOnBound(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_FOV", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteFOV(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_X", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteLengthX(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_Y", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteLengthY(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSCALE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxScale(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MINSCALE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMinScale(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_PENETRATIONCOUNT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemotePenetrationCount(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SIGHT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteSight(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_STATUS_RATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteStatusRate(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_CRITICALRATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteCriticalRate(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SUBBOUNDLENGTH", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteSubBoundLenght(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ACTIONBASE_PARAM_1", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setActionBaseParam1(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_REGEN_AND_HEALTH", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusRegenAndHealth(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusStatMovementSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_DEFENCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusStatDefence(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DURATION_TIME", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDurationTime(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_MAX_OVERLAP_COUNT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusMaxOverlapCount(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DOT_DAMAGE_MULTIPLIER", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDotDamageMultiplier(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ATTACK", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setAttack(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALDAMAGE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatAndCriticalDamage(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALRATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatAndCriticalRate(_temp);
+	}
+	else
+	{
+		LOG("ERROR(SetWeaponREFSet): Unsupported WEAPONSPEC_REF %s", weaponSpecREF);
 	}
 }
 
@@ -889,36 +1121,36 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 {
 	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
 	{
-		return SkillType::SKILL_COMBO;
+		return SkillType::SKILL_TYPE_COMBO;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
 	{
-		return SkillType::SKILL_NORMAL;
+		return SkillType::SKILL_TYPE_NORMAL;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
 	{
-		return SkillType::SKILL_PASSIVE;
+		return SkillType::SKILL_TYPE_PASSIVE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
 	{
-		return SkillType::SKILL_SHIRK;
+		return SkillType::SKILL_TYPE_SHIRK;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
 	{
-		return SkillType::SKILL_STANCE;
+		return SkillType::SKILL_TYPE_STANCE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
 	{
-		return SkillType::SKILL_SUMMON;
+		return SkillType::SKILL_TYPE_SUMMON;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
 	{
-		return SkillType::SKILL_TOGGLE;
+		return SkillType::SKILL_TYPE_TOGGLE;
 	}
 	else
 	{
 		LOG("Unknown SkillType: %s", s);
-		return SkillType::SKILL_INVALID;
+		return SkillType::SKILL_TYPE_INVALID;
 	}
 }
 

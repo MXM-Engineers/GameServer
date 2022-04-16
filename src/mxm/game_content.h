@@ -8,6 +8,8 @@
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
 #include "model/character_model.h"
+#include "model/weapon_model.h"
+#include "model/weapon_spec.h"
 
 struct GameXmlContent
 {
@@ -64,6 +66,7 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_vector<CharacterModel,100,false> mastersModel;
+	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
@@ -80,10 +83,13 @@ struct GameXmlContent
 	bool LoadMasterDefinitions();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
+	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 	bool LoadMasterDefinitionsModel();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
+	bool LoadWeaponModelDefinitions();
 	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
+	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);
@@ -104,6 +110,9 @@ struct GameXmlContent
 private:
 	tinyxml2::XMLDocument xmlSKILL;
 	tinyxml2::XMLDocument xmlSKILLPROPERTY;
+	tinyxml2::XMLDocument xmlCREATURECHARACTER;
+	tinyxml2::XMLDocument xmlWEAPON;
+	tinyxml2::XMLDocument xmlWEAPONTT;
 };
 
 bool GameXmlContentLoad();

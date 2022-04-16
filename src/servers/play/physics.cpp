@@ -46,6 +46,24 @@ public:
 	}
 };
 
+struct CCT_CollisionFilterCallback: PxControllerFilterCallback
+{
+	/**
+	\brief Filtering method for CCT-vs-CCT.
+
+	\param[in] a	First CCT
+	\param[in] b	Second CCT
+	\return true to keep the pair, false to filter it out
+	*/
+	virtual bool filter(const PxController& a, const PxController& b) override
+	{
+		// TODO: true for rozark and sutff?
+		return false;
+	}
+};
+
+static CCT_CollisionFilterCallback g_cctCollisionFilterCallback; // weird that we have to instantiate this but ok
+
 bool PhysicsContext::Init()
 {
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocatorCallback, errorCallback);
@@ -169,9 +187,11 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 
 void PhysicsScene::Step()
 {
+	ProfileFunction();
+
 	foreach(c, colliderList) {
 		PxControllerFilters filter;
-		filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
+		filter.mCCTFilterCallback = &g_cctCollisionFilterCallback; // cct filter callback
 
 		c->vel += vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE;
 		const vec3 disp = c->vel * (f32)UPDATE_RATE;

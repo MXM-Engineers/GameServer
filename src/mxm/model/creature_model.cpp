@@ -28,7 +28,7 @@ void CreatureModel::setCreatureType(CreatureType creatureType)
 	_CreatureType = creatureType;
 }
 
-i32 CreatureModel::getColliderRadius()
+i32 CreatureModel::getColliderRadius() const
 {
 	return _ColliderRadius;
 }
@@ -38,7 +38,7 @@ void CreatureModel::setColliderRadius(i32 colliderRadius)
 	_ColliderRadius = colliderRadius;
 }
 
-i32 CreatureModel::getColliderHeight()
+i32 CreatureModel::getColliderHeight() const
 {
 	return _ColliderHeight;
 }
@@ -70,6 +70,6 @@ void CreatureModel::setActorHeight(i32 actorHeight)
 
 void CreatureModel::Print()
 {
-	LOG("[CreatureModel]: Creature Type %d, Collider Radius: %d, Collider Height: %d", _CreatureType, _ColliderRadius, _ColliderHeight);
+	VERBOSE("[CreatureModel]: Creature Type %d, Collider Radius: %d, Collider Height: %d", _CreatureType, _ColliderRadius, _ColliderHeight);
 	EntityModel::Print();
 }

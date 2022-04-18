@@ -81,7 +81,7 @@ struct PhysicsDynamicBody
 	vec3 vel = vec3(0); // actual velocity
 
 	inline vec3 GetWorldPos() const { return tov3(collider->getPosition()); }
-	inline vec2 GetSize() const { return { radius, height }; }
+	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }
 
 private:
 	f32 radius;

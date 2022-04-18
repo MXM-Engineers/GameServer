@@ -13,12 +13,13 @@ static Path gameDataDir = L"gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {
-	XMLDocument doc;
-	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", doc)) return false;
+	// Parse CREATURE_CHARACTER.xml once
+	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER)) return false;
 
 	// get master IDs
-	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
-	do {
+	for(XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
+		pNodeMaster;
+		pNodeMaster = pNodeMaster->NextSiblingElement()) {
 		masters.push_back();
 		Master& master = masters.back();
 
@@ -47,9 +48,7 @@ bool GameXmlContent::LoadMasterDefinitions()
 		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
 
 		masterClassTypeMap.emplace(master.classType, &master);
-
-		pNodeMaster = pNodeMaster->NextSiblingElement();
-	} while(pNodeMaster);
+	}
 
 	return true;
 }
@@ -69,7 +68,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 
 		auto found = masterClassStringMap.find(strHash(classType));
 		if(found == masterClassStringMap.end()) {
-			LOG("WARNING(LoadMasterSkinsDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+			WARN("class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
 			Master& master = *found->second;
@@ -99,7 +98,7 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 		auto found = masterClassStringMap.find(strHash(classType));
 		if(found == masterClassStringMap.end()) {
-			LOG("WARNING(LoadMasterWeaponDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+			WARN("class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
 			Master& master = *found->second;
@@ -119,27 +118,29 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData)
 {
+	ASSERT_MSG(xmlData.NoChildren(), "xml already parsed");
+
 	Path filePath = gameDataDir;
 	PathAppend(filePath, fileName);
 
 	i32 fileSize;
 	u8* fileData = FileOpenAndReadAll(filePath.data(), &fileSize);
 	if (!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", filePath.data());
+		LOG("ERROR(LoadXMLFile): failed to open '%ls'", filePath.data());
 		return false;
 	}
 	defer(memFree(fileData));
 
-	using namespace tinyxml2;
 	XMLError error = xmlData.Parse((char*)fileData, fileSize);
 	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
+		LOG("ERROR(LoadXMLFile): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
 		return false;
 	}
 
 	return true;
 }
 
+// FIXME: merge with LoadMasterDefinitions
 bool GameXmlContent::LoadMasterDefinitionsModel()
 {
 	// Parse SKILLS.xml once
@@ -148,19 +149,17 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	// Parse SKILL_PROPERTY.xml once
 	if(!LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY)) return false;
 
-	// Parse CREATURE_CHARACTER.xml once
-	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER)) return false;
-
 	// get master IDs
 	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
 	do {
-		mastersModel.push_back();
-		CharacterModel &character = mastersModel.back();
-
-		LOG("DEBUG: CharacterModel addresss %llx", (intptr_t)&character);
-
 		i32 masterID;
 		pNodeMaster->QueryAttribute("ID", &masterID);
+
+		auto found = masterClassTypeMap.find((ClassType)(masterID - 100000000));
+		if(found == masterClassTypeMap.end());
+		auto& master = found->second;
+
+		CharacterModel &character = master->character;
 
 		// Entity data
 		XMLElement* pEntityComData = pNodeMaster->FirstChildElement("EntityComData");
@@ -207,7 +206,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			
 			pSkillElt->QueryAttribute("_Index", &skillID);
 			pSkillElt->QueryStringAttribute("_SkillSlot", &skillSlot);
-			LOG("SkillID: %d", skillID);
+			VERBOSE("SkillID: %d", skillID);
 
 			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
 			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
@@ -290,7 +289,7 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 sk
 		if (_skillID == skillID)
 		{
 			XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
-			LOG("Skill Match");
+			VERBOSE("Skill Match");
 			const char* SkillTypeTemp;
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
 			{

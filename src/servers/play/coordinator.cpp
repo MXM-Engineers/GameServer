@@ -585,7 +585,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 
 	// failed to authenticate
 	if(accountUID == AccountUID::INVALID) {
-		WARN("[client%x] Client failed to auhtenticate", clientHd);
+		WARN("[client%x] Client failed to authenticate", clientHd);
 
 		Sv::SA_AuthResult auth;
 		auth.result = 0;

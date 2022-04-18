@@ -13,7 +13,8 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	world.Init(&replication);
 
 	LoadMap();
-	// --------------------------
+
+	const GameXmlContent& xml = GetGameXmlContent();
 
 	// create players
 	i32 spawnPointIndex[2] = { 0 };
@@ -31,6 +32,18 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		desc.masters = p.masters;
 		desc.skins = p.skins;
 		desc.skills = p.skills;
+
+		const auto& master0 = xml.GetMaster(p.masters[0]);
+		const auto& master1 = xml.GetMaster(p.masters[1]);
+
+		desc.colliderSize[0] = {
+			(u16)master0.character.getColliderRadius(),
+			(u16)master0.character.getColliderHeight(),
+		};
+		desc.colliderSize[1] = {
+			(u16)master1.character.getColliderRadius(),
+			(u16)master1.character.getColliderHeight(),
+		};
 
 		const auto& spawnPoints = mapSpawnPoints[p.team];
 		const SpawnPoint& spawnPoint = spawnPoints[spawnPointIndex[p.team]++ % spawnPoints.size()];

@@ -62,10 +62,12 @@ struct Logger
 
 extern Logger g_LogBase;
 extern Logger g_LogNetTraffic;
+extern bool g_LogVerbose;
 
 #define MSVC_VERIFY_FORMATTING(...) (0 && snprintf(0, 0, ##__VA_ARGS__))
 
 #define LOG(...) do { g_LogBase.__LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
+#define VERBOSE(...) do { if(g_LogVerbose) g_LogBase.__LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 #define LOGN(...) do { g_LogBase.__Logf(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 #define WARN(...) do { g_LogBase.__Warnf(FUNCTION_STR, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 

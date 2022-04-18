@@ -11,6 +11,12 @@
 #include "replication.h"
 #include "physics.h"
 
+struct ColliderSize
+{
+	u16 radius;
+	u16 height;
+};
+
 struct World
 {
 	struct Player;
@@ -28,6 +34,7 @@ struct World
 
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
+		eastl::array<ColliderSize,2> colliderSize;
 		eastl::array<SkillID,4> skills;
 	};
 
@@ -61,6 +68,8 @@ struct World
 		const SkinIndex mainSkin;
 		const ClassType subClass;
 		const SkinIndex subSkin;
+
+		const eastl::array<ColliderSize,2> colliderSize; // used when checking for gameplay collisions, not movement
 
 		u8 level;
 		u32 experience;
@@ -96,7 +105,8 @@ struct World
 			mainClass(desc.masters[0]),
 			mainSkin(desc.skins[0]),
 			subClass(desc.masters[1]),
-			subSkin(desc.skins[1])
+			subSkin(desc.skins[1]),
+			colliderSize(desc.colliderSize)
 		{
 
 		}

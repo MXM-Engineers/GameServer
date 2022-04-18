@@ -30,7 +30,7 @@ void SkillNormalModel::setSkillNormalLevelByIndex(SkillNormalLevelModel skill, i
 
 void SkillNormalModel::Print()
 {
-	LOG("[SkillNormalModel]: %d", _ID);
+	VERBOSE("[SkillNormalModel]: %d", _ID);
 	_skillNormalLevelModel[0].Print();
 	_skillNormalLevelModel[1].Print();
 	_skillNormalLevelModel[2].Print();

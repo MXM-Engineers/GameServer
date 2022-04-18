@@ -274,7 +274,7 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 	player.mainCharaID = 0;
 	player.level = 1;
 	player.experience = 0;
-	player.body = physics.CreateDynamicBody(90, 270, pos); // radius 100 is found in files but 90 matches better
+	player.body = physics.CreateDynamicBody(110, 70, pos); // radius 100 is found in files but 110 (_AILength) matches better
 
 	// clear input
 	player.input.moveTo = pos;

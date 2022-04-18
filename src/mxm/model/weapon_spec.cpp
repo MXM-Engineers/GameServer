@@ -489,5 +489,5 @@ void WeaponSpec::setStatAndCriticalRate(float var)
 
 void WeaponSpec::print(void)
 {
-	LOG("[Weapon Spec]: Print not implemented\n");
+	VERBOSE("[Weapon Spec]: Print not implemented\n");
 }

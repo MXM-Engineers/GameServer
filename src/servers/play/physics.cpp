@@ -239,7 +239,7 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 	auto& ctx = PhysContext();
 
 	PxCapsuleControllerDesc desc;
-	desc.height = height - radius*2;
+	desc.height = height;
 	desc.radius = radius;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
 	desc.material = ctx.matMapSurface;

@@ -12,9 +12,9 @@ public:
 
 	CreatureType getCreatureType();
 	void setCreatureType(CreatureType creatureType);
-	i32 getColliderRadius();
+	i32 getColliderRadius() const;
 	void setColliderRadius(i32 colliderRadius);
-	i32 getColliderHeight();
+	i32 getColliderHeight() const;
 	void setColliderHeight(i32 colliderHeight);
 	i32 getActorRadius();
 	void setActorRadius(i32 actorRadius);

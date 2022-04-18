@@ -9,6 +9,7 @@
 
 Logger g_LogBase;
 Logger g_LogNetTraffic;
+bool g_LogVerbose = false; // TODO: load from config
 
 void Logger::Init(const char* filepath_, int flags_)
 {

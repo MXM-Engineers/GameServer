@@ -21,6 +21,9 @@ struct GameXmlContent
 		eastl::fixed_vector<SkillID,32,false> skillIDs;
 		eastl::fixed_vector<SkinIndex,20,false> skinIDs;
 		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
+
+		// TODO: make this inline
+		CharacterModel character;
 	};
 
 	struct Spawn
@@ -65,7 +68,6 @@ struct GameXmlContent
 	eastl::hash<const char*> strHash;
 
 	eastl::fixed_vector<Master,100,false> masters;
-	eastl::fixed_vector<CharacterModel,100,false> mastersModel;
 	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;

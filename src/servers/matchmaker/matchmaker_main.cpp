@@ -531,7 +531,6 @@ struct Matchmaker
 				packet.sortieUID = r->UID;
 				packet.playerCount = 0;
 
-
 				foreach_const(pl, r->playerList) {
 					In::RoomUser player;
 					player.name.Copy(pl->name);

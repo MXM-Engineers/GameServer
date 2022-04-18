@@ -22,7 +22,7 @@ void CharacterModel::setSkills(SkillsModel skills)
 
 void CharacterModel::Print()
 {
-	LOG("[CharacterModel]");
+	VERBOSE("[CharacterModel]");
 	CreatureModel::Print();
 	_skills.Print();
 }

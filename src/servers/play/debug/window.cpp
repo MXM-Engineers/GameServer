@@ -131,7 +131,7 @@ struct Window
 
 	inline void Draw(const PhysicsDynamicBody& col, vec3 color)
 	{
-		vec2 size = col.GetSize();
+		vec2 size = col.GetBoundSize();
 		vec3 pos = col.GetWorldPos() + vec3(0, 0, -size.y/2.f);
 		rdr.PushCapsule(Pipeline::Wireframe, pos, vec3(0), size.x, size.y, vec3(1, 0, 1));
 	}

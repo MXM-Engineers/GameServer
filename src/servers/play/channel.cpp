@@ -86,7 +86,7 @@ void GamePacketHandler::HandlePacket_CN_GameMapLoaded(ClientHandle clientHd, con
 {
 	NT_LOG("[client%x] Client :: CN_GameMapLoaded ::", clientHd);
 	game->OnPlayerGameMapLoaded(clientHd);
-
+	replication->SetPlayerAsInGame(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -267,6 +267,7 @@ void GamePacketHandler::HandlePacket_CQ_LoadingComplete(ClientHandle clientHd, c
 {
 	NT_LOG("[client%x] Client :: CQ_LoadingComplete", clientHd);
 	game->OnPlayerLoadingComplete(clientHd);
+	replication->SetPlayerLoaded(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CQ_GameIsReady(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

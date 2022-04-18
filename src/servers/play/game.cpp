@@ -113,64 +113,92 @@ void Game::Update(Time localTime_)
 		legoLastStep = step;
 	}
 
-	// bot random actions
-	if(TimeDiffSec(TimeDiff(startTime, localTime)) > 10) {
-		foreach(bot, botList) {
-			if(localTime > bot->tNextAction) {
-				bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
-				World::Player& wpl = world.GetPlayer(bot->playerIndex);
+	switch(phase) {
+		case Phase::WaitingForReady: {
+			if(phaseTime < localTime) {
+				phase = Phase::PreGame;
+				phaseTime = TimeAdd(localTime, TimeMsToTime(10000));
 
-				struct Action {
-					enum Enum: i32 {
-						Move = 0,
-						Tag,
-						Jump,
-						_Count
-					};
-				};
-
-				eastl::array<f32,Action::_Count> actionWeight = {0.f};
-				actionWeight[Action::Move] = 8;
-				actionWeight[Action::Tag] = 2;
-				actionWeight[Action::Jump] = 2;
-
-				f32 actionSpace = 0;
-				foreach_const(w, actionWeight) actionSpace += *w;
-
-				Action::Enum actionID = Action::Move;
-
-				f32 rs = Randf01() * actionSpace;
-				actionSpace = 0;
-				for(int wi = 0; wi < Action::_Count; wi++) {
-					if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
-						actionID = (Action::Enum)wi;
-						break;
-					}
-					actionSpace += actionWeight[wi];
-				}
-
-				switch(actionID) {
-					case Action::Move: {
-						f32 angle = Randf01() * 2*PI;
-						f32 dist = (f32)RandInt(250, 1000);
-						vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
-						wpl.input.moveTo = wpl.body->GetWorldPos() + vec3(off, 0);
-						wpl.input.rot.upperYaw = angle;
-						wpl.input.rot.upperPitch = 0;
-						wpl.input.rot.bodyYaw = angle;
-						wpl.input.speed = 600;
-					} break;
-
-					case Action::Tag: {
-						wpl.input.tag = true;
-					} break;
-
-					case Action::Jump: {
-						wpl.input.jump = true;
-					} break;
+				foreach_const(p, playerList) {
+					replication.SendPreGameLevelEvents(p->clientHd);
 				}
 			}
-		}
+		} break;
+
+		case Phase::PreGame: {
+			if(phaseTime < localTime) {
+				phase = Phase::Game;
+
+				// FIXME: hack to delete the spawn doors
+				// FIXME: door death effect
+				world.actorDynamicList.clear();
+				world.actorDynamicMap.clear();
+
+				foreach_const(p, playerList) {
+					replication.SendGameStart(p->clientHd);
+				}
+			}
+		} break;
+
+		case Phase::Game: {
+			// bot random actions
+			foreach(bot, botList) {
+				if(localTime > bot->tNextAction) {
+					bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
+					World::Player& wpl = world.GetPlayer(bot->playerIndex);
+
+					struct Action {
+						enum Enum: i32 {
+							Move = 0,
+							Tag,
+							Jump,
+							_Count
+						};
+					};
+
+					eastl::array<f32,Action::_Count> actionWeight = {0.f};
+					actionWeight[Action::Move] = 8;
+					actionWeight[Action::Tag] = 2;
+					actionWeight[Action::Jump] = 2;
+
+					f32 actionSpace = 0;
+					foreach_const(w, actionWeight) actionSpace += *w;
+
+					Action::Enum actionID = Action::Move;
+
+					f32 rs = Randf01() * actionSpace;
+					actionSpace = 0;
+					for(int wi = 0; wi < Action::_Count; wi++) {
+						if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
+							actionID = (Action::Enum)wi;
+							break;
+						}
+						actionSpace += actionWeight[wi];
+					}
+
+					switch(actionID) {
+						case Action::Move: {
+							f32 angle = Randf01() * 2*PI;
+							f32 dist = (f32)RandInt(250, 1000);
+							vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
+							wpl.input.moveTo = wpl.body->GetWorldPos() + vec3(off, 0);
+							wpl.input.rot.upperYaw = angle;
+							wpl.input.rot.upperPitch = 0;
+							wpl.input.rot.bodyYaw = angle;
+							wpl.input.speed = 600;
+						} break;
+
+						case Action::Tag: {
+							wpl.input.tag = true;
+						} break;
+
+						case Action::Jump: {
+							wpl.input.jump = true;
+						} break;
+					}
+				}
+			}
+		} break;
 	}
 
 	world.Update(localTime);
@@ -462,12 +490,12 @@ void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, Act
 
 void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
 {
-	replication.SetPlayerLoaded(clientHd);
+
 }
 
 void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 {
-	replication.SetPlayerAsInGame(clientHd);
+
 }
 
 void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
@@ -505,10 +533,16 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
 
 void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 {
-	replication.SendGameReady(clientHd);
+	const i32 READY_WAIT = 3000;
 
-	// TODO: after 5s
-	replication.SendGameStart(clientHd);
+	if(phase == Phase::WaitingForFirstPlayer) {
+		phase = Phase::WaitingForReady;
+		phaseTime = TimeAdd(localTime, TimeMsToTime(READY_WAIT));
+		replication.SendGameReady(clientHd, READY_WAIT, 0);
+	}
+	else {
+		replication.SendGameReady(clientHd, READY_WAIT, MAX(0, READY_WAIT - (i32)TimeDurationMs(localTime, phaseTime)));
+	}
 }
 
 bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)

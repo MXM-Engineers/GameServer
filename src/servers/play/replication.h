@@ -195,7 +195,8 @@ struct Replication
 	void SendAccountDataPvp(ClientHandle clientHd);
 
 	void SendPvpLoadingComplete(ClientHandle clientHd);
-	void SendGameReady(ClientHandle clientHd);
+	void SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed);
+	void SendPreGameLevelEvents(ClientHandle clientHd);
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);

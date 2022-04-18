@@ -662,26 +662,29 @@ void Replication::SendPvpLoadingComplete(ClientHandle clientHd)
 	SendPacketData<Sv::SA_LoadingComplete>(clientHd,  0, nullptr);
 }
 
-void Replication::SendGameReady(ClientHandle clientHd)
+void Replication::SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed)
 {
 	Sv::SA_GameReady ready;
-	ready.waitingTimeMs = 3000;
+	ready.waitingTimeMs = waitTime;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	ready.readyElapsedMs = 0;
+	ready.readyElapsedMs = elapsed;
 	SendPacket(clientHd, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
 	notify.userID = 1;
 	notify.skillPoint = 1;
 	SendPacket(clientHd, notify);
+}
 
+void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
+{
+	// countdown
 	Sv::SN_NotifyTimestamp notifyTimestamp;
 	notifyTimestamp.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	notifyTimestamp.curCount = 4;
+	notifyTimestamp.curCount = 0;
 	notifyTimestamp.maxCount = 5;
 	SendPacket(clientHd, notifyTimestamp);
 
-	/*
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -689,7 +692,6 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 218;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEventSeq
@@ -699,7 +701,6 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 219;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEventSeq
@@ -709,7 +710,6 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 274;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEvent
@@ -718,7 +718,6 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		event.eventID = 48;
 		event.caller = 0;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
 		SendPacket(clientHd, event);
 	}
 	// Sv::SN_RunClientLevelEventSeq
@@ -728,7 +727,6 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 1000001;
 		seq.caller = 21035;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
 	// Sv::SN_RunClientLevelEvent
@@ -737,10 +735,8 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		event.eventID = 150;
 		event.caller = 21035;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
 		SendPacket(clientHd, event);
 	}
-	*/
 
 	/*
 	Sv::SN_NotifyIsInSafeZone safe;

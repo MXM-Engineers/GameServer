@@ -50,6 +50,14 @@ struct Game
 		explicit Bot(u32 playerIndex_): playerIndex(playerIndex_) {}
 	};
 
+	enum class Phase: u8
+	{
+		WaitingForFirstPlayer,
+		WaitingForReady,
+		PreGame,
+		Game
+	};
+
 	World world;
 	Replication replication;
 
@@ -60,6 +68,9 @@ struct Game
 
 	Time startTime;
 	Time localTime;
+
+	Time phaseTime = Time::ZERO;
+	Phase phase = Phase::WaitingForFirstPlayer;
 
 	Dbg::GameUID dbgGameUID;
 

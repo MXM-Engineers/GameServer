@@ -1395,6 +1395,23 @@ inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseEnd>(const void* 
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_RunClientLevelEvent>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_RunClientLevelEvent& packet = *(Sv::SN_RunClientLevelEvent*)packetData;
+
+	SER("SN_RunClientLevelEvent(%d, %d) :: {", Sv::SN_RunClientLevelEvent::NET_ID, packetSize);
+	SER("	eventID=%d", packet.eventID);
+	SER("	caller=%d", packet.caller);
+	SER("	needCompleteTriggerAckID=%lld", packet.serverTime);
+	SER("}");
+
+	return str.data();
+}
+
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

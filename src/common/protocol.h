@@ -356,6 +356,33 @@ enum class EntrySystemID: i32
 	ARENA_3v3 = 210036812
 };
 
+// _Type in EntityComData
+// got values from decompile
+enum class EntityType : i32
+{
+	INVALID = -1, // UNKNOWN_ENTITY_TYPE default return
+	TERRAIN = 0, // haven't found this one in EntityComData was in an attribute CaseValue1 in tag <StatePlay>
+	CREATURE,
+	ITEM,
+	DYNAMIC,
+	REMOTE,
+	MARKER,
+	EFFECT,
+	SOUND, //not found in chinese data files check if this is changed to SFX in chinese release
+	DEFAULT,
+	MAX,
+	SFX //found in chinese data files check if exist in West files
+};
+
+enum class Faction: i32
+{
+	INVALID = -1,
+	RED = 0,
+	BLUE = 1,
+	DYNAMIC = 1,
+	_COUNT = 2
+};
+
 struct NetHeader
 {
 	u16 size;

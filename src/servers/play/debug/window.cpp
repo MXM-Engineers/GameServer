@@ -30,17 +30,24 @@
 
 struct GameState
 {
-	eastl::fixed_vector<Dbg::Entity,2048,true> entityList;
+	eastl::fixed_vector<Dbg::PlayerMaster,16,true> playerList;
+	eastl::fixed_vector<Dbg::Npc,64,true> npcList;
 	PhysicsScene scene;
 
 	void NewFrame()
 	{
-		entityList.clear();
+		playerList.clear();
+		npcList.clear();
 	}
 
-	void PushEntity(const Dbg::Entity& entity)
+	void Push(const Dbg::PlayerMaster& entity)
 	{
-		entityList.push_back(entity);
+		playerList.push_back(entity);
+	}
+
+	void Push(const Dbg::Npc& entity)
+	{
+		npcList.push_back(entity);
 	}
 
 	void PushPhysicsScene(const PhysicsScene& scene_)
@@ -111,7 +118,7 @@ struct Window
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
-	bool ui_bPhysicsTest = true;
+	bool ui_bPhysicsTest = false;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -271,7 +278,7 @@ void Window::WindowGameStates()
 
 
 	if(ImGui::Begin("Entities")) {
-		if(ImGui::BeginTable("EntityList", 8, flags))
+		if(ImGui::BeginTable("Players", 8, flags))
 		{
 			ImGui::TableSetupColumn("UID");
 			ImGui::TableSetupColumn("Name");
@@ -283,7 +290,7 @@ void Window::WindowGameStates()
 			ImGui::TableSetupColumn("RotBodyYaw");
 			ImGui::TableHeadersRow();
 
-			foreach_const(ent, gameState.entityList) {
+			foreach_const(ent, gameState.playerList) {
 				ImGui::TableNextRow();
 
 				ImGui::TableNextColumn();
@@ -309,8 +316,46 @@ void Window::WindowGameStates()
 			ImGui::EndTable();
 		}
 
-		foreach_const(ent, gameState.entityList) {
-			const Dbg::Entity& e = *ent;
+		if(ImGui::BeginTable("Npcs", 8, flags))
+		{
+			ImGui::TableSetupColumn("UID");
+			ImGui::TableSetupColumn("DocID");
+			ImGui::TableSetupColumn("PosX");
+			ImGui::TableSetupColumn("PosY");
+			ImGui::TableSetupColumn("PosZ");
+			ImGui::TableSetupColumn("RotUpperYaw");
+			ImGui::TableSetupColumn("RotUpperPitch");
+			ImGui::TableSetupColumn("RotBodyYaw");
+			ImGui::TableHeadersRow();
+
+			foreach_const(npc, gameState.npcList) {
+				ImGui::TableNextRow();
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%u", npc->UID);
+				ImGui::TableNextColumn();
+				ImGui::Text("%d", npc->docID);
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->pos.x);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->pos.y);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->pos.z);
+
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->rot.upperYaw);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->rot.upperPitch);
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", npc->rot.bodyYaw);
+			}
+
+			ImGui::EndTable();
+		}
+
+		foreach_const(ent, gameState.playerList) {
+			const Dbg::PlayerMaster& e = *ent;
 			//rdr.PushCylinder(Pipeline::Shaded, e.pos + vec3(0, 0, -270/2.f), vec3(0), 50, 270, e.color);
 			//rdr.PushMesh(Pipeline::Unlit, "Ring", e.pos, vec3(0), vec3(50), e.color);
 
@@ -325,6 +370,11 @@ void Window::WindowGameStates()
 			rdr.PushArrow(Pipeline::Unlit, dirStart, dirStart + glm::normalize(vec3(e.moveDir.x, e.moveDir.y, 0)) * 200.0f, vec3(0.2, 1, 0.2), 10);
 
 			rdr.PushArrow(Pipeline::Unlit, e.moveDest + vec3(0, 0, 15), e.moveDest, ColorV3(0x3405b5), 5);
+		}
+
+		foreach_const(ent, gameState.npcList) {
+			const Dbg::Npc& e = *ent;
+			rdr.PushCapsule(Pipeline::Unlit, e.pos, vec3(0), 10, 300, ColorV3(0x332789));
 		}
 	}
 	ImGui::End();
@@ -724,9 +774,9 @@ void PushNewFrame(GameUID gameUID)
 	g_pWindow->NewFrame(gameUID);
 }
 
-void PushEntity(GameUID gameUID, const Entity& entity)
+void Push(GameUID gameUID, const PlayerMaster& entity)
 {
-	g_pWindow->gameStateFront->PushEntity(entity);
+	g_pWindow->gameStateFront->Push(entity);
 }
 
 void PopGame(GameUID gameUID)
@@ -737,6 +787,11 @@ void PopGame(GameUID gameUID)
 void PushPhysics(GameUID gameUID, const PhysicsScene& scene)
 {
 	g_pWindow->gameStateFront->PushPhysicsScene(scene);
+}
+
+void Push(GameUID gameUID, const Npc& entity)
+{
+	g_pWindow->gameStateFront->Push(entity);
 }
 
 }

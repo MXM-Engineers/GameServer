@@ -747,7 +747,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		return false;
 	}
 
-	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
+	wchar_t tempPathData[256] = {0};
 	wchar_t* tempPath = tempPathData;
 	const char* levelFileString = mapList->levelFile.data();
 
@@ -759,7 +759,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 	XMLElement* pMapInfo = doc.FirstChildElement();
 	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
 	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
-	do {
+	for(pSpawnElt = pMapEntityCreature->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
 		Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
@@ -770,27 +770,25 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NPC_SPAWN;
+		spawn.type = Spawn::Type::NORMAL;
 		bool returnPoint;
 		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
 			spawn.type = Spawn::Type::SPAWN_POINT;
 		}
 
-		spawn.team = TeamID::INVALID;
+		spawn.faction = Faction::INVALID;
 		const char* teamString;
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
-			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.team = TeamID::RED;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
 		}
 
 		map->creatures.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while (pSpawnElt);
+	}
 
 	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
-	pSpawnElt = pMapEntityDynamic->FirstChildElement();
-	do {
+	for(XMLElement* pSpawnElt = pMapEntityDynamic->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
 		Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
@@ -801,12 +799,18 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NPC_SPAWN;
+		spawn.type = Spawn::Type::NORMAL;
+
+		spawn.faction = Faction::INVALID;
+		const char* teamString;
+		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
+		}
 
 		map->dynamic.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
+	}
 
 	return true;
 }
@@ -999,28 +1003,28 @@ EntityType GameXmlContent::StringToEntityType(const char* s)
 {
 	if (EA::StdC::Strcmp("ENTITY_TYPE_CREATURE", s) == 0)
 	{
-		return EntityType::ENTITY_CREATURE;
+		return EntityType::CREATURE;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_DYNAMIC", s) == 0)
 	{
-		return EntityType::ENTITY_DYNAMIC;
+		return EntityType::DYNAMIC;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_ITEM", s) == 0)
 	{
-		return EntityType::ENTITY_ITEM;
+		return EntityType::ITEM;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_SFX", s) == 0)
 	{
-		return EntityType::ENTITY_SFX;
+		return EntityType::SFX;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_TERRAIN", s) == 0)
 	{
-		return EntityType::ENTITY_TERRAIN;
+		return EntityType::TERRAIN;
 	}
 	else
 	{
 		LOG("Unknown EntityType: %s", s);
-		return EntityType::ENTITY_INVALID;
+		return EntityType::INVALID;
 	}
 }
 

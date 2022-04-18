@@ -12,25 +12,6 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	replication.Init(server_);
 	world.Init(&replication);
 
-	// TODO: move OUT
-	auto& phys = PhysContext();
-	PxTriangleMesh* pvpCollision1;
-	PxTriangleMesh* pvpCollision2;
-
-	const GameXmlContent& gc = GetGameXmlContent();
-	bool r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
-		return;
-	}
-	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
-		return;
-	}
-	world.physics.CreateStaticCollider(pvpCollision1);
-	world.physics.CreateStaticCollider(pvpCollision2);
-
 	LoadMap();
 	// --------------------------
 
@@ -182,7 +163,7 @@ void Game::Update(Time localTime_)
 	world.Update(localTime);
 
 	foreach_const(player, world.players) {
-		Dbg::Entity e;
+		Dbg::PlayerMaster e;
 		e.UID = (u32)player->userID;
 		e.name = player->name;
 		e.pos = player->body->GetWorldPos();
@@ -190,7 +171,23 @@ void Game::Update(Time localTime_)
 		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->GetWorldPos());
 		e.moveDest = player->input.moveTo;
 		e.color = vec3(1, 0, 1);
-		Dbg::PushEntity(dbgGameUID, e);
+		Dbg::Push(dbgGameUID, e);
+	}
+
+	foreach_const(npc, world.actorNpcList) {
+		Dbg::Npc n;
+		n.UID = (u32)npc->UID;
+		n.pos = npc->pos;
+		n.rot = {}; // TODO: fill
+		Dbg::Push(dbgGameUID, n);
+	}
+
+	foreach_const(dyn, world.actorDynamicList) {
+		Dbg::Npc n;
+		n.UID = (u32)dyn->UID;
+		n.pos = dyn->pos;
+		n.rot = {}; // TODO: fill
+		Dbg::Push(dbgGameUID, n);
 	}
 
 	Dbg::PushPhysics(dbgGameUID, world.physics);
@@ -200,30 +197,53 @@ void Game::Update(Time localTime_)
 
 bool Game::LoadMap()
 {
+	// TODO: Should probably part of world?
+	// Also at some point we need to better organise map data
+
+	auto& phys = PhysContext();
+	PxTriangleMesh* pvpCollision1;
+	PxTriangleMesh* pvpCollision2;
+
+	const GameXmlContent& gc = GetGameXmlContent();
+	bool r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
+		return false;
+	}
+	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
+	if(!r) {
+		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
+		return false;
+	}
+	world.physics.CreateStaticCollider(pvpCollision1);
+	world.physics.CreateStaticCollider(pvpCollision2);
+	// --------------------------------
+
 	const GameXmlContent& content = GetGameXmlContent();
 
 	foreach(it, content.mapPvpDeathMatch.creatures) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
-			if(it->team != TeamID::INVALID) {
-				mapSpawnPoints[(i32)it->team].push_back(SpawnPoint{ it->pos, it->rot });
+			if(it->faction != Faction::INVALID) {
+				mapSpawnPoints[(i32)it->faction].push_back(SpawnPoint{ it->pos, it->rot });
 			}
 			continue;
 		}
 
 		// spawn npc
-		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+		World::ActorNpc& actor = world.SpawnNpcActor(it->docID, it->localID);
+		actor.pos = it->pos;
+		actor.rot = it->rot;
+		actor.faction = it->faction;
 	}
 
-	// TODO: restore this (spawn safe area walls)
-	/*
 	foreach(it, content.mapPvpDeathMatch.dynamic) {
-		// spawn npc
-		World::ActorNpc& npc = SpawnNPC(it->docID, it->localID, it->pos, it->rot);
-		npc.type = 3;
-		npc.faction = 2;
+		// spawn dynamic
+		auto& actor = world.SpawnDynamic(it->docID, it->localID);
+		actor.pos = it->pos;
+		actor.rot = it->rot;
+		actor.faction = it->faction;
 	}
-	*/
 	return true;
 }
 
@@ -527,13 +547,4 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 void Game::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
 	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
-}
-
-World::ActorNpc& Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
-{
-	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
-	actor.pos = pos;
-	actor.dir = dir;
-	actor.faction = 2;
-	return actor;
 }

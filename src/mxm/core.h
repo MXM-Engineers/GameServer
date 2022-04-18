@@ -173,26 +173,8 @@ enum class CreatureType: i32
 	CREATURE_TYPE_MAX
 };
 
-// _Type in EntityComData
-// got values from decompile
-enum class EntityType : i32
-{
-	ENTITY_INVALID = -1, //UNKNOWN_ENTITY_TYPE default return
-	ENTITY_TERRAIN = 0, // haven't found this one in EntityComData was in an attribute CaseValue1 in tag <StatePlay>
-	ENTITY_CREATURE,
-	ENTITY_ITEM,
-	ENTITY_DYNAMIC,
-	ENTITY_REMOTE,
-	ENTITY_MARKER,
-	ENTITY_EFFECT,
-	ENTITY_SOUND, //not found in chinese data files check if this is changed to SFX in chinese release
-	ENTITY_DEFAULT,
-	ENTITY_MAX,
-	ENTITY_SFX //found in chinese data files check if exist in West files
-};
-
 // values from decompile
-enum class EntryTrype : i32
+enum class EntryType : i32
 {
 	ENTRY_TYPE = -1, // this one really exists
 	ENTRY_TYPE_TUTORIAL = 0,
@@ -618,14 +600,6 @@ enum class WorldStageDifficultType : i32
 };
 
 constexpr i32 JUKEBOX_MAX_TRACKS = 8;
-
-enum class TeamID: i32
-{
-	INVALID = -1,
-	RED = 0,
-	BLUE = 1,
-	_COUNT = 2
-};
 
 // TODO: weird place for this
 struct PlayerCastSkill

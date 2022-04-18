@@ -241,14 +241,28 @@ void World::Replicate()
 
 		Replication::ActorNpc rfl;
 		rfl.actorUID = actor.UID;
-		rfl.type = 1;
 		rfl.docID = actor.docID;
 		rfl.pos = actor.pos;
-		rfl.dir = actor.dir;
+		rfl.dir = actor.rot;
 		rfl.localID = actor.localID;
 		rfl.faction = actor.faction;
 
 		replication->FramePushNpcActor(rfl);
+	}
+
+	// dynamic
+	foreach_const(it, actorDynamicList) {
+		const ActorDynamic& actor = *it;
+
+		Replication::ActorDynamic rfl;
+		rfl.actorUID = actor.UID;
+		rfl.docID = actor.docID;
+		rfl.pos = actor.pos;
+		rfl.rot = actor.rot;
+		rfl.localID = actor.localID;
+		rfl.faction = actor.faction;
+
+		replication->FramePushDynamicActor(rfl);
 	}
 }
 
@@ -308,6 +322,19 @@ World::ActorNpc& World::SpawnNpcActor(CreatureIndex docID, i32 localID)
 	actor.localID = localID;
 
 	actorNpcMap.emplace(actorUID, --actorNpcList.end());
+	return actor;
+}
+
+World::ActorDynamic& World::SpawnDynamic(CreatureIndex docID, i32 localID)
+{
+	ActorUID actorUID = NewActorUID();
+
+	actorDynamicList.emplace_back(actorUID);
+	auto& actor = actorDynamicList.back();
+	actor.docID = (CreatureIndex)docID;
+	actor.localID = localID;
+
+	actorDynamicMap.emplace(actorUID, --actorDynamicList.end());
 	return actor;
 }
 

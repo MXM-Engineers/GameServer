@@ -25,6 +25,7 @@ struct Replication
 		INVALID = 0,
 		Master,
 		Npc,
+		Dynamic,
 	};
 
 	template<ActorType TYPE_>
@@ -85,23 +86,33 @@ struct Replication
 	struct ActorNpc: Actor<ActorType::Npc>
 	{
 		CreatureIndex docID;
-		i32 type;
 		i32 localID;
-		i32 faction;
+		Faction faction;
 
 		vec3 pos;
 		vec3 dir;
 	};
 
+	struct ActorDynamic: Actor<ActorType::Dynamic>
+	{
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		vec3 pos;
+		vec3 rot;
+	};
+
 	struct Frame
 	{
 		eastl::fixed_list<Player,10,false> playerList;
-		eastl::fixed_list<ActorMaster,2048,true> masterList;
-		eastl::fixed_list<ActorNpc,2048,true> npcList;
+		eastl::fixed_list<ActorMaster,32,true> masterList;
+		eastl::fixed_list<ActorNpc,32,true> npcList;
+		eastl::fixed_list<ActorDynamic,32,true> dynamicList;
 
 		eastl::array<decltype(playerList)::iterator,10> playerMap;
-		hash_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
-		hash_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
+		hash_map<ActorUID,decltype(masterList)::iterator,128,true> masterMap;
+		hash_map<ActorUID,decltype(npcList)::iterator,128,true> npcMap;
+		hash_map<ActorUID,decltype(dynamicList)::iterator,128,true> dynamicMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		hash_map<ActorUID,ActorType,2048,true> actorType;
@@ -167,6 +178,7 @@ struct Replication
 	void FramePushPlayer(const Player& player);
 	void FramePushMasterActors(const ActorMaster* actorList, const i32 count);
 	void FramePushNpcActor(const ActorNpc& actor);
+	void FramePushDynamicActor(const ActorDynamic& actor);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
@@ -202,6 +214,7 @@ private:
 
 	void SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster& actor, const Player& parent);
 	void SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor);
+	void SendActorDynamicSpawn(ClientHandle clientHd, const ActorDynamic& actor);
 	void SendActorDestroy(ClientHandle clientHd, ActorUID actorUID);
 
 	void SendMasterSkillSlots(ClientHandle clientHd, const ActorMaster& actor);

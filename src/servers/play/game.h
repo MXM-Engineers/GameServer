@@ -56,7 +56,7 @@ struct Game
 	eastl::fixed_list<Player,MAX_PLAYERS,false> playerList;
 	hash_map<ClientHandle, decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
 
-	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
+	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)Faction::_COUNT> mapSpawnPoints;
 
 	Time startTime;
 	Time localTime;
@@ -97,6 +97,4 @@ struct Game
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);
-
-	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };

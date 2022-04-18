@@ -26,14 +26,14 @@ struct GameXmlContent
 	struct Spawn
 	{
 		enum class Type: i32 {
-			NPC_SPAWN=0,
+			NORMAL=0,
 			SPAWN_POINT
 		};
 
 		CreatureIndex docID;
 		i32 localID;
 		Type type;
-		TeamID team;
+		Faction faction;
 		vec3 pos;
 		vec3 rot;
 

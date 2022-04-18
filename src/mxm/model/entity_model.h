@@ -27,5 +27,5 @@ private:
 	float _MoveSpeed = 0.0f;
 	float _RotateSpeed = 0.0f;
 	float _Scale = 0.0f;
-	EntityType _entityType = EntityType::ENTITY_INVALID;
+	EntityType _entityType = EntityType::INVALID;
 };

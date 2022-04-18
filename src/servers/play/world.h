@@ -124,11 +124,23 @@ struct World
 		const ActorUID UID;
 		CreatureIndex docID;
 		i32 localID;
-		i32 faction;
+		Faction faction;
 		vec3 pos;
-		vec3 dir;
+		vec3 rot;
 
 		explicit ActorNpc(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct ActorDynamic
+	{
+		const ActorUID UID;
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		vec3 pos;
+		vec3 rot;
+
+		explicit ActorDynamic(ActorUID UID_): UID(UID_) {}
 	};
 
 
@@ -137,12 +149,15 @@ struct World
 	eastl::fixed_vector<Player,10,false> players;
 	eastl::fixed_list<ActorMaster,512,true> actorMasterList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
+	eastl::fixed_list<ActorDynamic,512,true> actorDynamicList;
 
 	typedef ListItT<ActorNpc> ActorNpcHandle;
+	typedef ListItT<ActorDynamic> ActorDynamicHandle;
 
 	// TODO: make those fixed_hash_maps
 	eastl::fixed_map<ActorUID, ActorMasterHandle, 2048, true> actorMasterMap;
 	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
+	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
 
 	u32 nextActorUID;
 	Time localTime;
@@ -157,6 +172,7 @@ struct World
 
 	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
+	ActorDynamic& SpawnDynamic(CreatureIndex docID, i32 localID);
 
 	Player& GetPlayer(u32 playerIndex);
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;

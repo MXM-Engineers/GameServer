@@ -1410,6 +1410,48 @@ inline const char* PacketSerialize<Sv::SN_RunClientLevelEvent>(const void* packe
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Sv::SN_UpdateGameOwner>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_UpdateGameOwner& packet = *(Sv::SN_UpdateGameOwner*)packetData;
+
+	SER("SN_UpdateGameOwner(%d, %d) :: {", Sv::SN_UpdateGameOwner::NET_ID, packetSize);
+	SER("	userID=%d", packet.userID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_LobbyStartGame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_LobbyStartGame& packet = *(Sv::SN_LobbyStartGame*)packetData;
+
+	SER("SN_LobbyStartGame(%d, %d) :: {", Sv::SN_LobbyStartGame::NET_ID, packetSize);
+	SER("	stageType=%d", packet.stageType);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_CityMapInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_CityMapInfo& packet = *(Sv::SN_CityMapInfo*)packetData;
+
+	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
+	SER("	cityMapID=%d", packet.cityMapID);
+	SER("}");
+
+	return str.data();
+}
+
 
 template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
@@ -1674,9 +1716,6 @@ DEFAULT_SERIALIZE(Sv::SN_SpawnPosForMinimap);
 DEFAULT_SERIALIZE(Sv::SN_InitIngameModeInfo);
 DEFAULT_SERIALIZE(Sv::SN_ScanEnd);
 DEFAULT_SERIALIZE(Sv::SN_SetGameGvt);
-DEFAULT_SERIALIZE(Sv::SN_CityMapInfo);
-DEFAULT_SERIALIZE(Sv::SN_UpdateGameOwner);
-DEFAULT_SERIALIZE(Sv::SN_LobbyStartGame);
 DEFAULT_SERIALIZE(Sv::SA_GetCharacterInfo);
 DEFAULT_SERIALIZE(Sv::SN_LeaderCharacter);
 DEFAULT_SERIALIZE(Sv::SA_SetLeader);

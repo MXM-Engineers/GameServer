@@ -320,7 +320,7 @@ enum class StageType: i32
 {
 	INVALID = 0,
 	CITY = 1, // LOBBY
-	PLAY_INSTANCE = 2
+	PVP_GAME = 2
 };
 
 enum class StageRule: i32

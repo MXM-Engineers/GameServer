@@ -141,7 +141,7 @@ void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 	SendPacket(clientHd, owner);
 
 	Sv::SN_LobbyStartGame lobby;
-	lobby.stageType = StageType::PLAY_INSTANCE;
+	lobby.stageType = StageType::PVP_GAME;
 	SendPacket(clientHd, lobby);
 
 	// SN_CityMapInfo
@@ -527,10 +527,9 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		PacketWriter<Sv::SN_GameFieldReady,4096> packet;
 
 		packet.Write<i32>(1); // InGameID=449
-		packet.Write(GameType::PVP_Rank); // GameType=
-		packet.Write<i32>(190002202); // AreaIndex=190002202
-		//packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex // FIXME: wrong stage index?
-		packet.Write<StageIndex>(StageIndex::CombatArena); // StageIndex
+		packet.Write(GameType::PVP_Tutorial); // GameType=
+		packet.Write<i32>(190002102); // AreaIndex=190002202
+		packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex
 		packet.Write(GameDefinition::System); // GameDefinitionType=
 		packet.Write<u8>(6); // initPlayerCount=6
 		packet.Write<u8>(1); // CanEscape=1
@@ -551,6 +550,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		packet.Write<u16>(frameCur->playerList.size());
 
 		foreach_const(pit, frameCur->playerList) {
+			const bool self = pit->clientHd == clientHd;
 			const Player& p = *pit;
 
 			const GameXmlContent::Master& pmmain = content.GetMaster(p.mainClass);
@@ -560,14 +560,27 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.mainClass)); //mainCreatureIndex
 			packet.Write<SkinIndex>(p.mainSkin); //mainSkinIndex
 
-			packet.Write<SkillID>(pmmain.skillIDs[0]); //mainSkillindex1
-			packet.Write<SkillID>(pmmain.skillIDs[1]); //mainSkillIndex2
+			if(self) {
+				packet.Write<SkillID>(pmmain.skillIDs[0]); //mainSkillindex1
+				packet.Write<SkillID>(pmmain.skillIDs[1]); //mainSkillIndex2
+			}
+			else {
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
+			}
+
 
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.subClass)); //subCreatureIndex
 			packet.Write<SkinIndex>(p.subSkin); //subSkinIndex
 
-			packet.Write<SkillID>(pmsub.skillIDs[0]); //subSkillIndex1
-			packet.Write<SkillID>(pmsub.skillIDs[1]); //subSkillIndex2
+			if(self) {
+				packet.Write<SkillID>(pmsub.skillIDs[0]); //subSkillIndex1
+				packet.Write<SkillID>(pmsub.skillIDs[1]); //subSkillIndex2
+			}
+			else {
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
+			}
 
 			packet.Write<i32>(-1); //stageSkillIndex1
 			packet.Write<i32>(-1); //stageSkillIndex2

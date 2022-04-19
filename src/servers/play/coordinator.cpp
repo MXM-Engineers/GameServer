@@ -652,7 +652,7 @@ void Coordinator::CreateDevGame()
 		bot.skins.fill(SkinIndex::DEFAULT);
 
 		for(int attempts = 0; attempts < 10000; attempts++) {
-			u32 r0 = RandUint() % allowedMastersSet.size();
+			const u32 r0 = RandUint() % allowedMastersSet.size();
 
 			u32 i = 0;
 			foreach_const(m, allowedMastersSet) {
@@ -668,7 +668,7 @@ void Coordinator::CreateDevGame()
 							bot.skills[0] = master.skillIDs[0];
 							bot.skills[1] = master.skillIDs[1];
 						}
-						else {
+						else if(bot.masters[0] != classType){
 							bot.masters[1] = classType;
 							bot.skills[2] = master.skillIDs[0];
 							bot.skills[3] = master.skillIDs[1];

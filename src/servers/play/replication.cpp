@@ -241,7 +241,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	}
 }
 
-void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, EChatType chatType, const wchar* msg, i32 msgLen)
 {
 	const i32 toClientID = playerMap.at(toClientHd);
 	if(playerState[toClientID].cur < PlayerState::IN_GAME) return;
@@ -250,12 +250,31 @@ void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* 
 
 	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
-	packet.Write<i32>(chatType); // chatType
+	packet.Write<EChatType>(chatType); // chatType
 	packet.WriteStringObj(senderName);
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
 	SendPacket(toClientHd, packet);
+}
+
+void Replication::SendClientLevelEvent(ClientHandle clientHd, i32 eventID)
+{
+	Sv::SN_RunClientLevelEvent event;
+	event.eventID = eventID;
+	event.caller = 0;
+	event.serverTime = (i64)TimeDiffMs(TimeRelNow());
+	SendPacket(clientHd, event);
+}
+
+void Replication::SendClientLevelEventSeq(ClientHandle clientHd, i32 eventID)
+{
+	Sv::SN_RunClientLevelEventSeq seq;
+	seq.needCompleteTriggerAckID = -1;
+	seq.rootEventID = eventID;
+	seq.caller = 0;
+	seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
+	SendPacket(clientHd, seq);
 }
 
 void Replication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
@@ -698,6 +717,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 	notifyTimestamp.maxCount = 5;
 	SendPacket(clientHd, notifyTimestamp);
 
+
+	// EVENT: Starts music?
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -707,6 +728,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: You have entered the Combat Arena, the match begins soon
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -716,6 +739,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: Locks skill casting
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -725,6 +750,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: Pings the middle of the map where a powerup is
 	// Sv::SN_RunClientLevelEvent
 	{
 		Sv::SN_RunClientLevelEvent event;
@@ -733,6 +760,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		SendPacket(clientHd, event);
 	}
+
+	// EVENT: ???
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -742,6 +771,8 @@ void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: ???
 	// Sv::SN_RunClientLevelEvent
 	{
 		Sv::SN_RunClientLevelEvent event;
@@ -768,8 +799,7 @@ void Replication::SendGameStart(ClientHandle clientHd)
 	notify.isRestrictedByAAS = 0;
 	SendPacket(clientHd, notify);
 
-	// Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
-
+	// EVENT: Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -780,8 +810,9 @@ void Replication::SendGameStart(ClientHandle clientHd)
 		SendPacket(clientHd, seq);
 	}
 
-	// Timer related event
 
+	// EVENT: Start the internal battle timer (240s)
+	// -> will then call following sequence events (271, 272, 273, 274). "battle will end in 1min, 30s".
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;

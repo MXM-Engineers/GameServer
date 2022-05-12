@@ -858,7 +858,8 @@ inline mat4 MakeModelMatrixFromTransform(const Transform& t)
 {
 	mat4 model = glm::identity<mat4>();
 	model = glm::translate(model, t.pos);
-	model = model * glm::eulerAngleZYX(t.rot.x, -t.rot.y, t.rot.z);
+	//model = model * glm::eulerAngleZYX(t.rot.x, -t.rot.y, t.rot.z);
+	model = model * glm::eulerAngleXYZ(t.rot.x, t.rot.y, t.rot.z);
 	model = glm::scale(model, t.scale);
 	return model;
 }

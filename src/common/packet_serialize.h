@@ -1404,7 +1404,7 @@ inline const char* PacketSerialize<Sv::SN_RunClientLevelEvent>(const void* packe
 	SER("SN_RunClientLevelEvent(%d, %d) :: {", Sv::SN_RunClientLevelEvent::NET_ID, packetSize);
 	SER("	eventID=%d", packet.eventID);
 	SER("	caller=%d", packet.caller);
-	SER("	needCompleteTriggerAckID=%lld", packet.serverTime);
+	SER("	serverTime=%lld", packet.serverTime);
 	SER("}");
 
 	return str.data();
@@ -1447,6 +1447,23 @@ inline const char* PacketSerialize<Sv::SN_CityMapInfo>(const void* packetData, c
 
 	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
 	SER("	cityMapID=%d", packet.cityMapID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_RunClientLevelEventSeq>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_RunClientLevelEventSeq& packet = *(Sv::SN_RunClientLevelEventSeq*)packetData;
+
+	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
+	SER("	needCompleteTriggerAckID=%d", packet.needCompleteTriggerAckID);
+	SER("	rootEventID=%d", packet.rootEventID);
+	SER("	caller=%d", packet.caller);
+	SER("	serverTime=%lld", packet.serverTime);
 	SER("}");
 
 	return str.data();
@@ -1724,7 +1741,6 @@ DEFAULT_SERIALIZE(Sv::SA_GameReady);
 DEFAULT_SERIALIZE(Sv::SN_NotifyIngameSkillPoint);
 DEFAULT_SERIALIZE(Sv::SN_NotifyTimestamp);
 DEFAULT_SERIALIZE(Sv::SN_NotifyAasRestricted);
-DEFAULT_SERIALIZE(Sv::SN_RunClientLevelEventSeq);
 DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTurn);
 DEFAULT_SERIALIZE(Sv::SN_DestroyEntity);
 DEFAULT_SERIALIZE(Sv::SN_RegionServicePolicy);

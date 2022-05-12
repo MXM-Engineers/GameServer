@@ -141,6 +141,7 @@ void Game::Update(Time localTime_)
 		} break;
 
 		case Phase::Game: {
+#if 0
 			// bot random actions
 			foreach(bot, botList) {
 				if(localTime > bot->tNextAction) {
@@ -198,6 +199,7 @@ void Game::Update(Time localTime_)
 					}
 				}
 			}
+#endif
 		} break;
 	}
 
@@ -549,6 +551,11 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
 
+	// null terminate
+	eastl::fixed_string<wchar,1024,true> msgBuff;
+	msgBuff.assign(msg, len);
+	msg = msgBuff.data();
+
 	Player& p = *playerMap.at(clientHd);
 
 	static ActorUID lastLegoActorUID = ActorUID::INVALID;
@@ -586,6 +593,39 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 			return true;
 			*/
 		}
+
+		i32 event = 0;
+		if(EA::StdC::Sscanf(msg, L"e %d", &event) == 1) {
+			replication.SendChatMessageToClient(clientHd, L"Dbg", EChatType::NOTICE_CHAT, LFMT(L"Event (%d)", event));
+			replication.SendClientLevelEvent(clientHd, event);
+			return true;
+		}
+
+		i32 eventSeq = 0;
+		if(EA::StdC::Sscanf(msg, L"es %d", &eventSeq) == 1) {
+			replication.SendChatMessageToClient(clientHd, L"Dbg", EChatType::NOTICE_CHAT, LFMT(L"Event Sequence (%d)", eventSeq));
+			replication.SendClientLevelEventSeq(clientHd, eventSeq);
+			return true;
+		}
+
+		// Spawn a wall
+		// NOTE: Walls probably spawn on an "area point" (Area.xml)
+		if(EA::StdC::Strcmp(msg, L"wall") == 0) {
+			World::Player& playerActor = world.GetPlayer(p.playerIndex); // TODO: find currently active actor
+			const vec3 pos = playerActor.body->GetWorldPos();
+
+			// is lovalID used for anything?
+			static i32 localID = 37;
+			World::ActorDynamic& dyn = world.SpawnDynamic(CreatureIndex(110042602), localID++);
+			dyn.pos = pos;
+
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", pos.x, pos.y, pos.z));
+			return true;
+		}
+
+		// TODO:
+		// - Spawn all walls
+		// - Make them have a physical body (box)
 	}
 
 	return false;
@@ -593,5 +633,5 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 
 void Game::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
-	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
+	replication.SendChatMessageToClient(clientHd, L"System", EChatType::NOTICE, msg);
 }

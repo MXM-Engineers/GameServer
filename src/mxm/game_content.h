@@ -26,27 +26,38 @@ struct GameXmlContent
 		CharacterModel character;
 	};
 
-	struct Spawn
-	{
-		enum class Type: i32 {
-			NORMAL=0,
-			SPAWN_POINT
-		};
-
-		CreatureIndex docID;
-		i32 localID;
-		Type type;
-		Faction faction;
-		vec3 pos;
-		vec3 rot;
-
-		inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
-	};
-
 	struct Map
 	{
+		struct Spawn
+		{
+			enum class Type: i32 {
+				NORMAL=0,
+				SPAWN_POINT
+			};
+
+			CreatureIndex docID;
+			i32 localID;
+			Type type;
+			Faction faction;
+			vec3 pos;
+			vec3 rot;
+
+			inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
+		};
+
+		struct Area
+		{
+			i32 ID;
+			i32 type;
+			i32 layer;
+			vec3 size;
+			vec3 pos;
+			vec3 rot;
+		};
+
 		eastl::fixed_vector<Spawn,512> creatures;
 		eastl::fixed_vector<Spawn,512> dynamic;
+		eastl::fixed_vector<Area,512> areas;
 	};
 
 	struct MapList

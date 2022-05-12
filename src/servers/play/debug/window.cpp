@@ -119,6 +119,7 @@ struct Window
 	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
 	bool ui_bPhysicsTest = false;
+	bool ui_bAreas = false;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -141,6 +142,7 @@ struct Window
 	void WindowPhysicsScene(PhysicsScene& scene, const char* name);
 	void WindowGameStates();
 	void WindowPhysicsTest();
+	void WindowAreas();
 
 	void NewFrame(Dbg::GameUID gameUID);
 	void Update(f64 delta);
@@ -520,6 +522,74 @@ void Window::WindowPhysicsTest()
 	Draw(*testSubject.actor, vec3(1, 0, 1));
 }
 
+void Window::WindowAreas()
+{
+	const GameXmlContent& xml = GetGameXmlContent();
+	const auto& map = xml.mapPvpDeathMatch;
+
+	const eastl::array<vec3,5> color = {
+		vec3(1, 1, 1),
+		vec3(1, 0, 1),
+		vec3(1, 1, 0),
+		vec3(0, 1, 1),
+		vec3(0, 0, 1),
+	};
+
+	foreach_const(area, map.areas) {
+		vec3 rot = area->rot;
+		rdr.PushMesh(Pipeline::Wireframe, "CubeCentered", area->pos, rot, area->size, color[area->type]);
+	}
+
+	if(ImGui::Begin("Areas")) {
+		ImGui::BeginTable("areas_table", 12);
+		ImGui::TableSetupColumn("ID");
+		ImGui::TableSetupColumn("Type");
+		ImGui::TableSetupColumn("Layer");
+		ImGui::TableSetupColumn("PosX");
+		ImGui::TableSetupColumn("PosY");
+		ImGui::TableSetupColumn("PosZ");
+		ImGui::TableSetupColumn("SizeX");
+		ImGui::TableSetupColumn("SizeY");
+		ImGui::TableSetupColumn("SizeZ");
+		ImGui::TableSetupColumn("RotX");
+		ImGui::TableSetupColumn("RotY");
+		ImGui::TableSetupColumn("RotZ");
+		ImGui::TableHeadersRow();
+
+		foreach_const(area, map.areas) {
+			ImGui::TableNextRow();
+
+			ImGui::TableNextColumn();
+			ImGui::Text("%d", area->ID);
+			ImGui::TableNextColumn();
+			ImGui::Text("%d", area->type);
+			ImGui::TableNextColumn();
+			ImGui::Text("%d", area->layer);
+			ImGui::TableNextColumn();
+
+			ImGui::Text("%.2f", area->pos.x);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->pos.y);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->pos.z);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->size.x);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->size.y);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->size.z);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->rot.x);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->rot.y);
+			ImGui::TableNextColumn();
+			ImGui::Text("%.2f", area->rot.z);
+		}
+		ImGui::EndTable();
+	}
+	ImGui::End();
+}
+
 // WARNING: Threaded call
 void Window::NewFrame(Dbg::GameUID gameUID)
 {
@@ -552,6 +622,7 @@ void Window::Update(f64 delta)
 			ImGui::MenuItem("Physics tests", "", &ui_bPhysicsTest);
 			ImGui::MenuItem("Map wireframe", "", &ui_bMapWireframe);
 			ImGui::MenuItem("Game states", "", &ui_bGameStates);
+			ImGui::MenuItem("Areas", "", &ui_bAreas);
 			ImGui::EndMenu();
 		}
 
@@ -601,6 +672,10 @@ void Window::Update(f64 delta)
 
 	if(ui_bPhysicsTest) {
 		WindowPhysicsTest();
+	}
+
+	if(ui_bAreas) {
+		WindowAreas();
 	}
 }
 

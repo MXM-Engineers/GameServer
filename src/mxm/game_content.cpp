@@ -118,6 +118,8 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData)
 {
+	// Find a better way to check this
+	// Simple path hash map?
 	ASSERT_MSG(xmlData.NoChildren(), "xml already parsed");
 
 	Path filePath = gameDataDir;
@@ -759,7 +761,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
 	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
 	for(pSpawnElt = pMapEntityCreature->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
-		Spawn spawn;
+		Map::Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
 		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
@@ -769,10 +771,10 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NORMAL;
+		spawn.type = Map::Spawn::Type::NORMAL;
 		bool returnPoint;
 		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
-			spawn.type = Spawn::Type::SPAWN_POINT;
+			spawn.type = Map::Spawn::Type::SPAWN_POINT;
 		}
 
 		spawn.faction = Faction::INVALID;
@@ -788,7 +790,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 
 	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
 	for(XMLElement* pSpawnElt = pMapEntityDynamic->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
-		Spawn spawn;
+		Map::Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
 		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
@@ -798,7 +800,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NORMAL;
+		spawn.type = Map::Spawn::Type::NORMAL;
 
 		spawn.faction = Faction::INVALID;
 		const char* teamString;
@@ -809,6 +811,31 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		}
 
 		map->dynamic.push_back(spawn);
+	}
+
+
+	// Areas
+	XMLDocument areasXml;
+	if(!LoadXMLFile(LFMT(L"/%s/Area.xml", tempPathData), areasXml)) return false;
+
+	pMapInfo = areasXml.FirstChildElement();
+	XMLElement* pMapAreaInfo = pMapInfo->FirstChildElement();
+	for(XMLElement* pAreaList = pMapAreaInfo->FirstChildElement(); pAreaList; pAreaList = pAreaList->NextSiblingElement()) {
+		Map::Area area;
+		pAreaList->QueryAttribute("dwID", &area.ID);
+		pAreaList->QueryAttribute("dwType", &area.type);
+		// TODO: hard to judge what width, height and length represent
+		pAreaList->QueryAttribute("fWidth", &area.size.z);
+		pAreaList->QueryAttribute("fHeight", &area.size.y);
+		pAreaList->QueryAttribute("fLength", &area.size.x);
+		pAreaList->QueryAttribute("kTranslate_x", &area.pos.x);
+		pAreaList->QueryAttribute("kTranslate_y", &area.pos.y);
+		pAreaList->QueryAttribute("kTranslate_z", &area.pos.z);
+		pAreaList->QueryAttribute("kRotation_x", &area.rot.x);
+		pAreaList->QueryAttribute("kRotation_y", &area.rot.y);
+		pAreaList->QueryAttribute("kRotation_z", &area.rot.z);
+		pAreaList->QueryAttribute("layer", &area.layer);
+		map->areas.push_back(area);
 	}
 
 	return true;

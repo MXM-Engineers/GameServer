@@ -131,8 +131,15 @@ void Game::Update(Time localTime_)
 
 				// FIXME: hack to delete the spawn doors
 				// FIXME: door death effect
-				world.actorDynamicList.clear();
-				world.actorDynamicMap.clear();
+				for(auto it = world.actorDynamicList.begin(); it != world.actorDynamicList.end();) {
+					if(it->docID == CreatureIndex(110040546)) { // door
+						world.actorDynamicMap.erase(it->UID);
+						it = world.actorDynamicList.erase(it);
+					}
+					else {
+						++it;
+					}
+				}
 
 				foreach_const(p, playerList) {
 					replication.SendGameStart(p->clientHd);
@@ -286,6 +293,16 @@ bool Game::LoadMap()
 		actor.pos = it->pos;
 		actor.rot = it->rot;
 		actor.faction = it->faction;
+	}
+
+	// TODO: spawn walls dynamically
+	foreach(it, content.mapPvpDeathMatch.areas) {
+		if(it->layer == 49) {
+			// spawn wall
+			auto& actor = world.SpawnDynamic(CreatureIndex(110042602), it->ID);
+			actor.pos = it->pos;
+			actor.rot = it->rot;
+		}
 	}
 	return true;
 }

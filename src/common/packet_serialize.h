@@ -1459,11 +1459,32 @@ inline const char* PacketSerialize<Sv::SN_RunClientLevelEventSeq>(const void* pa
 
 	const Sv::SN_RunClientLevelEventSeq& packet = *(Sv::SN_RunClientLevelEventSeq*)packetData;
 
-	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
+	SER("SN_RunClientLevelEventSeq(%d, %d) :: {", Sv::SN_RunClientLevelEventSeq::NET_ID, packetSize);
 	SER("	needCompleteTriggerAckID=%d", packet.needCompleteTriggerAckID);
 	SER("	rootEventID=%d", packet.rootEventID);
 	SER("	caller=%d", packet.caller);
 	SER("	serverTime=%lld", packet.serverTime);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_ActionChangeLevelEvent>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ActionChangeLevelEvent(%d, %d) :: {", Sv::SN_ActionChangeLevelEvent::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	targetIDs(%u)=[", count);
+	for(u16 i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<LocalActorID>());
+	}
+	SER("	]");
+	SER("	action=%d", buff.Read<ActionStateID>());
+	SER("	serverTime=%lld", buff.Read<i64>());
 	SER("}");
 
 	return str.data();

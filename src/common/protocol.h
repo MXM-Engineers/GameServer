@@ -379,7 +379,7 @@ enum class Faction: i32
 	INVALID = -1,
 	RED = 0,
 	BLUE = 1,
-	DYNAMIC = 1,
+	DYNAMIC = 2,
 	_COUNT = 2
 };
 
@@ -2879,6 +2879,16 @@ struct SN_InitIngameModeInfo
 	u8 nextTitanIndex;
 	u16 listExceptionStat_count;
 	i32 listExceptionStat[1]; // TODO: not actually int
+};
+
+struct SN_ActionChangeLevelEvent
+{
+	enum { NET_ID = 62577 };
+
+	u16 targetIDs_count;
+	LocalActorID targetIDs[1];
+	ActionStateID actionID;
+	i64 serverTime;
 };
 
 PUSH_PACKED

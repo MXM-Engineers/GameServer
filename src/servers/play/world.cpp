@@ -261,6 +261,7 @@ void World::Replicate()
 		rfl.rot = actor.rot;
 		rfl.localID = actor.localID;
 		rfl.faction = actor.faction;
+		rfl.action = actor.action;
 
 		replication->FramePushDynamicActor(rfl);
 	}
@@ -333,6 +334,9 @@ World::ActorDynamic& World::SpawnDynamic(CreatureIndex docID, i32 localID)
 	auto& actor = actorDynamicList.back();
 	actor.docID = (CreatureIndex)docID;
 	actor.localID = localID;
+	actor.faction = Faction::DYNAMIC;
+	actor.action = ActionStateID::DYNAMIC_NORMAL_STAND;
+	actor.tLastActionChange = localTime;
 
 	actorDynamicMap.emplace(actorUID, --actorDynamicList.end());
 	return actor;

@@ -98,6 +98,7 @@ struct Replication
 		CreatureIndex docID;
 		i32 localID;
 		Faction faction;
+		ActionStateID action;
 		vec3 pos;
 		vec3 rot;
 	};
@@ -130,6 +131,13 @@ struct Replication
 		{
 			auto found = masterMap.find(actorUID);
 			if(found == masterMap.end()) return nullptr;
+			return &(*found->second);
+		}
+
+		inline ActorDynamic* FindDynamic(ActorUID actorUID)
+		{
+			auto found = dynamicMap.find(actorUID);
+			if(found == dynamicMap.end()) return nullptr;
 			return &(*found->second);
 		}
 	};
@@ -248,4 +256,7 @@ private:
 		NT_LOG("[client%x] Replication :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
+
+	typedef eastl::fixed_vector<ClientHandle,MAX_PLAYERS> ClientList;
+	void GetPlayersInGame(ClientList* list);
 };

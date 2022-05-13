@@ -129,12 +129,14 @@ void Game::Update(Time localTime_)
 			if(phaseTime < localTime) {
 				phase = Phase::Game;
 
-				// FIXME: hack to delete the spawn doors
-				// FIXME: door death effect
+				// TODO: delete when inactive
 				for(auto it = world.actorDynamicList.begin(); it != world.actorDynamicList.end();) {
 					if(it->docID == CreatureIndex(110040546)) { // door
-						world.actorDynamicMap.erase(it->UID);
-						it = world.actorDynamicList.erase(it);
+						it->action = ActionStateID::DYNAMIC_OPEN;
+
+						//world.actorDynamicMap.erase(it->UID);
+						//it = world.actorDynamicList.erase(it);
+						++it;
 					}
 					else {
 						++it;
@@ -207,6 +209,21 @@ void Game::Update(Time localTime_)
 				}
 			}
 #endif
+			foreach(it, world.actorDynamicList) {
+				if(it->docID == CreatureIndex(110042602) && TimeDiffSec(TimeDiff(it->tLastActionChange, localTime)) > 4.0) { // wall
+					if(RandInt(0, 150) == 0) {
+						if(it->action == ActionStateID::DYNAMIC_NORMAL_STAND || it->action == ActionStateID::DYNAMIC_CLOSE) {
+							it->action = ActionStateID::DYNAMIC_OPEN;
+						}
+						else {
+							it->action = ActionStateID::DYNAMIC_CLOSE;
+						}
+
+						it->tLastActionChange = localTime;
+					}
+				}
+			}
+
 		} break;
 	}
 

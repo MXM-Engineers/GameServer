@@ -147,6 +147,8 @@ struct World
 		CreatureIndex docID;
 		i32 localID;
 		Faction faction;
+		ActionStateID action;
+		Time tLastActionChange;
 		vec3 pos;
 		vec3 rot;
 
@@ -170,7 +172,7 @@ struct World
 	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
 
 	u32 nextActorUID;
-	Time localTime;
+	Time localTime = Time::ZERO;
 
 	PhysicsScene physics;
 

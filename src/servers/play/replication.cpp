@@ -1533,6 +1533,30 @@ void Replication::FrameDifference()
 			}
 		}
 	}
+
+	// diff dynamics
+	foreach_const(it, frameCur->dynamicList) {
+		const ActorDynamic& cur = *it;
+		const ActorDynamic* found = framePrev->FindDynamic(cur.actorUID);
+		if(!found) continue;
+		const ActorDynamic& prev = *found;
+
+		// change action
+		if(cur.action != prev.action) {
+			ClientList list;
+			GetPlayersInGame(&list);
+			foreach_const(clientHd, list) {
+				LocalActorID localActorID = GetLocalActorID(*clientHd, cur.actorUID);
+
+				PacketWriter<Sv::SN_ActionChangeLevelEvent,64> packet;
+				packet.WriteVec<LocalActorID>(&localActorID, 1);
+				packet.Write(cur.action); // action
+				packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
+
+				SendPacket(*clientHd, packet);
+			}
+		}
+	}
 }
 
 void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster& actor, const Player& parent)
@@ -2135,4 +2159,13 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 {
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
+}
+
+void Replication::GetPlayersInGame(ClientList* list)
+{
+	for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+		if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+		const ClientHandle clientHd = clientHandle[pi];
+		list->push_back(clientHd);
+	}
 }

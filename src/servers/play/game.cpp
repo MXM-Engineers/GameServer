@@ -7,6 +7,9 @@
 #include <mxm/game_content.h>
 #include "config.h"
 
+const CreatureIndex CI_DOOR = CreatureIndex(110040546);
+const CreatureIndex CI_WALL = CreatureIndex(110042602);
+
 void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle, MAX_PLAYERS>& playerClientHdList)
 {
 	replication.Init(server_);
@@ -131,7 +134,7 @@ void Game::Update(Time localTime_)
 
 				// TODO: delete when inactive
 				for(auto it = world.actorDynamicList.begin(); it != world.actorDynamicList.end();) {
-					if(it->docID == CreatureIndex(110040546)) { // door
+					if(it->docID == CI_DOOR) { // door
 						it->action = ActionStateID::DYNAMIC_OPEN;
 
 						//world.actorDynamicMap.erase(it->UID);
@@ -210,7 +213,7 @@ void Game::Update(Time localTime_)
 			}
 #endif
 			foreach(it, world.actorDynamicList) {
-				if(it->docID == CreatureIndex(110042602) && TimeDiffSec(TimeDiff(it->tLastActionChange, localTime)) > 4.0) { // wall
+				if(it->docID == CI_WALL && TimeDiffSec(TimeDiff(it->tLastActionChange, localTime)) > 4.0) { // wall
 					if(RandInt(0, 150) == 0) {
 						if(it->action == ActionStateID::DYNAMIC_NORMAL_STAND || it->action == ActionStateID::DYNAMIC_CLOSE) {
 							it->action = ActionStateID::DYNAMIC_OPEN;
@@ -312,11 +315,40 @@ bool Game::LoadMap()
 		actor.faction = it->faction;
 	}
 
-	// TODO: spawn walls dynamically
+	// spawn walls dynamically
+
+	// NOTE: Found in "Data/Design/Level/PVP/PVP_DeathMatch/EVENTNODES/LEVELEVENT_SERVER.XML"
+	const eastl::fixed_set<i32,12,false> configurations[] = {
+		{ 179, 178, 177, 176, 175, 174, 173, 172, 171, 170 }, // 10 A type
+		{ 40, 41, 45, 46, 39, 48, 37, 49, 36, 38, 51, 50 }, // 12 A type
+		{ 39, 48, 45, 40, 37, 49, 38, 50 }, // 8 A type
+		{ 39, 45, 46, 49, 36, 51 }, // 6 B type
+		{ 40, 45, 48, 37, 38, 50 }, // 6 A type
+		{ 48, 37, 41, 51 }, // 4 C type
+		{ 48, 37, 45, 38 }, // 4 B type
+		{ 51, 41, 48, 36 }, // 4 A type
+	};
+
+	const eastl::array<const char*, ARRAY_COUNT(configurations)> configurationName = {
+		"10 A type",
+		"12 A type",
+		"8 A type",
+		"6 B type",
+		"6 A type",
+		"4 C type",
+		"4 B type",
+		"4 A type",
+	};
+
+	const i32 chosenConf = RandInt(0, ARRAY_COUNT(configurations)-1);
+	const auto& wallConf = configurations[chosenConf];
+	const char* wallConfName = configurationName[chosenConf];
+
+	LOG("LoadMap> chosen wall configuration = '%s'", wallConfName);
+
 	foreach(it, content.mapPvpDeathMatch.areas) {
-		if(it->layer == 49) {
-			// spawn wall
-			auto& actor = world.SpawnDynamic(CreatureIndex(110042602), it->ID);
+		if(wallConf.find(it->ID) != wallConf.end()) {
+			auto& actor = world.SpawnDynamic(CI_WALL, it->ID);
 			actor.pos = it->pos;
 			actor.rot = it->rot;
 		}

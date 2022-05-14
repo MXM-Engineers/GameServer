@@ -257,6 +257,6 @@ private:
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 
-	typedef eastl::fixed_vector<ClientHandle,MAX_PLAYERS> ClientList;
+	typedef eastl::fixed_vector<ClientHandle,MAX_PLAYERS,false> ClientList;
 	void GetPlayersInGame(ClientList* list);
 };

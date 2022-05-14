@@ -110,6 +110,7 @@ struct CollisionNifReader
 			eastl::fixed_vector<Component,16,true> componentList;
 		};
 
+		i32 parentBlockID;
 		eastl::fixed_string<char,64,false> name;
 		/*
 			<option value="0" name="MESH_PRIMITIVE_TRIANGLES">Triangle primitive type.</option>
@@ -132,6 +133,7 @@ struct CollisionNifReader
 
 	struct Node
 	{
+		i32 blockID;
 		eastl::fixed_string<char,64,false> name;
 	};
 
@@ -142,11 +144,14 @@ struct CollisionNifReader
 	eastl::fixed_vector<Mesh,8,true> meshList;
 	Node currentNode;
 
+	eastl::fixed_vector<i32,8,true> collisionNodeList;
+
 	bool ReadBlock_NiNode(ConstBuffer buff, i32 blockID)
 	{
 		const i32 stringIndex = buff.Read<i32>();
 		const StringSlice& str = (stringIndex != -1) ? stringList[stringIndex] : StringSlice{"_", 1};
 		currentNode.name.assign(str.at, str.len);
+		currentNode.blockID = blockID;
 
 		const u32 numExtraDataList = buff.Read<u32>();
 		eastl::fixed_vector<i32,128,true> refExtraDataList;
@@ -218,7 +223,10 @@ struct CollisionNifReader
 
 	bool ReadBlock_NiMesh(ConstBuffer buff, i32 blockID)
 	{
+		DBG("Mesh @%lld", buff.data - fileData);
+
 		Mesh& mesh = meshList.push_back();
+		mesh.parentBlockID = currentNode.blockID;
 		const u32 nameStrID = buff.Read<u32>();
 		const StringSlice& name = (nameStrID != 0xFFFFFFFF) ? stringList[nameStrID] : StringSlice{"_", 1};
 		mesh.name = currentNode.name;
@@ -244,6 +252,11 @@ struct CollisionNifReader
 		const i32 refCollisionObject = buff.Read<i32>();
 
 		const u32 numMaterials = buff.Read<u32>();
+		for(int i = 0; i < numMaterials; i++) {
+			const u32 matNameStrID = buff.Read<u32>();
+			const i32 matExtraData = buff.Read<i32>();
+		}
+
 		const i32 activeMaterialID = buff.Read<i32>();
 		const u8 bMaterialNeedsUpdate = buff.Read<u8>();
 		mesh.meshPrimitiveType = buff.Read<u32>();
@@ -284,6 +297,7 @@ struct CollisionNifReader
 			refModifierList.push_back(buff.Read<i32>());
 		}
 
+		LOG("	parentNodeID = %d", mesh.parentBlockID);
 		LOG("	name = '%.*s'", name.len, name.at);
 		LOG("	extraDataList(%d) = [", numExtraDataList);
 		foreach(it, refExtraDataList) {
@@ -384,6 +398,19 @@ struct CollisionNifReader
 		return true;
 	}
 
+	bool ReadBlock_NiPhysXDynamicSrc(ConstBuffer buff, i32 blockID)
+	{
+		const u16 numNodes = buff.Read<u16>();
+		LOG("	children(%u)=[", numNodes);
+		for(int i = 0; i < numNodes; i++) {
+			const i32 childBlockID = buff.Read<i32>();
+			LOG("		%d,", childBlockID);
+			collisionNodeList.push_back(childBlockID);
+		}
+		LOG("	]");
+		return true;
+	}
+
 	bool ReadBlock(ConstBuffer& buff, i32 blockID, const u16 blockType, const StringSlice& blockTypeStr)
 	{
 		bool r = true;
@@ -405,6 +432,9 @@ struct CollisionNifReader
 		}
 		else if(blockTypeStr.StartsWith("NiDataStream")) {
 			r = ReadBlock_NiDataStream(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXDynamicSrc")) {
+			r = ReadBlock_NiPhysXDynamicSrc(block, blockID);
 		}
 		else {
 			LOG("	[Unknown block -- skipping]");
@@ -484,7 +514,7 @@ struct CollisionNifReader
 		LOG("numGroups = %u", numGroups);
 
 		for(int i = 0; i < numBlocks; i++) {
-			const u16 blockTypeIndex = blockTypeIndexList[i];
+			const u16 blockTypeIndex = blockTypeIndexList[i] & 0x7FFF;
 			const StringSlice& blockTypeStr = (blockTypeIndex < numBlockTypes) ? blockTypeStringList[blockTypeIndex] : StringSlice{"_", 1};
 
 			bool r = ReadBlock(buff, i, blockTypeIndex, blockTypeStr);
@@ -523,12 +553,31 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
+	eastl::fixed_vector<const CollisionNifReader::Mesh*,8> validMeshes;
+	foreach_const(it, nif.meshList) {
+		const CollisionNifReader::Mesh& mesh = *it;
+
+		if(mesh.dataStreamList.size() > 2) {
+			LOG("Mesh is probably not used for collision since it has a many data streams, skipping");
+			continue;
+		}
+
+		const CollisionNifReader::Mesh::DataStream& streamVertices = mesh.dataStreamList[1];
+
+		if(streamVertices.componentList.size() > 3) {
+			LOG("Mesh is probably not used for collision since it has a lot of vertex components, skipping");
+			continue;
+		}
+
+		validMeshes.push_back(&*it);
+	}
+
 	// mesh file
 	GrowableBuffer outMesh(1024*1024);
 	outMesh.Append("MESH", 4);
 	const u16 meshVersion = 2;
 	outMesh.Append(&meshVersion, sizeof(meshVersion));
-	const u16 meshCount = nif.meshList.size();
+	const u16 meshCount = validMeshes.size();
 	outMesh.Append(&meshCount, sizeof(meshCount));
 
 	GrowableBuffer outCooked(1024*1024);
@@ -539,8 +588,8 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 
 	int vertOffset = 1;
 
-	foreach_const(it, nif.meshList) {
-		const CollisionNifReader::Mesh& mesh = *it;
+	foreach_const(it, validMeshes) {
+		const CollisionNifReader::Mesh& mesh = **it;
 
 		if(mesh.meshPrimitiveType != 0) {
 			LOG("ERROR: mesh primitive type not handled");
@@ -560,8 +609,8 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		}
 
 		// VERTICES
-		if(streamVertices.componentList.size() < 3) {
-			LOG("ERROR: streamVertices component count < 3");
+		if(streamVertices.componentList.size() < 2) {
+			LOG("ERROR: streamVertices component count < 2");
 			return false;
 		}
 
@@ -573,17 +622,12 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 
 		const CollisionNifReader::Mesh::DataStream::Component& compVertPosition = streamVertices.componentList[0];
 		const CollisionNifReader::Mesh::DataStream::Component& compVertNormal = streamVertices.componentList[1];
-		const CollisionNifReader::Mesh::DataStream::Component& compVertColor = streamVertices.componentList[2];
 		if(!compVertPosition.name.Equals("POSITION")) {
 			LOG("ERROR: compVertPosition is invalid");
 			return false;
 		}
 		if(!compVertNormal.name.Equals("NORMAL")) {
 			LOG("ERROR: compVertNormal is invalid");
-			return false;
-		}
-		if(!compVertColor.name.Equals("COLOR")) {
-			LOG("ERROR: compVertColor is invalid");
 			return false;
 		}
 
@@ -595,17 +639,16 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 
 		const CollisionNifReader::DataStream& verticesBlock = found->second;
 
-		PUSH_PACKED;
-		struct Vertex
-		{
+		struct Vertex {
 			Vector3 pos;
 			Vector3 normal;
-			u32 color;
 		};
-		POP_PACKED;
-		STATIC_ASSERT(sizeof(Vertex) == 28);
 
-		ASSERT(verticesBlock.size == sizeof(Vertex) * verticesBlock.numIndices);
+		i32 vertexSize = 24; // pos, normal
+		if(streamVertices.componentList.size() == 3) {
+			vertexSize = 28; // pos, normal, colour
+		}
+		ASSERT(verticesBlock.size == vertexSize * verticesBlock.numIndices);
 
 
 		// INDICES
@@ -635,9 +678,11 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		out.append(FMT("o %s\n", mesh.name.data()));
 
 		// obj file
-		const Vertex* vertices = (Vertex*)verticesBlock.at;
+		const u8* vertices = (u8*)verticesBlock.at;
 		for(int i = 0; i < verticesBlock.numIndices; i++) {
-			const Vertex& v = vertices[i];
+			const Vertex& v = *(Vertex*)vertices;
+			vertices += vertexSize;
+
 			out.append(FMT("v %g %g %g\n", v.pos.x, v.pos.z, v.pos.y));
 			out.append(FMT("vn %g %g %g\n", -v.normal.x, -v.normal.z, -v.normal.y));
 		}
@@ -664,8 +709,10 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		// indexCount
 		outMesh.Append(&indexBlock.numIndices, sizeof(indexBlock.numIndices));
 
+		vertices = (u8*)verticesBlock.at;
 		for(int i = 0; i < verticesBlock.numIndices; i++) {
-			const Vertex& v = vertices[i];
+			const Vertex& v = *(Vertex*)vertices;
+			vertices += vertexSize;
 			Vector3 p = { v.pos.x, v.pos.y, v.pos.z };
 			outMesh.Append(&p, sizeof(p));
 			Vector3 n = { v.normal.x, v.normal.y, v.normal.z };
@@ -679,10 +726,16 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 			outMesh.Append(&indices[i+1], sizeof(u16));
 		}
 
+		// physx cooked mesh
+
+		// name
+		outCooked.Append(&nameLen, sizeof(nameLen));
+		outCooked.Append(mesh.name.data(), nameLen);
+
 		PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = verticesBlock.numIndices;
-		meshDesc.points.stride = sizeof(Vertex);
-		meshDesc.points.data = vertices;
+		meshDesc.points.stride = vertexSize;
+		meshDesc.points.data = verticesBlock.at;
 
 		meshDesc.triangles.count = indexBlock.numIndices/3;
 		meshDesc.triangles.stride = 3*sizeof(u16);

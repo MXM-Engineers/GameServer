@@ -32,6 +32,7 @@ struct GameState
 {
 	eastl::fixed_vector<Dbg::PlayerMaster,16,true> playerList;
 	eastl::fixed_vector<Dbg::Npc,64,true> npcList;
+	eastl::fixed_vector<Dbg::Dynamic,64,true> dynamicList;
 	PhysicsScene scene;
 
 	void NewFrame()
@@ -48,6 +49,11 @@ struct GameState
 	void Push(const Dbg::Npc& entity)
 	{
 		npcList.push_back(entity);
+	}
+
+	void Push(const Dbg::Dynamic& entity)
+	{
+		dynamicList.push_back(entity);
 	}
 
 	void PushPhysicsScene(const PhysicsScene& scene_)
@@ -167,20 +173,26 @@ bool Window::Init()
 
 	MeshFile mfCollision;
 	MeshFile mfEnv;
+	MeshFile mfDynWall;
 	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
 	if(!r) return false;
-	r = OpenMeshFile("gamedata/PVP_DeathMatch01_CollisionWalls.msh", &mfEnv);
+	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
+	if(!r) return false;
+	r = OpenMeshFile("gamedata/PvP_Death_NM_Wall04.msh", &mfDynWall);
 	if(!r) return false;
 
 	// drawable meshes
-	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
-	rdr.LoadMeshFile("PVP_DeathMatchCollision", mshCol);
-
+	foreach_const(it, mfCollision.meshList) {
+		rdr.LoadMeshFile(it->name.data(), *it);
+	}
 	foreach_const(it, mfEnv.meshList) {
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
+	foreach_const(it, mfDynWall.meshList) {
+		rdr.LoadMeshFile(it->name.data(), *it);
+	}
 
-	r = MakeMapCollisionMesh(mshCol, &mapCollision);
+	r = MakeMapCollisionMesh(mfCollision.meshList.front(), &mapCollision);
 	if(!r) return false;
 	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
 	if(!r) return false;
@@ -190,23 +202,8 @@ bool Window::Init()
 	// create map scene, add ground and wall static meshes
 	phys.CreateScene(&testScene);
 
-	PxTriangleMesh* pvpCollision1;
-	PxTriangleMesh* pvpCollision2;
-
-	const GameXmlContent& gc = GetGameXmlContent();
-	r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
-		return false;
-	}
-	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
-		return false;
-	}
-
-	testScene.CreateStaticCollider(pvpCollision1);
-	testScene.CreateStaticCollider(pvpCollision2);
+	testScene.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0));
+	testScene.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0));
 
 	testSubject.actor = testScene.CreateDynamicBody(100, 300, vec3(0));
 	testSubject.Reset();
@@ -377,6 +374,11 @@ void Window::WindowGameStates()
 		foreach_const(ent, gameState.npcList) {
 			const Dbg::Npc& e = *ent;
 			rdr.PushCapsule(Pipeline::Unlit, e.pos, vec3(0), 10, 300, ColorV3(0x332789));
+		}
+
+		foreach_const(ent, gameState.dynamicList) {
+			const Dbg::Dynamic& d = *ent;
+			rdr.PushMesh(Pipeline::Shaded, "PvP_Death_NM_Wall04_GuardrailMob", d.pos, vec3(d.rot.x, d.rot.y, -d.rot.z), vec3(1), vec3(0.2, 0.3, 0.3));
 		}
 	}
 	ImGui::End();
@@ -640,7 +642,7 @@ void Window::Update(f64 delta)
 	const f64 t = TimeDiffSec(TimeDiff(startTime, localTime));
 
 	// map
-	rdr.PushMesh(Pipeline::Shaded, "PVP_DeathMatchCollision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
+	rdr.PushMesh(Pipeline::Shaded, "PVP_DeathMatch01_Collision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
 	rdr.PushMesh(Pipeline::Shaded, "PVP_Deathmatch01_GuardrailMob", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.5));
 
 	if(ui_bMapWireframe) {
@@ -865,6 +867,11 @@ void PushPhysics(GameUID gameUID, const PhysicsScene& scene)
 }
 
 void Push(GameUID gameUID, const Npc& entity)
+{
+	g_pWindow->gameStateFront->Push(entity);
+}
+
+void Push(GameUID gameUID, const Dynamic& entity)
 {
 	g_pWindow->gameStateFront->Push(entity);
 }

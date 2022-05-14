@@ -36,10 +36,19 @@ struct Npc: EntityCore
 	CreatureIndex docID;
 };
 
+struct Dynamic
+{
+	u32 UID;
+	CreatureIndex docID;
+	vec3 pos;
+	vec3 rot;
+};
+
 GameUID PushNewGame(const FixedStr32& mapName);
 void PushNewFrame(GameUID gameUID);
 void Push(GameUID gameUID, const PlayerMaster& entity);
 void Push(GameUID gameUID, const Npc& entity);
+void Push(GameUID gameUID, const Dynamic& entity);
 void PushPhysics(GameUID gameUID, const PhysicsScene& scene);
 void PopGame(GameUID gameUID);
 

@@ -253,10 +253,11 @@ void Game::Update(Time localTime_)
 	}
 
 	foreach_const(dyn, world.actorDynamicList) {
-		Dbg::Npc n;
+		Dbg::Dynamic n;
 		n.UID = (u32)dyn->UID;
+		n.docID = dyn->docID;
 		n.pos = dyn->pos;
-		n.rot = {}; // TODO: fill
+		n.rot = dyn->rot;
 		Dbg::Push(dbgGameUID, n);
 	}
 
@@ -268,25 +269,9 @@ void Game::Update(Time localTime_)
 bool Game::LoadMap()
 {
 	// TODO: Should probably part of world?
-	// Also at some point we need to better organise map data
-
 	auto& phys = PhysContext();
-	PxTriangleMesh* pvpCollision1;
-	PxTriangleMesh* pvpCollision2;
-
-	const GameXmlContent& gc = GetGameXmlContent();
-	bool r = phys.LoadCollisionMesh(&pvpCollision1, gc.filePvpDeathmatch01Collision);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision1)");
-		return false;
-	}
-	r = phys.LoadCollisionMesh(&pvpCollision2, gc.filePvpDeathmatch01CollisionWalls);
-	if(!r) {
-		LOG("ERROR: LoadCollisionMesh failed (pvpCollision2)");
-		return false;
-	}
-	world.physics.CreateStaticCollider(pvpCollision1);
-	world.physics.CreateStaticCollider(pvpCollision2);
+	world.physics.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0));
+	world.physics.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0));
 	// --------------------------------
 
 	const GameXmlContent& content = GetGameXmlContent();
@@ -351,6 +336,7 @@ bool Game::LoadMap()
 			auto& actor = world.SpawnDynamic(CI_WALL, it->ID);
 			actor.pos = it->pos;
 			actor.rot = it->rot;
+			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_GuardrailMob", it->pos, it->rot);
 		}
 	}
 	return true;

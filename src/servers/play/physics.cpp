@@ -104,6 +104,10 @@ bool PhysicsContext::Init()
 		return false;
 	}
 
+	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01Collision)) return false;
+	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01CollisionWalls)) return false;
+	if(!LoadCollisionMeshes(gc.filePvpDeathNmWall04)) return false;
+
 	LOG("PhysicsContext initialised");
 	return true;
 }
@@ -120,15 +124,42 @@ void PhysicsContext::Shutdown()
 	LOG("PhysicsContext shutdown");
 }
 
-bool PhysicsContext::LoadCollisionMesh(PxTriangleMesh** out, const FileBuffer& file)
+bool PhysicsContext::LoadCollisionMeshes(const FileBuffer& file)
 {
-	// TODO: actually properly read this file instead of skipping the header
-	PhysxReadBuffer readBuff(file.data + 12 , file.size - 12);
+	ConstBuffer buff(file.data, file.size);
 
-	*out = physics->createTriangleMesh(readBuff);
-	if(!*out) {
-		LOG("[PhysX] ERROR: createTriangleMesh failed");
+	const u32 magic = buff.Read<u32>();
+	if(magic != 0x58594850) { // PHYSX
+		LOG("[PhysX] ERROR(LoadCollisionMeshes): file format not recognised");
 		return false;
+	}
+
+	const u16 version = buff.Read<u16>();
+	if(version != 1) {
+		LOG("[PhysX] ERROR(LoadCollisionMeshes): version not supported");
+		return false;
+	}
+
+	const u16 meshCount = buff.Read<u16>();
+	for(u16 i = 0; i < meshCount; i++) {
+		const i32 nameLen = buff.Read<i32>();
+		const char* name = (char*)buff.ReadRaw(nameLen);
+
+		const u16 meshDataSize = buff.Read<u32>();
+		void* meshData = buff.ReadRaw(meshDataSize);
+
+		PhysxReadBuffer readBuff(meshData, meshDataSize);
+		PxTriangleMesh* tri = physics->createTriangleMesh(readBuff);
+		if(!tri) {
+			LOG("[PhysX] ERROR(LoadCollisionMeshes): createTriangleMesh failed (meshIdx=%d)", i);
+			return false;
+		}
+
+		const size_t key = eastl::hash<const char*>{}(FixedStr64(name, nameLen).data());
+		ASSERT(triangleMeshMap.find(key) == triangleMeshMap.end());
+		triangleMeshMap.emplace(key, tri);
+
+		LOG("[PhysX] '%.*s' loaded", nameLen, name);
 	}
 
 	return true;
@@ -220,17 +251,20 @@ void PhysicsScene::Destroy()
     }
 }
 
-void PhysicsScene::CreateStaticCollider(PxTriangleMesh* mesh)
+void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot)
 {
 	auto& ctx = PhysContext();
 
-	PxTriangleMeshGeometry geometry = PxTriangleMeshGeometry(mesh);
+	PxTriangleMeshGeometry geometry = PxTriangleMeshGeometry(ctx.triangleMeshMap.at(eastl::hash<const char*>{}(meshName)));
 
 	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface);
 	ASSERT(shape); // createShape failed
 
 	PxRigidStatic* ground = ctx.physics->createRigidStatic(PxTransform{PxIdentity});
 	ground->attachShape(*shape);
+
+	glm::quat quat(vec3(rot.x, rot.y, -rot.z)); // quaternion from euler angles
+	ground->setGlobalPose(PxTransform(PxVec3(pos.x, pos.y, pos.z), PxQuat(quat.x, quat.y, quat.z, quat.w)));
 	scene->addActor(*ground);
 }
 

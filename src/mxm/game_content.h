@@ -91,6 +91,7 @@ struct GameXmlContent
 
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
+	FileBuffer filePvpDeathNmWall04;
 	FileBuffer fileCylinderCollision;
 
 	bool Load();

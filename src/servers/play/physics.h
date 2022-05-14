@@ -99,7 +99,7 @@ struct PhysicsScene
 	void Step();
 	void Destroy();
 
-	void CreateStaticCollider(PxTriangleMesh* mesh);
+	void CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot = vec3(0));
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
 	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };
@@ -118,10 +118,13 @@ struct PhysicsContext
 	PxMaterial* matMapSurface;
 	PxConvexMesh* cylinderMesh;
 
+	eastl::hash<const char*> strHash;
+	eastl::fixed_hash_map<size_t, PxTriangleMesh*, 64> triangleMeshMap;
+
 	bool Init();
 	void Shutdown();
 
-	bool LoadCollisionMesh(PxTriangleMesh** out, const FileBuffer& file);
+	bool LoadCollisionMeshes(const FileBuffer& file);
 	bool LoadCollisionMesh(PxConvexMesh** out, const FileBuffer& file);
 	void CreateScene(PhysicsScene* out);
 };

@@ -911,8 +911,13 @@ bool GameXmlContent::LoadCollisionMeshes()
 	if(!r) return false;
 
 	path = gameDataDir;
-	PathAppend(path, L"/PVP_DeathMatch01_CollisionWalls.physx_static");
+	PathAppend(path, L"/PVP_DeathMatch01_Env.physx_static");
 	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
+	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/PvP_Death_NM_Wall04.physx_static");
+	r = FileLoad(&filePvpDeathNmWall04, path.data());
 	if(!r) return false;
 
 	path = gameDataDir;

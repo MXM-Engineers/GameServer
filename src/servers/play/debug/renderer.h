@@ -77,14 +77,14 @@ struct MeshBuffer
 	eastl::fixed_vector<u16,8192*1024,false> indexBuffer;
 	sg_buffer gpuVertexBuff = { 0xFFFFFFFF };
 	sg_buffer gpuIndexBuff = { 0xFFFFFFFF };
-	eastl::fixed_map<FixedStr64, MeshRef, 2048, false> meshRefMap;
+	eastl::fixed_hash_map<size_t, MeshRef, 128> meshRefMap;
 	bool needsUpdate = false;
 
-	void Push(const FixedStr64& name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount);
+	void Register(const char* name, const Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount);
 	void UpdateAndBind();
-	void DrawMesh(const FixedStr64& name);
+	void DrawMesh(const char* name);
 
-	bool HasMesh(const FixedStr64& name) const;
+	bool HasMesh(const char* name) const;
 };
 
 struct TrianglePoint
@@ -192,7 +192,7 @@ struct Renderer
 	// return ID
 	inline const InstanceMesh* PushMesh(
 		Pipeline pipeline,
-		const FixedStr64& meshName,
+		const char* meshName,
 		const vec3& pos,
 		const vec3& rot = vec3(0),
 		const vec3& scale = vec3(1),

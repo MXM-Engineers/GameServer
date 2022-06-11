@@ -39,6 +39,7 @@ struct GameState
 	{
 		playerList.clear();
 		npcList.clear();
+		dynamicList.clear();
 	}
 
 	void Push(const Dbg::PlayerMaster& entity)
@@ -616,6 +617,8 @@ void Window::NewFrame(Dbg::GameUID gameUID)
 
 void Window::Update(f64 delta)
 {
+	ProfileFunction();
+
 	//ImGui::ShowDemoWindow();
 
 	if(ImGui::BeginMainMenuBar()) {
@@ -714,6 +717,9 @@ void Window::UpdatePhysics()
 
 void Window::Frame()
 {
+	ProfileNewFrame("Window");
+	ProfileFunction();
+
 	Time lastLocalTime = localTime;
 	Time now = TimeNow();
 	localTime = TimeDiff(startTime, now);

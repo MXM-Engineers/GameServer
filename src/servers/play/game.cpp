@@ -153,7 +153,7 @@ void Game::Update(Time localTime_)
 		} break;
 
 		case Phase::Game: {
-#if 0
+#if 1
 			// bot random actions
 			foreach(bot, botList) {
 				if(localTime > bot->tNextAction) {
@@ -212,6 +212,9 @@ void Game::Update(Time localTime_)
 				}
 			}
 #endif
+
+			// Dynamic walls going up and down randomly
+			/*
 			foreach(it, world.actorDynamicList) {
 				if(it->docID == CI_WALL && TimeDiffSec(TimeDiff(it->tLastActionChange, localTime)) > 4.0) { // wall
 					if(RandInt(0, 150) == 0) {
@@ -226,6 +229,7 @@ void Game::Update(Time localTime_)
 					}
 				}
 			}
+			*/
 
 		} break;
 	}

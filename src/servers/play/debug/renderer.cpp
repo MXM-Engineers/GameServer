@@ -835,8 +835,8 @@ void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, 
 	f32 armLen = len - coneHeight;
 	f32 sizeY = thickness;
 
-	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color, parent);
-	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color, parent);
+	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(0, -pitch, yaw), vec3(armLen, sizeY, sizeY), color, parent);
+	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(0, -pitch + PI/2, yaw), vec3(coneSize, coneSize, coneHeight), color, parent);
 }
 
 void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent)
@@ -863,8 +863,8 @@ inline mat4 MakeModelMatrixFromTransform(const Transform& t)
 {
 	mat4 model = glm::identity<mat4>();
 	model = glm::translate(model, t.pos);
-	//model = model * glm::eulerAngleZYX(t.rot.x, -t.rot.y, t.rot.z);
-	model = model * glm::eulerAngleXYZ(t.rot.x, t.rot.y, t.rot.z);
+	model = model * glm::eulerAngleZYX(t.rot.z, t.rot.y, t.rot.x);
+	//model = model * glm::eulerAngleXYZ(t.rot.x, t.rot.y, t.rot.z);
 	model = glm::scale(model, t.scale);
 	return model;
 }

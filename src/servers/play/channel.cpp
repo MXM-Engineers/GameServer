@@ -115,7 +115,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 	NT_LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
 	NT_LOG("	nSpeed=%g", update.nSpeed);
 	NT_LOG("	unk1=%u", update.unk1);
-	NT_LOG("	actionState=%s (%d)", ActionStateString(update.actionState), update.actionState);
+	NT_LOG("	actionState=%s (%d)", ActionStateToString(update.actionState), update.actionState);
 	NT_LOG("	localTimeS=%g", update.localTimeS);
 	NT_LOG("	unk2=%u", update.unk2);
 	NT_LOG("}");

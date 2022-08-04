@@ -401,16 +401,16 @@ enum class PVPResult : i32
 // values from decompile
 enum class SkillType : i32
 {
-	SKILL_TYPE_INVALID = -1,
-	SKILL_TYPE_PASSIVE = 0,
-	SKILL_TYPE_NORMAL,
-	SKILL_TYPE_TOGGLE,
-	SKILL_TYPE_SUMMON,
-	SKILL_TYPE_STANCE,
-	SKILL_TYPE_SHIRK,
-	SKILL_TYPE_COMBO,
-	SKILL_TYPE_BREAKFALL,
-	SKILL_TYPE_MAX
+	INVALID = -1,
+	PASSIVE = 0,
+	NORMAL,
+	TOGGLE,
+	SUMMON,
+	STANCE,
+	SHIRK,
+	COMBO,
+	BREAKFALL,
+	MAX
 };
 
 // these types are used from 

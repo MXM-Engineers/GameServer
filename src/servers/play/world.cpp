@@ -1,4 +1,5 @@
 #include "world.h"
+#include <mxm/game_content.h>
 
 void World::Init(Replication* replication_)
 {
@@ -43,49 +44,7 @@ void World::Update(Time localTime_)
 			// TODO: check for requirements in general
 			// TODO: check for skill
 			// TODO: check for cost
-			p.cast.skill = p.input.castSkill;
-
-			ActionStateID actionState;
-			f32 distance = 0;
-			f32 moveDuration = 0;
-
-			switch(p.cast.skill) {
-				// Lua dodge
-				case (SkillID)180350002: {
-					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-					distance = 500;
-					moveDuration = 0.7333333f;
-				} break;
-
-				// Sizuka dodge
-				case (SkillID)180030002: {
-					actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-					distance = 500;
-					moveDuration = 0.01f;
-				} break;
-
-				case (SkillID)180350010: actionState = ActionStateID::SKILL_1_BEHAVIORSTATE; break;
-				case (SkillID)180350030: actionState = (ActionStateID)30; break;
-				case (SkillID)180030020: actionState = (ActionStateID)32; break;
-				case (SkillID)180030030: actionState = (ActionStateID)33; break;
-				case (SkillID)180030050: actionState = (ActionStateID)35; break;
-			}
-
-			if(distance > 0) {
-				p.cast.startPos = body.GetWorldPos();
-				const f32 angle = p.input.rot.upperYaw;
-				vec2 dir = vec2(cosf(angle), sinf(angle));
-				const vec3 endPos = physics.Move(p.body, vec3(dir * distance, 0), moveDuration);
-
-				p.cast.endPos = endPos;
-				p.input.moveTo = endPos;
-				p.movement.moveDir = dir;
-				p.movement.rot = { angle, 0, angle };
-			}
-			p.cast.moveDurationS = moveDuration;
-
-			p.input.castSkill = SkillID::INVALID;
-			p.Main().actionState = actionState;
+			PlayerCastSkill(p, p.input.castSkill, p.input.castPos);
 		}
 
 		// move
@@ -372,4 +331,46 @@ ActorUID World::NewActorUID()
 World::ActorMasterHandle World::MasterInvalidHandle()
 {
 	return actorMasterList.end();
+}
+
+void World::PlayerCastSkill(Player& player, SkillID skillID, const vec2& castPos)
+{
+	player.cast.skill = skillID;
+
+	f32 distance = 0;
+	f32 moveDuration = 0;
+
+	const auto& content = GetGameXmlContent();
+	const auto& skill = content.skillMap.at(skillID);
+	const ActionStateID actionState = skill.action;
+
+	switch(skillID) {
+		// Lua dodge
+		case (SkillID)180350002: {
+			distance = 500;
+			moveDuration = 0.7333333f;
+		} break;
+
+		// Sizuka dodge
+		case (SkillID)180030002: {
+			distance = 500;
+			moveDuration = 0.01f;
+		} break;
+	}
+
+	if(distance > 0) {
+		player.cast.startPos = player.body->GetWorldPos();
+		const f32 angle = player.input.rot.upperYaw;
+		vec2 dir = vec2(cosf(angle), sinf(angle));
+		const vec3 endPos = physics.Move(player.body, vec3(dir * distance, 0), moveDuration);
+
+		player.cast.endPos = endPos;
+		player.input.moveTo = endPos;
+		player.movement.moveDir = dir;
+		player.movement.rot = { angle, 0, angle };
+	}
+	player.cast.moveDurationS = moveDuration;
+
+	player.input.castSkill = SkillID::INVALID;
+	player.Main().actionState = actionState;
 }

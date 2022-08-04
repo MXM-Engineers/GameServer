@@ -172,7 +172,7 @@ void Game::Update(Time localTime_)
 					eastl::array<f32,Action::_Count> actionWeight = {0.f};
 					actionWeight[Action::Move] = 8;
 					actionWeight[Action::Tag] = 2;
-					actionWeight[Action::Jump] = 2;
+					actionWeight[Action::Jump] = 0;
 
 					f32 actionSpace = 0;
 					foreach_const(w, actionWeight) actionSpace += *w;

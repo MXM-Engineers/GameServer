@@ -74,15 +74,12 @@ struct GameXmlContent
 		i32 length;
 	};
 
-	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
-	// intead of comparing the hash generated from the string? I must be missing something here. LordSk (29/08/2020)
-	eastl::hash<const char*> strHash;
-
 	eastl::fixed_vector<Master,100,false> masters;
 	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
+	eastl::fixed_hash_map<SkillID, SkillNormalModel, 500> skillMap;
 
 	Map mapLobby;
 	Map mapPvpDeathMatch;
@@ -107,6 +104,7 @@ private:
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();
+	void LoadAllSkills();
 	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
 	bool LoadWeaponModelDefinitions();

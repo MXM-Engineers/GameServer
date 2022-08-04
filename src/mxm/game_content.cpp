@@ -6,6 +6,7 @@
 #include "game_content.h"
 
 using namespace tinyxml2;
+constexpr eastl::hash<const char*> strHash;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
@@ -151,6 +152,8 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	// Parse SKILL_PROPERTY.xml once
 	if(!LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY)) return false;
 
+	LoadAllSkills(); // TODO: move
+
 	// get master IDs
 	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
 	do {
@@ -281,6 +284,71 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	return true;
 }
 
+void GameXmlContent::LoadAllSkills()
+{
+	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
+
+	do {
+		SkillNormalModel skill;
+
+		i32 skillID;
+		pNodeSkill->QueryAttribute("ID", &skillID);
+		skill.setID(skillID);
+
+		XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
+
+		// parse type
+		const char* typeStr;
+		pNodeCommonSkill->QueryStringAttribute("_Type", &typeStr);
+
+		SkillType type = SkillType::INVALID;
+		if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_PASSIVE")) {
+			type = SkillType::PASSIVE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_NORMAL")) {
+			type = SkillType::NORMAL;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_TOGGLE")) {
+			type = SkillType::TOGGLE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SUMMON")) {
+			type = SkillType::SUMMON;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_STANCE")) {
+			type = SkillType::STANCE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SHIRK")) {
+			type = SkillType::SHIRK;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_COMBO")) {
+			type = SkillType::COMBO;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_BREAKFALL")) {
+			type = SkillType::BREAKFALL;
+		}
+		skill.type = type;
+
+		// parse action
+		const char* actionStr;
+		pNodeCommonSkill->QueryStringAttribute("_Action", &actionStr);
+		if(actionStr) {
+			skill.action = ActionStateFromString(actionStr);
+		}
+
+		for(int i = 0; i < 6; i++) {
+			SkillNormalLevelModel& _skillNormalLevelModel = *skill.getSkillNormalLevelByIndex(i);
+			SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel);
+		}
+
+		// TODO: slow
+		LoadMasterSkillPropertyWithID(skill, skillID);
+
+		skillMap.emplace(SkillID(skillID), skill);
+
+		pNodeSkill = pNodeSkill->NextSiblingElement();
+	} while (pNodeSkill);
+}
+
 bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID)
 {
 	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
@@ -333,13 +401,14 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 
 			//LOG("Skill Match");
 			XMLElement* pNodePropertyLevel = pNodeSkillProperty->FirstChildElement("_PROPERTY_LEVEL");
-					
-			//Need -1 to correct index
-			for (int i = level-1; i < 6; i++)
-			{
-				SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
-				_skillNormalLevelModel.setLevel(level);
-				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel);
+			if(pNodePropertyLevel) { // some skills don't have a level property (180000010 for example)
+				//Need -1 to correct index
+				for (int i = level-1; i < 6; i++)
+				{
+					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
+					_skillNormalLevelModel.setLevel(level);
+					SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel);
+				}
 			}
 		}
 	
@@ -1063,36 +1132,36 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 {
 	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_COMBO;
+		return SkillType::COMBO;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_NORMAL;
+		return SkillType::NORMAL;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_PASSIVE;
+		return SkillType::PASSIVE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_SHIRK;
+		return SkillType::SHIRK;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_STANCE;
+		return SkillType::STANCE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_SUMMON;
+		return SkillType::SUMMON;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
 	{
-		return SkillType::SKILL_TYPE_TOGGLE;
+		return SkillType::TOGGLE;
 	}
 	else
 	{
 		LOG("Unknown SkillType: %s", s);
-		return SkillType::SKILL_TYPE_INVALID;
+		return SkillType::INVALID;
 	}
 }
 

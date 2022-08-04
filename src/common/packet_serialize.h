@@ -813,7 +813,7 @@ inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData
 	SER("	nSpeed=%f", buff.Read<f32>());
 	SER("	flags=%u", buff.Read<u8>());
 	ActionStateID action = buff.Read<ActionStateID>();
-	SER("	state=%s (%d)", ActionStateString(action), action);
+	SER("	state=%s (%d)", ActionStateToString(action), action);
 	SER("}");
 
 	return str.data();

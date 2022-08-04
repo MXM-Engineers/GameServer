@@ -202,13 +202,15 @@ struct ConstBuffer
 	}
 };
 
-inline bool StringEquals(const char* str1, const char* str2)
+inline bool StringEquals(const char* s1, const char* s2)
 {
-	const i32 len = (i32)strlen(str1);
-	if(len != strlen(str2)) {
-		return false;
+	while(*s1 != 0 && *s2 != 0) {
+		if(*s1 != *s2) return false;
+		s1++;
+		s2++;
 	}
-	return strncmp(str1, str2, len) == 0;
+
+	return *s1 == *s2;
 }
 
 inline void logAsHex(const void* data, int size)

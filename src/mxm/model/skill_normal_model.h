@@ -14,6 +14,9 @@ public:
 
 	void Print();
 
+	SkillType type = SkillType::INVALID;
+	ActionStateID action = ActionStateID::INVALID;
+
 private:
 	i32 _ID = 0;
 	SkillNormalLevelModel _skillNormalLevelModel[6];

@@ -193,4 +193,6 @@ struct World
 private:
 	ActorUID NewActorUID();
 	ActorMasterHandle MasterInvalidHandle();
+
+	void PlayerCastSkill(Player& player, SkillID skill, const vec2& castPos);
 };

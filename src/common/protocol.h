@@ -303,7 +303,8 @@ enum class ActionStateID: i32
 	UNKNOWN_ACTION_STATE_TYPE,
 };
 
-const char* ActionStateString(ActionStateID state);
+const char* ActionStateToString(ActionStateID state);
+ActionStateID ActionStateFromString(const char* str);
 
 enum class MapIndex: i32
 {

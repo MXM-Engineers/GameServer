@@ -7,6 +7,7 @@
 #include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_string.h>
+#include <EASTL/span.h>
 #include <EAStdC/EAString.h>
 #include "logger.h"
 
@@ -513,3 +514,6 @@ struct FileBuffer
 	u8* data;
 	i32 size;
 };
+
+template<typename T>
+using Slice = eastl::span<T>;

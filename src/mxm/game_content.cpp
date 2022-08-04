@@ -997,6 +997,134 @@ bool GameXmlContent::LoadCollisionMeshes()
 	return true;
 }
 
+bool GameXmlContent::LoadAnimationData()
+{
+	XMLDocument xmlAniLength;
+	if(!LoadXMLFile(L"/AniLength.xml", xmlAniLength)) return false;
+
+	struct SequenceLength
+	{
+		i32 ID;
+		f32 length;
+	};
+
+	eastl::fixed_vector<SequenceLength, 18000, false>* aniLenList;
+	eastl::fixed_hash_map<size_t, Slice<SequenceLength>, 800> aniLenListMap;
+
+	aniLenList = new eastl::remove_reference<decltype(*aniLenList)>::type();
+	defer(delete aniLenList);
+
+	for(XMLElement* pEntityType = xmlAniLength.FirstChildElement()->FirstChildElement();
+		pEntityType;
+		pEntityType = pEntityType->NextSiblingElement()) {
+
+		for(XMLElement* pEntity = pEntityType->FirstChildElement();
+			pEntity;
+			pEntity = pEntity->NextSiblingElement()) {
+
+			const char* _Key;
+			pEntity->QueryStringAttribute("_Key", &_Key);
+			//LOG("_Key='%s'", _Key);
+
+			const i32 startIdx = aniLenList->size();
+
+			for(XMLElement* pAnimationInfo = pEntity->FirstChildElement();
+				pAnimationInfo;
+				pAnimationInfo = pAnimationInfo->NextSiblingElement()) {
+
+				i32 _SeqID;
+				f32 _SeqTime;
+				pAnimationInfo->QueryAttribute("_SeqID", &_SeqID);
+				pAnimationInfo->QueryAttribute("_SeqTime", &_SeqTime);
+				//LOG("%d %f", _SeqID, _SeqTime);
+
+				aniLenList->push_back({ _SeqID, _SeqTime });
+			}
+
+			aniLenListMap.emplace(strHash(_Key), Slice<SequenceLength>(&(*aniLenList)[startIdx], aniLenList->size() - startIdx));
+		}
+	}
+
+	XMLDocument xmlActionBase;
+	if(!LoadXMLFile(L"/ActionBase.xml", xmlActionBase)) return false;
+
+	u32 prevMasterClassHash = 0x0;
+	ActionStateID prevActionID = ActionStateID::INVALID;
+	i32 actionSliceStart = 0;
+	i32 actionSliceCount = 0;
+	Action* cutAction = nullptr;
+
+	for(XMLElement* pActionBase = xmlActionBase.FirstChildElement()->FirstChildElement();
+		pActionBase;
+		pActionBase = pActionBase->NextSiblingElement()) {
+
+		const char* Class;
+		pActionBase->QueryStringAttribute("Class", &Class);
+		eastl::fixed_string<char,64,false> classStr = Class;
+		classStr.make_upper();
+
+		const u32 masterClassHash = strHash(classStr.data());
+		if(masterClassHash != prevMasterClassHash) {
+			LOG("%s:", classStr.data());
+
+			if(actionSliceCount > 0) {
+				actionListMap.emplace(prevMasterClassHash, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+			}
+
+			prevMasterClassHash = masterClassHash;
+			actionSliceStart = actionList.size();
+			actionSliceCount = 0;
+			prevActionID = ActionStateID::INVALID;
+		}
+
+		const char* BehaviorState;
+		i32 AnimationId;
+		pActionBase->QueryStringAttribute("BehaviorState", &BehaviorState);
+		pActionBase->QueryAttribute("AnimationId", &AnimationId);
+
+		const ActionStateID actionID = ActionStateFromString(BehaviorState);
+		if(actionID != prevActionID) {
+			prevActionID = actionID;
+
+			bool foundAction = false;
+			for(int i = actionSliceStart; i < actionSliceStart+actionSliceCount; i++) {
+				if(actionList[i].ID == actionID) {
+					cutAction = &actionList[i];
+					foundAction = true;
+					break;
+				}
+			}
+
+			if(!foundAction) {
+				actionList.push_back();
+				cutAction = &actionList.back();
+				actionSliceCount++;
+				cutAction->ID = actionID;
+
+				auto foundSeq = aniLenListMap.find(masterClassHash);
+				if(foundSeq != aniLenListMap.end()) {
+					foreach_const(it, foundSeq->second) {
+						if(it->ID == AnimationId) {
+							cutAction->seqLength = it->length;
+
+							break;
+						}
+					}
+				}
+
+				LOG("	ID=%d", cutAction->ID);
+				LOG("	seqLength=%f", cutAction->seqLength);
+			}
+		}
+	}
+
+	if(actionSliceCount > 0) {
+		actionListMap.emplace(prevMasterClassHash, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+	}
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	LOG("Loading GameContent...");
@@ -1026,6 +1154,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadCollisionMeshes();
+	if(!r) return false;
+
+	r = LoadAnimationData();
 	if(!r) return false;
 
 	/*
@@ -1194,9 +1325,9 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 
 bool GameXmlContentLoad()
 {
-	static GameXmlContent content;
-	g_GameXmlContent = &content;
-	return content.Load();
+	GameXmlContent* content = new GameXmlContent();
+	g_GameXmlContent = content;
+	return content->Load();
 }
 
 const GameXmlContent& GetGameXmlContent()

@@ -116,6 +116,7 @@ private:
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();
+	bool LoadAnimationData();
 
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
@@ -127,6 +128,15 @@ private:
 	tinyxml2::XMLDocument xmlCREATURECHARACTER;
 	tinyxml2::XMLDocument xmlWEAPON;
 	tinyxml2::XMLDocument xmlWEAPONTT;
+
+	struct Action
+	{
+		ActionStateID ID;
+		f32 seqLength = 0.0f;
+	};
+
+	eastl::fixed_vector<Action, 2000, false> actionList;
+	eastl::fixed_hash_map<size_t, Slice<Action>, 800> actionListMap;
 };
 
 bool GameXmlContentLoad();

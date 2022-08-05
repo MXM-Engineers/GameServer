@@ -1381,6 +1381,21 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 	return *found->second;
 }
 
+const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType, ActionStateID actionID) const
+{
+	auto found = actionListMap.find(classType);
+	ASSERT(found != actionListMap.end());
+
+	foreach_const(it, found->second) {
+		if(it->ID == actionID) {
+			return *it;
+		}
+	}
+
+	ASSERT(0); // not found
+	return actionListMap.cbegin()->second.front(); // unreachable
+}
+
 bool GameXmlContentLoad()
 {
 	GameXmlContent* content = new GameXmlContent();

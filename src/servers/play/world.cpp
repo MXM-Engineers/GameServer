@@ -340,25 +340,31 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec2& castPos
 	f32 distance = 0;
 	f32 moveDuration = 0;
 
+	// access method is kinda convoluted
 	const auto& content = GetGameXmlContent();
 	const auto& skill = content.skillMap.at(skillID);
 	const ActionStateID actionState = skill.action;
+	const auto& action = content.GetSkillAction(player.Main().classType, actionState);
 
-	switch(skillID) {
-		// Lua dodge
-		case (SkillID)180350002: {
-			distance = 500;
-			moveDuration = 0.7333333f;
-		} break;
+	foreach_const(cmd, action.commands) {
+		switch(cmd->type) {
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				distance = cmd->graphMoveHorz.distance;
+				moveDuration = action.seqLength;
+			} break;
 
-		// Sizuka dodge
-		case (SkillID)180030002: {
-			distance = 500;
-			moveDuration = 0.01f;
-		} break;
+			case ActionCommand::Type::MOVE: {
+				switch(cmd->move.preset) {
+					case ActionCommand::MovePreset::WARP: {
+						distance = (f32)cmd->move.param2;
+						moveDuration = 0.01f; // warping
+					} break;
+				}
+			} break;
+		}
 	}
 
-	if(distance > 0) {
+	if(distance != 0) {
 		player.cast.startPos = player.body->GetWorldPos();
 		const f32 angle = player.input.rot.upperYaw;
 		vec2 dir = vec2(cosf(angle), sinf(angle));

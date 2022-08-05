@@ -609,13 +609,13 @@ void Coordinator::CreateDevGame()
 	const GameXmlContent& content = GetGameXmlContent();
 
 	const eastl::fixed_set<ClassType,100,false> allowedMastersSet = {
-		ClassType::Taejin,
-		ClassType::MBA_07,
-		ClassType::Sizuka,
-		ClassType::Demenos,
-		ClassType::Koom,
-		ClassType::Innowin,
-		ClassType::Lua,
+		ClassType::STRIKER,
+		ClassType::ARTILLERY,
+		ClassType::ASSASSIN,
+		ClassType::ELECTRO,
+		ClassType::DEFENDER,
+		ClassType::SNIPER,
+		ClassType::LAUNCHER,
 	};
 
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
@@ -631,10 +631,10 @@ void Coordinator::CreateDevGame()
 	p.accountUID = AccountUID(0x1337);
 	p.team = 0;
 	p.isBot = 0;
-	p.masters[0] = ClassType::Lua;
-	p.masters[1] = ClassType::Sizuka;
-	teamMasterPickCount[0][(i32)ClassType::Lua] = 1;
-	teamMasterPickCount[0][(i32)ClassType::Sizuka] = 1;
+	p.masters[0] = ClassType::LAUNCHER;
+	p.masters[1] = ClassType::ASSASSIN;
+	teamMasterPickCount[0][(i32)ClassType::LAUNCHER] = 1;
+	teamMasterPickCount[0][(i32)ClassType::ASSASSIN] = 1;
 	p.skins.fill(SkinIndex::DEFAULT);
 	p.skills[0] = SkillID(180350010);
 	p.skills[1] = SkillID(180350030);

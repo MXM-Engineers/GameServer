@@ -1,5 +1,6 @@
 #include <common/utils.h>
 #include <EAStdC/EAString.h>
+#include <EAStdC/EASprintf.h>
 #include <tinyxml2.h>
 
 #include "core.h"
@@ -1009,7 +1010,7 @@ bool GameXmlContent::LoadAnimationData()
 	};
 
 	eastl::fixed_vector<SequenceLength, 18000, false>* aniLenList;
-	eastl::fixed_hash_map<size_t, Slice<SequenceLength>, 800> aniLenListMap;
+	eastl::fixed_hash_map<ClassType, Slice<SequenceLength>, 800> aniLenListMap;
 
 	aniLenList = new eastl::remove_reference<decltype(*aniLenList)>::type();
 	defer(delete aniLenList);
@@ -1041,18 +1042,18 @@ bool GameXmlContent::LoadAnimationData()
 				aniLenList->push_back({ _SeqID, _SeqTime });
 			}
 
-			aniLenListMap.emplace(strHash(_Key), Slice<SequenceLength>(&(*aniLenList)[startIdx], aniLenList->size() - startIdx));
+			aniLenListMap.emplace(ClassTypeFromString(_Key), Slice<SequenceLength>(&(*aniLenList)[startIdx], aniLenList->size() - startIdx));
 		}
 	}
 
 	XMLDocument xmlActionBase;
 	if(!LoadXMLFile(L"/ActionBase.xml", xmlActionBase)) return false;
 
-	u32 prevMasterClassHash = 0x0;
+	ClassType prevMasterClassType = ClassType::NONE;
 	ActionStateID prevActionID = ActionStateID::INVALID;
 	i32 actionSliceStart = 0;
 	i32 actionSliceCount = 0;
-	Action* cutAction = nullptr;
+	Action* curAction = nullptr;
 
 	for(XMLElement* pActionBase = xmlActionBase.FirstChildElement()->FirstChildElement();
 		pActionBase;
@@ -1063,15 +1064,15 @@ bool GameXmlContent::LoadAnimationData()
 		eastl::fixed_string<char,64,false> classStr = Class;
 		classStr.make_upper();
 
-		const u32 masterClassHash = strHash(classStr.data());
-		if(masterClassHash != prevMasterClassHash) {
+		const ClassType masterClassType = ClassTypeFromString(classStr.data());
+		if(masterClassType != prevMasterClassType) {
 			LOG("%s:", classStr.data());
 
 			if(actionSliceCount > 0) {
-				actionListMap.emplace(prevMasterClassHash, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+				actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
 			}
 
-			prevMasterClassHash = masterClassHash;
+			prevMasterClassType = masterClassType;
 			actionSliceStart = actionList.size();
 			actionSliceCount = 0;
 			prevActionID = ActionStateID::INVALID;
@@ -1089,7 +1090,7 @@ bool GameXmlContent::LoadAnimationData()
 			bool foundAction = false;
 			for(int i = actionSliceStart; i < actionSliceStart+actionSliceCount; i++) {
 				if(actionList[i].ID == actionID) {
-					cutAction = &actionList[i];
+					curAction = &actionList[i];
 					foundAction = true;
 					break;
 				}
@@ -1097,29 +1098,86 @@ bool GameXmlContent::LoadAnimationData()
 
 			if(!foundAction) {
 				actionList.push_back();
-				cutAction = &actionList.back();
+				curAction = &actionList.back();
 				actionSliceCount++;
-				cutAction->ID = actionID;
-
-				auto foundSeq = aniLenListMap.find(masterClassHash);
+				curAction->ID = actionID;
+				auto foundSeq = aniLenListMap.find(masterClassType);
 				if(foundSeq != aniLenListMap.end()) {
 					foreach_const(it, foundSeq->second) {
 						if(it->ID == AnimationId) {
-							cutAction->seqLength = it->length;
+							curAction->seqLength = it->length;
 
 							break;
 						}
 					}
 				}
 
-				LOG("	ID=%d", cutAction->ID);
-				LOG("	seqLength=%f", cutAction->seqLength);
+				LOG("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
+				LOG("		seqLength=%f", curAction->seqLength);
 			}
+		}
+
+		const char* CommandType;
+		pActionBase->QueryStringAttribute("CommandType", &CommandType);
+
+		Action::Command cmd;
+		cmd.type = ActionCommand::TypeFromString(CommandType);
+
+		switch(cmd.type) {
+			case ActionCommand::Type::STATE_BLOCK: {
+				pActionBase->QueryAttribute("Delay", &cmd.stateBlock.delay);
+			} break;
+
+			case ActionCommand::Type::MOVE: {
+				const char* Param1;
+				const char* Param2;
+				pActionBase->QueryStringAttribute("Param1", &Param1);
+				pActionBase->QueryStringAttribute("Param2", &Param2);
+
+				cmd.move.preset = ActionCommand::MovePresetFromString(Param1);
+				ASSERT(cmd.move.preset != ActionCommand::MovePreset::INVALID);
+
+				if(Param2 != nullptr) {
+					i32 tmp;
+					i32 r = EA::StdC::Sscanf(Param2, "%d|%d", &cmd.move.param2, &tmp);
+					ASSERT(r == 2);
+				}
+			} break;
+
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
+			} break;
+
+			case ActionCommand::Type::ROTATESPEED: {
+				pActionBase->QueryAttribute("Param1", &cmd.rotateSpeed.speed);
+			} break;
+		}
+
+		curAction->commands.push_back(cmd);
+
+		LOG("		Command='%s'", CommandType);
+		switch(cmd.type) {
+			case ActionCommand::Type::STATE_BLOCK: {
+				LOG("		  delay=%f", cmd.stateBlock.delay);
+			} break;
+
+			case ActionCommand::Type::MOVE: {
+				LOG("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
+				LOG("		  param2=%d", cmd.move.param2);
+			} break;
+
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				LOG("		  distance=%f", cmd.graphMoveHorz.distance);
+			} break;
+
+			case ActionCommand::Type::ROTATESPEED: {
+				LOG("		  speed=%d", cmd.rotateSpeed.speed);
+			} break;
 		}
 	}
 
 	if(actionSliceCount > 0) {
-		actionListMap.emplace(prevMasterClassHash, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+		actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
 	}
 
 	return true;
@@ -1383,4 +1441,196 @@ bool OpenMeshFile(const char* path, MeshFile* out)
 		mesh.indices = indices;
 	}
 	return true;
+}
+
+namespace ActionCommand {
+
+Type TypeFromString(const char* str)
+{
+	if(StringEquals(str, "STATE_BLOCK")) {
+		return Type::STATE_BLOCK;
+	}
+	if(StringEquals(str, "WEAPON_USE")) {
+		return Type::WEAPON_USE;
+	}
+	if(StringEquals(str, "MOVE")) {
+		return Type::MOVE;
+	}
+	if(StringEquals(str, "TELEPORT")) {
+		return Type::TELEPORT;
+	}
+	if(StringEquals(str, "ENTITY")) {
+		return Type::ENTITY;
+	}
+	if(StringEquals(str, "STATUS")) {
+		return Type::STATUS;
+	}
+	if(StringEquals(str, "REMOTE")) {
+		return Type::REMOTE;
+	}
+	if(StringEquals(str, "STATUS_SKILL_TARGET")) {
+		return Type::STATUS_SKILL_TARGET;
+	}
+	if(StringEquals(str, "REMOTE_SKILL_TARGET")) {
+		return Type::REMOTE_SKILL_TARGET;
+	}
+	if(StringEquals(str, "GRAPH_MOVE_HORZ")) {
+		return Type::GRAPH_MOVE_HORZ;
+	}
+	if(StringEquals(str, "FLY_MOVE")) {
+		return Type::FLY_MOVE;
+	}
+	if(StringEquals(str, "MOVESPEED")) {
+		return Type::MOVESPEED;
+	}
+	if(StringEquals(str, "ROTATESPEED")) {
+		return Type::ROTATESPEED;
+	}
+	if(StringEquals(str, "REGCOMBO")) {
+		return Type::REGCOMBO;
+	}
+	if(StringEquals(str, "SETSTANCE")) {
+		return Type::SETSTANCE;
+	}
+	if(StringEquals(str, "PHYSICS")) {
+		return Type::PHYSICS;
+	}
+	if(StringEquals(str, "AIOBJECT")) {
+		return Type::AIOBJECT;
+	}
+	if(StringEquals(str, "PUSH_OVERLAP")) {
+		return Type::PUSH_OVERLAP;
+	}
+	if(StringEquals(str, "POLYMORPH")) {
+		return Type::POLYMORPH;
+	}
+	if(StringEquals(str, "DIE_MODE")) {
+		return Type::DIE_MODE;
+	}
+	if(StringEquals(str, "SET_FLAG")) {
+		return Type::SET_FLAG;
+	}
+	if(StringEquals(str, "CLEAR_FLAG")) {
+		return Type::CLEAR_FLAG;
+	}
+	if(StringEquals(str, "FORCE_ROTATE")) {
+		return Type::FORCE_ROTATE;
+	}
+	if(StringEquals(str, "CALL_CHILD_SKILL")) {
+		return Type::CALL_CHILD_SKILL;
+	}
+	if(StringEquals(str, "LONG_JUMP")) {
+		return Type::LONG_JUMP;
+	}
+	if(StringEquals(str, "TALK")) {
+		return Type::TALK;
+	}
+	if(StringEquals(str, "EFFECT")) {
+		return Type::EFFECT;
+	}
+	if(StringEquals(str, "AI_ADJUST")) {
+		return Type::AI_ADJUST;
+	}
+	if(StringEquals(str, "INTERACTION")) {
+		return Type::INTERACTION;
+	}
+	if(StringEquals(str, "DEATHWORM_BOUND")) {
+		return Type::DEATHWORM_BOUND;
+	}
+	if(StringEquals(str, "UI")) {
+		return Type::UI;
+	}
+	if(StringEquals(str, "CHANGE_MESH")) {
+		return Type::CHANGE_MESH;
+	}
+
+	return Type::INVALID;
+}
+
+MovePreset MovePresetFromString(const char* str)
+{
+	if(StringEquals(str, "MOVE_PRESET_SEE_TARGET")) {
+		return MovePreset::SEE_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_ROTATE")) {
+		return MovePreset::ROTATE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_LIFTED")) {
+		return MovePreset::LIFTED;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GRAPH")) {
+		return MovePreset::GRAPH;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GRAPH_GROUND")) {
+		return MovePreset::GRAPH_GROUND;
+	}
+	if(StringEquals(str, "MOVE_PRESET_MOVE_NONE")) {
+		return MovePreset::MOVE_NONE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET")) {
+		return MovePreset::GOTO_CURRENT_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_CHASE")) {
+		return MovePreset::GOTO_CURRENT_TARGET_CHASE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_SEE_CURRENT_TARGET")) {
+		return MovePreset::SEE_CURRENT_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_AFTERIMAGE_MOVE")) {
+		return MovePreset::AFTERIMAGE_MOVE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_TARGET_POS")) {
+		return MovePreset::TARGET_POS;
+	}
+	if(StringEquals(str, "MOVE_PRESET_TARGET_POS_LEAP")) {
+		return MovePreset::TARGET_POS_LEAP;
+	}
+	if(StringEquals(str, "MOVE_PRESET_WARP")) {
+		return MovePreset::WARP;
+	}
+	if(StringEquals(str, "MOVE_PRESET_WARP_TARGET_POS")) {
+		return MovePreset::WARP_TARGET_POS;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH")) {
+		return MovePreset::GOTO_CURRENT_TARGET_THROUGH;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH_CHASE")) {
+		return MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_SEE_MEMORIZED_TARGET")) {
+		return MovePreset::SEE_MEMORIZED_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET")) {
+		return MovePreset::CHASE_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET_ATTACK")) {
+		return MovePreset::CHASE_TARGET_ATTACK;
+	}
+	return MovePreset::INVALID;
+}
+
+const char* MovePresetToString(MovePreset p)
+{
+	if(p == MovePreset::SEE_TARGET) { return "SEE_TARGET"; }
+	if(p == MovePreset::ROTATE) { return "ROTATE"; }
+	if(p == MovePreset::LIFTED) { return "LIFTED"; }
+	if(p == MovePreset::GRAPH) { return "GRAPH"; }
+	if(p == MovePreset::GRAPH_GROUND) { return "GRAPH_GROUND"; }
+	if(p == MovePreset::MOVE_NONE) { return "MOVE_NONE"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET) { return "GOTO_CURRENT_TARGET"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_CHASE) { return "GOTO_CURRENT_TARGET_CHASE"; }
+	if(p == MovePreset::SEE_CURRENT_TARGET) { return "SEE_CURRENT_TARGET"; }
+	if(p == MovePreset::AFTERIMAGE_MOVE) { return "AFTERIMAGE_MOVE"; }
+	if(p == MovePreset::TARGET_POS) { return "TARGET_POS"; }
+	if(p == MovePreset::TARGET_POS_LEAP) { return "TARGET_POS_LEAP"; }
+	if(p == MovePreset::WARP) { return "WARP"; }
+	if(p == MovePreset::WARP_TARGET_POS) { return "WARP_TARGET_POS"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_THROUGH) { return "GOTO_CURRENT_TARGET_THROUGH"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE) { return "GOTO_CURRENT_TARGET_THROUGH_CHASE"; }
+	if(p == MovePreset::SEE_MEMORIZED_TARGET) { return "SEE_MEMORIZED_TARGET"; }
+	if(p == MovePreset::CHASE_TARGET) { return "CHASE_TARGET"; }
+	if(p == MovePreset::CHASE_TARGET_ATTACK) { return "CHASE_TARGET_ATTACK"; }
+	return "INVALID";
+}
+
 }

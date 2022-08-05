@@ -71,13 +71,13 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	teamMasterPickCount[Team::BLUE].fill(0);
 
 	allowedMastersSet = {
-		ClassType::Taejin,
-		ClassType::MBA_07,
-		ClassType::Sizuka,
-		ClassType::Demenos,
-		ClassType::Koom,
-		ClassType::Innowin,
-		ClassType::Lua,
+		ClassType::STRIKER,
+		ClassType::ARTILLERY,
+		ClassType::ASSASSIN,
+		ClassType::ELECTRO,
+		ClassType::DEFENDER,
+		ClassType::SNIPER,
+		ClassType::LAUNCHER,
 	};
 
 	startTime = TimeNow();

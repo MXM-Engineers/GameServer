@@ -719,3 +719,156 @@ ActionStateID ActionStateFromString(const char* str)
 
 	return ActionStateID::INVALID;
 }
+
+ClassType ClassTypeFromString(const char* str)
+{
+	if(StringEquals(str, "STRIKER")){
+		return ClassType::STRIKER;
+	}
+	if(StringEquals(str, "ARTILLERY")){
+		return ClassType::ARTILLERY;
+	}
+	if(StringEquals(str, "ASSASSIN")){
+		return ClassType::ASSASSIN;
+	}
+	if(StringEquals(str, "ELECTRO")){
+		return ClassType::ELECTRO;
+	}
+	if(StringEquals(str, "DEFENDER")){
+		return ClassType::DEFENDER;
+	}
+	if(StringEquals(str, "SNIPER")){
+		return ClassType::SNIPER;
+	}
+	if(StringEquals(str, "DEATHKNIGHT")){
+		return ClassType::DEATHKNIGHT;
+	}
+	if(StringEquals(str, "DESTROYER")){
+		return ClassType::DESTROYER;
+	}
+	if(StringEquals(str, "MECHANIC")){
+		return ClassType::MECHANIC;
+	}
+	if(StringEquals(str, "SOULMASTER")){
+		return ClassType::SOULMASTER;
+	}
+	if(StringEquals(str, "DOUBLEGUN")){
+		return ClassType::DOUBLEGUN;
+	}
+	if(StringEquals(str, "JINSEOYEON")){
+		return ClassType::JINSEOYEON;
+	}
+	if(StringEquals(str, "KROMEDE")){
+		return ClassType::KROMEDE;
+	}
+	if(StringEquals(str, "RODMASTER")){
+		return ClassType::RODMASTER;
+	}
+	if(StringEquals(str, "PHOTOG")){
+		return ClassType::PHOTOG;
+	}
+	if(StringEquals(str, "ICEQUEEN")){
+		return ClassType::ICEQUEEN;
+	}
+	if(StringEquals(str, "MAGICGIRL")){
+		return ClassType::MAGICGIRL;
+	}
+	if(StringEquals(str, "POHWARAN")){
+		return ClassType::POHWARAN;
+	}
+	if(StringEquals(str, "BOOMERANG")){
+		return ClassType::BOOMERANG;
+	}
+	if(StringEquals(str, "SLIME")){
+		return ClassType::SLIME;
+	}
+	if(StringEquals(str, "MONDOZAX")){
+		return ClassType::MONDOZAX;
+	}
+	if(StringEquals(str, "LILU")){
+		return ClassType::LILU;
+	}
+	if(StringEquals(str, "EFREET")){
+		return ClassType::EFREET;
+	}
+	if(StringEquals(str, "SHADOWHUNTER")){
+		return ClassType::SHADOWHUNTER;
+	}
+	if(StringEquals(str, "RYTLOCK")){
+		return ClassType::RYTLOCK;
+	}
+	if(StringEquals(str, "CATTHECAT")){
+		return ClassType::CATTHECAT;
+	}
+	if(StringEquals(str, "RNB")){
+		return ClassType::RNB;
+	}
+	if(StringEquals(str, "BATTER")){
+		return ClassType::BATTER;
+	}
+	if(StringEquals(str, "ANDROA")){
+		return ClassType::ANDROA;
+	}
+	if(StringEquals(str, "ANDROB")){
+		return ClassType::ANDROB;
+	}
+	if(StringEquals(str, "ATTACKER")){
+		return ClassType::ATTACKER;
+	}
+	if(StringEquals(str, "BOXER")){
+		return ClassType::BOXER;
+	}
+	if(StringEquals(str, "SHUGOTRADER")){
+		return ClassType::SHUGOTRADER;
+	}
+	if(StringEquals(str, "NAGA")){
+		return ClassType::NAGA;
+	}
+	if(StringEquals(str, "LAUNCHER")){
+		return ClassType::LAUNCHER;
+	}
+	if(StringEquals(str, "STATESMAN")){
+		return ClassType::STATESMAN;
+	}
+	if(StringEquals(str, "YURI")){
+		return ClassType::YURI;
+	}
+	if(StringEquals(str, "ESPER")){
+		return ClassType::ESPER;
+	}
+	if(StringEquals(str, "PRIEST")){
+		return ClassType::PRIEST;
+	}
+	if(StringEquals(str, "GHOSTWIDOW")){
+		return ClassType::GHOSTWIDOW;
+	}
+	if(StringEquals(str, "SHUTTLE")){
+		return ClassType::SHUTTLE;
+	}
+	if(StringEquals(str, "JAVELIN")){
+		return ClassType::JAVELIN;
+	}
+	if(StringEquals(str, "GATLING")){
+		return ClassType::GATLING;
+	}
+	if(StringEquals(str, "GUARDIAN")){
+		return ClassType::GUARDIAN;
+	}
+	if(StringEquals(str, "RESERVED_START")){
+		return ClassType::RESERVED_START;
+	}
+	if(StringEquals(str, "ALEX")){
+		return ClassType::ALEX;
+	}
+	if(StringEquals(str, "TOPAZ")){
+		return ClassType::TOPAZ;
+	}
+	if(StringEquals(str, "TITAN")){
+		return ClassType::TITAN;
+	}
+	if(StringEquals(str, "TITAN_SIEGE")){
+		return ClassType::TITAN_SIEGE;
+	}
+
+	return ClassType::NONE;
+}

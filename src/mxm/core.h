@@ -601,16 +601,6 @@ enum class WorldStageDifficultType : i32
 
 constexpr i32 JUKEBOX_MAX_TRACKS = 8;
 
-// TODO: weird place for this
-struct PlayerCastSkill
-{
-	ActorUID playerActorUID;
-	SkillID skillID;
-	vec3 p3nPos;
-	eastl::fixed_vector<ActorUID,32,false> targetList;
-	Cl::CQ_PlayerCastSkill::PosStruct posStruct;
-};
-
 inline f32 MxmYawToWorldYaw(f32 a)
 {
 	return -a - PI/2;

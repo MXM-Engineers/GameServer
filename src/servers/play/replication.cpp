@@ -21,6 +21,8 @@ void Replication::Frame::Clear()
 
 	actorUIDSet.clear();
 	actorType.clear();
+
+	skillCastList.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -124,6 +126,11 @@ void Replication::FramePushDynamicActor(const ActorDynamic& actor)
 	frameCur->dynamicMap.emplace(actor.actorUID, --frameCur->dynamicList.end());
 	frameCur->actorUIDSet.insert(actor.actorUID);
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
+}
+
+void Replication::FramePushSkillCast(const SkillCast& skillCast)
+{
+	frameCur->skillCastList.push_back(skillCast);
 }
 
 void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
@@ -856,106 +863,6 @@ void Replication::SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f
 	SendPacket(clientHd, packet);
 }
 
-void Replication::SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSkill& cast)
-{
-	LocalActorID localActorID = GetLocalActorID(clientHd, cast.playerActorUID);
-	ASSERT(localActorID != LocalActorID::INVALID);
-
-	// SA_CastSkill
-	{
-		Sv::SA_CastSkill accept;
-		accept.characterID = localActorID;
-		accept.ret = 0;
-		accept.skillIndex = cast.skillID;
-
-		SendPacket(clientHd, accept);
-	}
-
-	// SN_CastSkill
-	{
-		PacketWriter<Sv::SN_CastSkill> packet;
-
-		packet.Write<LocalActorID>(localActorID); // entityID
-		packet.Write<i32>(0); // ret
-		packet.Write<SkillID>(cast.skillID);
-		packet.Write<u8>(0); // costLevel
-		packet.Write<ActionStateID>(ActionStateID::INVALID);
-		packet.Write<float3>(v2f(cast.p3nPos));
-
-		packet.Write<u16>(0); // targetList_count
-
-		packet.Write<u8>(1); // bSyncMyPosition
-		packet.Write<float3>(cast.posStruct.pos);
-		packet.Write<float3>(cast.posStruct.destPos);
-		packet.Write<float2>(cast.posStruct.moveDir);
-		packet.Write<float3>(cast.posStruct.rotateStruct);
-		packet.Write<f32>(cast.posStruct.speed);
-		packet.Write<i32>(cast.posStruct.clientTime);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ExecuteSkill
-	{
-		PacketWriter<Sv::SN_ExecuteSkill,512> packet;
-
-		packet.Write<LocalActorID>(localActorID); // entityID
-		packet.Write<i32>(0); // ret
-		packet.Write<SkillID>(cast.skillID);
-		packet.Write<u8>(0); // costLevel
-
-		ActionStateID actionState = ActionStateID::INVALID;
-		f32 distance = 0.0f;
-		f32 moveDuration = 1.0f; // WARNING: if this is 0 the character fall through the map (probably a division by 0 error)
-
-		switch(cast.skillID) {
-			// Lua dodge
-			case (SkillID)180350002: {
-				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-				distance = 500;
-				moveDuration = 0.7333333f;
-			} break;
-
-			// Sizuka dodge
-			case (SkillID)180030002: {
-				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-				distance = 500;
-				moveDuration = 0.01f;
-			} break;
-
-			case (SkillID)180350010: actionState = ActionStateID::SKILL_1_BEHAVIORSTATE; break;
-			case (SkillID)180350030: actionState = (ActionStateID)30; break;
-			case (SkillID)180030020: actionState = (ActionStateID)32; break;
-			case (SkillID)180030030: actionState = (ActionStateID)33; break;
-			case (SkillID)180030050: actionState = (ActionStateID)35; break;
-		}
-		packet.Write<ActionStateID>(actionState);
-		packet.Write<float3>(v2f(cast.p3nPos));
-
-		packet.Write<u16>(0); // targetList_count
-
-		packet.Write<u8>(0); // bSyncMyPosition
-		packet.Write<float3>(float3());
-		packet.Write<float3>(float3());
-		packet.Write<float2>(float2());
-		packet.Write<float3>(float3());
-		packet.Write<f32>(0);
-		packet.Write<i32>(0);
-
-		packet.Write<f32>(0); // fSkillChargeDamageMultiplier
-
-		// graphMove
-		packet.Write<u8>(1); // bApply
-		packet.Write<float3>(cast.posStruct.pos); // startPos
-		vec3 endPos = f2v(cast.posStruct.pos) + vec3(distance, 0, 0);
-		packet.Write<float3>(v2f(endPos)); // endPos
-		packet.Write<f32>(moveDuration); // durationTimeS
-		packet.Write<f32>(distance); // originDistance
-
-		SendPacket(clientHd, packet);
-	}
-}
-
 void Replication::OnPlayerDisconnect(ClientHandle clientHd)
 {
 	const i32 clientID = playerMap.at(clientHd);
@@ -1254,149 +1161,6 @@ void Replication::FrameDifference()
 		bool rotationUpdated = false;
 		bool positionUpdated = false;
 
-		if(cur.castSkill != SkillID::INVALID) {
-			struct UpdateSendCast
-			{
-				ClientHandle clientHd;
-				ActorUID actorUID;
-				SkillID skill;
-				f32 distance;
-				f32 moveDurationS;
-				vec3 startPos;
-				vec3 endPos;
-				vec2 moveDir;
-				RotationHumanoid rotation;
-				f32 speed;
-				ActionStateID action;
-			};
-
-			UpdateSendCast up;
-			up.clientHd = cur.clientHd;
-			up.actorUID = cur.actorUID;
-			up.skill = cur.castSkill;
-			up.startPos = cur.skillStartPos;
-			up.endPos = cur.skillEndPos;
-			up.moveDir = cur.moveDir;
-			up.rotation = cur.rotation;
-			up.speed = cur.speed;
-			up.distance = glm::length(cur.skillEndPos - cur.skillStartPos);
-			up.moveDurationS = cur.skillMoveDurationS;
-			up.action = cur.actionState;
-
-			if(up.clientHd != ClientHandle::INVALID) {
-				LocalActorID localActorID = GetLocalActorID(up.clientHd, up.actorUID);
-
-				// SA_CastSkill
-				{
-					Sv::SA_CastSkill accept;
-					accept.characterID = localActorID;
-					accept.ret = 0;
-					accept.skillIndex = up.skill;
-
-					SendPacket(up.clientHd, accept);
-				}
-			}
-
-			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
-				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
-				const ClientHandle clientHd = clientHandle[pi];
-
-				LocalActorID localActorID = GetLocalActorID(clientHd, up.actorUID);
-
-				// SN_CastSkill
-				{
-					PacketWriter<Sv::SN_CastSkill,512> packet;
-
-					packet.Write<LocalActorID>(localActorID); // entityID
-					packet.Write<i32>(0); // ret
-					packet.Write<SkillID>(up.skill);
-					packet.Write<u8>(0); // costLevel
-					packet.Write<ActionStateID>(ActionStateID::INVALID);
-					packet.Write<float3>({});
-
-					packet.Write<u16>(0); // targetList_count
-
-
-	#if 0
-					packet.Write<u8>(0); // bSyncMyPosition
-					packet.Write<float3>({});
-					packet.Write<float3>({});
-					packet.Write<float2>({});
-					packet.Write<RotationHumanoid>({});
-					packet.Write<f32>(0);
-					packet.Write<i32>(0);
-
-	#else
-					packet.Write<u8>(1); // bSyncMyPosition
-					packet.Write<float3>(v2f(up.startPos));
-					packet.Write<float3>(v2f(up.startPos));
-					packet.Write<float2>(v2f(up.moveDir));
-					packet.Write<RotationHumanoid>(RotConvertToMxm(up.rotation));
-					packet.Write<f32>(up.speed);
-					//packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-					packet.Write<i32>(0);
-	#endif
-
-					SendPacket(clientHd, packet);
-				}
-
-				// SN_ExecuteSkill
-				{
-					PacketWriter<Sv::SN_ExecuteSkill,512> packet;
-
-					packet.Write<LocalActorID>(localActorID); // entityID
-					packet.Write<i32>(0); // ret
-					packet.Write<SkillID>(up.skill);
-					packet.Write<u8>(0); // costLevel
-					packet.Write<ActionStateID>(up.action);
-					packet.Write<float3>({});
-
-					packet.Write<u16>(0); // targetList_count
-
-
-					packet.Write<u8>(0); // bSyncMyPosition
-					packet.Write<float3>({});
-					packet.Write<float3>({});
-					packet.Write<float2>({});
-					packet.Write<RotationHumanoid>({});
-					packet.Write<f32>(0);
-					packet.Write<i32>(0);
-
-					/*
-					packet.Write<u8>(1); // bSyncMyPosition
-					packet.Write<float3>(v2f(up.actorPos));
-					packet.Write<float3>(v2f(up.endPos));
-					packet.Write<float2>(v2f(up.moveDir));
-					packet.Write<RotationHumanoid>(up.rotation.ConvertToMxm());
-					packet.Write<f32>(up.speed);
-					packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-					*/
-
-					packet.Write<f32>(0); // fSkillChargeDamageMultiplier
-
-					if(up.distance > 0) {
-						// graphMove
-						packet.Write<u8>(1); // bApply
-						packet.Write<float3>(v2f(up.startPos)); // startPos
-						packet.Write<float3>(v2f(up.endPos)); // endPos
-						packet.Write<f32>(up.moveDurationS); // durationTimeS
-						packet.Write<f32>(up.distance); // originDistance
-					}
-					else {
-						// graphMove
-						packet.Write<u8>(0); // bApply
-						packet.Write<float3>(float3()); // startPos
-						packet.Write<float3>(float3()); // endPos
-						packet.Write<f32>(0); // durationTimeS
-						packet.Write<f32>(0); // originDistance
-					}
-
-					SendPacket(clientHd, packet);
-				}
-			}
-			positionUpdated = true;
-		}
-
 		// position
 		const f32 posEpsilon = 0.5f;
 		const f32 dirEpsilon = 0.001f;
@@ -1457,8 +1221,6 @@ void Replication::FrameDifference()
 	}
 
 
-
-
 	// diff dynamics
 	foreach_const(it, frameCur->dynamicList) {
 		const ActorDynamic& cur = *it;
@@ -1479,6 +1241,116 @@ void Replication::FrameDifference()
 				packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
 
 				SendPacket(*clientHd, packet);
+			}
+		}
+	}
+
+	// skill casts
+	foreach_const(it, frameCur->skillCastList) {
+		const auto& cast = *it;
+
+		if(cast.clientHd != ClientHandle::INVALID) {
+			LocalActorID localActorID = GetLocalActorID(cast.clientHd, cast.casterUID);
+
+			// SA_CastSkill
+			{
+				Sv::SA_CastSkill accept;
+				accept.characterID = localActorID;
+				accept.ret = 0;
+				accept.skillIndex = cast.skillID;
+
+				SendPacket(cast.clientHd, accept);
+			}
+		}
+
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
+
+			LocalActorID localCasterID = GetLocalActorID(clientHd, cast.casterUID);
+
+			// SN_CastSkill
+			{
+				PacketWriter<Sv::SN_CastSkill,512> packet;
+
+				packet.Write<LocalActorID>(localCasterID); // entityID
+				packet.Write<i32>(0); // ret
+				packet.Write<SkillID>(cast.skillID);
+				packet.Write<u8>(0); // costLevel
+				packet.Write<ActionStateID>(ActionStateID::INVALID); // TODO: is it always invalid?
+				packet.Write<float3>(v2f(cast.castPos));
+
+				packet.Write<u16>(cast.targetList.size()); // targetList_count
+				foreach_const(t, cast.targetList) {
+					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
+				}
+
+				packet.Write<u8>(1); // bSyncMyPosition
+				packet.Write<float3>(v2f(cast.startPos));
+				packet.Write<float3>(v2f(cast.startPos));
+				packet.Write<float2>(v2f(cast.moveDir));
+				packet.Write<RotationHumanoid>(RotConvertToMxm(cast.rot));
+				packet.Write<f32>(cast.speed);
+				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				//packet.Write<i32>(0);
+
+				SendPacket(clientHd, packet);
+			}
+
+			// SN_ExecuteSkill
+			{
+				PacketWriter<Sv::SN_ExecuteSkill,512> packet;
+
+				packet.Write<LocalActorID>(localCasterID); // entityID
+				packet.Write<i32>(0); // ret
+				packet.Write<SkillID>(cast.skillID);
+				packet.Write<u8>(0); // costLevel
+				packet.Write<ActionStateID>(cast.actionID);
+				packet.Write<float3>(v2f(cast.castPos));
+
+				packet.Write<u16>(cast.targetList.size()); // targetList_count
+				foreach_const(t, cast.targetList) {
+					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
+				}
+
+				packet.Write<u8>(0); // bSyncMyPosition
+				packet.Write<float3>({});
+				packet.Write<float3>({});
+				packet.Write<float2>({});
+				packet.Write<RotationHumanoid>({});
+				packet.Write<f32>(0);
+				packet.Write<i32>(0);
+
+				/*
+				packet.Write<u8>(1); // bSyncMyPosition
+				packet.Write<float3>(v2f(up.actorPos));
+				packet.Write<float3>(v2f(up.endPos));
+				packet.Write<float2>(v2f(up.moveDir));
+				packet.Write<RotationHumanoid>(up.rotation.ConvertToMxm());
+				packet.Write<f32>(up.speed);
+				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				*/
+
+				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
+
+				if(cast.moveDuration != 0) {
+					// graphMove
+					packet.Write<u8>(1); // bApply
+					packet.Write<float3>(v2f(cast.startPos)); // startPos
+					packet.Write<float3>(v2f(cast.endPos)); // endPos
+					packet.Write<f32>(cast.moveDuration); // durationTimeS
+					packet.Write<f32>(glm::distance(cast.startPos, cast.endPos)); // originDistance
+				}
+				else {
+					// graphMove
+					packet.Write<u8>(0); // bApply
+					packet.Write<float3>(float3()); // startPos
+					packet.Write<float3>(float3()); // endPos
+					packet.Write<f32>(0); // durationTimeS
+					packet.Write<f32>(0); // originDistance
+				}
+
+				SendPacket(clientHd, packet);
 			}
 		}
 	}

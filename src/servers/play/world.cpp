@@ -38,13 +38,15 @@ void World::Update(Time localTime_)
 			p.mainCharaID ^= 1;
 		}
 
-		// cast skill
-		p.cast.skill = SkillID::INVALID;
-		if(p.input.castSkill != SkillID::INVALID) {
+		// cast skills
+		if(!p.input.cast.empty()) {
 			// TODO: check for requirements in general
 			// TODO: check for skill
 			// TODO: check for cost
-			PlayerCastSkill(p, p.input.castSkill, p.input.castPos);
+			foreach_const(cast, p.input.cast) {
+				PlayerCastSkill(p, cast->skillID, cast->pos, Slice<const ActorUID>(cast->targetList.data(), cast->targetList.size()));
+			}
+			p.input.cast.clear();
 		}
 
 		// move
@@ -149,11 +151,6 @@ void World::Replicate()
 			rch.actionParam1 = chara.actionParam1;
 			rch.actionParam2 = chara.actionParam2;
 
-			rch.castSkill = player.cast.skill;
-			rch.skillStartPos = player.cast.startPos;
-			rch.skillEndPos = player.cast.endPos;
-			rch.skillMoveDurationS = player.cast.moveDurationS;
-
 			rch.taggedOut = false;
 		}
 
@@ -175,11 +172,6 @@ void World::Replicate()
 			rch.actionState = chara.actionState;
 			rch.actionParam1 = chara.actionParam1;
 			rch.actionParam2 = chara.actionParam2;
-
-			rch.castSkill = player.cast.skill;
-			rch.skillStartPos = player.cast.startPos;
-			rch.skillEndPos = player.cast.endPos;
-			rch.skillMoveDurationS = player.cast.moveDurationS;
 
 			rch.taggedOut = true;
 		}
@@ -242,7 +234,7 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 	player.input.rot = rot;
 	player.input.tag = 0;
 	player.input.jump = 0;
-	player.input.actionState = ActionStateID::INVALID;
+	player.input.action = ActionStateID::INVALID;
 
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();
@@ -333,9 +325,11 @@ World::ActorMasterHandle World::MasterInvalidHandle()
 	return actorMasterList.end();
 }
 
-void World::PlayerCastSkill(Player& player, SkillID skillID, const vec2& castPos)
+void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets)
 {
-	player.cast.skill = skillID;
+	// TODO: each skill is executed following a list of commands from ActionBase.xml
+	// process them at runtime first
+	// but since they never change, produce logic code from ActionBase.xml
 
 	f32 distance = 0;
 	f32 moveDuration = 0;
@@ -364,19 +358,33 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec2& castPos
 		}
 	}
 
-	if(distance != 0) {
-		player.cast.startPos = player.body->GetWorldPos();
-		const f32 angle = player.input.rot.upperYaw;
-		vec2 dir = vec2(cosf(angle), sinf(angle));
-		const vec3 endPos = physics.Move(player.body, vec3(dir * distance, 0), moveDuration);
+	player.Main().actionState = actionState;
 
-		player.cast.endPos = endPos;
+	const f32 angle = player.input.rot.upperYaw;
+	const vec2 dir = vec2(cosf(angle), sinf(angle));
+
+	Replication::SkillCast rpCast;
+	rpCast.clientHd = player.clientHd;
+	rpCast.casterUID = player.Main().UID;
+	rpCast.skillID = skillID;
+	rpCast.castPos = castPos;
+	rpCast.actionID = actionState;
+	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
+
+	rpCast.moveDuration = moveDuration;
+	rpCast.startPos = player.body->GetWorldPos();
+	rpCast.moveDir = dir;
+	rpCast.rot = { angle, 0, angle };
+	rpCast.speed = player.input.speed; // FIXME: should not come from input
+
+	if(distance != 0) {
+		const vec3 endPos = physics.Move(player.body, vec3(dir * distance, 0), moveDuration);
+		rpCast.endPos = endPos;
+
 		player.input.moveTo = endPos;
 		player.movement.moveDir = dir;
 		player.movement.rot = { angle, 0, angle };
 	}
-	player.cast.moveDurationS = moveDuration;
 
-	player.input.castSkill = SkillID::INVALID;
-	player.Main().actionState = actionState;
+	replication->FramePushSkillCast(rpCast);
 }

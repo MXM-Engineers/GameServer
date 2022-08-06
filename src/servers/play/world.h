@@ -17,6 +17,13 @@ struct ColliderSize
 	u16 height;
 };
 
+struct PlayerInputCastSkill
+{
+	SkillID skillID = SkillID::INVALID;
+	vec3 pos;
+	eastl::fixed_vector<ActorUID,10,false> targetList;
+};
+
 struct World
 {
 	struct Player;
@@ -49,12 +56,11 @@ struct World
 			u8 tag: 1;
 			u8 jump: 1;
 
-			ActionStateID actionState;
-			i32 actionParam1;
+			ActionStateID action;
+			i32 actionParam1; // TODO: investigate these
 			i32 actionParam2;
 
-			SkillID castSkill = SkillID::INVALID;
-			vec3 castPos;
+			eastl::fixed_vector<PlayerInputCastSkill,4,false> cast;
 		};
 
 		const u32 index;
@@ -87,13 +93,6 @@ struct World
 			RotationHumanoid rot;
 			bool hasJumped = false;
 		} movement;
-
-		struct {
-			SkillID skill;
-			vec3 startPos;
-			vec3 endPos;
-			f32 moveDurationS;
-		} cast;
 
 		explicit Player(u32 index_, const PlayerDescription& desc):
 			index(index_),
@@ -194,5 +193,5 @@ private:
 	ActorUID NewActorUID();
 	ActorMasterHandle MasterInvalidHandle();
 
-	void PlayerCastSkill(Player& player, SkillID skill, const vec2& castPos);
+	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets);
 };

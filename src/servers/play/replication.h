@@ -75,11 +75,6 @@ struct Replication
 		i32 actionParam1;
 		i32 actionParam2;
 
-		SkillID castSkill = SkillID::INVALID;
-		vec3 skillStartPos;
-		vec3 skillEndPos;
-		f32 skillMoveDurationS;
-
 		u8 taggedOut = false;
 	};
 
@@ -103,6 +98,24 @@ struct Replication
 		vec3 rot;
 	};
 
+	struct SkillCast
+	{
+		ClientHandle clientHd;
+		ActorUID casterUID;
+		SkillID skillID;
+		ActionStateID actionID;
+		vec3 castPos;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+
+		// movement
+		vec3 startPos;
+		vec3 endPos;
+		vec2 moveDir;
+		RotationHumanoid rot;
+		f32 speed;
+		f32 moveDuration;
+	};
+
 	struct Frame
 	{
 		eastl::fixed_list<Player,10,false> playerList;
@@ -117,6 +130,8 @@ struct Replication
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		hash_map<ActorUID,ActorType,2048,true> actorType;
+
+		eastl::fixed_vector<SkillCast,40,true> skillCastList;
 
 		void Clear();
 
@@ -187,6 +202,7 @@ struct Replication
 	void FramePushMasterActors(const ActorMaster* actorList, const i32 count);
 	void FramePushNpcActor(const ActorNpc& actor);
 	void FramePushDynamicActor(const ActorDynamic& actor);
+	void FramePushSkillCast(const SkillCast& skillCast);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
@@ -212,7 +228,6 @@ struct Replication
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSkill& cast);
 
 	void OnPlayerDisconnect(ClientHandle clientHd);
 

@@ -379,7 +379,7 @@ void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 	WARN("Client sent an invalid actorUID (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
 }
 
-void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
+void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID action, f32 clientTime)
 {
 	ProfileFunction();
 
@@ -541,7 +541,7 @@ void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, Act
 	// TODO: check hacking
 	player.input.rot.bodyYaw = rotate;
 	player.input.rot.upperYaw = upperRotate;
-	player.input.actionState = state;
+	player.input.action = state;
 	player.input.actionParam1 = param1;
 	player.input.actionParam2 = param2;
 }
@@ -556,7 +556,7 @@ void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 
 }
 
-void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
+void Game::OnPlayerTag(ClientHandle clientHd, ActorUID actorUID)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
@@ -566,7 +566,7 @@ void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 	player.input.tag = 1;
 }
 
-void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
+void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
@@ -575,18 +575,19 @@ void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 
 	player.input.jump = 1;
 }
 
-void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
+void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	player.input.castSkill = cast.skillID;
-	player.input.castPos = cast.p3nPos;
-	float3 r = cast.posStruct.rotateStruct;
-	player.input.rot = RotConvertToWorld({ r.x, r.y, r.z });
+	player.input.cast.push_back(cast);
 
-	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
+	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
+	// TODO: convert clientTime to localTime
+	OnPlayerUpdatePosition(clientHd, actorUID, f2v(posInfo.pos), f2v(posInfo.moveDir), rot, posInfo.speed, ActionStateID::INVALID, 0);
+
+	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.pos.x, cast.pos.y, cast.pos.z);
 }
 
 void Game::OnPlayerGameIsReady(ClientHandle clientHd)

@@ -93,7 +93,7 @@ struct Game
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
-	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime);
+	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID action, f32 clientTime);
 	void OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot);
 	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
@@ -102,9 +102,9 @@ struct Game
 	void OnPlayerLoadingComplete(ClientHandle clientHd);
 	void OnPlayerGameIsReady(ClientHandle clientHd);
 	void OnPlayerGameMapLoaded(ClientHandle clientHd);
-	void OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID);
-	void OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast);
+	void OnPlayerTag(ClientHandle clientHd, ActorUID actorUID);
+	void OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

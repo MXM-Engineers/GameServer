@@ -615,7 +615,7 @@ struct CQ_PlayerCastSkill
 		float3 pos;
 		float3 destPos;
 		float2 moveDir;
-		float3 rotateStruct;
+		float3 rot;
 		f32 speed;
 		i32 clientTime;
 	};
@@ -1256,7 +1256,26 @@ struct SN_CastSkill
 {
 	enum { NET_ID = 62035 };
 
-	// TODO: fill
+	LocalActorID entityID;
+	i32 ret;
+	SkillID skillID;
+	u8 costLevel;
+	ActionStateID actionState;
+	float3 targetPos;
+
+	u16 targetList_count;
+	LocalActorID targetList[1];
+
+	u8 bSyncMyPosition;
+
+	struct PosStruct {
+		float3 pos;
+		float3 destPos;
+		float2 moveDir;
+		float3 rotateStruct;
+		f32 speed;
+		i32 clientTime;
+	} posStruct;
 };
 
 struct SN_ExecuteSkill

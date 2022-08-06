@@ -12,6 +12,7 @@
 #include "model/weapon_spec.h"
 
 namespace ActionCommand {
+
 enum class Type: i8
 {
 	INVALID = -1,

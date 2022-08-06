@@ -141,7 +141,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 	// transform rotation for our coordinate system
 	RotationHumanoid rot = RotConvertToWorld({ update.upperYaw, update.upperPitch, update.bodyYaw });
 
-	game->OnPlayerUpdatePosition(clientHd, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, 0, update.localTimeS);
+	game->OnPlayerUpdatePosition(clientHd, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, update.localTimeS);
 }
 
 void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -277,7 +277,7 @@ void GamePacketHandler::HandlePacket_CQ_GamePlayerTag(ClientHandle clientHd, con
 	const Cl::CQ_GamePlayerTag& tag = SafeCast<Cl::CQ_GamePlayerTag>(packetData, packetSize);
 
 	NT_LOG("[client%x] Client :: CQ_GamePlayerTag :: localActorID=%d", clientHd, tag.characterID);
-	game->OnPlayerTag(clientHd, tag.characterID);
+	game->OnPlayerTag(clientHd, replication->GetWorldActorUID(clientHd, tag.characterID));
 }
 
 void GamePacketHandler::HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -290,37 +290,33 @@ void GamePacketHandler::HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const 
 	const f32 moveDirX = buff.Read<f32>();
 	const f32 moveDirY = buff.Read<f32>();
 
-	NT_LOG("[client%x] Client :: CQ_PlayerJump :: localActorID", clientHd, actorID);
-	game->OnPlayerJump(clientHd, actorID, rotate, moveDirX, moveDirY);
+	NT_LOG("[client%x] Client :: CQ_PlayerJump :: localActorID=%d", clientHd, actorID);
+	game->OnPlayerJump(clientHd, replication->GetWorldActorUID(clientHd, actorID), rotate, moveDirX, moveDirY);
 }
 
 void GamePacketHandler::HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PlayerCastSkill>(packetData, packetSize));
 
-	PlayerCastSkill cast;
-	ReadPacket(&cast, clientHd, packetData, packetSize);
+	PlayerInputCastSkill cast;
+	Cl::CQ_PlayerCastSkill::PosStruct posInfo;
 
-	game->OnPlayerCastSkill(clientHd, cast);
-}
-
-void GamePacketHandler::ReadPacket(PlayerCastSkill* cast, ClientHandle clientHd, const u8* packetData, const i32 packetSize)
-{
 	ConstBuffer buff(packetData, packetSize);
+	const ActorUID actorUID = replication->GetWorldActorUID(clientHd, buff.Read<LocalActorID>());
 
-	cast->playerActorUID = replication->GetWorldActorUID(clientHd, buff.Read<LocalActorID>());
-	cast->skillID = buff.Read<SkillID>();
-	cast->p3nPos = buff.Read<vec3>();
+	cast.skillID = buff.Read<SkillID>();
+	cast.pos = f2v(buff.Read<float3>());
 
 	const u16 count = buff.Read<u16>();
 	for(int i = 0; i < count; i++) {
-		cast->targetList.push_back(replication->GetWorldActorUID(clientHd, buff.Read<LocalActorID>()));
+		cast.targetList.push_back(replication->GetWorldActorUID(clientHd, buff.Read<LocalActorID>()));
 	}
 
-	cast->posStruct.pos = buff.Read<float3>();
-	cast->posStruct.destPos = buff.Read<float3>();
-	cast->posStruct.moveDir = buff.Read<float2>();
-	cast->posStruct.rotateStruct= buff.Read<float3>();
-	cast->posStruct.speed = buff.Read<f32>();
-	cast->posStruct.clientTime = buff.Read<i32>();
+	posInfo = buff.Read<Cl::CQ_PlayerCastSkill::PosStruct>();
+
+	// convert rotation
+	RotationHumanoid rot = RotConvertToWorld({ posInfo.rot.x, posInfo.rot.y, posInfo.rot.z });
+	posInfo.rot = { rot.upperYaw, rot.upperPitch, rot.bodyYaw };
+
+	game->OnPlayerCastSkill(clientHd, actorUID, cast, posInfo);
 }

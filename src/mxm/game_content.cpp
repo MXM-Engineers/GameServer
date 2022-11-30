@@ -330,7 +330,7 @@ void GameXmlContent::LoadAllSkills()
 		skill.type = type;
 
 		// parse action
-		const char* actionStr;
+		const char* actionStr = 0;
 		pNodeCommonSkill->QueryStringAttribute("_Action", &actionStr);
 		if(actionStr) {
 			skill.action = ActionStateFromString(actionStr);

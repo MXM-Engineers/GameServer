@@ -1129,8 +1129,8 @@ bool GameXmlContent::LoadAnimationData()
 			} break;
 
 			case ActionCommand::Type::MOVE: {
-				const char* Param1;
-				const char* Param2;
+				const char* Param1 = 0;
+				const char* Param2 = 0;
 				pActionBase->QueryStringAttribute("Param1", &Param1);
 				pActionBase->QueryStringAttribute("Param2", &Param2);
 

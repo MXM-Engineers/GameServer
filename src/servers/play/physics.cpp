@@ -295,9 +295,17 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
 	PxControllerFilters filter;
-	filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
+	//filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
 	PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter, nullptr /* obstacles? */);
 	return body->GetWorldPos();
+}
+
+vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time)
+{
+	const PxExtendedVec3& start = body->collider->getPosition();
+	vec3 end = Move(body, disp, time);
+	body->collider->setPosition(start);
+	return end;
 }
 
 static PhysicsContext* g_Context;

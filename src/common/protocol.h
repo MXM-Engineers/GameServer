@@ -429,6 +429,11 @@ enum class Faction: i32
 	_COUNT = 2
 };
 
+enum class RemoteIdx: i32
+{
+	INVALID = -1
+};
+
 struct NetHeader
 {
 	u16 size;

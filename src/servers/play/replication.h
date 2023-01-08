@@ -105,6 +105,19 @@ struct Replication
 		SkillID skillID;
 		ActionStateID actionID;
 		vec3 castPos;
+		vec3 casterPos;
+		vec2 casterMoveDir;
+		RotationHumanoid casterRot;
+		f32 casterSpeed;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+	};
+
+	struct SkillExec
+	{
+		ActorUID casterUID;
+		SkillID skillID;
+		ActionStateID actionID;
+		vec3 castPos;
 		eastl::fixed_vector<ActorUID,10,false> targetList;
 
 		// movement
@@ -132,6 +145,7 @@ struct Replication
 		hash_map<ActorUID,ActorType,2048,true> actorType;
 
 		eastl::fixed_vector<SkillCast,40,true> skillCastList;
+		eastl::fixed_vector<SkillExec,40,true> skillExecList;
 
 		void Clear();
 
@@ -203,6 +217,7 @@ struct Replication
 	void FramePushNpcActor(const ActorNpc& actor);
 	void FramePushDynamicActor(const ActorDynamic& actor);
 	void FramePushSkillCast(const SkillCast& skillCast);
+	void FramePushSkillExec(const SkillExec& skillExec);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);

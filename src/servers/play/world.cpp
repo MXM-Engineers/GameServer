@@ -39,14 +39,13 @@ void World::Update(Time localTime_)
 		}
 
 		// cast skills
-		if(!p.input.cast.empty()) {
+		if(p.input.cast.skillID != SkillID::INVALID) {
 			// TODO: check for requirements in general
 			// TODO: check for skill
 			// TODO: check for cost
-			foreach_const(cast, p.input.cast) {
-				PlayerCastSkill(p, cast->skillID, cast->pos, Slice<const ActorUID>(cast->targetList.data(), cast->targetList.size()));
-			}
-			p.input.cast.clear();
+			const auto& cast = p.input.cast;
+			PlayerCastSkill(p, cast.skillID, cast.pos, Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()));
+			p.input.cast.skillID = SkillID::INVALID;
 		}
 
 		// move
@@ -81,6 +80,17 @@ void World::Update(Time localTime_)
 		const f32 s = p.movement.moveSpeed;
 		body.vel.x = p.movement.moveDir.x * s;
 		body.vel.y = p.movement.moveDir.y * s;
+	}
+
+	// execute skill programs
+	for(auto it = skillProgramList.begin(); it != skillProgramList.end(); ) {
+		if(it->IsDoneExecuting()) {
+			it = skillProgramList.erase_unsorted(it);
+		}
+		else {
+			ExecuteSkillProgram(*it);
+			++it;
+		}
 	}
 
 	physics.Step();
@@ -298,6 +308,13 @@ World::Player& World::GetPlayer(u32 playerIndex)
 	return players[playerIndex];
 }
 
+World::ActorMaster* World::FindMasterActor(ActorUID actorUID) const
+{
+	auto it = actorMasterMap.find(actorUID);
+	if(it == actorMasterMap.end()) return nullptr;
+	return &(*it->second);
+}
+
 World::ActorNpc* World::FindNpcActor(ActorUID actorUID) const
 {
 	auto it = actorNpcMap.find(actorUID);
@@ -327,17 +344,57 @@ World::ActorMasterHandle World::MasterInvalidHandle()
 
 void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets)
 {
-	// TODO: each skill is executed following a list of commands from ActionBase.xml
-	// process them at runtime first
-	// but since they never change, produce logic code from ActionBase.xml
-
-	f32 distance = 0;
-	f32 moveDuration = 0;
+	// TODO: check if can cast
 
 	// access method is kinda convoluted
 	const auto& content = GetGameXmlContent();
 	const auto& skill = content.skillMap.at(skillID);
 	const ActionStateID actionState = skill.action;
+
+	const f32 angle = player.input.rot.upperYaw;
+	const vec2 dir = vec2(cosf(angle), sinf(angle));
+
+	Replication::SkillCast rpCast;
+	rpCast.clientHd = player.clientHd;
+	rpCast.casterUID = player.Main().UID;
+	rpCast.skillID = skillID;
+	rpCast.castPos = castPos;
+	rpCast.actionID = actionState;
+
+	rpCast.casterPos = player.body->GetWorldPos();
+	rpCast.casterMoveDir = dir;
+	rpCast.casterRot = { angle, 0, angle };
+	rpCast.casterSpeed = player.input.speed; // FIXME: should not come from input
+
+	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
+
+	replication->FramePushSkillCast(rpCast);
+
+
+	/*
+	 * After the cast, we start executing a "skill program"
+	 * It is a set of simple instructions in the world of MxM
+	 * Each "program" is described in ActionBase.xml
+	 */
+
+	// Trigger new skill execution
+	player.Main().actionState = actionState;
+
+	SkillProgram prog;
+	prog.skillID = skillID;
+	prog.actionID = actionState;
+	prog.castPos = castPos;
+	prog.castAngle = angle;
+	prog.casterUID = player.Main().UID;
+	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(prog.targetList));
+	prog.startTime = localTime;
+	prog.commandID = 0;
+	skillProgramList.push_back(prog);
+
+	// go through the skill program to find out how much the master moves
+	f32 distance = 0;
+	f32 moveDuration = 0;
+
 	const auto& action = content.GetSkillAction(player.Main().classType, actionState);
 
 	foreach_const(cmd, action.commands) {
@@ -358,33 +415,92 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		}
 	}
 
-	player.Main().actionState = actionState;
+	Replication::SkillExec rpExec;
+	rpExec.casterUID = player.Main().UID;
+	rpExec.skillID = skillID;
+	rpExec.castPos = castPos;
+	rpExec.actionID = actionState;
+	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpExec.targetList));
 
-	const f32 angle = player.input.rot.upperYaw;
-	const vec2 dir = vec2(cosf(angle), sinf(angle));
-
-	Replication::SkillCast rpCast;
-	rpCast.clientHd = player.clientHd;
-	rpCast.casterUID = player.Main().UID;
-	rpCast.skillID = skillID;
-	rpCast.castPos = castPos;
-	rpCast.actionID = actionState;
-	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
-
-	rpCast.moveDuration = moveDuration;
-	rpCast.startPos = player.body->GetWorldPos();
-	rpCast.moveDir = dir;
-	rpCast.rot = { angle, 0, angle };
-	rpCast.speed = player.input.speed; // FIXME: should not come from input
+	rpExec.moveDuration = moveDuration;
+	rpExec.startPos = player.body->GetWorldPos();
+	rpExec.moveDir = dir;
+	rpExec.rot = { angle, 0, angle };
+	rpExec.speed = player.input.speed; // FIXME: should not come from input
 
 	if(distance != 0) {
-		const vec3 endPos = physics.Move(player.body, vec3(dir * distance, 0), moveDuration);
-		rpCast.endPos = endPos;
-
-		player.input.moveTo = endPos;
-		player.movement.moveDir = dir;
-		player.movement.rot = { angle, 0, angle };
+		const vec3 endPos = physics.FindMovePos(player.body, vec3(dir * distance, 0), moveDuration);
+		rpExec.endPos = endPos;
 	}
 
-	replication->FramePushSkillCast(rpCast);
+	replication->FramePushSkillExec(rpExec);
+}
+
+void World::ExecuteSkillProgram(SkillProgram& prog)
+{
+	// TODO: each skill is executed following a list of commands from ActionBase.xml
+	// process them at runtime for now
+	// but since they never change, produce logic code from ActionBase.xml
+
+	ActorMaster* caster = FindMasterActor(prog.casterUID);
+
+	const vec2 dir = vec2(cosf(prog.castAngle), sinf(prog.castAngle));
+
+	// access method is kinda convoluted
+	const auto& content = GetGameXmlContent();
+	const auto& action = content.GetSkillAction(caster->classType, prog.actionID);
+
+	if(TimeDiffSec(TimeDiff(prog.startTime, localTime)) > action.commands[prog.commandID].relativeEndTimeFromStart) {
+		prog.commandID++;
+
+		// program is done
+		if(prog.commandID >= action.commands.size()) {
+			prog.Finish();
+			return;
+		}
+	}
+	else {
+		// we have not changed command / instruction, nothing to be done
+		return;
+	}
+
+	bool running = true;
+	while(running) {
+		running = false;
+		const auto& cmd = action.commands[prog.commandID];
+
+		f32 distance = 0;
+		f32 moveDuration = 0;
+
+		switch(cmd.type) {
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				distance = cmd.graphMoveHorz.distance;
+				moveDuration = action.seqLength;
+			} break;
+
+			case ActionCommand::Type::MOVE: {
+				switch(cmd.move.preset) {
+					case ActionCommand::MovePreset::WARP: {
+						distance = (f32)cmd.move.param2;
+						moveDuration = 0.01f; // warping
+					} break;
+				}
+			} break;
+		}
+
+		if(distance != 0) {
+			physics.Move(caster->parent->body, vec3(dir * distance, 0), moveDuration);
+		}
+
+		if(cmd.delay == 0) {
+			running = true;
+			prog.commandID++;
+
+			// program is done
+			if(prog.commandID >= action.commands.size()) {
+				prog.Finish();
+				return;
+			}
+		}
+	}
 }

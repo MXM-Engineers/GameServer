@@ -79,6 +79,31 @@ enum class MovePreset: i8
 MovePreset MovePresetFromString(const char* str);
 const char* MovePresetToString(MovePreset p);
 
+
+enum class TargetPreset: i8
+{
+	INVALID = -1,
+	SELF_FFF = 0,
+	SELF_FFF_1,
+	SELF_TFF,
+	SELF_TTF,
+	SELF_TTT,
+	POS_TTT_1,
+	POS_FFF,
+	POS_TFF,
+	POS_TFF_1_800_1000,
+	LAST_CHILD_FFF,
+	LAST_CHILD_TFF,
+	CHILD_INDEX_FFF,
+	MEMORIZED_TFT,
+	CURRENT_FFF,
+	LOCK_TFF,
+	MULTI_LOCKON_FFF,
+};
+
+TargetPreset TargetPresetFromString(const char* str);
+const char* TargetPresetToString(TargetPreset p);
+
 }
 
 struct GameXmlContent
@@ -149,11 +174,17 @@ struct GameXmlContent
 		struct Command
 		{
 			ActionCommand::Type type;
+			f32 delay;
+			f32 relativeEndTimeFromStart;
 
 			union {
 				struct {
-					f32 delay;
+
 				} stateBlock;
+
+				struct {
+					// not really useful for anything?
+				} weaponUse;
 
 				struct {
 					ActionCommand::MovePreset preset;
@@ -161,9 +192,13 @@ struct GameXmlContent
 				} move;
 
 				struct {
+					RemoteIdx idx;
+					ActionCommand::TargetPreset targetPreset;
+				} remote;
+
+				struct {
 					f32 distance;
 				} graphMoveHorz;
-
 
 				struct {
 					i32 speed;

@@ -102,6 +102,7 @@ struct PhysicsScene
 	void CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot = vec3(0));
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
 	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time);
+	vec3 FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };
 
 struct PhysicsContext

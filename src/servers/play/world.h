@@ -60,7 +60,7 @@ struct World
 			i32 actionParam1; // TODO: investigate these
 			i32 actionParam2;
 
-			eastl::fixed_vector<PlayerInputCastSkill,4,false> cast;
+			PlayerInputCastSkill cast;
 		};
 
 		const u32 index;
@@ -154,6 +154,21 @@ struct World
 		explicit ActorDynamic(ActorUID UID_): UID(UID_) {}
 	};
 
+	struct SkillProgram
+	{
+		SkillID skillID = SkillID::INVALID;
+		ActionStateID actionID;
+		vec3 castPos;
+		f32 castAngle;
+		ActorUID casterUID;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+		Time startTime;
+		i32 commandID = 0;
+
+		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
+		inline void Finish() { skillID = SkillID::INVALID; }
+	};
+
 
 	Replication* replication;
 
@@ -169,6 +184,8 @@ struct World
 	eastl::fixed_map<ActorUID, ActorMasterHandle, 2048, true> actorMasterMap;
 	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
 	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
+
+	eastl::fixed_vector<SkillProgram,40,false> skillProgramList;
 
 	u32 nextActorUID;
 	Time localTime = Time::ZERO;
@@ -186,6 +203,7 @@ struct World
 	ActorDynamic& SpawnDynamic(CreatureIndex docID, i32 localID);
 
 	Player& GetPlayer(u32 playerIndex);
+	ActorMaster* FindMasterActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 
@@ -194,4 +212,5 @@ private:
 	ActorMasterHandle MasterInvalidHandle();
 
 	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets);
+	void ExecuteSkillProgram(SkillProgram& prog);
 };

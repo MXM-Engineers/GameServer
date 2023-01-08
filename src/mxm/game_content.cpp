@@ -1054,6 +1054,7 @@ bool GameXmlContent::LoadAnimationData()
 	i32 actionSliceStart = 0;
 	i32 actionSliceCount = 0;
 	Action* curAction = nullptr;
+	f32 accumulatedDelay = 0;
 
 	for(XMLElement* pActionBase = xmlActionBase.FirstChildElement()->FirstChildElement();
 		pActionBase;
@@ -1078,12 +1079,14 @@ bool GameXmlContent::LoadAnimationData()
 			prevActionID = ActionStateID::INVALID;
 		}
 
-		const char* BehaviorState;
-		i32 AnimationId;
+		const char* BehaviorState = nullptr;
+		i32 AnimationId = -1;
 		pActionBase->QueryStringAttribute("BehaviorState", &BehaviorState);
 		pActionBase->QueryAttribute("AnimationId", &AnimationId);
 
 		const ActionStateID actionID = ActionStateFromString(BehaviorState);
+		ASSERT(actionID != ActionStateID::INVALID);
+
 		if(actionID != prevActionID) {
 			prevActionID = actionID;
 
@@ -1114,18 +1117,28 @@ bool GameXmlContent::LoadAnimationData()
 
 				LOG("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
 				LOG("		seqLength=%f", curAction->seqLength);
+
+				accumulatedDelay = 0.0f;
 			}
 		}
 
-		const char* CommandType;
-		pActionBase->QueryStringAttribute("CommandType", &CommandType);
+		const char* CommandType = nullptr;
+		if(pActionBase->QueryStringAttribute("CommandType", &CommandType) != XMLError::XML_SUCCESS) {
+			// FIXME: handle this case, it has AnimationLoop?
+			continue;
+		}
 
 		Action::Command cmd;
 		cmd.type = ActionCommand::TypeFromString(CommandType);
+		if(pActionBase->QueryAttribute("Delay", &cmd.delay) != XMLError::XML_SUCCESS) {
+			cmd.delay = 0.0f;
+		}
+		cmd.relativeEndTimeFromStart = accumulatedDelay + cmd.delay;
+		accumulatedDelay += cmd.delay;
 
 		switch(cmd.type) {
 			case ActionCommand::Type::STATE_BLOCK: {
-				pActionBase->QueryAttribute("Delay", &cmd.stateBlock.delay);
+
 			} break;
 
 			case ActionCommand::Type::MOVE: {
@@ -1144,6 +1157,19 @@ bool GameXmlContent::LoadAnimationData()
 				}
 			} break;
 
+			case ActionCommand::Type::REMOTE: {
+				const char* TargetPreset;
+				//const char* Param2;
+				i32 RemoteIndex;
+				pActionBase->QueryStringAttribute("TargetPreset", &TargetPreset);
+				//pActionBase->QueryStringAttribute("Param2", &Param2);
+				pActionBase->QueryAttribute("RemoteIndex", &RemoteIndex);
+
+				cmd.remote.idx = RemoteIdx(RemoteIndex);
+				cmd.remote.targetPreset = ActionCommand::TargetPresetFromString(TargetPreset);
+				ASSERT(cmd.remote.targetPreset != ActionCommand::TargetPreset::INVALID);
+			} break;
+
 			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
 				pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
 			} break;
@@ -1155,10 +1181,10 @@ bool GameXmlContent::LoadAnimationData()
 
 		curAction->commands.push_back(cmd);
 
-		LOG("		Command='%s'", CommandType);
+		LOG("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
 		switch(cmd.type) {
 			case ActionCommand::Type::STATE_BLOCK: {
-				LOG("		  delay=%f", cmd.stateBlock.delay);
+
 			} break;
 
 			case ActionCommand::Type::MOVE: {
@@ -1645,6 +1671,48 @@ const char* MovePresetToString(MovePreset p)
 	if(p == MovePreset::SEE_MEMORIZED_TARGET) { return "SEE_MEMORIZED_TARGET"; }
 	if(p == MovePreset::CHASE_TARGET) { return "CHASE_TARGET"; }
 	if(p == MovePreset::CHASE_TARGET_ATTACK) { return "CHASE_TARGET_ATTACK"; }
+	return "INVALID";
+}
+
+TargetPreset TargetPresetFromString(const char* str)
+{
+	if(StringEquals(str, "TARGET_SELF_FFF")) { return TargetPreset::SELF_FFF; }
+	if(StringEquals(str, "TARGET_SELF_FFF_1")) { return TargetPreset::SELF_FFF_1; }
+	if(StringEquals(str, "TARGET_SELF_TFF")) { return TargetPreset::SELF_TFF; }
+	if(StringEquals(str, "TARGET_SELF_TTF")) { return TargetPreset::SELF_TTF; }
+	if(StringEquals(str, "TARGET_SELF_TTT")) { return TargetPreset::SELF_TTT; }
+	if(StringEquals(str, "TARGET_POS_TTT_1")) { return TargetPreset::POS_TTT_1; }
+	if(StringEquals(str, "TARGET_POS_FFF")) { return TargetPreset::POS_FFF; }
+	if(StringEquals(str, "TARGET_POS_TFF")) { return TargetPreset::POS_TFF; }
+	if(StringEquals(str, "TARGET_POS_TFF_1_800_1000")) { return TargetPreset::POS_TFF_1_800_1000; }
+	if(StringEquals(str, "TARGET_LAST_CHILD_FFF")) { return TargetPreset::LAST_CHILD_FFF; }
+	if(StringEquals(str, "TARGET_LAST_CHILD_TFF")) { return TargetPreset::LAST_CHILD_TFF; }
+	if(StringEquals(str, "TARGET_CHILD_INDEX_FFF")) { return TargetPreset::CHILD_INDEX_FFF; }
+	if(StringEquals(str, "TARGET_MEMORIZED_TFT")) { return TargetPreset::MEMORIZED_TFT; }
+	if(StringEquals(str, "TARGET_CURRENT_FFF")) { return TargetPreset::CURRENT_FFF; }
+	if(StringEquals(str, "TARGET_LOCK_TFF")) { return TargetPreset::LOCK_TFF; }
+	if(StringEquals(str, "TARGET_MULTI_LOCKON_FFF")) { return TargetPreset::MULTI_LOCKON_FFF; }
+	return TargetPreset::INVALID;
+}
+
+const char* TargetPresetToString(TargetPreset p)
+{
+	if(p == TargetPreset::SELF_FFF) { return "TARGET_SELF_FFF"; }
+	if(p == TargetPreset::SELF_FFF_1) { return "TARGET_SELF_FFF_1"; }
+	if(p == TargetPreset::SELF_TFF) { return "TARGET_SELF_TFF"; }
+	if(p == TargetPreset::SELF_TTF) { return "TARGET_SELF_TTF"; }
+	if(p == TargetPreset::SELF_TTT) { return "TARGET_SELF_TTT"; }
+	if(p == TargetPreset::POS_TTT_1) { return "TARGET_POS_TTT_1"; }
+	if(p == TargetPreset::POS_FFF) { return "TARGET_POS_FFF"; }
+	if(p == TargetPreset::POS_TFF) { return "TARGET_POS_TFF"; }
+	if(p == TargetPreset::POS_TFF_1_800_1000) { return "TARGET_POS_TFF_1_800_1000"; }
+	if(p == TargetPreset::LAST_CHILD_FFF) { return "TARGET_LAST_CHILD_FFF"; }
+	if(p == TargetPreset::LAST_CHILD_TFF) { return "TARGET_LAST_CHILD_TFF"; }
+	if(p == TargetPreset::CHILD_INDEX_FFF) { return "TARGET_CHILD_INDEX_FFF"; }
+	if(p == TargetPreset::MEMORIZED_TFT) { return "TARGET_MEMORIZED_TFT"; }
+	if(p == TargetPreset::CURRENT_FFF) { return "TARGET_CURRENT_FFF"; }
+	if(p == TargetPreset::LOCK_TFF) { return "TARGET_LOCK_TFF"; }
+	if(p == TargetPreset::MULTI_LOCKON_FFF) { return "TARGET_MULTI_LOCKON_FFF"; }
 	return "INVALID";
 }
 

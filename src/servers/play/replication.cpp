@@ -23,6 +23,7 @@ void Replication::Frame::Clear()
 	actorType.clear();
 
 	skillCastList.clear();
+	skillExecList.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -131,6 +132,11 @@ void Replication::FramePushDynamicActor(const ActorDynamic& actor)
 void Replication::FramePushSkillCast(const SkillCast& skillCast)
 {
 	frameCur->skillCastList.push_back(skillCast);
+}
+
+void Replication::FramePushSkillExec(const SkillExec& skillExec)
+{
+	frameCur->skillExecList.push_back(skillExec);
 }
 
 void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
@@ -1286,16 +1292,26 @@ void Replication::FrameDifference()
 				}
 
 				packet.Write<u8>(1); // bSyncMyPosition
-				packet.Write<float3>(v2f(cast.startPos));
-				packet.Write<float3>(v2f(cast.startPos));
-				packet.Write<float2>(v2f(cast.moveDir));
-				packet.Write<RotationHumanoid>(RotConvertToMxm(cast.rot));
-				packet.Write<f32>(cast.speed);
+				packet.Write<float3>(v2f(cast.casterPos));
+				packet.Write<float3>(v2f(cast.casterPos));
+				packet.Write<float2>(v2f(cast.casterMoveDir));
+				packet.Write<RotationHumanoid>(RotConvertToMxm(cast.casterRot));
+				packet.Write<f32>(cast.casterSpeed);
 				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-				//packet.Write<i32>(0);
 
 				SendPacket(clientHd, packet);
 			}
+		}
+	}
+
+	foreach_const(it, frameCur->skillExecList) {
+		const auto& exec = *it;
+
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
+
+			LocalActorID localCasterID = GetLocalActorID(clientHd, exec.casterUID);
 
 			// SN_ExecuteSkill
 			{
@@ -1303,13 +1319,13 @@ void Replication::FrameDifference()
 
 				packet.Write<LocalActorID>(localCasterID); // entityID
 				packet.Write<i32>(0); // ret
-				packet.Write<SkillID>(cast.skillID);
+				packet.Write<SkillID>(exec.skillID);
 				packet.Write<u8>(0); // costLevel
-				packet.Write<ActionStateID>(cast.actionID);
-				packet.Write<float3>(v2f(cast.castPos));
+				packet.Write<ActionStateID>(exec.actionID);
+				packet.Write<float3>(v2f(exec.castPos));
 
-				packet.Write<u16>(cast.targetList.size()); // targetList_count
-				foreach_const(t, cast.targetList) {
+				packet.Write<u16>(exec.targetList.size()); // targetList_count
+				foreach_const(t, exec.targetList) {
 					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
 				}
 
@@ -1321,25 +1337,15 @@ void Replication::FrameDifference()
 				packet.Write<f32>(0);
 				packet.Write<i32>(0);
 
-				/*
-				packet.Write<u8>(1); // bSyncMyPosition
-				packet.Write<float3>(v2f(up.actorPos));
-				packet.Write<float3>(v2f(up.endPos));
-				packet.Write<float2>(v2f(up.moveDir));
-				packet.Write<RotationHumanoid>(up.rotation.ConvertToMxm());
-				packet.Write<f32>(up.speed);
-				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-				*/
-
 				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
 
-				if(cast.moveDuration != 0) {
+				if(exec.moveDuration != 0) {
 					// graphMove
 					packet.Write<u8>(1); // bApply
-					packet.Write<float3>(v2f(cast.startPos)); // startPos
-					packet.Write<float3>(v2f(cast.endPos)); // endPos
-					packet.Write<f32>(cast.moveDuration); // durationTimeS
-					packet.Write<f32>(glm::distance(cast.startPos, cast.endPos)); // originDistance
+					packet.Write<float3>(v2f(exec.startPos)); // startPos
+					packet.Write<float3>(v2f(exec.endPos)); // endPos
+					packet.Write<f32>(exec.moveDuration); // durationTimeS
+					packet.Write<f32>(glm::distance(exec.startPos, exec.endPos)); // originDistance
 				}
 				else {
 					// graphMove

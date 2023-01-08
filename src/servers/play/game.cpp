@@ -581,7 +581,7 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	player.input.cast.push_back(cast);
+	player.input.cast = cast;
 
 	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
 	// TODO: convert clientTime to localTime

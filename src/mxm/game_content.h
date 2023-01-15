@@ -207,7 +207,7 @@ struct GameXmlContent
 		};
 
 		ActionStateID ID;
-		f32 seqLength = 0.0f;
+		f32 seqLength = 0.0f; // seconds
 		eastl::fixed_vector<Command,16,false> commands;
 	};
 

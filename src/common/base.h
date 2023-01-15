@@ -449,11 +449,8 @@ f64 TimeDiffMs(Time diff);
 f64 TimeDurationSinceSec(Time t0);
 f64 TimeDurationSinceMs(Time t0);
 Time TimeMsToTime(f64 ms);
-
-inline Time TimeAdd(Time a, Time b)
-{
-	return Time((u64)a + (u64)b);
-}
+Time TimeAdd(Time a, Time b);
+Time TimeAddSec(Time a, f64 seconds);
 
 
 template<typename T>

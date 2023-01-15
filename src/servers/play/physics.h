@@ -79,8 +79,9 @@ struct PhysicsDynamicBody
 {
 	PxCapsuleController* collider = nullptr;
 	vec3 vel = vec3(0); // actual velocity
+	Time lockedMoveUntil = Time::ZERO;
 
-	inline vec3 GetWorldPos() const { return tov3(collider->getPosition()); }
+	inline vec3 GetWorldPos() const { return tov3(collider->getFootPosition()); }
 	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }
 
 private:
@@ -92,6 +93,7 @@ private:
 
 struct PhysicsScene
 {
+	Time localTime = Time::ZERO;
     PxScene* scene = nullptr;
     PxControllerManager* controllerMngr = nullptr;
 	eastl::fixed_vector<PhysicsDynamicBody,256,false> colliderList; // doesn't grow so we don't invalidate pointer
@@ -101,7 +103,7 @@ struct PhysicsScene
 
 	void CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot = vec3(0));
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
-	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time);
+	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time /* seconds */);
 	vec3 FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };
 

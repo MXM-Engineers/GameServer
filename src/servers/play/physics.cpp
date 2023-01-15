@@ -221,6 +221,10 @@ void PhysicsScene::Step()
 	ProfileFunction();
 
 	foreach(c, colliderList) {
+		if(c->lockedMoveUntil > localTime) {
+			continue;
+		}
+
 		PxControllerFilters filter;
 		filter.mCCTFilterCallback = &g_cctCollisionFilterCallback; // cct filter callback
 
@@ -302,9 +306,9 @@ vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 
 vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
-	const PxExtendedVec3& start = body->collider->getPosition();
+	const PxExtendedVec3& start = body->collider->getFootPosition();
 	vec3 end = Move(body, disp, time);
-	body->collider->setPosition(start);
+	body->collider->setFootPosition(start);
 	return end;
 }
 

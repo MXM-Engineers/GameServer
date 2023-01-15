@@ -100,6 +100,16 @@ Time TimeMsToTime(f64 ms)
 	return Time(u64(ms * 1000000.0));
 }
 
+Time TimeAdd(Time a, Time b)
+{
+	return Time((u64)a + (u64)b);
+}
+
+Time TimeAddSec(Time a, f64 seconds)
+{
+	return TimeAdd(a, TimeMsToTime(seconds * 1000));
+}
+
 static void EASTL_AssertionFailed(const char* expression, void* pContext)
 {
 	__assertion_failed(expression, "eastl", 0);

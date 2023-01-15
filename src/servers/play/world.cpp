@@ -19,8 +19,9 @@ void World::Update(Time localTime_)
 {
 	ProfileFunction();
 
-	const f64 delta = TimeDurationSec(localTime, localTime_);
+	const f64 tdelta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
+	physics.localTime = localTime;
 
 	vec3 prevPos = players.front().body->GetWorldPos();
 
@@ -473,6 +474,11 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 		f32 moveDuration = 0;
 
 		switch(cmd.type) {
+			case ActionCommand::Type::STATE_BLOCK: {
+				// lock WASD input type movement during skill execution
+				caster->parent->body->lockedMoveUntil = TimeAddSec(localTime, cmd.delay);
+			} break
+				;
 			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
 				distance = cmd.graphMoveHorz.distance;
 				moveDuration = action.seqLength;
@@ -489,6 +495,8 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 		}
 
 		if(distance != 0) {
+			caster->parent->input.moveTo = caster->parent->body->GetWorldPos() + vec3(dir * distance, 0);
+			caster->parent->body->vel = vec3(0);
 			physics.Move(caster->parent->body, vec3(dir * distance, 0), moveDuration);
 		}
 

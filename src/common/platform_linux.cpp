@@ -47,7 +47,10 @@ void PlatformInit()
 
 uint64_t CurrentFiletimeTimestampUTC()
 {
-	LOG("WARNING: Implement CurrentFiletimeTimestampUTC correctly");
-	return 0;
+	//WARNING: Implementation CurrentFiletimeTimestampUTC not tested"
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	uint64_t result = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+	return result * 10 + 116444736000000000ULL;
 }
 #endif

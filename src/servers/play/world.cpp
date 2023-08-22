@@ -30,6 +30,13 @@ void World::Update(Time localTime_)
 
 		PhysicsDynamicBody& body = *p.body;
 
+		// process block time
+		if(p.blockDuration > 0)
+			p.blockDuration = MAX(0, p.blockDuration - delta);
+		// if blocked, stop here
+		if(p.blockDuration > 0)
+			continue;
+
 		p.movement.rot = p.input.rot;
 
 		// tag
@@ -354,6 +361,11 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 						moveDuration = 0.01f; // warping
 					} break;
 				}
+			} break;
+
+			// This blocks the player from doing anything afaik
+			case ActionCommand::Type::STATE_BLOCK: {
+				player.blockDuration = cmd->stateBlock.delay;
 			} break;
 		}
 	}

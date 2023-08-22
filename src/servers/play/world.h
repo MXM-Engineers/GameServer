@@ -75,6 +75,8 @@ struct World
 		const ClassType subClass;
 		const SkinIndex subSkin;
 
+		f32 blockDuration = 0;
+
 		const eastl::array<ColliderSize,2> colliderSize; // used when checking for gameplay collisions, not movement
 
 		u8 level;

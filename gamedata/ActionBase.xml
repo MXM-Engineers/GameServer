@@ -1678,7 +1678,10 @@
   <ActionBase Class="LAUNCHER" BehaviorState="SKILL_5_BEHAVIORSTATE" AnimationIndex="0" AnimationId="18500" CommandType="GRAPH_MOVE_HORZ" Param1="-300" />
   <ActionBase Class="LAUNCHER" BehaviorState="SHIRK_BEHAVIORSTATE" AnimationIndex="0" AnimationId="17010" Delay="0.5" CommandType="STATE_BLOCK" />
   <ActionBase Class="LAUNCHER" BehaviorState="SHIRK_BEHAVIORSTATE" AnimationIndex="0" AnimationId="17010" CommandType="GRAPH_MOVE_HORZ" Param1="500" Param2="0|1" />
+  <!-- https://www.youtube.com/watch?v=HsCyzTkOunY -->
+  <!-- Punches forward with electrified fists -->
   <ActionBase Class="STATESMAN" BehaviorState="ATTACK_BEHAVIORSTATE" AnimationIndex="0" AnimationId="15000" CommandType="WEAPON_USE" Param1="EQUIP_SLOT_NONE" TargetPreset="TARGET_SELF_TFF" NodeName="R_WEAPONPOS" />
+  <!-- or can be charged up to perform a short-range leaping kick, damage + knockback -->
   <ActionBase Class="STATESMAN" BehaviorState="ATTACKCHARGE_BEHAVIORSTATE" AnimationIndex="0" AnimationLoop="100" AnimationId="15030" CommandType="ROTATESPEED" Param1="200" />
   <ActionBase Class="STATESMAN" BehaviorState="ATTACKCHARGE_BEHAVIORSTATE" AnimationIndex="0" AnimationLoop="100" AnimationId="15030" Delay="1" CommandType="STATUS" StatusIndex="1230360000" Param2="RemoveWhenAniEnd" TargetPreset="TARGET_SELF_TFF" />
   <ActionBase Class="STATESMAN" BehaviorState="ATTACK1_BEHAVIORSTATE" AnimationIndex="0" AnimationId="15020" CommandType="WEAPON_USE" Param1="EQUIP_SLOT_NONE" TargetPreset="TARGET_SELF_TFF" NodeName="R_WEAPONPOS" />
@@ -1712,12 +1715,17 @@
   <ActionBase Class="STATESMAN" BehaviorState="ATTACK8_BEHAVIORSTATE" AnimationIndex="0" AnimationId="15020" CommandType="ROTATESPEED" Param1="0" />
   <ActionBase Class="STATESMAN" BehaviorState="ATTACK8_BEHAVIORSTATE" AnimationIndex="0" AnimationId="15020" Delay="1" CommandType="STATE_BLOCK" />
   <ActionBase Class="STATESMAN" BehaviorState="ATTACK2_BEHAVIORSTATE" Stance="STANCE_TYPE_C" AnimationIndex="0" AnimationId="15130" CommandType="WEAPON_USE" Param1="EQUIP_SLOT_NONE" TargetPreset="TARGET_SELF_TFF" NodeName="R_WEAPONPOS" />
+  <!-- Pretty sure this is the skill 1, the olympian bolt: lightning strikes -->
+  <!-- This is probably when he bows down and charges for 0.4s -->
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" Delay="0.4" CommandType="STATE_BLOCK" />
+  <!-- I don't know what this does -->
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" CommandType="MOVE" Param1="MOVE_PRESET_MOVE_NONE" TargetPreset="192200" />
+  <!-- And the bows have 0.2s delay before hitting -->
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" Delay="0.2" CommandType="REMOTE" RemoteIndex="1440360010" TargetPreset="TARGET_SELF_TFF" TargetParam="0|0|0|-1|0|310|310" NodeName="Scene Root" />
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" Delay="0.2" CommandType="REMOTE" RemoteIndex="1440360010" TargetPreset="TARGET_SELF_TFF" TargetParam="0|0|0|-1|0|310|-310" NodeName="Scene Root" />
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" Delay="0.2" CommandType="REMOTE" RemoteIndex="1440360010" TargetPreset="TARGET_SELF_TFF" TargetParam="0|0|0|-1|0|-310|310" NodeName="Scene Root" />
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_DEFAULT" AnimationIndex="0" AnimationId="17010" Delay="0.2" CommandType="REMOTE" RemoteIndex="1440360010" TargetPreset="TARGET_SELF_TFF" TargetParam="0|0|0|-1|0|-310|-310" NodeName="Scene Root" />
+  <!-- and this is skill 1 with the stance, which proces additional bolts -->
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_C" AnimationIndex="0" AnimationId="17080" Delay="0.4" CommandType="STATE_BLOCK" />
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_C" AnimationIndex="0" AnimationId="17080" CommandType="MOVE" Param1="MOVE_PRESET_MOVE_NONE" />
   <ActionBase Class="STATESMAN" BehaviorState="SKILL_1_BEHAVIORSTATE" Stance="STANCE_TYPE_C" AnimationIndex="0" AnimationId="17080" Delay="0" CommandType="REMOTE" RemoteIndex="1440360010" TargetPreset="TARGET_SELF_TFF" TargetParam="0|0|0|-1|0|310|310" NodeName="Scene Root" />

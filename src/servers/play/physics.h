@@ -79,7 +79,7 @@ struct PhysicsDynamicBody
 {
 	PxCapsuleController* collider = nullptr;
 	vec3 vel = vec3(0); // actual velocity
-	Time lockedMoveUntil = Time::ZERO;
+	Time lockedMoveUntil = Time::ZERO; // triggered by cast animations etc. also used for non-physics
 
 	inline vec3 GetWorldPos() const { return tov3(collider->getFootPosition()); }
 	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }

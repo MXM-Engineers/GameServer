@@ -125,7 +125,7 @@ struct Remote
 
 	enum class DamageGroup: i8 {
 		INVALID = -1,
-		eNONE,
+		eNONE = 0,
 		eENEMY,
 		eFRIEND,
 		eALL,
@@ -137,14 +137,35 @@ struct Remote
 		VS_PLAYER_CHARACTER,
 	};
 
+	enum class BehaviorType: i8 {
+		INVALID = -1,
+		NONETARGET = 0,
+		HOMING,
+		RETURN,
+		CASTER_TARGET,
+		BEAM,
+		CHAIN,
+		GRAPH,
+		TARGET,
+		FOLLOW_TARGET,
+		ATTACH_TARGET,
+		ATTACH_MUZZLE,
+		TARGET_GROUNDPOSITION,
+		ORBIT,
+	};
+
 	static BoundType BoundTypeFromString(const char* str);
 	static const char* BoundTypeToString(BoundType t);
 	static DamageGroup DamageGroupFromString(const char* str);
 	static const char* DamageGroupToString(DamageGroup g);
+	static BehaviorType BehaviourTypeFromString(const char* str);
+	static const char* BehaviourTypeToString(BehaviorType t);
 
 	RemoteIdx ID = RemoteIdx::INVALID;
 	BoundType boundType = BoundType::INVALID;
 	DamageGroup damageGroup = DamageGroup::INVALID;
+	BehaviorType behaviorType = BehaviorType::INVALID;
+
 	eastl::array<u16,3> boundSize;
 	u8 vs = 0;
 

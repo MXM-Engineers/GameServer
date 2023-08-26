@@ -1263,6 +1263,20 @@ bool GameXmlContent::LoadRemoteData()
 				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
 				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
 			}
+
+			else if((EA::StdC::Strcmp("RemoteComData2", compName) == 0)) {
+				ELT_GET(pComp, i32, _ActivateCount, 0);
+				ELT_GET(pComp, i32, _AttackMultiplier, 0);
+
+				const char* _BehaviorType = 0;
+				pComp->QueryStringAttribute("_BehaviorType", &_BehaviorType);
+				if(_BehaviorType) {
+					remote.behaviorType = Remote::BehaviourTypeFromString(_BehaviorType);
+				}
+
+				LOG("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
+				LOG("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
+			}
 		}
 
 		remoteMap.emplace(remote.ID, remote);
@@ -1837,5 +1851,41 @@ const char* Remote::DamageGroupToString(DamageGroup g)
 	if(g == DamageGroup::eENEMY) { return "eENEMY"; }
 	if(g == DamageGroup::eFRIEND) { return "eFRIEND"; }
 	if(g == DamageGroup::eALL) { return "eALL"; }
+	return "INVALID";
+}
+
+Remote::BehaviorType Remote::BehaviourTypeFromString(const char* str)
+{
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_NONETARGET")) { return BehaviorType::NONETARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_HOMING")) { return BehaviorType::HOMING; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_RETURN")) { return BehaviorType::RETURN; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET")) { return BehaviorType::CASTER_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_BEAM")) { return BehaviorType::BEAM; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CHAIN")) { return BehaviorType::CHAIN; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_GRAPH")) { return BehaviorType::GRAPH; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET")) { return BehaviorType::TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET")) { return BehaviorType::FOLLOW_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET")) { return BehaviorType::ATTACH_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE")) { return BehaviorType::ATTACH_MUZZLE; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION")) { return BehaviorType::TARGET_GROUNDPOSITION; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ORBIT")) { return BehaviorType::ORBIT; }
+	return BehaviorType::INVALID;
+}
+
+const char* Remote::BehaviourTypeToString(BehaviorType t)
+{
+	if(t == BehaviorType::NONETARGET) { return "E_REMOTE_BEHAVIOR_TYPE_NONETARGET"; }
+	if(t == BehaviorType::HOMING) { return "E_REMOTE_BEHAVIOR_TYPE_HOMING"; }
+	if(t == BehaviorType::RETURN) { return "E_REMOTE_BEHAVIOR_TYPE_RETURN"; }
+	if(t == BehaviorType::CASTER_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET"; }
+	if(t == BehaviorType::BEAM) { return "E_REMOTE_BEHAVIOR_TYPE_BEAM"; }
+	if(t == BehaviorType::CHAIN) { return "E_REMOTE_BEHAVIOR_TYPE_CHAIN"; }
+	if(t == BehaviorType::GRAPH) { return "E_REMOTE_BEHAVIOR_TYPE_GRAPH"; }
+	if(t == BehaviorType::TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_TARGET"; }
+	if(t == BehaviorType::FOLLOW_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET"; }
+	if(t == BehaviorType::ATTACH_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET"; }
+	if(t == BehaviorType::ATTACH_MUZZLE) { return "E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE"; }
+	if(t == BehaviorType::TARGET_GROUNDPOSITION) { return "E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION"; }
+	if(t == BehaviorType::ORBIT) { return "E_REMOTE_BEHAVIOR_TYPE_ORBIT"; }
 	return "INVALID";
 }

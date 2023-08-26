@@ -11,7 +11,7 @@ constexpr eastl::hash<const char*> strHash;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
-static Path gameDataDir = L"gamedata";
+static Path gameDataDir = L"../gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {
@@ -1060,7 +1060,7 @@ bool GameXmlContent::LoadAnimationData()
 		pActionBase;
 		pActionBase = pActionBase->NextSiblingElement()) {
 
-		const char* Class;
+		const char* Class = nullptr;
 		pActionBase->QueryStringAttribute("Class", &Class);
 		eastl::fixed_string<char,64,false> classStr = Class;
 		classStr.make_upper();
@@ -1209,6 +1209,26 @@ bool GameXmlContent::LoadAnimationData()
 	return true;
 }
 
+bool GameXmlContent::LoadRemoteData()
+{
+	XMLDocument xml;
+	if(!LoadXMLFile(L"/REMOTE_PC.xml", xml)) return false;
+
+	for(XMLElement* pEntityInfo = xml.FirstChildElement()->FirstChildElement();
+		pEntityInfo;
+		pEntityInfo = pEntityInfo->NextSiblingElement()) {
+
+		const char* KEYNAME = nullptr;
+		u32 ID = 0;
+		pEntityInfo->QueryStringAttribute("KEYNAME", &KEYNAME);
+		pEntityInfo->QueryAttribute("ID", &ID);
+
+		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
+	}
+
+	return true;
+}
+
 bool GameXmlContent::Load()
 {
 	LOG("Loading GameContent...");
@@ -1241,6 +1261,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadAnimationData();
+	if(!r) return false;
+
+	r = LoadRemoteData();
 	if(!r) return false;
 
 	/*

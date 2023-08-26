@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <eathread/eathread_futex.h> // mutex
+#include <eathread/eathread_thread.h>
 #include <EASTL/fixed_string.h>
 
 struct LoggerFlags
@@ -16,11 +17,15 @@ struct Logger
 	int flags = 0x0;
 	const char* filepath;
 	FILE* file;
-	EA::Thread::Futex mutex;
+	EA::Thread::Futex mutexBuffer;
+	EA::Thread::Thread thread;
+	bool running = true;
+	eastl::string buffer;
 
 	void Init(const char* filepath, int flags_);
 	void Vlogf(const char* fmt, va_list list);
 	void FlushAndClose();
+	void WriteOut();
 
 	inline void __Logf(const char* fmt, ...)
 	{
@@ -53,11 +58,7 @@ struct Logger
 		va_end(list);
 	}
 
-	~Logger() {
-		if(file) {
-			fclose(file);
-		}
-	}
+	~Logger();
 };
 
 extern Logger g_LogBase;

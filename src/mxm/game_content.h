@@ -257,6 +257,7 @@ private:
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();
 	bool LoadAnimationData();
+	bool LoadRemoteData(); // Any object created by skills (projectiles, explosions, etc): a "remote"
 
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);

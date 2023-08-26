@@ -1211,6 +1211,15 @@ bool GameXmlContent::LoadAnimationData()
 
 bool GameXmlContent::LoadRemoteData()
 {
+	// TODO: use these everywhere?
+#define ELT_GET_STR(COMP, STR)\
+	const char* STR = 0;\
+	pComp->QueryStringAttribute(#STR, &STR)\
+
+#define ELT_GET(COMP, T, V, V_DEFAULT)\
+	T V = V_DEFAULT;\
+	pComp->QueryAttribute(#V, &V)\
+
 	XMLDocument xml;
 	if(!LoadXMLFile(L"/REMOTE_PC.xml", xml)) return false;
 
@@ -1224,6 +1233,26 @@ bool GameXmlContent::LoadRemoteData()
 		pEntityInfo->QueryAttribute("ID", &ID);
 
 		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
+
+		for(XMLElement* pComp = pEntityInfo->FirstChildElement();
+			pComp;
+			pComp = pComp->NextSiblingElement()) {
+			const char* compName = pComp->Name();
+
+			if((EA::StdC::Strcmp("RemoteBoundComData2", compName) == 0)) {
+				ELT_GET(pComp, i32, _LengthX, 0);
+				ELT_GET(pComp, i32, _LengthY, 0);
+				ELT_GET(pComp, i32, _LengthZ, 0);
+				ELT_GET_STR(pComp, _Type);
+				ELT_GET_STR(pComp, _DamageGroup);
+
+				Remote::BoundType boundType = Remote::BoundTypeFromString(_Type);
+				Remote::DamageGroup damageGroup = Remote::DamageGroupFromString(_DamageGroup);
+
+				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
+				LOG("	_DamageGroup=%s _Type=%s", Remote::DamageGroupToString(damageGroup), Remote::BoundTypeToString(boundType));
+			}
+		}
 	}
 
 	return true;
@@ -1739,4 +1768,54 @@ const char* TargetPresetToString(TargetPreset p)
 	return "INVALID";
 }
 
+}
+
+Remote::BoundType Remote::BoundTypeFromString(const char* str)
+{
+	if(StringEquals(str, "E_BOUND_NONE")) { return BoundType::E_BOUND_NONE; }
+	if(StringEquals(str, "E_BOUND_RAY")) { return BoundType::E_BOUND_RAY; }
+	if(StringEquals(str, "E_BOUND_BOX")) { return BoundType::E_BOUND_BOX; }
+	if(StringEquals(str, "E_BOUND_CAPSULE")) { return BoundType::E_BOUND_CAPSULE; }
+	if(StringEquals(str, "E_BOUND_SPHERE")) { return BoundType::E_BOUND_SPHERE; }
+	if(StringEquals(str, "E_BOUND_BEAM")) { return BoundType::E_BOUND_BEAM; }
+	if(StringEquals(str, "E_BOUND_BEAM_NIF")) { return BoundType::E_BOUND_BEAM_NIF; }
+	if(StringEquals(str, "E_BOUND_LASER")) { return BoundType::E_BOUND_LASER; }
+	if(StringEquals(str, "E_BOUND_PHYSXPROP")) { return BoundType::E_BOUND_PHYSXPROP; }
+	if(StringEquals(str, "E_BOUND_HAMMER")) { return BoundType::E_BOUND_HAMMER; }
+	if(StringEquals(str, "E_BOUND_CASTER_MOVE_BOUND")) { return BoundType::E_BOUND_CASTER_MOVE_BOUND; }
+	return BoundType::INVALID;
+}
+
+const char* Remote::BoundTypeToString(BoundType t)
+{
+	if(t == BoundType::E_BOUND_NONE) { return "E_BOUND_NONE"; }
+	if(t == BoundType::E_BOUND_RAY) { return "E_BOUND_RAY"; }
+	if(t == BoundType::E_BOUND_BOX) { return "E_BOUND_BOX"; }
+	if(t == BoundType::E_BOUND_CAPSULE) { return "E_BOUND_CAPSULE"; }
+	if(t == BoundType::E_BOUND_SPHERE) { return "E_BOUND_SPHERE"; }
+	if(t == BoundType::E_BOUND_BEAM) { return "E_BOUND_BEAM"; }
+	if(t == BoundType::E_BOUND_BEAM_NIF) { return "E_BOUND_BEAM_NIF"; }
+	if(t == BoundType::E_BOUND_LASER) { return "E_BOUND_LASER"; }
+	if(t == BoundType::E_BOUND_PHYSXPROP) { return "E_BOUND_PHYSXPROP"; }
+	if(t == BoundType::E_BOUND_HAMMER) { return "E_BOUND_HAMMER"; }
+	if(t == BoundType::E_BOUND_CASTER_MOVE_BOUND) { return "E_BOUND_CASTER_MOVE_BOUND"; }
+	return "INVALID";
+}
+
+Remote::DamageGroup Remote::DamageGroupFromString(const char* str)
+{
+	if(StringEquals(str, "eNONE")) { return DamageGroup::eNONE; }
+	if(StringEquals(str, "eENEMY")) { return DamageGroup::eENEMY; }
+	if(StringEquals(str, "eFRIEND")) { return DamageGroup::eFRIEND; }
+	if(StringEquals(str, "eALL")) { return DamageGroup::eALL; }
+	return DamageGroup::INVALID;
+}
+
+const char* Remote::DamageGroupToString(DamageGroup g)
+{
+	if(g == DamageGroup::eNONE) { return "eNONE"; }
+	if(g == DamageGroup::eENEMY) { return "eENEMY"; }
+	if(g == DamageGroup::eFRIEND) { return "eFRIEND"; }
+	if(g == DamageGroup::eALL) { return "eALL"; }
+	return "INVALID";
 }

@@ -106,6 +106,37 @@ const char* TargetPresetToString(TargetPreset p);
 
 }
 
+struct Remote
+{
+	enum class BoundType: i8 {
+		INVALID = -1,
+		E_BOUND_NONE = 0,
+		E_BOUND_RAY,
+		E_BOUND_BOX,
+		E_BOUND_CAPSULE,
+		E_BOUND_SPHERE,
+		E_BOUND_BEAM,
+		E_BOUND_BEAM_NIF,
+		E_BOUND_LASER,
+		E_BOUND_PHYSXPROP,
+		E_BOUND_HAMMER,
+		E_BOUND_CASTER_MOVE_BOUND
+	};
+
+	enum class DamageGroup: i8 {
+		INVALID = -1,
+		eNONE,
+		eENEMY,
+		eFRIEND,
+		eALL,
+	};
+
+	static BoundType BoundTypeFromString(const char* str);
+	static const char* BoundTypeToString(BoundType t);
+	static DamageGroup DamageGroupFromString(const char* str);
+	static const char* DamageGroupToString(DamageGroup g);
+};
+
 struct GameXmlContent
 {
 	struct Master

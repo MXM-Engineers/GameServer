@@ -131,10 +131,23 @@ struct Remote
 		eALL,
 	};
 
+	enum VsFlagBit: u32 {
+		VS_DYNAMIC = 0,
+		VS_NPC_MONSTER,
+		VS_PLAYER_CHARACTER,
+	};
+
 	static BoundType BoundTypeFromString(const char* str);
 	static const char* BoundTypeToString(BoundType t);
 	static DamageGroup DamageGroupFromString(const char* str);
 	static const char* DamageGroupToString(DamageGroup g);
+
+	RemoteIdx ID = RemoteIdx::INVALID;
+	BoundType boundType = BoundType::INVALID;
+	DamageGroup damageGroup = DamageGroup::INVALID;
+	eastl::array<u16,3> boundSize;
+	u8 vs = 0;
+
 };
 
 struct GameXmlContent
@@ -267,6 +280,7 @@ struct GameXmlContent
 	const Song* FindJukeboxSongByID(SongID songID) const;
 	const Master& GetMaster(ClassType classType) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
+	const Remote& GetRemote(RemoteIdx remoteID) const;
 
 private:
 	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
@@ -300,6 +314,8 @@ private:
 	tinyxml2::XMLDocument xmlCREATURECHARACTER;
 	tinyxml2::XMLDocument xmlWEAPON;
 	tinyxml2::XMLDocument xmlWEAPONTT;
+
+	eastl::fixed_hash_map<RemoteIdx, Remote, 1500> remoteMap;
 };
 
 bool GameXmlContentLoad();

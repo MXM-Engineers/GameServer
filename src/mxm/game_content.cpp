@@ -1227,10 +1227,14 @@ bool GameXmlContent::LoadRemoteData()
 		pEntityInfo;
 		pEntityInfo = pEntityInfo->NextSiblingElement()) {
 
+		Remote remote;
+
 		const char* KEYNAME = nullptr;
-		u32 ID = 0;
+		i32 ID = 0;
 		pEntityInfo->QueryStringAttribute("KEYNAME", &KEYNAME);
 		pEntityInfo->QueryAttribute("ID", &ID);
+
+		remote.ID = RemoteIdx(ID);
 
 		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
 
@@ -1245,14 +1249,23 @@ bool GameXmlContent::LoadRemoteData()
 				ELT_GET(pComp, i32, _LengthZ, 0);
 				ELT_GET_STR(pComp, _Type);
 				ELT_GET_STR(pComp, _DamageGroup);
+				ELT_GET(pComp, bool, _VsDynamic, false);
+				ELT_GET(pComp, bool, _VsNPC_Monster, false);
+				ELT_GET(pComp, bool, _VsPC, false);
 
-				Remote::BoundType boundType = Remote::BoundTypeFromString(_Type);
-				Remote::DamageGroup damageGroup = Remote::DamageGroupFromString(_DamageGroup);
+				remote.boundType = Remote::BoundTypeFromString(_Type);
+				remote.damageGroup = Remote::DamageGroupFromString(_DamageGroup);
+				remote.vs =
+					(_VsDynamic << Remote::VS_DYNAMIC) |
+					(_VsNPC_Monster << Remote::VS_NPC_MONSTER) |
+					(_VsPC << Remote::VS_PLAYER_CHARACTER);
 
 				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
-				LOG("	_DamageGroup=%s _Type=%s", Remote::DamageGroupToString(damageGroup), Remote::BoundTypeToString(boundType));
+				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
 			}
 		}
+
+		remoteMap.emplace(remote.ID, remote);
 	}
 
 	return true;
@@ -1472,6 +1485,13 @@ const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType
 
 	ASSERT(0); // not found
 	return actionListMap.cbegin()->second.front(); // unreachable
+}
+
+const Remote& GameXmlContent::GetRemote(RemoteIdx remoteID) const
+{
+	auto found = remoteMap.find(remoteID);
+	ASSERT(found != remoteMap.end());
+	return found->second;
 }
 
 bool GameXmlContentLoad()

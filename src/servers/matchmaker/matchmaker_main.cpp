@@ -632,7 +632,7 @@ intptr_t ThreadMatchmaker(void* pData)
 		return 1;
 	}
 
-	const f64 UPDATE_RATE_MS = (1.0/120.0) * 1000.0;
+	const f64 UPDATE_RATE_MS = (1.0/30.0) * 1000.0;
 	const Time startTime = TimeNow();
 	Time t0 = startTime;
 
@@ -642,15 +642,21 @@ intptr_t ThreadMatchmaker(void* pData)
 		mm.localTime = TimeDiff(startTime, t1);
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
-		if(delta > UPDATE_RATE_MS) {
+		if (delta >= UPDATE_RATE_MS) {
 			ProfileNewFrame("Matchmaker");
 			mm.Update();
-			t0 = t1;
+			t0 = Time((u64)t0 + (u64)TimeMsToTime(UPDATE_RATE_MS));
 		}
 		else {
-			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta)); // yield
-			// EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
-			// Sleep on windows is notoriously innacurate, we'll probably need to "just yield"
+			// Calculate sleep time in milliseconds
+			EA::Thread::ThreadTime sleepTime = (EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta);
+
+			if (sleepTime > 1.0) {
+				// Sleep for most of the remaining time
+				EA::Thread::ThreadSleep(sleepTime - 1);
+			}
+			// Yield for the final millisecond to improve timing accuracy
+			EA::Thread::ThreadSleep(EA::Thread::kTimeoutYield);
 		}
 	}
 	return 0;

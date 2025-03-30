@@ -405,10 +405,88 @@ bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 			return true;
 		}
 
+		if (EA::StdC::Strncmp(msg, L"spawn ", 6) == 0) {
+			msg += 6; // skip command
+			int classTypeVal = _wtoi(msg); // convert wide string to integer
+
+			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
+			ASSERT(playerActor);
+
+			WorldHub::ActorCore& actor = world.SpawnPlayerActor(-1, (ClassType)classTypeVal, SkinIndex::DEFAULT, L"spawned", L"TEST");
+			actor.pos = playerActor->pos;
+			actor.dir = playerActor->dir;
+			actor.eye = playerActor->eye;
+
+			lastLegoActorUID = actor.UID;
+
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned with class %d at (%g, %g, %g)",
+				classTypeVal, actor.pos.x, actor.pos.y, actor.pos.z));
+			return true;
+		}
+
 		if(EA::StdC::Strncmp(msg, L"delete", 6) == 0) {
 			world.DestroyPlayerActor(lastLegoActorUID);
 
 			SendDbgMsg(clientHd, LFMT(L"Actor destroyed (%u)", lastLegoActorUID));
+			return true;
+		}
+
+		if (EA::StdC::Strncmp(msg, L"change ", 7) == 0) {
+			msg += 7; // skip command
+
+			// Parse class type and optional skin
+			int classTypeVal;
+			int skinIndex = (int)SkinIndex::DEFAULT;
+
+			// Check if we have two arguments (class and skin)
+			const wchar* space = wcschr(msg, L' ');
+			if (space) {
+				// Temporarily null terminate first number
+				wchar firstNum[32];
+				size_t len = space - msg;
+				if (len < sizeof(firstNum)) {
+					wcsncpy(firstNum, msg, len);
+					firstNum[len] = L'\0';
+					classTypeVal = _wtoi(firstNum);
+					skinIndex = _wtoi(space + 1); // Convert second number after space
+				}
+			}
+			else {
+				classTypeVal = _wtoi(msg); // Just class type provided
+			}
+
+			WorldHub::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[userID]);
+			ASSERT(playerActor);
+
+			vec3 oldPos = playerActor->pos;
+			vec3 oldDir = playerActor->dir;
+			vec3 oldEye = playerActor->eye;
+
+			// Destroy the current player actor
+			world.DestroyPlayerActor(playerActorUID[userID]);
+
+			// Create new player actor properly
+			ASSERT(playerAccountData[userID]); // account data should exist
+			WorldHub::ActorPlayer& actor = world.SpawnPlayerActor(
+				userID,
+				(ClassType)classTypeVal,
+				(SkinIndex)skinIndex,
+				playerAccountData[userID]->nickname.data(),
+				playerAccountData[userID]->guildTag.data()
+			);
+
+			// Set position and orientation
+			actor.pos = oldPos;
+			actor.dir = oldDir;
+			actor.eye = oldEye;
+
+			// Store the new actor UID
+			playerActorUID[userID] = actor.UID;
+
+			// Notify clients about the new character
+			replication.SendPlayerSetLeaderMaster(clientHd, actor.UID, (ClassType)classTypeVal, (SkinIndex)skinIndex);
+
+			SendDbgMsg(clientHd, LFMT(L"Character changed to class %d with skin %d", classTypeVal, skinIndex));
 			return true;
 		}
 

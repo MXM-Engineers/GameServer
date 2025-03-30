@@ -71,13 +71,13 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	teamMasterPickCount[Team::BLUE].fill(0);
 
 	allowedMastersSet = {
-		ClassType::Taejin,
-		ClassType::MBA_07,
-		ClassType::Sizuka,
-		ClassType::Demenos,
-		ClassType::Koom,
-		ClassType::Innowin,
-		ClassType::Lua,
+		ClassType::STRIKER,
+		ClassType::ARTILLERY,
+		ClassType::ASSASSIN,
+		ClassType::ELECTRO,
+		ClassType::DEFENDER,
+		ClassType::SNIPER,
+		ClassType::LAUNCHER,
 	};
 
 	startTime = TimeNow();
@@ -284,7 +284,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	foreach(u, userList) {
 		if(u->isBot) {
 			for(int attempts = 0; attempts < 1000; attempts++) {
-				u32 r0 = RandUint() % allowedMastersSet.size();
+				const u32 r0 = RandUint() % allowedMastersSet.size();
 
 				u32 i = 0;
 				foreach_const(m, allowedMastersSet) {
@@ -355,7 +355,7 @@ void RoomInstance::Update(Time localTime_)
 			packetStep.isRandomPick = 0;
 
 			Sv::SN_StartCountdownSortieRoom packetCountdown;
-			packetCountdown.stageType = StageType::PLAY_INSTANCE;
+			packetCountdown.stageType = StageType::PVP_GAME;
 			packetCountdown.timeToWaitSec = MATCH_WAIT_TIME;
 
 			foreach_const(cu, connectedUsers) {

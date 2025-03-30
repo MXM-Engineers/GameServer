@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-const char* ActionStateString(ActionStateID state)
+const char* ActionStateToString(ActionStateID state)
 {
 	if(state == ActionStateID::INVALID) return "INVALID";
 
@@ -185,4 +185,690 @@ const char* ActionStateString(ActionStateID state)
 	i32 i = (i32)state;
 	ASSERT(i >= 0 && i < ARRAY_COUNT(s));
 	return s[i];
+}
+
+
+// TODO: could be faster
+ActionStateID ActionStateFromString(const char* str)
+{
+	if(StringEquals(str, "ACTION_STATE_TYPE_IDLE")) {
+		return ActionStateID::ACTION_STATE_TYPE_IDLE;
+	}
+	if(StringEquals(str, "NORMAL_STAND_MOVESTATE")) {
+		return ActionStateID::NORMAL_STAND_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_STAND_MOVESTATE")) {
+		return ActionStateID::BATTLE_STAND_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_RUN_MOVESTATE")) {
+		return ActionStateID::NORMAL_RUN_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_RUN_MOVESTATE")) {
+		return ActionStateID::BATTLE_RUN_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_RUN_FRONT_MOVESTATE")) {
+		return ActionStateID::NORMAL_RUN_FRONT_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_RUN_FRONT_MOVESTATE")) {
+		return ActionStateID::BATTLE_RUN_FRONT_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_RUN_LEFT_MOVESTATE")) {
+		return ActionStateID::NORMAL_RUN_LEFT_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_RUN_LEFT_MOVESTATE")) {
+		return ActionStateID::BATTLE_RUN_LEFT_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_RUN_RIGHT_MOVESTATE")) {
+		return ActionStateID::NORMAL_RUN_RIGHT_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_RUN_RIGHT_MOVESTATE")) {
+		return ActionStateID::BATTLE_RUN_RIGHT_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_RUN_BACK_MOVESTATE")) {
+		return ActionStateID::NORMAL_RUN_BACK_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_RUN_BACK_MOVESTATE")) {
+		return ActionStateID::BATTLE_RUN_BACK_MOVESTATE;
+	}
+	if(StringEquals(str, "NORMAL_ROTATE_LEFT")) {
+		return ActionStateID::NORMAL_ROTATE_LEFT;
+	}
+	if(StringEquals(str, "BATTLE_ROTATE_LEFT")) {
+		return ActionStateID::BATTLE_ROTATE_LEFT;
+	}
+	if(StringEquals(str, "NORMAL_ROTATE_RIGHT")) {
+		return ActionStateID::NORMAL_ROTATE_RIGHT;
+	}
+	if(StringEquals(str, "BATTLE_ROTATE_RIGHT")) {
+		return ActionStateID::BATTLE_ROTATE_RIGHT;
+	}
+	if(StringEquals(str, "MAXTYPE_MOVESTATE")) {
+		return ActionStateID::MAXTYPE_MOVESTATE;
+	}
+	if(StringEquals(str, "NONE_BEHAVIORSTATE")) {
+		return ActionStateID::NONE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK1_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK2_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK3_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK4_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK5_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK6_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK6_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK7_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK7_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK8_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK8_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK9_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK9_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACK10_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACK10_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "HIT_BEHAVIORSTATE")) {
+		return ActionStateID::HIT_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_1_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_2_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_3_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_4_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_5_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_6_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_6_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_7_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_7_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_8_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_8_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_9_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_9_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_10_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_10_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_11_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_11_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_12_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_12_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_13_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_13_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_14_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_14_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_15_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_15_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_16_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_16_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_17_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_17_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_18_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_18_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_19_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_19_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_20_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_20_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_21_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_21_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_22_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_22_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_23_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_23_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_24_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_24_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_25_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_25_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_26_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_26_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_27_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_27_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_28_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_28_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_29_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_29_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_30_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_30_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_MAX_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_MAX_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE1_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE2_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE3_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE4_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE5_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE6_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE6_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE7_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE7_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE8_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE8_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE9_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE9_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE10_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE10_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE11_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE11_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE12_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE12_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE13_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE13_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE14_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE14_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE15_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE15_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE16_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE16_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE17_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE17_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE18_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE18_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE19_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE19_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE20_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE20_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SKILL_STAGE_MAX_BEHAVIORSTATE")) {
+		return ActionStateID::SKILL_STAGE_MAX_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "ATTACKCHARGE_BEHAVIORSTATE")) {
+		return ActionStateID::ATTACKCHARGE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_FLY_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_FLY_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_AIRBORNE_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_AIRBORNE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_PUSH_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_PUSH_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_KNOCKDOWN_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_KNOCKDOWN_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_SYNC_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_SYNC_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DEFEAT_GROGGY_BEHAVIORSTATE")) {
+		return ActionStateID::DEFEAT_GROGGY_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "LIE_BEHAVIORSTATE")) {
+		return ActionStateID::LIE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "INTERACTION_CAST_BEHAVIORSTATE")) {
+		return ActionStateID::INTERACTION_CAST_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "INTERACTION_EXECUTE_BEHAVIORSTAT")) {
+		return ActionStateID::INTERACTION_EXECUTE_BEHAVIORSTAT;
+	}
+	if(StringEquals(str, "TAG_IN_EXECUTE_BEHAVIORSTATE")) {
+		return ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "TAG_OUT_EXECUTE_BEHAVIORSTATE")) {
+		return ActionStateID::TAG_OUT_EXECUTE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "STANCE_IN_BEHAVIORSTATE")) {
+		return ActionStateID::STANCE_IN_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "STANCE_OUT_BEHAVIORSTATE")) {
+		return ActionStateID::STANCE_OUT_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "RELOAD_BEHAVIORSTATE")) {
+		return ActionStateID::RELOAD_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "WEAPONCHANGE_BEHAVIORSTATE")) {
+		return ActionStateID::WEAPONCHANGE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SPAWN_BEHAVIORSTATE")) {
+		return ActionStateID::SPAWN_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "RESPAWN_BEHAVIORSTATE")) {
+		return ActionStateID::RESPAWN_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DIE_BEHAVIORSTATE")) {
+		return ActionStateID::DIE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "UNDEAD_BEHAVIORSTATE")) {
+		return ActionStateID::UNDEAD_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SHIRK_BEHAVIORSTATE")) {
+		return ActionStateID::SHIRK_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SHIRK_COMBO_1_BEHAVIORSTATE")) {
+		return ActionStateID::SHIRK_COMBO_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SHIRK_MOVE_BEHAVIORSTATE")) {
+		return ActionStateID::SHIRK_MOVE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "TALK_BEHAVIORSTATE")) {
+		return ActionStateID::TALK_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "BATTLE_STAND_EMOTION_BEHAVIORSTA")) {
+		return ActionStateID::BATTLE_STAND_EMOTION_BEHAVIORSTA;
+	}
+	if(StringEquals(str, "CRAWLUP_START_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLUP_START_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CRAWLUP_MOVE_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLUP_MOVE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CRAWLUP_END_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLUP_END_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CRAWLDOWN_START_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLDOWN_START_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CRAWLDOWN_MOVE_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLDOWN_MOVE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CRAWLDOWN_END_BEHAVIORSTATE")) {
+		return ActionStateID::CRAWLDOWN_END_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "JUMP_UP_BEHAVIORSTATE")) {
+		return ActionStateID::JUMP_UP_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "JUMP_DOWN_BEHAVIORSTATE")) {
+		return ActionStateID::JUMP_DOWN_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_1_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_2_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_3_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_4_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_5_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_6_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_6_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_7_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_7_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_8_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_8_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_9_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_9_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EXTRAMOTION_10_BEHAVIORSTATE")) {
+		return ActionStateID::EXTRAMOTION_10_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SEQUENCE_1_BEHAVIORSTATE")) {
+		return ActionStateID::SEQUENCE_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SEQUENCE_2_BEHAVIORSTATE")) {
+		return ActionStateID::SEQUENCE_2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SEQUENCE_3_BEHAVIORSTATE")) {
+		return ActionStateID::SEQUENCE_3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SEQUENCE_4_BEHAVIORSTATE")) {
+		return ActionStateID::SEQUENCE_4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "SEQUENCE_5_BEHAVIORSTATE")) {
+		return ActionStateID::SEQUENCE_5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_1_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_2_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_2_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_3_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_3_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_4_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_4_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_5_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_5_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_6_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_6_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_7_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_7_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_8_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_8_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_9_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_9_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "COMBO_10_BEHAVIORSTATE")) {
+		return ActionStateID::COMBO_10_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "MELEE_1_BEHAVIORSTATE")) {
+		return ActionStateID::MELEE_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "STYLISH_1_BEHAVIORSTATE")) {
+		return ActionStateID::STYLISH_1_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "CAUGHT_BEHAVIORSTATE")) {
+		return ActionStateID::CAUGHT_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DISABLED_BEHAVIORSTATE")) {
+		return ActionStateID::DISABLED_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "LIFTED_BEHAVIORSTATE")) {
+		return ActionStateID::LIFTED_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "PULLED_BEHAVIORSTATE")) {
+		return ActionStateID::PULLED_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DRAGGED_BEHAVIORSTATE")) {
+		return ActionStateID::DRAGGED_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EVENT_BEHAVIORSTATE")) {
+		return ActionStateID::EVENT_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "EMOTION_BEHAVIORSTATE")) {
+		return ActionStateID::EMOTION_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "JUMP_LOOP_MOVESTATE")) {
+		return ActionStateID::JUMP_LOOP_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_JUMP_LOOP_MOVESTATE")) {
+		return ActionStateID::BATTLE_JUMP_LOOP_MOVESTATE;
+	}
+	if(StringEquals(str, "JUMP_START_MOVESTATE")) {
+		return ActionStateID::JUMP_START_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_JUMP_START_MOVESTATE")) {
+		return ActionStateID::BATTLE_JUMP_START_MOVESTATE;
+	}
+	if(StringEquals(str, "JUMP_END_MOVESTATE")) {
+		return ActionStateID::JUMP_END_MOVESTATE;
+	}
+	if(StringEquals(str, "BATTLE_JUMP_END_MOVESTATE")) {
+		return ActionStateID::BATTLE_JUMP_END_MOVESTATE;
+	}
+	if(StringEquals(str, "BREAKFALL_BEHAVIORSTATE")) {
+		return ActionStateID::BREAKFALL_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "MAXTYPE_BEHAVIORSTATE")) {
+		return ActionStateID::MAXTYPE_BEHAVIORSTATE;
+	}
+	if(StringEquals(str, "DYNAMIC_OPEN")) {
+		return ActionStateID::DYNAMIC_OPEN;
+	}
+	if(StringEquals(str, "DYNAMIC_CLOSE")) {
+		return ActionStateID::DYNAMIC_CLOSE;
+	}
+	if(StringEquals(str, "DYNAMIC_SPAWN")) {
+		return ActionStateID::DYNAMIC_SPAWN;
+	}
+	if(StringEquals(str, "DYNAMIC_NORMAL_STAND")) {
+		return ActionStateID::DYNAMIC_NORMAL_STAND;
+	}
+	if(StringEquals(str, "DYNAMIC_BATTLE_STAND")) {
+		return ActionStateID::DYNAMIC_BATTLE_STAND;
+	}
+	if(StringEquals(str, "DYNAMIC_RUN_FRONT")) {
+		return ActionStateID::DYNAMIC_RUN_FRONT;
+	}
+	if(StringEquals(str, "DYNAMIC_ROTATE_LEFT")) {
+		return ActionStateID::DYNAMIC_ROTATE_LEFT;
+	}
+	if(StringEquals(str, "DYNAMIC_ROTATE_RIGHT")) {
+		return ActionStateID::DYNAMIC_ROTATE_RIGHT;
+	}
+	if(StringEquals(str, "DYNAMIC_ATTACK")) {
+		return ActionStateID::DYNAMIC_ATTACK;
+	}
+	if(StringEquals(str, "DYNAMIC_HIT")) {
+		return ActionStateID::DYNAMIC_HIT;
+	}
+	if(StringEquals(str, "DYNAMIC_DIE")) {
+		return ActionStateID::DYNAMIC_DIE;
+	}
+	if(StringEquals(str, "DYNAMIC_ACTIVE")) {
+		return ActionStateID::DYNAMIC_ACTIVE;
+	}
+	if(StringEquals(str, "DYNAMIC_EXTRAMOTION_1")) {
+		return ActionStateID::DYNAMIC_EXTRAMOTION_1;
+	}
+	if(StringEquals(str, "DYNAMIC_EXTRAMOTION_2")) {
+		return ActionStateID::DYNAMIC_EXTRAMOTION_2;
+	}
+	if(StringEquals(str, "DYNAMIC_EXTRAMOTION_3")) {
+		return ActionStateID::DYNAMIC_EXTRAMOTION_3;
+	}
+	if(StringEquals(str, "ACTION_STATE_TYPE_MAX")) {
+		return ActionStateID::ACTION_STATE_TYPE_MAX;
+	}
+	if(StringEquals(str, "UNKNOWN_ACTION_STATE_TYPE")) {
+		return ActionStateID::UNKNOWN_ACTION_STATE_TYPE;
+	}
+
+	return ActionStateID::INVALID;
+}
+
+ClassType ClassTypeFromString(const char* str)
+{
+	if(StringEquals(str, "STRIKER")){
+		return ClassType::STRIKER;
+	}
+	if(StringEquals(str, "ARTILLERY")){
+		return ClassType::ARTILLERY;
+	}
+	if(StringEquals(str, "ASSASSIN")){
+		return ClassType::ASSASSIN;
+	}
+	if(StringEquals(str, "ELECTRO")){
+		return ClassType::ELECTRO;
+	}
+	if(StringEquals(str, "DEFENDER")){
+		return ClassType::DEFENDER;
+	}
+	if(StringEquals(str, "SNIPER")){
+		return ClassType::SNIPER;
+	}
+	if(StringEquals(str, "DEATHKNIGHT")){
+		return ClassType::DEATHKNIGHT;
+	}
+	if(StringEquals(str, "DESTROYER")){
+		return ClassType::DESTROYER;
+	}
+	if(StringEquals(str, "MECHANIC")){
+		return ClassType::MECHANIC;
+	}
+	if(StringEquals(str, "SOULMASTER")){
+		return ClassType::SOULMASTER;
+	}
+	if(StringEquals(str, "DOUBLEGUN")){
+		return ClassType::DOUBLEGUN;
+	}
+	if(StringEquals(str, "JINSEOYEON")){
+		return ClassType::JINSEOYEON;
+	}
+	if(StringEquals(str, "KROMEDE")){
+		return ClassType::KROMEDE;
+	}
+	if(StringEquals(str, "RODMASTER")){
+		return ClassType::RODMASTER;
+	}
+	if(StringEquals(str, "PHOTOG")){
+		return ClassType::PHOTOG;
+	}
+	if(StringEquals(str, "ICEQUEEN")){
+		return ClassType::ICEQUEEN;
+	}
+	if(StringEquals(str, "MAGICGIRL")){
+		return ClassType::MAGICGIRL;
+	}
+	if(StringEquals(str, "POHWARAN")){
+		return ClassType::POHWARAN;
+	}
+	if(StringEquals(str, "BOOMERANG")){
+		return ClassType::BOOMERANG;
+	}
+	if(StringEquals(str, "SLIME")){
+		return ClassType::SLIME;
+	}
+	if(StringEquals(str, "MONDOZAX")){
+		return ClassType::MONDOZAX;
+	}
+	if(StringEquals(str, "LILU")){
+		return ClassType::LILU;
+	}
+	if(StringEquals(str, "EFREET")){
+		return ClassType::EFREET;
+	}
+	if(StringEquals(str, "SHADOWHUNTER")){
+		return ClassType::SHADOWHUNTER;
+	}
+	if(StringEquals(str, "RYTLOCK")){
+		return ClassType::RYTLOCK;
+	}
+	if(StringEquals(str, "CATTHECAT")){
+		return ClassType::CATTHECAT;
+	}
+	if(StringEquals(str, "RNB")){
+		return ClassType::RNB;
+	}
+	if(StringEquals(str, "BATTER")){
+		return ClassType::BATTER;
+	}
+	if(StringEquals(str, "ANDROA")){
+		return ClassType::ANDROA;
+	}
+	if(StringEquals(str, "ANDROB")){
+		return ClassType::ANDROB;
+	}
+	if(StringEquals(str, "ATTACKER")){
+		return ClassType::ATTACKER;
+	}
+	if(StringEquals(str, "BOXER")){
+		return ClassType::BOXER;
+	}
+	if(StringEquals(str, "SHUGOTRADER")){
+		return ClassType::SHUGOTRADER;
+	}
+	if(StringEquals(str, "NAGA")){
+		return ClassType::NAGA;
+	}
+	if(StringEquals(str, "LAUNCHER")){
+		return ClassType::LAUNCHER;
+	}
+	if(StringEquals(str, "STATESMAN")){
+		return ClassType::STATESMAN;
+	}
+	if(StringEquals(str, "YURI")){
+		return ClassType::YURI;
+	}
+	if(StringEquals(str, "ESPER")){
+		return ClassType::ESPER;
+	}
+	if(StringEquals(str, "PRIEST")){
+		return ClassType::PRIEST;
+	}
+	if(StringEquals(str, "GHOSTWIDOW")){
+		return ClassType::GHOSTWIDOW;
+	}
+	if(StringEquals(str, "SHUTTLE")){
+		return ClassType::SHUTTLE;
+	}
+	if(StringEquals(str, "JAVELIN")){
+		return ClassType::JAVELIN;
+	}
+	if(StringEquals(str, "GATLING")){
+		return ClassType::GATLING;
+	}
+	if(StringEquals(str, "GUARDIAN")){
+		return ClassType::GUARDIAN;
+	}
+	if(StringEquals(str, "RESERVED_START")){
+		return ClassType::RESERVED_START;
+	}
+	if(StringEquals(str, "ALEX")){
+		return ClassType::ALEX;
+	}
+	if(StringEquals(str, "TOPAZ")){
+		return ClassType::TOPAZ;
+	}
+	if(StringEquals(str, "TITAN")){
+		return ClassType::TITAN;
+	}
+	if(StringEquals(str, "TITAN_SIEGE")){
+		return ClassType::TITAN_SIEGE;
+	}
+
+	return ClassType::NONE;
 }

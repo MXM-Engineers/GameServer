@@ -813,7 +813,7 @@ inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData
 	SER("	nSpeed=%f", buff.Read<f32>());
 	SER("	flags=%u", buff.Read<u8>());
 	ActionStateID action = buff.Read<ActionStateID>();
-	SER("	state=%s (%d)", ActionStateString(action), action);
+	SER("	state=%s (%d)", ActionStateToString(action), action);
 	SER("}");
 
 	return str.data();
@@ -1395,6 +1395,103 @@ inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseEnd>(const void* 
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_RunClientLevelEvent>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_RunClientLevelEvent& packet = *(Sv::SN_RunClientLevelEvent*)packetData;
+
+	SER("SN_RunClientLevelEvent(%d, %d) :: {", Sv::SN_RunClientLevelEvent::NET_ID, packetSize);
+	SER("	eventID=%d", packet.eventID);
+	SER("	caller=%d", packet.caller);
+	SER("	serverTime=%lld", packet.serverTime);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_UpdateGameOwner>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_UpdateGameOwner& packet = *(Sv::SN_UpdateGameOwner*)packetData;
+
+	SER("SN_UpdateGameOwner(%d, %d) :: {", Sv::SN_UpdateGameOwner::NET_ID, packetSize);
+	SER("	userID=%d", packet.userID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_LobbyStartGame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_LobbyStartGame& packet = *(Sv::SN_LobbyStartGame*)packetData;
+
+	SER("SN_LobbyStartGame(%d, %d) :: {", Sv::SN_LobbyStartGame::NET_ID, packetSize);
+	SER("	stageType=%d", packet.stageType);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_CityMapInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_CityMapInfo& packet = *(Sv::SN_CityMapInfo*)packetData;
+
+	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
+	SER("	cityMapID=%d", packet.cityMapID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_RunClientLevelEventSeq>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_RunClientLevelEventSeq& packet = *(Sv::SN_RunClientLevelEventSeq*)packetData;
+
+	SER("SN_RunClientLevelEventSeq(%d, %d) :: {", Sv::SN_RunClientLevelEventSeq::NET_ID, packetSize);
+	SER("	needCompleteTriggerAckID=%d", packet.needCompleteTriggerAckID);
+	SER("	rootEventID=%d", packet.rootEventID);
+	SER("	caller=%d", packet.caller);
+	SER("	serverTime=%lld", packet.serverTime);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_ActionChangeLevelEvent>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ActionChangeLevelEvent(%d, %d) :: {", Sv::SN_ActionChangeLevelEvent::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	targetIDs(%u)=[", count);
+	for(u16 i = 0; i < count; i++) {
+		SER("		%d,", buff.Read<LocalActorID>());
+	}
+	SER("	]");
+	SER("	action=%d", buff.Read<ActionStateID>());
+	SER("	serverTime=%lld", buff.Read<i64>());
+	SER("}");
+
+	return str.data();
+}
+
+
+template<>
 inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1657,9 +1754,6 @@ DEFAULT_SERIALIZE(Sv::SN_SpawnPosForMinimap);
 DEFAULT_SERIALIZE(Sv::SN_InitIngameModeInfo);
 DEFAULT_SERIALIZE(Sv::SN_ScanEnd);
 DEFAULT_SERIALIZE(Sv::SN_SetGameGvt);
-DEFAULT_SERIALIZE(Sv::SN_CityMapInfo);
-DEFAULT_SERIALIZE(Sv::SN_UpdateGameOwner);
-DEFAULT_SERIALIZE(Sv::SN_LobbyStartGame);
 DEFAULT_SERIALIZE(Sv::SA_GetCharacterInfo);
 DEFAULT_SERIALIZE(Sv::SN_LeaderCharacter);
 DEFAULT_SERIALIZE(Sv::SA_SetLeader);
@@ -1668,7 +1762,6 @@ DEFAULT_SERIALIZE(Sv::SA_GameReady);
 DEFAULT_SERIALIZE(Sv::SN_NotifyIngameSkillPoint);
 DEFAULT_SERIALIZE(Sv::SN_NotifyTimestamp);
 DEFAULT_SERIALIZE(Sv::SN_NotifyAasRestricted);
-DEFAULT_SERIALIZE(Sv::SN_RunClientLevelEventSeq);
 DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTurn);
 DEFAULT_SERIALIZE(Sv::SN_DestroyEntity);
 DEFAULT_SERIALIZE(Sv::SN_RegionServicePolicy);

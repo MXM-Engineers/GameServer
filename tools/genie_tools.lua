@@ -99,10 +99,12 @@ project "ToolCollision"
 	includedirs {
 		common_includes,
 		"collision",
+		physx_includedir,
 	}
 
 	links {
-		common_links
+		common_links,
+		physx_libs_win64
 	}
 	
 	files {
@@ -111,3 +113,13 @@ project "ToolCollision"
 		"collision/**.c",
 		"collision/**.cpp",
 	}
+
+	configuration "Release"
+		libdirs {
+			physx_libdir_release
+		}
+
+	configuration "Debug"
+		libdirs {
+			physx_libdir_debug
+		}

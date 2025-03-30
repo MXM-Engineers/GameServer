@@ -1,10 +1,25 @@
 #include "renderer.h"
-#include "shaders.h"
 #include "sokol_imgui.h"
 #include "config.h"
 
+namespace shaded {
+#include "shader_shaded.h"
+}
+
+namespace unlit {
+#include "shader_unlit.h"
+}
+
+namespace line {
+#include "shader_line.h"
+}
+
+constexpr eastl::hash<const char*> HashStr;
+
 sg_buffer LineBuffer::GetUpdatedBuffer()
 {
+	ProfileFunction();
+
 	if(needsUpdate) {
 		if(vramBuffer.id == 0xFFFFFFFF) {
 			sg_buffer_desc desc = {0};
@@ -33,9 +48,10 @@ void LineBuffer::Clear()
 	needsUpdate = true;
 }
 
-void MeshBuffer::Push(const FixedStr64& name, const MeshBuffer::Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount)
+void MeshBuffer::Register(const char* name, const MeshBuffer::Vertex* vertices, const u32 vertexCount, const u16* indices, const u32 indexCount)
 {
-	ASSERT(meshRefMap.find(name) == meshRefMap.end());
+	const size_t hash = HashStr(name);
+	ASSERT(meshRefMap.find(hash) == meshRefMap.end());
 
 	const u32 vertexStartIndex = vertexBuffer.size();
 
@@ -48,7 +64,7 @@ void MeshBuffer::Push(const FixedStr64& name, const MeshBuffer::Vertex* vertices
 		indexBuffer.push_back(vertexStartIndex + indices[i]);
 	}
 
-	meshRefMap[name] = ref;
+	meshRefMap[hash] = ref;
 	needsUpdate = true;
 }
 
@@ -86,15 +102,15 @@ void MeshBuffer::UpdateAndBind()
 	sg_apply_bindings(&binds);
 }
 
-void MeshBuffer::DrawMesh(const FixedStr64& name)
+void MeshBuffer::DrawMesh(const char* name)
 {
-	const MeshRef& ref = meshRefMap.at(name);
+	const MeshRef& ref = meshRefMap.at(HashStr(name));
 	sg_draw(ref.indexStart, ref.indexCount, 1);
 }
 
-bool MeshBuffer::HasMesh(const FixedStr64& name) const
+bool MeshBuffer::HasMesh(const char* name) const
 {
-	return meshRefMap.find(name) != meshRefMap.end();
+	return meshRefMap.find(HashStr(name)) != meshRefMap.end();
 }
 
 sg_buffer TriangleBuffer::GetUpdatedBuffer()
@@ -681,8 +697,8 @@ bool Renderer::Init()
 		22, 21, 20, 23, 22, 20
 	};
 
-	meshBuffer.Push("Cube", verticesCube, ARRAY_COUNT(verticesCube), indices, ARRAY_COUNT(indices));
-	meshBuffer.Push("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
+	meshBuffer.Register("Cube", verticesCube, ARRAY_COUNT(verticesCube), indices, ARRAY_COUNT(indices));
+	meshBuffer.Register("CubeCentered", verticesCubeCentered, ARRAY_COUNT(verticesCubeCentered), indices, ARRAY_COUNT(indices));
 
 	eastl::fixed_vector<MeshBuffer::Vertex,1024,true> genVertList;
 	eastl::fixed_vector<u16,1024,true> genIndList;
@@ -695,28 +711,28 @@ bool Renderer::Init()
 	*/
 
 	GenerateFlatRingMesh(0.1f, 1, 0.8f, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
-	meshBuffer.Push("Ring", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	meshBuffer.Register("Ring", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
 	GenerateConeMesh(1, 1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
-	meshBuffer.Push("Cone", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	meshBuffer.Register("Cone", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
 	GenerateCylinderMesh(1, 1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
-	meshBuffer.Push("Cylinder", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	meshBuffer.Register("Cylinder", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
 	GenerateSphereMesh(1, 32, eastl::back_inserter(genVertList), eastl::back_inserter(genIndList));
-	meshBuffer.Push("Sphere", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
+	meshBuffer.Register("Sphere", genVertList.data(), genVertList.size(), genIndList.data(), genIndList.size());
 	genVertList.clear();
 	genIndList.clear();
 
-	shaderMeshShaded = sg_make_shader(&ShaderBaseMeshShaded());
-	shaderMeshUnlit = sg_make_shader(&ShaderBaseMeshUnlit());
-	shaderLine = sg_make_shader(&ShaderLine());
+    shaderMeshShaded = sg_make_shader(shaded::shaded_shader_desc(sg_query_backend()));
+    shaderMeshUnlit = sg_make_shader(unlit::unlit_shader_desc(sg_query_backend()));
+    shaderLine = sg_make_shader(line::line_shader_desc(sg_query_backend()));
 
 	// basic mesh pipeline
 	{
@@ -804,7 +820,7 @@ void Renderer::Cleanup()
 void Renderer::LoadMeshFile(const char* name, const MeshFile::Mesh& mesh)
 {
 	STATIC_ASSERT(sizeof(MeshBuffer::Vertex) == sizeof(MeshFile::Vertex)); // hacky
-	meshBuffer.Push(name, (MeshBuffer::Vertex*)mesh.vertices, mesh.vertexCount, mesh.indices, mesh.indexCount);
+	meshBuffer.Register(name, (MeshBuffer::Vertex*)mesh.vertices, mesh.vertexCount, mesh.indices, mesh.indexCount);
 }
 
 void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, const vec3& color, f32 thickness, const InstanceMesh* parent)
@@ -819,8 +835,8 @@ void Renderer::PushArrow(Pipeline pipeline, const vec3& start, const vec3& end, 
 	f32 armLen = len - coneHeight;
 	f32 sizeY = thickness;
 
-	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(yaw, pitch, 0), vec3(armLen, sizeY, sizeY), color, parent);
-	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(yaw, pitch - PI/2, 0), vec3(coneSize, coneSize, coneHeight), color, parent);
+	PushMesh(pipeline, "CubeCentered", start + dir * (armLen/2), vec3(0, -pitch, yaw), vec3(armLen, sizeY, sizeY), color, parent);
+	PushMesh(pipeline, "Cone", end - dir * coneHeight, vec3(0, -pitch + PI/2, yaw), vec3(coneSize, coneSize, coneHeight), color, parent);
 }
 
 void Renderer::PushCapsule(Pipeline pipeline, const vec3& pos, const vec3& rot, f32 radius, f32 height, const vec3& color, const InstanceMesh* parent)
@@ -847,7 +863,8 @@ inline mat4 MakeModelMatrixFromTransform(const Transform& t)
 {
 	mat4 model = glm::identity<mat4>();
 	model = glm::translate(model, t.pos);
-	model = model * glm::eulerAngleZYX(t.rot.x, -t.rot.y, t.rot.z);
+	model = model * glm::eulerAngleZYX(t.rot.z, t.rot.y, t.rot.x);
+	//model = model * glm::eulerAngleXYZ(t.rot.x, t.rot.y, t.rot.z);
 	model = glm::scale(model, t.scale);
 	return model;
 }
@@ -872,6 +889,8 @@ inline mat4 MakeModelMatrixFromTransformHierarchy(const Transform& t)
 
 void Renderer::Render(f64 delta)
 {
+	ProfileFunction();
+
 	// push a simple grid
 	const u32 lineColor = 0xFF7F7F7F;
 	const f32 lineSpacing = 100.0f;
@@ -922,13 +941,15 @@ void Renderer::Render(f64 delta)
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
+			shaded::vs_params_t vsUni0 = { proj * view, model, normalMat };
+			shaded::fs_params_t fsUni0; 
+			fsUni0.color = it->color; 
+			fsUni0.lightPos = sunPos;
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(vsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, SG_RANGE(fsUni0));
 
-			meshBuffer.DrawMesh(it->meshName);
+			meshBuffer.DrawMesh(it->meshName.data());
 		}
 
 		// double sided
@@ -939,13 +960,15 @@ void Renderer::Render(f64 delta)
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
 			mat4 normalMat = glm::transpose(glm::inverse(model));
-			ShaderMeshShaded::VsUniform0 vsUni0 = { proj * view, model, normalMat };
-			ShaderMeshShaded::FsUniform0 fsUni0 = { it->color, sunPos, vec3(1) };
+			shaded::vs_params_t vsUni0 = { proj * view, model, normalMat };
+			shaded::fs_params_t fsUni0; 
+			fsUni0.color = it->color; 
+			fsUni0.lightPos = sunPos;
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &vsUni0, sizeof(vsUni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, { &fsUni0, sizeof(fsUni0) });
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(vsUni0));
+			sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, SG_RANGE(fsUni0));
 
-			meshBuffer.DrawMesh(it->meshName);
+			meshBuffer.DrawMesh(it->meshName.data());
 		}
 
 		// unlit
@@ -955,17 +978,13 @@ void Renderer::Render(f64 delta)
 		foreach_const(it, drawQueue[(i32)Pipeline::Unlit]) {
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
-			struct Uniform0
-			{
-				mat4 mvp;
-			};
+            unlit::vs_params_t uni0;
+			uni0.mvp = proj * view * model;
+            uni0.color = it->color;
 
-			Uniform0 uni0 = { proj * view * model };
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(uni0));
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
-
-			meshBuffer.DrawMesh(it->meshName);
+			meshBuffer.DrawMesh(it->meshName.data());
 		}
 
 		// wireframe
@@ -975,17 +994,13 @@ void Renderer::Render(f64 delta)
 		foreach_const(it, drawQueue[(i32)Pipeline::Wireframe]) {
 			mat4 model = MakeModelMatrixFromTransformHierarchy(*it);
 
-			struct Uniform0
-			{
-				mat4 mvp;
-			};
+			unlit::vs_params_t uni0;
+			uni0.mvp = proj * view * model;
+			uni0.color = it->color;
 
-			Uniform0 uni0 = { proj * view * model };
+			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(uni0));
 
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &uni0, sizeof(uni0) });
-			sg_apply_uniforms(SG_SHADERSTAGE_VS, 1, { &it->color, sizeof(it->color) });
-
-			meshBuffer.DrawMesh(it->meshName);
+			meshBuffer.DrawMesh(it->meshName.data());
 		}
 	}
 
@@ -998,7 +1013,7 @@ void Renderer::Render(f64 delta)
 
 		sg_apply_pipeline(pipeLine);
 		sg_apply_bindings(&bindsLine);
-		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, { &mvp, sizeof(mvp) });
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, SG_RANGE(mvp));
 		sg_draw(0, lineBuffer.GetLineCount() * 2, 1);
 	}
 

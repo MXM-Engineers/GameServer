@@ -2,12 +2,27 @@
 #include <common/base.h>
 #include <common/network.h>
 #include <common/vector_math.h>
+#include <mxm/core.h>
+
 #include <EASTL/array.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_vector.h>
+
 #include "replication.h"
-#include <mxm/core.h>
-#include <mxm/physics.h>
+#include "physics.h"
+
+struct ColliderSize
+{
+	u16 radius;
+	u16 height;
+};
+
+struct PlayerInputCastSkill
+{
+	SkillID skillID = SkillID::INVALID;
+	vec3 pos;
+	eastl::fixed_vector<ActorUID,10,false> targetList;
+};
 
 struct World
 {
@@ -26,6 +41,7 @@ struct World
 
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
+		eastl::array<ColliderSize,2> colliderSize;
 		eastl::array<SkillID,4> skills;
 	};
 
@@ -40,12 +56,11 @@ struct World
 			u8 tag: 1;
 			u8 jump: 1;
 
-			ActionStateID actionState;
-			i32 actionParam1;
+			ActionStateID action;
+			i32 actionParam1; // TODO: investigate these
 			i32 actionParam2;
 
-			SkillID castSkill = SkillID::INVALID;
-			vec3 castPos;
+			PlayerInputCastSkill cast;
 		};
 
 		const u32 index;
@@ -60,6 +75,8 @@ struct World
 		const ClassType subClass;
 		const SkinIndex subSkin;
 
+		const eastl::array<ColliderSize,2> colliderSize; // used when checking for gameplay collisions, not movement
+
 		u8 level;
 		u32 experience;
 
@@ -67,21 +84,15 @@ struct World
 		u8 mainCharaID = 0;
 
 		Input input;
-		PhysWorld::BodyHandle body;
+		PhysicsDynamicBody* body = nullptr;
 
 		// book keeping
 		struct {
-			vec2 moveDir;
+			vec2 moveDir = vec2(0);
+			f32 moveSpeed = 0;
 			RotationHumanoid rot;
 			bool hasJumped = false;
 		} movement;
-
-		struct {
-			SkillID skill;
-			vec3 startPos;
-			vec3 endPos;
-			f32 moveDurationS;
-		} cast;
 
 		explicit Player(u32 index_, const PlayerDescription& desc):
 			index(index_),
@@ -93,7 +104,8 @@ struct World
 			mainClass(desc.masters[0]),
 			mainSkin(desc.skins[0]),
 			subClass(desc.masters[1]),
-			subSkin(desc.skins[1])
+			subSkin(desc.skins[1]),
+			colliderSize(desc.colliderSize)
 		{
 
 		}
@@ -121,11 +133,40 @@ struct World
 		const ActorUID UID;
 		CreatureIndex docID;
 		i32 localID;
-		i32 faction;
+		Faction faction;
 		vec3 pos;
-		vec3 dir;
+		vec3 rot;
 
 		explicit ActorNpc(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct ActorDynamic
+	{
+		const ActorUID UID;
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		ActionStateID action;
+		Time tLastActionChange;
+		vec3 pos;
+		vec3 rot;
+
+		explicit ActorDynamic(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct SkillProgram
+	{
+		SkillID skillID = SkillID::INVALID;
+		ActionStateID actionID;
+		vec3 castPos;
+		f32 castAngle;
+		ActorUID casterUID;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+		Time startTime;
+		i32 commandID = 0;
+
+		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
+		inline void Finish() { skillID = SkillID::INVALID; }
 	};
 
 
@@ -134,30 +175,42 @@ struct World
 	eastl::fixed_vector<Player,10,false> players;
 	eastl::fixed_list<ActorMaster,512,true> actorMasterList;
 	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
+	eastl::fixed_list<ActorDynamic,512,true> actorDynamicList;
 
 	typedef ListItT<ActorNpc> ActorNpcHandle;
+	typedef ListItT<ActorDynamic> ActorDynamicHandle;
 
 	// TODO: make those fixed_hash_maps
 	eastl::fixed_map<ActorUID, ActorMasterHandle, 2048, true> actorMasterMap;
 	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
+	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
+
+	eastl::fixed_vector<SkillProgram,40,false> skillProgramList;
 
 	u32 nextActorUID;
-	Time localTime;
+	Time localTime = Time::ZERO;
 
-	PhysWorld physics;
+	PhysicsScene physics;
 
 	void Init(Replication* replication_);
+	void Cleanup();
+
 	void Update(Time localTime_);
 	void Replicate();
 
 	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
+	ActorDynamic& SpawnDynamic(CreatureIndex docID, i32 localID);
 
 	Player& GetPlayer(u32 playerIndex);
+	ActorMaster* FindMasterActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActor(ActorUID actorUID) const;
 	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
 
 private:
 	ActorUID NewActorUID();
 	ActorMasterHandle MasterInvalidHandle();
+
+	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets);
+	void ExecuteSkillProgram(SkillProgram& prog);
 };

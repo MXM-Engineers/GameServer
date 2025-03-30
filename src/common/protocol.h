@@ -54,13 +54,97 @@ enum class WeaponIndex: i32
 enum class ClassType: i32
 {
 	NONE = -1,
-	Taejin = 1,
-	MBA_07 = 2,
-	Sizuka = 3,
-	Demenos = 4,
-	Koom = 5,
-	Innowin = 6,
-	Lua = 35,
+	STRIKER = 1,
+	ARTILLERY,
+	ASSASSIN,
+	ELECTRO,
+	DEFENDER,
+	SNIPER,
+	DEATHKNIGHT,
+	DESTROYER,
+	MECHANIC,
+	SOULMASTER,
+	DOUBLEGUN,
+	JINSEOYEON,
+	KROMEDE,
+	RODMASTER,
+	PHOTOG,
+	ICEQUEEN,
+	MAGICGIRL,
+	POHWARAN,
+	BOOMERANG,
+	SLIME,
+	MONDOZAX,
+	LILU,
+	EFREET,
+	SHADOWHUNTER,
+	RYTLOCK,
+	CATTHECAT,
+	RNB,
+	BATTER,
+	ANDROA,
+	ANDROB,
+	ATTACKER,
+	BOXER,
+	SHUGOTRADER,
+	NAGA,
+	LAUNCHER,
+	STATESMAN,
+	YURI,
+	ESPER,
+	PRIEST,
+	GHOSTWIDOW,
+	SHUTTLE,
+	JAVELIN,
+	GATLING,
+	GUARDIAN,
+	RESERVED_START,
+	ALEX,
+	TOPAZ,
+	TITAN,
+	TITAN_SIEGE,
+	MAX,
+};
+
+ClassType ClassTypeFromString(const char* str);
+
+// values are from decompile and work ingame
+enum class EChatType : i32
+{
+	INVALID = 0,
+	NOTICE,
+	NOTICE_CHAT,
+	NOTICE_BANNER,
+	SYSTEM_GM,
+	SYSTEM1,
+	SYSTEM2,
+	SYSTEM3,
+	MOTD,
+	NPC,
+	NORMAL,
+	RECV_WHISPER,
+	SEND_WHISPER,
+	ALL_PLAYER,
+	TEAM,
+	GUILD,
+	PARTY,
+	CHANNEL = 20
+};
+
+// values from decompile
+enum class GamePingType : i32
+{
+	GAME_PING_TYPE_INVALID = -1,
+	GAME_PING_TYPE_NORMAL = 0,
+	GAME_PING_TYPE_WARNING,
+	GAME_PING_TYPE_TOGO,
+	GAME_PING_TYPE_DEFENCE,
+	GAME_PING_TYPE_SUPPORT,
+	GAME_PING_TYPE_ATTACK,
+	GAME_PING_TYPE_DESTROY,
+	GAME_PING_TYPE_OCCUPY,
+	GAME_PING_TYPE_BACK,
+	GAME_PING_TYPE_MOBGEN
 };
 
 enum class SkillID: i32
@@ -264,7 +348,8 @@ enum class ActionStateID: i32
 	UNKNOWN_ACTION_STATE_TYPE,
 };
 
-const char* ActionStateString(ActionStateID state);
+const char* ActionStateToString(ActionStateID state);
+ActionStateID ActionStateFromString(const char* str);
 
 enum class MapIndex: i32
 {
@@ -281,7 +366,7 @@ enum class StageType: i32
 {
 	INVALID = 0,
 	CITY = 1, // LOBBY
-	PLAY_INSTANCE = 2
+	PVP_GAME = 2
 };
 
 enum class StageRule: i32
@@ -315,6 +400,38 @@ enum class GameDefinition: i32
 enum class EntrySystemID: i32
 {
 	ARENA_3v3 = 210036812
+};
+
+// _Type in EntityComData
+// got values from decompile
+enum class EntityType : i32
+{
+	INVALID = -1, // UNKNOWN_ENTITY_TYPE default return
+	TERRAIN = 0, // haven't found this one in EntityComData was in an attribute CaseValue1 in tag <StatePlay>
+	CREATURE,
+	ITEM,
+	DYNAMIC,
+	REMOTE,
+	MARKER,
+	EFFECT,
+	SOUND, //not found in chinese data files check if this is changed to SFX in chinese release
+	DEFAULT,
+	MAX,
+	SFX //found in chinese data files check if exist in West files
+};
+
+enum class Faction: i32
+{
+	INVALID = -1,
+	RED = 0,
+	BLUE = 1,
+	DYNAMIC = 2,
+	_COUNT = 2
+};
+
+enum class RemoteIdx: i32
+{
+	INVALID = -1
 };
 
 struct NetHeader
@@ -503,7 +620,7 @@ struct CQ_PlayerCastSkill
 		float3 pos;
 		float3 destPos;
 		float2 moveDir;
-		float3 rotateStruct;
+		float3 rot;
 		f32 speed;
 		i32 clientTime;
 	};
@@ -1144,7 +1261,26 @@ struct SN_CastSkill
 {
 	enum { NET_ID = 62035 };
 
-	// TODO: fill
+	LocalActorID entityID;
+	i32 ret;
+	SkillID skillID;
+	u8 costLevel;
+	ActionStateID actionState;
+	float3 targetPos;
+
+	u16 targetList_count;
+	LocalActorID targetList[1];
+
+	u8 bSyncMyPosition;
+
+	struct PosStruct {
+		float3 pos;
+		float3 destPos;
+		float2 moveDir;
+		float3 rotateStruct;
+		f32 speed;
+		i32 clientTime;
+	} posStruct;
 };
 
 struct SN_ExecuteSkill
@@ -2813,6 +2949,16 @@ struct SN_InitIngameModeInfo
 	u8 nextTitanIndex;
 	u16 listExceptionStat_count;
 	i32 listExceptionStat[1]; // TODO: not actually int
+};
+
+struct SN_ActionChangeLevelEvent
+{
+	enum { NET_ID = 62577 };
+
+	u16 targetIDs_count;
+	LocalActorID targetIDs[1];
+	ActionStateID actionID;
+	i64 serverTime;
 };
 
 PUSH_PACKED

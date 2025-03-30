@@ -25,6 +25,7 @@ struct Replication
 		INVALID = 0,
 		Master,
 		Npc,
+		Dynamic,
 	};
 
 	template<ActorType TYPE_>
@@ -74,37 +75,77 @@ struct Replication
 		i32 actionParam1;
 		i32 actionParam2;
 
-		SkillID castSkill = SkillID::INVALID;
-		vec3 skillStartPos;
-		vec3 skillEndPos;
-		f32 skillMoveDurationS;
-
 		u8 taggedOut = false;
 	};
 
 	struct ActorNpc: Actor<ActorType::Npc>
 	{
 		CreatureIndex docID;
-		i32 type;
 		i32 localID;
-		i32 faction;
+		Faction faction;
 
 		vec3 pos;
 		vec3 dir;
 	};
 
+	struct ActorDynamic: Actor<ActorType::Dynamic>
+	{
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		ActionStateID action;
+		vec3 pos;
+		vec3 rot;
+	};
+
+	struct SkillCast
+	{
+		ClientHandle clientHd;
+		ActorUID casterUID;
+		SkillID skillID;
+		ActionStateID actionID;
+		vec3 castPos;
+		vec3 casterPos;
+		vec2 casterMoveDir;
+		RotationHumanoid casterRot;
+		f32 casterSpeed;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+	};
+
+	struct SkillExec
+	{
+		ActorUID casterUID;
+		SkillID skillID;
+		ActionStateID actionID;
+		vec3 castPos;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+
+		// movement
+		vec3 startPos;
+		vec3 endPos;
+		vec2 moveDir;
+		RotationHumanoid rot;
+		f32 speed;
+		f32 moveDuration;
+	};
+
 	struct Frame
 	{
 		eastl::fixed_list<Player,10,false> playerList;
-		eastl::fixed_list<ActorMaster,2048,true> masterList;
-		eastl::fixed_list<ActorNpc,2048,true> npcList;
+		eastl::fixed_list<ActorMaster,32,true> masterList;
+		eastl::fixed_list<ActorNpc,32,true> npcList;
+		eastl::fixed_list<ActorDynamic,32,true> dynamicList;
 
 		eastl::array<decltype(playerList)::iterator,10> playerMap;
-		hash_map<ActorUID,decltype(masterList)::iterator,2048,true> masterMap;
-		hash_map<ActorUID,decltype(npcList)::iterator,2048,true> npcMap;
+		hash_map<ActorUID,decltype(masterList)::iterator,128,true> masterMap;
+		hash_map<ActorUID,decltype(npcList)::iterator,128,true> npcMap;
+		hash_map<ActorUID,decltype(dynamicList)::iterator,128,true> dynamicMap;
 
 		eastl::fixed_set<ActorUID,2048> actorUIDSet;
 		hash_map<ActorUID,ActorType,2048,true> actorType;
+
+		eastl::fixed_vector<SkillCast,40,true> skillCastList;
+		eastl::fixed_vector<SkillExec,40,true> skillExecList;
 
 		void Clear();
 
@@ -119,6 +160,13 @@ struct Replication
 		{
 			auto found = masterMap.find(actorUID);
 			if(found == masterMap.end()) return nullptr;
+			return &(*found->second);
+		}
+
+		inline ActorDynamic* FindDynamic(ActorUID actorUID)
+		{
+			auto found = dynamicMap.find(actorUID);
+			if(found == dynamicMap.end()) return nullptr;
 			return &(*found->second);
 		}
 	};
@@ -167,6 +215,9 @@ struct Replication
 	void FramePushPlayer(const Player& player);
 	void FramePushMasterActors(const ActorMaster* actorList, const i32 count);
 	void FramePushNpcActor(const ActorNpc& actor);
+	void FramePushDynamicActor(const ActorDynamic& actor);
+	void FramePushSkillCast(const SkillCast& skillCast);
+	void FramePushSkillExec(const SkillExec& skillExec);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
@@ -176,18 +227,22 @@ struct Replication
 	void SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
-	void SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
+	void SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, EChatType chatType, const wchar* msg, i32 msgLen = -1);
+
+	void SendClientLevelEvent(ClientHandle clientHd, i32 eventID);
+	void SendClientLevelEventSeq(ClientHandle clientHd, i32 eventID);
+
 	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataPvp(ClientHandle clientHd);
 
 	void SendPvpLoadingComplete(ClientHandle clientHd);
-	void SendGameReady(ClientHandle clientHd);
+	void SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed);
+	void SendPreGameLevelEvents(ClientHandle clientHd);
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSkill& cast);
 
 	void OnPlayerDisconnect(ClientHandle clientHd);
 
@@ -202,6 +257,7 @@ private:
 
 	void SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster& actor, const Player& parent);
 	void SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor);
+	void SendActorDynamicSpawn(ClientHandle clientHd, const ActorDynamic& actor);
 	void SendActorDestroy(ClientHandle clientHd, ActorUID actorUID);
 
 	void SendMasterSkillSlots(ClientHandle clientHd, const ActorMaster& actor);
@@ -230,4 +286,7 @@ private:
 		NT_LOG("[client%x] Replication :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
+
+	typedef eastl::fixed_vector<ClientHandle,MAX_PLAYERS,false> ClientList;
+	void GetPlayersInGame(ClientList* list);
 };

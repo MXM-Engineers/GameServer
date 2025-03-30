@@ -50,16 +50,27 @@ struct Game
 		explicit Bot(u32 playerIndex_): playerIndex(playerIndex_) {}
 	};
 
+	enum class Phase: u8
+	{
+		WaitingForFirstPlayer,
+		WaitingForReady,
+		PreGame,
+		Game
+	};
+
 	World world;
 	Replication replication;
 
 	eastl::fixed_list<Player,MAX_PLAYERS,false> playerList;
 	hash_map<ClientHandle, decltype(playerList)::iterator,MAX_PLAYERS> playerMap;
 
-	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)TeamID::_COUNT> mapSpawnPoints;
+	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)Faction::_COUNT> mapSpawnPoints;
 
 	Time startTime;
 	Time localTime;
+
+	Time phaseTime = Time::ZERO;
+	Phase phase = Phase::WaitingForFirstPlayer;
 
 	Dbg::GameUID dbgGameUID;
 
@@ -73,6 +84,8 @@ struct Game
 	eastl::fixed_list<Bot,MAX_PLAYERS,false> botList;
 
 	void Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle,MAX_PLAYERS>& playerClientHdList);
+	void Cleanup();
+
 	void Update(Time localTime_);
 
 	bool LoadMap();
@@ -80,7 +93,7 @@ struct Game
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
-	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime);
+	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID action, f32 clientTime);
 	void OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot);
 	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
@@ -89,12 +102,10 @@ struct Game
 	void OnPlayerLoadingComplete(ClientHandle clientHd);
 	void OnPlayerGameIsReady(ClientHandle clientHd);
 	void OnPlayerGameMapLoaded(ClientHandle clientHd);
-	void OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID);
-	void OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY);
-	void OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast);
+	void OnPlayerTag(ClientHandle clientHd, ActorUID actorUID);
+	void OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);
-
-	World::ActorNpc& SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };

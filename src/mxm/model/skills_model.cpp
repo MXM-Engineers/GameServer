@@ -30,15 +30,15 @@ void SkillsModel::setUltimate(SkillNormalModel skill)
 
 void SkillsModel::Print()
 {
-	LOG("[SkillsModel]:");
-	LOG("skill 1:\n");
+	VERBOSE("[SkillsModel]:");
+	VERBOSE("skill 1:\n");
 	_skills[0].Print();
-	LOG("\nskill 2:\n");
+	VERBOSE("\nskill 2:\n");
 	_skills[1].Print();
-	LOG("\nskill 3:\n");
+	VERBOSE("\nskill 3:\n");
 	_skills[2].Print();
-	LOG("\nskill 4:\n");
+	VERBOSE("\nskill 4:\n");
 	_skills[3].Print();
-	LOG("\nUltimate:\n");
+	VERBOSE("\nUltimate:\n");
 	_ultimate.Print();
 }

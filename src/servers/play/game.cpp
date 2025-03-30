@@ -7,29 +7,17 @@
 #include <mxm/game_content.h>
 #include "config.h"
 
+const CreatureIndex CI_DOOR = CreatureIndex(110040546);
+const CreatureIndex CI_WALL = CreatureIndex(110042602);
+
 void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle, MAX_PLAYERS>& playerClientHdList)
 {
 	replication.Init(server_);
 	world.Init(&replication);
 
-	// TODO: move OUT
-	MeshFile mfCollision;
-	MeshFile mfEnv;
-	ShapeMesh shape[2];
-
-	bool r = OpenMeshFile("gamedata/PVP_DeathMatch01_Collision.msh", &mfCollision);
-	ASSERT(r);
-	r = OpenMeshFile("gamedata/PVP_DeathMatch01_Env.msh", &mfEnv);
-	ASSERT(r);
-	const MeshFile::Mesh& mshCol = mfCollision.meshList.front();
-	r = MakeMapCollisionMesh(mshCol, &shape[0]);
-	ASSERT(r);
-	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &shape[1]);
-	ASSERT(r);
-	world.physics.PushStaticMeshes(shape, 2);
-
 	LoadMap();
-	// --------------------------
+
+	const GameXmlContent& xml = GetGameXmlContent();
 
 	// create players
 	i32 spawnPointIndex[2] = { 0 };
@@ -47,6 +35,18 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		desc.masters = p.masters;
 		desc.skins = p.skins;
 		desc.skills = p.skills;
+
+		const auto& master0 = xml.GetMaster(p.masters[0]);
+		const auto& master1 = xml.GetMaster(p.masters[1]);
+
+		desc.colliderSize[0] = {
+			(u16)master0.character.getColliderRadius(),
+			(u16)master0.character.getColliderHeight(),
+		};
+		desc.colliderSize[1] = {
+			(u16)master1.character.getColliderRadius(),
+			(u16)master1.character.getColliderHeight(),
+		};
 
 		const auto& spawnPoints = mapSpawnPoints[p.team];
 		const SpawnPoint& spawnPoint = spawnPoints[spawnPointIndex[p.team]++ % spawnPoints.size()];
@@ -67,6 +67,11 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	}
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
+}
+
+void Game::Cleanup()
+{
+	world.Cleanup();
 }
 
 void Game::Update(Time localTime_)
@@ -100,7 +105,7 @@ void Game::Update(Time localTime_)
 			f32 a = legoAngle * PI/2;
 			lego->input.rot.upperYaw = a;
 			lego->input.rot.bodyYaw = a;
-			lego->input.moveTo = lego->body->pos + vec3(legoDir * 1000.f, 0);
+			lego->input.moveTo = lego->body->GetWorldPos() + vec3(legoDir * 1000.f, 0);
 			lego->input.speed = 626;
 		}
 		else { // stop
@@ -111,78 +116,153 @@ void Game::Update(Time localTime_)
 		legoLastStep = step;
 	}
 
-	// bot random actions
-	if(TimeDiffSec(TimeDiff(startTime, localTime)) > 10) {
-		foreach(bot, botList) {
-			if(localTime > bot->tNextAction) {
-				bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
-				World::Player& wpl = world.GetPlayer(bot->playerIndex);
+	switch(phase) {
+		case Phase::WaitingForReady: {
+			if(phaseTime < localTime) {
+				phase = Phase::PreGame;
+				phaseTime = TimeAdd(localTime, TimeMsToTime(10000));
 
-				struct Action {
-					enum Enum: i32 {
-						Move = 0,
-						Tag,
-						Jump,
-						_Count
-					};
-				};
-
-				eastl::array<f32,Action::_Count> actionWeight = {0.f};
-				actionWeight[Action::Move] = 8;
-				actionWeight[Action::Tag] = 2;
-				actionWeight[Action::Jump] = 2;
-
-				f32 actionSpace = 0;
-				foreach_const(w, actionWeight) actionSpace += *w;
-
-				Action::Enum actionID = Action::Move;
-
-				f32 rs = Randf01() * actionSpace;
-				actionSpace = 0;
-				for(int wi = 0; wi < Action::_Count; wi++) {
-					if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
-						actionID = (Action::Enum)wi;
-						break;
-					}
-					actionSpace += actionWeight[wi];
-				}
-
-				switch(actionID) {
-					case Action::Move: {
-						f32 angle = Randf01() * 2*PI;
-						f32 dist = (f32)RandInt(250, 1000);
-						vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
-						wpl.input.moveTo = wpl.body->pos + vec3(off, 0);
-						wpl.input.rot.upperYaw = angle;
-						wpl.input.rot.upperPitch = 0;
-						wpl.input.rot.bodyYaw = angle;
-						wpl.input.speed = 600;
-					} break;
-
-					case Action::Tag: {
-						wpl.input.tag = true;
-					} break;
-
-					case Action::Jump: {
-						wpl.input.jump = true;
-					} break;
+				foreach_const(p, playerList) {
+					replication.SendPreGameLevelEvents(p->clientHd);
 				}
 			}
-		}
+		} break;
+
+		case Phase::PreGame: {
+			if(phaseTime < localTime) {
+				phase = Phase::Game;
+
+				// TODO: delete when inactive
+				for(auto it = world.actorDynamicList.begin(); it != world.actorDynamicList.end();) {
+					if(it->docID == CI_DOOR) { // door
+						it->action = ActionStateID::DYNAMIC_OPEN;
+
+						//world.actorDynamicMap.erase(it->UID);
+						//it = world.actorDynamicList.erase(it);
+						++it;
+					}
+					else {
+						++it;
+					}
+				}
+
+				foreach_const(p, playerList) {
+					replication.SendGameStart(p->clientHd);
+				}
+			}
+		} break;
+
+		case Phase::Game: {
+#if 1
+			// bot random actions
+			foreach(bot, botList) {
+				if(localTime > bot->tNextAction) {
+					bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
+					World::Player& wpl = world.GetPlayer(bot->playerIndex);
+
+					struct Action {
+						enum Enum: i32 {
+							Move = 0,
+							Tag,
+							Jump,
+							_Count
+						};
+					};
+
+					eastl::array<f32,Action::_Count> actionWeight = {0.f};
+					actionWeight[Action::Move] = 8;
+					actionWeight[Action::Tag] = 2;
+					actionWeight[Action::Jump] = 0;
+
+					f32 actionSpace = 0;
+					foreach_const(w, actionWeight) actionSpace += *w;
+
+					Action::Enum actionID = Action::Move;
+
+					f32 rs = Randf01() * actionSpace;
+					actionSpace = 0;
+					for(int wi = 0; wi < Action::_Count; wi++) {
+						if(rs >= actionSpace && rs < actionSpace + actionWeight[wi]) {
+							actionID = (Action::Enum)wi;
+							break;
+						}
+						actionSpace += actionWeight[wi];
+					}
+
+					switch(actionID) {
+						case Action::Move: {
+							f32 angle = Randf01() * 2*PI;
+							f32 dist = (f32)RandInt(250, 1000);
+							vec2 off = vec2(cosf(angle) * dist, sinf(angle) * dist);
+							wpl.input.moveTo = wpl.body->GetWorldPos() + vec3(off, 0);
+							wpl.input.rot.upperYaw = angle;
+							wpl.input.rot.upperPitch = 0;
+							wpl.input.rot.bodyYaw = angle;
+							wpl.input.speed = 600;
+						} break;
+
+						case Action::Tag: {
+							wpl.input.tag = true;
+						} break;
+
+						case Action::Jump: {
+							wpl.input.jump = true;
+						} break;
+					}
+				}
+			}
+#endif
+
+			// Dynamic walls going up and down randomly
+			/*
+			foreach(it, world.actorDynamicList) {
+				if(it->docID == CI_WALL && TimeDiffSec(TimeDiff(it->tLastActionChange, localTime)) > 4.0) { // wall
+					if(RandInt(0, 150) == 0) {
+						if(it->action == ActionStateID::DYNAMIC_NORMAL_STAND || it->action == ActionStateID::DYNAMIC_CLOSE) {
+							it->action = ActionStateID::DYNAMIC_OPEN;
+						}
+						else {
+							it->action = ActionStateID::DYNAMIC_CLOSE;
+						}
+
+						it->tLastActionChange = localTime;
+					}
+				}
+			}
+			*/
+
+		} break;
 	}
 
 	world.Update(localTime);
 
 	foreach_const(player, world.players) {
-		Dbg::Entity e;
+		Dbg::PlayerMaster e;
 		e.UID = (u32)player->userID;
 		e.name = player->name;
-		e.pos = player->body->pos;
+		e.pos = player->body->GetWorldPos();
 		e.rot = player->input.rot;
-		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->pos);
+		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->GetWorldPos());
 		e.moveDest = player->input.moveTo;
 		e.color = vec3(1, 0, 1);
-		Dbg::PushEntity(dbgGameUID, e);
+		Dbg::Push(dbgGameUID, e);
+	}
+
+	foreach_const(npc, world.actorNpcList) {
+		Dbg::Npc n;
+		n.UID = (u32)npc->UID;
+		n.pos = npc->pos;
+		n.rot = {}; // TODO: fill
+		Dbg::Push(dbgGameUID, n);
+	}
+
+	foreach_const(dyn, world.actorDynamicList) {
+		Dbg::Dynamic n;
+		n.UID = (u32)dyn->UID;
+		n.docID = dyn->docID;
+		n.pos = dyn->pos;
+		n.rot = dyn->rot;
+		Dbg::Push(dbgGameUID, n);
 	}
 
 	Dbg::PushPhysics(dbgGameUID, world.physics);
@@ -192,30 +272,77 @@ void Game::Update(Time localTime_)
 
 bool Game::LoadMap()
 {
+	// TODO: Should probably part of world?
+	auto& phys = PhysContext();
+	world.physics.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0));
+	world.physics.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0));
+	// --------------------------------
+
 	const GameXmlContent& content = GetGameXmlContent();
 
 	foreach(it, content.mapPvpDeathMatch.creatures) {
 		// don't spawn "spawn points"
 		if(it->IsSpawnPoint()) {
-			if(it->team != TeamID::INVALID) {
-				mapSpawnPoints[(i32)it->team].push_back(SpawnPoint{ it->pos, it->rot });
+			if(it->faction != Faction::INVALID) {
+				mapSpawnPoints[(i32)it->faction].push_back(SpawnPoint{ it->pos, it->rot });
 			}
 			continue;
 		}
 
 		// spawn npc
-		SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+		World::ActorNpc& actor = world.SpawnNpcActor(it->docID, it->localID);
+		actor.pos = it->pos;
+		actor.rot = it->rot;
+		actor.faction = it->faction;
 	}
 
-	// TODO: restore this (spawn safe area walls)
-	/*
 	foreach(it, content.mapPvpDeathMatch.dynamic) {
-		// spawn npc
-		World::ActorNpc& npc = SpawnNPC(it->docID, it->localID, it->pos, it->rot);
-		npc.type = 3;
-		npc.faction = 2;
+		// spawn dynamic
+		auto& actor = world.SpawnDynamic(it->docID, it->localID);
+		actor.pos = it->pos;
+		actor.rot = it->rot;
+		actor.faction = it->faction;
 	}
-	*/
+
+	// spawn walls dynamically
+
+	// NOTE: Found in "Data/Design/Level/PVP/PVP_DeathMatch/EVENTNODES/LEVELEVENT_SERVER.XML"
+	const eastl::fixed_set<i32,12,false> configurations[] = {
+		{ 179, 178, 177, 176, 175, 174, 173, 172, 171, 170 }, // 10 A type
+		{ 40, 41, 45, 46, 39, 48, 37, 49, 36, 38, 51, 50 }, // 12 A type
+		{ 39, 48, 45, 40, 37, 49, 38, 50 }, // 8 A type
+		{ 39, 45, 46, 49, 36, 51 }, // 6 B type
+		{ 40, 45, 48, 37, 38, 50 }, // 6 A type
+		{ 48, 37, 41, 51 }, // 4 C type
+		{ 48, 37, 45, 38 }, // 4 B type
+		{ 51, 41, 48, 36 }, // 4 A type
+	};
+
+	const eastl::array<const char*, ARRAY_COUNT(configurations)> configurationName = {
+		"10 A type",
+		"12 A type",
+		"8 A type",
+		"6 B type",
+		"6 A type",
+		"4 C type",
+		"4 B type",
+		"4 A type",
+	};
+
+	const i32 chosenConf = RandInt(0, ARRAY_COUNT(configurations)-1);
+	const auto& wallConf = configurations[chosenConf];
+	const char* wallConfName = configurationName[chosenConf];
+
+	LOG("LoadMap> chosen wall configuration = '%s'", wallConfName);
+
+	foreach(it, content.mapPvpDeathMatch.areas) {
+		if(wallConf.find(it->ID) != wallConf.end()) {
+			auto& actor = world.SpawnDynamic(CI_WALL, it->ID);
+			actor.pos = it->pos;
+			actor.rot = it->rot;
+			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_GuardrailMob", it->pos, it->rot);
+		}
+	}
 	return true;
 }
 
@@ -252,7 +379,7 @@ void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 	WARN("Client sent an invalid actorUID (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
 }
 
-void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID state, i32 actionID, f32 clientTime)
+void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& dir, const RotationHumanoid& rot, f32 speed, ActionStateID action, f32 clientTime)
 {
 	ProfileFunction();
 
@@ -291,9 +418,9 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		f64 clientDelta = clientTime - prevClientTime;
 		f64 serverDelta = serverTime - prevServerTime;
 		vec3 posDelta = prevPos - pos;
-		vec3 posBodyDelta = prevBodyPos - player.body->pos;
+		vec3 posBodyDelta = prevBodyPos - player.body->GetWorldPos();
 
-		vec2 delta = vec2(pos - player.body->pos);
+		vec2 delta = vec2(pos - player.body->GetWorldPos());
 		f64 speedClient = glm::length(posDelta) / clientDelta;
 		f64 speedServer = glm::length(posBodyDelta) / serverDelta;
 		if(speedClient - speedServer > 0) {
@@ -309,7 +436,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	prevClientTime = clientTime;
 	prevServerTime = serverTime;
 	prevPos = pos;
-	prevBodyPos = player.body->pos;
+	prevBodyPos = player.body->GetWorldPos();
 
 
 	// TODO: check for movement hacking
@@ -414,22 +541,22 @@ void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, Act
 	// TODO: check hacking
 	player.input.rot.bodyYaw = rotate;
 	player.input.rot.upperYaw = upperRotate;
-	player.input.actionState = state;
+	player.input.action = state;
 	player.input.actionParam1 = param1;
 	player.input.actionParam2 = param2;
 }
 
 void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
 {
-	replication.SetPlayerLoaded(clientHd);
+
 }
 
 void Game::OnPlayerGameMapLoaded(ClientHandle clientHd)
 {
-	replication.SetPlayerAsInGame(clientHd);
+
 }
 
-void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
+void Game::OnPlayerTag(ClientHandle clientHd, ActorUID actorUID)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
@@ -439,7 +566,7 @@ void Game::OnPlayerTag(ClientHandle clientHd, LocalActorID toLocalActorID)
 	player.input.tag = 1;
 }
 
-void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 rotate, f32 moveDirX, f32 moveDirY)
+void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
@@ -448,31 +575,43 @@ void Game::OnPlayerJump(ClientHandle clientHd, LocalActorID toLocalActorID, f32 
 	player.input.jump = 1;
 }
 
-void Game::OnPlayerCastSkill(ClientHandle clientHd, const PlayerCastSkill& cast)
+void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	player.input.castSkill = cast.skillID;
-	player.input.castPos = cast.p3nPos;
-	float3 r = cast.posStruct.rotateStruct;
-	player.input.rot = RotConvertToWorld({ r.x, r.y, r.z });
+	player.input.cast = cast;
 
-	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.p3nPos.x, cast.p3nPos.y, cast.p3nPos.z);
+	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
+	// TODO: convert clientTime to localTime
+	OnPlayerUpdatePosition(clientHd, actorUID, f2v(posInfo.pos), f2v(posInfo.moveDir), rot, posInfo.speed, ActionStateID::INVALID, 0);
+
+	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.pos.x, cast.pos.y, cast.pos.z);
 }
 
 void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 {
-	replication.SendGameReady(clientHd);
+	const i32 READY_WAIT = 3000;
 
-	// TODO: after 5s
-	replication.SendGameStart(clientHd);
+	if(phase == Phase::WaitingForFirstPlayer) {
+		phase = Phase::WaitingForReady;
+		phaseTime = TimeAdd(localTime, TimeMsToTime(READY_WAIT));
+		replication.SendGameReady(clientHd, READY_WAIT, 0);
+	}
+	else {
+		replication.SendGameReady(clientHd, READY_WAIT, MAX(0, READY_WAIT - (i32)TimeDurationMs(localTime, phaseTime)));
+	}
 }
 
 bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
 {
 	if(!Config().DevMode) return false; // don't allow command when dev mode is not enabled
+
+	// null terminate
+	eastl::fixed_string<wchar,1024,true> msgBuff;
+	msgBuff.assign(msg, len);
+	msg = msgBuff.data();
 
 	Player& p = *playerMap.at(clientHd);
 
@@ -511,6 +650,39 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 			return true;
 			*/
 		}
+
+		i32 event = 0;
+		if(EA::StdC::Sscanf(msg, L"e %d", &event) == 1) {
+			replication.SendChatMessageToClient(clientHd, L"Dbg", EChatType::NOTICE_CHAT, LFMT(L"Event (%d)", event));
+			replication.SendClientLevelEvent(clientHd, event);
+			return true;
+		}
+
+		i32 eventSeq = 0;
+		if(EA::StdC::Sscanf(msg, L"es %d", &eventSeq) == 1) {
+			replication.SendChatMessageToClient(clientHd, L"Dbg", EChatType::NOTICE_CHAT, LFMT(L"Event Sequence (%d)", eventSeq));
+			replication.SendClientLevelEventSeq(clientHd, eventSeq);
+			return true;
+		}
+
+		// Spawn a wall
+		// NOTE: Walls probably spawn on an "area point" (Area.xml)
+		if(EA::StdC::Strcmp(msg, L"wall") == 0) {
+			World::Player& playerActor = world.GetPlayer(p.playerIndex); // TODO: find currently active actor
+			const vec3 pos = playerActor.body->GetWorldPos();
+
+			// is lovalID used for anything?
+			static i32 localID = 37;
+			World::ActorDynamic& dyn = world.SpawnDynamic(CreatureIndex(110042602), localID++);
+			dyn.pos = pos;
+
+			SendDbgMsg(clientHd, LFMT(L"Actor spawned at (%g, %g, %g)", pos.x, pos.y, pos.z));
+			return true;
+		}
+
+		// TODO:
+		// - Spawn all walls
+		// - Make them have a physical body (box)
 	}
 
 	return false;
@@ -518,14 +690,5 @@ bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 l
 
 void Game::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 {
-	replication.SendChatMessageToClient(clientHd, L"System", 1, msg);
-}
-
-World::ActorNpc& Game::SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir)
-{
-	World::ActorNpc& actor = world.SpawnNpcActor(docID, localID);
-	actor.pos = pos;
-	actor.dir = dir;
-	actor.faction = 2;
-	return actor;
+	replication.SendChatMessageToClient(clientHd, L"System", EChatType::NOTICE, msg);
 }

@@ -347,7 +347,7 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 
 	partyMap.emplace(partyUID, --partyList.end());
 
-	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PLAY_INSTANCE);
+	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
 }
 
 void HubGame::MmOnPartyEnqueued(PartyUID partyUID)

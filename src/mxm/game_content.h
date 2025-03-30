@@ -8,6 +8,168 @@
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_string.h>
 #include "model/character_model.h"
+#include "model/weapon_model.h"
+#include "model/weapon_spec.h"
+
+namespace ActionCommand {
+
+enum class Type: i8
+{
+	INVALID = -1,
+	STATE_BLOCK = 0,
+	WEAPON_USE,
+	MOVE,
+	TELEPORT,
+	ENTITY,
+	STATUS,
+	REMOTE,
+	STATUS_SKILL_TARGET,
+	REMOTE_SKILL_TARGET,
+	GRAPH_MOVE_HORZ,
+	FLY_MOVE,
+	MOVESPEED,
+	ROTATESPEED,
+	REGCOMBO,
+	SETSTANCE,
+	PHYSICS,
+	AIOBJECT,
+	PUSH_OVERLAP,
+	POLYMORPH,
+	DIE_MODE,
+	SET_FLAG,
+	CLEAR_FLAG,
+	FORCE_ROTATE,
+	CALL_CHILD_SKILL,
+	LONG_JUMP,
+	TALK,
+	EFFECT,
+	AI_ADJUST,
+	INTERACTION,
+	DEATHWORM_BOUND,
+	UI,
+	CHANGE_MESH,
+};
+
+Type TypeFromString(const char* str);
+
+enum class MovePreset: i8
+{
+	INVALID = -1,
+	SEE_TARGET = 0,
+	ROTATE,
+	LIFTED,
+	GRAPH,
+	GRAPH_GROUND,
+	MOVE_NONE,
+	GOTO_CURRENT_TARGET,
+	GOTO_CURRENT_TARGET_CHASE,
+	SEE_CURRENT_TARGET,
+	AFTERIMAGE_MOVE,
+	TARGET_POS,
+	TARGET_POS_LEAP,
+	WARP,
+	WARP_TARGET_POS,
+	GOTO_CURRENT_TARGET_THROUGH,
+	GOTO_CURRENT_TARGET_THROUGH_CHASE,
+	SEE_MEMORIZED_TARGET,
+	CHASE_TARGET,
+	CHASE_TARGET_ATTACK,
+};
+
+MovePreset MovePresetFromString(const char* str);
+const char* MovePresetToString(MovePreset p);
+
+
+enum class TargetPreset: i8
+{
+	INVALID = -1,
+	SELF_FFF = 0,
+	SELF_FFF_1,
+	SELF_TFF,
+	SELF_TTF,
+	SELF_TTT,
+	POS_TTT_1,
+	POS_FFF,
+	POS_TFF,
+	POS_TFF_1_800_1000,
+	LAST_CHILD_FFF,
+	LAST_CHILD_TFF,
+	CHILD_INDEX_FFF,
+	MEMORIZED_TFT,
+	CURRENT_FFF,
+	LOCK_TFF,
+	MULTI_LOCKON_FFF,
+};
+
+TargetPreset TargetPresetFromString(const char* str);
+const char* TargetPresetToString(TargetPreset p);
+
+}
+
+struct Remote
+{
+	enum class BoundType: i8 {
+		INVALID = -1,
+		E_BOUND_NONE = 0,
+		E_BOUND_RAY,
+		E_BOUND_BOX,
+		E_BOUND_CAPSULE,
+		E_BOUND_SPHERE,
+		E_BOUND_BEAM,
+		E_BOUND_BEAM_NIF,
+		E_BOUND_LASER,
+		E_BOUND_PHYSXPROP,
+		E_BOUND_HAMMER,
+		E_BOUND_CASTER_MOVE_BOUND
+	};
+
+	enum class DamageGroup: i8 {
+		INVALID = -1,
+		eNONE = 0,
+		eENEMY,
+		eFRIEND,
+		eALL,
+	};
+
+	enum VsFlagBit: u32 {
+		VS_DYNAMIC = 0,
+		VS_NPC_MONSTER,
+		VS_PLAYER_CHARACTER,
+	};
+
+	enum class BehaviorType: i8 {
+		INVALID = -1,
+		NONETARGET = 0,
+		HOMING,
+		RETURN,
+		CASTER_TARGET,
+		BEAM,
+		CHAIN,
+		GRAPH,
+		TARGET,
+		FOLLOW_TARGET,
+		ATTACH_TARGET,
+		ATTACH_MUZZLE,
+		TARGET_GROUNDPOSITION,
+		ORBIT,
+	};
+
+	static BoundType BoundTypeFromString(const char* str);
+	static const char* BoundTypeToString(BoundType t);
+	static DamageGroup DamageGroupFromString(const char* str);
+	static const char* DamageGroupToString(DamageGroup g);
+	static BehaviorType BehaviourTypeFromString(const char* str);
+	static const char* BehaviourTypeToString(BehaviorType t);
+
+	RemoteIdx ID = RemoteIdx::INVALID;
+	BoundType boundType = BoundType::INVALID;
+	DamageGroup damageGroup = DamageGroup::INVALID;
+	BehaviorType behaviorType = BehaviorType::INVALID;
+
+	eastl::array<u16,3> boundSize;
+	u8 vs = 0;
+
+};
 
 struct GameXmlContent
 {
@@ -19,29 +181,43 @@ struct GameXmlContent
 		eastl::fixed_vector<SkillID,32,false> skillIDs;
 		eastl::fixed_vector<SkinIndex,20,false> skinIDs;
 		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
-	};
 
-	struct Spawn
-	{
-		enum class Type: i32 {
-			NPC_SPAWN=0,
-			SPAWN_POINT
-		};
-
-		CreatureIndex docID;
-		i32 localID;
-		Type type;
-		TeamID team;
-		vec3 pos;
-		vec3 rot;
-
-		inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
+		// TODO: make this inline
+		CharacterModel character;
 	};
 
 	struct Map
 	{
+		struct Spawn
+		{
+			enum class Type: i32 {
+				NORMAL=0,
+				SPAWN_POINT
+			};
+
+			CreatureIndex docID;
+			i32 localID;
+			Type type;
+			Faction faction;
+			vec3 pos;
+			vec3 rot;
+
+			inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
+		};
+
+		struct Area
+		{
+			i32 ID;
+			i32 type;
+			i32 layer;
+			vec3 size;
+			vec3 pos;
+			vec3 rot;
+		};
+
 		eastl::fixed_vector<Spawn,512> creatures;
 		eastl::fixed_vector<Spawn,512> dynamic;
+		eastl::fixed_vector<Area,512> areas;
 	};
 
 	struct MapList
@@ -58,262 +234,115 @@ struct GameXmlContent
 		i32 length;
 	};
 
-	// NOTE: We have to store the string hash ourselves, hash_map.find() searches by pointer when we use const char*
-	// intead of comparing the hash generated from the string? I must be missing something here. LordSk (29/08/2020)
-	eastl::hash<const char*> strHash;
+	struct Action
+	{
+		struct Command
+		{
+			ActionCommand::Type type;
+			f32 delay;
+			f32 relativeEndTimeFromStart;
+
+			union {
+				struct {
+
+				} stateBlock;
+
+				struct {
+					// not really useful for anything?
+				} weaponUse;
+
+				struct {
+					ActionCommand::MovePreset preset;
+					i32 param2;
+				} move;
+
+				struct {
+					RemoteIdx idx;
+					ActionCommand::TargetPreset targetPreset;
+				} remote;
+
+				struct {
+					f32 distance;
+				} graphMoveHorz;
+
+				struct {
+					i32 speed;
+				} rotateSpeed;
+			};
+		};
+
+		ActionStateID ID;
+		f32 seqLength = 0.0f; // seconds
+		eastl::fixed_vector<Command,16,false> commands;
+	};
 
 	eastl::fixed_vector<Master,100,false> masters;
-	eastl::fixed_vector<CharacterModel,100,false> mastersModel;
+	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_vector<MapList, 500, false> maplists;
+	eastl::fixed_hash_map<SkillID, SkillNormalModel, 500> skillMap;
+	eastl::fixed_vector<Action, 2000, false> actionList;
+	eastl::fixed_hash_map<ClassType, Slice<Action>, 800> actionListMap;
 
 	Map mapLobby;
 	Map mapPvpDeathMatch;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
-	bool LoadMasterDefinitions();
-	bool LoadMasterSkinsDefinitions();
-	bool LoadMasterWeaponDefinitions();
-	bool LoadMasterDefinitionsModel();
-	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
-	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
-	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
-	bool LoadMapList();
-	bool LoadMapByID(Map* map, i32 index);
-	bool LoadLobby(i32 index);
-	bool LoadPvpDeathmach();
-	bool LoadJukeboxSongs();
+	FileBuffer filePvpDeathmatch01Collision;
+	FileBuffer filePvpDeathmatch01CollisionWalls;
+	FileBuffer filePvpDeathNmWall04;
+	FileBuffer fileCylinderCollision;
+
 	bool Load();
 
 	const MapList* FindMapListByID(i32 index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
 	const Master& GetMaster(ClassType classType) const;
+	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
+	const Remote& GetRemote(RemoteIdx remoteID) const;
+
+private:
+	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
+
+	bool LoadMasterDefinitions();
+	bool LoadMasterSkinsDefinitions();
+	bool LoadMasterWeaponDefinitions();
+	bool LoadMasterDefinitionsModel();
+	void LoadAllSkills();
+	bool LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID);
+	bool LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal, i32 skillID);
+	bool LoadWeaponModelDefinitions();
+	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
+	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
+	bool LoadMapList();
+	bool LoadMapByID(Map* map, i32 index);
+	bool LoadLobby(i32 index);
+	bool LoadPvpDeathmach();
+	bool LoadJukeboxSongs();
+	bool LoadCollisionMeshes();
+	bool LoadAnimationData();
+	bool LoadRemoteData(); // Any object created by skills (projectiles, explosions, etc): a "remote"
 
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
 	EntityType StringToEntityType(const char* s);
 	SkillType StringToSkillType(const char* s);
 
-private:
 	tinyxml2::XMLDocument xmlSKILL;
 	tinyxml2::XMLDocument xmlSKILLPROPERTY;
+	tinyxml2::XMLDocument xmlCREATURECHARACTER;
+	tinyxml2::XMLDocument xmlWEAPON;
+	tinyxml2::XMLDocument xmlWEAPONTT;
+
+	eastl::fixed_hash_map<RemoteIdx, Remote, 1500> remoteMap;
 };
 
 bool GameXmlContentLoad();
 const GameXmlContent& GetGameXmlContent();
 
-struct MeshFile
-{
-	const u8* fileData;
-
-	struct Vertex
-	{
-		f32 px, py, pz;
-		f32 nx, ny, nz;
-	};
-
-	struct Mesh
-	{
-		FixedStr64 name;
-		u32 vertexCount;
-		u32 indexCount;
-		const Vertex* vertices;
-		const u16* indices;
-	};
-
-	eastl::fixed_vector<Mesh,16> meshList;
-
-	~MeshFile() {
-		memFree((void*)fileData);
-	}
-};
-
 bool OpenMeshFile(const char* path, MeshFile* out);
-
-struct ShapeMesh;
-bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out);
-
-constexpr const char* g_ActionStateString[] = {
-	"ACTION_STATE_TYPE_IDLE",
-	"NORMAL_STAND_MOVESTATE",
-	"BATTLE_STAND_MOVESTATE",
-	"NORMAL_RUN_MOVESTATE",
-	"BATTLE_RUN_MOVESTATE",
-	"NORMAL_RUN_FRONT_MOVESTATE",
-	"BATTLE_RUN_FRONT_MOVESTATE",
-	"NORMAL_RUN_LEFT_MOVESTATE",
-	"BATTLE_RUN_LEFT_MOVESTATE",
-	"NORMAL_RUN_RIGHT_MOVESTATE",
-	"BATTLE_RUN_RIGHT_MOVESTATE",
-	"NORMAL_RUN_BACK_MOVESTATE",
-	"BATTLE_RUN_BACK_MOVESTATE",
-	"NORMAL_ROTATE_LEFT",
-	"BATTLE_ROTATE_LEFT",
-	"NORMAL_ROTATE_RIGHT",
-	"BATTLE_ROTATE_RIGHT",
-	"MAXTYPE_MOVESTATE",
-	"NONE_BEHAVIORSTATE",
-	"ATTACK_BEHAVIORSTATE",
-	"ATTACK1_BEHAVIORSTATE",
-	"ATTACK2_BEHAVIORSTATE",
-	"ATTACK3_BEHAVIORSTATE",
-	"ATTACK4_BEHAVIORSTATE",
-	"ATTACK5_BEHAVIORSTATE",
-	"ATTACK6_BEHAVIORSTATE",
-	"ATTACK7_BEHAVIORSTATE",
-	"ATTACK8_BEHAVIORSTATE",
-	"ATTACK9_BEHAVIORSTATE",
-	"ATTACK10_BEHAVIORSTATE",
-	"HIT_BEHAVIORSTATE",
-	"SKILL_1_BEHAVIORSTATE", // 31
-	"SKILL_2_BEHAVIORSTATE", // 32
-	"SKILL_3_BEHAVIORSTATE", // 33
-	"SKILL_4_BEHAVIORSTATE", // 34
-	"SKILL_5_BEHAVIORSTATE", // 35
-	"SKILL_6_BEHAVIORSTATE",
-	"SKILL_7_BEHAVIORSTATE",
-	"SKILL_8_BEHAVIORSTATE",
-	"SKILL_9_BEHAVIORSTATE",
-	"SKILL_10_BEHAVIORSTATE",
-	"SKILL_11_BEHAVIORSTATE",
-	"SKILL_12_BEHAVIORSTATE",
-	"SKILL_13_BEHAVIORSTATE",
-	"SKILL_14_BEHAVIORSTATE",
-	"SKILL_15_BEHAVIORSTATE",
-	"SKILL_16_BEHAVIORSTATE",
-	"SKILL_17_BEHAVIORSTATE",
-	"SKILL_18_BEHAVIORSTATE",
-	"SKILL_19_BEHAVIORSTATE",
-	"SKILL_20_BEHAVIORSTATE",
-	"SKILL_21_BEHAVIORSTATE",
-	"SKILL_22_BEHAVIORSTATE",
-	"SKILL_23_BEHAVIORSTATE",
-	"SKILL_24_BEHAVIORSTATE",
-	"SKILL_25_BEHAVIORSTATE",
-	"SKILL_26_BEHAVIORSTATE",
-	"SKILL_27_BEHAVIORSTATE",
-	"SKILL_28_BEHAVIORSTATE",
-	"SKILL_29_BEHAVIORSTATE",
-	"SKILL_30_BEHAVIORSTATE",
-	"SKILL_MAX_BEHAVIORSTATE",
-	"SKILL_STAGE1_BEHAVIORSTATE",
-	"SKILL_STAGE2_BEHAVIORSTATE",
-	"SKILL_STAGE3_BEHAVIORSTATE",
-	"SKILL_STAGE4_BEHAVIORSTATE",
-	"SKILL_STAGE5_BEHAVIORSTATE",
-	"SKILL_STAGE6_BEHAVIORSTATE",
-	"SKILL_STAGE7_BEHAVIORSTATE",
-	"SKILL_STAGE8_BEHAVIORSTATE",
-	"SKILL_STAGE9_BEHAVIORSTATE",
-	"SKILL_STAGE10_BEHAVIORSTATE",
-	"SKILL_STAGE11_BEHAVIORSTATE",
-	"SKILL_STAGE12_BEHAVIORSTATE",
-	"SKILL_STAGE13_BEHAVIORSTATE",
-	"SKILL_STAGE14_BEHAVIORSTATE",
-	"SKILL_STAGE15_BEHAVIORSTATE",
-	"SKILL_STAGE16_BEHAVIORSTATE",
-	"SKILL_STAGE17_BEHAVIORSTATE",
-	"SKILL_STAGE18_BEHAVIORSTATE",
-	"SKILL_STAGE19_BEHAVIORSTATE",
-	"SKILL_STAGE20_BEHAVIORSTATE",
-	"SKILL_STAGE_MAX_BEHAVIORSTATE",
-	"ATTACKCHARGE_BEHAVIORSTATE",
-	"DEFEAT_FLY_BEHAVIORSTATE",
-	"DEFEAT_AIRBORNE_BEHAVIORSTATE",
-	"DEFEAT_PUSH_BEHAVIORSTATE",
-	"DEFEAT_KNOCKDOWN_BEHAVIORSTATE",
-	"DEFEAT_SYNC_BEHAVIORSTATE",
-	"DEFEAT_GROGGY_BEHAVIORSTATE",
-	"LIE_BEHAVIORSTATE",
-	"INTERACTION_CAST_BEHAVIORSTATE",
-	"INTERACTION_EXECUTE_BEHAVIORSTAT",
-	"TAG_IN_EXECUTE_BEHAVIORSTATE",
-	"TAG_OUT_EXECUTE_BEHAVIORSTATE",
-	"STANCE_IN_BEHAVIORSTATE",
-	"STANCE_OUT_BEHAVIORSTATE",
-	"RELOAD_BEHAVIORSTATE",
-	"WEAPONCHANGE_BEHAVIORSTATE",
-	"SPAWN_BEHAVIORSTATE",
-	"RESPAWN_BEHAVIORSTATE",
-	"DIE_BEHAVIORSTATE",
-	"UNDEAD_BEHAVIORSTATE",
-	"SHIRK_BEHAVIORSTATE",
-	"SHIRK_COMBO_1_BEHAVIORSTATE",
-	"SHIRK_MOVE_BEHAVIORSTATE",
-	"TALK_BEHAVIORSTATE",
-	"BATTLE_STAND_EMOTION_BEHAVIORSTA",
-	"CRAWLUP_START_BEHAVIORSTATE",
-	"CRAWLUP_MOVE_BEHAVIORSTATE",
-	"CRAWLUP_END_BEHAVIORSTATE",
-	"CRAWLDOWN_START_BEHAVIORSTATE",
-	"CRAWLDOWN_MOVE_BEHAVIORSTATE",
-	"CRAWLDOWN_END_BEHAVIORSTATE",
-	"JUMP_UP_BEHAVIORSTATE",
-	"JUMP_DOWN_BEHAVIORSTATE",
-	"EXTRAMOTION_1_BEHAVIORSTATE",
-	"EXTRAMOTION_2_BEHAVIORSTATE",
-	"EXTRAMOTION_3_BEHAVIORSTATE",
-	"EXTRAMOTION_4_BEHAVIORSTATE",
-	"EXTRAMOTION_5_BEHAVIORSTATE",
-	"EXTRAMOTION_6_BEHAVIORSTATE",
-	"EXTRAMOTION_7_BEHAVIORSTATE",
-	"EXTRAMOTION_8_BEHAVIORSTATE",
-	"EXTRAMOTION_9_BEHAVIORSTATE",
-	"EXTRAMOTION_10_BEHAVIORSTATE",
-	"SEQUENCE_1_BEHAVIORSTATE",
-	"SEQUENCE_2_BEHAVIORSTATE",
-	"SEQUENCE_3_BEHAVIORSTATE",
-	"SEQUENCE_4_BEHAVIORSTATE",
-	"SEQUENCE_5_BEHAVIORSTATE",
-	"COMBO_1_BEHAVIORSTATE",
-	"COMBO_2_BEHAVIORSTATE",
-	"COMBO_3_BEHAVIORSTATE",
-	"COMBO_4_BEHAVIORSTATE",
-	"COMBO_5_BEHAVIORSTATE",
-	"COMBO_6_BEHAVIORSTATE",
-	"COMBO_7_BEHAVIORSTATE",
-	"COMBO_8_BEHAVIORSTATE",
-	"COMBO_9_BEHAVIORSTATE",
-	"COMBO_10_BEHAVIORSTATE",
-	"MELEE_1_BEHAVIORSTATE",
-	"STYLISH_1_BEHAVIORSTATE",
-	"CAUGHT_BEHAVIORSTATE",
-	"DISABLED_BEHAVIORSTATE",
-	"LIFTED_BEHAVIORSTATE",
-	"PULLED_BEHAVIORSTATE",
-	"DRAGGED_BEHAVIORSTATE",
-	"EVENT_BEHAVIORSTATE",
-	"EMOTION_BEHAVIORSTATE",
-	"JUMP_LOOP_MOVESTATE",
-	"BATTLE_JUMP_LOOP_MOVESTATE",
-	"JUMP_START_MOVESTATE",
-	"BATTLE_JUMP_START_MOVESTATE",
-	"JUMP_END_MOVESTATE",
-	"BATTLE_JUMP_END_MOVESTATE",
-	"BREAKFALL_BEHAVIORSTATE",
-	"MAXTYPE_BEHAVIORSTATE",
-	"DYNAMIC_OPEN",
-	"DYNAMIC_CLOSE",
-	"DYNAMIC_SPAWN",
-	"DYNAMIC_NORMAL_STAND",
-	"DYNAMIC_BATTLE_STAND",
-	"DYNAMIC_RUN_FRONT",
-	"DYNAMIC_ROTATE_LEFT",
-	"DYNAMIC_ROTATE_RIGHT",
-	"DYNAMIC_ATTACK",
-	"DYNAMIC_HIT",
-	"DYNAMIC_DIE",
-	"DYNAMIC_ACTIVE",
-	"DYNAMIC_EXTRAMOTION_1",
-	"DYNAMIC_EXTRAMOTION_2",
-	"DYNAMIC_EXTRAMOTION_3",
-	"ACTION_STATE_TYPE_MAX",
-	"UNKNOWN_ACTION_STATE_TYPE",
-};
-
-constexpr const char* g_ActionStateInvalidString = "ACTION_STATE_TYPE_INVALID";
 
 constexpr const char* g_ResultErrorString[] = {
 	"ERROR_TYPE_SUCCESS",

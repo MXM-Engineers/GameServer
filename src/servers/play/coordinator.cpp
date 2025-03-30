@@ -13,7 +13,7 @@ intptr_t ThreadLane(void* pData)
 	InstancePool::Lane& lane = *(InstancePool::Lane*)pData;
 	ProfileSetThreadName(FMT("Lane_%d", lane.laneIndex));
 	const i32 cpuID = (i32)CoreAffinity::LANES + lane.laneIndex;
-	EA::Thread::SetThreadAffinityMask((EA::Thread::ThreadAffinityMask)1 << cpuID);
+    ThreadSetCoreAffinity(cpuID);
 
 	const f64 UPDATE_RATE_MS = (1.0/UPDATE_TICK_RATE) * 1000.0;
 	const Time startTime = TimeNow();
@@ -53,7 +53,7 @@ intptr_t ThreadLane(void* pData)
 intptr_t ThreadCoordinator(void* pData)
 {
 	ProfileSetThreadName("Coordinator");
-	EA::Thread::SetThreadAffinityMask(1 << (i32)CoreAffinity::COORDINATOR);
+    ThreadSetCoreAffinity((i32)CoreAffinity::COORDINATOR);
 
 	Coordinator& coordinator = *(Coordinator*)pData;
 
@@ -253,7 +253,9 @@ void InstancePool::Lane::Update()
 
 void InstancePool::Lane::Cleanup()
 {
-
+	foreach(inst, instancePvpList) {
+		inst->game.Cleanup();
+	}
 }
 
 bool InstancePool::Init(Server* server_)
@@ -583,7 +585,7 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 
 	// failed to authenticate
 	if(accountUID == AccountUID::INVALID) {
-		WARN("[client%x] Client failed to auhtenticate", clientHd);
+		WARN("[client%x] Client failed to authenticate", clientHd);
 
 		Sv::SA_AuthResult auth;
 		auth.result = 0;
@@ -607,13 +609,13 @@ void Coordinator::CreateDevGame()
 	const GameXmlContent& content = GetGameXmlContent();
 
 	const eastl::fixed_set<ClassType,100,false> allowedMastersSet = {
-		ClassType::Taejin,
-		ClassType::MBA_07,
-		ClassType::Sizuka,
-		ClassType::Demenos,
-		ClassType::Koom,
-		ClassType::Innowin,
-		ClassType::Lua,
+		ClassType::STRIKER,
+		ClassType::ARTILLERY,
+		ClassType::ASSASSIN,
+		ClassType::ELECTRO,
+		ClassType::DEFENDER,
+		ClassType::SNIPER,
+		ClassType::LAUNCHER,
 	};
 
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
@@ -629,10 +631,10 @@ void Coordinator::CreateDevGame()
 	p.accountUID = AccountUID(0x1337);
 	p.team = 0;
 	p.isBot = 0;
-	p.masters[0] = ClassType::Lua;
-	p.masters[1] = ClassType::Sizuka;
-	teamMasterPickCount[0][(i32)ClassType::Lua] = 1;
-	teamMasterPickCount[0][(i32)ClassType::Sizuka] = 1;
+	p.masters[0] = ClassType::LAUNCHER;
+	p.masters[1] = ClassType::ASSASSIN;
+	teamMasterPickCount[0][(i32)ClassType::LAUNCHER] = 1;
+	teamMasterPickCount[0][(i32)ClassType::ASSASSIN] = 1;
 	p.skins.fill(SkinIndex::DEFAULT);
 	p.skills[0] = SkillID(180350010);
 	p.skills[1] = SkillID(180350030);
@@ -650,7 +652,7 @@ void Coordinator::CreateDevGame()
 		bot.skins.fill(SkinIndex::DEFAULT);
 
 		for(int attempts = 0; attempts < 10000; attempts++) {
-			u32 r0 = RandUint() % allowedMastersSet.size();
+			const u32 r0 = RandUint() % allowedMastersSet.size();
 
 			u32 i = 0;
 			foreach_const(m, allowedMastersSet) {
@@ -666,7 +668,7 @@ void Coordinator::CreateDevGame()
 							bot.skills[0] = master.skillIDs[0];
 							bot.skills[1] = master.skillIDs[1];
 						}
-						else {
+						else if(bot.masters[0] != classType){
 							bot.masters[1] = classType;
 							bot.skills[2] = master.skillIDs[0];
 							bot.skills[3] = master.skillIDs[1];

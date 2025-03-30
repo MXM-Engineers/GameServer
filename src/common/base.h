@@ -7,6 +7,7 @@
 #include <eathread/eathread_futex.h> // mutex
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_string.h>
+#include <EASTL/span.h>
 #include <EAStdC/EAString.h>
 #include "logger.h"
 
@@ -202,13 +203,15 @@ struct ConstBuffer
 	}
 };
 
-inline bool StringEquals(const char* str1, const char* str2)
+inline bool StringEquals(const char* s1, const char* s2)
 {
-	const i32 len = (i32)strlen(str1);
-	if(len != strlen(str2)) {
-		return false;
+	while(*s1 != 0 && *s2 != 0) {
+		if(*s1 != *s2) return false;
+		s1++;
+		s2++;
 	}
-	return strncmp(str1, str2, len) == 0;
+
+	return *s1 == *s2;
 }
 
 inline void logAsHex(const void* data, int size)
@@ -419,7 +422,7 @@ typedef LockGuardT<tracy::Lockable<Mutex>> LockGuard;
 typedef EA::Thread::Futex Mutex;
 typedef EA::Thread::AutoFutex LockGuard;
 
-#define LOCK_MUTEX(MUTEX) const LockGuard lock(MUTEX)
+#define LOCK_MUTEX(MUTEX) const LockGuard __lock##__LINE__(MUTEX)
 #endif
 
 // NOTE: this is kinda dirty but funny at the same time? And useful?
@@ -446,11 +449,8 @@ f64 TimeDiffMs(Time diff);
 f64 TimeDurationSinceSec(Time t0);
 f64 TimeDurationSinceMs(Time t0);
 Time TimeMsToTime(f64 ms);
-
-inline Time TimeAdd(Time a, Time b)
-{
-	return Time((u64)a + (u64)b);
-}
+Time TimeAdd(Time a, Time b);
+Time TimeAddSec(Time a, f64 seconds);
 
 
 template<typename T>
@@ -505,3 +505,12 @@ inline u32 hash_fnv1a(const void* data, const u32 dataSize)
 
 	return h;
 }
+
+struct FileBuffer
+{
+	u8* data;
+	i32 size;
+};
+
+template<typename T>
+using Slice = eastl::span<T>;

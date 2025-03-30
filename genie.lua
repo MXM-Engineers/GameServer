@@ -92,7 +92,7 @@ solution "PrivateMxM"
 		"NoRTTI",
 		"EnableAVX",
 		"EnableAVX2",
-		--"StaticRuntime",
+		--"StaticRuntime", 
 	}
 
 	-- erternal dependencies
@@ -103,6 +103,7 @@ solution "PrivateMxM"
 	dofile("external/genie_glm.lua");
 	dofile("external/genie_sokol.lua");
 	dofile("external/genie_imgui.lua");
+	dofile("external/genie_physx.lua");
 
 
 -- Tools
@@ -187,9 +188,6 @@ local server_common_files = {
 	"src/common/**.h",
 	"src/common/**.c",
 	"src/common/**.cpp",
-	"src/servers/common/**.h",
-	"src/servers/common/**.c",
-	"src/servers/common/**.cpp",
 	"src/mxm/**.h",
 	"src/mxm/**.c",
 	"src/mxm/**.cpp",
@@ -257,11 +255,13 @@ project "GameServer"
 
 	includedirs {
 		server_common_includedirs,
+		physx_includedir,
 		"src/servers/play",
 	}
 
 	links {
-		server_common_links
+		server_common_links,
+		physx_libs_win64
 	}
 	
 	files {
@@ -278,6 +278,15 @@ project "GameServer"
 	configuration "Release"
 		defines {
 			PROFILE_DEFINE
+		}
+
+		libdirs {
+			physx_libdir_release
+		}
+
+	configuration "Debug"
+		libdirs {
+			physx_libdir_debug
 		}
 
 	configuration "windows"

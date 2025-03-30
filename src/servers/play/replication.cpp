@@ -12,13 +12,18 @@ void Replication::Frame::Clear()
 	playerList.clear();
 	masterList.clear();
 	npcList.clear();
+	dynamicList.clear();
 
 	playerMap.fill(playerList.end());
 	masterMap.clear();
 	npcMap.clear();
+	dynamicMap.clear();
 
 	actorUIDSet.clear();
 	actorType.clear();
+
+	skillCastList.clear();
+	skillExecList.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -113,6 +118,27 @@ void Replication::FramePushNpcActor(const Replication::ActorNpc& actor)
 	frameCur->actorType.emplace(actor.actorUID, actor.Type());
 }
 
+void Replication::FramePushDynamicActor(const ActorDynamic& actor)
+{
+	ASSERT(frameCur->dynamicMap.find(actor.actorUID) == frameCur->dynamicMap.end());
+	ASSERT(frameCur->actorUIDSet.find(actor.actorUID) == frameCur->actorUIDSet.end());
+
+	frameCur->dynamicList.emplace_back(actor);
+	frameCur->dynamicMap.emplace(actor.actorUID, --frameCur->dynamicList.end());
+	frameCur->actorUIDSet.insert(actor.actorUID);
+	frameCur->actorType.emplace(actor.actorUID, actor.Type());
+}
+
+void Replication::FramePushSkillCast(const SkillCast& skillCast)
+{
+	frameCur->skillCastList.push_back(skillCast);
+}
+
+void Replication::FramePushSkillExec(const SkillExec& skillExec)
+{
+	frameCur->skillExecList.push_back(skillExec);
+}
+
 void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
 {
 	playerMap[clientHd] = playerIndex;
@@ -128,7 +154,7 @@ void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 	SendPacket(clientHd, owner);
 
 	Sv::SN_LobbyStartGame lobby;
-	lobby.stageType = StageType::PLAY_INSTANCE;
+	lobby.stageType = StageType::PVP_GAME;
 	SendPacket(clientHd, lobby);
 
 	// SN_CityMapInfo
@@ -228,7 +254,7 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	}
 }
 
-void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
+void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* senderName, EChatType chatType, const wchar* msg, i32 msgLen)
 {
 	const i32 toClientID = playerMap.at(toClientHd);
 	if(playerState[toClientID].cur < PlayerState::IN_GAME) return;
@@ -237,12 +263,31 @@ void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* 
 
 	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
-	packet.Write<i32>(chatType); // chatType
+	packet.Write<EChatType>(chatType); // chatType
 	packet.WriteStringObj(senderName);
 	packet.Write<u8>(0); // senderStaffType
 	packet.WriteStringObj(msg, msgLen);
 
 	SendPacket(toClientHd, packet);
+}
+
+void Replication::SendClientLevelEvent(ClientHandle clientHd, i32 eventID)
+{
+	Sv::SN_RunClientLevelEvent event;
+	event.eventID = eventID;
+	event.caller = 0;
+	event.serverTime = (i64)TimeDiffMs(TimeRelNow());
+	SendPacket(clientHd, event);
+}
+
+void Replication::SendClientLevelEventSeq(ClientHandle clientHd, i32 eventID)
+{
+	Sv::SN_RunClientLevelEventSeq seq;
+	seq.needCompleteTriggerAckID = -1;
+	seq.rootEventID = eventID;
+	seq.caller = 0;
+	seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
+	SendPacket(clientHd, seq);
 }
 
 void Replication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
@@ -514,10 +559,9 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		PacketWriter<Sv::SN_GameFieldReady,4096> packet;
 
 		packet.Write<i32>(1); // InGameID=449
-		packet.Write(GameType::PVP_Rank); // GameType=
-		packet.Write<i32>(190002202); // AreaIndex=190002202
-		//packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex // FIXME: wrong stage index?
-		packet.Write<StageIndex>(StageIndex::CombatArena); // StageIndex
+		packet.Write(GameType::PVP_Tutorial); // GameType=
+		packet.Write<i32>(190002102); // AreaIndex=190002202
+		packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex
 		packet.Write(GameDefinition::System); // GameDefinitionType=
 		packet.Write<u8>(6); // initPlayerCount=6
 		packet.Write<u8>(1); // CanEscape=1
@@ -538,6 +582,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		packet.Write<u16>(frameCur->playerList.size());
 
 		foreach_const(pit, frameCur->playerList) {
+			const bool self = pit->clientHd == clientHd;
 			const Player& p = *pit;
 
 			const GameXmlContent::Master& pmmain = content.GetMaster(p.mainClass);
@@ -547,14 +592,27 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.mainClass)); //mainCreatureIndex
 			packet.Write<SkinIndex>(p.mainSkin); //mainSkinIndex
 
-			packet.Write<SkillID>(pmmain.skillIDs[0]); //mainSkillindex1
-			packet.Write<SkillID>(pmmain.skillIDs[1]); //mainSkillIndex2
+			if(self) {
+				packet.Write<SkillID>(pmmain.skillIDs[0]); //mainSkillindex1
+				packet.Write<SkillID>(pmmain.skillIDs[1]); //mainSkillIndex2
+			}
+			else {
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
+			}
+
 
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.subClass)); //subCreatureIndex
 			packet.Write<SkinIndex>(p.subSkin); //subSkinIndex
 
-			packet.Write<SkillID>(pmsub.skillIDs[0]); //subSkillIndex1
-			packet.Write<SkillID>(pmsub.skillIDs[1]); //subSkillIndex2
+			if(self) {
+				packet.Write<SkillID>(pmsub.skillIDs[0]); //subSkillIndex1
+				packet.Write<SkillID>(pmsub.skillIDs[1]); //subSkillIndex2
+			}
+			else {
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
+				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
+			}
 
 			packet.Write<i32>(-1); //stageSkillIndex1
 			packet.Write<i32>(-1); //stageSkillIndex2
@@ -649,26 +707,31 @@ void Replication::SendPvpLoadingComplete(ClientHandle clientHd)
 	SendPacketData<Sv::SA_LoadingComplete>(clientHd,  0, nullptr);
 }
 
-void Replication::SendGameReady(ClientHandle clientHd)
+void Replication::SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed)
 {
 	Sv::SA_GameReady ready;
-	ready.waitingTimeMs = 3000;
+	ready.waitingTimeMs = waitTime;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	ready.readyElapsedMs = 0;
+	ready.readyElapsedMs = elapsed;
 	SendPacket(clientHd, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
 	notify.userID = 1;
 	notify.skillPoint = 1;
 	SendPacket(clientHd, notify);
+}
 
+void Replication::SendPreGameLevelEvents(ClientHandle clientHd)
+{
+	// countdown
 	Sv::SN_NotifyTimestamp notifyTimestamp;
 	notifyTimestamp.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	notifyTimestamp.curCount = 4;
+	notifyTimestamp.curCount = 0;
 	notifyTimestamp.maxCount = 5;
 	SendPacket(clientHd, notifyTimestamp);
 
-	/*
+
+	// EVENT: Starts music?
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -676,9 +739,10 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 218;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: You have entered the Combat Arena, the match begins soon
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -686,9 +750,10 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 219;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: Locks skill casting
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -696,18 +761,20 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 274;
 		seq.caller = 0;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: Pings the middle of the map where a powerup is
 	// Sv::SN_RunClientLevelEvent
 	{
 		Sv::SN_RunClientLevelEvent event;
 		event.eventID = 48;
 		event.caller = 0;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
 		SendPacket(clientHd, event);
 	}
+
+	// EVENT: ???
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -715,19 +782,18 @@ void Replication::SendGameReady(ClientHandle clientHd)
 		seq.rootEventID = 1000001;
 		seq.caller = 21035;
 		seq.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEventSeq", clientID);
 		SendPacket(clientHd, seq);
 	}
+
+	// EVENT: ???
 	// Sv::SN_RunClientLevelEvent
 	{
 		Sv::SN_RunClientLevelEvent event;
 		event.eventID = 150;
 		event.caller = 21035;
 		event.serverTime = (i64)TimeDiffMs(TimeRelNow());
-		LOG("[client%03d] Server :: SN_RunClientLevelEvent", clientID);
 		SendPacket(clientHd, event);
 	}
-	*/
 
 	/*
 	Sv::SN_NotifyIsInSafeZone safe;
@@ -746,8 +812,7 @@ void Replication::SendGameStart(ClientHandle clientHd)
 	notify.isRestrictedByAAS = 0;
 	SendPacket(clientHd, notify);
 
-	// Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
-
+	// EVENT: Release input lock (Data\Design\Level\PVP\PVP_DeathMatch\EVENTNODES\LEVELEVENT_CLIENT.XML)
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -758,8 +823,9 @@ void Replication::SendGameStart(ClientHandle clientHd)
 		SendPacket(clientHd, seq);
 	}
 
-	// Timer related event
 
+	// EVENT: Start the internal battle timer (240s)
+	// -> will then call following sequence events (271, 272, 273, 274). "battle will end in 1min, 30s".
 	// Sv::SN_RunClientLevelEventSeq
 	{
 		Sv::SN_RunClientLevelEventSeq seq;
@@ -801,106 +867,6 @@ void Replication::SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f
 	packet.Write<i32>(0); // errorType
 
 	SendPacket(clientHd, packet);
-}
-
-void Replication::SendPlayerAcceptCast(ClientHandle clientHd, const PlayerCastSkill& cast)
-{
-	LocalActorID localActorID = GetLocalActorID(clientHd, cast.playerActorUID);
-	ASSERT(localActorID != LocalActorID::INVALID);
-
-	// SA_CastSkill
-	{
-		Sv::SA_CastSkill accept;
-		accept.characterID = localActorID;
-		accept.ret = 0;
-		accept.skillIndex = cast.skillID;
-
-		SendPacket(clientHd, accept);
-	}
-
-	// SN_CastSkill
-	{
-		PacketWriter<Sv::SN_CastSkill> packet;
-
-		packet.Write<LocalActorID>(localActorID); // entityID
-		packet.Write<i32>(0); // ret
-		packet.Write<SkillID>(cast.skillID);
-		packet.Write<u8>(0); // costLevel
-		packet.Write<ActionStateID>(ActionStateID::INVALID);
-		packet.Write<float3>(v2f(cast.p3nPos));
-
-		packet.Write<u16>(0); // targetList_count
-
-		packet.Write<u8>(1); // bSyncMyPosition
-		packet.Write<float3>(cast.posStruct.pos);
-		packet.Write<float3>(cast.posStruct.destPos);
-		packet.Write<float2>(cast.posStruct.moveDir);
-		packet.Write<float3>(cast.posStruct.rotateStruct);
-		packet.Write<f32>(cast.posStruct.speed);
-		packet.Write<i32>(cast.posStruct.clientTime);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ExecuteSkill
-	{
-		PacketWriter<Sv::SN_ExecuteSkill,512> packet;
-
-		packet.Write<LocalActorID>(localActorID); // entityID
-		packet.Write<i32>(0); // ret
-		packet.Write<SkillID>(cast.skillID);
-		packet.Write<u8>(0); // costLevel
-
-		ActionStateID actionState = ActionStateID::INVALID;
-		f32 distance = 0.0f;
-		f32 moveDuration = 1.0f; // WARNING: if this is 0 the character fall through the map (probably a division by 0 error)
-
-		switch(cast.skillID) {
-			// Lua dodge
-			case (SkillID)180350002: {
-				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-				distance = 500;
-				moveDuration = 0.7333333f;
-			} break;
-
-			// Sizuka dodge
-			case (SkillID)180030002: {
-				actionState = ActionStateID::SHIRK_BEHAVIORSTATE;
-				distance = 500;
-				moveDuration = 0.01f;
-			} break;
-
-			case (SkillID)180350010: actionState = ActionStateID::SKILL_1_BEHAVIORSTATE; break;
-			case (SkillID)180350030: actionState = (ActionStateID)30; break;
-			case (SkillID)180030020: actionState = (ActionStateID)32; break;
-			case (SkillID)180030030: actionState = (ActionStateID)33; break;
-			case (SkillID)180030050: actionState = (ActionStateID)35; break;
-		}
-		packet.Write<ActionStateID>(actionState);
-		packet.Write<float3>(v2f(cast.p3nPos));
-
-		packet.Write<u16>(0); // targetList_count
-
-		packet.Write<u8>(0); // bSyncMyPosition
-		packet.Write<float3>(float3());
-		packet.Write<float3>(float3());
-		packet.Write<float2>(float2());
-		packet.Write<float3>(float3());
-		packet.Write<f32>(0);
-		packet.Write<i32>(0);
-
-		packet.Write<f32>(0); // fSkillChargeDamageMultiplier
-
-		// graphMove
-		packet.Write<u8>(1); // bApply
-		packet.Write<float3>(cast.posStruct.pos); // startPos
-		vec3 endPos = f2v(cast.posStruct.pos) + vec3(distance, 0, 0);
-		packet.Write<float3>(v2f(endPos)); // endPos
-		packet.Write<f32>(moveDuration); // durationTimeS
-		packet.Write<f32>(distance); // originDistance
-
-		SendPacket(clientHd, packet);
-	}
 }
 
 void Replication::OnPlayerDisconnect(ClientHandle clientHd)
@@ -991,6 +957,12 @@ void Replication::UpdatePlayersLocalState()
 					ASSERT(pm->second->actorUID == actorUID);
 				} break;
 
+				case ActorType::Dynamic: {
+					auto pm = framePrev->dynamicMap.find(actorUID);
+					ASSERT(pm != framePrev->dynamicMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+				} break;
+
 				default: {
 					ASSERT_MSG(0, "case not handled");
 				} break;
@@ -1032,6 +1004,13 @@ void Replication::UpdatePlayersLocalState()
 					SendActorNpcSpawn(clientHd, *pm->second);
 				} break;
 
+				case ActorType::Dynamic: {
+					const auto pm = frameCur->dynamicMap.find(actorUID);
+					ASSERT(pm != frameCur->dynamicMap.end());
+					ASSERT(pm->second->actorUID == actorUID);
+					SendActorDynamicSpawn(clientHd, *pm->second);
+				} break;
+
 				default: {
 					ASSERT_MSG(0, "case not handled");
 				} break;
@@ -1060,62 +1039,6 @@ void Replication::UpdatePlayersLocalState()
 
 void Replication::FrameDifference()
 {
-	// send position update
-	struct UpdatePosition
-	{
-		ClientHandle clientHd;
-		ActorUID actorUID;
-		vec3 pos;
-		vec2 moveDir;
-		RotationHumanoid rotation;
-		f32	speed;
-		ActionStateID action;
-	};
-
-	struct UpdateRotation
-	{
-		ClientHandle clientHd;
-		ActorUID actorUID;
-		RotationHumanoid rot;
-	};
-
-	struct UpdateTag
-	{
-		ClientHandle clientHd;
-		ActorUID mainUID;
-		ActorUID subUID;
-		vec3 pos;
-		RotationHumanoid rot;
-	};
-
-	struct UpdateJump
-	{
-		ActorUID actorUID;
-		vec2 moveDir;
-		f32 rotate;
-	};
-
-	struct UpdateSendCast
-	{
-		ClientHandle clientHd;
-		ActorUID actorUID;
-		SkillID skill;
-		f32 distance;
-		f32 moveDurationS;
-		vec3 startPos;
-		vec3 endPos;
-		vec2 moveDir;
-		RotationHumanoid rotation;
-		f32 speed;
-		ActionStateID action;
-	};
-
-	eastl::fixed_vector<UpdatePosition,1024> listUpdatePosition;
-	eastl::fixed_vector<UpdateRotation,1024> listUpdateRotation;
-	eastl::fixed_vector<UpdateTag,1024> listUpdateTag;
-	eastl::fixed_vector<UpdateJump,1024> listUpdateJump;
-	eastl::fixed_vector<UpdateSendCast,1024> listUpdateSendCast;
-
 	foreach_const(it, frameCur->playerList) {
 		const Player& cur = *it;
 		const Player* found = framePrev->FindPlayer(cur.index);
@@ -1124,25 +1047,110 @@ void Replication::FrameDifference()
 
 		// tagging
 		if(cur.mainCharaID != prev.mainCharaID) {
-			UpdateTag update;
-			update.clientHd = cur.clientHd;
-			update.mainUID = cur.masters[cur.mainCharaID];
-			update.subUID = cur.masters[cur.mainCharaID ^ 1];
+			const ClientHandle upClientHd = cur.clientHd;
+			const ActorUID upMainUID = cur.masters[cur.mainCharaID];
+			const ActorUID upSubUID = cur.masters[cur.mainCharaID ^ 1];
 			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]); // @Speed
 			ASSERT(chara);
-			update.pos = chara->pos;
-			update.rot = chara->rotation;
-			listUpdateTag.push_back(update);
+			const vec3 upPos = chara->pos;
+			const RotationHumanoid upRot = chara->rotation;
+
+			Sv::SN_GamePlayerTag tag;
+			tag.result = 128;
+			tag.attackerID = LocalActorID::INVALID;
+
+			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+				const ClientHandle clientHd = clientHandle[pi];
+
+				tag.mainID = GetLocalActorID(clientHd, upMainUID);
+				tag.subID = GetLocalActorID(clientHd, upSubUID);
+				ASSERT(tag.mainID != LocalActorID::INVALID);
+				ASSERT(tag.subID != LocalActorID::INVALID);
+
+				SendPacket(clientHd, tag);
+
+				if(clientHd != upClientHd) { // ignore self
+					Sv::SN_GameLeaveActor leave;
+					leave.objectID = tag.subID;
+					SendPacket(clientHd, leave);
+
+					// Sv::SN_GameEnterActor
+					{
+						PacketWriter<Sv::SN_GameEnterActor,512> packet;
+						packet.Write<u8>(0x1); // excludedBits
+						packet.Write<LocalActorID>(tag.mainID); // objectID
+						packet.Write<float3>(v2f(upPos)); //  p3nPos
+						packet.Write<RotationHumanoid>(RotConvertToMxm(upRot)); //  p3nDir
+						packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveDir
+						packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveUpperDir
+						packet.Write<float3>(v2f(vec3(0))); //  p3nMoveTargetPos
+						packet.Write<u8>(0); //  isBattleState
+						packet.Write<f32>(620.0f); //  baseMoveSpeed
+						packet.Write<ActionStateID>(ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE); //  actionState
+						packet.Write<i32>(0); //  aiTargetID
+
+						// statSnapshot
+						typedef Sv::SN_GameEnterActor::ST_StatData Stat;
+						eastl::array<Stat, 9> curStats = {
+							Stat{ 0, 1270 },
+							Stat{ 37, 13.2f },
+							Stat{ 35, 1000 },
+							Stat{ 2, 200 },
+							Stat{ 6, 0 },
+							Stat{ 10, 0 },
+							Stat{ 64, 0 },
+							Stat{ 7, 0 },
+							Stat{ 14, 10 },
+						};
+						eastl::array<Stat, 9> maxStats = {
+							Stat{ 0, 1270 },
+							Stat{ 37, 120 },
+							Stat{ 35, 1000 },
+							Stat{ 2, 200 },
+							Stat{ 6, 49.0077f },
+							Stat{ 10, 150 },
+							Stat{ 64, 150 },
+							Stat{ 7, 76.5 },
+							Stat{ 14, 100 },
+						};
+						eastl::array<Stat, 0> addPrivate;
+						eastl::array<Stat, 0> mulPrivate;
+
+						packet.WriteVec(curStats.data(), curStats.size());
+						packet.WriteVec(maxStats.data(), maxStats.size());
+						packet.WriteVec(addPrivate.data(), addPrivate.size());
+						packet.WriteVec(mulPrivate.data(), mulPrivate.size());
+
+						SendPacket(clientHd, packet);
+					}
+				}
+			}
 		}
 
 		if(cur.hasJumped && !prev.hasJumped) {
-			UpdateJump update;
-			update.actorUID = cur.masters[cur.mainCharaID];
+			const ActorUID actorUID = cur.masters[cur.mainCharaID];
 			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]);  // @Speed
 			ASSERT(chara);
-			update.rotate = chara->rotation.bodyYaw;
-			update.moveDir = chara->moveDir;
-			listUpdateJump.push_back(update);
+			const f32 rotate = chara->rotation.bodyYaw;
+			const vec2 moveDir = chara->moveDir;
+
+			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+				const ClientHandle clientHd = clientHandle[pi];
+
+				PacketWriter<Sv::SA_ResultSpAction> packet;
+
+				packet.Write<u8>(0x20); // excludedFieldBits
+				packet.Write<i32>(0); // actionID
+				packet.Write<LocalActorID>(GetLocalActorID(clientHd, actorUID));
+				packet.Write<f32>(rotate);
+				packet.Write<f32>(moveDir.x);
+				packet.Write<f32>(moveDir.y);
+				packet.Write<i32>(0); // errorType
+
+				SendPacket(clientHd, packet);
+			}
 		}
 	}
 
@@ -1159,36 +1167,6 @@ void Replication::FrameDifference()
 		bool rotationUpdated = false;
 		bool positionUpdated = false;
 
-		const f32 rotEpsilon = 0.1f;
-		if(!rotationUpdated &&
-		   (fabs(cur.rotation.upperYaw - prev.rotation.upperYaw) > rotEpsilon ||
-		   fabs(cur.rotation.upperPitch - prev.rotation.upperPitch) > rotEpsilon ||
-		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
-		{
-			UpdateRotation update;
-			update.clientHd = cur.clientHd;
-			update.actorUID = cur.actorUID;
-			update.rot = cur.rotation;
-			listUpdateRotation.push_back(update);
-		}
-
-		if(cur.castSkill != SkillID::INVALID) {
-			UpdateSendCast update;
-			update.clientHd = cur.clientHd;
-			update.actorUID = cur.actorUID;
-			update.skill = cur.castSkill;
-			update.startPos = cur.skillStartPos;
-			update.endPos = cur.skillEndPos;
-			update.moveDir = cur.moveDir;
-			update.rotation = cur.rotation;
-			update.speed = cur.speed;
-			update.distance = glm::length(cur.skillEndPos - cur.skillStartPos);
-			update.moveDurationS = cur.skillMoveDurationS;
-			update.action = cur.actionState;
-			listUpdateSendCast.push_back(update);
-			positionUpdated = true;
-		}
-
 		// position
 		const f32 posEpsilon = 0.5f;
 		const f32 dirEpsilon = 0.001f;
@@ -1201,171 +1179,93 @@ void Replication::FrameDifference()
 		   fabs(cur.moveDir.y - prev.moveDir.y) > dirEpsilon ||
 		   fabs(cur.speed - prev.speed) > speedEpsilon)
 		{
-			UpdatePosition update;
-			update.clientHd = cur.clientHd;
-			update.actorUID = cur.actorUID;
-			update.pos = cur.pos;
-			update.moveDir = cur.moveDir;
-			update.rotation = cur.rotation;
-			update.speed = cur.speed;
-
-			if(cur.actionState != ActionStateID::INVALID) {
-				update.action = cur.actionState;
-				//update.action = ActionStateID::JUMP_START_MOVESTATE;
-			}
-			else {
-				update.action = ActionStateID::NONE_BEHAVIORSTATE;
+			ActionStateID action = cur.actionState;
+			if(action == ActionStateID::INVALID) {
+				action = ActionStateID::NONE_BEHAVIORSTATE;
 			}
 
-			listUpdatePosition.push_back(update);
+			Sv::SN_PlayerSyncMove sync;
+			sync.destPos = v2f(cur.pos);
+			sync.moveDir = v2f(cur.moveDir);
+			sync.upperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
+			sync.nRotate = WorldYawToMxmYaw(cur.rotation.bodyYaw);
+			sync.nSpeed = cur.speed;
+			sync.flags = 0;
+			sync.state = action;
+
+			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+				const ClientHandle clientHd = clientHandle[pi];
+				if(clientHd == cur.clientHd) continue; // ignore self
+				sync.characterID = GetLocalActorID(clientHd, cur.actorUID);
+				SendPacket(clientHd, sync);
+			}
 
 			rotationUpdated = true;
 		}
-	}
 
-	// send updates
-	foreach_const(up, listUpdatePosition) {
-		Sv::SN_PlayerSyncMove sync;
-		sync.destPos = v2f(up->pos);
-		sync.moveDir = v2f(up->moveDir);
-		sync.upperDir = { WorldYawToMxmYaw(up->rotation.upperYaw), WorldPitchToMxmPitch(up->rotation.upperPitch) };
-		sync.nRotate = WorldYawToMxmYaw(up->rotation.bodyYaw);
-		sync.nSpeed = up->speed;
-		sync.flags = 0;
-		sync.state = up->action;
+		// rotation
+		const f32 rotEpsilon = 0.1f;
+		if(!rotationUpdated &&
+		   (fabs(cur.rotation.upperYaw - prev.rotation.upperYaw) > rotEpsilon ||
+		   fabs(cur.rotation.upperPitch - prev.rotation.upperPitch) > rotEpsilon ||
+		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
+		{
+			Sv::SN_PlayerSyncTurn sync;
+			sync.upperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
+			sync.nRotate = WorldYawToMxmYaw(cur.rotation.bodyYaw);
 
-		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
-			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[pi];
-			if(clientHd == up->clientHd) continue; // ignore self
+			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+				const ClientHandle clientHd = clientHandle[pi];
+				if(clientHd == cur.clientHd) continue; // ignore self
 
-			ProfileBlock("Send Sv::SN_PlayerSyncMove");
-
-			sync.characterID = GetLocalActorID(clientHd, up->actorUID);
-			SendPacket(clientHd, sync);
-		}
-	}
-
-	foreach_const(up, listUpdateRotation) {
-		Sv::SN_PlayerSyncTurn sync;
-		sync.upperDir = { WorldYawToMxmYaw(up->rot.upperYaw), WorldPitchToMxmPitch(up->rot.upperPitch) };
-		sync.nRotate = WorldYawToMxmYaw(up->rot.bodyYaw);
-
-		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
-			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[pi];
-			if(clientHd == up->clientHd) continue; // ignore self
-
-			sync.characterID = GetLocalActorID(clientHd, up->actorUID);
-			SendPacket(clientHd, sync);
-		}
-	}
-
-	foreach_const(up, listUpdateTag) {
-		Sv::SN_GamePlayerTag tag;
-		tag.result = 128;
-		tag.attackerID = LocalActorID::INVALID;
-
-		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
-			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[pi];
-
-			tag.mainID = GetLocalActorID(clientHd, up->mainUID);
-			tag.subID = GetLocalActorID(clientHd, up->subUID);
-			ASSERT(tag.mainID != LocalActorID::INVALID);
-			ASSERT(tag.subID != LocalActorID::INVALID);
-
-			SendPacket(clientHd, tag);
-
-			if(clientHd != up->clientHd) { // ignore self
-				Sv::SN_GameLeaveActor leave;
-				leave.objectID = tag.subID;
-				SendPacket(clientHd, leave);
-
-				// Sv::SN_GameEnterActor
-				{
-					PacketWriter<Sv::SN_GameEnterActor,512> packet;
-					packet.Write<u8>(0x1); // excludedBits
-					packet.Write<LocalActorID>(tag.mainID); // objectID
-					packet.Write<float3>(v2f(up->pos)); //  p3nPos
-					packet.Write<RotationHumanoid>(RotConvertToMxm(up->rot)); //  p3nDir
-					packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveDir
-					packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveUpperDir
-					packet.Write<float3>(v2f(vec3(0))); //  p3nMoveTargetPos
-					packet.Write<u8>(0); //  isBattleState
-					packet.Write<f32>(620.0f); //  baseMoveSpeed
-					packet.Write<ActionStateID>(ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE); //  actionState
-					packet.Write<i32>(0); //  aiTargetID
-
-					// statSnapshot
-					typedef Sv::SN_GameEnterActor::ST_StatData Stat;
-					eastl::array<Stat, 9> curStats = {
-						Stat{ 0, 1270 },
-						Stat{ 37, 13.2f },
-						Stat{ 35, 1000 },
-						Stat{ 2, 200 },
-						Stat{ 6, 0 },
-						Stat{ 10, 0 },
-						Stat{ 64, 0 },
-						Stat{ 7, 0 },
-						Stat{ 14, 10 },
-					};
-					eastl::array<Stat, 9> maxStats = {
-						Stat{ 0, 1270 },
-						Stat{ 37, 120 },
-						Stat{ 35, 1000 },
-						Stat{ 2, 200 },
-						Stat{ 6, 49.0077f },
-						Stat{ 10, 150 },
-						Stat{ 64, 150 },
-						Stat{ 7, 76.5 },
-						Stat{ 14, 100 },
-					};
-					eastl::array<Stat, 0> addPrivate;
-					eastl::array<Stat, 0> mulPrivate;
-
-					packet.WriteVec(curStats.data(), curStats.size());
-					packet.WriteVec(maxStats.data(), maxStats.size());
-					packet.WriteVec(addPrivate.data(), addPrivate.size());
-					packet.WriteVec(mulPrivate.data(), mulPrivate.size());
-
-					SendPacket(clientHd, packet);
-				}
+				sync.characterID = GetLocalActorID(clientHd, cur.actorUID);
+				SendPacket(clientHd, sync);
 			}
 		}
 	}
 
-	foreach_const(up, listUpdateJump) {
-		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
-			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
-			const ClientHandle clientHd = clientHandle[pi];
 
-			PacketWriter<Sv::SA_ResultSpAction> packet;
+	// diff dynamics
+	foreach_const(it, frameCur->dynamicList) {
+		const ActorDynamic& cur = *it;
+		const ActorDynamic* found = framePrev->FindDynamic(cur.actorUID);
+		if(!found) continue;
+		const ActorDynamic& prev = *found;
 
-			packet.Write<u8>(0x20); // excludedFieldBits
-			packet.Write<i32>(0); // actionID
-			packet.Write<LocalActorID>(GetLocalActorID(clientHd, up->actorUID));
-			packet.Write<f32>(up->rotate);
-			packet.Write<f32>(up->moveDir.x);
-			packet.Write<f32>(up->moveDir.y);
-			packet.Write<i32>(0); // errorType
+		// change action
+		if(cur.action != prev.action) {
+			ClientList list;
+			GetPlayersInGame(&list);
+			foreach_const(clientHd, list) {
+				LocalActorID localActorID = GetLocalActorID(*clientHd, cur.actorUID);
 
-			SendPacket(clientHd, packet);
+				PacketWriter<Sv::SN_ActionChangeLevelEvent,64> packet;
+				packet.WriteVec<LocalActorID>(&localActorID, 1);
+				packet.Write(cur.action); // action
+				packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
+
+				SendPacket(*clientHd, packet);
+			}
 		}
 	}
 
-	foreach_const(up, listUpdateSendCast) {
-		if(up->clientHd != ClientHandle::INVALID) {
-			LocalActorID localActorID = GetLocalActorID(up->clientHd, up->actorUID);
+	// skill casts
+	foreach_const(it, frameCur->skillCastList) {
+		const auto& cast = *it;
+
+		if(cast.clientHd != ClientHandle::INVALID) {
+			LocalActorID localActorID = GetLocalActorID(cast.clientHd, cast.casterUID);
 
 			// SA_CastSkill
 			{
 				Sv::SA_CastSkill accept;
 				accept.characterID = localActorID;
 				accept.ret = 0;
-				accept.skillIndex = up->skill;
+				accept.skillIndex = cast.skillID;
 
-				SendPacket(up->clientHd, accept);
+				SendPacket(cast.clientHd, accept);
 			}
 		}
 
@@ -1373,58 +1273,61 @@ void Replication::FrameDifference()
 			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
 			const ClientHandle clientHd = clientHandle[pi];
 
-			LocalActorID localActorID = GetLocalActorID(clientHd, up->actorUID);
+			LocalActorID localCasterID = GetLocalActorID(clientHd, cast.casterUID);
 
 			// SN_CastSkill
 			{
 				PacketWriter<Sv::SN_CastSkill,512> packet;
 
-				packet.Write<LocalActorID>(localActorID); // entityID
+				packet.Write<LocalActorID>(localCasterID); // entityID
 				packet.Write<i32>(0); // ret
-				packet.Write<SkillID>(up->skill);
+				packet.Write<SkillID>(cast.skillID);
 				packet.Write<u8>(0); // costLevel
-				packet.Write<ActionStateID>(ActionStateID::INVALID);
-				packet.Write<float3>({});
+				packet.Write<ActionStateID>(ActionStateID::INVALID); // TODO: is it always invalid?
+				packet.Write<float3>(v2f(cast.castPos));
 
-				packet.Write<u16>(0); // targetList_count
+				packet.Write<u16>(cast.targetList.size()); // targetList_count
+				foreach_const(t, cast.targetList) {
+					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
+				}
 
-
-#if 0
-				packet.Write<u8>(0); // bSyncMyPosition
-				packet.Write<float3>({});
-				packet.Write<float3>({});
-				packet.Write<float2>({});
-				packet.Write<RotationHumanoid>({});
-				packet.Write<f32>(0);
-				packet.Write<i32>(0);
-
-#else
 				packet.Write<u8>(1); // bSyncMyPosition
-				packet.Write<float3>(v2f(up->startPos));
-				packet.Write<float3>(v2f(up->startPos));
-				packet.Write<float2>(v2f(up->moveDir));
-				packet.Write<RotationHumanoid>(RotConvertToMxm(up->rotation));
-				packet.Write<f32>(up->speed);
-				//packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-				packet.Write<i32>(0);
-#endif
+				packet.Write<float3>(v2f(cast.casterPos));
+				packet.Write<float3>(v2f(cast.casterPos));
+				packet.Write<float2>(v2f(cast.casterMoveDir));
+				packet.Write<RotationHumanoid>(RotConvertToMxm(cast.casterRot));
+				packet.Write<f32>(cast.casterSpeed);
+				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
 
 				SendPacket(clientHd, packet);
 			}
+		}
+	}
+
+	foreach_const(it, frameCur->skillExecList) {
+		const auto& exec = *it;
+
+		for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+			if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+			const ClientHandle clientHd = clientHandle[pi];
+
+			LocalActorID localCasterID = GetLocalActorID(clientHd, exec.casterUID);
 
 			// SN_ExecuteSkill
 			{
 				PacketWriter<Sv::SN_ExecuteSkill,512> packet;
 
-				packet.Write<LocalActorID>(localActorID); // entityID
+				packet.Write<LocalActorID>(localCasterID); // entityID
 				packet.Write<i32>(0); // ret
-				packet.Write<SkillID>(up->skill);
+				packet.Write<SkillID>(exec.skillID);
 				packet.Write<u8>(0); // costLevel
-				packet.Write<ActionStateID>(up->action);
-				packet.Write<float3>({});
+				packet.Write<ActionStateID>(exec.actionID);
+				packet.Write<float3>(v2f(exec.castPos));
 
-				packet.Write<u16>(0); // targetList_count
-
+				packet.Write<u16>(exec.targetList.size()); // targetList_count
+				foreach_const(t, exec.targetList) {
+					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
+				}
 
 				packet.Write<u8>(0); // bSyncMyPosition
 				packet.Write<float3>({});
@@ -1434,25 +1337,15 @@ void Replication::FrameDifference()
 				packet.Write<f32>(0);
 				packet.Write<i32>(0);
 
-				/*
-				packet.Write<u8>(1); // bSyncMyPosition
-				packet.Write<float3>(v2f(up->actorPos));
-				packet.Write<float3>(v2f(up->endPos));
-				packet.Write<float2>(v2f(up->moveDir));
-				packet.Write<RotationHumanoid>(up->rotation.ConvertToMxm());
-				packet.Write<f32>(up->speed);
-				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
-				*/
-
 				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
 
-				if(up->distance > 0) {
+				if(exec.moveDuration != 0) {
 					// graphMove
 					packet.Write<u8>(1); // bApply
-					packet.Write<float3>(v2f(up->startPos)); // startPos
-					packet.Write<float3>(v2f(up->endPos)); // endPos
-					packet.Write<f32>(up->moveDurationS); // durationTimeS
-					packet.Write<f32>(up->distance); // originDistance
+					packet.Write<float3>(v2f(exec.startPos)); // startPos
+					packet.Write<float3>(v2f(exec.endPos)); // endPos
+					packet.Write<f32>(exec.moveDuration); // durationTimeS
+					packet.Write<f32>(glm::distance(exec.startPos, exec.endPos)); // originDistance
 				}
 				else {
 					// graphMove
@@ -1485,7 +1378,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 			PacketWriter<Sv::SN_GameCreateActor,512> packet;
 
 			packet.Write<LocalActorID>(localActorID); // objectID
-			packet.Write<i32>(1); // nType
+			packet.Write<EntityType>(EntityType::CREATURE); // nType
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
 			packet.Write<i32>(-1); // dwLocalID
 			// TODO: localID?
@@ -1634,7 +1527,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<LocalActorID>(parentLocalActorID); // mainEntityID
-			packet.Write<i32>(1); // nType
+			packet.Write<EntityType>(EntityType::CREATURE); // nType
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
 			packet.Write<i32>(-1); // dwLocalID
 
@@ -1781,7 +1674,7 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 		PacketWriter<Sv::SN_GameCreateActor,512> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(actor.type); // nType
+		packet.Write<EntityType>(EntityType::CREATURE); // nType
 		packet.Write<CreatureIndex>(actor.docID); // nIDX
 		packet.Write<i32>(actor.localID); // dwLocalID
 
@@ -1793,7 +1686,7 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 		packet.Write<u8>(0); // bDirectionToNearPC
 		packet.Write<i32>(-1); // AiWanderDistOverride
 		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(actor.faction); // faction
+		packet.Write<Faction>(actor.faction); // faction
 		packet.Write<ClassType>(ClassType::NONE); // classType
 		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
 		packet.Write<i32>(0); // seed
@@ -1801,24 +1694,124 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
 		// initStat ------------------------
-		/*packet.Write<u16>(11); // maxStats_count
-		packet.Write(Stat{ 0, 24953 });
-		packet.Write(Stat{ 6, 96 });
-		packet.Write(Stat{ 7, 113.333 });
-		packet.Write(Stat{ 8, 10 });
-		packet.Write(Stat{ 9, 5 });
-		packet.Write(Stat{ 10, 150 });
-		packet.Write(Stat{ 13, 100 });
-		packet.Write(Stat{ 14, 80 });
-		packet.Write(Stat{ 15, 100 });
-		packet.Write(Stat{ 52, 100 });
-		packet.Write(Stat{ 64, 150 });
-		packet.Write<u16>(1); // curStats_count
-		packet.Write(Stat{ 0, 24953 });*/
+		switch(actor.docID) {
+			case (CreatureIndex)100010101: {
+				const Stat maxStats[] = {
+					{ 0, 15596.f },
+					{ 6, 48.f },
+					{ 7, 113.333f },
+					{ 8, 10.f },
+					{ 9, 5.f },
+					{ 10, 150.f },
+					{ 13, 100.f },
+					{ 14, 80.f },
+					{ 15, 100.f },
+					{ 52, 70.f },
+					{ 64, 150.f },
+				};
+				const Stat curStats[] = {
+					{ 0, 15596.f },
+				};
+
+				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
+				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
+			} break;
+
+			case (CreatureIndex)110040546: {
+				const Stat maxStats[] = {
+					{ 0, -1 },
+				};
+				const Stat curStats[] = {
+					{ 0, -1 },
+				};
+
+				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
+				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
+			} break;
+
+			default: {
+				packet.Write<u16>(0); // maxStats
+				packet.Write<u16>(0); // curStats
+			}
+		}
 		// ------------------------------------
 
-		packet.Write<u16>(0); // maxStats_count
-		packet.Write<u16>(0); // curStats_count
+		packet.Write<u8>(1); // isInSight
+		packet.Write<u8>(0); // isDead
+		packet.Write<i64>((i64)TimeDiffMs(TimeRelNow())); // serverTime
+
+		packet.Write<u16>(0); // meshChangeActionHistory_count
+
+		SendPacket(clientHd, packet);
+	}
+
+	// SN_SpawnPosForMinimap
+	{
+		PacketWriter<Sv::SN_SpawnPosForMinimap> packet;
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write(actor.pos); // p3nPos
+
+		SendPacket(clientHd, packet);
+	}
+}
+
+void Replication::SendActorDynamicSpawn(ClientHandle clientHd, const ActorDynamic& actor)
+{
+	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
+
+	const i32 clientID = playerMap.at(clientHd);
+	auto found = playerLocalInfo[clientID].localActorIDMap.find(actor.actorUID);
+	ASSERT(found != playerLocalInfo[clientID].localActorIDMap.end());
+
+	const LocalActorID localActorID = found->second;
+
+	LOG("[client%03d] Replication :: SendActorNpcSpawn :: actorUID=%u localActorID=%u", clientID, (u32)actor.actorUID, (u32)localActorID);
+
+	// SN_GameCreateActor
+	{
+		PacketWriter<Sv::SN_GameCreateActor,512> packet;
+
+		packet.Write<LocalActorID>(localActorID); // objectID
+		packet.Write<EntityType>(EntityType::DYNAMIC); // nType
+		packet.Write<CreatureIndex>(actor.docID); // nIDX
+		packet.Write<i32>(actor.localID); // dwLocalID
+
+		packet.Write(actor.pos); // p3nPos
+		packet.Write(actor.rot); // p3nDir
+		packet.Write<i32>(0); // spawnType
+		packet.Write<ActionStateID>(ActionStateID::DYNAMIC_NORMAL_STAND); // actionState
+		packet.Write<i32>(0); // ownerID
+		packet.Write<u8>(0); // bDirectionToNearPC
+		packet.Write<i32>(-1); // AiWanderDistOverride
+		packet.Write<i32>(-1); // tagID
+		packet.Write<Faction>(actor.faction); // faction
+		packet.Write<ClassType>(ClassType::NONE); // classType
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
+		packet.Write<i32>(0); // seed
+
+		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+
+		// initStat ------------------------
+		switch(actor.docID) {
+			case (CreatureIndex)110040546: {
+				const Stat maxStats[] = {
+					{ 0, -1 },
+				};
+				const Stat curStats[] = {
+					{ 0, -1 },
+				};
+
+				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
+				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
+			} break;
+
+			default: {
+				packet.Write<u16>(0); // maxStats
+				packet.Write<u16>(0); // curStats
+			}
+		}
+		// ------------------------------------
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -1969,4 +1962,13 @@ void Replication::DeleteLocalActorID(i32 clientID, ActorUID actorUID)
 {
 	auto& localActorIDMap = playerLocalInfo[clientID].localActorIDMap;
 	localActorIDMap.erase(localActorIDMap.find(actorUID));
+}
+
+void Replication::GetPlayersInGame(ClientList* list)
+{
+	for(int pi = 0; pi < MAX_PLAYERS; pi++) {
+		if(playerState[pi].cur < PlayerState::IN_GAME) continue;
+		const ClientHandle clientHd = clientHandle[pi];
+		list->push_back(clientHd);
+	}
 }

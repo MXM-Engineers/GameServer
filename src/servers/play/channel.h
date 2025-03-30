@@ -46,6 +46,4 @@ private:
 	void HandlePacket_CQ_GamePlayerTag(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
-
-	void ReadPacket(PlayerCastSkill* cast, ClientHandle clientHd, const u8* packetData, const i32 packetSize);
 };

@@ -1,41 +1,27 @@
 #include <common/utils.h>
 #include <EAStdC/EAString.h>
+#include <EAStdC/EASprintf.h>
 #include <tinyxml2.h>
 
 #include "core.h"
-#include "physics.h"
 #include "game_content.h"
 
 using namespace tinyxml2;
+constexpr eastl::hash<const char*> strHash;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
-static Path gameDataDir = L"gamedata";
+static Path gameDataDir = L"../gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {
-	Path creatureCharacterXml = gameDataDir;
-	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
-		return false;
-	}
+	// Parse CREATURE_CHARACTER.xml once
+	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlCREATURECHARACTER)) return false;
 
 	// get master IDs
-	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
-	do {
+	for(XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
+		pNodeMaster;
+		pNodeMaster = pNodeMaster->NextSiblingElement()) {
 		masters.push_back();
 		Master& master = masters.back();
 
@@ -64,33 +50,15 @@ bool GameXmlContent::LoadMasterDefinitions()
 		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
 
 		masterClassTypeMap.emplace(master.classType, &master);
-
-		pNodeMaster = pNodeMaster->NextSiblingElement();
-	} while(pNodeMaster);
+	}
 
 	return true;
 }
 
 bool GameXmlContent::LoadMasterSkinsDefinitions()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/CHARACTERSKIN.XML");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterSkinsDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/CHARACTERSKIN.xml", doc)) return false;
 
 	XMLElement* pSkinElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
@@ -102,7 +70,7 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 
 		auto found = masterClassStringMap.find(strHash(classType));
 		if(found == masterClassStringMap.end()) {
-			LOG("WARNING(LoadMasterSkinsDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+			WARN("class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
 			Master& master = *found->second;
@@ -117,26 +85,10 @@ bool GameXmlContent::LoadMasterSkinsDefinitions()
 
 bool GameXmlContent::LoadMasterWeaponDefinitions()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/WEAPON.xml");
+	// Parse WEAPON.xml once
+	if(!LoadXMLFile(L"/WEAPON.xml", xmlWEAPON)) return false;
 
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterWeaponDefinitions): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
-
-	XMLElement* pWeapElt = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pWeapElt = xmlWEAPON.FirstChildElement()->FirstChildElement();
 	do {
 		i32 ID;
 		pWeapElt->QueryAttribute("ID", &ID);
@@ -148,7 +100,7 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 
 		auto found = masterClassStringMap.find(strHash(classType));
 		if(found == masterClassStringMap.end()) {
-			LOG("WARNING(LoadMasterWeaponDefinitions): class '%s' not found in masterClassMap, ignored", classType);
+			WARN("class '%s' not found in masterClassMap, ignored", classType);
 		}
 		else {
 			Master& master = *found->second;
@@ -158,85 +110,62 @@ bool GameXmlContent::LoadMasterWeaponDefinitions()
 		pWeapElt = pWeapElt->NextSiblingElement();
 	} while(pWeapElt);
 
+	if(!LoadWeaponModelDefinitions()) {
+		LOG("ERROR(LoadWeaponModelDefinitions): failed");
+		return false;
+	}
+
 	return true;
 }
 
-bool GameXmlContent::LoadMasterDefinitionsModel()
+bool GameXmlContent::LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData)
 {
-	return true; // TODO: remove
+	// Find a better way to check this
+	// Simple path hash map?
+	ASSERT_MSG(xmlData.NoChildren(), "xml already parsed");
 
-	// Parse SKILLS.xml once
-	{
-		Path SkillXml = gameDataDir;
-		PathAppend(SkillXml, L"/SKILL.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILL.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillXml.data(), xmlSKILL.ErrorStr());
-			return false;
-		}
-	}
-
-	// Parse SKILL_PROPERTY.xml once
-	{
-		Path SkillPropertyXml = gameDataDir;
-		PathAppend(SkillPropertyXml, L"/SKILL_PROPERTY.xml");
-
-		i32 fileSize;
-		u8* fileData = FileOpenAndReadAll(SkillPropertyXml.data(), &fileSize);
-		if (!fileData) {
-			LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", SkillPropertyXml.data());
-			return false;
-		}
-		defer(memFree(fileData));
-
-		using namespace tinyxml2;
-		XMLError error = xmlSKILLPROPERTY.Parse((char*)fileData, fileSize);
-		if (error != XML_SUCCESS) {
-			LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", SkillPropertyXml.data(), xmlSKILLPROPERTY.ErrorStr());
-			return false;
-		}
-	}
-
-	Path creatureCharacterXml = gameDataDir;
-	PathAppend(creatureCharacterXml, L"/CREATURE_CHARACTER.xml");
+	Path filePath = gameDataDir;
+	PathAppend(filePath, fileName);
 
 	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(creatureCharacterXml.data(), &fileSize);
+	u8* fileData = FileOpenAndReadAll(filePath.data(), &fileSize);
 	if (!fileData) {
-		LOG("ERROR(LoadMasterDefinitions): failed to open '%ls'", creatureCharacterXml.data());
+		LOG("ERROR(LoadXMLFile): failed to open '%ls'", filePath.data());
 		return false;
 	}
 	defer(memFree(fileData));
 
-	using namespace tinyxml2;
-	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
+	XMLError error = xmlData.Parse((char*)fileData, fileSize);
 	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMasterDefinitions): error parsing '%ls' > '%s'", creatureCharacterXml.data(), doc.ErrorStr());
+		LOG("ERROR(LoadXMLFile): error parsing '%ls' > '%s'", filePath.data(), xmlData.ErrorStr());
 		return false;
 	}
 
+	return true;
+}
+
+// FIXME: merge with LoadMasterDefinitions
+bool GameXmlContent::LoadMasterDefinitionsModel()
+{
+	// Parse SKILLS.xml once
+	if(!LoadXMLFile(L"/SKILL.xml", xmlSKILL)) return false;
+
+	// Parse SKILL_PROPERTY.xml once
+	if(!LoadXMLFile(L"/SKILL_PROPERTY.xml", xmlSKILLPROPERTY)) return false;
+
+	LoadAllSkills(); // TODO: move
 
 	// get master IDs
-	XMLElement* pNodeMaster = doc.FirstChildElement()->FirstChildElement();
+	XMLElement* pNodeMaster = xmlCREATURECHARACTER.FirstChildElement()->FirstChildElement();
 	do {
-		mastersModel.push_back();
-		CharacterModel &character = mastersModel.back();
-
-		LOG("DEBUG: CharacterModel addresss %llx", (intptr_t)&character);
-
 		i32 masterID;
 		pNodeMaster->QueryAttribute("ID", &masterID);
+
+		auto found = masterClassTypeMap.find((ClassType)(masterID - 100000000));
+		if(found == masterClassTypeMap.end());
+		auto& master = found->second;
+
+		CharacterModel &character = master->character;
 
 		// Entity data
 		XMLElement* pEntityComData = pNodeMaster->FirstChildElement("EntityComData");
@@ -258,6 +187,18 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		const char* creatureTypeTemp;
 		pCreatureCompData->QueryStringAttribute("_Type", &creatureTypeTemp);
 
+		XMLElement* pMoveControllerComData = pNodeMaster->FirstChildElement("MoveController_ComData");
+
+		i32 actorRadius, actorHeight;
+		pMoveControllerComData->QueryIntAttribute("ActorRadius", &actorRadius);
+		pMoveControllerComData->QueryIntAttribute("ActorHeight", &actorHeight);
+
+		XMLElement* pPhysxMeshComData = pNodeMaster->FirstChildElement("PhysXMeshComData");
+
+		i32 colliderRadius, colliderHeight;
+		pPhysxMeshComData->QueryIntAttribute("_ColliderRadius", &colliderRadius);
+		pPhysxMeshComData->QueryIntAttribute("_ColliderHeight", &colliderHeight);
+
 		XMLElement* pStatsCompData = pNodeMaster->FirstChildElement("StatsComData");
 
 		// Read character data: skills
@@ -271,7 +212,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			
 			pSkillElt->QueryAttribute("_Index", &skillID);
 			pSkillElt->QueryStringAttribute("_SkillSlot", &skillSlot);
-			LOG("SkillID: %d", skillID);
+			VERBOSE("SkillID: %d", skillID);
 
 			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
 			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
@@ -302,6 +243,18 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			{
 
 			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_BREAK_FALL", skillSlot) == 0)
+			{
+
+			}
+			else if (EA::StdC::Strcmp("SKILL_SLOT_COMBOSET", skillSlot) == 0)
+			{
+
+			}
+			else
+			{
+				LOG("UNSUPPORTED skillslot: %s\n", skillSlot);
+			}
 
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while (pSkillElt);
@@ -315,6 +268,12 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		character.setMoveSpeed(moveSpeed);
 		character.setRotateSpeed(rotateSpeed);
 		character.setScale(scale);
+		//MoveController data
+		character.setActorHeight(actorHeight);
+		character.setActorRadius(actorRadius);
+		//Physx data
+		character.setColliderHeight(colliderHeight);
+		character.setColliderRadius(colliderRadius);
 		
 		pNodeMaster = pNodeMaster->NextSiblingElement();
 
@@ -324,6 +283,71 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 	} while (pNodeMaster);
 
 	return true;
+}
+
+void GameXmlContent::LoadAllSkills()
+{
+	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
+
+	do {
+		SkillNormalModel skill;
+
+		i32 skillID;
+		pNodeSkill->QueryAttribute("ID", &skillID);
+		skill.setID(skillID);
+
+		XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
+
+		// parse type
+		const char* typeStr;
+		pNodeCommonSkill->QueryStringAttribute("_Type", &typeStr);
+
+		SkillType type = SkillType::INVALID;
+		if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_PASSIVE")) {
+			type = SkillType::PASSIVE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_NORMAL")) {
+			type = SkillType::NORMAL;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_TOGGLE")) {
+			type = SkillType::TOGGLE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SUMMON")) {
+			type = SkillType::SUMMON;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_STANCE")) {
+			type = SkillType::STANCE;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SHIRK")) {
+			type = SkillType::SHIRK;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_COMBO")) {
+			type = SkillType::COMBO;
+		}
+		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_BREAKFALL")) {
+			type = SkillType::BREAKFALL;
+		}
+		skill.type = type;
+
+		// parse action
+		const char* actionStr = 0;
+		pNodeCommonSkill->QueryStringAttribute("_Action", &actionStr);
+		if(actionStr) {
+			skill.action = ActionStateFromString(actionStr);
+		}
+
+		for(int i = 0; i < 6; i++) {
+			SkillNormalLevelModel& _skillNormalLevelModel = *skill.getSkillNormalLevelByIndex(i);
+			SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel);
+		}
+
+		// TODO: slow
+		LoadMasterSkillPropertyWithID(skill, skillID);
+
+		skillMap.emplace(SkillID(skillID), skill);
+
+		pNodeSkill = pNodeSkill->NextSiblingElement();
+	} while (pNodeSkill);
 }
 
 bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 skillID)
@@ -336,7 +360,7 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 sk
 		if (_skillID == skillID)
 		{
 			XMLElement* pNodeCommonSkill = pNodeSkill->FirstChildElement("ST_COMMONSKILL");
-			LOG("Skill Match");
+			VERBOSE("Skill Match");
 			const char* SkillTypeTemp;
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
 			{
@@ -378,18 +402,46 @@ bool GameXmlContent::LoadMasterSkillPropertyWithID(SkillNormalModel& SkillNormal
 
 			//LOG("Skill Match");
 			XMLElement* pNodePropertyLevel = pNodeSkillProperty->FirstChildElement("_PROPERTY_LEVEL");
-					
-			//Need -1 to correct index
-			for (int i = level-1; i < 6; i++)
-			{
-				SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
-				_skillNormalLevelModel.setLevel(level);
-				SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel);
+			if(pNodePropertyLevel) { // some skills don't have a level property (180000010 for example)
+				//Need -1 to correct index
+				for (int i = level-1; i < 6; i++)
+				{
+					SkillNormalLevelModel& _skillNormalLevelModel = *SkillNormal.getSkillNormalLevelByIndex(i);
+					_skillNormalLevelModel.setLevel(level);
+					SetValuesSkillNormalLevel(*pNodePropertyLevel, _skillNormalLevelModel);
+				}
 			}
 		}
 	
 		pNodeInfo = pNodeInfo->NextSiblingElement();
 	} while (pNodeInfo);
+
+	return true;
+}
+
+bool GameXmlContent::LoadWeaponModelDefinitions()
+{
+	//get weapon IDS
+	XMLElement* pNodeWeapon = xmlWEAPON.FirstChildElement()->FirstChildElement();
+	do {
+		//weaponModel.push_back();
+		//WeaponModel& weapon = weaponModel.back();
+
+		i32 weaponID;
+		pNodeWeapon->QueryAttribute("ID", &weaponID);
+
+		// WeaponComData
+		XMLElement* pWeaponComData = pNodeWeapon->FirstChildElement("WeaponComData");
+		float attack, pvpattack;
+		
+		pWeaponComData->QueryFloatAttribute("_Attack", &attack);
+		pWeaponComData->QueryFloatAttribute("_PvPAttack", &pvpattack);
+
+		// save weapon data
+		//weapon.setAttack(attack);
+
+		pNodeWeapon = pNodeWeapon->NextSiblingElement();
+	} while (pNodeWeapon);
 
 	return true;
 }
@@ -453,26 +505,217 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 	}
 }
 
+//Todo make this loop and finish it
+void GameXmlContent::SetWeaponSpecRef(XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec)
+{
+	const char *weaponSpecREF;
+	float _temp = 0.0f;
+
+	pNodeWeaponSpecRef.QueryStringAttribute("ref", &weaponSpecREF);
+	pNodeWeaponSpecRef.QueryFloatAttribute("value", &_temp);
+
+	if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL1", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel1(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL2", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel2(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL3", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingTimeLevel3(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_FIREDELAY", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboFireDelay(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_VALIDTIME", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboValidTime(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodConsumption(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION_BY_CHARGING", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodConsumptionByCharging(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_ERRORANGLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodErrorAngle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIREDELAY", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodComboFireDelay(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MAXDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodMaxDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MINDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodMinDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1CreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2CreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXANGBLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodCreateRadiateMaxAngBle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodCreateRadiateMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIRINGSTAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodFiringStatMovementSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_LEVEL", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodGaugeLevel(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1CreateParallelMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2CreateParallelMaxNum(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel1AnimationMoveHorizon(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodChargingLevel2AnimationMoveHorizon(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_AUTOREGEN", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setFiringMethodGaugeAutoRegen(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ANGLE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteAngle(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ATTACKMULTIPLIER", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteAttackMultiplier(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_DAMAGEONBOUND", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteDamageOnBound(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_FOV", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteFOV(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_X", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteLengthX(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_Y", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteLengthY(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXDISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSCALE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxScale(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MINSCALE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMinScale(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteMaxSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_PENETRATIONCOUNT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemotePenetrationCount(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SIGHT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteSight(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_STATUS_RATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteStatusRate(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_CRITICALRATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteCriticalRate(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SUBBOUNDLENGTH", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setRemoteSubBoundLenght(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ACTIONBASE_PARAM_1", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setActionBaseParam1(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DISTANCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDistance(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_REGEN_AND_HEALTH", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusRegenAndHealth(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusStatMovementSpeed(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_DEFENCE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusStatDefence(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DURATION_TIME", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDurationTime(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_MAX_OVERLAP_COUNT", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusMaxOverlapCount(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DOT_DAMAGE_MULTIPLIER", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatusDotDamageMultiplier(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ATTACK", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setAttack(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALDAMAGE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatAndCriticalDamage(_temp);
+	}
+	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALRATE", weaponSpecREF) == 0)
+	{
+		_weaponSpec.setStatAndCriticalRate(_temp);
+	}
+	else
+	{
+		LOG("ERROR(SetWeaponREFSet): Unsupported WEAPONSPEC_REF %s", weaponSpecREF);
+	}
+}
+
 bool GameXmlContent::LoadMapList()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/MAPLIST.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if (!fileData) {
-		LOG("ERROR(LoadMapList): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMapList): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/MAPLIST.xml", doc)) return false;
 
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
@@ -575,38 +818,20 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		return false;
 	}
 
-	Path xmlPath = gameDataDir;
-
-	wchar_t tempPathData[256] = {0}; //ToDO: replace with define
+	wchar_t tempPathData[256] = {0};
 	wchar_t* tempPath = tempPathData;
 	const char* levelFileString = mapList->levelFile.data();
 
 	eastl::DecodePart(levelFileString, mapList->levelFile.data() + EA::StdC::Strlen(mapList->levelFile.data()), tempPath, tempPathData + sizeof(tempPathData));
-	PathAppend(xmlPath, L"/");
-	PathAppend(xmlPath, tempPathData);
-	PathAppend(xmlPath, L"/Spawn.xml");
 
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if (!fileData) {
-		LOG("ERROR(LoadMapByID): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if (error != XML_SUCCESS) {
-		LOG("ERROR(LoadMapByID): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(LFMT(L"/%s/Spawn.xml", tempPathData), doc)) return false;
 
 	XMLElement* pMapInfo = doc.FirstChildElement();
 	XMLElement* pMapEntityCreature = pMapInfo->FirstChildElement();
 	XMLElement* pSpawnElt = pMapEntityCreature->FirstChildElement();
-	do {
-		Spawn spawn;
+	for(pSpawnElt = pMapEntityCreature->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
+		Map::Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
 		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
@@ -616,28 +841,26 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NPC_SPAWN;
+		spawn.type = Map::Spawn::Type::NORMAL;
 		bool returnPoint;
 		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
-			spawn.type = Spawn::Type::SPAWN_POINT;
+			spawn.type = Map::Spawn::Type::SPAWN_POINT;
 		}
 
-		spawn.team = TeamID::INVALID;
+		spawn.faction = Faction::INVALID;
 		const char* teamString;
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
-			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.team = TeamID::RED;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.team = TeamID::BLUE;
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
 		}
 
 		map->creatures.push_back(spawn);
-
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while (pSpawnElt);
+	}
 
 	XMLElement* pMapEntityDynamic = pMapEntityCreature->NextSiblingElement();
-	pSpawnElt = pMapEntityDynamic->FirstChildElement();
-	do {
-		Spawn spawn;
+	for(XMLElement* pSpawnElt = pMapEntityDynamic->FirstChildElement(); pSpawnElt; pSpawnElt = pSpawnElt->NextSiblingElement()) {
+		Map::Spawn spawn;
 		pSpawnElt->QueryAttribute("dwDoc", (i32*)&spawn.docID);
 		pSpawnElt->QueryAttribute("dwID", (i32*)&spawn.localID);
 		pSpawnElt->QueryAttribute("kTranslate_x", &spawn.pos.x);
@@ -647,12 +870,43 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_y", &spawn.rot.y);
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
-		spawn.type = Spawn::Type::NPC_SPAWN;
+		spawn.type = Map::Spawn::Type::NORMAL;
+
+		spawn.faction = Faction::INVALID;
+		const char* teamString;
+		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
+			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
+			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
+		}
 
 		map->dynamic.push_back(spawn);
+	}
 
-		pSpawnElt = pSpawnElt->NextSiblingElement();
-	} while(pSpawnElt);
+
+	// Areas
+	XMLDocument areasXml;
+	if(!LoadXMLFile(LFMT(L"/%s/Area.xml", tempPathData), areasXml)) return false;
+
+	pMapInfo = areasXml.FirstChildElement();
+	XMLElement* pMapAreaInfo = pMapInfo->FirstChildElement();
+	for(XMLElement* pAreaList = pMapAreaInfo->FirstChildElement(); pAreaList; pAreaList = pAreaList->NextSiblingElement()) {
+		Map::Area area;
+		pAreaList->QueryAttribute("dwID", &area.ID);
+		pAreaList->QueryAttribute("dwType", &area.type);
+		// TODO: hard to judge what width, height and length represent
+		pAreaList->QueryAttribute("fWidth", &area.size.z);
+		pAreaList->QueryAttribute("fHeight", &area.size.y);
+		pAreaList->QueryAttribute("fLength", &area.size.x);
+		pAreaList->QueryAttribute("kTranslate_x", &area.pos.x);
+		pAreaList->QueryAttribute("kTranslate_y", &area.pos.y);
+		pAreaList->QueryAttribute("kTranslate_z", &area.pos.z);
+		pAreaList->QueryAttribute("kRotation_x", &area.rot.x);
+		pAreaList->QueryAttribute("kRotation_y", &area.rot.y);
+		pAreaList->QueryAttribute("kRotation_z", &area.rot.z);
+		pAreaList->QueryAttribute("layer", &area.layer);
+		map->areas.push_back(area);
+	}
 
 	return true;
 }
@@ -688,24 +942,8 @@ bool GameXmlContent::LoadPvpDeathmach()
 
 bool GameXmlContent::LoadJukeboxSongs()
 {
-	Path xmlPath = gameDataDir;
-	PathAppend(xmlPath, L"/JUKEBOX.xml");
-
-	i32 fileSize;
-	u8* fileData = FileOpenAndReadAll(xmlPath.data(), &fileSize);
-	if(!fileData) {
-		LOG("ERROR(LoadJukeboxSongs): failed to open '%ls'", xmlPath.data());
-		return false;
-	}
-	defer(memFree(fileData));
-
-	using namespace tinyxml2;
 	XMLDocument doc;
-	XMLError error = doc.Parse((char*)fileData, fileSize);
-	if(error != XML_SUCCESS) {
-		LOG("ERROR(LoadJukeboxSongs): error parsing '%ls' > '%s'", xmlPath.data(), doc.ErrorStr());
-		return false;
-	}
+	if(!LoadXMLFile(L"/JUKEBOX.xml", doc)) return false;
 
 	// TODO: load spawns from "MAP_ENTITY_TYPE_DYNAMIC" as well
 	XMLElement* pSongElt = doc.FirstChildElement()->FirstChildElement();
@@ -720,6 +958,329 @@ bool GameXmlContent::LoadJukeboxSongs()
 
 		pSongElt = pSongElt->NextSiblingElement();
 	} while(pSongElt);
+
+	return true;
+}
+
+static bool FileLoad(FileBuffer* out, const wchar* path)
+{
+	out->data = FileOpenAndReadAll(path, &out->size);
+	if(!out->data) {
+		LOG("ERROR(FileLoad): failed to open '%ls'", path);
+		return false;
+	}
+
+	return true;
+}
+
+bool GameXmlContent::LoadCollisionMeshes()
+{
+	Path path = gameDataDir;
+	PathAppend(path, L"/PVP_DeathMatch01_Collision.physx_static");
+	bool r = FileLoad(&filePvpDeathmatch01Collision, path.data());
+	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/PVP_DeathMatch01_Env.physx_static");
+	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
+	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/PvP_Death_NM_Wall04.physx_static");
+	r = FileLoad(&filePvpDeathNmWall04, path.data());
+	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/cylinder.physx_dynamic");
+	r = FileLoad(&fileCylinderCollision, path.data());
+	if(!r) return false;
+
+	return true;
+}
+
+bool GameXmlContent::LoadAnimationData()
+{
+	XMLDocument xmlAniLength;
+	if(!LoadXMLFile(L"/AniLength.xml", xmlAniLength)) return false;
+
+	struct SequenceLength
+	{
+		i32 ID;
+		f32 length;
+	};
+
+	eastl::fixed_vector<SequenceLength, 18000, false>* aniLenList;
+	eastl::fixed_hash_map<ClassType, Slice<SequenceLength>, 800> aniLenListMap;
+
+	aniLenList = new eastl::remove_reference<decltype(*aniLenList)>::type();
+	defer(delete aniLenList);
+
+	for(XMLElement* pEntityType = xmlAniLength.FirstChildElement()->FirstChildElement();
+		pEntityType;
+		pEntityType = pEntityType->NextSiblingElement()) {
+
+		for(XMLElement* pEntity = pEntityType->FirstChildElement();
+			pEntity;
+			pEntity = pEntity->NextSiblingElement()) {
+
+			const char* _Key;
+			pEntity->QueryStringAttribute("_Key", &_Key);
+			//LOG("_Key='%s'", _Key);
+
+			const i32 startIdx = aniLenList->size();
+
+			for(XMLElement* pAnimationInfo = pEntity->FirstChildElement();
+				pAnimationInfo;
+				pAnimationInfo = pAnimationInfo->NextSiblingElement()) {
+
+				i32 _SeqID;
+				f32 _SeqTime;
+				pAnimationInfo->QueryAttribute("_SeqID", &_SeqID);
+				pAnimationInfo->QueryAttribute("_SeqTime", &_SeqTime);
+				//LOG("%d %f", _SeqID, _SeqTime);
+
+				aniLenList->push_back({ _SeqID, _SeqTime });
+			}
+
+			aniLenListMap.emplace(ClassTypeFromString(_Key), Slice<SequenceLength>(&(*aniLenList)[startIdx], aniLenList->size() - startIdx));
+		}
+	}
+
+	XMLDocument xmlActionBase;
+	if(!LoadXMLFile(L"/ActionBase.xml", xmlActionBase)) return false;
+
+	ClassType prevMasterClassType = ClassType::NONE;
+	ActionStateID prevActionID = ActionStateID::INVALID;
+	i32 actionSliceStart = 0;
+	i32 actionSliceCount = 0;
+	Action* curAction = nullptr;
+	f32 accumulatedDelay = 0;
+
+	for(XMLElement* pActionBase = xmlActionBase.FirstChildElement()->FirstChildElement();
+		pActionBase;
+		pActionBase = pActionBase->NextSiblingElement()) {
+
+		const char* Class = nullptr;
+		pActionBase->QueryStringAttribute("Class", &Class);
+		eastl::fixed_string<char,64,false> classStr = Class;
+		classStr.make_upper();
+
+		const ClassType masterClassType = ClassTypeFromString(classStr.data());
+		if(masterClassType != prevMasterClassType) {
+			LOG("%s:", classStr.data());
+
+			if(actionSliceCount > 0) {
+				actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+			}
+
+			prevMasterClassType = masterClassType;
+			actionSliceStart = actionList.size();
+			actionSliceCount = 0;
+			prevActionID = ActionStateID::INVALID;
+		}
+
+		const char* BehaviorState = nullptr;
+		i32 AnimationId = -1;
+		pActionBase->QueryStringAttribute("BehaviorState", &BehaviorState);
+		pActionBase->QueryAttribute("AnimationId", &AnimationId);
+
+		const ActionStateID actionID = ActionStateFromString(BehaviorState);
+		ASSERT(actionID != ActionStateID::INVALID);
+
+		if(actionID != prevActionID) {
+			prevActionID = actionID;
+
+			bool foundAction = false;
+			for(int i = actionSliceStart; i < actionSliceStart+actionSliceCount; i++) {
+				if(actionList[i].ID == actionID) {
+					curAction = &actionList[i];
+					foundAction = true;
+					break;
+				}
+			}
+
+			if(!foundAction) {
+				actionList.push_back();
+				curAction = &actionList.back();
+				actionSliceCount++;
+				curAction->ID = actionID;
+				auto foundSeq = aniLenListMap.find(masterClassType);
+				if(foundSeq != aniLenListMap.end()) {
+					foreach_const(it, foundSeq->second) {
+						if(it->ID == AnimationId) {
+							curAction->seqLength = it->length;
+
+							break;
+						}
+					}
+				}
+
+				LOG("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
+				LOG("		seqLength=%f", curAction->seqLength);
+
+				accumulatedDelay = 0.0f;
+			}
+		}
+
+		const char* CommandType = nullptr;
+		if(pActionBase->QueryStringAttribute("CommandType", &CommandType) != XMLError::XML_SUCCESS) {
+			// FIXME: handle this case, it has AnimationLoop?
+			continue;
+		}
+
+		Action::Command cmd;
+		cmd.type = ActionCommand::TypeFromString(CommandType);
+		if(pActionBase->QueryAttribute("Delay", &cmd.delay) != XMLError::XML_SUCCESS) {
+			cmd.delay = 0.0f;
+		}
+		cmd.relativeEndTimeFromStart = accumulatedDelay + cmd.delay;
+		accumulatedDelay += cmd.delay;
+
+		switch(cmd.type) {
+			case ActionCommand::Type::STATE_BLOCK: {
+
+			} break;
+
+			case ActionCommand::Type::MOVE: {
+				const char* Param1 = 0;
+				const char* Param2 = 0;
+				pActionBase->QueryStringAttribute("Param1", &Param1);
+				pActionBase->QueryStringAttribute("Param2", &Param2);
+
+				cmd.move.preset = ActionCommand::MovePresetFromString(Param1);
+				ASSERT(cmd.move.preset != ActionCommand::MovePreset::INVALID);
+
+				if(Param2 != nullptr) {
+					i32 tmp;
+					i32 r = EA::StdC::Sscanf(Param2, "%d|%d", &cmd.move.param2, &tmp);
+					ASSERT(r == 2);
+				}
+			} break;
+
+			case ActionCommand::Type::REMOTE: {
+				const char* TargetPreset;
+				//const char* Param2;
+				i32 RemoteIndex;
+				pActionBase->QueryStringAttribute("TargetPreset", &TargetPreset);
+				//pActionBase->QueryStringAttribute("Param2", &Param2);
+				pActionBase->QueryAttribute("RemoteIndex", &RemoteIndex);
+
+				cmd.remote.idx = RemoteIdx(RemoteIndex);
+				cmd.remote.targetPreset = ActionCommand::TargetPresetFromString(TargetPreset);
+				ASSERT(cmd.remote.targetPreset != ActionCommand::TargetPreset::INVALID);
+			} break;
+
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
+			} break;
+
+			case ActionCommand::Type::ROTATESPEED: {
+				pActionBase->QueryAttribute("Param1", &cmd.rotateSpeed.speed);
+			} break;
+		}
+
+		curAction->commands.push_back(cmd);
+
+		LOG("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
+		switch(cmd.type) {
+			case ActionCommand::Type::STATE_BLOCK: {
+
+			} break;
+
+			case ActionCommand::Type::MOVE: {
+				LOG("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
+				LOG("		  param2=%d", cmd.move.param2);
+			} break;
+
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				LOG("		  distance=%f", cmd.graphMoveHorz.distance);
+			} break;
+
+			case ActionCommand::Type::ROTATESPEED: {
+				LOG("		  speed=%d", cmd.rotateSpeed.speed);
+			} break;
+		}
+	}
+
+	if(actionSliceCount > 0) {
+		actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+	}
+
+	return true;
+}
+
+bool GameXmlContent::LoadRemoteData()
+{
+	// TODO: use these everywhere?
+#define ELT_GET_STR(COMP, STR)\
+	const char* STR = 0;\
+	pComp->QueryStringAttribute(#STR, &STR)\
+
+#define ELT_GET(COMP, T, V, V_DEFAULT)\
+	T V = V_DEFAULT;\
+	pComp->QueryAttribute(#V, &V)\
+
+	XMLDocument xml;
+	if(!LoadXMLFile(L"/REMOTE_PC.xml", xml)) return false;
+
+	for(XMLElement* pEntityInfo = xml.FirstChildElement()->FirstChildElement();
+		pEntityInfo;
+		pEntityInfo = pEntityInfo->NextSiblingElement()) {
+
+		Remote remote;
+
+		const char* KEYNAME = nullptr;
+		i32 ID = 0;
+		pEntityInfo->QueryStringAttribute("KEYNAME", &KEYNAME);
+		pEntityInfo->QueryAttribute("ID", &ID);
+
+		remote.ID = RemoteIdx(ID);
+
+		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
+
+		for(XMLElement* pComp = pEntityInfo->FirstChildElement();
+			pComp;
+			pComp = pComp->NextSiblingElement()) {
+			const char* compName = pComp->Name();
+
+			if((EA::StdC::Strcmp("RemoteBoundComData2", compName) == 0)) {
+				ELT_GET(pComp, i32, _LengthX, 0);
+				ELT_GET(pComp, i32, _LengthY, 0);
+				ELT_GET(pComp, i32, _LengthZ, 0);
+				ELT_GET_STR(pComp, _Type);
+				ELT_GET_STR(pComp, _DamageGroup);
+				ELT_GET(pComp, bool, _VsDynamic, false);
+				ELT_GET(pComp, bool, _VsNPC_Monster, false);
+				ELT_GET(pComp, bool, _VsPC, false);
+
+				remote.boundType = Remote::BoundTypeFromString(_Type);
+				remote.damageGroup = Remote::DamageGroupFromString(_DamageGroup);
+				remote.vs =
+					(_VsDynamic << Remote::VS_DYNAMIC) |
+					(_VsNPC_Monster << Remote::VS_NPC_MONSTER) |
+					(_VsPC << Remote::VS_PLAYER_CHARACTER);
+
+				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
+				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
+			}
+
+			else if((EA::StdC::Strcmp("RemoteComData2", compName) == 0)) {
+				ELT_GET(pComp, i32, _ActivateCount, 0);
+				ELT_GET(pComp, i32, _AttackMultiplier, 0);
+
+				const char* _BehaviorType = 0;
+				pComp->QueryStringAttribute("_BehaviorType", &_BehaviorType);
+				if(_BehaviorType) {
+					remote.behaviorType = Remote::BehaviourTypeFromString(_BehaviorType);
+				}
+
+				LOG("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
+				LOG("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
+			}
+		}
+
+		remoteMap.emplace(remote.ID, remote);
+	}
 
 	return true;
 }
@@ -750,6 +1311,15 @@ bool GameXmlContent::Load()
 	if (!r) return false;
 
 	r = LoadJukeboxSongs();
+	if(!r) return false;
+
+	r = LoadCollisionMeshes();
+	if(!r) return false;
+
+	r = LoadAnimationData();
+	if(!r) return false;
+
+	r = LoadRemoteData();
 	if(!r) return false;
 
 	/*
@@ -827,28 +1397,28 @@ EntityType GameXmlContent::StringToEntityType(const char* s)
 {
 	if (EA::StdC::Strcmp("ENTITY_TYPE_CREATURE", s) == 0)
 	{
-		return EntityType::ENTITY_CREATURE;
+		return EntityType::CREATURE;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_DYNAMIC", s) == 0)
 	{
-		return EntityType::ENTITY_DYNAMIC;
+		return EntityType::DYNAMIC;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_ITEM", s) == 0)
 	{
-		return EntityType::ENTITY_ITEM;
+		return EntityType::ITEM;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_SFX", s) == 0)
 	{
-		return EntityType::ENTITY_SFX;
+		return EntityType::SFX;
 	}
 	else if (EA::StdC::Strcmp("ENTITY_TYPE_TERRAIN", s) == 0)
 	{
-		return EntityType::ENTITY_TERRAIN;
+		return EntityType::TERRAIN;
 	}
 	else
 	{
 		LOG("Unknown EntityType: %s", s);
-		return EntityType::ENTITY_INVALID;
+		return EntityType::INVALID;
 	}
 }
 
@@ -856,36 +1426,36 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 {
 	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
 	{
-		return SkillType::SKILL_COMBO;
+		return SkillType::COMBO;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
 	{
-		return SkillType::SKILL_NORMAL;
+		return SkillType::NORMAL;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
 	{
-		return SkillType::SKILL_PASSIVE;
+		return SkillType::PASSIVE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
 	{
-		return SkillType::SKILL_SHIRK;
+		return SkillType::SHIRK;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
 	{
-		return SkillType::SKILL_STANCE;
+		return SkillType::STANCE;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
 	{
-		return SkillType::SKILL_SUMMON;
+		return SkillType::SUMMON;
 	}
 	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
 	{
-		return SkillType::SKILL_TOGGLE;
+		return SkillType::TOGGLE;
 	}
 	else
 	{
 		LOG("Unknown SkillType: %s", s);
-		return SkillType::SKILL_INVALID;
+		return SkillType::INVALID;
 	}
 }
 
@@ -916,11 +1486,33 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 	return *found->second;
 }
 
+const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType, ActionStateID actionID) const
+{
+	auto found = actionListMap.find(classType);
+	ASSERT(found != actionListMap.end());
+
+	foreach_const(it, found->second) {
+		if(it->ID == actionID) {
+			return *it;
+		}
+	}
+
+	ASSERT(0); // not found
+	return actionListMap.cbegin()->second.front(); // unreachable
+}
+
+const Remote& GameXmlContent::GetRemote(RemoteIdx remoteID) const
+{
+	auto found = remoteMap.find(remoteID);
+	ASSERT(found != remoteMap.end());
+	return found->second;
+}
+
 bool GameXmlContentLoad()
 {
-	static GameXmlContent content;
-	g_GameXmlContent = &content;
-	return content.Load();
+	GameXmlContent* content = new GameXmlContent();
+	g_GameXmlContent = content;
+	return content->Load();
 }
 
 const GameXmlContent& GetGameXmlContent()
@@ -978,23 +1570,322 @@ bool OpenMeshFile(const char* path, MeshFile* out)
 	return true;
 }
 
-bool MakeMapCollisionMesh(const MeshFile::Mesh& mesh, ShapeMesh* out)
+namespace ActionCommand {
+
+Type TypeFromString(const char* str)
 {
-	out->triangleList.reserve(mesh.indexCount/3);
-
-	// triangles
-	for(int i = 0; i < mesh.indexCount; i += 3) {
-		const MeshFile::Vertex& vert0 = mesh.vertices[mesh.indices[i]];
-		const MeshFile::Vertex& vert1 = mesh.vertices[mesh.indices[i+1]];
-		const MeshFile::Vertex& vert2 = mesh.vertices[mesh.indices[i+2]];
-		const vec3 v0(vert0.px, vert0.py, vert0.pz);
-		const vec3 v1(vert1.px, vert1.py, vert1.pz);
-		const vec3 v2(vert2.px, vert2.py, vert2.pz);
-
-		ShapeTriangle tri;
-		tri.p = { v0, v2, v1 };
-		out->triangleList.push_back(tri);
+	if(StringEquals(str, "STATE_BLOCK")) {
+		return Type::STATE_BLOCK;
+	}
+	if(StringEquals(str, "WEAPON_USE")) {
+		return Type::WEAPON_USE;
+	}
+	if(StringEquals(str, "MOVE")) {
+		return Type::MOVE;
+	}
+	if(StringEquals(str, "TELEPORT")) {
+		return Type::TELEPORT;
+	}
+	if(StringEquals(str, "ENTITY")) {
+		return Type::ENTITY;
+	}
+	if(StringEquals(str, "STATUS")) {
+		return Type::STATUS;
+	}
+	if(StringEquals(str, "REMOTE")) {
+		return Type::REMOTE;
+	}
+	if(StringEquals(str, "STATUS_SKILL_TARGET")) {
+		return Type::STATUS_SKILL_TARGET;
+	}
+	if(StringEquals(str, "REMOTE_SKILL_TARGET")) {
+		return Type::REMOTE_SKILL_TARGET;
+	}
+	if(StringEquals(str, "GRAPH_MOVE_HORZ")) {
+		return Type::GRAPH_MOVE_HORZ;
+	}
+	if(StringEquals(str, "FLY_MOVE")) {
+		return Type::FLY_MOVE;
+	}
+	if(StringEquals(str, "MOVESPEED")) {
+		return Type::MOVESPEED;
+	}
+	if(StringEquals(str, "ROTATESPEED")) {
+		return Type::ROTATESPEED;
+	}
+	if(StringEquals(str, "REGCOMBO")) {
+		return Type::REGCOMBO;
+	}
+	if(StringEquals(str, "SETSTANCE")) {
+		return Type::SETSTANCE;
+	}
+	if(StringEquals(str, "PHYSICS")) {
+		return Type::PHYSICS;
+	}
+	if(StringEquals(str, "AIOBJECT")) {
+		return Type::AIOBJECT;
+	}
+	if(StringEquals(str, "PUSH_OVERLAP")) {
+		return Type::PUSH_OVERLAP;
+	}
+	if(StringEquals(str, "POLYMORPH")) {
+		return Type::POLYMORPH;
+	}
+	if(StringEquals(str, "DIE_MODE")) {
+		return Type::DIE_MODE;
+	}
+	if(StringEquals(str, "SET_FLAG")) {
+		return Type::SET_FLAG;
+	}
+	if(StringEquals(str, "CLEAR_FLAG")) {
+		return Type::CLEAR_FLAG;
+	}
+	if(StringEquals(str, "FORCE_ROTATE")) {
+		return Type::FORCE_ROTATE;
+	}
+	if(StringEquals(str, "CALL_CHILD_SKILL")) {
+		return Type::CALL_CHILD_SKILL;
+	}
+	if(StringEquals(str, "LONG_JUMP")) {
+		return Type::LONG_JUMP;
+	}
+	if(StringEquals(str, "TALK")) {
+		return Type::TALK;
+	}
+	if(StringEquals(str, "EFFECT")) {
+		return Type::EFFECT;
+	}
+	if(StringEquals(str, "AI_ADJUST")) {
+		return Type::AI_ADJUST;
+	}
+	if(StringEquals(str, "INTERACTION")) {
+		return Type::INTERACTION;
+	}
+	if(StringEquals(str, "DEATHWORM_BOUND")) {
+		return Type::DEATHWORM_BOUND;
+	}
+	if(StringEquals(str, "UI")) {
+		return Type::UI;
+	}
+	if(StringEquals(str, "CHANGE_MESH")) {
+		return Type::CHANGE_MESH;
 	}
 
-	return true;
+	return Type::INVALID;
+}
+
+MovePreset MovePresetFromString(const char* str)
+{
+	if(StringEquals(str, "MOVE_PRESET_SEE_TARGET")) {
+		return MovePreset::SEE_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_ROTATE")) {
+		return MovePreset::ROTATE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_LIFTED")) {
+		return MovePreset::LIFTED;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GRAPH")) {
+		return MovePreset::GRAPH;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GRAPH_GROUND")) {
+		return MovePreset::GRAPH_GROUND;
+	}
+	if(StringEquals(str, "MOVE_PRESET_MOVE_NONE")) {
+		return MovePreset::MOVE_NONE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET")) {
+		return MovePreset::GOTO_CURRENT_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_CHASE")) {
+		return MovePreset::GOTO_CURRENT_TARGET_CHASE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_SEE_CURRENT_TARGET")) {
+		return MovePreset::SEE_CURRENT_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_AFTERIMAGE_MOVE")) {
+		return MovePreset::AFTERIMAGE_MOVE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_TARGET_POS")) {
+		return MovePreset::TARGET_POS;
+	}
+	if(StringEquals(str, "MOVE_PRESET_TARGET_POS_LEAP")) {
+		return MovePreset::TARGET_POS_LEAP;
+	}
+	if(StringEquals(str, "MOVE_PRESET_WARP")) {
+		return MovePreset::WARP;
+	}
+	if(StringEquals(str, "MOVE_PRESET_WARP_TARGET_POS")) {
+		return MovePreset::WARP_TARGET_POS;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH")) {
+		return MovePreset::GOTO_CURRENT_TARGET_THROUGH;
+	}
+	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH_CHASE")) {
+		return MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE;
+	}
+	if(StringEquals(str, "MOVE_PRESET_SEE_MEMORIZED_TARGET")) {
+		return MovePreset::SEE_MEMORIZED_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET")) {
+		return MovePreset::CHASE_TARGET;
+	}
+	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET_ATTACK")) {
+		return MovePreset::CHASE_TARGET_ATTACK;
+	}
+	return MovePreset::INVALID;
+}
+
+const char* MovePresetToString(MovePreset p)
+{
+	if(p == MovePreset::SEE_TARGET) { return "SEE_TARGET"; }
+	if(p == MovePreset::ROTATE) { return "ROTATE"; }
+	if(p == MovePreset::LIFTED) { return "LIFTED"; }
+	if(p == MovePreset::GRAPH) { return "GRAPH"; }
+	if(p == MovePreset::GRAPH_GROUND) { return "GRAPH_GROUND"; }
+	if(p == MovePreset::MOVE_NONE) { return "MOVE_NONE"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET) { return "GOTO_CURRENT_TARGET"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_CHASE) { return "GOTO_CURRENT_TARGET_CHASE"; }
+	if(p == MovePreset::SEE_CURRENT_TARGET) { return "SEE_CURRENT_TARGET"; }
+	if(p == MovePreset::AFTERIMAGE_MOVE) { return "AFTERIMAGE_MOVE"; }
+	if(p == MovePreset::TARGET_POS) { return "TARGET_POS"; }
+	if(p == MovePreset::TARGET_POS_LEAP) { return "TARGET_POS_LEAP"; }
+	if(p == MovePreset::WARP) { return "WARP"; }
+	if(p == MovePreset::WARP_TARGET_POS) { return "WARP_TARGET_POS"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_THROUGH) { return "GOTO_CURRENT_TARGET_THROUGH"; }
+	if(p == MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE) { return "GOTO_CURRENT_TARGET_THROUGH_CHASE"; }
+	if(p == MovePreset::SEE_MEMORIZED_TARGET) { return "SEE_MEMORIZED_TARGET"; }
+	if(p == MovePreset::CHASE_TARGET) { return "CHASE_TARGET"; }
+	if(p == MovePreset::CHASE_TARGET_ATTACK) { return "CHASE_TARGET_ATTACK"; }
+	return "INVALID";
+}
+
+TargetPreset TargetPresetFromString(const char* str)
+{
+	if(StringEquals(str, "TARGET_SELF_FFF")) { return TargetPreset::SELF_FFF; }
+	if(StringEquals(str, "TARGET_SELF_FFF_1")) { return TargetPreset::SELF_FFF_1; }
+	if(StringEquals(str, "TARGET_SELF_TFF")) { return TargetPreset::SELF_TFF; }
+	if(StringEquals(str, "TARGET_SELF_TTF")) { return TargetPreset::SELF_TTF; }
+	if(StringEquals(str, "TARGET_SELF_TTT")) { return TargetPreset::SELF_TTT; }
+	if(StringEquals(str, "TARGET_POS_TTT_1")) { return TargetPreset::POS_TTT_1; }
+	if(StringEquals(str, "TARGET_POS_FFF")) { return TargetPreset::POS_FFF; }
+	if(StringEquals(str, "TARGET_POS_TFF")) { return TargetPreset::POS_TFF; }
+	if(StringEquals(str, "TARGET_POS_TFF_1_800_1000")) { return TargetPreset::POS_TFF_1_800_1000; }
+	if(StringEquals(str, "TARGET_LAST_CHILD_FFF")) { return TargetPreset::LAST_CHILD_FFF; }
+	if(StringEquals(str, "TARGET_LAST_CHILD_TFF")) { return TargetPreset::LAST_CHILD_TFF; }
+	if(StringEquals(str, "TARGET_CHILD_INDEX_FFF")) { return TargetPreset::CHILD_INDEX_FFF; }
+	if(StringEquals(str, "TARGET_MEMORIZED_TFT")) { return TargetPreset::MEMORIZED_TFT; }
+	if(StringEquals(str, "TARGET_CURRENT_FFF")) { return TargetPreset::CURRENT_FFF; }
+	if(StringEquals(str, "TARGET_LOCK_TFF")) { return TargetPreset::LOCK_TFF; }
+	if(StringEquals(str, "TARGET_MULTI_LOCKON_FFF")) { return TargetPreset::MULTI_LOCKON_FFF; }
+	return TargetPreset::INVALID;
+}
+
+const char* TargetPresetToString(TargetPreset p)
+{
+	if(p == TargetPreset::SELF_FFF) { return "TARGET_SELF_FFF"; }
+	if(p == TargetPreset::SELF_FFF_1) { return "TARGET_SELF_FFF_1"; }
+	if(p == TargetPreset::SELF_TFF) { return "TARGET_SELF_TFF"; }
+	if(p == TargetPreset::SELF_TTF) { return "TARGET_SELF_TTF"; }
+	if(p == TargetPreset::SELF_TTT) { return "TARGET_SELF_TTT"; }
+	if(p == TargetPreset::POS_TTT_1) { return "TARGET_POS_TTT_1"; }
+	if(p == TargetPreset::POS_FFF) { return "TARGET_POS_FFF"; }
+	if(p == TargetPreset::POS_TFF) { return "TARGET_POS_TFF"; }
+	if(p == TargetPreset::POS_TFF_1_800_1000) { return "TARGET_POS_TFF_1_800_1000"; }
+	if(p == TargetPreset::LAST_CHILD_FFF) { return "TARGET_LAST_CHILD_FFF"; }
+	if(p == TargetPreset::LAST_CHILD_TFF) { return "TARGET_LAST_CHILD_TFF"; }
+	if(p == TargetPreset::CHILD_INDEX_FFF) { return "TARGET_CHILD_INDEX_FFF"; }
+	if(p == TargetPreset::MEMORIZED_TFT) { return "TARGET_MEMORIZED_TFT"; }
+	if(p == TargetPreset::CURRENT_FFF) { return "TARGET_CURRENT_FFF"; }
+	if(p == TargetPreset::LOCK_TFF) { return "TARGET_LOCK_TFF"; }
+	if(p == TargetPreset::MULTI_LOCKON_FFF) { return "TARGET_MULTI_LOCKON_FFF"; }
+	return "INVALID";
+}
+
+}
+
+Remote::BoundType Remote::BoundTypeFromString(const char* str)
+{
+	if(StringEquals(str, "E_BOUND_NONE")) { return BoundType::E_BOUND_NONE; }
+	if(StringEquals(str, "E_BOUND_RAY")) { return BoundType::E_BOUND_RAY; }
+	if(StringEquals(str, "E_BOUND_BOX")) { return BoundType::E_BOUND_BOX; }
+	if(StringEquals(str, "E_BOUND_CAPSULE")) { return BoundType::E_BOUND_CAPSULE; }
+	if(StringEquals(str, "E_BOUND_SPHERE")) { return BoundType::E_BOUND_SPHERE; }
+	if(StringEquals(str, "E_BOUND_BEAM")) { return BoundType::E_BOUND_BEAM; }
+	if(StringEquals(str, "E_BOUND_BEAM_NIF")) { return BoundType::E_BOUND_BEAM_NIF; }
+	if(StringEquals(str, "E_BOUND_LASER")) { return BoundType::E_BOUND_LASER; }
+	if(StringEquals(str, "E_BOUND_PHYSXPROP")) { return BoundType::E_BOUND_PHYSXPROP; }
+	if(StringEquals(str, "E_BOUND_HAMMER")) { return BoundType::E_BOUND_HAMMER; }
+	if(StringEquals(str, "E_BOUND_CASTER_MOVE_BOUND")) { return BoundType::E_BOUND_CASTER_MOVE_BOUND; }
+	return BoundType::INVALID;
+}
+
+const char* Remote::BoundTypeToString(BoundType t)
+{
+	if(t == BoundType::E_BOUND_NONE) { return "E_BOUND_NONE"; }
+	if(t == BoundType::E_BOUND_RAY) { return "E_BOUND_RAY"; }
+	if(t == BoundType::E_BOUND_BOX) { return "E_BOUND_BOX"; }
+	if(t == BoundType::E_BOUND_CAPSULE) { return "E_BOUND_CAPSULE"; }
+	if(t == BoundType::E_BOUND_SPHERE) { return "E_BOUND_SPHERE"; }
+	if(t == BoundType::E_BOUND_BEAM) { return "E_BOUND_BEAM"; }
+	if(t == BoundType::E_BOUND_BEAM_NIF) { return "E_BOUND_BEAM_NIF"; }
+	if(t == BoundType::E_BOUND_LASER) { return "E_BOUND_LASER"; }
+	if(t == BoundType::E_BOUND_PHYSXPROP) { return "E_BOUND_PHYSXPROP"; }
+	if(t == BoundType::E_BOUND_HAMMER) { return "E_BOUND_HAMMER"; }
+	if(t == BoundType::E_BOUND_CASTER_MOVE_BOUND) { return "E_BOUND_CASTER_MOVE_BOUND"; }
+	return "INVALID";
+}
+
+Remote::DamageGroup Remote::DamageGroupFromString(const char* str)
+{
+	if(StringEquals(str, "eNONE")) { return DamageGroup::eNONE; }
+	if(StringEquals(str, "eENEMY")) { return DamageGroup::eENEMY; }
+	if(StringEquals(str, "eFRIEND")) { return DamageGroup::eFRIEND; }
+	if(StringEquals(str, "eALL")) { return DamageGroup::eALL; }
+	return DamageGroup::INVALID;
+}
+
+const char* Remote::DamageGroupToString(DamageGroup g)
+{
+	if(g == DamageGroup::eNONE) { return "eNONE"; }
+	if(g == DamageGroup::eENEMY) { return "eENEMY"; }
+	if(g == DamageGroup::eFRIEND) { return "eFRIEND"; }
+	if(g == DamageGroup::eALL) { return "eALL"; }
+	return "INVALID";
+}
+
+Remote::BehaviorType Remote::BehaviourTypeFromString(const char* str)
+{
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_NONETARGET")) { return BehaviorType::NONETARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_HOMING")) { return BehaviorType::HOMING; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_RETURN")) { return BehaviorType::RETURN; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET")) { return BehaviorType::CASTER_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_BEAM")) { return BehaviorType::BEAM; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CHAIN")) { return BehaviorType::CHAIN; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_GRAPH")) { return BehaviorType::GRAPH; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET")) { return BehaviorType::TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET")) { return BehaviorType::FOLLOW_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET")) { return BehaviorType::ATTACH_TARGET; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE")) { return BehaviorType::ATTACH_MUZZLE; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION")) { return BehaviorType::TARGET_GROUNDPOSITION; }
+	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ORBIT")) { return BehaviorType::ORBIT; }
+	return BehaviorType::INVALID;
+}
+
+const char* Remote::BehaviourTypeToString(BehaviorType t)
+{
+	if(t == BehaviorType::NONETARGET) { return "E_REMOTE_BEHAVIOR_TYPE_NONETARGET"; }
+	if(t == BehaviorType::HOMING) { return "E_REMOTE_BEHAVIOR_TYPE_HOMING"; }
+	if(t == BehaviorType::RETURN) { return "E_REMOTE_BEHAVIOR_TYPE_RETURN"; }
+	if(t == BehaviorType::CASTER_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET"; }
+	if(t == BehaviorType::BEAM) { return "E_REMOTE_BEHAVIOR_TYPE_BEAM"; }
+	if(t == BehaviorType::CHAIN) { return "E_REMOTE_BEHAVIOR_TYPE_CHAIN"; }
+	if(t == BehaviorType::GRAPH) { return "E_REMOTE_BEHAVIOR_TYPE_GRAPH"; }
+	if(t == BehaviorType::TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_TARGET"; }
+	if(t == BehaviorType::FOLLOW_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET"; }
+	if(t == BehaviorType::ATTACH_TARGET) { return "E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET"; }
+	if(t == BehaviorType::ATTACH_MUZZLE) { return "E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE"; }
+	if(t == BehaviorType::TARGET_GROUNDPOSITION) { return "E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION"; }
+	if(t == BehaviorType::ORBIT) { return "E_REMOTE_BEHAVIOR_TYPE_ORBIT"; }
+	return "INVALID";
 }

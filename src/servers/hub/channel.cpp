@@ -375,11 +375,7 @@ void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandl
 {
 	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
-	i32 state = (i32)sync.state;
-	const char* stateStr = g_ActionStateInvalidString;
-	if(state >= 0 && state < ARRAY_COUNT(g_ActionStateString)) {
-		stateStr = g_ActionStateString[state];
-	}
+	const char* stateStr = ActionStateToString(sync.state);
 
 	NT_LOG("[client%x] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientHd);
 	NT_LOG("	characterID=%d", (u32)sync.characterID);

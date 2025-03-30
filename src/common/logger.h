@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <eathread/eathread_futex.h> // mutex
+#include <eathread/eathread_thread.h>
 #include <EASTL/fixed_string.h>
 
 struct LoggerFlags
@@ -16,11 +17,15 @@ struct Logger
 	int flags = 0x0;
 	const char* filepath;
 	FILE* file;
-	EA::Thread::Futex mutex;
+	EA::Thread::Futex mutexBuffer;
+	EA::Thread::Thread thread;
+	bool running = true;
+	eastl::string buffer;
 
 	void Init(const char* filepath, int flags_);
 	void Vlogf(const char* fmt, va_list list);
 	void FlushAndClose();
+	void WriteOut();
 
 	inline void __Logf(const char* fmt, ...)
 	{
@@ -53,19 +58,17 @@ struct Logger
 		va_end(list);
 	}
 
-	~Logger() {
-		if(file) {
-			fclose(file);
-		}
-	}
+	~Logger();
 };
 
 extern Logger g_LogBase;
 extern Logger g_LogNetTraffic;
+extern bool g_LogVerbose;
 
 #define MSVC_VERIFY_FORMATTING(...) (0 && snprintf(0, 0, ##__VA_ARGS__))
 
 #define LOG(...) do { g_LogBase.__LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
+#define VERBOSE(...) do { if(g_LogVerbose) g_LogBase.__LogfLine(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 #define LOGN(...) do { g_LogBase.__Logf(__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 #define WARN(...) do { g_LogBase.__Warnf(FUNCTION_STR, ##__VA_ARGS__); MSVC_VERIFY_FORMATTING(__VA_ARGS__); } while(0)
 

@@ -67,7 +67,6 @@ void PlatformInit()
 	freopen("CONOUT$", "w", stderr);
 	freopen("CONOUT$", "w", stdout);
 }
-#endif
 
 uint64_t CurrentFiletimeTimestampUTC()
 {
@@ -78,3 +77,4 @@ uint64_t CurrentFiletimeTimestampUTC()
 	large.HighPart = ft.dwHighDateTime;
 	return large.QuadPart;
 }
+#endif

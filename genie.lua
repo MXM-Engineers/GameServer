@@ -80,6 +80,13 @@ solution "PrivateMxM"
 			"Cpp14"
 		}
 
+	configuration "vs2022"
+        defines {
+            "_HAS_CXX17=0",  -- VS2022 defaults to newer C++ standards
+            "_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING",
+            "EASTL_CUSTOM_FLOAT_CONSTANTS_REQUIRED=1"
+        }
+
 	flags {
 		"NoExceptions",
 		"NoRTTI",
@@ -130,7 +137,6 @@ project "Login"
 		"src/servers/login/**.h",
 		"src/servers/login/**.c",
 		"src/servers/login/**.cpp",
-		"src/servers/login/**.rc",
 	}
 
 	configuration "windows"
@@ -138,6 +144,9 @@ project "Login"
 		linkoptions{ natvis}
 		links {
 			"ws2_32",
+		}
+		files {
+			"src/servers/login/**.rc",
 		}
 	configuration "linux"
 		links {
@@ -210,7 +219,6 @@ project "HubServer"
 		"src/servers/hub/**.h",
 		"src/servers/hub/**.c",
 		"src/servers/hub/**.cpp",
-		"src/servers/hub/**.rc",
 	}
 
 	defines {
@@ -228,6 +236,10 @@ project "HubServer"
 
 		links {
 			server_common_links_win
+		}
+
+		files {
+			"src/servers/hub/**.rc",
 		}
 
 	configuration "linux"
@@ -257,7 +269,6 @@ project "GameServer"
 		"src/servers/play/**.h",
 		"src/servers/play/**.c",
 		"src/servers/play/**.cpp",
-		"src/servers/play/**.rc",
 	}
 
 	defines {
@@ -288,7 +299,8 @@ project "GameServer"
 
 		files {
 			sokol_files,
-			imgui_files
+			imgui_files,
+			"src/servers/play/**.rc",
 		}
 
 		includedirs {
@@ -327,7 +339,6 @@ project "MatchMaker"
 		"src/servers/matchmaker/**.h",
 		"src/servers/matchmaker/**.c",
 		"src/servers/matchmaker/**.cpp",
-		"src/servers/matchmaker/**.rc",
 	}
 
 	defines {
@@ -345,6 +356,10 @@ project "MatchMaker"
 
 		links {
 			server_common_links_win
+		}
+
+		files {
+			"src/servers/matchmaker/**.rc",
 		}
 
 	configuration "linux"

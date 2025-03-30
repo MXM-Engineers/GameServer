@@ -44,4 +44,13 @@ void PlatformInit()
 {
 	prctl(PR_SET_DUMPABLE, 1); // enable generating dump when program crashes.
 }
+
+uint64_t CurrentFiletimeTimestampUTC()
+{
+	//WARNING: Implementation CurrentFiletimeTimestampUTC not tested"
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	uint64_t result = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+	return result * 10 + 116444736000000000ULL;
+}
 #endif

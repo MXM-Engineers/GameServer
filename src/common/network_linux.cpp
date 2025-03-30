@@ -28,7 +28,26 @@ void AsyncConnection::Reset()
 {
 }
 
-void AsyncConnection::PrepareForNewConnection(SOCKET s)
+//ToDo: finish this function
+bool AsyncConnection::ConnectTo(const u8* ip, u16 port)
+{
+	Init();
+
+	sockaddr_in addr = { 0 };
+	memmove(&addr.sin_addr.s_addr, ip, 4);
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	ASSERT(s != INVALID_SOCKET);
+
+	int r = connect(s, (sockaddr*)&addr, sizeof(addr));
+	if (r == SOCKET_ERROR) return false;
+
+	PostConnectionInit(s);
+	return true;
+}
+
+void AsyncConnection::PostConnectionInit(SOCKET s)
 {
 	sock = s;
 

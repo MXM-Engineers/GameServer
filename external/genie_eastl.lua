@@ -79,5 +79,11 @@ project "eastl"
 		"EASTL_OPENSOURCE=1",
 	}
 
+	configuration "vs2022"
+        defines {
+            "_HAS_CXX17=0",  -- VS2022 defaults to newer C++ standards
+            "_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING",
+            "EASTL_CUSTOM_FLOAT_CONSTANTS_REQUIRED=1"
+        }
 
     

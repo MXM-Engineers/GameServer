@@ -328,8 +328,11 @@ private:
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
 	EntityType StringToEntityType(const char* s);
+	Faction StringToFaction(const char* s);
+	GameSubModeType StringToGameSubModeType(const char* s);
+	MapType StringToMapType(const char* s);
 	SkillType StringToSkillType(const char* s);
-
+	
 	tinyxml2::XMLDocument xmlSKILL;
 	tinyxml2::XMLDocument xmlSKILLPROPERTY;
 	tinyxml2::XMLDocument xmlCREATURECHARACTER;

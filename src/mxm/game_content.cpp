@@ -289,6 +289,17 @@ void GameXmlContent::LoadAllSkills()
 {
 	XMLElement* pNodeSkill = xmlSKILL.FirstChildElement()->FirstChildElement();
 
+	static const eastl::hash_map<eastl::string, SkillType> skillTypeMap = {
+		{"SKILL_TYPE_PASSIVE", SkillType::PASSIVE},
+		{"SKILL_TYPE_NORMAL", SkillType::NORMAL},
+		{"SKILL_TYPE_TOGGLE", SkillType::TOGGLE},
+		{"SKILL_TYPE_SUMMON", SkillType::SUMMON},
+		{"SKILL_TYPE_STANCE", SkillType::STANCE},
+		{"SKILL_TYPE_SHIRK", SkillType::SHIRK},
+		{"SKILL_TYPE_COMBO", SkillType::COMBO},
+		{"SKILL_TYPE_BREAKFALL", SkillType::BREAKFALL},
+	};
+
 	do {
 		SkillNormalModel skill;
 
@@ -302,31 +313,9 @@ void GameXmlContent::LoadAllSkills()
 		const char* typeStr;
 		pNodeCommonSkill->QueryStringAttribute("_Type", &typeStr);
 
-		SkillType type = SkillType::INVALID;
-		if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_PASSIVE")) {
-			type = SkillType::PASSIVE;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_NORMAL")) {
-			type = SkillType::NORMAL;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_TOGGLE")) {
-			type = SkillType::TOGGLE;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SUMMON")) {
-			type = SkillType::SUMMON;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_STANCE")) {
-			type = SkillType::STANCE;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_SHIRK")) {
-			type = SkillType::SHIRK;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_COMBO")) {
-			type = SkillType::COMBO;
-		}
-		else if(EA::StdC::Strcmp(typeStr, "SKILL_TYPE_BREAKFALL")) {
-			type = SkillType::BREAKFALL;
-		}
+		auto it = skillTypeMap.find(typeStr);
+		SkillType type = (it != skillTypeMap.end()) ? it->second : SkillType::INVALID;
+
 		skill.type = type;
 
 		// parse action
@@ -508,214 +497,123 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 //Todo make this loop and finish it
 void GameXmlContent::SetWeaponSpecRef(XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec)
 {
-	const char *weaponSpecREF;
+	// Define a function pointer type for WeaponSpec setter methods
+	using SetterFunction = void (WeaponSpec::*)(float);
+
+	// Create a lookup table mapping weapon spec references to setter functions
+	static const eastl::hash_map<eastl::string, SetterFunction> weaponSpecSetters = {
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL1", &WeaponSpec::setFiringMethodChargingTimeLevel1},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL2", &WeaponSpec::setFiringMethodChargingTimeLevel2},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL3", &WeaponSpec::setFiringMethodChargingTimeLevel3},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_COMBO_FIREDELAY", &WeaponSpec::setFiringMethodComboFireDelay},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_COMBO_VALIDTIME", &WeaponSpec::setFiringMethodComboValidTime},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION", &WeaponSpec::setFiringMethodConsumption},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION_BY_CHARGING", &WeaponSpec::setFiringMethodConsumptionByCharging},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_ERRORANGLE", &WeaponSpec::setFiringMethodErrorAngle},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_FIREDELAY", &WeaponSpec::setFiringMethodComboFireDelay},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_MAXDISTANCE", &WeaponSpec::setFiringMethodMaxDistance},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_MINDISTANCE", &WeaponSpec::setFiringMethodMinDistance},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_RADIATE_MAXNUM", &WeaponSpec::setFiringMethodChargingLevel1CreateRadiateMaxNum},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_RADIATE_MAXNUM", &WeaponSpec::setFiringMethodChargingLevel2CreateRadiateMaxNum},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXANGBLE", &WeaponSpec::setFiringMethodCreateRadiateMaxAngBle},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXNUM", &WeaponSpec::setFiringMethodCreateRadiateMaxNum},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_FIRINGSTAT_MOVEMENT_SPEED", &WeaponSpec::setFiringMethodFiringStatMovementSpeed},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_LEVEL", &WeaponSpec::setFiringMethodGaugeLevel},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_PARALLEL_MAXNUM", &WeaponSpec::setFiringMethodChargingLevel1CreateParallelMaxNum},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_PARALLEL_MAXNUM", &WeaponSpec::setFiringMethodChargingLevel2CreateParallelMaxNum},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_ANIMATION_MOVEHORIZON", &WeaponSpec::setFiringMethodChargingLevel1AnimationMoveHorizon},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_ANIMATION_MOVEHORIZON", &WeaponSpec::setFiringMethodChargingLevel2AnimationMoveHorizon},
+		{"WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_AUTOREGEN", &WeaponSpec::setFiringMethodGaugeAutoRegen},
+		{"WEAPONSPEC_REF_REMOTE_ANGLE", &WeaponSpec::setRemoteAngle},
+		{"WEAPONSPEC_REF_REMOTE_ATTACKMULTIPLIER", &WeaponSpec::setRemoteAttackMultiplier},
+		{"WEAPONSPEC_REF_REMOTE_DAMAGEONBOUND", &WeaponSpec::setRemoteDamageOnBound},
+		{"WEAPONSPEC_REF_REMOTE_FOV", &WeaponSpec::setRemoteFOV},
+		{"WEAPONSPEC_REF_REMOTE_LENGTH_X", &WeaponSpec::setRemoteLengthX},
+		{"WEAPONSPEC_REF_REMOTE_LENGTH_Y", &WeaponSpec::setRemoteLengthY},
+		{"WEAPONSPEC_REF_REMOTE_MAXDISTANCE", &WeaponSpec::setRemoteMaxDistance},
+		{"WEAPONSPEC_REF_REMOTE_MAXSCALE", &WeaponSpec::setRemoteMaxScale},
+		{"WEAPONSPEC_REF_REMOTE_MINSCALE", &WeaponSpec::setRemoteMinScale},
+		{"WEAPONSPEC_REF_REMOTE_MAXSPEED", &WeaponSpec::setRemoteMaxSpeed},
+		{"WEAPONSPEC_REF_REMOTE_PENETRATIONCOUNT", &WeaponSpec::setRemotePenetrationCount},
+		{"WEAPONSPEC_REF_REMOTE_SIGHT", &WeaponSpec::setRemoteSight},
+		{"WEAPONSPEC_REF_REMOTE_STATUS_RATE", &WeaponSpec::setRemoteStatusRate},
+		{"WEAPONSPEC_REF_REMOTE_CRITICALRATE", &WeaponSpec::setRemoteCriticalRate},
+		{"WEAPONSPEC_REF_REMOTE_SUBBOUNDLENGTH", &WeaponSpec::setRemoteSubBoundLenght},
+		{"WEAPONSPEC_REF_ACTIONBASE_PARAM_1", &WeaponSpec::setActionBaseParam1},
+		{"WEAPONSPEC_REF_STATUS_DISTANCE", &WeaponSpec::setStatusDistance},
+		{"WEAPONSPEC_REF_STATUS_REGEN_AND_HEALTH", &WeaponSpec::setStatusRegenAndHealth},
+		{"WEAPONSPEC_REF_STATUS_STAT_MOVEMENT_SPEED", &WeaponSpec::setStatusStatMovementSpeed},
+		{"WEAPONSPEC_REF_STATUS_STAT_DEFENCE", &WeaponSpec::setStatusStatDefence},
+		{"WEAPONSPEC_REF_STATUS_DURATION_TIME", &WeaponSpec::setStatusDurationTime},
+		{"WEAPONSPEC_REF_STATUS_MAX_OVERLAP_COUNT", &WeaponSpec::setStatusMaxOverlapCount},
+		{"WEAPONSPEC_REF_STATUS_DOT_DAMAGE_MULTIPLIER", &WeaponSpec::setStatusDotDamageMultiplier},
+		{"WEAPONSPEC_REF_ATTACK", &WeaponSpec::setAttack},
+		{"WEAPONSPEC_REF_STAT_AND_CRITICALDAMAGE", &WeaponSpec::setStatAndCriticalDamage},
+		{"WEAPONSPEC_REF_STAT_AND_CRITICALRATE", &WeaponSpec::setStatAndCriticalRate}
+	};
+
+	const char* weaponSpecREF;
 	float _temp = 0.0f;
 
 	pNodeWeaponSpecRef.QueryStringAttribute("ref", &weaponSpecREF);
 	pNodeWeaponSpecRef.QueryFloatAttribute("value", &_temp);
 
-	if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL1", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingTimeLevel1(_temp);
+	// Look up the setter function and call it
+	auto it = weaponSpecSetters.find(weaponSpecREF);
+	if (it != weaponSpecSetters.end()) {
+		(_weaponSpec.*(it->second))(_temp);
 	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL2", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingTimeLevel2(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_TIME_LEVEL3", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingTimeLevel3(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_FIREDELAY", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodComboFireDelay(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_COMBO_VALIDTIME", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodComboValidTime(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodConsumption(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CONSUMPTION_BY_CHARGING", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodConsumptionByCharging(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_ERRORANGLE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodErrorAngle(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIREDELAY", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodComboFireDelay(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MAXDISTANCE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodMaxDistance(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_MINDISTANCE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodMinDistance(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel1CreateRadiateMaxNum(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel2CreateRadiateMaxNum(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXANGBLE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodCreateRadiateMaxAngBle(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CREATE_RADIATE_MAXNUM", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodCreateRadiateMaxNum(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_FIRINGSTAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodFiringStatMovementSpeed(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_LEVEL", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodGaugeLevel(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel1CreateParallelMaxNum(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_CREATE_PARALLEL_MAXNUM", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel2CreateParallelMaxNum(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_1_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel1AnimationMoveHorizon(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_CHARGING_LEVEL_2_ANIMATION_MOVEHORIZON", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodChargingLevel2AnimationMoveHorizon(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_FIRINGMETHOD_GAUGE_AUTOREGEN", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setFiringMethodGaugeAutoRegen(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ANGLE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteAngle(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_ATTACKMULTIPLIER", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteAttackMultiplier(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_DAMAGEONBOUND", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteDamageOnBound(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_FOV", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteFOV(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_X", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteLengthX(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_LENGTH_Y", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteLengthY(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXDISTANCE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteMaxDistance(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSCALE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteMaxScale(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MINSCALE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteMinScale(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_MAXSPEED", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteMaxSpeed(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_PENETRATIONCOUNT", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemotePenetrationCount(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SIGHT", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteSight(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_STATUS_RATE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteStatusRate(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_CRITICALRATE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteCriticalRate(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_REMOTE_SUBBOUNDLENGTH", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setRemoteSubBoundLenght(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ACTIONBASE_PARAM_1", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setActionBaseParam1(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DISTANCE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusDistance(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_REGEN_AND_HEALTH", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusRegenAndHealth(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_MOVEMENT_SPEED", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusStatMovementSpeed(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_STAT_DEFENCE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusStatDefence(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DURATION_TIME", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusDurationTime(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_MAX_OVERLAP_COUNT", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusMaxOverlapCount(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STATUS_DOT_DAMAGE_MULTIPLIER", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatusDotDamageMultiplier(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_ATTACK", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setAttack(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALDAMAGE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatAndCriticalDamage(_temp);
-	}
-	else if (EA::StdC::Strcmp("WEAPONSPEC_REF_STAT_AND_CRITICALRATE", weaponSpecREF) == 0)
-	{
-		_weaponSpec.setStatAndCriticalRate(_temp);
-	}
-	else
-	{
+	else {
 		LOG("ERROR(SetWeaponREFSet): Unsupported WEAPONSPEC_REF %s", weaponSpecREF);
 	}
+}
+
+GameSubModeType GameXmlContent::StringToGameSubModeType(const char* s)
+{
+	static const eastl::hash_map<eastl::string, GameSubModeType> gameModeMap = {
+		{"GAME_SUB_MODE_DEATH_MATCH_NORMAL", GameSubModeType::GAME_SUB_MODE_DEATH_MATCH_NORMAL},
+		{"GAME_SUB_MODE_OCCUPY_CORE", GameSubModeType::GAME_SUB_MODE_OCCUPY_CORE},
+		{"GAME_SUB_MODE_OCCUPY_BUSH", GameSubModeType::GAME_SUB_MODE_OCCUPY_BUSH},
+		{"GAME_SUB_MODE_GOT_AUTHENTIC", GameSubModeType::GAME_SUB_MODE_GOT_AUTHENTIC},
+		{"GAME_SUB_MODE_GOT_TUTORIAL_BASIC", GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_BASIC},
+		{"GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_EXPERT},
+		{"GAME_SUB_MODE_GOT_FIRE_POWER", GameSubModeType::GAME_SUB_MODE_GOT_FIRE_POWER},
+		{"GAME_SUB_MODE_GOT_ULTIMATE_TITAN", GameSubModeType::GAME_SUB_MODE_GOT_ULTIMATE_TITAN},
+		{"GAME_SUB_MODE_SPORTS_RUN", GameSubModeType::GAME_SUB_MODE_SPORTS_RUN},
+		{"GAME_SUB_MODE_SPORTS_SURVIVAL", GameSubModeType::GAME_SUB_MODE_SPORTS_SURVIVAL},
+		{"GAME_SUB_MODE_STAGE_TUTORIAL", GameSubModeType::GAME_SUB_MODE_STAGE_TUTORIAL},
+		{"GAME_SUB_MODE_STAGE_NORMAL", GameSubModeType::GAME_SUB_MODE_STAGE_NORMAL}
+	};
+
+	auto it = gameModeMap.find(s);
+	if (it != gameModeMap.end()) {
+		return it->second;
+	}
+
+	LOG("ERROR(StringToGameSubModeType): Unsupported subGameMode %s", s);
+	return GameSubModeType::GAME_SUB_MODE_INVALID;
+}
+
+MapType GameXmlContent::StringToMapType(const char* s)
+{
+	static const eastl::hash_map<eastl::string, MapType> mapTypeMap = {
+		{"E_MAP_TYPE_CITY", MapType::MAP_CITY},
+		{"E_MAP_TYPE_INGAME", MapType::MAP_INGAME}
+	};
+
+	auto it = mapTypeMap.find(s);
+	if (it != mapTypeMap.end()) {
+		return it->second;
+	}
+
+	LOG("ERROR(StringToMapType): Unsupported map type %s", s);
+	return MapType::MAP_INVALID; // Assuming this exists
 }
 
 bool GameXmlContent::LoadMapList()
 {
 	XMLDocument doc;
-	if(!LoadXMLFile(L"/MAPLIST.xml", doc)) return false;
+	if (!LoadXMLFile(L"/MAPLIST.xml", doc)) return false;
 
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
@@ -728,85 +626,22 @@ bool GameXmlContent::LoadMapList()
 
 		const char* mapTypeXml;
 		pMapElt->QueryStringAttribute("_MapType", &mapTypeXml);
-		
-		mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_INVALID;
-		if (EA::StdC::Strcmp("E_MAP_TYPE_CITY", mapTypeXml) == 0)
-		{
-			mapList.mapType = MapType::MAP_CITY;
-		}
-		else if (EA::StdC::Strcmp("E_MAP_TYPE_INGAME", mapTypeXml) == 0)
-		{
-			const char* gameSubModeTypeXml;
 
-			mapList.mapType = MapType::MAP_INGAME;
-		
-			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) != XML_SUCCESS)
-			{
-				// training room doesn't have a gamesubmode
+		mapList.mapType = StringToMapType(mapTypeXml);
+		mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_INVALID;
+
+		if (mapList.mapType == MapType::MAP_INGAME) {
+			const char* gameSubModeTypeXml;
+			if (pMapElt->QueryStringAttribute("_GameSubModeType", &gameSubModeTypeXml) == XML_SUCCESS) {
+				mapList.gameSubModeType = StringToGameSubModeType(gameSubModeTypeXml);
 			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_DEATH_MATCH_NORMAL", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_DEATH_MATCH_NORMAL;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_CORE", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_CORE;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_OCCUPY_BUSH", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_OCCUPY_BUSH;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_AUTHENTIC", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_AUTHENTIC;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_BASIC", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_BASIC;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_TUTORIAL_EXPERT", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_TUTORIAL_EXPERT;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_FIRE_POWER", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_FIRE_POWER;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_GOT_ULTIMATE_TITAN", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_GOT_ULTIMATE_TITAN;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_RUN", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_RUN;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_SPORTS_SURVIVAL", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_SPORTS_SURVIVAL;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_TUTORIAL", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_TUTORIAL;
-			}
-			else if (EA::StdC::Strcmp("GAME_SUB_MODE_STAGE_NORMAL", gameSubModeTypeXml) == 0)
-			{
-				mapList.gameSubModeType = GameSubModeType::GAME_SUB_MODE_STAGE_NORMAL;
-			}
-			else
-			{
-				LOG("ERROR(LOADMAPLIST): Unsupported subGameMode %s", gameSubModeTypeXml);
-			}
+			// training room doesn't have a gamesubmode, so this is OK
 		}
-		else
-		{
-			LOG("ERROR(LOADMAPLIST): Unsupported map type");
-			return false;
-		}
-		
+
 		maplists.push_back(mapList);
 		pMapElt = pMapElt->NextSiblingElement();
 	} while (pMapElt);
-	
+
 	return true;
 }
 
@@ -875,9 +710,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		spawn.faction = Faction::INVALID;
 		const char* teamString;
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
-			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
+			spawn.faction = StringToFaction(teamString);
 		}
 
 		map->dynamic.push_back(spawn);
@@ -1362,64 +1195,56 @@ bool GameXmlContent::Load()
 	return true;
 }
 
+Faction GameXmlContent::StringToFaction(const char* s)
+{
+	static const eastl::hash_map<eastl::string, Faction> factionMap = {
+		{"TEAM_RED", Faction::RED},
+		{"TEAM_BLUE", Faction::BLUE},
+		{"TEAM_DYNAMIC", Faction::DYNAMIC}
+	};
+
+	auto it = factionMap.find(s);
+	return (it != factionMap.end()) ? it->second : Faction::INVALID;
+}
+
 // Returns CREATURE_TYPE_INVALID when it doesn't recognises the creature type.
 CreatureType GameXmlContent::StringToCreatureType(const char* s)
 {
-	if (EA::StdC::Strcmp("CREATURE_TYPE_ALLY", s) == 0)
-	{
-		return CreatureType::CREATURE_TYPE_ALLY;
+	static const eastl::hash_map<eastl::string, CreatureType> creatureTypeMap = {
+		{"CREATURE_TYPE_ALLY", CreatureType::CREATURE_TYPE_ALLY},
+		{"CREATURE_TYPE_BOT", CreatureType::CREATURE_TYPE_BOT},
+		{"CREATURE_TYPE_MONSTER", CreatureType::CREATURE_TYPE_MONSTER},
+		{"CREATURE_TYPE_NPC", CreatureType::CREATURE_TYPE_NPC},
+		{"CREATURE_TYPE_PC", CreatureType::CREATURE_TYPE_PC}
+	};
+
+	auto it = creatureTypeMap.find(s);
+	if (it != creatureTypeMap.end()) {
+		return it->second;
 	}
-	else if (EA::StdC::Strcmp("CREATURE_TYPE_BOT", s) == 0)
-	{
-		return CreatureType::CREATURE_TYPE_BOT;
-	}
-	else if (EA::StdC::Strcmp("CREATURE_TYPE_MONSTER", s) == 0)
-	{
-		return CreatureType::CREATURE_TYPE_MONSTER;
-	}
-	else if (EA::StdC::Strcmp("CREATURE_TYPE_NPC", s) == 0)
-	{
-		return CreatureType::CREATURE_TYPE_NPC;
-	}
-	else if (EA::StdC::Strcmp("CREATURE_TYPE_PC", s) == 0)
-	{
-		return CreatureType::CREATURE_TYPE_PC;
-	}
-	else
-	{
-		LOG("Unknown CreatureType: %s", s);
-		return CreatureType::CREATURE_TYPE_INVALID;
-	}
+
+	LOG("Unknown CreatureType: %s", s);
+	return CreatureType::CREATURE_TYPE_INVALID;
 }
 
 // Returns ENTITY_INVALID when it doesn't recognises the entity type.
 EntityType GameXmlContent::StringToEntityType(const char* s)
 {
-	if (EA::StdC::Strcmp("ENTITY_TYPE_CREATURE", s) == 0)
-	{
-		return EntityType::CREATURE;
+	static const eastl::hash_map<eastl::string, EntityType> entityTypeMap = {
+		{"ENTITY_TYPE_CREATURE", EntityType::CREATURE},
+		{"ENTITY_TYPE_DYNAMIC", EntityType::DYNAMIC},
+		{"ENTITY_TYPE_ITEM", EntityType::ITEM},
+		{"ENTITY_TYPE_SFX", EntityType::SFX},
+		{"ENTITY_TYPE_TERRAIN", EntityType::TERRAIN}
+	};
+
+	auto it = entityTypeMap.find(s);
+	if (it != entityTypeMap.end()) {
+		return it->second;
 	}
-	else if (EA::StdC::Strcmp("ENTITY_TYPE_DYNAMIC", s) == 0)
-	{
-		return EntityType::DYNAMIC;
-	}
-	else if (EA::StdC::Strcmp("ENTITY_TYPE_ITEM", s) == 0)
-	{
-		return EntityType::ITEM;
-	}
-	else if (EA::StdC::Strcmp("ENTITY_TYPE_SFX", s) == 0)
-	{
-		return EntityType::SFX;
-	}
-	else if (EA::StdC::Strcmp("ENTITY_TYPE_TERRAIN", s) == 0)
-	{
-		return EntityType::TERRAIN;
-	}
-	else
-	{
-		LOG("Unknown EntityType: %s", s);
-		return EntityType::INVALID;
-	}
+
+	LOG("Unknown EntityType: %s", s);
+	return EntityType::INVALID;
 }
 
 SkillType GameXmlContent::StringToSkillType(const char* s)
@@ -1574,164 +1399,73 @@ namespace ActionCommand {
 
 Type TypeFromString(const char* str)
 {
-	if(StringEquals(str, "STATE_BLOCK")) {
-		return Type::STATE_BLOCK;
-	}
-	if(StringEquals(str, "WEAPON_USE")) {
-		return Type::WEAPON_USE;
-	}
-	if(StringEquals(str, "MOVE")) {
-		return Type::MOVE;
-	}
-	if(StringEquals(str, "TELEPORT")) {
-		return Type::TELEPORT;
-	}
-	if(StringEquals(str, "ENTITY")) {
-		return Type::ENTITY;
-	}
-	if(StringEquals(str, "STATUS")) {
-		return Type::STATUS;
-	}
-	if(StringEquals(str, "REMOTE")) {
-		return Type::REMOTE;
-	}
-	if(StringEquals(str, "STATUS_SKILL_TARGET")) {
-		return Type::STATUS_SKILL_TARGET;
-	}
-	if(StringEquals(str, "REMOTE_SKILL_TARGET")) {
-		return Type::REMOTE_SKILL_TARGET;
-	}
-	if(StringEquals(str, "GRAPH_MOVE_HORZ")) {
-		return Type::GRAPH_MOVE_HORZ;
-	}
-	if(StringEquals(str, "FLY_MOVE")) {
-		return Type::FLY_MOVE;
-	}
-	if(StringEquals(str, "MOVESPEED")) {
-		return Type::MOVESPEED;
-	}
-	if(StringEquals(str, "ROTATESPEED")) {
-		return Type::ROTATESPEED;
-	}
-	if(StringEquals(str, "REGCOMBO")) {
-		return Type::REGCOMBO;
-	}
-	if(StringEquals(str, "SETSTANCE")) {
-		return Type::SETSTANCE;
-	}
-	if(StringEquals(str, "PHYSICS")) {
-		return Type::PHYSICS;
-	}
-	if(StringEquals(str, "AIOBJECT")) {
-		return Type::AIOBJECT;
-	}
-	if(StringEquals(str, "PUSH_OVERLAP")) {
-		return Type::PUSH_OVERLAP;
-	}
-	if(StringEquals(str, "POLYMORPH")) {
-		return Type::POLYMORPH;
-	}
-	if(StringEquals(str, "DIE_MODE")) {
-		return Type::DIE_MODE;
-	}
-	if(StringEquals(str, "SET_FLAG")) {
-		return Type::SET_FLAG;
-	}
-	if(StringEquals(str, "CLEAR_FLAG")) {
-		return Type::CLEAR_FLAG;
-	}
-	if(StringEquals(str, "FORCE_ROTATE")) {
-		return Type::FORCE_ROTATE;
-	}
-	if(StringEquals(str, "CALL_CHILD_SKILL")) {
-		return Type::CALL_CHILD_SKILL;
-	}
-	if(StringEquals(str, "LONG_JUMP")) {
-		return Type::LONG_JUMP;
-	}
-	if(StringEquals(str, "TALK")) {
-		return Type::TALK;
-	}
-	if(StringEquals(str, "EFFECT")) {
-		return Type::EFFECT;
-	}
-	if(StringEquals(str, "AI_ADJUST")) {
-		return Type::AI_ADJUST;
-	}
-	if(StringEquals(str, "INTERACTION")) {
-		return Type::INTERACTION;
-	}
-	if(StringEquals(str, "DEATHWORM_BOUND")) {
-		return Type::DEATHWORM_BOUND;
-	}
-	if(StringEquals(str, "UI")) {
-		return Type::UI;
-	}
-	if(StringEquals(str, "CHANGE_MESH")) {
-		return Type::CHANGE_MESH;
-	}
+	static const eastl::hash_map<eastl::string, Type> commandTypeMap = {
+		{"STATE_BLOCK", Type::STATE_BLOCK},
+		{"WEAPON_USE", Type::WEAPON_USE},
+		{"MOVE", Type::MOVE},
+		{"TELEPORT", Type::TELEPORT},
+		{"ENTITY", Type::ENTITY},
+		{"STATUS", Type::STATUS},
+		{"REMOTE", Type::REMOTE},
+		{"STATUS_SKILL_TARGET", Type::STATUS_SKILL_TARGET},
+		{"REMOTE_SKILL_TARGET", Type::REMOTE_SKILL_TARGET},
+		{"GRAPH_MOVE_HORZ", Type::GRAPH_MOVE_HORZ},
+		{"FLY_MOVE", Type::FLY_MOVE},
+		{"MOVESPEED", Type::MOVESPEED},
+		{"ROTATESPEED", Type::ROTATESPEED},
+		{"REGCOMBO", Type::REGCOMBO},
+		{"SETSTANCE", Type::SETSTANCE},
+		{"PHYSICS", Type::PHYSICS},
+		{"AIOBJECT", Type::AIOBJECT},
+		{"PUSH_OVERLAP", Type::PUSH_OVERLAP},
+		{"POLYMORPH", Type::POLYMORPH},
+		{"DIE_MODE", Type::DIE_MODE},
+		{"SET_FLAG", Type::SET_FLAG},
+		{"CLEAR_FLAG", Type::CLEAR_FLAG},
+		{"FORCE_ROTATE", Type::FORCE_ROTATE},
+		{"CALL_CHILD_SKILL", Type::CALL_CHILD_SKILL},
+		{"LONG_JUMP", Type::LONG_JUMP},
+		{"TALK", Type::TALK},
+		{"EFFECT", Type::EFFECT},
+		{"AI_ADJUST", Type::AI_ADJUST},
+		{"INTERACTION", Type::INTERACTION},
+		{"DEATHWORM_BOUND", Type::DEATHWORM_BOUND},
+		{"UI", Type::UI},
+		{"CHANGE_MESH", Type::CHANGE_MESH}
+	};
 
-	return Type::INVALID;
+	auto it = commandTypeMap.find(str);
+	return (it != commandTypeMap.end()) ? it->second : Type::INVALID;
 }
 
 MovePreset MovePresetFromString(const char* str)
 {
-	if(StringEquals(str, "MOVE_PRESET_SEE_TARGET")) {
-		return MovePreset::SEE_TARGET;
-	}
-	if(StringEquals(str, "MOVE_PRESET_ROTATE")) {
-		return MovePreset::ROTATE;
-	}
-	if(StringEquals(str, "MOVE_PRESET_LIFTED")) {
-		return MovePreset::LIFTED;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GRAPH")) {
-		return MovePreset::GRAPH;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GRAPH_GROUND")) {
-		return MovePreset::GRAPH_GROUND;
-	}
-	if(StringEquals(str, "MOVE_PRESET_MOVE_NONE")) {
-		return MovePreset::MOVE_NONE;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET")) {
-		return MovePreset::GOTO_CURRENT_TARGET;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_CHASE")) {
-		return MovePreset::GOTO_CURRENT_TARGET_CHASE;
-	}
-	if(StringEquals(str, "MOVE_PRESET_SEE_CURRENT_TARGET")) {
-		return MovePreset::SEE_CURRENT_TARGET;
-	}
-	if(StringEquals(str, "MOVE_PRESET_AFTERIMAGE_MOVE")) {
-		return MovePreset::AFTERIMAGE_MOVE;
-	}
-	if(StringEquals(str, "MOVE_PRESET_TARGET_POS")) {
-		return MovePreset::TARGET_POS;
-	}
-	if(StringEquals(str, "MOVE_PRESET_TARGET_POS_LEAP")) {
-		return MovePreset::TARGET_POS_LEAP;
-	}
-	if(StringEquals(str, "MOVE_PRESET_WARP")) {
-		return MovePreset::WARP;
-	}
-	if(StringEquals(str, "MOVE_PRESET_WARP_TARGET_POS")) {
-		return MovePreset::WARP_TARGET_POS;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH")) {
-		return MovePreset::GOTO_CURRENT_TARGET_THROUGH;
-	}
-	if(StringEquals(str, "MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH_CHASE")) {
-		return MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE;
-	}
-	if(StringEquals(str, "MOVE_PRESET_SEE_MEMORIZED_TARGET")) {
-		return MovePreset::SEE_MEMORIZED_TARGET;
-	}
-	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET")) {
-		return MovePreset::CHASE_TARGET;
-	}
-	if(StringEquals(str, "MOVE_PRESET_CHASE_TARGET_ATTACK")) {
-		return MovePreset::CHASE_TARGET_ATTACK;
+	static const eastl::hash_map<eastl::string, MovePreset> movePresetMap = {
+		{"MOVE_PRESET_SEE_TARGET", MovePreset::SEE_TARGET},
+		{"MOVE_PRESET_ROTATE", MovePreset::ROTATE},
+		{"MOVE_PRESET_LIFTED", MovePreset::LIFTED},
+		{"MOVE_PRESET_GRAPH", MovePreset::GRAPH},
+		{"MOVE_PRESET_GRAPH_GROUND", MovePreset::GRAPH_GROUND},
+		{"MOVE_PRESET_MOVE_NONE", MovePreset::MOVE_NONE},
+		{"MOVE_PRESET_GOTO_CURRENT_TARGET", MovePreset::GOTO_CURRENT_TARGET},
+		{"MOVE_PRESET_GOTO_CURRENT_TARGET_CHASE", MovePreset::GOTO_CURRENT_TARGET_CHASE},
+		{"MOVE_PRESET_SEE_CURRENT_TARGET", MovePreset::SEE_CURRENT_TARGET},
+		{"MOVE_PRESET_AFTERIMAGE_MOVE", MovePreset::AFTERIMAGE_MOVE},
+		{"MOVE_PRESET_TARGET_POS", MovePreset::TARGET_POS},
+		{"MOVE_PRESET_TARGET_POS_LEAP", MovePreset::TARGET_POS_LEAP},
+		{"MOVE_PRESET_WARP", MovePreset::WARP},
+		{"MOVE_PRESET_WARP_TARGET_POS", MovePreset::WARP_TARGET_POS},
+		{"MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH", MovePreset::GOTO_CURRENT_TARGET_THROUGH},
+		{"MOVE_PRESET_GOTO_CURRENT_TARGET_THROUGH_CHASE", MovePreset::GOTO_CURRENT_TARGET_THROUGH_CHASE},
+		{"MOVE_PRESET_SEE_MEMORIZED_TARGET", MovePreset::SEE_MEMORIZED_TARGET},
+		{"MOVE_PRESET_CHASE_TARGET", MovePreset::CHASE_TARGET},
+		{"MOVE_PRESET_CHASE_TARGET_ATTACK", MovePreset::CHASE_TARGET_ATTACK}
+	};
+
+
+	auto it = movePresetMap.find(str);
+	if (it != movePresetMap.end()) {
+		return it->second;
 	}
 	return MovePreset::INVALID;
 }

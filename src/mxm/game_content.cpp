@@ -215,44 +215,18 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 			VERBOSE("SkillID: %d", skillID);
 
 			//Yes this could be done in a shorter way perhaps but atleast it's not as dangerous as previous code.
-			if (EA::StdC::Strcmp("SKILL_SLOT_1", skillSlot) == 0)
-			{
-				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(0), skillID);
+			int slotIndex = GetSkillSlotIndex(skillSlot);
+			if (slotIndex >= 0 && slotIndex < 4) {
+				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(slotIndex), skillID);
 			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_2", skillSlot) == 0)
-			{
-				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(1), skillID);
-			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_3", skillSlot) == 0)
-			{
-				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(2), skillID);
-			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_4", skillSlot) == 0)
-			{
-				LoadMasterSkillWithID(*_skillsModel.getSkillByIndex(3), skillID);
-			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_UG", skillSlot) == 0)
-			{
+			else if (slotIndex == -2) {
 				LoadMasterSkillWithID(*_skillsModel.getUltimate(), skillID);
 			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_PASSIVE", skillSlot) == 0)
-			{
-
+			else if (slotIndex >= -6 && slotIndex <= -3) {
+				// Handle other slot types or leave empty for now
+				VERBOSE("Skill slot '%s' recognized but not implemented", skillSlot);
 			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_SHIRK", skillSlot) == 0)
-			{
-
-			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_BREAK_FALL", skillSlot) == 0)
-			{
-
-			}
-			else if (EA::StdC::Strcmp("SKILL_SLOT_COMBOSET", skillSlot) == 0)
-			{
-
-			}
-			else
-			{
+			else {
 				LOG("UNSUPPORTED skillslot: %s\n", skillSlot);
 			}
 
@@ -685,9 +659,7 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		spawn.faction = Faction::INVALID;
 		const char* teamString;
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
-			if(EA::StdC::Strncmp(teamString, "TEAM_RED", 8) == 0) spawn.faction = Faction::RED;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_BLUE", 9) == 0) spawn.faction = Faction::BLUE;
-			else if(EA::StdC::Strncmp(teamString, "TEAM_DYNAMIC", 12) == 0) spawn.faction = Faction::DYNAMIC;
+			spawn.faction = StringToFaction(teamString);
 		}
 
 		map->creatures.push_back(spawn);
@@ -1247,41 +1219,44 @@ EntityType GameXmlContent::StringToEntityType(const char* s)
 	return EntityType::INVALID;
 }
 
+int GameXmlContent::GetSkillSlotIndex(const char* skillSlot)
+{
+	static const eastl::hash_map<eastl::string, int> skillSlotMap = {
+		{"SKILL_SLOT_1", 0},
+		{"SKILL_SLOT_2", 1},
+		{"SKILL_SLOT_3", 2},
+		{"SKILL_SLOT_4", 3},
+		{"SKILL_SLOT_UG", -2},         // Ultimate
+		{"SKILL_SLOT_PASSIVE", -3},
+		{"SKILL_SLOT_SHIRK", -4},
+		{"SKILL_SLOT_BREAK_FALL", -5},
+		{"SKILL_SLOT_COMBOSET", -6}
+	};
+
+	auto it = skillSlotMap.find(skillSlot);
+	return (it != skillSlotMap.end()) ? it->second : -1;
+}
+
 SkillType GameXmlContent::StringToSkillType(const char* s)
 {
-	if (EA::StdC::Strcmp("SKILL_TYPE_COMBO", s) == 0)
-	{
-		return SkillType::COMBO;
+	static const eastl::hash_map<eastl::string, SkillType> skillTypeMap = {
+		{"SKILL_TYPE_COMBO", SkillType::COMBO},
+		{"SKILL_TYPE_NORMAL", SkillType::NORMAL},
+		{"SKILL_TYPE_PASSIVE", SkillType::PASSIVE},
+		{"SKILL_TYPE_SHIRK", SkillType::SHIRK},
+		{"SKILL_TYPE_STANCE", SkillType::STANCE},
+		{"SKILL_TYPE_SUMMON", SkillType::SUMMON},
+		{"SKILL_TYPE_TOGGLE", SkillType::TOGGLE},
+		{"SKILL_TYPE_BREAKFALL", SkillType::BREAKFALL}
+	};
+
+	auto it = skillTypeMap.find(s);
+	if (it != skillTypeMap.end()) {
+		return it->second;
 	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_NORMAL", s) == 0)
-	{
-		return SkillType::NORMAL;
-	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_PASSIVE", s) == 0)
-	{
-		return SkillType::PASSIVE;
-	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_SHIRK", s) == 0)
-	{
-		return SkillType::SHIRK;
-	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_STANCE", s) == 0)
-	{
-		return SkillType::STANCE;
-	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_SUMMON", s) == 0)
-	{
-		return SkillType::SUMMON;
-	}
-	else if (EA::StdC::Strcmp("SKILL_TYPE_TOGGLE", s) == 0)
-	{
-		return SkillType::TOGGLE;
-	}
-	else
-	{
-		LOG("Unknown SkillType: %s", s);
-		return SkillType::INVALID;
-	}
+
+	LOG("Unknown SkillType: %s", s);
+	return SkillType::INVALID;
 }
 
 const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const
@@ -1496,23 +1471,27 @@ const char* MovePresetToString(MovePreset p)
 
 TargetPreset TargetPresetFromString(const char* str)
 {
-	if(StringEquals(str, "TARGET_SELF_FFF")) { return TargetPreset::SELF_FFF; }
-	if(StringEquals(str, "TARGET_SELF_FFF_1")) { return TargetPreset::SELF_FFF_1; }
-	if(StringEquals(str, "TARGET_SELF_TFF")) { return TargetPreset::SELF_TFF; }
-	if(StringEquals(str, "TARGET_SELF_TTF")) { return TargetPreset::SELF_TTF; }
-	if(StringEquals(str, "TARGET_SELF_TTT")) { return TargetPreset::SELF_TTT; }
-	if(StringEquals(str, "TARGET_POS_TTT_1")) { return TargetPreset::POS_TTT_1; }
-	if(StringEquals(str, "TARGET_POS_FFF")) { return TargetPreset::POS_FFF; }
-	if(StringEquals(str, "TARGET_POS_TFF")) { return TargetPreset::POS_TFF; }
-	if(StringEquals(str, "TARGET_POS_TFF_1_800_1000")) { return TargetPreset::POS_TFF_1_800_1000; }
-	if(StringEquals(str, "TARGET_LAST_CHILD_FFF")) { return TargetPreset::LAST_CHILD_FFF; }
-	if(StringEquals(str, "TARGET_LAST_CHILD_TFF")) { return TargetPreset::LAST_CHILD_TFF; }
-	if(StringEquals(str, "TARGET_CHILD_INDEX_FFF")) { return TargetPreset::CHILD_INDEX_FFF; }
-	if(StringEquals(str, "TARGET_MEMORIZED_TFT")) { return TargetPreset::MEMORIZED_TFT; }
-	if(StringEquals(str, "TARGET_CURRENT_FFF")) { return TargetPreset::CURRENT_FFF; }
-	if(StringEquals(str, "TARGET_LOCK_TFF")) { return TargetPreset::LOCK_TFF; }
-	if(StringEquals(str, "TARGET_MULTI_LOCKON_FFF")) { return TargetPreset::MULTI_LOCKON_FFF; }
-	return TargetPreset::INVALID;
+	static const eastl::hash_map<eastl::string, TargetPreset> targetPresetMap = {
+		{"TARGET_SELF_FFF", TargetPreset::SELF_FFF},
+		{"TARGET_SELF_FFF_1", TargetPreset::SELF_FFF_1},
+		{"TARGET_SELF_TFF", TargetPreset::SELF_TFF},
+		{"TARGET_SELF_TTF", TargetPreset::SELF_TTF},
+		{"TARGET_SELF_TTT", TargetPreset::SELF_TTT},
+		{"TARGET_POS_TTT_1", TargetPreset::POS_TTT_1},
+		{"TARGET_POS_FFF", TargetPreset::POS_FFF},
+		{"TARGET_POS_TFF", TargetPreset::POS_TFF},
+		{"TARGET_POS_TFF_1_800_1000", TargetPreset::POS_TFF_1_800_1000},
+		{"TARGET_LAST_CHILD_FFF", TargetPreset::LAST_CHILD_FFF},
+		{"TARGET_LAST_CHILD_TFF", TargetPreset::LAST_CHILD_TFF},
+		{"TARGET_CHILD_INDEX_FFF", TargetPreset::CHILD_INDEX_FFF},
+		{"TARGET_MEMORIZED_TFT", TargetPreset::MEMORIZED_TFT},
+		{"TARGET_CURRENT_FFF", TargetPreset::CURRENT_FFF},
+		{"TARGET_LOCK_TFF", TargetPreset::LOCK_TFF},
+		{"TARGET_MULTI_LOCKON_FFF", TargetPreset::MULTI_LOCKON_FFF}
+	};
+
+	auto it = targetPresetMap.find(str);
+	return (it != targetPresetMap.end()) ? it->second : TargetPreset::INVALID;
 }
 
 const char* TargetPresetToString(TargetPreset p)
@@ -1540,19 +1519,24 @@ const char* TargetPresetToString(TargetPreset p)
 
 Remote::BoundType Remote::BoundTypeFromString(const char* str)
 {
-	if(StringEquals(str, "E_BOUND_NONE")) { return BoundType::E_BOUND_NONE; }
-	if(StringEquals(str, "E_BOUND_RAY")) { return BoundType::E_BOUND_RAY; }
-	if(StringEquals(str, "E_BOUND_BOX")) { return BoundType::E_BOUND_BOX; }
-	if(StringEquals(str, "E_BOUND_CAPSULE")) { return BoundType::E_BOUND_CAPSULE; }
-	if(StringEquals(str, "E_BOUND_SPHERE")) { return BoundType::E_BOUND_SPHERE; }
-	if(StringEquals(str, "E_BOUND_BEAM")) { return BoundType::E_BOUND_BEAM; }
-	if(StringEquals(str, "E_BOUND_BEAM_NIF")) { return BoundType::E_BOUND_BEAM_NIF; }
-	if(StringEquals(str, "E_BOUND_LASER")) { return BoundType::E_BOUND_LASER; }
-	if(StringEquals(str, "E_BOUND_PHYSXPROP")) { return BoundType::E_BOUND_PHYSXPROP; }
-	if(StringEquals(str, "E_BOUND_HAMMER")) { return BoundType::E_BOUND_HAMMER; }
-	if(StringEquals(str, "E_BOUND_CASTER_MOVE_BOUND")) { return BoundType::E_BOUND_CASTER_MOVE_BOUND; }
-	return BoundType::INVALID;
-}
+	static const eastl::hash_map<eastl::string, BoundType> boundTypeMap = {
+        {"E_BOUND_NONE", BoundType::E_BOUND_NONE},
+        {"E_BOUND_RAY", BoundType::E_BOUND_RAY},
+        {"E_BOUND_BOX", BoundType::E_BOUND_BOX},
+        {"E_BOUND_CAPSULE", BoundType::E_BOUND_CAPSULE},
+        {"E_BOUND_SPHERE", BoundType::E_BOUND_SPHERE},
+        {"E_BOUND_BEAM", BoundType::E_BOUND_BEAM},
+        {"E_BOUND_BEAM_NIF", BoundType::E_BOUND_BEAM_NIF},
+        {"E_BOUND_LASER", BoundType::E_BOUND_LASER},
+        {"E_BOUND_PHYSXPROP", BoundType::E_BOUND_PHYSXPROP},
+        {"E_BOUND_HAMMER", BoundType::E_BOUND_HAMMER},
+        {"E_BOUND_CASTER_MOVE_BOUND", BoundType::E_BOUND_CASTER_MOVE_BOUND}
+    };
+
+    auto it = boundTypeMap.find(str);
+    return (it != boundTypeMap.end()) ? it->second : BoundType::INVALID;
+
+}	
 
 const char* Remote::BoundTypeToString(BoundType t)
 {
@@ -1572,11 +1556,16 @@ const char* Remote::BoundTypeToString(BoundType t)
 
 Remote::DamageGroup Remote::DamageGroupFromString(const char* str)
 {
-	if(StringEquals(str, "eNONE")) { return DamageGroup::eNONE; }
-	if(StringEquals(str, "eENEMY")) { return DamageGroup::eENEMY; }
-	if(StringEquals(str, "eFRIEND")) { return DamageGroup::eFRIEND; }
-	if(StringEquals(str, "eALL")) { return DamageGroup::eALL; }
-	return DamageGroup::INVALID;
+	static const eastl::hash_map<eastl::string, DamageGroup> damageGroupMap = {
+	   {"eNONE", DamageGroup::eNONE},
+	   {"eENEMY", DamageGroup::eENEMY},
+	   {"eFRIEND", DamageGroup::eFRIEND},
+	   {"eALL", DamageGroup::eALL}
+	};
+
+	auto it = damageGroupMap.find(str);
+	return (it != damageGroupMap.end()) ? it->second : DamageGroup::INVALID;
+
 }
 
 const char* Remote::DamageGroupToString(DamageGroup g)
@@ -1590,20 +1579,25 @@ const char* Remote::DamageGroupToString(DamageGroup g)
 
 Remote::BehaviorType Remote::BehaviourTypeFromString(const char* str)
 {
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_NONETARGET")) { return BehaviorType::NONETARGET; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_HOMING")) { return BehaviorType::HOMING; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_RETURN")) { return BehaviorType::RETURN; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET")) { return BehaviorType::CASTER_TARGET; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_BEAM")) { return BehaviorType::BEAM; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_CHAIN")) { return BehaviorType::CHAIN; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_GRAPH")) { return BehaviorType::GRAPH; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET")) { return BehaviorType::TARGET; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET")) { return BehaviorType::FOLLOW_TARGET; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET")) { return BehaviorType::ATTACH_TARGET; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE")) { return BehaviorType::ATTACH_MUZZLE; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION")) { return BehaviorType::TARGET_GROUNDPOSITION; }
-	if(StringEquals(str, "E_REMOTE_BEHAVIOR_TYPE_ORBIT")) { return BehaviorType::ORBIT; }
-	return BehaviorType::INVALID;
+	static const eastl::hash_map<eastl::string, BehaviorType> behaviorTypeMap = {
+		{"E_REMOTE_BEHAVIOR_TYPE_NONETARGET", BehaviorType::NONETARGET},
+		{"E_REMOTE_BEHAVIOR_TYPE_HOMING", BehaviorType::HOMING},
+		{"E_REMOTE_BEHAVIOR_TYPE_RETURN", BehaviorType::RETURN},
+		{"E_REMOTE_BEHAVIOR_TYPE_CASTER_TARGET", BehaviorType::CASTER_TARGET},
+		{"E_REMOTE_BEHAVIOR_TYPE_BEAM", BehaviorType::BEAM},
+		{"E_REMOTE_BEHAVIOR_TYPE_CHAIN", BehaviorType::CHAIN},
+		{"E_REMOTE_BEHAVIOR_TYPE_GRAPH", BehaviorType::GRAPH},
+		{"E_REMOTE_BEHAVIOR_TYPE_TARGET", BehaviorType::TARGET},
+		{"E_REMOTE_BEHAVIOR_TYPE_FOLLOW_TARGET", BehaviorType::FOLLOW_TARGET},
+		{"E_REMOTE_BEHAVIOR_TYPE_ATTACH_TARGET", BehaviorType::ATTACH_TARGET},
+		{"E_REMOTE_BEHAVIOR_TYPE_ATTACH_MUZZLE", BehaviorType::ATTACH_MUZZLE},
+		{"E_REMOTE_BEHAVIOR_TYPE_TARGET_GROUNDPOSITION", BehaviorType::TARGET_GROUNDPOSITION},
+		{"E_REMOTE_BEHAVIOR_TYPE_ORBIT", BehaviorType::ORBIT}
+	};
+
+	auto it = behaviorTypeMap.find(str);
+	return (it != behaviorTypeMap.end()) ? it->second : BehaviorType::INVALID;
+
 }
 
 const char* Remote::BehaviourTypeToString(BehaviorType t)

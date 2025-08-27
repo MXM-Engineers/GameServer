@@ -328,6 +328,7 @@ private:
 	// helper functions
 	CreatureType StringToCreatureType(const char* s);
 	EntityType StringToEntityType(const char* s);
+	int GetSkillSlotIndex(const char* skillSlot);
 	Faction StringToFaction(const char* s);
 	GameSubModeType StringToGameSubModeType(const char* s);
 	MapType StringToMapType(const char* s);

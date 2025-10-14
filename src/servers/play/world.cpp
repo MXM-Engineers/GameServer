@@ -31,6 +31,11 @@ void World::Update(Time localTime_)
 
 		PhysicsDynamicBody& body = *p.body;
 
+		// we might want to parse locked players actions in the future to queue them
+		// in this case, we may need to comment this out
+		if(body.lockedMoveUntil > localTime)
+			continue;
+
 		p.movement.rot = p.input.rot;
 
 		// tag

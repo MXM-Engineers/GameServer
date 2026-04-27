@@ -60,6 +60,7 @@ void MatchmakerConnector::Update()
 				case Query::Type::PartyEnqueue: {
 					In::HQ_PartyEnqueue packet;
 					packet.partyUID = q->PartyEnqueue.partyUID;
+					packet.mapIndex = q->PartyEnqueue.mapIndex;
 					conn.SendPacket(packet);
 				} break;
 
@@ -83,6 +84,7 @@ void MatchmakerConnector::Update()
 
 					In::HQ_RoomCreateGame packet;
 					packet.sortieUID = qq.sortieUID;
+					packet.mapIndex = qq.mapIndex;
 					packet.playerCount = 0;
 					packet.spectatorCount = 0;
 
@@ -130,7 +132,7 @@ void MatchmakerConnector::QueryPartyCreate(const WideString& name, AccountUID le
 }
 
 // Thread: Any Lane
-void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
+void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, MapIndex mapIndex)
 {
 	DBG_ASSERT(partyUID != PartyUID::INVALID);
 
@@ -139,6 +141,7 @@ void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
 
 	Query query(queryUID, Query::Type::PartyEnqueue);
 	query.PartyEnqueue.partyUID = partyUID;
+	query.PartyEnqueue.mapIndex = mapIndex;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);
@@ -177,7 +180,7 @@ void MatchmakerConnector::QueryPlayerRoomConfirm(AccountUID playerAccountUID, So
 	queries.push_back(query);
 }
 
-void MatchmakerConnector::QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount)
+void MatchmakerConnector::QueryRoomCreateGame(SortieUID sortieUID, MapIndex mapIndex, const RoomPlayer* playerList, u32 playerCount)
 {
 	DBG_ASSERT(sortieUID != SortieUID::INVALID);
 
@@ -186,6 +189,7 @@ void MatchmakerConnector::QueryRoomCreateGame(SortieUID sortieUID, const RoomPla
 
 	Query query(queryUID, Query::Type::RoomCreateGame);
 	query.RoomCreateGame.sortieUID = sortieUID;
+	query.RoomCreateGame.mapIndex = mapIndex;
 	ASSERT(playerCount < query.RoomCreateGame.players.size());
 	query.RoomCreateGame.playerCount = playerCount;
 	for(int i = 0; i < playerCount; i++) {

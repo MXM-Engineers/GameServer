@@ -51,6 +51,7 @@ struct Matchmaker
 	struct Party
 	{
 		const PartyUID UID;
+		MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 
 		struct Member
 		{
@@ -103,6 +104,7 @@ struct Matchmaker
 		};
 
 		const SortieUID UID;
+		MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 		eastl::fixed_vector<Player,16,false> playerList;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
@@ -300,7 +302,14 @@ struct Matchmaker
 				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyEnqueue>(packetData, packetSize));
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
-				// TODO: validate args?
+				// Store mapIndex from Hub for team sizing
+				{
+					auto pit = partyMap.find(packet.partyUID);
+					if(pit != partyMap.end()) {
+						pit->second->mapIndex = packet.mapIndex;
+					}
+				}
+
 				matchingPartyList.push_back(packet.partyUID);
 
 				const Party& party = *partyMap.at(packet.partyUID);
@@ -371,6 +380,7 @@ struct Matchmaker
 				// FIXME: hacky? can we guarantee that the player arrays match?
 
 				Room& room = *roomMap.at(packet.sortieUID);
+				room.mapIndex = packet.mapIndex;
 				for(int i = 0; i < packet.playerCount; i++) {
 					const In::HQ_RoomCreateGame::Player pp = packet.players[i];
 					Room::Player& p = room.playerList[i];
@@ -446,9 +456,13 @@ struct Matchmaker
 		foreach_const(puid, matchingPartyList) {
 			const Party& party = *partyMap.at(*puid);
 
+			// Team size based on map: 5v5 for Titan Ruins, 3v3 for DeathMatch
+			const i32 teamSize = (party.mapIndex == MapIndex::PVP_TITAN_RUINS) ? 5 : 3;
+
 			// create room
 			roomList.emplace_back(nextSortieUID);
 			Room& room = *(--roomList.end());
+			room.mapIndex = party.mapIndex;
 			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
 			roomMap.emplace(room.UID, --roomList.end());
 
@@ -461,7 +475,7 @@ struct Matchmaker
 
 			// fill empty slots with bots
 			i32 botID = 1;
-			while(room.teamRed.size() < 3) {
+			while((i32)room.teamRed.size() < teamSize) {
 				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 				player.team = Team::RED;
 				player.isBot = true;
@@ -469,7 +483,7 @@ struct Matchmaker
 				room.playerList.push_back(player);
 				room.teamRed.push_back(&room.playerList.back());
 			}
-			while(room.teamBlue.size() < 3) {
+			while((i32)room.teamBlue.size() < teamSize) {
 				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 				player.team = Team::BLUE;
 				player.isBot = true;
@@ -553,6 +567,7 @@ struct Matchmaker
 	{
 		In::MQ_CreateGame packet;
 		packet.sortieUID = room.UID;
+		packet.mapIndex = room.mapIndex;
 		packet.playerCount = 0;
 		packet.spectatorCount = 0;
 

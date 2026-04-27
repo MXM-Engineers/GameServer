@@ -63,6 +63,20 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CA_SortieRoomFound);
 		HANDLE_CASE(CN_SortieRoomConfirm);
 
+		// CQ_PartyDisband (60086) — player clicks "Previous" / back out of Arena
+		case Cl::CQ_PartyDisband::NET_ID: {
+			LOG("[client%x] Client :: CQ_PartyDisband (60086)", clientHd);
+			game->OnLeaveParty(clientHd);
+		} break;
+
+		// CQ_ReturnToCity (60197) on Hub
+		case Cl::CQ_ReturnToCity::NET_ID: {
+			LOG("[client%x] Client :: CQ_ReturnToCity (Hub)", clientHd);
+			Sv::SA_ReturnToCity resp;
+			resp.errCode = 0;
+			game->replication.server->SendPacket(clientHd, resp);
+		} break;
+
 		default: {
 			NT_LOG("[client%x] Client :: Unknown packet :: size=%d netID=%d", clientHd, header.size, header.netID);
 		} break;
@@ -466,6 +480,28 @@ void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const 
 void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
+
+	// Parse stageIndex from variable-length packet to determine map
+	if(packetSize >= 6) {
+		ConstBuffer buf(packetData, packetSize);
+		const u16 stageCount = buf.Read<u16>();
+		if(stageCount > 0 && buf.CanRead(sizeof(i32))) {
+			const i32 stageIndex = buf.Read<i32>();
+			const i32 userID = game->plidMap->Get(clientHd);
+			auto& player = *game->playerMap[userID];
+			if(player.partyUID != PartyUID::INVALID) {
+				auto found = game->partyMap.find(player.partyUID);
+				if(found != game->partyMap.end()) {
+					auto& party = *found->second;
+					// stageIndex 200101000 = Titan Ruins 5v5, 200020102 = Arena 3v3
+					party.mapIndex = (stageIndex == 200101000)
+						? MapIndex::PVP_TITAN_RUINS : MapIndex::PVP_DEATHMATCH;
+					LOG("[client%x] PartyModify: stageIndex=%d -> mapIndex=%d (%s)", clientHd, stageIndex, (i32)party.mapIndex,
+						party.mapIndex == MapIndex::PVP_TITAN_RUINS ? "TitanRuins" : "DeathMatch");
+				}
+			}
+		}
+	}
 
 	Sv::SA_PartyModify packet;
 	packet.retval = 0;

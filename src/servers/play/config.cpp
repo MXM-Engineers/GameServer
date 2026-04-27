@@ -7,9 +7,13 @@ bool CConfigGame::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
+	if(EA::StdC::Sscanf(line, "GameMode=%d", &GameMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
+	if(EA::StdC::Sscanf(line, "EnableSkillVFX=%d", &EnableSkillVFX) == 1) return true;
+	if(EA::StdC::Sscanf(line, "EnableDeathDamageInfo=%d", &EnableDeathDamageInfo) == 1) return true;
+	if(EA::StdC::Sscanf(line, "EnableDebugWindow=%d", &EnableDebugWindow) == 1) return true;
 
 	if(EA::StdC::Sscanf(line, "DbgCamPosX=%f", &DbgCamPosX) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DbgCamPosY=%f", &DbgCamPosY) == 1) return true;
@@ -73,9 +77,12 @@ bool CConfigGame::SaveConfigFile()
 	out.append_sprintf("ListenPort=%d\n", ListenPort);
 	out.append_sprintf("DevMode=%d\n", DevMode);
 	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
+	out.append_sprintf("GameMode=%d\n", GameMode);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("WindowWidth=%d\n", WindowWidth);
 	out.append_sprintf("WindowHeight=%d\n", WindowHeight);
+	out.append_sprintf("EnableSkillVFX=%d\n", EnableSkillVFX);
+	out.append_sprintf("EnableDeathDamageInfo=%d\n", EnableDeathDamageInfo);
 	out.append_sprintf("DbgCamPosX=%f\n", DbgCamPosX);
 	out.append_sprintf("DbgCamPosY=%f\n", DbgCamPosY);
 	out.append_sprintf("DbgCamPosZ=%f\n", DbgCamPosZ);
@@ -97,9 +104,12 @@ void CConfigGame::Print() const
 	LOG("	ListenPort=%d", ListenPort);
 	LOG("	DevMode=%d", DevMode);
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
+	LOG("	GameMode=%d (%s)", GameMode, GameMode == 1 ? "TitanRuins" : "DeathMatch");
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	WindowWidth=%d", WindowWidth);
 	LOG("	WindowHeight=%d", WindowHeight);
+	LOG("	EnableSkillVFX=%d", EnableSkillVFX);
+	LOG("	EnableDeathDamageInfo=%d", EnableDeathDamageInfo);
 	LOG("	DbgCamPosX=%f", DbgCamPosX);
 	LOG("	DbgCamPosY=%f", DbgCamPosY);
 	LOG("	DbgCamPosZ=%f", DbgCamPosZ);

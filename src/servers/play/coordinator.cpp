@@ -108,11 +108,15 @@ void InstancePool::Lane::Update()
 	}
 
 	foreach_const(tr, disconnectedList) {
-		auto client = clientMap.at(*tr);
+		auto clientIt = clientMap.find(*tr);
+		if(clientIt == clientMap.end()) continue;
+		auto client = clientIt->second;
 
 		switch(client->instanceType) {
 			case InstanceType::PVP_3V3: {
-				PvpInstance& instance = *instancePvpMap.at(client->sortieUID);
+				auto instIt = instancePvpMap.find(client->sortieUID);
+				if(instIt == instancePvpMap.end()) break;
+				PvpInstance& instance = *instIt->second;
 				instance.OnClientsDisconnected(&client->clientHd, 1); // TODO: group client handles by instance
 			} break;
 
@@ -145,7 +149,12 @@ void InstancePool::Lane::Update()
 		client.instanceType = InstanceType::PVP_3V3;
 		client.sortieUID = e->sortieUID;
 
-		PvpInstance& instance = *instancePvpMap.at(client.sortieUID);
+		auto instIt = instancePvpMap.find(client.sortieUID);
+		if(instIt == instancePvpMap.end()) {
+			WARN("[Lane_%d][client%x] sortie not found (sortieUID=%llu)", laneIndex, e->clientHd, client.sortieUID);
+			continue;
+		}
+		PvpInstance& instance = *instIt->second;
 		eastl::pair<ClientHandle,AccountUID> list(e->clientHd, e->accountUID);
 		instance.OnClientsConnected(&list, 1); // TODO: group by instance
 
@@ -200,23 +209,20 @@ void InstancePool::Lane::Update()
 			if(curClientHd != chunkInfo.clientHd) {
 				curClientHd = chunkInfo.clientHd;
 				curPvpInstance = nullptr;
-				const Client& client = *clientMap.at(curClientHd);
-				switch(client.instanceType) {
-					case InstanceType::PVP_3V3: {
-						curPvpInstance = &*instancePvpMap.at(client.sortieUID);
-					} break;
-
-					default: {
-						ASSERT_MSG(0, "case not handled");
+				auto cit = clientMap.find(curClientHd);
+				if(cit != clientMap.end()) {
+					const Client& client = *cit->second;
+					if(client.instanceType == InstanceType::PVP_3V3) {
+						auto iit = instancePvpMap.find(client.sortieUID);
+						if(iit != instancePvpMap.end()) {
+							curPvpInstance = &*iit->second;
+						}
 					}
 				}
 			}
 
 			if(curPvpInstance) {
 				curPvpInstance->OnClientPacket(curClientHd, header, packetData);
-			}
-			else {
-				ASSERT_MSG(0, "case not handled");
 			}
 		}
 	}
@@ -248,6 +254,19 @@ void InstancePool::Lane::Update()
 	// update instances
 	foreach(room, instancePvpList) {
 		room->Update(localTime);
+	}
+
+	// cleanup finished instances (all players disconnected and game is over)
+	for(auto it = instancePvpList.begin(); it != instancePvpList.end(); ) {
+		if(it->game.matchEnded && it->game.playerList.empty()) {
+			LOG("[Lane_%d] Removing finished game (sortieUID=%llu)", laneIndex, it->sortieUID);
+			it->game.Cleanup();
+			instancePvpMap.erase(it->sortieUID);
+			it = instancePvpList.erase(it);
+		}
+		else {
+			++it;
+		}
 	}
 }
 
@@ -583,6 +602,15 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 		}
 	}
 
+	// DevQuickConnect: accept any client using the first pending entry
+	if(accountUID == AccountUID::INVALID && Config().DevQuickConnect && !pendingClientQueue.empty()) {
+		auto& e = pendingClientQueue.front();
+		accountUID = e.accountUID;
+		sortieUID = e.sortieUID;
+		pendingClientQueue.erase(pendingClientQueue.begin());
+		LOG("[client%x] DevQuickConnect: accepted with first pending entry (accountUID=%u)", clientHd, accountUID);
+	}
+
 	// failed to authenticate
 	if(accountUID == AccountUID::INVALID) {
 		WARN("[client%x] Client failed to authenticate", clientHd);
@@ -623,11 +651,12 @@ void Coordinator::CreateDevGame()
 
 	In::MQ_CreateGame game;
 	game.sortieUID = SortieUID(1);
-	game.playerCount = 6;
+	game.mapIndex = Config().GameMode == 1 ? MapIndex::PVP_TITAN_RUINS : MapIndex::PVP_DEATHMATCH;
+	game.playerCount = 6; // TODO: increase to 10 for Titan Ruins once stable
 	game.spectatorCount = 0;
 
 	auto& p = game.players[0];
-	p.name.Copy(WideString(L"LordSk")); // TODO: we really need an account system (sorry Delta)
+	p.name.Copy(WideString(L"Player1"));
 	p.accountUID = AccountUID(0x1337);
 	p.team = 0;
 	p.isBot = 0;

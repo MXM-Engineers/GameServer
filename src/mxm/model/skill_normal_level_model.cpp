@@ -9,6 +9,8 @@ SkillNormalLevelModel::SkillNormalLevelModel()
 	_ConsumeMP = 0.0f;
 	_ConsumeUG = 0.0f;
 	_CoolTime = 0.0f;
+	_ConsumeStamina = 0.0f;
+	_ConsumeHP = 0.0f;
 	_Level = 0;
 	_SkillIndex = 0;
 	_TargetMaxDistance = 0.0f;
@@ -140,6 +142,16 @@ void SkillNormalLevelModel::setConsumeUG(float ug)
 	_ConsumeUG = ug;
 }
 
+float SkillNormalLevelModel::getConsumeRP()
+{
+	return _ConsumeRP;
+}
+
+void SkillNormalLevelModel::setConsumeRP(float rp)
+{
+	_ConsumeRP = rp;
+}
+
 float SkillNormalLevelModel::getTargetMaxDistance()
 {
 	return _TargetMaxDistance;
@@ -158,6 +170,26 @@ float SkillNormalLevelModel::getAddGroggy()
 void SkillNormalLevelModel::setAddGroggy(float groggy)
 {
 	_AddGroggy = groggy;
+}
+
+float SkillNormalLevelModel::getConsumeStamina()
+{
+	return _ConsumeStamina;
+}
+
+void SkillNormalLevelModel::setConsumeStamina(float stamina)
+{
+	_ConsumeStamina = stamina;
+}
+
+float SkillNormalLevelModel::getConsumeHP()
+{
+	return _ConsumeHP;
+}
+
+void SkillNormalLevelModel::setConsumeHP(float hp)
+{
+	_ConsumeHP = hp;
 }
 
 void SkillNormalLevelModel::Print()

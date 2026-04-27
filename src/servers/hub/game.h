@@ -26,6 +26,7 @@ struct HubGame
 		const ClientHandle clientHd;
 		PartyUID partyUID = PartyUID::INVALID;
 		SortieUID sortieUID = SortieUID::INVALID;
+		EntrySystemID pendingEntry = EntrySystemID(0);
 
 		Player(): clientHd(ClientHandle::INVALID) {}
 
@@ -42,6 +43,7 @@ struct HubGame
 		const PartyUID UID;
 		EntrySystemID entry;
 		StageType stageType;
+		MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 
 		eastl::fixed_vector<Member,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on
@@ -88,6 +90,7 @@ struct HubGame
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);
 	void OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType);
+	void OnLeaveParty(ClientHandle clientHd);
 	void OnEnqueueGame(ClientHandle clientHd);
 	void OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID);
 	void OnSortieRoomConfirm(ClientHandle clientHd, bool confirm);
@@ -101,3 +104,5 @@ struct HubGame
 
 	void SpawnNPC(CreatureIndex docID, i32 localID, const vec3& pos, const vec3& dir);
 };
+
+MapIndex GetSortieMapIndex(SortieUID sortieUID);

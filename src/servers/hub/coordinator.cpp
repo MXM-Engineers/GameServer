@@ -169,6 +169,7 @@ void InstancePool::Lane::Update()
 		instanceRoomList.emplace_back(instUID, cr->sortieUID);
 		instanceRoomMap.emplace(instUID, --instanceRoomList.end());
 		RoomInstance& room = *(--instanceRoomList.end());
+		room.mapIndex = cr->mapIndex;
 
 		foreach_const(u, cr->users) {
 			if(u->clientHd != ClientHandle::INVALID) {
@@ -394,7 +395,7 @@ void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accoun
 	l.hubPushPlayerQueue.push_back(player);
 }
 
-void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount)
+void InstancePool::QueueCreateRoom(SortieUID sortieUID, MapIndex mapIndex, const RoomUser* userList, const i32 userCount)
 {
 	// TODO: choose a lane based on capacity
 	Lane& roomLane = lanes.front();
@@ -421,6 +422,7 @@ void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList
 
 	Lane::CreateRoomEntry create;
 	create.sortieUID = sortieUID;
+	create.mapIndex = mapIndex;
 
 	for(i32 i = 0; i < userCount; i++) {
 		const RoomUser& user = userList[i];
@@ -561,7 +563,8 @@ void Coordinator::Update(f64 delta)
 				}
 			}
 
-			instancePool.QueueCreateRoom(packet.sortieUID, roomClientList.data(), roomClientList.size());
+			const MapIndex mapIndex = GetSortieMapIndex(packet.sortieUID);
+			instancePool.QueueCreateRoom(packet.sortieUID, mapIndex, roomClientList.data(), roomClientList.size());
 		}
 	}
 	matchmaker.packetQueue.Clear();

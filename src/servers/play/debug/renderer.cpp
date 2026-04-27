@@ -104,7 +104,9 @@ void MeshBuffer::UpdateAndBind()
 
 void MeshBuffer::DrawMesh(const char* name)
 {
-	const MeshRef& ref = meshRefMap.at(HashStr(name));
+	auto it = meshRefMap.find(HashStr(name));
+	if(it == meshRefMap.end()) return;
+	const MeshRef& ref = it->second;
 	sg_draw(ref.indexStart, ref.indexCount, 1);
 }
 

@@ -784,213 +784,115 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	money.nReason = 1;
 	SendPacket(clientHd, money);
 
-	// SN_UpdateEntrySystem
+	// SN_UpdateEntrySystem (matches official server from pcapng capture)
 	{
-		PacketWriter<Sv::SN_UpdateEntrySystem,2048> packet;
+		PacketWriter<Sv::SN_UpdateEntrySystem,4096> packet;
 
 		packet.Write<u16>(7); // entrySystemListCount
 
+		// 1. Random Arena
 		{
-			packet.Write<u32>(210036011); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 2, 190009205 }
-			};
+			packet.Write<u32>(210036011);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 2, 190009205 } };
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
 			packet.Write<u16>(1);
-			packet.Write<u8>(2); // areaKey
-			packet.Write<i32>(200101330); // stageIndex
+			packet.Write<u8>(2);
+			packet.Write<i32>(200101330);
 			const u8 gametypes[] = { 4, 6 };
 			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 		}
+		// 2. 4v4 HardPoint Capture
 		{
-			packet.Write<u32>(210036010); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 3, 190009204 }
-			};
+			packet.Write<u32>(210036010);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 3, 190009204 } };
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
 			packet.Write<u16>(1);
-			packet.Write<u8>(3); // areaKey
-			packet.Write<i32>(200101320); // stageIndex
+			packet.Write<u8>(3);
+			packet.Write<i32>(200101320);
 			const u8 gametypes[] = { 4, 6 };
 			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 		}
+		// 3. Master Training Area
 		{
-			packet.Write<u32>(210037002); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 4, 190004000 }
-			};
+			packet.Write<u32>(210037002);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 4, 190004000 } };
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
 			packet.Write<u16>(1);
-			packet.Write<u8>(4); // areaKey
-			packet.Write<i32>(200000100); // stageIndex
+			packet.Write<u8>(4);
+			packet.Write<i32>(200000100);
 			const u8 gametypes[] = { 1 };
 			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 		}
+		// 4. Titan Ruins 5v5 (areaKey=5 per official)
 		{
-			packet.Write<u32>(210037000); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 5, 190000006 },
-				{ 6, 190000007 },
-				{ 7, 190000008 },
-				{ 8, 190000009 },
-				{ 9, 190000010 },
-				{ 10, 190000011 },
-			};
+			packet.Write<u32>(210037003);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 5, 190002200 } };
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
-			packet.Write<u16>(12);
-			{
-				packet.Write<u8>(5); // areaKey
-				packet.Write<i32>(200007101); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(5); // areaKey
-				packet.Write<i32>(200007103); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(6); // areaKey
-				packet.Write<i32>(200007201); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(6); // areaKey
-				packet.Write<i32>(200007203); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(7); // areaKey
-				packet.Write<i32>(200007301); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(7); // areaKey
-				packet.Write<i32>(200007303); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(8); // areaKey
-				packet.Write<i32>(200007401); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(8); // areaKey
-				packet.Write<i32>(200007403); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(9); // areaKey
-				packet.Write<i32>(200007501); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(9); // areaKey
-				packet.Write<i32>(200007503); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(10); // areaKey
-				packet.Write<i32>(200007601); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(10); // areaKey
-				packet.Write<i32>(200007603); // stageIndex
-				const u8 gametypes[] = { 1 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-		}
-		{
-			packet.Write<u32>(210037006); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 11, 190001000 }
-			};
-			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
 			packet.Write<u16>(1);
-			packet.Write<u8>(11); // areaKey
-			packet.Write<i32>(200011109); // stageIndex
-			const u8 gametypes[] = { 1 };
+			packet.Write<u8>(5);
+			packet.Write<i32>(200006203);
+			const u8 gametypes[] = { 7 };
 			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 		}
+		// 5. Arena 3v3
 		{
-			packet.Write<u32>(210036812); // entrySystemIndex
-
-			// areaList
-			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 1, 190002101 }
-			};
+			packet.Write<u32>(210036812);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 1, 190002101 } };
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
-			// stageList
 			packet.Write<u16>(3);
 			{
-				packet.Write<u8>(1); // areaKey
-				packet.Write<i32>(200020102); // stageIndex
+				packet.Write<u8>(1);
+				packet.Write<i32>(200006112);
+				const u8 gametypes[] = { 4 };
+				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+			}
+			{
+				packet.Write<u8>(1);
+				packet.Write<i32>(200020102);
 				const u8 gametypes[] = { 4, 6 };
 				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 			}
 			{
-				packet.Write<u8>(1); // areaKey
-				packet.Write<i32>(200101000); // stageIndex
-				const u8 gametypes[] = { 4, 6, 5 };
-				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
-			}
-			{
-				packet.Write<u8>(1); // areaKey
-				packet.Write<i32>(200006112); // stageIndex
-				const u8 gametypes[] = { 4 };
+				packet.Write<u8>(1);
+				packet.Write<i32>(200101000);
+				const u8 gametypes[] = { 5, 4, 6 };
 				packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 			}
 		}
+		// 6. TimeSpace Distortion (areaKeys per official: 10,11,14,19,20,23)
 		{
-			packet.Write<u32>(210037003); // entrySystemIndex
-
-			// areaList
+			packet.Write<u32>(210037000);
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 18, 190002200 }
+				{ 10, 190000009 }, { 11, 190000007 }, { 14, 190000008 },
+				{ 19, 190000010 }, { 20, 190000006 }, { 23, 190000011 },
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
-
-			// stageList
+			packet.Write<u16>(12);
+			{
+				const struct { u8 ak; i32 si; } stages[] = {
+					{10,200007401}, {10,200007403}, {11,200007201}, {11,200007203},
+					{14,200007301}, {14,200007303}, {19,200007501}, {19,200007503},
+					{20,200007101}, {20,200007103}, {23,200007601}, {23,200007603},
+				};
+				for(int i = 0; i < 12; i++) {
+					packet.Write<u8>(stages[i].ak);
+					packet.Write<i32>(stages[i].si);
+					const u8 gametypes[] = { 1 };
+					packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
+				}
+			}
+		}
+		// 7. Master Mini Games
+		{
+			packet.Write<u32>(210037006);
+			const Sv::SN_UpdateEntrySystem::Area areaList[] = { { 11, 190001000 } };
+			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 			packet.Write<u16>(1);
-			packet.Write<u8>(18); // areaKey
-			packet.Write<i32>(200006203); // stageIndex
-			const u8 gametypes[] = { 7 };
+			packet.Write<u8>(11);
+			packet.Write<i32>(200011109);
+			const u8 gametypes[] = { 1 };
 			packet.WriteVec(gametypes, ARRAY_COUNT(gametypes));
 		}
-
 
 		SendPacket(clientHd, packet);
 	}

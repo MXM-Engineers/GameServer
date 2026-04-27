@@ -1799,6 +1799,32 @@ DEFAULT_SERIALIZE(Cl::CQ_TierRecord);
 DEFAULT_SERIALIZE(Sv::SN_Unknown_62472);
 DEFAULT_SERIALIZE(Sv::SN_UpdateEntrySystem);
 
+// Combat system packets
+DEFAULT_SERIALIZE(Sv::SN_UpdateStat);
+DEFAULT_SERIALIZE(Sv::SN_DeadAck);
+DEFAULT_SERIALIZE(Sv::SN_DEAD_DAMAGE_INFO);
+DEFAULT_SERIALIZE(Sv::SN_KillNotify);
+DEFAULT_SERIALIZE(Sv::SN_BroadcastDamage);
+DEFAULT_SERIALIZE(Sv::SN_RemoteActivated);
+DEFAULT_SERIALIZE(Sv::SN_AiSetActionState);
+DEFAULT_SERIALIZE(Sv::SN_RemoteSyncCreateFromCreatorID);
+DEFAULT_SERIALIZE(Sv::SN_RemoteSyncCreateFromRemoteDoc);
+DEFAULT_SERIALIZE(Sv::SN_CancelSkill);
+DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTeleport);
+DEFAULT_SERIALIZE(Sv::SN_RespawnDelaytime);
+DEFAULT_SERIALIZE(Sv::SN_RevivePlayerAtStartingPoint);
+DEFAULT_SERIALIZE(Sv::SN_PvpEventAnnouncement);
+DEFAULT_SERIALIZE(Sv::SN_PvpResult);
+DEFAULT_SERIALIZE(Sv::SN_PvpResultScoreDeathmatch);
+DEFAULT_SERIALIZE(Sv::SN_ScoreUpdate);
+DEFAULT_SERIALIZE(Sv::SN_TeamScoreUpdate);
+DEFAULT_SERIALIZE(Sv::SN_ChangeBattleState);
+DEFAULT_SERIALIZE(Sv::SN_CreateGroundItem);
+DEFAULT_SERIALIZE(Sv::SN_DestroyGroundItem);
+DEFAULT_SERIALIZE(Sv::SA_ReturnToCity);
+DEFAULT_SERIALIZE(Cl::CQ_WeaponFire);
+DEFAULT_SERIALIZE(Sv::SN_DoConnectChannelServer);
+
 #undef DEFAULT_SERIALIZE
 
 
@@ -1815,6 +1841,25 @@ inline const char* PacketSerialize<Sv::SN_LoadCharacterStart>(const void* packet
 	return str.data();
 }
 */
+
+// SN_AddStatus (62230) — variable size, written with PacketWriter
+template<>
+inline const char* PacketSerialize<Sv::SN_AddStatus>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_AddStatus(size=%d)", packetSize);
+	return str.data();
+}
+
+// SN_RemoveStatus (62232)
+template<>
+inline const char* PacketSerialize<Sv::SN_RemoveStatus>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_RemoveStatus(statusID=%d targetID=%d casterID=%d)", buff.Read<i32>(), buff.Read<i32>(), buff.Read<i32>());
+	return str.data();
+}
 
 #undef SER_BEGIN
 #undef SER

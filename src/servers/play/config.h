@@ -6,9 +6,13 @@ struct CConfigGame
 	i32 ListenPort = 12900;
 	i32 DevMode = false;
 	i32 DevQuickConnect = false;
+	i32 GameMode = 0; // 0=DeathMatch, 1=TitanRuins
 	i32 TraceNetwork = false;
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;
+	i32 EnableSkillVFX = 1;
+	i32 EnableDeathDamageInfo = 0;
+	i32 EnableDebugWindow = 1;
 	f32 DbgCamPosX = 0;
 	f32 DbgCamPosY = 0;
 	f32 DbgCamPosZ = 6000;

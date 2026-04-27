@@ -53,6 +53,20 @@ struct Replication
 		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> masters;
 		u8 mainCharaID;
 		bool hasJumped;
+
+		// Combat stats for tag enter packet
+		f32 hp;
+		f32 maxHp;
+		f32 mana;
+		f32 maxMana;
+		f32 stamina;
+		f32 maxStamina;
+		f32 atk;
+		f32 defense;
+		f32 moveSpeed;
+		i32 resourceStatType;
+		f32 ultimateGauge;
+		f32 maxUltimateGauge;
 	};
 
 	struct ActorMaster: Actor<ActorType::Master>
@@ -86,6 +100,10 @@ struct Replication
 
 		vec3 pos;
 		vec3 dir;
+
+		f32 hp = 0;
+		f32 maxHp = 0;
+		bool hasHP = false;
 	};
 
 	struct ActorDynamic: Actor<ActorType::Dynamic>
@@ -96,6 +114,10 @@ struct Replication
 		ActionStateID action;
 		vec3 pos;
 		vec3 rot;
+
+		f32 hp = 0;
+		f32 maxHp = 0;
+		bool hasHP = false;
 	};
 
 	struct SkillCast
@@ -132,9 +154,9 @@ struct Replication
 	struct Frame
 	{
 		eastl::fixed_list<Player,10,false> playerList;
-		eastl::fixed_list<ActorMaster,32,true> masterList;
-		eastl::fixed_list<ActorNpc,32,true> npcList;
-		eastl::fixed_list<ActorDynamic,32,true> dynamicList;
+		eastl::fixed_list<ActorMaster,64,true> masterList;
+		eastl::fixed_list<ActorNpc,256,true> npcList;
+		eastl::fixed_list<ActorDynamic,128,true> dynamicList;
 
 		eastl::array<decltype(playerList)::iterator,10> playerMap;
 		hash_map<ActorUID,decltype(masterList)::iterator,128,true> masterMap;
@@ -208,6 +230,7 @@ struct Replication
 	eastl::array<PlayerLocalInfo,MAX_PLAYERS> playerLocalInfo;
 
 	hash_map<ClientHandle, i32, MAX_PLAYERS> playerMap;
+	MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 
 	void Init(Server* server_);
 
@@ -240,9 +263,94 @@ struct Replication
 	void SendPvpLoadingComplete(ClientHandle clientHd);
 	void SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed);
 	void SendPreGameLevelEvents(ClientHandle clientHd);
+	void SendCountdown(ClientHandle clientHd, i32 curCount, i32 maxCount);
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+
+	// Combat system
+	void SendUpdateStatToAll(ActorUID actorUID, u8 statType, f32 maxValue, f32 curValue);
+	void SendUpdateStatToClient(ClientHandle clientHd, ActorUID actorUID, u8 statType, f32 maxValue, f32 curValue);
+	void SendBroadcastDamage(ActorUID attackerUID, ActorUID targetUID, i32 damage,
+		const vec3& attackerPos, const vec3& attackerDir,
+		const vec3& hitPos, const vec3& hitDir,
+		i32 damageType, i32 skillDocID);
+	void SendDeadAck(ActorUID victimUID, ActorUID killerUID, i32 victimDocIndex);
+
+	// Death damage info screen - shows killer portrait, skills used, damage breakdown, assisters
+	struct DeadDamageEntry {
+		i32 objectID;        // LocalActorID of damage source (per-client, filled during send)
+		ActorUID actorUID;   // World ActorUID (resolved to LocalActorID per client)
+		i32 skillDocIndex;   // Skill document index, -1 for auto-attack
+		i32 statusDocIndex;  // Status document index for icon, -1 for none
+		i32 damage;          // Damage amount
+		u8  attackerIsMonster; // 0=player, 1=monster
+		u8  damageType;      // 0=auto-attack, 1=skill
+	};
+	struct DeadDamageAttacker {
+		i32 attackerKey;     // 1-based player index in match
+		ActorUID actorUID;   // Primary ActorUID (for LocalActorID resolution)
+		eastl::fixed_vector<DeadDamageEntry, 8, false> entries;
+	};
+	void SendDeadDamageInfo(ClientHandle victimClientHd, ActorUID victimUID,
+		const DeadDamageAttacker& killer,
+		const eastl::fixed_vector<DeadDamageAttacker, 8, false>& others,
+		i32 durationTimeMs);
+	void SendRespawnDelaytime(UserID usn, i32 delayMs);
+	void SendRevivePlayerAtStartingPoint(UserID userID, ActorUID activeUID, ActorUID inactiveUID, const vec3& pos);
+	void SendPlayerSyncTeleport(ActorUID actorUID, const vec3& pos, const vec3& rot);
+	void SendKillNotify(ActorUID killerUID, ActorUID victimUID, i32 skillIndex);
+	void SendPvpEventAnnouncement(i32 type, i32 param1, i32 param2, ActorUID killerUID, ActorUID victimUID);
+	void SendCancelSkill(ActorUID actorUID, i32 skillIndex);
+	void SendTagCooltime(ActorUID actorUID, i32 cooltimeMs);
+	void SendChangeBattleState(ActorUID actorUID, bool inBattle, f32 baseMoveSpeed);
+	void SendNotifyPcDetailInfos();
+	void SendNotifyPcDetailInfosEnemyOnly();
+	void SendNotifyPcDetailInfosForClient(ClientHandle clientHd, i32 excludeTeam);
+	void SendNotifyPcDetailInfosAllForClient(ClientHandle clientHd); // ALL players for death screen
+
+	// Match results
+	struct PlayerScoreData {
+		u32 playerIndex;
+		i32 kills;
+		i32 deaths;
+		i32 assists;
+		i32 score;
+		bool disconnected;
+		i32 totalDamageDealt;
+		i32 totalDamageReceived;
+		i32 highestKillStreak;
+	};
+	void SendPvpResult(ClientHandle clientHd, i32 gameEndReason, i32 playTimeMs, i32 winningTeam);
+	void SendPvpResultScoreDeathmatch(ClientHandle clientHd, const PlayerScoreData* scores, i32 scoreCount,
+		i32 redKills, i32 blueKills);
+	void SendAuthResultForRTB(ClientHandle clientHd);
+	void SendReturnToCity(ClientHandle clientHd);
+	void SendDoConnectChannelServer(ClientHandle clientHd);
+
+	// Buff/Debuff system
+	void SendAddStatusToAll(i32 statusID, ActorUID targetUID, ActorUID casterUID,
+		f32 durationTime, u8 overlapCount = 1, u8 customValue = 0);
+	void SendRemoveStatusToAll(i32 statusID, ActorUID targetUID, ActorUID casterUID);
+
+	// Scoreboard
+	void SendTeamScoreToAll(i32 redKills, i32 blueKills, i32 redScore, i32 blueScore);
+	void SendScoreUpdatePlayer(UserID usn, i32 statID, i32 value);
+	void SendScoreUpdateTeam(i32 teamType, i32 statID, i32 value);
+
+	// Pickups
+	void SendCreateGroundItem(i32 groundItemID, i32 itemDocIndex, const vec3& pos);
+	void SendDestroyGroundItem(i32 groundItemID);
+
+	// VFX system
+	void SendRemoteSyncCreateToAll(ActorUID casterUID, i32 remoteDocIndex, i32 remoteSeedID,
+		const vec3& firePos, f32 fireYaw, const vec3& targetPos, i32 scale, u8 fireObjectType = 0,
+		i32 lifeTimeMs = 0, ActorUID targetUID = ActorUID::INVALID);
+	void SendRemoteActivatedToAll(ActorUID casterUID, i32 remoteSeedID,
+		ActorUID targetUID, i32 penetrationCount, const vec3& hitPos);
+
+	// Action state broadcast
+	void SendActionStateBroadcast(ActorUID actorUID, ActionStateID state, i32 param1, i32 param2);
 
 	void OnPlayerDisconnect(ClientHandle clientHd);
 
@@ -250,6 +358,10 @@ struct Replication
 
 	LocalActorID GetLocalActorID(ClientHandle clientHd, ActorUID actorUID) const; // Can return INVALID
 	ActorUID GetWorldActorUID(ClientHandle clientHd, LocalActorID localActorID) const; // Can return INVALID
+
+	// Debug: send raw action change or destroy to a specific client
+	void DbgSendActionChange(ClientHandle clientHd, ActorUID uid, i32 actionID);
+	void DbgSendDestroy(ClientHandle clientHd, ActorUID uid);
 
 private:
 	void UpdatePlayersLocalState();

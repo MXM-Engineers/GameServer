@@ -122,6 +122,7 @@ struct RoomInstance
 
 	bool markedAsRemove = false;
 	Phase phase = Phase::Picking;
+	MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 
 	eastl::array<u8,4> matchServerIp = {0};
 	u16 matchServerPort = 0x0;

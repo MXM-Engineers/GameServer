@@ -16,6 +16,7 @@ public:
 
 	SkillType type = SkillType::INVALID;
 	ActionStateID action = ActionStateID::INVALID;
+	f32 consumeUG = 0; // _ConsumeUG from SKILL.xml (ultimate gauge cost)
 
 private:
 	i32 _ID = 0;

@@ -30,10 +30,16 @@ public:
 	void setConsumeEP(float ep);
 	float getConsumeUG();
 	void setConsumeUG(float ug);
+	float getConsumeRP();
+	void setConsumeRP(float rp);
 	float getTargetMaxDistance();
 	void setTargetMaxDistance(float distance);
 	float getAddGroggy();
 	void setAddGroggy(float groggy);
+	float getConsumeStamina();
+	void setConsumeStamina(float stamina);
+	float getConsumeHP();
+	void setConsumeHP(float hp);
 	//ToDo: check if for some of these float's we can use int
 
 	void Print();
@@ -51,6 +57,9 @@ private:
 	float _ConsumeMP = 0.0f; //int?
 	float _ConsumeEP = 0.0f; //int?
 	float _ConsumeUG = 0.0f; //int?
+	float _ConsumeRP = 0.0f; //int?
 	float _TargetMaxDistance = 0.0f; //int?
 	float _AddGroggy = 0.0f; //int?
+	float _ConsumeStamina = 0.0f;
+	float _ConsumeHP = 0.0f;
 };

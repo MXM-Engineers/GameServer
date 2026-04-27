@@ -96,6 +96,7 @@ struct InstancePool
 		ProfileMutex(Mutex, mutexCreateRoomQueue);
 		struct CreateRoomEntry {
 			SortieUID sortieUID;
+			MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 			eastl::fixed_vector<RoomUser,16> users;
 		};
 		eastl::fixed_vector<CreateRoomEntry,128> createRoomQueue;
@@ -148,7 +149,7 @@ struct InstancePool
 
 	// Thread: Coordinator
 	void QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID);
-	void QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount);
+	void QueueCreateRoom(SortieUID sortieUID, MapIndex mapIndex, const RoomUser* userList, const i32 userCount);
 
 	void QueuePopPlayers(const ClientHandle* clientList, const i32 count); // on disconnect
 

@@ -167,7 +167,19 @@ struct Remote
 	BehaviorType behaviorType = BehaviorType::INVALID;
 
 	eastl::array<u16,3> boundSize;
+	u16 boundAngle = 0;        // _Angle from RemoteBoundComData2 (degrees, 0 = full circle)
+	i32 activateCount = 0;     // _ActivateCount from RemoteComData2
+	i32 attackMultiplier = 0;  // _AttackMultiplier from RemoteComData2
+	f32 lifeTime = 0;         // _LifeTime from RemoteComData2
+	i32 penetrationCount = 0;  // _PenetrationCount from RemoteComData2
 	u8 vs = 0;
+
+	// Status effects applied on hit (from _Status entries in RemoteComData2)
+	struct HitStatus {
+		i32 statusID;
+		i32 rate; // percentage chance (100 = always)
+	};
+	eastl::fixed_vector<HitStatus, 4, false> hitStatuses;
 
 };
 
@@ -259,6 +271,7 @@ struct GameXmlContent
 				struct {
 					RemoteIdx idx;
 					ActionCommand::TargetPreset targetPreset;
+					u8 fireObjectType; // 0=Skill_Fire_Dummy, 1=Attack_Fire_Dummy, 2=Scene Root
 				} remote;
 
 				struct {
@@ -268,6 +281,12 @@ struct GameXmlContent
 				struct {
 					i32 speed;
 				} rotateSpeed;
+
+				struct {
+					i32 statusIndex;
+					ActionCommand::TargetPreset targetPreset;
+					u8 isRemove; // 1 if Param2="Remove" or "RemoveWhenAniEnd"
+				} status;
 			};
 		};
 
@@ -287,12 +306,14 @@ struct GameXmlContent
 
 	Map mapLobby;
 	Map mapPvpDeathMatch;
+	Map mapPvpTitanRuins;
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
 	FileBuffer filePvpDeathNmWall04;
+	FileBuffer filePvpTitanRuinsCollision;
 	FileBuffer fileCylinderCollision;
 
 	bool Load();
@@ -320,6 +341,7 @@ private:
 	bool LoadMapByID(Map* map, i32 index);
 	bool LoadLobby(i32 index);
 	bool LoadPvpDeathmach();
+	bool LoadPvpTitanRuins();
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();
 	bool LoadAnimationData();

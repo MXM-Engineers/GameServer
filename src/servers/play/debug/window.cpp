@@ -124,7 +124,7 @@ struct Window
 
 	bool ui_bCollisionTests = false;
 	bool ui_bMapWireframe = false;
-	bool ui_bGameStates = true;
+	bool ui_bGameStates = false;
 	bool ui_bPhysicsTest = false;
 	bool ui_bAreas = false;
 
@@ -778,17 +778,22 @@ void Window::Cleanup()
 
 static Window* g_pWindow = nullptr;
 
+static bool g_windowInitialized = false;
+
 void WindowInit()
 {
 	bool r = g_pWindow->Init();
 	if(!r) {
 		LOG("ERROR: failed to init window");
 		sapp_quit();
+		return;
 	}
+	g_windowInitialized = true;
 }
 
 void WindowFrame()
 {
+	if(!g_windowInitialized) return;
 	g_pWindow->Frame();
 }
 
@@ -854,11 +859,13 @@ GameUID PushNewGame(const FixedStr32& mapName)
 
 void PushNewFrame(GameUID gameUID)
 {
+	if(!g_pWindow) return;
 	g_pWindow->NewFrame(gameUID);
 }
 
 void Push(GameUID gameUID, const PlayerMaster& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 
@@ -869,16 +876,19 @@ void PopGame(GameUID gameUID)
 
 void PushPhysics(GameUID gameUID, const PhysicsScene& scene)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->PushPhysicsScene(scene);
 }
 
 void Push(GameUID gameUID, const Npc& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 
 void Push(GameUID gameUID, const Dynamic& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 

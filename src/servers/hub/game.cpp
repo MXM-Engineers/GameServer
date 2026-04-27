@@ -4,6 +4,17 @@
 #include "config.h"
 #include <EAStdC/EAString.h>
 
+struct SortieMapEntry { SortieUID sortieUID; MapIndex mapIndex; };
+static eastl::fixed_vector<SortieMapEntry, 64, false> g_sortieMapIndex;
+
+MapIndex GetSortieMapIndex(SortieUID sortieUID)
+{
+	foreach_const(e, g_sortieMapIndex) {
+		if(e->sortieUID == sortieUID) return e->mapIndex;
+	}
+	return MapIndex::PVP_DEATHMATCH;
+}
+
 void HubGame::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
 	plidMap = plidMap_;
@@ -85,8 +96,8 @@ bool HubGame::LoadMap()
 	const GameXmlContent& content = GetGameXmlContent();
 
 	foreach(it, content.mapLobby.creatures) {
-		// don't spawn "spawn points"
-		if(it->IsSpawnPoint()) {
+		// Collect player spawn points (lobby uses ReturnPoint=False with dwDoc=100000001)
+		if((i32)it->docID == 100000001) {
 			mapSpawnPoints.push_back(SpawnPoint{ it->pos, it->rot });
 			continue;
 		}
@@ -94,7 +105,7 @@ bool HubGame::LoadMap()
 		if(it->docID == CreatureIndex::Jukebox) {
 			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
 		}
-		if (it->docID == CreatureIndex::HalloweenJukebox) {
+		else if(it->docID == CreatureIndex::HalloweenJukebox) {
 			world.SpawnJukeboxActor(CreatureIndex::HalloweenJukebox, it->localID, it->pos, it->rot);
 		}
 		else {
@@ -222,9 +233,13 @@ void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
 	// select a spawn point at random
-	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
-	vec3 pos = spawnPoint.pos;
-	vec3 dir = spawnPoint.dir;
+	vec3 pos = vec3(0, 0, 0);
+	vec3 dir = vec3(1, 0, 0);
+	if(!mapSpawnPoints.empty()) {
+		const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
+		pos = spawnPoint.pos;
+		dir = spawnPoint.dir;
+	}
 	vec3 eye(0, 0, 0);
 
 	// TODO: check if already leader character
@@ -287,6 +302,10 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 {
 	const i32 userID = plidMap->Get(clientHd);
 
+	// Store entry for map selection when party is created
+	playerMap[userID]->pendingEntry = entry;
+	LOG("[client%x] OnCreateParty: entrySystemID=%u", clientHd, (u32)entry);
+
 	// TODO: validate args
 	const Account& acc = *playerAccountData[userID];
 
@@ -307,12 +326,40 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 	}
 }
 
+void HubGame::OnLeaveParty(ClientHandle clientHd)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	if(userID < 0) return;
+
+	PartyUID partyUID = playerMap[userID]->partyUID;
+	if(partyUID != PartyUID(0)) {
+		auto pit = partyMap.find(partyUID);
+		if(pit != partyMap.end()) {
+			partyList.erase(pit->second);
+			partyMap.erase(pit);
+		}
+		playerMap[userID]->partyUID = PartyUID(0);
+	}
+
+	Sv::SA_PartyBreakup resp;
+	resp.retval = 0;
+	resp.remainMemberCount = 0;
+	replication.server->SendPacket(clientHd, resp);
+
+	LOG("[client%x] OnLeaveParty: party disbanded, sent SA_PartyBreakup", clientHd);
+}
+
 void HubGame::OnEnqueueGame(ClientHandle clientHd)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// TODO: validate args
-	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID);
+	// Pass mapIndex from party to MM for correct team sizing
+	MapIndex mapIdx = MapIndex::PVP_DEATHMATCH;
+	auto pit = partyMap.find(playerMap[userID]->partyUID);
+	if(pit != partyMap.end()) {
+		mapIdx = pit->second->mapIndex;
+	}
+	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID, mapIdx);
 }
 
 void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
@@ -345,6 +392,7 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 	member.accountUID = leader;
 	party.memberList.push_back(member);
 
+	// mapIndex will be set by CQ_PartyModify when client selects a stage
 	partyMap.emplace(partyUID, --partyList.end());
 
 	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
@@ -365,6 +413,7 @@ void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 {
 	// TODO: find and error out if not found
 	Party& party = *partyMap.at(matchingParty.partyUID);
+	g_sortieMapIndex.push_back({matchingParty.sortieUID, party.mapIndex});
 	foreach_const(m, party.memberList) {
 		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
 		const i32 userID = plidMap->Get(clientHd);

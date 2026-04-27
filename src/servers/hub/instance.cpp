@@ -348,7 +348,7 @@ void RoomInstance::Update(Time localTime_)
 				rpList.push_back(rp);
 			}
 
-			mm.QueryRoomCreateGame(sortieUID, rpList.data(), rpList.size());
+			mm.QueryRoomCreateGame(sortieUID, mapIndex, rpList.data(), rpList.size());
 
 			// update clients
 			Sv::SN_SortieMasterPickPhaseStep packetStep;

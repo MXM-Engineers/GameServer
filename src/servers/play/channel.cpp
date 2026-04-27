@@ -61,6 +61,8 @@ void GamePacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& head
 		CASE(CQ_GamePlayerTag);
 		CASE(CQ_PlayerJump);
 		CASE(CQ_PlayerCastSkill);
+		CASE(CQ_WeaponFire);
+		CASE(CQ_ReturnToCity);
 
 		default: {
 			NT_LOG("[client%x] Client :: Unknown packet :: size=%d netID=%d", clientHd, header.size, header.netID);
@@ -319,4 +321,24 @@ void GamePacketHandler::HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, c
 	posInfo.rot = { rot.upperYaw, rot.upperPitch, rot.bodyYaw };
 
 	game->OnPlayerCastSkill(clientHd, actorUID, cast, posInfo);
+}
+
+void GamePacketHandler::HandlePacket_CQ_WeaponFire(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	const Cl::CQ_WeaponFire& fire = SafeCast<Cl::CQ_WeaponFire>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: CQ_WeaponFire :: characterID=%d", clientHd, (u32)fire.characterID);
+
+	ActorUID actorUID = replication->GetWorldActorUID(clientHd, fire.characterID);
+	if(actorUID == ActorUID::INVALID) {
+		WARN("Client sent an invalid actor (localActorID=%d)", fire.characterID);
+		return;
+	}
+
+	game->OnPlayerWeaponFire(clientHd, actorUID, f2v(fire.pos));
+}
+
+void GamePacketHandler::HandlePacket_CQ_ReturnToCity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	NT_LOG("[client%x] Client :: CQ_ReturnToCity", clientHd);
+	game->OnPlayerReturnToCity(clientHd);
 }

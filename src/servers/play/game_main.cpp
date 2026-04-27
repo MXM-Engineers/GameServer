@@ -3,6 +3,7 @@
 #include "debug/window.h"
 #include "coordinator.h"
 #include "config.h"
+#include "world.h"
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
@@ -44,6 +45,8 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	LoadStatusDefinitions();
+
 	r = PhysicsInit();
 	if(!r) {
 		LOG("ERROR: failed to init physics");
@@ -70,7 +73,9 @@ int main(int argc, char** argv)
 	}
 
 #ifdef CONF_WINDOWS
-	WindowCreate();
+	if(Config().EnableDebugWindow) {
+		WindowCreate();
+	}
 #endif
 
 	static Coordinator coordinator;
@@ -86,7 +91,9 @@ int main(int argc, char** argv)
 	LOG("Cleaning up...");
 
 #ifdef CONF_WINDOWS
-	WindowWaitForCleanup();
+	if(Config().EnableDebugWindow) {
+		WindowWaitForCleanup();
+	}
 #endif
 
 	coordinator.Cleanup();

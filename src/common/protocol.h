@@ -355,6 +355,7 @@ enum class MapIndex: i32
 {
 	LOBBY_NORMAL = 160000042,
 	PVP_DEATHMATCH = 160000094,
+	PVP_TITAN_RUINS = 160000050,
 };
 
 enum class StageIndex: i32
@@ -711,6 +712,16 @@ struct CQ_PartyCreate
 };
 ASSERT_SIZE(CQ_PartyCreate, 8);
 
+struct CQ_PartyLeave
+{
+	enum { NET_ID = 60077 };
+};
+
+struct CQ_PartyDisband
+{
+	enum { NET_ID = 60086 };
+};
+
 struct CQ_PartyModify
 {
 	enum { NET_ID = 60075 };
@@ -903,6 +914,11 @@ struct CQ_RequestCalendar
 	u64 filetimeUTC;
 };
 ASSERT_SIZE(CQ_RequestCalendar, 8);
+
+struct CQ_ReturnToCity
+{
+	enum { NET_ID = 60197 };
+};
 
 } // Cl
 
@@ -1934,6 +1950,21 @@ struct SA_PartyModify
 	i32 retval;
 };
 ASSERT_SIZE(SA_PartyModify, 4);
+
+struct SA_PartyBreakup
+{
+	enum { NET_ID = 62193 };
+	i32 retval;
+	i32 remainMemberCount;
+};
+ASSERT_SIZE(SA_PartyBreakup, 8);
+
+struct SA_ReturnToCity
+{
+	enum { NET_ID = 62197 };
+	i32 errCode;
+};
+ASSERT_SIZE(SA_ReturnToCity, 4);
 
 PUSH_PACKED
 struct SA_PartyOptionModify
@@ -2974,6 +3005,277 @@ struct SN_UpdateMasterGroupingEffect
 POP_PACKED
 ASSERT_SIZE(SN_UpdateMasterGroupingEffect, 13);
 
+// --- Combat system packets ---
+
+PUSH_PACKED
+struct SN_UpdateStat
+{
+	enum { NET_ID = 62056 };
+
+	LocalActorID objectID;
+	u8 statType;
+	u8 pad[3];
+	f32 maxValue;
+	f32 curValue;
+	i32 param;  // usually 0
+};
+POP_PACKED
+ASSERT_SIZE(SN_UpdateStat, 20);
+
+PUSH_PACKED
+struct SN_DeadAck
+{
+	enum { NET_ID = 62062 };
+
+	// 21 bytes payload (25 on wire)
+	// Fields: sourceID, targetID, targetDocIndex, dwRemoteID, dwRemoteDocIndex, isPast
+	i32 sourceID;          // 4 — killer LocalActorID
+	i32 targetID;          // 4 — victim LocalActorID
+	i32 targetDocIndex;    // 4 — creature doc index of victim (100000000 + classType)
+	i32 dwRemoteID;        // 4 — remote ID (0 for basic kills)
+	i32 dwRemoteDocIndex;  // 4 — remote doc index (0 for basic kills)
+	u8  isPast;            // 1 — always 0
+};
+POP_PACKED
+ASSERT_SIZE(SN_DeadAck, 21);
+
+// SN_DEAD_DAMAGE_INFO (62063) - Death damage info screen
+// Variable-size, written with PacketWriter. See replication.cpp for format details.
+struct SN_DEAD_DAMAGE_INFO
+{
+	enum { NET_ID = 62063 };
+};
+
+// SN_UPDATE_GAME_PLAYER_TAG_COOLTIME (62114) — tag swap cooldown timer
+// Confirmed from client binary: handler reads playerID + tagCooltimeMS
+struct SN_KillNotify  // legacy name kept for compatibility
+{
+	enum { NET_ID = 62114 };
+
+	LocalActorID actorID;  // 4 — active hero's LocalActorID (after swap)
+	i32 param;             // 4 — tagCooltimeMS (cooldown in milliseconds, e.g. 14000)
+};
+ASSERT_SIZE(SN_KillNotify, 8);
+
+// SN_RemoteActivated (62237) — hit confirmation for remote VFX entity
+// Format: remoteID(i32) + defID(i32) + penetrationCount(i32) + remotePos(vec3) = 24 bytes
+// remoteID = RemoteSeedID (0xC0000000 | counter), defID = target LocalActorID
+// Variable-size, written with PacketWriter
+struct SN_RemoteActivated
+{
+	enum { NET_ID = 62237 };
+};
+
+// SN_AiSetActionState (62382) — AI entity action/movement state
+// 2112x in ranked capture, 25-27 bytes. Format: excludedFieldBits(u8), entityID(i32),
+// [motionType(u16)], [lowerBodyYaw(u16)], [movementSpeed(u16)], pos(vec3)
+// Previously misidentified as SN_SKILL_DAMAGED — actual name from client binary handler.
+struct SN_AiSetActionState
+{
+	enum { NET_ID = 62382 };
+};
+
+// SN_RemoteSyncCreateFromCreatorID (62385) — spawns VFX from creator entity ID
+// 1063x in ranked capture, 108 bytes typical (94 variant). Format encrypted/unknown.
+// Sibling of 62386. Handler @9a18e1. NOT implemented yet.
+struct SN_RemoteSyncCreateFromCreatorID
+{
+	enum { NET_ID = 62385 };
+};
+
+// SN_RemoteSyncCreateFromRemoteDoc (62386) — spawns a VFX entity in the client scene
+// Variable-size, written with PacketWriter
+struct SN_RemoteSyncCreateFromRemoteDoc
+{
+	enum { NET_ID = 62386 };
+};
+
+// SN_BroadcastDamage (62235) — variable-size packet (123 bytes typical)
+// Fields from client handler: damageSeqNum, remoteID, defID, attID, remoteDocIndex,
+// remotePos(vec3), remoteDir(vec3), remoteForceDir(vec3), hitPos(vec3), hitDir(vec3),
+// damageType, skillDocID, nRagePoint, nRelativeElement, hitNodeName(str), damage(i32),
+// partName(str), partDamage, masterGroupingDamage, optionalResultOfHit
+struct SN_BroadcastDamage
+{
+	enum { NET_ID = 62235 };
+};
+
+struct SN_CancelSkill
+{
+	enum { NET_ID = 62039 };
+
+	LocalActorID objectID;  // 4
+	i32 skillIndex;         // 4
+	i32 unk;                // 4 = total 12
+};
+ASSERT_SIZE(SN_CancelSkill, 12);
+
+PUSH_PACKED
+struct SN_PlayerSyncTeleport
+{
+	enum { NET_ID = 62498 };
+
+	LocalActorID objectID;
+	float3 pos;
+	float3 rot;
+};
+POP_PACKED
+ASSERT_SIZE(SN_PlayerSyncTeleport, 28);
+
+PUSH_PACKED
+struct SN_RespawnDelaytime
+{
+	enum { NET_ID = 62399 };
+
+	i32 usn;            // 4 — UserID (NOT LocalActorID)
+	i32 delaytimeMs;    // 4 = total 8 payload (12 on wire)
+};
+POP_PACKED
+ASSERT_SIZE(SN_RespawnDelaytime, 8);
+
+PUSH_PACKED
+struct SN_RevivePlayerAtStartingPoint
+{
+	enum { NET_ID = 62398 };
+
+	i32 usn;             // UserID
+	i32 activeID;        // LocalActorID of active (main) hero
+	i32 inactiveID;      // LocalActorID of inactive (sub) hero
+	f32 posX;
+	f32 posY;
+	f32 posZ;
+	i32 param;           // unknown, 0
+};
+POP_PACKED
+ASSERT_SIZE(SN_RevivePlayerAtStartingPoint, 28);
+
+PUSH_PACKED
+struct SN_PvpEventAnnouncement
+{
+	enum { NET_ID = 62488 };
+
+	// stAnnounceMent struct — 21 bytes payload (25 on wire)
+	// Client handles First Blood/Double Kill/Kill Streaks internally from type=5 kills.
+	// Multi-kill window: 2500ms, kill streak window: 3000ms (from ServiceRule.xml).
+	i32 type;            // 4 — event type (5=PvP player kill — all 1976 instances in official capture)
+	i32 param1;          // 4 — always 0 in captures
+	i32 param2;          // 4 — always 1 in captures
+	i32 killerActorID;   // 4 — LocalActorID of killer
+	i32 victimActorID;   // 4 — LocalActorID of victim
+	u8 extra;            // 1 — always 0
+};
+POP_PACKED
+ASSERT_SIZE(SN_PvpEventAnnouncement, 21);
+
+// SN_PVP_RESULT (62079) - 81 bytes payload (variable size, written with PacketWriter)
+struct SN_PvpResult
+{
+	enum { NET_ID = 62079 };
+
+	// Wire format:
+	// i32 gameEndReason (6=time, 7=score_limit)
+	// i32 m_playTime (ms)
+	// VEC(PST_PVP_RESULT): u16 count, per entry: i32 teamType + i32 pvpResultType
+	// PST_RESULT_REWARD: empty reward section
+	// u8 tierGameResult, u8 tierTypeResult, u16 curTierPoint, u16 deltaTierPoint, u16 deltaGuildRp
+	// VEC(i32) pcCafeUserIds: empty
+};
+
+// SN_PVP_RESULT_SCORE_DEATHMATCH (62080)
+struct SN_PvpResultScoreDeathmatch
+{
+	enum { NET_ID = 62080 };
+
+	// variable size, written with PacketWriter
+};
+
+// SN_SCORE_UPDATE (62504)
+struct SN_ScoreUpdate
+{
+	enum { NET_ID = 62504 };
+
+	// variable size, written with PacketWriter
+};
+
+// Team score for tournament HUD
+struct SN_TeamScoreUpdate
+{
+	enum { NET_ID = 62493 };
+
+	// SN_InteractionStatus - used for team score tournament format
+	// variable size, written with PacketWriter
+};
+
+PUSH_PACKED
+struct SN_ChangeBattleState
+{
+	enum { NET_ID = 62499 };
+
+	LocalActorID objectID;
+	u8 isBattleState;
+	f32 baseMoveSpeed;
+};
+POP_PACKED
+ASSERT_SIZE(SN_ChangeBattleState, 9);
+
+// SN_CreateGroundItem (62024)
+struct SN_CreateGroundItem
+{
+	enum { NET_ID = 62024 };
+
+	// variable size, written with PacketWriter
+};
+
+// SN_DestroyGroundItem (62094)
+struct SN_DestroyGroundItem
+{
+	enum { NET_ID = 62094 };
+
+	i32 groundItemID;
+};
+ASSERT_SIZE(SN_DestroyGroundItem, 4);
+
+// SN_AddStatus (62230)
+// Variable size: 29 bytes (no defeat) or 69 bytes (with defeat)
+struct SN_AddStatus
+{
+	enum { NET_ID = 62230 };
+	// Written manually with PacketWriter
+};
+
+// SN_RemoveStatus (62232)
+PUSH_PACKED
+struct SN_RemoveStatus
+{
+	enum { NET_ID = 62232 };
+
+	i32 statusID;
+	i32 targetID;    // ActorUID (as LocalActorID on wire)
+	i32 casterID;    // ActorUID (as LocalActorID on wire, 0=system)
+};
+POP_PACKED
+ASSERT_SIZE(SN_RemoveStatus, 12);
+
+// CQ_WeaponFire (60180)
+// Defined in Cl namespace below
+
 } // Sv
+
+// Additional client packets for combat
+namespace Cl {
+
+PUSH_PACKED
+struct CQ_WeaponFire
+{
+	enum { NET_ID = 60180 };
+
+	LocalActorID characterID;
+	float3 pos;
+	u16 unk;
+};
+POP_PACKED
+ASSERT_SIZE(CQ_WeaponFire, 18);
+
+} // Cl
 
 #undef VEC

@@ -51,6 +51,7 @@ struct MatchmakerConnector
 
 			struct {
 				PartyUID partyUID;
+				MapIndex mapIndex;
 			} PartyEnqueue;
 
 			struct {
@@ -67,6 +68,7 @@ struct MatchmakerConnector
 			// NOTE: this one is big and is impacting the other queries in terms of size @Speed
 			struct {
 				SortieUID sortieUID;
+				MapIndex mapIndex;
 				u8 playerCount;
 				eastl::array<RoomPlayer,16> players;
 			} RoomCreateGame;
@@ -90,10 +92,10 @@ struct MatchmakerConnector
 	void Update();
 
 	void QueryPartyCreate(const WideString& name, AccountUID leader);
-	void QueryPartyEnqueue(PartyUID partyUID);
+	void QueryPartyEnqueue(PartyUID partyUID, MapIndex mapIndex);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);
-	void QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount);
+	void QueryRoomCreateGame(SortieUID sortieUID, MapIndex mapIndex, const RoomPlayer* playerList, u32 playerCount);
 };
 
 MatchmakerConnector& Matchmaker();

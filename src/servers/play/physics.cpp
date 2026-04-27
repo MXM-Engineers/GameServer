@@ -107,6 +107,9 @@ bool PhysicsContext::Init()
 	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01Collision)) return false;
 	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01CollisionWalls)) return false;
 	if(!LoadCollisionMeshes(gc.filePvpDeathNmWall04)) return false;
+	if(gc.filePvpTitanRuinsCollision.size > 0) {
+		if(!LoadCollisionMeshes(gc.filePvpTitanRuinsCollision)) return false;
+	}
 
 	LOG("PhysicsContext initialised");
 	return true;
@@ -225,6 +228,14 @@ void PhysicsScene::Step()
 			continue;
 		}
 
+		if(noGravity) {
+			// No terrain collision — move directly without PhysX
+			const vec3 disp = c->vel * (f32)UPDATE_RATE;
+			const PxExtendedVec3 cur = c->collider->getFootPosition();
+			c->collider->setFootPosition(PxExtendedVec3(cur.x + disp.x, cur.y + disp.y, cur.z + disp.z));
+			continue;
+		}
+
 		PxControllerFilters filter;
 		filter.mCCTFilterCallback = &g_cctCollisionFilterCallback; // cct filter callback
 
@@ -238,13 +249,10 @@ void PhysicsScene::Step()
 		}
 	}
 
-	// we don't need to actually *simulate* anything?
-#if 1
-	// FIXME: find out how to simulate on the same thread
-	scene->simulate((f32)UPDATE_RATE);
-	// here we do nothing but wait...
-	scene->fetchResults(true);
-#endif
+	if(!noGravity) {
+		scene->simulate((f32)UPDATE_RATE);
+		scene->fetchResults(true);
+	}
 }
 
 void PhysicsScene::Destroy()
@@ -253,6 +261,15 @@ void PhysicsScene::Destroy()
         scene->release();
         scene = nullptr;
     }
+}
+
+void PhysicsScene::DisableGravity()
+{
+	noGravity = true;
+	if(scene) {
+		scene->setGravity(PxVec3(0, 0, 0));
+	}
+	LOG("[PhysX] Gravity disabled for scene");
 }
 
 void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot)
@@ -280,12 +297,13 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 	desc.height = height;
 	desc.radius = radius;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
+	desc.stepOffset = GetGlobalTweakableVars().stepHeight;
 	desc.material = ctx.matMapSurface;
 
 	PxCapsuleController* ctrl = (PxCapsuleController*)controllerMngr->createController(desc);
 	ASSERT(ctrl);
 
-	ctrl->setPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
+	ctrl->setFootPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
 
 	PhysicsDynamicBody collider;
 	collider.collider = ctrl;
@@ -310,6 +328,20 @@ vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 t
 	vec3 end = Move(body, disp, time);
 	body->collider->setFootPosition(start);
 	return end;
+}
+
+bool PhysicsScene::RaycastTerrainZ(f32 x, f32 y, f32* outZ)
+{
+	if(!scene) return false;
+	// Cast ray downward from high above
+	PxVec3 origin(x, y, 2000.0f);
+	PxVec3 dir(0, 0, -1);
+	PxRaycastBuffer hit;
+	if(scene->raycast(origin, dir, 5000.0f, hit) && hit.hasBlock) {
+		*outZ = hit.block.position.z;
+		return true;
+	}
+	return false;
 }
 
 static PhysicsContext* g_Context;

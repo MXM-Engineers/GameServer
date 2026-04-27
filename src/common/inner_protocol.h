@@ -82,8 +82,8 @@ struct HQ_PartyEnqueue
 {
 	enum { NET_ID = 1003 };
 
-	// TODO: some useful stuff here
 	PartyUID partyUID;
+	MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 };
 
 PUSH_PACKED
@@ -127,6 +127,7 @@ struct HQ_RoomCreateGame
 	};
 
 	SortieUID sortieUID;
+	MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 	u8 playerCount;
 	u8 spectatorCount;
 	eastl::array<Player,10> players;
@@ -212,6 +213,7 @@ struct MQ_CreateGame
 	};
 
 	SortieUID sortieUID;
+	MapIndex mapIndex = MapIndex::PVP_DEATHMATCH;
 	u8 playerCount;
 	u8 spectatorCount;
 	eastl::array<Player,10> players;

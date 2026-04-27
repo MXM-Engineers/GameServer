@@ -1,4 +1,5 @@
 #include <common/utils.h>
+#include <mxm/hero_stats.h>
 #include <EAStdC/EAString.h>
 #include <EAStdC/EASprintf.h>
 #include <tinyxml2.h>
@@ -299,6 +300,11 @@ void GameXmlContent::LoadAllSkills()
 			skill.action = ActionStateFromString(actionStr);
 		}
 
+		// Load _ConsumeUG (ultimate gauge cost)
+		f32 ugCost = 0;
+		pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &ugCost);
+		skill.consumeUG = ugCost;
+
 		for(int i = 0; i < 6; i++) {
 			SkillNormalLevelModel& _skillNormalLevelModel = *skill.getSkillNormalLevelByIndex(i);
 			SetValuesSkillNormalLevel(*pNodeCommonSkill, _skillNormalLevelModel);
@@ -328,6 +334,11 @@ bool GameXmlContent::LoadMasterSkillWithID(SkillNormalModel& SkillNormal, i32 sk
 			pNodeCommonSkill->QueryStringAttribute("_Type", &SkillTypeTemp);
 			{
 				SkillNormal.setID(_skillID);
+
+				// Load _ConsumeUG (ultimate gauge cost)
+				f32 ugCost = 0;
+				pNodeCommonSkill->QueryFloatAttribute("_ConsumeUG", &ugCost);
+				SkillNormal.consumeUG = ugCost;
 
 				for (int i = 0; i < 6; i++)
 				{
@@ -434,9 +445,21 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 	{
 		_skillNormalLevelModel.setConsumeMP(_temp);
 	}
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeRP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel.setConsumeRP(_temp);
+	}
 	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeUG", &_temp) == XML_SUCCESS)
 	{
 		_skillNormalLevelModel.setConsumeUG(_temp);
+	}
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeStamina", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel.setConsumeStamina(_temp);
+	}
+	if (pNodeCommonSkill.QueryFloatAttribute("_ConsumeHP", &_temp) == XML_SUCCESS)
+	{
+		_skillNormalLevelModel.setConsumeHP(_temp);
 	}
 	if (pNodeCommonSkill.QueryFloatAttribute("_CoolTime", &_temp) == XML_SUCCESS)
 	{
@@ -446,6 +469,7 @@ void GameXmlContent::SetValuesSkillNormalLevel(XMLElement& pNodeCommonSkill, Ski
 	{
 		_skillNormalLevelModel.setSkillIndex(ival);
 	}
+	// Note: _ConsumeUG is loaded separately at SkillNormalModel level (not here)
 	if (pNodeCommonSkill.QueryFloatAttribute("_SkillRangeLengthX", &_temp) == XML_SUCCESS)
 	{
 		_skillNormalLevelModel.setSkillRangeLengthX(_temp);
@@ -651,8 +675,8 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		pSpawnElt->QueryAttribute("kRotation_z", &spawn.rot.z);
 
 		spawn.type = Map::Spawn::Type::NORMAL;
-		bool returnPoint;
-		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS) {
+		bool returnPoint = false;
+		if (pSpawnElt->QueryAttribute("ReturnPoint", &returnPoint) == XML_SUCCESS && returnPoint) {
 			spawn.type = Map::Spawn::Type::SPAWN_POINT;
 		}
 
@@ -745,6 +769,28 @@ bool GameXmlContent::LoadPvpDeathmach()
 	return LoadMapByID(&mapPvpDeathMatch, 160000094);
 }
 
+bool GameXmlContent::LoadPvpTitanRuins()
+{
+	const MapList* map = FindMapListByID(160000050);
+	if (!map) {
+		LOG("WARNING(LoadPvpTitanRuins): Map not found %d (non-fatal)", 160000050);
+		return true; // non-fatal: server can run without Titan Ruins
+	};
+
+	bool r = LoadMapByID(&mapPvpTitanRuins, 160000050);
+	if(!r) {
+		LOG("WARNING(LoadPvpTitanRuins): LoadMapByID failed (non-fatal)");
+		return true; // non-fatal
+	}
+
+	LOG("[Load] PvpTitanRuins OK - creatures=%d, dynamic=%d, areas=%d",
+		(i32)mapPvpTitanRuins.creatures.size(),
+		(i32)mapPvpTitanRuins.dynamic.size(),
+		(i32)mapPvpTitanRuins.areas.size());
+
+	return true;
+}
+
 bool GameXmlContent::LoadJukeboxSongs()
 {
 	XMLDocument doc;
@@ -794,6 +840,10 @@ bool GameXmlContent::LoadCollisionMeshes()
 	PathAppend(path, L"/PvP_Death_NM_Wall04.physx_static");
 	r = FileLoad(&filePvpDeathNmWall04, path.data());
 	if(!r) return false;
+
+	path = gameDataDir;
+	PathAppend(path, L"/PvP_Titan_Ruins_Collision.physx_static");
+	FileLoad(&filePvpTitanRuinsCollision, path.data()); // optional — don't fail if missing
 
 	path = gameDataDir;
 	PathAppend(path, L"/cylinder.physx_dynamic");
@@ -973,6 +1023,18 @@ bool GameXmlContent::LoadAnimationData()
 				cmd.remote.idx = RemoteIdx(RemoteIndex);
 				cmd.remote.targetPreset = ActionCommand::TargetPresetFromString(TargetPreset);
 				ASSERT(cmd.remote.targetPreset != ActionCommand::TargetPreset::INVALID);
+
+				// Parse NodeName to determine FireObject string for VFX packet
+				const char* NodeName = nullptr;
+				pActionBase->QueryStringAttribute("NodeName", &NodeName);
+				cmd.remote.fireObjectType = 0; // default: Skill_Fire_Dummy
+				if(NodeName) {
+					if(EA::StdC::Strcmp(NodeName, "Attack_Fire_Dummy") == 0)
+						cmd.remote.fireObjectType = 1; // Attack_Fire_Dummy
+					else if(EA::StdC::Strcmp(NodeName, "Scene Root") == 0)
+						cmd.remote.fireObjectType = 2; // Scene Root
+					// else: Skill_Fire_Dummy (default for named dummies like CanonFist_Fire_Dummy)
+				}
 			} break;
 
 			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
@@ -981,6 +1043,24 @@ bool GameXmlContent::LoadAnimationData()
 
 			case ActionCommand::Type::ROTATESPEED: {
 				pActionBase->QueryAttribute("Param1", &cmd.rotateSpeed.speed);
+			} break;
+
+			case ActionCommand::Type::STATUS:
+			case ActionCommand::Type::STATUS_SKILL_TARGET: {
+				i32 StatusIndex = 0;
+				pActionBase->QueryAttribute("StatusIndex", &StatusIndex);
+				cmd.status.statusIndex = StatusIndex;
+
+				const char* TargetPreset = nullptr;
+				pActionBase->QueryStringAttribute("TargetPreset", &TargetPreset);
+				cmd.status.targetPreset = TargetPreset ? ActionCommand::TargetPresetFromString(TargetPreset) : ActionCommand::TargetPreset::SELF_FFF;
+
+				const char* Param2 = nullptr;
+				pActionBase->QueryStringAttribute("Param2", &Param2);
+				cmd.status.isRemove = 0;
+				if(Param2 && (EA::StdC::Strcmp(Param2, "Remove") == 0 || EA::StdC::Strcmp(Param2, "RemoveWhenAniEnd") == 0)) {
+					cmd.status.isRemove = 1;
+				}
 			} break;
 		}
 
@@ -1052,6 +1132,7 @@ bool GameXmlContent::LoadRemoteData()
 				ELT_GET(pComp, i32, _LengthX, 0);
 				ELT_GET(pComp, i32, _LengthY, 0);
 				ELT_GET(pComp, i32, _LengthZ, 0);
+				ELT_GET(pComp, i32, _Angle, 0);
 				ELT_GET_STR(pComp, _Type);
 				ELT_GET_STR(pComp, _DamageGroup);
 				ELT_GET(pComp, bool, _VsDynamic, false);
@@ -1065,13 +1146,21 @@ bool GameXmlContent::LoadRemoteData()
 					(_VsNPC_Monster << Remote::VS_NPC_MONSTER) |
 					(_VsPC << Remote::VS_PLAYER_CHARACTER);
 
-				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
+				// Store bound sizes (were loaded but never saved before)
+				remote.boundSize[0] = (u16)_LengthX;
+				remote.boundSize[1] = (u16)_LengthY;
+				remote.boundSize[2] = (u16)_LengthZ;
+				remote.boundAngle = (u16)_Angle;
+
+				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d _Angle=%d", _LengthX, _LengthY, _LengthZ, _Angle);
 				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
 			}
 
 			else if((EA::StdC::Strcmp("RemoteComData2", compName) == 0)) {
 				ELT_GET(pComp, i32, _ActivateCount, 0);
 				ELT_GET(pComp, i32, _AttackMultiplier, 0);
+				ELT_GET(pComp, i32, _PenetrationCount, 0);
+				ELT_GET(pComp, float, _LifeTime, 0.0f);
 
 				const char* _BehaviorType = 0;
 				pComp->QueryStringAttribute("_BehaviorType", &_BehaviorType);
@@ -1079,7 +1168,26 @@ bool GameXmlContent::LoadRemoteData()
 					remote.behaviorType = Remote::BehaviourTypeFromString(_BehaviorType);
 				}
 
-				LOG("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
+				remote.activateCount = _ActivateCount;
+				remote.attackMultiplier = _AttackMultiplier;
+				remote.penetrationCount = _PenetrationCount;
+				remote.lifeTime = _LifeTime;
+
+				// Parse _Status entries (debuffs applied on hit)
+				for(tinyxml2::XMLElement* pStatus = pComp->FirstChildElement("_Status"); pStatus; pStatus = pStatus->NextSiblingElement("_Status")) {
+					i32 statusID = 0;
+					i32 rate = 100;
+					pStatus->QueryAttribute("DATAKEY", &statusID);
+					pStatus->QueryAttribute("_Rate", &rate);
+					if(statusID != 0) {
+						Remote::HitStatus hs;
+						hs.statusID = statusID;
+						hs.rate = rate;
+						remote.hitStatuses.push_back(hs);
+					}
+				}
+
+				LOG("	_ActivateCount=%d _ActivateMultiplier=%d _PenetrationCount=%d _LifeTime=%.2f hitStatuses=%d", _ActivateCount, _AttackMultiplier, _PenetrationCount, _LifeTime, (i32)remote.hitStatuses.size());
 				LOG("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
 			}
 		}
@@ -1112,7 +1220,14 @@ bool GameXmlContent::Load()
 	r = LoadLobby(160000042);
 	if (!r) return false;
 
+	r = LoadHeroStats();
+	if (!r) LOG("[Load] HeroStats FAILED (non-fatal)");
+	else LOG("[Load] HeroStats OK");
+
 	r = LoadPvpDeathmach();
+	if (!r) return false;
+
+	r = LoadPvpTitanRuins();
 	if (!r) return false;
 
 	r = LoadJukeboxSongs();
@@ -1297,8 +1412,9 @@ const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType
 		}
 	}
 
-	ASSERT(0); // not found
-	return actionListMap.cbegin()->second.front(); // unreachable
+	// Action not found for this classType+actionID — return first action as fallback
+	LOG("[WARN] GetSkillAction: actionID=%d not found for classType=%d", (i32)actionID, (i32)classType);
+	return found->second.front();
 }
 
 const Remote& GameXmlContent::GetRemote(RemoteIdx remoteID) const

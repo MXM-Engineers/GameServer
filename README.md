@@ -4,7 +4,23 @@
 
 Requires CMake (>= 3.20) and a C++14 compiler.
 
-```sh
+For the command line, first load the MSVC environment (finds Visual Studio
+via vswhere, no hardcoded path):
+
+```bat
+setup.bat
+```
+
+Then configure and build with either generator:
+
+```bat
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+or the Visual Studio generator (multi-config: Debug and Release in one tree):
+
+```bat
 cmake -S . -B build -G "Visual Studio 18 2026" -A x64
 cmake --build build --config Release
 ```

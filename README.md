@@ -11,18 +11,13 @@ via vswhere, no hardcoded path):
 setup.bat
 ```
 
-Then configure and build with either generator:
+Then use the presets:
 
 ```bat
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-```
-
-or the Visual Studio generator (multi-config: Debug and Release in one tree):
-
-```bat
-cmake -S . -B build -G "Visual Studio 18 2026" -A x64
-cmake --build build --config Release
+cmake --preset debug      REM configure build/debug
+cmake --build --preset debug
+cmake --preset release    REM configure build/release
+cmake --build --preset release
 ```
 
 Debug builds are configured the same way (`--config Debug`) and produce

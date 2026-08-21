@@ -1,8 +1,10 @@
 /build
+/_ignored/
 /scripts/packets*
 /scripts/*.log
 **/__pycache__
 /config.lua
+/scripts/config.ini
 /build_linux
 .vs
 /tools/build

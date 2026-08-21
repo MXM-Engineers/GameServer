@@ -75,9 +75,10 @@ add_library(physx INTERFACE)
 target_include_directories(physx INTERFACE
 	${PHYSX_DIR}/include/physx
 	${PHYSX_DIR}/include/pxshared)
-target_link_directories(physx INTERFACE
-	$<$<CONFIG:Debug>:${PHYSX_DIR}/lib/debug;${PHYSX_DIR}/lib/checked>
-	$<$<CONFIG:Release>:${PHYSX_DIR}/lib/release>)
+mxm_config_expr(MXM_PHYSX_LIBDIRS
+	"${PHYSX_DIR}/lib/debug;${PHYSX_DIR}/lib/checked"
+	"${PHYSX_DIR}/lib/release")
+target_link_directories(physx INTERFACE ${MXM_PHYSX_LIBDIRS})
 target_link_libraries(physx INTERFACE
 	PhysXExtensions_static_64
 	PhysX_64

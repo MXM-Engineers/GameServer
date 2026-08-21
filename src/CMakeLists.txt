@@ -111,7 +111,8 @@ mxm_debug_suffix(mm_srv)
 
 # ---- Profiling (was: genie --profile -> TRACY_ENABLE on Release) ----
 if(PROFILE)
+	mxm_config_expr(MXM_TRACY_ENABLE "" TRACY_ENABLE)
 	foreach(srv hub_srv game_srv mm_srv)
-		target_compile_definitions(${srv} PRIVATE $<$<CONFIG:Release>:TRACY_ENABLE>)
+		target_compile_definitions(${srv} PRIVATE ${MXM_TRACY_ENABLE})
 	endforeach()
 endif()

@@ -55,6 +55,35 @@ Full workflow to turn one server->client packet into a verified `protocol.h` str
    - Full capture smoke (if serializers changed): `wireshark_to_raw.py` on `Minigame Night.pcapng` reproduces 43,921 segments.
 3. **Don't commit** unless the user explicitly says so.
 
+## Client->server (CQ_/CN_) packets — send-site reversal
+
+The client CONSTRUCTS these; its builder functions are the wire truth. `NetworkManager_RegisterSendPackets` (0x976966) registers only (category, netid) — no function pointers.
+
+**Find the builder:** byte-pattern search for the push-imm32 encoding of the netid: bytes `68 <LE32>` (e.g. 60003 -> `68 63 ea 00 00`). Exclude hits inside NetworkManager_RegisterSendPackets (~0x976966-0x9778f6). Expect ~3 sites per netid: an unanalyzed stub (~0x58xxxx, alt-builder-init FUN_0056ea00), the authoritative builder (0x9c/0x9d region), and a pass-through wrapper.
+
+**Builder shape:** `FUN_0092f208(netid)` BeginPacket -> ordered typed writer calls into a stack buffer -> u16 size patch -> vtbl+0x18 transmit.
+
+**Writer taxonomy (verified):**
+| fn | type |
+|---|---|
+| FUN_009701f1 | wstr (u16 len + len*2 utf16) — reads its own length |
+| FUN_009c360b | str (u16 len + ansi) |
+| FUN_0056e0db / 0056e086 / 0056e130 | u32 |
+| FUN_0056e02f / 0056dfd8 | u16 |
+| FUN_0056df84 / 0056e298 / 0056df30 | u8 |
+| FUN_0056e1de | raw 8-byte (u64) |
+| FUN_009c317b | vec<u16 count> of {u32,u32} |
+| FUN_009c3069 / 0056dc65 | vec<u16 count> of u32 |
+| FUN_009c302c / 0056dbd4 | blob<u16 count> of u8 |
+| FUN_009c3203 / 009c3245 / 009c31bd(28B elems via FUN_0096fb54) | vector writers |
+| FUN_009c328b | vec<u64> |
+| FUN_0096ecde / 0096ecbc | vec3 / vec2 |
+| FUN_0095c81c | 13 consecutive dwords |
+
+Unknown writers: decompile once, classify by evidence (byte width, movss=float, len*2=wstr, explicit size=blob).
+
+Empty-body packets are real (header-only): confirm by absence of append calls between BeginPacket and the size patch.
+
 ## Pitfalls (all hit in practice)
 
 - **Sub-formatter misclassification** (`SN_GameModifyActor`): Vec3/BaseStat fields read via sub-calls were tagged "variable-size", dropping 24 bytes and **drifting the name<->size alignment** — downstream fields got wrong types (`bDirectionToNearPC` u32 instead of u8, `seed` u8 instead of u32) and the tail collapsed into 12 garbage `unk_`. The sub-call is the type; never skip it.

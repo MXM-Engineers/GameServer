@@ -904,6 +904,2437 @@ struct CQ_RequestCalendar
 };
 ASSERT_SIZE(CQ_RequestCalendar, 8);
 
+PUSH_PACKED
+struct CQ_UNKNOWN_60004
+{
+	enum { NET_ID = 60004 };
+	u16 field1_len; // 2 bytes
+	char field1[1]; // 1 byte each (ansi string: u16 len + len)
+	u16 field2_len; // 2 bytes
+	char field2[1]; // 1 byte each (ansi string: u16 len + len)
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60006
+{
+	enum { NET_ID = 60006 };
+	u32 field_1; // 4 bytes
+	// vec_u16<{u32,u16}>: variable-size (u16 count + count x u32)
+	u16 field2_count; // 2 bytes
+	u32 field2[1]; // 4 bytes each
+	// vec_u16<{u32,u16,u16,u32}>: variable-size (u16 count + count x u32)
+	u16 field3_count; // 2 bytes
+	u32 field3[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60010
+{
+	enum { NET_ID = 60010 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60011
+{
+	enum { NET_ID = 60011 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60012
+{
+	enum { NET_ID = 60012 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60012, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60013
+{
+	enum { NET_ID = 60013 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60015
+{
+	enum { NET_ID = 60015 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60015, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60017
+{
+	enum { NET_ID = 60017 };
+	u32 field_1; // 4 bytes
+	// vec_u16<{u32,u32}>: variable-size (u16 count + count x u32)
+	u16 field2_count; // 2 bytes
+	u32 field2[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60019
+{
+	enum { NET_ID = 60019 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60020
+{
+	enum { NET_ID = 60020 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60020, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60025
+{
+	enum { NET_ID = 60025 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60026
+{
+	enum { NET_ID = 60026 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60027
+{
+	enum { NET_ID = 60027 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60028
+{
+	enum { NET_ID = 60028 };
+	u32 field_1; // 4 bytes
+	u16 field2_len; // 2 bytes
+	wchar_t field2[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u16 field3_len; // 2 bytes
+	wchar_t field3[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60029
+{
+	enum { NET_ID = 60029 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60029, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60030
+{
+	enum { NET_ID = 60030 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60030, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60031
+{
+	enum { NET_ID = 60031 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60031, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60036
+{
+	enum { NET_ID = 60036 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60036, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60037
+{
+	enum { NET_ID = 60037 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60037, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60039
+{
+	enum { NET_ID = 60039 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes (unclassified writer 13xdword)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60041
+{
+	enum { NET_ID = 60041 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u8 field_4; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60042
+{
+	enum { NET_ID = 60042 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60043
+{
+	enum { NET_ID = 60043 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60044
+{
+	enum { NET_ID = 60044 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60044, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60045
+{
+	enum { NET_ID = 60045 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60046
+{
+	enum { NET_ID = 60046 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60047
+{
+	enum { NET_ID = 60047 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60047, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60048
+{
+	enum { NET_ID = 60048 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60054
+{
+	enum { NET_ID = 60054 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes (unclassified writer u32[3])
+	u32 field_3; // 4 bytes (unclassified writer u32[3])
+	u32 field_4; // 4 bytes (unclassified writer u32[3])
+	u32 field_5; // 4 bytes
+	u32 field_6; // 4 bytes
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60055
+{
+	enum { NET_ID = 60055 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u8 field_3; // 1 bytes (bool)
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes
+	u32 field_6; // 4 bytes
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60055, 29);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60056
+{
+	enum { NET_ID = 60056 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60056, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60057
+{
+	enum { NET_ID = 60057 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60058
+{
+	enum { NET_ID = 60058 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60060
+{
+	enum { NET_ID = 60060 };
+	u32 field_1; // 4 bytes
+	u16 field2_len; // 2 bytes
+	wchar_t field2[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u16 field3_len; // 2 bytes
+	wchar_t field3[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60061
+{
+	enum { NET_ID = 60061 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60061, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60062
+{
+	enum { NET_ID = 60062 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60062, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60065
+{
+	enum { NET_ID = 60065 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60066
+{
+	enum { NET_ID = 60066 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60067
+{
+	enum { NET_ID = 60067 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60068
+{
+	enum { NET_ID = 60068 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60068, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60069
+{
+	enum { NET_ID = 60069 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60069, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60070
+{
+	enum { NET_ID = 60070 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60070, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60077
+{
+	enum { NET_ID = 60077 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60077, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60078
+{
+	enum { NET_ID = 60078 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60078, 12);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60079
+{
+	enum { NET_ID = 60079 };
+	u32 field_1; // 4 bytes (unclassified writer u16 count + N x u8)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60080
+{
+	enum { NET_ID = 60080 };
+	u32 field_1; // 4 bytes (unclassified writer u16 count + N x u8)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60081
+{
+	enum { NET_ID = 60081 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60082
+{
+	enum { NET_ID = 60082 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60083
+{
+	enum { NET_ID = 60083 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60083, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60084
+{
+	enum { NET_ID = 60084 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60084, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60085
+{
+	enum { NET_ID = 60085 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60085, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60086
+{
+	enum { NET_ID = 60086 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60086, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60087
+{
+	enum { NET_ID = 60087 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60087, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60088
+{
+	enum { NET_ID = 60088 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60088, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60091
+{
+	enum { NET_ID = 60091 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60091, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60092
+{
+	enum { NET_ID = 60092 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60092, 9);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60093
+{
+	enum { NET_ID = 60093 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60093, 5);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60094
+{
+	enum { NET_ID = 60094 };
+	u8 field_1; // 1 bytes (bool)
+	u8 field_2; // 1 bytes (bool)
+	u8 field_3; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60094, 3);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60095
+{
+	enum { NET_ID = 60095 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes (unclassified writer blob(u16 len + bytes))
+	u32 field_3; // 4 bytes (unclassified writer array<u32>(u16 count + N x u32))
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60096
+{
+	enum { NET_ID = 60096 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes (unclassified writer blob(u16 len + bytes))
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60098
+{
+	enum { NET_ID = 60098 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60099
+{
+	enum { NET_ID = 60099 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60104
+{
+	enum { NET_ID = 60104 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60104, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60105
+{
+	enum { NET_ID = 60105 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60105, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60106
+{
+	enum { NET_ID = 60106 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60106, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60107
+{
+	enum { NET_ID = 60107 };
+	u32 field_1; // 4 bytes (unclassified writer array<u32>(u16 count + N x u32) + u32 + u32 + u8)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60108
+{
+	enum { NET_ID = 60108 };
+	u8 field_1; // 1 bytes (bool)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60108, 2);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60109
+{
+	enum { NET_ID = 60109 };
+	u32 field_1; // 4 bytes
+	u8 field_2; // 1 bytes (bool)
+	u32 field_3; // 4 bytes
+	u8 field_4; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60109, 10);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60110
+{
+	enum { NET_ID = 60110 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60111
+{
+	enum { NET_ID = 60111 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60112
+{
+	enum { NET_ID = 60112 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60115
+{
+	enum { NET_ID = 60115 };
+	u32 field_1; // 4 bytes
+	u8 field_2; // 1 bytes (bool)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60116
+{
+	enum { NET_ID = 60116 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60117
+{
+	enum { NET_ID = 60117 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60118
+{
+	enum { NET_ID = 60118 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60118, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60119
+{
+	enum { NET_ID = 60119 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60120
+{
+	enum { NET_ID = 60120 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60121
+{
+	enum { NET_ID = 60121 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60122
+{
+	enum { NET_ID = 60122 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60123
+{
+	enum { NET_ID = 60123 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60124
+{
+	enum { NET_ID = 60124 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60125
+{
+	enum { NET_ID = 60125 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60126
+{
+	enum { NET_ID = 60126 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60127
+{
+	enum { NET_ID = 60127 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60128
+{
+	enum { NET_ID = 60128 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60129
+{
+	enum { NET_ID = 60129 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60131
+{
+	enum { NET_ID = 60131 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60132
+{
+	enum { NET_ID = 60132 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60132, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60133
+{
+	enum { NET_ID = 60133 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u16 field2_len; // 2 bytes
+	wchar_t field2[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60134
+{
+	enum { NET_ID = 60134 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60135
+{
+	enum { NET_ID = 60135 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60137
+{
+	enum { NET_ID = 60137 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60138
+{
+	enum { NET_ID = 60138 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60139
+{
+	enum { NET_ID = 60139 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60140
+{
+	enum { NET_ID = 60140 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60141
+{
+	enum { NET_ID = 60141 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60142
+{
+	enum { NET_ID = 60142 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60143
+{
+	enum { NET_ID = 60143 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60144
+{
+	enum { NET_ID = 60144 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60147
+{
+	enum { NET_ID = 60147 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60149
+{
+	enum { NET_ID = 60149 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60150
+{
+	enum { NET_ID = 60150 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60152
+{
+	enum { NET_ID = 60152 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60153
+{
+	enum { NET_ID = 60153 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60154
+{
+	enum { NET_ID = 60154 };
+	u16 field1_len; // 2 bytes
+	wchar_t field1[1]; // 2 bytes each (wide string: u16 len + len*2)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60155
+{
+	enum { NET_ID = 60155 };
+	u32 field_1; // 4 bytes (unclassified writer bytes[7])
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60156
+{
+	enum { NET_ID = 60156 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60156, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60157
+{
+	enum { NET_ID = 60157 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60157, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60158
+{
+	enum { NET_ID = 60158 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60159
+{
+	enum { NET_ID = 60159 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60160
+{
+	enum { NET_ID = 60160 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+	u32 field_3; // 4 bytes (unclassified writer 10 x u8 struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60161
+{
+	enum { NET_ID = 60161 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60161, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60162
+{
+	enum { NET_ID = 60162 };
+	u32 field_1; // 4 bytes
+	u8 field_2; // 1 bytes (bool)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+	u32 field_4; // 4 bytes (unclassified writer 10 x u8 struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60163
+{
+	enum { NET_ID = 60163 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60163, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60164
+{
+	enum { NET_ID = 60164 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60165
+{
+	enum { NET_ID = 60165 };
+	u8 field_1; // 1 bytes (bool)
+	u8 field_2; // 1 bytes (bool)
+	u8 field_3; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60165, 3);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60166
+{
+	enum { NET_ID = 60166 };
+	u8 field_1; // 1 bytes (bool)
+	u16 field_2; // 2 bytes
+	u8 field_3; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60166, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60168
+{
+	enum { NET_ID = 60168 };
+	u8 field_1; // 1 bytes (bool)
+	u16 field_2; // 2 bytes
+	u32 field_3; // 4 bytes
+	u8 field_4; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60168, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60169
+{
+	enum { NET_ID = 60169 };
+	u8 field_1; // 1 bytes (bool)
+	u16 field_2; // 2 bytes
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60170
+{
+	enum { NET_ID = 60170 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60170, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60171
+{
+	enum { NET_ID = 60171 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60171, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60172
+{
+	enum { NET_ID = 60172 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u8 field_2; // 1 bytes (bool)
+	u8 field_3; // 1 bytes (bool)
+	u8 field_4; // 1 bytes (bool)
+	u8 field_5; // 1 bytes (bool)
+	u8 field_6; // 1 bytes (bool)
+	u8 field_7; // 1 bytes (bool)
+	u32 field_8; // 4 bytes (unclassified writer 7 x u8 struct)
+	u32 field_9; // 4 bytes
+	u8 field_10; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60173
+{
+	enum { NET_ID = 60173 };
+	u16 field_1; // 2 bytes
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60173, 3);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60174
+{
+	enum { NET_ID = 60174 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60174, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60175
+{
+	enum { NET_ID = 60175 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60175, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60176
+{
+	enum { NET_ID = 60176 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes (unclassified writer wstring)
+	u32 field_6; // 4 bytes (unclassified writer wstring)
+	u8 field_7; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60177
+{
+	enum { NET_ID = 60177 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60180
+{
+	enum { NET_ID = 60180 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u8 field_3; // 1 bytes (bool)
+	u8 field_4; // 1 bytes (bool)
+	u32 field_5; // 4 bytes
+	u32 field_6; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60180, 18);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60181
+{
+	enum { NET_ID = 60181 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field3_count; // 2 bytes
+	u32 field3[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60182
+{
+	enum { NET_ID = 60182 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field6_count; // 2 bytes
+	u32 field6[1]; // 4 bytes each
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60183
+{
+	enum { NET_ID = 60183 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u8 field_3; // 1 bytes (bool)
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field5_count; // 2 bytes
+	u32 field5[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field6_count; // 2 bytes
+	u32 field6[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field7_count; // 2 bytes
+	u32 field7[1]; // 4 bytes each
+	u32 field_8; // 4 bytes
+	u32 field_9; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60184
+{
+	enum { NET_ID = 60184 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60184, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60185
+{
+	enum { NET_ID = 60185 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60185, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60186
+{
+	enum { NET_ID = 60186 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60186, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60187
+{
+	enum { NET_ID = 60187 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field3_count; // 2 bytes
+	u32 field3[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field5_count; // 2 bytes
+	u32 field5[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field6_count; // 2 bytes
+	u32 field6[1]; // 4 bytes each
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+	u32 field_9; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60188
+{
+	enum { NET_ID = 60188 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field3_count; // 2 bytes
+	u32 field3[1]; // 4 bytes each
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	u32 field_5; // 4 bytes
+	u32 field_6; // 4 bytes
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60189
+{
+	enum { NET_ID = 60189 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60189, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60191
+{
+	enum { NET_ID = 60191 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60191, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60193
+{
+	enum { NET_ID = 60193 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field3_count; // 2 bytes
+	u32 field3[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60195
+{
+	enum { NET_ID = 60195 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	u16 field_5; // 2 bytes
+	u16 field_6; // 2 bytes
+	u16 field_7; // 2 bytes
+	u16 field_8; // 2 bytes
+	u16 field_9; // 2 bytes
+	u16 field_10; // 2 bytes
+	u16 field_11; // 2 bytes
+	u16 field_12; // 2 bytes
+	u16 field_13; // 2 bytes
+	u32 field_14; // 4 bytes (unclassified writer wstring)
+	u16 field_15; // 2 bytes
+	u32 field_16; // 4 bytes
+	u32 field_17; // 4 bytes
+	u16 field_18; // 2 bytes
+	u16 field_19; // 2 bytes
+	u16 field_20; // 2 bytes
+	u8 field_21; // 1 bytes (bool)
+	u8 field_22; // 1 bytes (bool)
+	u16 field_23; // 2 bytes
+	u8 field_24; // 1 bytes (bool)
+	u32 field_25; // 4 bytes
+	u32 field_26; // 4 bytes
+	u32 field_27; // 4 bytes
+	u32 field_28; // 4 bytes
+	u32 field_29; // 4 bytes
+	u8 field_30; // 1 bytes (bool)
+	u8 field_31; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60196
+{
+	enum { NET_ID = 60196 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	u16 field_5; // 2 bytes
+	u16 field_6; // 2 bytes
+	u16 field_7; // 2 bytes
+	u16 field_8; // 2 bytes
+	u16 field_9; // 2 bytes
+	u16 field_10; // 2 bytes
+	u16 field_11; // 2 bytes
+	u16 field_12; // 2 bytes
+	u16 field_13; // 2 bytes
+	u32 field_14; // 4 bytes (unclassified writer wstring)
+	u16 field_15; // 2 bytes
+	u32 field_16; // 4 bytes
+	u32 field_17; // 4 bytes
+	u32 field_18; // 4 bytes
+	u32 field_19; // 4 bytes
+	u32 field_20; // 4 bytes
+	u32 field_21; // 4 bytes
+	u32 field_22; // 4 bytes
+	u32 field_23; // 4 bytes
+	u8 field_24; // 1 bytes (bool)
+	u8 field_25; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60197
+{
+	enum { NET_ID = 60197 };
+	u32 field_1; // 4 bytes (unclassified writer u8 flags)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	// vec3 (3 x u32): variable-size (u16 count + count x u32)
+	u16 field4_count; // 2 bytes
+	u32 field4[1]; // 4 bytes each
+	// vec3 (3 x u32), optional: variable-size (u16 count + count x u32)
+	u16 field5_count; // 2 bytes
+	u32 field5[1]; // 4 bytes each
+	u32 field_6; // 4 bytes (unclassified writer u32, optional)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60198
+{
+	enum { NET_ID = 60198 };
+	u32 field_1; // 4 bytes (unclassified writer array: u16 count + N x {u32,u32,u32,u32,u32,u32,u8} (28-byte element))
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60199
+{
+	enum { NET_ID = 60199 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60199, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60200
+{
+	enum { NET_ID = 60200 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60200, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60201
+{
+	enum { NET_ID = 60201 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60202
+{
+	enum { NET_ID = 60202 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60202, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60203
+{
+	enum { NET_ID = 60203 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60203, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60204
+{
+	enum { NET_ID = 60204 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60205
+{
+	enum { NET_ID = 60205 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+	u32 field_4; // 4 bytes
+	float3 field_5; // 12 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60206
+{
+	enum { NET_ID = 60206 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes
+	u32 field_6; // 4 bytes
+	u32 field_7; // 4 bytes
+	u32 field_8; // 4 bytes
+	u32 field_9; // 4 bytes
+	u32 field_10; // 4 bytes
+	u32 field_11; // 4 bytes
+	u32 field_12; // 4 bytes
+	u32 field_13; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60206, 52);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60207
+{
+	enum { NET_ID = 60207 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60207, 20);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60208
+{
+	enum { NET_ID = 60208 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60208, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60209
+{
+	enum { NET_ID = 60209 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60209, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60211
+{
+	enum { NET_ID = 60211 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60211, 4);
+
+PUSH_PACKED
+struct CA_UNKNOWN_60212
+{
+	enum { NET_ID = 60212 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60213
+{
+	enum { NET_ID = 60213 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60214
+{
+	enum { NET_ID = 60214 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60214, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60215
+{
+	enum { NET_ID = 60215 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60216
+{
+	enum { NET_ID = 60216 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60217
+{
+	enum { NET_ID = 60217 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60218
+{
+	enum { NET_ID = 60218 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60218, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60219
+{
+	enum { NET_ID = 60219 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60220
+{
+	enum { NET_ID = 60220 };
+	u64 field_1; // 8 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60220, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60221
+{
+	enum { NET_ID = 60221 };
+	u64 field_1; // 8 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60221, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60222
+{
+	enum { NET_ID = 60222 };
+	// vector<u64>: variable-size (u16 count + count x u32)
+	u16 field1_count; // 2 bytes
+	u32 field1[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60223
+{
+	enum { NET_ID = 60223 };
+	u8 field_1; // 1 bytes (bool)
+	// vector<u64>: variable-size (u16 count + count x u32)
+	u16 field2_count; // 2 bytes
+	u32 field2[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60224
+{
+	enum { NET_ID = 60224 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60225
+{
+	enum { NET_ID = 60225 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60226
+{
+	enum { NET_ID = 60226 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60226, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60227
+{
+	enum { NET_ID = 60227 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60227, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60228
+{
+	enum { NET_ID = 60228 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60229
+{
+	enum { NET_ID = 60229 };
+	u32 field_1; // 4 bytes
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60229, 5);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60230
+{
+	enum { NET_ID = 60230 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60230, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60231
+{
+	enum { NET_ID = 60231 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60232
+{
+	enum { NET_ID = 60232 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60232, 16);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60233
+{
+	enum { NET_ID = 60233 };
+	u32 field_1; // 4 bytes
+	float3 field_2; // 12 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60233, 24);
+
+PUSH_PACKED
+struct CA_UNKNOWN_60234
+{
+	enum { NET_ID = 60234 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60236
+{
+	enum { NET_ID = 60236 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60236, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60237
+{
+	enum { NET_ID = 60237 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60237, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60238
+{
+	enum { NET_ID = 60238 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60239
+{
+	enum { NET_ID = 60239 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CA_UNKNOWN_60239, 1);
+
+PUSH_PACKED
+struct CA_UNKNOWN_60240
+{
+	enum { NET_ID = 60240 };
+	u8 field_1; // 1 bytes (bool)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CA_UNKNOWN_60240, 2);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60241
+{
+	enum { NET_ID = 60241 };
+	u8 field_1; // 1 bytes (bool)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60241, 2);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60242
+{
+	enum { NET_ID = 60242 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60242, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60243
+{
+	enum { NET_ID = 60243 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60243, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60244
+{
+	enum { NET_ID = 60244 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60244, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60246
+{
+	enum { NET_ID = 60246 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60246, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60247
+{
+	enum { NET_ID = 60247 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60247, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60248
+{
+	enum { NET_ID = 60248 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60248, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60249
+{
+	enum { NET_ID = 60249 };
+	u32 field_1; // 4 bytes
+	float3 field_2; // 12 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60249, 16);
+
+PUSH_PACKED
+struct CA_UNKNOWN_60250
+{
+	enum { NET_ID = 60250 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes (unclassified writer blob[u8])
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60251
+{
+	enum { NET_ID = 60251 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60252
+{
+	enum { NET_ID = 60252 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+	u8 field_3; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60252, 9);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60253
+{
+	enum { NET_ID = 60253 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes
+	u8 field_3; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60253, 6);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60254
+{
+	enum { NET_ID = 60254 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes (unclassified writer array u16 count + N x {u32,u32,u32})
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60255
+{
+	enum { NET_ID = 60255 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60256
+{
+	enum { NET_ID = 60256 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60257
+{
+	enum { NET_ID = 60257 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60259
+{
+	enum { NET_ID = 60259 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60259, 1);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60260
+{
+	enum { NET_ID = 60260 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60260, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60261
+{
+	enum { NET_ID = 60261 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60262
+{
+	enum { NET_ID = 60262 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u8 field_2; // 1 bytes (bool)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60263
+{
+	enum { NET_ID = 60263 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60264
+{
+	enum { NET_ID = 60264 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60265
+{
+	enum { NET_ID = 60265 };
+	u32 field_1; // 4 bytes (unclassified writer blob[u8])
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60266
+{
+	enum { NET_ID = 60266 };
+	u16 field_1; // 2 bytes
+	u16 field_2; // 2 bytes
+	u16 field_3; // 2 bytes
+	u32 field_4; // 4 bytes (unclassified writer blob[u8])
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60267
+{
+	enum { NET_ID = 60267 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60268
+{
+	enum { NET_ID = 60268 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60268, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60269
+{
+	enum { NET_ID = 60269 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60269, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60270
+{
+	enum { NET_ID = 60270 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60270, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60271
+{
+	enum { NET_ID = 60271 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60273
+{
+	enum { NET_ID = 60273 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60273, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60274
+{
+	enum { NET_ID = 60274 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60274, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60276
+{
+	enum { NET_ID = 60276 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60276, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60277
+{
+	enum { NET_ID = 60277 };
+	u32 field_1; // 4 bytes
+	u32 field_2; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60277, 8);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60278
+{
+	enum { NET_ID = 60278 };
+	u32 field_1; // 4 bytes
+	u16 field_2; // 2 bytes
+	u16 field_3; // 2 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60278, 8);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60279
+{
+	enum { NET_ID = 60279 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60279, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60280
+{
+	enum { NET_ID = 60280 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60280, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60281
+{
+	enum { NET_ID = 60281 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60281, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60282
+{
+	enum { NET_ID = 60282 };
+	u8 field_1; // 1 bytes (bool)
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60282, 1);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60283
+{
+	enum { NET_ID = 60283 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60284
+{
+	enum { NET_ID = 60284 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60285
+{
+	enum { NET_ID = 60285 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60286
+{
+	enum { NET_ID = 60286 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60287
+{
+	enum { NET_ID = 60287 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60288
+{
+	enum { NET_ID = 60288 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60289
+{
+	enum { NET_ID = 60289 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60290
+{
+	enum { NET_ID = 60290 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60291
+{
+	enum { NET_ID = 60291 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60292
+{
+	enum { NET_ID = 60292 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60293
+{
+	enum { NET_ID = 60293 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60294
+{
+	enum { NET_ID = 60294 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60295
+{
+	enum { NET_ID = 60295 };
+	u32 field_1; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60296
+{
+	enum { NET_ID = 60296 };
+	u8 field_1; // 1 bytes (bool)
+	u32 field_2; // 4 bytes
+	u32 field_3; // 4 bytes
+	u32 field_4; // 4 bytes
+	u32 field_5; // 4 bytes (unclassified writer struct)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60297
+{
+	enum { NET_ID = 60297 };
+	u16 field_1; // 2 bytes
+	u16 field_2; // 2 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CQ_UNKNOWN_60297, 4);
+
+PUSH_PACKED
+struct CN_UNKNOWN_60298
+{
+	enum { NET_ID = 60298 };
+	u32 field_1; // 4 bytes
+	// blob: variable-size (u16 count + count x u8)
+	u16 field2_count; // 2 bytes
+	u8 field2[1]; // 1 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60299
+{
+	enum { NET_ID = 60299 };
+	u32 field_1; // 4 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60299, 4);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60301
+{
+	enum { NET_ID = 60301 };
+	u32 field_1; // 4 bytes (unclassified writer string)
+	// vector: variable-size (u16 count + count x u32)
+	u16 field2_count; // 2 bytes
+	u32 field2[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60302
+{
+	enum { NET_ID = 60302 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u32 field_2; // 4 bytes (unclassified writer wstring)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+	u32 field_4; // 4 bytes (unclassified writer wstring)
+	u32 field_5; // 4 bytes (unclassified writer wstring)
+	u32 field_6; // 4 bytes (unclassified writer wstring)
+	u16 field_7; // 2 bytes
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60303
+{
+	enum { NET_ID = 60303 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60304
+{
+	enum { NET_ID = 60304 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u8 field_2; // 1 bytes (bool)
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60305
+{
+	enum { NET_ID = 60305 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60306
+{
+	enum { NET_ID = 60306 };
+	u16 field_1; // 2 bytes
+};
+POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60306, 2);
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60307
+{
+	enum { NET_ID = 60307 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60308
+{
+	enum { NET_ID = 60308 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60309
+{
+	enum { NET_ID = 60309 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60310
+{
+	enum { NET_ID = 60310 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CN_UNKNOWN_60311
+{
+	enum { NET_ID = 60311 };
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CA_UNKNOWN_60312
+{
+	enum { NET_ID = 60312 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	// vector: variable-size (u16 count + count x u32)
+	u16 field2_count; // 2 bytes
+	u32 field2[1]; // 4 bytes each
+};
+POP_PACKED
+
+PUSH_PACKED
+struct CQ_UNKNOWN_60313
+{
+	enum { NET_ID = 60313 };
+	u32 field_1; // 4 bytes (unclassified writer wstring)
+	u64 field_2; // 8 bytes
+	u32 field_3; // 4 bytes (unclassified writer wstring)
+	u32 field_4; // 4 bytes (unclassified writer wstring)
+	u32 field_5; // 4 bytes (unclassified writer string)
+};
+POP_PACKED
+
 } // Cl
 
 

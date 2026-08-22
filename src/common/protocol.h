@@ -1027,50 +1027,74 @@ struct SN_StationList
 	PST_Station stationList[1]; // variable size
 };
 
+PUSH_PACKED
 struct SN_TgchatServerInfo
 {
 	enum { NET_ID = 62009 };
-
-	u8 data[1]; // variable size
-
-	// TODO: proper ghidra reverse
+	u16 host_len; // 2 bytes
+	char host[1]; // variable (ANSI string: 2 + len bytes)
+	u16 port; // 2 bytes
+	u32 gameID; // 4 bytes
+	u32 serverID; // 4 bytes
+	u32 userID; // 4 bytes
+	u16 gamename_len; // 2 bytes
+	wchar_t gamename[1]; // variable (wide string: 2 + len*2 bytes)
+	u16 chatname_len; // 2 bytes
+	wchar_t chatname[1]; // variable (wide string: 2 + len*2 bytes)
+	u16 playncname_len; // 2 bytes
+	wchar_t playncname[1]; // variable (wide string: 2 + len*2 bytes)
+	u16 signature_count; // 2 bytes
+	u8 signature[1]; // variable (byte vector: 2 + count bytes)
+	u8 serverType; // 1 bytes (i8)
+	// logger 0x9a7060
 };
+POP_PACKED
+ASSERT_SIZE(SN_TgchatServerInfo, 33);
+;
 
+PUSH_PACKED
 struct SN_DoConnectGameServer
 {
 	enum { NET_ID = 62010 };
-
-	u16 port;
-	eastl::array<u8,4> ip;
-
-	i32 gameID;
-	u32 idcHash; // not sure what this is used for
-
-	u16 nickLen;
-	wchar nick[1]; // length is nickLen
-
-	u32 instantKey;
+	u16 dwPort; // 2 bytes
+	u32 dwIP; // 4 bytes
+	u32 dwGameID; // 4 bytes
+	u32 idcHash; // 4 bytes
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u32 instantKey; // 4 bytes
+	// logger 0x9914f7
 };
+POP_PACKED
+ASSERT_SIZE(SN_DoConnectGameServer, 22);
+;
 
+PUSH_PACKED
 struct SN_DoConnectChannelServer
 {
 	enum { NET_ID = 62011 };
-
-	u16 count;
-	u8 ip[4];
-	u16 port;
-
-	u16 serverNamelen;
-	wchar serverName[1]; // length is serverNamelen
-
-	u16 nickLen;
-	wchar nick[1]; // length is nickLen
-
-	i32 var1;
-	i32 var2;
-
-	// TODO: proper ghidra reverse
+	// variable part (ST_HOST_ADDRESS):
+	PUSH_PACKED
+	struct HostAddress
+	{
+		u32 ip; // 4 bytes
+		u16 port; // 2 bytes
+		u16 isp_len; // 2 bytes
+		wchar_t isp[1]; // 2*isp_len bytes (wide string)
+	};
+	POP_PACKED
+	u16 addresses_count; // 2 bytes
+	HostAddress addresses[1]; // 8 + 2*isp_len bytes each
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2*nickname_len bytes (wide string)
+	u32 instantKey; // 4 bytes
+	u32 reasonCode; // 4 bytes
+	// logger 0x991344
 };
+POP_PACKED
+// variable size (VEC of variable-size HostAddress + wide strings) - no ASSERT_SIZE possible
+// variable size (VEC of variable-size HostAddress + wide strings) - no ASSERT_SIZE possible
+;
 
 struct SN_GameCreateActor
 {
@@ -1300,13 +1324,16 @@ struct SA_CastSkill
 };
 ASSERT_SIZE(SA_CastSkill, 12);
 
+PUSH_PACKED
 struct SA_VersionInfo
 {
 	enum { NET_ID = 62047 };
-
-	u16 strLen;
-	wchar str[1]; // variable size
+	u16 m_VersionName_len; // 2 bytes (wchar count)
+	wchar_t m_VersionName[1]; // variable: 2 * m_VersionName_len bytes
+	// logger 0x9884cf
 };
+POP_PACKED
+;
 
 struct SN_PlayerSkillSlot
 {
@@ -1509,24 +1536,28 @@ struct SN_GamePlayerEquipWeapon
 
 ASSERT_SIZE(SN_GamePlayerEquipWeapon, 16);
 
+PUSH_PACKED
 struct SN_GamePlayerStock
 {
 	enum { NET_ID = 62089 };
-
-	LocalActorID playerID;
-	u16 name_len;
-	wchar name[1];
-	ClassType classType;
-	i32 displayTitleIDX;
-	i32 statTitleIDX;
-	u8 badgeType;
-	u8 badgeTierLevel;
-	u16 guildTag_len;
-	wchar guildTag[1];
-	u8 vipLevel;
-	u8 staffType;
-	u8 isSubstituted;
+	u32 playerID; // 4 bytes
+	u16 wStrPlayerName_len; // 2 bytes
+	wchar_t wStrPlayerName[1]; // 2 bytes (wide)
+	u32 m_Class; // 4 bytes
+	u32 m_DisplayTitleIDX; // 4 bytes
+	u32 m_StatTitleIDX; // 4 bytes
+	u8 m_badgeType; // 1 bytes
+	u8 m_badgeTierLevel; // 1 bytes
+	u16 m_guildTag_len; // 2 bytes
+	wchar_t m_guildTag[1]; // 2 bytes (wide)
+	u8 m_vipLevel; // 1 bytes
+	u8 m_staffType; // 1 bytes
+	u8 m_isSubstituted; // 1 bytes (bool)
+	// logger 0x995269
 };
+POP_PACKED
+ASSERT_SIZE(SN_GamePlayerStock, 29);
+;
 
 struct SN_PlayerStateInTown
 {
@@ -1609,23 +1640,26 @@ struct SN_AchieveUpdate
 	ST_AchieveInfo achieve;
 };
 
+PUSH_PACKED
 struct SN_AccountInfo
 {
 	enum { NET_ID = 62106 };
-
-	u16 nick_len;
-	wchar_t nick[1];
-
-	i32 inventoryLineCountTab0;
-	i32 inventoryLineCountTab1;
-	i32 inventoryLineCountTab2;
-	i32 displayTitlteIndex;
-	i32 statTitleIndex;
-	i32 warehouseLineCount;
-	i32 tutorialState;
-	i32 masterGearDurability;
-	u8 badgeType;
+	u16 Nickname_len; // 2 bytes
+	wchar_t Nickname[1]; // 2 bytes (wide string)
+	u32 inventoryLineCountTab0; // 4 bytes
+	u32 inventoryLineCountTab1; // 4 bytes
+	u32 inventoryLineCountTab2; // 4 bytes
+	u32 displayTitleIndex; // 4 bytes
+	u32 statTitleIndex; // 4 bytes
+	u32 warehouseLineCount; // 4 bytes
+	u32 tutorialState; // 4 bytes
+	u32 masterGearDurability; // 4 bytes
+	u8 badgeType; // 1 bytes
+	// logger 0x98ade0
 };
+POP_PACKED
+ASSERT_SIZE(SN_AccountInfo, 37);
+;
 
 struct SN_AccountExtraInfo
 {
@@ -1715,15 +1749,18 @@ struct SA_GetCharacterInfo
 };
 ASSERT_SIZE(SA_GetCharacterInfo, 20);
 
+PUSH_PACKED
 struct SA_CheckDupNickname
 {
 	enum { NET_ID = 62121 };
-
-	u16 statusCode;
-	u8 unk;
-	u16 nick_len;
-	wchar nick[1];
+	u32 result; // 4 bytes
+	u16 reqNickname_len; // 2 bytes
+	wchar_t reqNickname[1]; // 2 bytes (wide string)
+	// logger 0x984cb6
 };
+POP_PACKED
+ASSERT_SIZE(SA_CheckDupNickname, 8);
+;
 
 struct SA_SetLeader
 {
@@ -2150,17 +2187,23 @@ struct SA_ResultSpAction
 	float3 startPos;
 };
 
+PUSH_PACKED
 struct SN_ChatChannelMessage
 {
 	enum { NET_ID = 62242 };
-
-	i32 chatType;
-	u16 senderNickname_len;
-	wchar senderNickname[1];
-	u8 senderStaffType;
-	u16 chatMsg_len;
-	wchar chatMsg[1];
+	u32 chatType; // 4 bytes
+	// variable part (wide string):
+	u16 senderNickname_len; // 2 bytes
+	wchar_t senderNickname[1]; // 2 bytes
+	u8 senderStaffType; // 1 bytes
+	// variable part (wide string):
+	u16 chatMsg_len; // 2 bytes
+	wchar_t chatMsg[1]; // 2 bytes
+	// logger 0x98fa3c
 };
+POP_PACKED
+ASSERT_SIZE(SN_ChatChannelMessage, 13);
+;
 
 struct SN_FriendList
 {
@@ -2235,17 +2278,21 @@ struct SN_NotifyAasRestricted
 };
 ASSERT_SIZE(SN_NotifyAasRestricted, 1);
 
+PUSH_PACKED
 struct SN_Exp
 {
 	enum { NET_ID = 62278 };
-
-	i32 leaderCsn;
-	u16 nickname_len;
-	wchar nickname[1];
-	u8 isLevelUp;
-	u16 level;
-	i32 currentLevelExp;
+	u32 leaderCSN; // 4 bytes
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string)
+	u8 isLevelUp; // 1 bytes (bool)
+	u16 level; // 2 bytes
+	u32 currentLevelExp; // 4 bytes
+	// logger 0x9924fd
 };
+POP_PACKED
+ASSERT_SIZE(SN_Exp, 15);
+;
 
 struct SN_JukeboxEnqueuedList
 {
@@ -2395,7 +2442,8 @@ struct SA_GetGuildProfile
 	i32 curDailyArenaGuildPoint;
 	i32 maxDailyArenaGuildPoint;
 	u8 todayRollCallCount;
-};
+}
+;
 
 struct SA_GetGuildMemberList
 {
@@ -2467,15 +2515,19 @@ struct SA_GetGuildRankingSeasonList
 	ST_RankingSeason rankingSeasonList[1];
 };
 
+PUSH_PACKED
 struct SN_MyGuild
 {
 	enum { NET_ID = 62330 };
-
-	u16 guildTag_len;
-	wchar_t guildTag[1];
-	i64 dissolutionDate;
-	u8 isFirstTodayRollCall;
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes (wide string, reader 0xa19080)
+	i64 dissolutionDate; // 8 bytes
+	u8 isFirstTodayRollCall; // 1 bytes (bool)
+	// logger 0x99be52
 };
+POP_PACKED
+ASSERT_SIZE(SN_MyGuild, 13);
+;
 
 struct SN_GuildMemberStatus
 {
@@ -2492,16 +2544,19 @@ struct SN_GuildMemberStatus
 	Member guildMemberStatusList[1];
 };
 
+PUSH_PACKED
 struct SN_GuildChannelEnter
 {
 	enum { NET_ID = 62358 };
-
-	u16 guildName_len;
-	wchar_t guildName[1];
-	u16 nick_len;
-	wchar_t nick[1];
-	u8 onlineStatus;
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2*N bytes (variable, wide string)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2*N bytes (variable, wide string)
+	u8 onlineStatus; // 1 bytes
+	// logger 0x9963d6
 };
+POP_PACKED
+;
 
 PUSH_PACKED
 struct SN_PlayerSyncMove
@@ -2608,27 +2663,37 @@ struct SN_WarehouseItems
 	PST_ProfileItem items[1];
 };
 
+PUSH_PACKED
 struct SA_WhisperSend
 {
 	enum { NET_ID = 62406 };
-
-	i32 result;
-	u16 destNick_len;
-	wchar destNick[1];
-	u16 msg_len;
-	wchar msg[1];
+	u32 retval; // 4 bytes
+	// variable part (wide string reader 0xa19080):
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 + count*2
+	u16 message_len; // 2 bytes
+	wchar_t message[1]; // 2 + count*2
+	// logger 0x98a94f
 };
+POP_PACKED
+// variable-size packet: wire = 4 + (2 + 2*nickname_len) + (2 + 2*message_len); no fixed ASSERT_SIZE
+// variable-size packet: wire = 4 + (2 + 2*nickname_len) + (2 + 2*message_len); no fixed ASSERT_SIZE
+;
 
+PUSH_PACKED
 struct SN_WhisperReceive
 {
 	enum { NET_ID = 62407 };
-
-	u16 senderNick_len;
-	wchar senderNick[1];
-	u8 staffType;
-	u16 msg_len;
-	wchar msg[1];
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 staffType; // 1 bytes
+	u16 message_len; // 2 bytes
+	wchar_t message[1]; // 2 bytes
+	// logger 0x009a8914
 };
+POP_PACKED
+ASSERT_SIZE(SN_WhisperReceive, 9);
+;
 
 struct SN_MailUnreadNotice
 {
@@ -2705,18 +2770,23 @@ struct SN_RunClientLevelEventSeq
 POP_PACKED
 ASSERT_SIZE(SN_RunClientLevelEventSeq, 20);
 
+PUSH_PACKED
 struct SN_LoadingProgressData
 {
 	enum { NET_ID = 62450 };
-
-	UserID usn;
-	u16 nick_len;
-	wchar nick[1];
-	u8 progressData;
-	CreatureIndex activeCreatureIndex;
-	CreatureIndex inactiveCreatureIndex;
-	u8 isSpectator;
+	u32 usn; // 4 bytes
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes each (variable: wide string)
+	u8 progressData; // 1 bytes
+	u32 activeCreatureIndex; // 4 bytes
+	u32 inactiveCreatureIndex; // 4 bytes
+	u8 isSpectator; // 1 bytes
+	// logger 0x99996e
 };
+POP_PACKED
+// ASSERT_SIZE n/a: wire = 16 + 2*nickname_len (variable string)
+// ASSERT_SIZE n/a: wire = 16 + 2*nickname_len (variable string)
+;
 
 struct SN_MasterRotationInfo
 {
@@ -3008,16 +3078,15 @@ struct SN_DoConnectSpectateServer
 {
 	enum { NET_ID = 62012 };
 	u16 dwPort; // 2 bytes
-	u8 dwIP[4]; // 4 bytes
+	u32 dwIP; // 4 bytes
 	u32 idcHash; // 4 bytes
-	// nickname: variable-size (string/vector)
-	u16 instantKey; // 2 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string)
+	u32 instantKey; // 4 bytes
 	// logger 0x991667
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_DoConnectSpectateServer, 18);
 PUSH_PACKED
 struct SN_UNKNOWN_62013
 {
@@ -3113,49 +3182,52 @@ PUSH_PACKED
 struct SN_ShopItemList
 {
 	enum { NET_ID = 62022 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
+	// variable part (ST_SHOP_ITEM_INFO):
+	PUSH_PACKED
+	struct Item
+	{
+		u32 m_ItemKey; // 4 bytes
+		u32 m_IDX; // 4 bytes
+		u32 m_Count; // 4 bytes
+		u32 m_Price; // 4 bytes
+		u32 UpgradeIndex; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_ShopItem_count; // 2 bytes
+	Item m_ShopItem[1]; // 20 bytes
 	// logger 0x9a403f
 };
 POP_PACKED
-ASSERT_SIZE(SN_ShopItemList, 20);
-
+ASSERT_SIZE(SN_ShopItemList, 22);
 PUSH_PACKED
 struct SA_SellShopItem
 {
 	enum { NET_ID = 62023 };
 	u32 Result; // 4 bytes
-	u32 sellAmount; // 4 bytes
-	i64 unk_0; // 8 bytes
+	u16 sellItemDocIndexes_count; // 2 bytes
+	u32 sellItemDocIndexes[1]; // 4 bytes
+	i64 sellAmount; // 8 bytes
 	// logger 0x98836f
 };
 POP_PACKED
-ASSERT_SIZE(SA_SellShopItem, 16);
-
+ASSERT_SIZE(SA_SellShopItem, 18);
 PUSH_PACKED
 struct SN_CreateGroundItem
 {
 	enum { NET_ID = 62024 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
-	u32 field_10; // 4 bytes
-	u32 field_11; // 4 bytes
-	u32 field_12; // 4 bytes
-	u32 field_13; // 4 bytes
-	u8 field_14; // 1 bytes
-	u8 field_15; // 1 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes (bit0=!startPos, bit1=!destPos)
+	float3 startPos; // 12 bytes (ST_POS3, present if !(bits & 1))
+	float3 destPos; // 12 bytes (ST_POS3, present if !(bits & 2))
+	u32 itemID; // 4 bytes
+	u32 dropType; // 4 bytes
+	u32 nIndex; // 4 bytes
+	u32 count; // 4 bytes
+	u32 ownerID; // 4 bytes
+	i32 gettableType; // 4 bytes
+	i32 factionType; // 4 bytes
+	u8 isPrivate; // 1 bytes (bool)
+	u8 positionType; // 1 bytes
+	// logger 0x9900ee
 };
 POP_PACKED
 ASSERT_SIZE(SN_CreateGroundItem, 55);
@@ -3169,31 +3241,31 @@ struct SN_GameModifyActor
 	u32 nType; // 4 bytes
 	u32 nIDX; // 4 bytes
 	u32 dwLocalID; // 4 bytes
-	// p3nPos: variable-size (string/vector)
-	// p3nDir: variable-size (string/vector)
+	float3 p3nPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 p3nDir; // 12 bytes (ST_POS3)
 	u32 SpawnType; // 4 bytes
 	u32 actionState; // 4 bytes
 	u32 ownerID; // 4 bytes
-	u32 bDirectionToNearPC; // 4 bytes
+	u8 bDirectionToNearPC; // 1 bytes (bool)
 	u32 nAIWanderDistOverride; // 4 bytes
 	u32 tagID; // 4 bytes
 	u32 faction; // 4 bytes
 	u32 classType; // 4 bytes
 	u32 skinIndex; // 4 bytes
-	u8 seed; // 1 bytes
-	// initStat: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u8 unk_7; // 1 bytes
-	u32 unk_8; // 4 bytes
-	u16 unk_9; // 2 bytes
-	u8 unk_10; // 1 bytes
-	u32 unk_11; // 4 bytes
+	u32 seed; // 4 bytes
+
+	// ST_BASE_STAT: maxStats/curStats (count + count x {u8 type, f32 value})
+	PUSH_PACKED
+	struct Stat
+	{
+		u8 type; // 1 bytes
+		f32 value; // 4 bytes
+	};
+	POP_PACKED
+	u16 maxStats_count; // 2 bytes
+	Stat maxStats[1]; // 5 bytes
+	u16 curStats_count; // 2 bytes
+	Stat curStats[1]; // 5 bytes
 	// logger 0x994d1b
 };
 POP_PACKED
@@ -3220,26 +3292,25 @@ struct SN_PrecastSkill
 	u32 entity; // 4 bytes
 	u32 ret; // 4 bytes
 	u32 skillIndex; // 4 bytes
-	u8 bSyncMyPosition; // 1 bytes
-	// posStruct: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u32 unk_12; // 4 bytes
+	u8 bSyncMyPosition; // 1 bytes (bool)
+	// posStruct (PST_SKILL_POS_SYNC):
+	PUSH_PACKED
+	struct SkillPosSync
+	{
+		float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
+		float3 destPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+		f32 moveDirX; // 4 bytes (ST_POS2: fX)
+		f32 moveDirY; // 4 bytes (ST_POS2: fY)
+		float3 rotateStruct; // 12 bytes (ST_POS3: fX, fY, fZ)
+		f32 speed; // 4 bytes
+		f32 clientTime; // 4 bytes
+	};
+	POP_PACKED
+	SkillPosSync posStruct; // 52 bytes
 	// logger 0x99ec9f
 };
 POP_PACKED
 ASSERT_SIZE(SN_PrecastSkill, 65);
-
 PUSH_PACKED
 struct SN_SwitchOnToggleSkill
 {
@@ -3247,13 +3318,14 @@ struct SN_SwitchOnToggleSkill
 	u32 entity; // 4 bytes
 	u32 ret; // 4 bytes
 	u32 skillIndex; // 4 bytes
+	// variable part (VEC of u32, remoteList):
+	u16 remoteList_count; // 2 bytes
+	u32 remoteList[1]; // 4 bytes
 	u32 param1; // 4 bytes
-	u32 unk_0; // 4 bytes
 	// logger 0x9a6b8a
 };
 POP_PACKED
-ASSERT_SIZE(SN_SwitchOnToggleSkill, 20);
-
+ASSERT_SIZE(SN_SwitchOnToggleSkill, 22);
 PUSH_PACKED
 struct SN_SwitchOffToggleSkill
 {
@@ -3360,21 +3432,14 @@ struct SN_UpdateTargetGraphMove
 {
 	enum { NET_ID = 62049 };
 	u32 characterID; // 4 bytes
-	// curPos: variable-size (string/vector)
+	float3 curPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 targetID; // 4 bytes
-	// targetPos: variable-size (string/vector)
+	float3 targetPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 curActionID; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
 	// logger 0x9a7fff
 };
 POP_PACKED
 ASSERT_SIZE(SN_UpdateTargetGraphMove, 36);
-
 PUSH_PACKED
 struct SA_ItemChange
 {
@@ -3451,29 +3516,35 @@ PUSH_PACKED
 struct SN_DeadDamageInfo
 {
 	enum { NET_ID = 62063 };
-	// killer: variable-size (string/vector)
-	u16 durationTime; // 2 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
-	u32 unk_6; // 4 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u8 unk_12; // 1 bytes
-	u8 unk_13; // 1 bytes
-	u32 unk_14; // 4 bytes
-	u32 unk_15; // 4 bytes
+	// killer (PST_DEAD_DAMAGE_INFO_LIST):
+	PUSH_PACKED
+	struct DeadDamageInfo
+	{
+		u32 objectID; // 4 bytes
+		u32 skillDocIndex; // 4 bytes
+		u32 statusDocIndex; // 4 bytes
+		u32 damage; // 4 bytes
+		u8 attackerIsMonster; // 1 bytes (bool)
+		u8 damageType; // 1 bytes
+	};
+	POP_PACKED
+	PUSH_PACKED
+	struct DamageInfoList
+	{
+		u16 deadDamageInfo_count; // 2 bytes
+		DeadDamageInfo deadDamageInfo[1]; // 18 bytes
+		u32 attackerKey; // 4 bytes
+	};
+	POP_PACKED
+	DamageInfoList killer; // 24 bytes (PST_DEAD_DAMAGE_INFO_LIST)
+	// others (VEC of PST_DEAD_DAMAGE_INFO_LIST):
+	u16 others_count; // 2 bytes
+	DamageInfoList others[1]; // 24 bytes
+	u32 durationTime; // 4 bytes
 	// logger 0x99088a
 };
 POP_PACKED
-ASSERT_SIZE(SN_DeadDamageInfo, 52);
-
+ASSERT_SIZE(SN_DeadDamageInfo, 54);
 PUSH_PACKED
 struct SA_BuyShopItem
 {
@@ -3501,27 +3572,40 @@ struct SA_GiftFriendsAvailable
 {
 	enum { NET_ID = 62067 };
 	u32 result; // 4 bytes
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (friendsList:VEC of wide strings, wire elem = u16 len + wchar[len]):
+	u16 friendsList_count; // 2 bytes
+	struct
+	{
+		u16 len; // 2 bytes
+		wchar_t str[1]; // 2 bytes
+	} friendsList[1]; // 4 bytes
 	// logger 0x982dd1
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_GiftFriendsAvailable, 10);
 PUSH_PACKED
 struct SA_GiftFriendCharsAndSkins
 {
 	enum { NET_ID = 62068 };
 	u32 result; // 4 bytes
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string, reader 0xa19080)
+	u16 characterList_count; // 2 bytes
+	u32 characterList[1]; // 4 bytes (VEC of u32)
+	u16 skinList_count; // 2 bytes
+	// variable part (PST_CHARACTER_SKIN):
+	PUSH_PACKED
+	struct CharacterSkin
+	{
+		u32 classType; // 4 bytes
+		u32 skinIndex; // 4 bytes
+	};
+	POP_PACKED
+	CharacterSkin skinList[1]; // 8 bytes
 	// logger 0x982f18
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_GiftFriendCharsAndSkins, 24);
 PUSH_PACKED
 struct SA_BuyGift
 {
@@ -3537,20 +3621,26 @@ struct SN_PlayerSkillUpdate
 {
 	enum { NET_ID = 62070 };
 	u32 characterID; // 4 bytes
-	// stSkillSlot: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	u8 unk_7; // 1 bytes
+	// stSkillSlot (ST_SKILL_SLOT):
+	u32 nSkillIndex; // 4 bytes
+	u32 nCoolTime; // 4 bytes
+	u8 bUnlocked; // 1 bytes (bool)
+	// variable part (ST_SKILL_SLOT properties):
+	PUSH_PACKED
+	struct SkillProperty
+	{
+		u32 m_skillPropertyIndex; // 4 bytes
+		u32 m_level; // 4 bytes
+	};
+	POP_PACKED
+	u16 properties_count; // 2 bytes
+	SkillProperty properties[1]; // 8 bytes
+	u8 isUnlocked; // 1 bytes (bool)
+	u8 isActivated; // 1 bytes (bool)
 	// logger 0x99df3c
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerSkillUpdate, 25);
-
 PUSH_PACKED
 struct SN_GameAreaMove
 {
@@ -3590,211 +3680,328 @@ struct SA_ItemUse
 	u32 nErrorType; // 4 bytes
 	u32 usedItemDocIndex; // 4 bytes
 	i64 goldAmount; // 8 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (ST/PST_ITEM_SIMPLE_INFO):
+	PUSH_PACKED
+	struct ItemSimpleInfo
+	{
+		u32 itemId; // 4 bytes
+		u32 itemDocIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 addedItemList_count; // 2 bytes
+	ItemSimpleInfo addedItemList[1]; // 12 bytes
 	// logger 0x983f8d
 };
 POP_PACKED
-ASSERT_SIZE(SA_ItemUse, 28);
-
+ASSERT_SIZE(SA_ItemUse, 30);
 PUSH_PACKED
 struct SN_PvpResult
 {
 	enum { NET_ID = 62079 };
 	u32 gameEndReason; // 4 bytes
 	u32 m_playTime; // 4 bytes
-	// m_resultReward: variable-size (string/vector)
-	u32 tierGameResult; // 4 bytes
-	u32 tierTypeResult; // 4 bytes
-	u32 curTierPoint; // 4 bytes
-	u32 deltaTierPoint; // 4 bytes
+	// pvpResults (ST_PVP_RESULT):
+	PUSH_PACKED
+	struct PvpResult
+	{
+		u32 teamType; // 4 bytes
+		u32 pvpResultType; // 4 bytes
+	};
+	POP_PACKED
+	u16 pvpResults_count; // 2 bytes
+	PvpResult pvpResults[1]; // 8 bytes
+	// m_resultReward (PST_RESULT_REWARD, logger LogPST_ResultReward 0x97bb16):
+	PUSH_PACKED
+	struct ResultReward
+	{
+		u32 m_playerID; // 4 bytes
+		u32 m_baseRon; // 4 bytes
+		// m_bonusRon (PST_REWARD_BONUS):
+		PUSH_PACKED
+		struct RewardBonus
+		{
+			u32 bonusType; // 4 bytes
+			u32 amount; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_bonusRon_count; // 2 bytes
+		RewardBonus m_bonusRon[1]; // 8 bytes
+		u32 m_baseExp; // 4 bytes
+		u16 m_bonusExp_count; // 2 bytes
+		RewardBonus m_bonusExp[1]; // 8 bytes
+		// rewardItems (ST_REWARD_ITEM):
+		PUSH_PACKED
+		struct RewardItem
+		{
+			u32 m_ItemType; // 4 bytes
+			u32 m_ItemIndex; // 4 bytes
+			u32 m_ItemAmount; // 4 bytes
+		};
+		POP_PACKED
+		u16 rewardItems_count; // 2 bytes
+		RewardItem rewardItems[1]; // 12 bytes
+		// m_guildPointReward (ST_GUILD_REWARD):
+		PUSH_PACKED
+		struct GuildReward
+		{
+			u32 m_baseGuildPoint; // 4 bytes
+			u32 m_bonusGuildPoint; // 4 bytes
+			u8 m_guildMemberNum; // 1 bytes
+			u16 m_boostGoldRate; // 2 bytes
+			u16 m_boostExpRate; // 2 bytes
+			u16 m_bonusSlotOpen; // 2 bytes
+		};
+		POP_PACKED
+		GuildReward m_guildPointReward; // 15 bytes
+		RewardItem m_pcCafeBonusItem; // 12 bytes
+	};
+	POP_PACKED
+	ResultReward m_resultReward; // 73 bytes
+	u8 tierGameResult; // 1 bytes
+	u8 tierTypeResult; // 1 bytes
+	u16 curTierPoint; // 2 bytes
+	u16 deltaTierPoint; // 2 bytes
 	u16 deltaGuildRp; // 2 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u8 unk_12; // 1 bytes
-	u16 unk_13; // 2 bytes
-	u16 unk_14; // 2 bytes
-	u16 unk_15; // 2 bytes
-	u32 unk_16; // 4 bytes
-	u32 unk_17; // 4 bytes
-	u32 unk_18; // 4 bytes
-	u8 unk_19; // 1 bytes
-	u8 unk_20; // 1 bytes
-	u16 unk_21; // 2 bytes
-	u16 unk_22; // 2 bytes
-	u16 unk_23; // 2 bytes
-	u32 unk_24; // 4 bytes
-	// logger 0x99fd9b
+	// pcCafeUserIds (VEC of u32):
+	u16 pcCafeUserIds_count; // 2 bytes
+	u32 pcCafeUserIds[1]; // 4 bytes
+	// logger LogPacket_SN_PvpResult 0x99fd9b
 };
 POP_PACKED
-ASSERT_SIZE(SN_PvpResult, 101);
-
+ASSERT_SIZE(SN_PvpResult, 105);
 PUSH_PACKED
 struct SN_PvpResultScoreDeathmatch
 {
 	enum { NET_ID = 62080 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u16 field_3; // 2 bytes
-	u32 field_4; // 4 bytes
-	u8 field_5; // 1 bytes
-	u32 field_6; // 4 bytes
-	u16 field_7; // 2 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
-	u8 field_10; // 1 bytes
-	u8 field_11; // 1 bytes
-	u8 field_12; // 1 bytes
-	u8 field_13; // 1 bytes
-	u8 field_14; // 1 bytes
-	u32 field_15; // 4 bytes
-	u32 field_16; // 4 bytes
-	u32 field_17; // 4 bytes
-	u32 field_18; // 4 bytes
-	u32 field_19; // 4 bytes
-	u32 field_20; // 4 bytes
-	u32 field_21; // 4 bytes
-	u32 field_22; // 4 bytes
+	// m_TeamScore (ST_PVP_TEAM_SCORE, LogPST_PvpTeamScore 0x9aeec3):
+	PUSH_PACKED
+	struct TeamScore
+	{
+		u32 m_Team; // 4 bytes
+		u32 m_TotalScore; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_TeamScore_count; // 2 bytes
+	TeamScore m_TeamScore[1]; // 8 bytes
+	// m_PvPScore (ST_PVP_PLAYER_SCORE_DEATHMATCH, LogPST_PvpPlayerScoreDeathmatch 0x9aded4):
+	PUSH_PACKED
+	struct PvPScore
+	{
+		u32 m_playerID; // 4 bytes
+		u16 m_nickName_len; // 2 bytes
+		wchar_t m_nickName[1]; // 2 bytes (wide string)
+		u32 m_teamType; // 4 bytes
+		u8 m_Disconnected; // 1 bytes (bool)
+		u32 m_TotalScore; // 4 bytes
+		// m_charScore (ST_PVP_CHAR_SCORE_DEATHMATCH, LogPST_PvpCharScoreDeathmatch 0x9ad22c):
+		PUSH_PACKED
+		struct CharScore
+		{
+			u32 m_CreatureIndex; // 4 bytes
+			u32 m_PlayTimeMS; // 4 bytes
+			u8 m_KillCount; // 1 bytes
+			u8 m_MaxContinuousKillCount; // 1 bytes
+			u8 m_MaxMultiKillCount; // 1 bytes
+			u8 m_DeadCount; // 1 bytes
+			u8 m_AssistCount; // 1 bytes
+			u32 m_TotalDamageDealt; // 4 bytes
+			u32 m_MaxDamageDealt; // 4 bytes
+			u32 m_TotalNormalDamageDealt; // 4 bytes
+			u32 m_TotalSkillDamageDealt; // 4 bytes
+			u32 m_TotalDamageTaken; // 4 bytes
+			u32 m_MaxDamageTaken; // 4 bytes
+			u32 m_TotalNormalDamageTaken; // 4 bytes
+			u32 m_TotalSkillDamageTaken; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_charScore_count; // 2 bytes
+		CharScore m_charScore[1]; // 45 bytes
+	};
+	POP_PACKED
+	u16 m_PvPScore_count; // 2 bytes
+	PvPScore m_PvPScore[1]; // 64 bytes
 	// logger 0x9a00c6
 };
 POP_PACKED
-ASSERT_SIZE(SN_PvpResultScoreDeathmatch, 70);
-
+ASSERT_SIZE(SN_PvpResultScoreDeathmatch, 76);
 PUSH_PACKED
 struct SN_PvpResultScoreOccupy
 {
 	enum { NET_ID = 62081 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u16 field_3; // 2 bytes
-	u32 field_4; // 4 bytes
-	u8 field_5; // 1 bytes
-	u16 field_6; // 2 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u8 field_9; // 1 bytes
-	u8 field_10; // 1 bytes
-	u8 field_11; // 1 bytes
-	u8 field_12; // 1 bytes
-	u8 field_13; // 1 bytes
-	u32 field_14; // 4 bytes
-	u32 field_15; // 4 bytes
-	u32 field_16; // 4 bytes
-	u32 field_17; // 4 bytes
-	u32 field_18; // 4 bytes
-	u32 field_19; // 4 bytes
-	u32 field_20; // 4 bytes
-	u32 field_21; // 4 bytes
-	u8 field_22; // 1 bytes
-	u16 field_23; // 2 bytes
+	// variable part (ST_PVP_TEAM_SCORE):
+	PUSH_PACKED
+	struct TeamScore
+	{
+		u32 m_Team; // 4 bytes
+		u32 m_TotalScore; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_TeamScore_count; // 2 bytes
+	TeamScore m_TeamScore[1]; // 8 bytes
+	// variable part (ST_PVP_PLAYER_SCORE_OCCUPY):
+	PUSH_PACKED
+	struct PvPScore
+	{
+		u32 m_playerID; // 4 bytes
+		u16 m_nickName_len; // 2 bytes
+		wchar_t m_nickName[1]; // 2 bytes (wide string)
+		u32 m_teamType; // 4 bytes
+		u8 m_Disconnected; // 1 bytes (bool)
+		// variable part (ST_PVP_CHAR_SCORE_OCCUPY):
+		PUSH_PACKED
+		struct CharScore
+		{
+			u32 m_CreatureIndex; // 4 bytes
+			u32 m_PlayTimeMS; // 4 bytes
+			u8 m_KillCount; // 1 bytes
+			u8 m_MaxContinuousKillCount; // 1 bytes
+			u8 m_MaxMultiKillCount; // 1 bytes
+			u8 m_DeadCount; // 1 bytes
+			u8 m_AssistCount; // 1 bytes
+			u32 m_TotalDamageDealt; // 4 bytes
+			u32 m_MaxDamageDealt; // 4 bytes
+			u32 m_TotalNormalDamageDealt; // 4 bytes
+			u32 m_TotalSkillDamageDealt; // 4 bytes
+			u32 m_TotalDamageTaken; // 4 bytes
+			u32 m_MaxDamageTaken; // 4 bytes
+			u32 m_TotalNormalDamageTaken; // 4 bytes
+			u32 m_TotalSkillDamageTaken; // 4 bytes
+			u8 m_OccupyCount; // 1 bytes
+			u16 m_OccupyScore; // 2 bytes
+		};
+		POP_PACKED
+		u16 m_charScore_count; // 2 bytes
+		CharScore m_charScore[1]; // 48 bytes
+	};
+	POP_PACKED
+	u16 m_PvPScore_count; // 2 bytes
+	PvPScore m_PvPScore[1]; // 63 bytes
 	// logger 0x9a04bf
 };
 POP_PACKED
-ASSERT_SIZE(SN_PvpResultScoreOccupy, 69);
-
+ASSERT_SIZE(SN_PvpResultScoreOccupy, 75);
 PUSH_PACKED
 struct SN_PvpResultScoreGot
 {
 	enum { NET_ID = 62082 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u16 field_2; // 2 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u16 field_5; // 2 bytes
-	u32 field_6; // 4 bytes
-	u8 field_7; // 1 bytes
-	u8 field_8; // 1 bytes
-	u32 field_9; // 4 bytes
-	u16 field_10; // 2 bytes
-	u8 field_11; // 1 bytes
-	u8 field_12; // 1 bytes
-	u16 field_13; // 2 bytes
-	u8 field_14; // 1 bytes
-	u8 field_15; // 1 bytes
-	u16 field_16; // 2 bytes
-	u32 field_17; // 4 bytes
-	u32 field_18; // 4 bytes
-	u8 field_19; // 1 bytes
-	u8 field_20; // 1 bytes
-	u8 field_21; // 1 bytes
-	u8 field_22; // 1 bytes
-	u8 field_23; // 1 bytes
-	u32 field_24; // 4 bytes
-	u32 field_25; // 4 bytes
-	u32 field_26; // 4 bytes
-	u32 field_27; // 4 bytes
-	u32 field_28; // 4 bytes
-	u32 field_29; // 4 bytes
-	u32 field_30; // 4 bytes
-	u32 field_31; // 4 bytes
-	u32 field_32; // 4 bytes
-	u32 field_33; // 4 bytes
-	u8 field_34; // 1 bytes
-	u8 field_35; // 1 bytes
-	u8 field_36; // 1 bytes
-	u8 field_37; // 1 bytes
-	u8 field_38; // 1 bytes
-	u8 field_39; // 1 bytes
-	u8 field_40; // 1 bytes
-	u16 field_41; // 2 bytes
-	u32 field_42; // 4 bytes
-	u32 field_43; // 4 bytes
-	u8 field_44; // 1 bytes
-	u8 field_45; // 1 bytes
-	u8 field_46; // 1 bytes
-	u8 field_47; // 1 bytes
-	u8 field_48; // 1 bytes
-	u32 field_49; // 4 bytes
-	u32 field_50; // 4 bytes
-	u32 field_51; // 4 bytes
-	u32 field_52; // 4 bytes
-	u32 field_53; // 4 bytes
-	u32 field_54; // 4 bytes
-	u32 field_55; // 4 bytes
-	u32 field_56; // 4 bytes
-	u32 field_57; // 4 bytes
-	u32 field_58; // 4 bytes
-	u8 field_59; // 1 bytes
+	// variable part (ST_PVP_TEAM_SCORE_GOT):
+	PUSH_PACKED
+	struct TeamScore
+	{
+		u32 m_Team; // 4 bytes
+		u32 m_TotalScore; // 4 bytes
+		// variable part (m_TitanSummonList):
+		u16 m_TitanSummonList_count; // 2 bytes
+		u32 m_TitanSummonList[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_TeamScore_count; // 2 bytes
+	TeamScore m_TeamScore[1]; // 14 bytes
+	// variable part (ST_PVP_PLAYER_SCORE_GOT):
+	PUSH_PACKED
+	struct PvPScore
+	{
+		u32 m_playerID; // 4 bytes
+		u16 m_nickName_len; // 2 bytes
+		wchar_t m_nickName[1]; // 2 bytes
+		u32 m_teamType; // 4 bytes
+		u8 m_Disconnected; // 1 bytes (bool)
+		u8 m_IngameLevel; // 1 bytes
+		u32 m_TotalScore; // 4 bytes
+		// variable part (ST_CHARACTER_PROPERTY_INFO):
+		PUSH_PACKED
+		struct CharPropertyInfo
+		{
+			u8 propertyIndex; // 1 bytes
+			u8 propertyLevel; // 1 bytes
+		};
+		POP_PACKED
+		u16 m_charPropertyInfo1_count; // 2 bytes
+		CharPropertyInfo m_charPropertyInfo1[1]; // 2 bytes
+		u16 m_charPropertyInfo2_count; // 2 bytes
+		CharPropertyInfo m_charPropertyInfo2[1]; // 2 bytes
+		// variable part (ST_PVP_CHAR_SCORE_GOT):
+		PUSH_PACKED
+		struct CharScore
+		{
+			u32 m_CreatureIndex; // 4 bytes
+			u32 m_PlayTimeMS; // 4 bytes
+			u8 m_KillCount; // 1 bytes
+			u8 m_MaxContinuousKillCount; // 1 bytes
+			u8 m_MaxMultiKillCount; // 1 bytes
+			u8 m_DeadCount; // 1 bytes
+			u8 m_AssistCount; // 1 bytes
+			u32 m_TotalDamageDealt; // 4 bytes
+			u32 m_MaxDamageDealt; // 4 bytes
+			u32 m_TotalNormalDamageDealt; // 4 bytes
+			u32 m_TotalSkillDamageDealt; // 4 bytes
+			u32 m_TotalBuildingDamageDealt; // 4 bytes
+			u32 m_TotalDamageTaken; // 4 bytes
+			u32 m_MaxDamageTaken; // 4 bytes
+			u32 m_TotalNormalDamageTaken; // 4 bytes
+			u32 m_TotalSkillDamageTaken; // 4 bytes
+			u32 m_TotalHeal; // 4 bytes
+			u8 m_DestroyTowerCount; // 1 bytes
+			u8 m_KillBossCount; // 1 bytes
+			u8 m_OccupyStatueCount; // 1 bytes
+			u8 m_SavePieceCount; // 1 bytes
+			u8 m_OccupySightCount; // 1 bytes
+			u8 m_KillMinionCount; // 1 bytes
+			u8 m_KillNeutralMobCount; // 1 bytes
+		};
+		POP_PACKED
+		u16 m_charScore_count; // 2 bytes
+		CharScore m_charScore[1]; // 60 bytes
+		u16 m_activeTransformCharScore_count; // 2 bytes
+		CharScore m_activeTransformCharScore[1]; // 60 bytes
+		u16 m_inActiveTransformCharScore_count; // 2 bytes
+		CharScore m_inActiveTransformCharScore[1]; // 60 bytes
+	};
+	POP_PACKED
+	u16 m_PvPScore_count; // 2 bytes
+	PvPScore m_PvPScore[1]; // 212 bytes
 	// logger 0x9a02ba
 };
 POP_PACKED
-ASSERT_SIZE(SN_PvpResultScoreGot, 156);
-
+ASSERT_SIZE(SN_PvpResultScoreGot, 230);
 PUSH_PACKED
 struct SN_PvpResultScoreSport
 {
 	enum { NET_ID = 62083 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u16 field_3; // 2 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u8 field_7; // 1 bytes
-	u32 field_8; // 4 bytes
-	u8 field_9; // 1 bytes
-	u8 field_10; // 1 bytes
-	u32 field_11; // 4 bytes
+	// variable part (ST_PVP_TEAM_SCORE):
+	PUSH_PACKED
+	struct TeamScore
+	{
+		u32 m_Team; // 4 bytes
+		u32 m_TotalScore; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_TeamScore_count; // 2 bytes
+	TeamScore m_TeamScore[1]; // 8 bytes
+	// variable part (ST_PVP_PLAYER_SCORE_SPORT):
+	PUSH_PACKED
+	struct PlayerScore
+	{
+		u32 m_playerID; // 4 bytes
+		u16 m_nickName_len; // 2 bytes
+		wchar_t m_nickName[1]; // 2 bytes
+		u32 m_teamType; // 4 bytes
+		u32 m_activeCreatureIndex; // 4 bytes
+		u32 m_inactiveCreatureIndex; // 4 bytes
+		u8 m_Disconnected; // 1 bytes (bool)
+		u32 m_OlympicRecord; // 4 bytes
+		char m_Ranking; // 1 bytes
+		u8 m_IsFinished; // 1 bytes (bool)
+		u32 m_TotalScore; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_PvPScore_count; // 2 bytes
+	PlayerScore m_PvPScore[1]; // 31 bytes
 	// logger 0x9a06b3
 };
 POP_PACKED
-ASSERT_SIZE(SN_PvpResultScoreSport, 37);
-
+ASSERT_SIZE(SN_PvpResultScoreSport, 43);
 PUSH_PACKED
 struct SA_GetGroundItem
 {
@@ -3813,81 +4020,137 @@ struct SN_StageClearResult
 {
 	enum { NET_ID = 62086 };
 	u32 m_playerID; // 4 bytes
-	u32 isRandomRestart; // 4 bytes
+	// variable part (ST_MEMBER):
+	PUSH_PACKED
+	struct Member
+	{
+		u32 mainClassType; // 4 bytes
+		u32 subClassType; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 member_count; // 2 bytes
+	Member member[1]; // 12 bytes
+	u8 isRandomRestart; // 1 bytes (bool)
 	u32 m_StageIndex; // 4 bytes
-	u16 m_KillCount; // 2 bytes
-	u8 m_DeathCount; // 1 bytes
+	u32 m_KillCount; // 4 bytes
+	u32 m_DeathCount; // 4 bytes
 	u32 m_PlayTime; // 4 bytes
-	u32 m_ClearRank; // 4 bytes
+	u8 m_ClearRank; // 1 bytes
 	u32 m_CombatScore; // 4 bytes
 	u32 m_baseRon; // 4 bytes
-	u8 m_baseExp; // 1 bytes
+	// variable part (ST_REWARD_BONUS):
+	PUSH_PACKED
+	struct RewardBonus
+	{
+		u32 bonusType; // 4 bytes
+		u32 amount; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_bonusRon_count; // 2 bytes
+	RewardBonus m_bonusRon[1]; // 8 bytes
+	u32 m_baseExp; // 4 bytes
+	u16 m_bonusExp_count; // 2 bytes
+	RewardBonus m_bonusExp[1]; // 8 bytes
 	u32 m_attackScore; // 4 bytes
 	u32 m_defenseScore; // 4 bytes
 	u32 m_timeScore; // 4 bytes
 	u32 m_deathTimeScore; // 4 bytes
 	u32 m_totalScore; // 4 bytes
 	u32 m_ranking; // 4 bytes
-	u32 m_technicGrade; // 4 bytes
-	// m_guildPointReward: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u8 unk_9; // 1 bytes
-	u16 unk_10; // 2 bytes
-	u16 unk_11; // 2 bytes
-	u16 unk_12; // 2 bytes
+	u8 m_technicGrade; // 1 bytes
+	// ST_GUILD_REWARD (m_guildPointReward):
+	PUSH_PACKED
+	struct GuildReward
+	{
+		u32 m_baseGuildPoint; // 4 bytes
+		u32 m_bonusGuildPoint; // 4 bytes
+		u8 m_guildMemberNum; // 1 bytes
+		u16 m_boostGoldRate; // 2 bytes
+		u16 m_boostExpRate; // 2 bytes
+		u16 m_bonusSlotOpen; // 2 bytes
+	};
+	POP_PACKED
+	GuildReward m_guildPointReward; // 15 bytes
 	// logger 0x9a585a
 };
 POP_PACKED
-ASSERT_SIZE(SN_StageClearResult, 100);
-
+ASSERT_SIZE(SN_StageClearResult, 108);
 PUSH_PACKED
 struct SN_DefenceClearResult
 {
 	enum { NET_ID = 62087 };
 	u32 m_playerID; // 4 bytes
+	// variable part (ST_MEMBER):
+	PUSH_PACKED
+	struct Member
+	{
+		u32 mainClassType; // 4 bytes
+		u32 subClassType; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 member_count; // 2 bytes
+	Member member[1]; // 12 bytes
 	u32 m_StageIndex; // 4 bytes
 	u32 m_ClearStepIndex; // 4 bytes
-	u16 m_ClearTime; // 2 bytes
-	// m_pstResultReward: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u16 unk_5; // 2 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u16 unk_9; // 2 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u16 unk_12; // 2 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
-	u32 unk_15; // 4 bytes
-	u32 unk_16; // 4 bytes
-	u32 unk_17; // 4 bytes
-	u8 unk_18; // 1 bytes
-	u16 unk_19; // 2 bytes
-	u16 unk_20; // 2 bytes
-	u16 unk_21; // 2 bytes
-	u32 unk_22; // 4 bytes
-	u32 unk_23; // 4 bytes
-	u32 unk_24; // 4 bytes
-	u32 unk_25; // 4 bytes
+	u32 m_ClearTime; // 4 bytes
+	// m_pstResultReward (PST_RESULT_REWARD):
+	PUSH_PACKED
+	struct ResultReward
+	{
+		u32 m_playerID; // 4 bytes
+		u32 m_baseRon; // 4 bytes
+		// variable part (PST_REWARD_BONUS):
+		PUSH_PACKED
+		struct RewardBonus
+		{
+			u32 bonusType; // 4 bytes
+			u32 amount; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_bonusRon_count; // 2 bytes
+		RewardBonus m_bonusRon[1]; // 8 bytes
+		u32 m_baseExp; // 4 bytes
+		u16 m_bonusExp_count; // 2 bytes
+		RewardBonus m_bonusExp[1]; // 8 bytes
+		// variable part (ST_REWARD_ITEM):
+		PUSH_PACKED
+		struct RewardItem
+		{
+			u32 m_ItemType; // 4 bytes
+			u32 m_ItemIndex; // 4 bytes
+			u32 m_ItemAmount; // 4 bytes
+		};
+		POP_PACKED
+		u16 rewardItems_count; // 2 bytes
+		RewardItem rewardItems[1]; // 12 bytes
+		// ST_GUILD_REWARD:
+		PUSH_PACKED
+		struct GuildReward
+		{
+			u32 m_baseGuildPoint; // 4 bytes
+			u32 m_bonusGuildPoint; // 4 bytes
+			u8 m_guildMemberNum; // 1 bytes
+			u16 m_boostGoldRate; // 2 bytes
+			u16 m_boostExpRate; // 2 bytes
+			u16 m_bonusSlotOpen; // 2 bytes
+		};
+		POP_PACKED
+		GuildReward m_guildPointReward; // 15 bytes
+		RewardItem m_pcCafeBonusItem; // 12 bytes
+	};
+	POP_PACKED
+	ResultReward m_pstResultReward; // 73 bytes
+	// variable part (VEC of u32):
+	u16 pcCafeUserIds_count; // 2 bytes
+	u32 pcCafeUserIds[1]; // 4 bytes
 	// logger 0x990a40
 };
 POP_PACKED
-ASSERT_SIZE(SN_DefenceClearResult, 103);
-
+ASSERT_SIZE(SN_DefenceClearResult, 109);
 PUSH_PACKED
 struct SN_UNKNOWN_62088
 {
@@ -3905,16 +4168,16 @@ struct SN_CommunityChat
 	enum { NET_ID = 62092 };
 	u32 m_ChatType; // 4 bytes
 	u32 m_SendPlayerID; // 4 bytes
-	// m_SendName: variable-size (string/vector)
-	u16 m_SendStaffType; // 2 bytes
-	// m_Msg: variable-size (string/vector)
-	u8 m_DurationMS; // 1 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 m_SendName_len; // 2 bytes
+	wchar_t m_SendName[1]; // 2 bytes
+	u8 m_SendStaffType; // 1 bytes
+	u16 m_Msg_len; // 2 bytes
+	wchar_t m_Msg[1]; // 2 bytes
+	u16 m_DurationMS; // 2 bytes
 	// logger 0x98feaa
 };
 POP_PACKED
+ASSERT_SIZE(SN_CommunityChat, 19);
 
 PUSH_PACKED
 struct SN_GetGroundItem
@@ -3942,120 +4205,155 @@ PUSH_PACKED
 struct SN_GroundItemsSnapshot
 {
 	enum { NET_ID = 62095 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u8 field_7; // 1 bytes
-	u8 field_8; // 1 bytes
-	u8 field_9; // 1 bytes
-	u32 field_10; // 4 bytes
-	u32 field_11; // 4 bytes
-	u32 field_12; // 4 bytes
+	// variable part (ST_GROUND_ITEM):
+	PUSH_PACKED
+	struct GroundItem
+	{
+		u32 docIndex; // 4 bytes
+		u32 itemID; // 4 bytes
+		u32 dropType; // 4 bytes
+		u32 count; // 4 bytes
+		u32 ownerID; // 4 bytes
+		u32 gettableType; // 4 bytes
+		u32 factionType; // 4 bytes
+		u8 isPrivate; // 1 bytes (bool)
+		char positionType; // 1 bytes
+		u8 bFiltered; // 1 bytes (bool)
+		float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	};
+	POP_PACKED
+	u16 items_count; // 2 bytes
+	GroundItem items[1]; // 43 bytes
 	// logger 0x996290
 };
 POP_PACKED
-ASSERT_SIZE(SN_GroundItemsSnapshot, 43);
-
+ASSERT_SIZE(SN_GroundItemsSnapshot, 45);
 PUSH_PACKED
 struct SA_WorldSetInfoList
 {
 	enum { NET_ID = 62096 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
+	// variable part (ST_SERVER_SET_INFO):
+	PUSH_PACKED
+	struct ServerInfo
+	{
+		u32 m_nWorldID; // 4 bytes
+		u32 m_nChannelID; // 4 bytes
+		u32 m_nServerID; // 4 bytes
+		u32 m_nServerRealID; // 4 bytes
+		u32 m_nServerType; // 4 bytes
+		u32 m_nIP; // 4 bytes
+		u32 m_nPort; // 4 bytes
+		u32 m_nState; // 4 bytes
+		u32 m_nMaxSessionCount; // 4 bytes
+		u32 m_nCurrentSessionCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_ServerInfo_count; // 2 bytes
+	ServerInfo m_ServerInfo[1]; // 40 bytes
 	// logger 0x98aa49
 };
 POP_PACKED
-ASSERT_SIZE(SA_WorldSetInfoList, 40);
-
+ASSERT_SIZE(SA_WorldSetInfoList, 42);
 PUSH_PACKED
 struct SN_AntihackAuth
 {
 	enum { NET_ID = 62099 };
-	u8 field_0; // 1 bytes
+	// variable part (VEC of PST_CH):
+	u16 authKey_count; // 2 bytes
+	u8 authKey[1]; // 1 bytes
 	// logger 0x98d43f
 };
 POP_PACKED
-ASSERT_SIZE(SN_AntihackAuth, 1);
-
+ASSERT_SIZE(SN_AntihackAuth, 3);
 PUSH_PACKED
 struct SN_MissionList
 {
 	enum { NET_ID = 62103 };
+	// variable part (PST_MISSION_INFO):
+	PUSH_PACKED
+	struct Mission
+	{
+		u32 index; // 4 bytes
+		i64 progressCount; // 8 bytes
+		u16 changedCount; // 2 bytes
+		u8 isCleared; // 1 bytes (bool)
+		u8 isRewarded; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 missions_count; // 2 bytes
+	Mission missions[1]; // 16 bytes
 	u32 dailyMissionRemainTimeMS; // 4 bytes
-	i64 weeklyMissionRemainTimeMS; // 8 bytes
-	u16 monthlyMissionRemainTimeMS; // 2 bytes
-	u8 unk_0; // 1 bytes
-	u8 unk_1; // 1 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
+	u32 weeklyMissionRemainTimeMS; // 4 bytes
+	u32 monthlyMissionRemainTimeMS; // 4 bytes
 	// logger 0x99b378
 };
 POP_PACKED
-ASSERT_SIZE(SN_MissionList, 28);
-
+ASSERT_SIZE(SN_MissionList, 30);
 PUSH_PACKED
 struct SN_MissionUpdate
 {
 	enum { NET_ID = 62104 };
-	// mission: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	i64 unk_1; // 8 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
+	// PST_MISSION_INFO (logger 0x97a8c0):
+	PUSH_PACKED
+	struct MissionInfo
+	{
+		u32 index; // 4 bytes
+		i64 progressCount; // 8 bytes
+		u16 changedCount; // 2 bytes
+		u8 isCleared; // 1 bytes (bool)
+		u8 isRewarded; // 1 bytes (bool)
+	};
+	POP_PACKED
+	MissionInfo mission; // 16 bytes
 	// logger 0x99b545
 };
 POP_PACKED
 ASSERT_SIZE(SN_MissionUpdate, 16);
-
 PUSH_PACKED
 struct SA_DailyMissionChange
 {
 	enum { NET_ID = 62105 };
 	u32 result; // 4 bytes
 	u32 step; // 4 bytes
-	// mission: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	i64 unk_1; // 8 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
+	// mission (PST_MISSION_INFO):
+	PUSH_PACKED
+	struct MissionInfo
+	{
+		u32 index; // 4 bytes
+		i64 progressCount; // 8 bytes
+		u16 changedCount; // 2 bytes
+		u8 isCleared; // 1 bytes (bool)
+		u8 isRewarded; // 1 bytes (bool)
+	};
+	POP_PACKED
+	MissionInfo mission; // 16 bytes
 	// logger 0x97ed26
 };
 POP_PACKED
 ASSERT_SIZE(SA_DailyMissionChange, 24);
-
 PUSH_PACKED
 struct SN_ChangedUserGradeInfo
 {
 	enum { NET_ID = 62108 };
-	// userGradeInfo: variable-size (string/vector)
-	u8 activityPoint; // 1 bytes
+	// userGradeInfo (PST_USER_GRADE_INFO, LogPST_UserGradeInfo 0x97d251):
+	PUSH_PACKED
+	struct UserGradeInfo
+	{
+		u8 userGrade; // 1 bytes
+		u8 activated; // 1 bytes
+		i64 expireDateTime64; // 8 bytes
+		u8 level; // 1 bytes
+		u16 point; // 2 bytes
+		u16 nextPoint; // 2 bytes
+	};
+	POP_PACKED
+	UserGradeInfo userGradeInfo; // 15 bytes
+	u32 activityPoint; // 4 bytes
 	u8 activityRewardedState; // 1 bytes
-	i64 unk_0; // 8 bytes
-	u8 unk_1; // 1 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
 	// logger 0x98eb49
 };
 POP_PACKED
 ASSERT_SIZE(SN_ChangedUserGradeInfo, 20);
-
 PUSH_PACKED
 struct SN_StageRank
 {
@@ -4105,48 +4403,67 @@ struct SN_ItemAcquisition
 {
 	enum { NET_ID = 62116 };
 	u32 nReason; // 4 bytes
-	// itemInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	// itemInfo (PST_ITEM_SIMPLE_INFO):
+	PUSH_PACKED
+	struct ItemInfo
+	{
+		u32 itemId; // 4 bytes
+		u32 itemDocIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	ItemInfo itemInfo; // 12 bytes
 	// logger 0x998c03
 };
 POP_PACKED
 ASSERT_SIZE(SN_ItemAcquisition, 16);
-
 PUSH_PACKED
 struct SN_ItemUpdate
 {
 	enum { NET_ID = 62117 };
+	// variable part (m_updatedItems, PST_PROFILE_ITEM):
+	PUSH_PACKED
+	struct ProfileItem
+	{
+		u32 m_itemID; // 4 bytes
+		u8 m_invenType; // 1 bytes
+		u32 m_slot; // 4 bytes
+		u32 m_itemIndex; // 4 bytes
+		u32 m_count; // 4 bytes
+		u32 m_propertyGroupIndex; // 4 bytes
+		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
+		i64 m_lifeEndTimeUTC; // 8 bytes
+		// variable part (m_properties, PST_ITEM_PROPERTY):
+		PUSH_PACKED
+		struct ItemProperty
+		{
+			u8 Type; // 1 bytes
+			u32 TypeDetail; // 4 bytes
+			u8 ValueType; // 1 bytes
+			f32 Value; // 4 bytes
+			u8 Fixed; // 1 bytes (bool)
+		};
+		POP_PACKED
+		u16 m_properties_count; // 2 bytes
+		ItemProperty m_properties[1]; // 11 bytes
+	};
+	POP_PACKED
+	u16 m_updatedItems_count; // 2 bytes
+	ProfileItem m_updatedItems[1]; // 43 bytes
 	u32 context; // 4 bytes
-	u8 unk_0; // 1 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
-	i64 unk_6; // 8 bytes
-	u16 unk_7; // 2 bytes
-	u8 unk_8; // 1 bytes
-	u32 unk_9; // 4 bytes
-	u8 unk_10; // 1 bytes
-	u32 unk_11; // 4 bytes
-	u8 unk_12; // 1 bytes
-	u32 unk_13; // 4 bytes
 	// logger 0x998f40
 };
 POP_PACKED
-ASSERT_SIZE(SN_ItemUpdate, 47);
-
+ASSERT_SIZE(SN_ItemUpdate, 49);
 PUSH_PACKED
 struct SN_UNKNOWN_62118
 {
 	enum { NET_ID = 62118 };
-	u16 field_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
-	// logger none
+	u16 str_len; // 2 bytes
+	wchar_t str[1]; // 2 bytes
 };
 POP_PACKED
+ASSERT_SIZE(SN_UNKNOWN_62118, 4);
 
 PUSH_PACKED
 struct SN_NicknameNeeded
@@ -4162,72 +4479,138 @@ struct SA_NicknameSet
 {
 	enum { NET_ID = 62120 };
 	u32 result; // 4 bytes
-	// reqNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 reqNickname_len; // 2 bytes
+	wchar_t reqNickname[1]; // 2 bytes (wide string, char count in reqNickname_len)
 	// logger 0x984d88
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_NicknameSet, 8);
 PUSH_PACKED
 struct SN_ExtraCharacters
 {
 	enum { NET_ID = 62130 };
-	u8 isSelected; // 1 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u32 unk_12; // 4 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
-	u32 unk_15; // 4 bytes
-	u8 unk_16; // 1 bytes
-	u32 unk_17; // 4 bytes
-	u8 unk_18; // 1 bytes
-	u32 unk_19; // 4 bytes
-	u32 unk_20; // 4 bytes
-	u32 unk_21; // 4 bytes
-	u32 unk_22; // 4 bytes
-	u8 unk_23; // 1 bytes
-	i64 unk_24; // 8 bytes
-	u16 unk_25; // 2 bytes
-	u8 unk_26; // 1 bytes
-	u32 unk_27; // 4 bytes
-	u8 unk_28; // 1 bytes
-	u32 unk_29; // 4 bytes
-	u8 unk_30; // 1 bytes
-	u32 unk_31; // 4 bytes
-	u32 unk_32; // 4 bytes
-	u32 unk_33; // 4 bytes
-	u32 unk_34; // 4 bytes
-	u8 unk_35; // 1 bytes
-	u8 unk_36; // 1 bytes
-	u32 unk_37; // 4 bytes
-	u32 unk_38; // 4 bytes
-	u8 unk_39; // 1 bytes
-	u8 unk_40; // 1 bytes
-	u16 unk_41; // 2 bytes
-	u32 unk_42; // 4 bytes
-	u32 unk_43; // 4 bytes
-	u8 unk_44; // 1 bytes
-	u16 unk_45; // 2 bytes
-	u16 unk_46; // 2 bytes
-	u32 unk_47; // 4 bytes
-	u32 unk_48; // 4 bytes
+	u8 isSelected; // 1 bytes (bool)
+	// variable part (PST_COMRADE_PROFILE):
+	PUSH_PACKED
+	struct ComradeProfile
+	{
+		u32 leaderID; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u32 displayTitleIndex; // 4 bytes
+		u32 tier; // 4 bytes
+		u8 available; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 profiles_count; // 2 bytes
+	ComradeProfile profiles[1]; // 17 bytes
+	// variable part (PST_PROFILE_CHARACTER):
+	PUSH_PACKED
+	struct Character
+	{
+		u32 m_characterID; // 4 bytes
+		u32 m_creatureIndex; // 4 bytes
+		u32 m_skillSlot1; // 4 bytes
+		u32 m_skillSlot2; // 4 bytes
+		u32 m_class; // 4 bytes
+		f32 m_x; // 4 bytes
+		f32 m_y; // 4 bytes
+		f32 m_z; // 4 bytes
+		u32 m_characterType; // 4 bytes
+		u32 m_skinIndex; // 4 bytes
+		u32 m_weaponIndex; // 4 bytes
+		u8 m_masterGearNo; // 1 bytes
+	};
+	POP_PACKED
+	u16 characters_count; // 2 bytes
+	Character characters[1]; // 45 bytes
+	// variable part (PST_PROFILE_ITEM):
+	PUSH_PACKED
+	struct ItemProperty
+	{
+		u8 Type; // 1 bytes
+		u32 TypeDetail; // 4 bytes
+		u8 ValueType; // 1 bytes
+		f32 Value; // 4 bytes
+		u8 Fixed; // 1 bytes
+	};
+	POP_PACKED
+	PUSH_PACKED
+	struct ProfileItem
+	{
+		u32 m_itemID; // 4 bytes
+		u8 m_invenType; // 1 bytes
+		u32 m_slot; // 4 bytes
+		u32 m_itemIndex; // 4 bytes
+		u32 m_count; // 4 bytes
+		u32 m_propertyGroupIndex; // 4 bytes
+		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
+		i64 m_lifeEndTimeUTC; // 8 bytes
+		u16 m_properties_count; // 2 bytes
+		ItemProperty m_properties[1]; // 11 bytes
+	};
+	POP_PACKED
+	u16 items_count; // 2 bytes
+	ProfileItem items[1]; // 43 bytes
+	// variable part (PST_PROFILE_WEAPON):
+	PUSH_PACKED
+	struct ProfileWeapon
+	{
+		u32 characterID; // 4 bytes
+		u32 weaponType; // 4 bytes
+		u32 weaponIndex; // 4 bytes
+		u32 grade; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 weapons_count; // 2 bytes
+	ProfileWeapon weapons[1]; // 18 bytes
+	// variable part (PST_PROFILE_SKILL):
+	PUSH_PACKED
+	struct SkillProperty
+	{
+		u32 m_skillPropertyIndex; // 4 bytes
+		u32 m_level; // 4 bytes
+	};
+	POP_PACKED
+	PUSH_PACKED
+	struct ProfileSkill
+	{
+		u32 m_characterID; // 4 bytes
+		u32 m_skillIndex; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+		u16 m_properties_count; // 2 bytes
+		SkillProperty m_properties[1]; // 8 bytes
+	};
+	POP_PACKED
+	u16 skills_count; // 2 bytes
+	ProfileSkill skills[1]; // 20 bytes
+	// variable part (PST_PROFILE_MASTERGEAR):
+	PUSH_PACKED
+	struct MasterGearSlot
+	{
+		u32 gearType; // 4 bytes
+		u32 gearItemID; // 4 bytes
+	};
+	POP_PACKED
+	PUSH_PACKED
+	struct ProfileMasterGear
+	{
+		u8 masterGearNo; // 1 bytes
+		u16 name_len; // 2 bytes
+		wchar_t name[1]; // 2 bytes
+		u16 slots_count; // 2 bytes
+		MasterGearSlot slots[1]; // 8 bytes
+	};
+	POP_PACKED
+	u16 masterGears_count; // 2 bytes
+	ProfileMasterGear masterGears[1]; // 15 bytes
 	// logger 0x992814
 };
 POP_PACKED
-ASSERT_SIZE(SN_ExtraCharacters, 155);
-
+ASSERT_SIZE(SN_ExtraCharacters, 171);
 PUSH_PACKED
 struct SN_UNKNOWN_62131
 {
@@ -4275,47 +4658,64 @@ struct SA_SkillUpgrade
 	enum { NET_ID = 62132 };
 	u32 result; // 4 bytes
 	u32 characterID; // 4 bytes
-	// skill: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
-	u8 unk_3; // 1 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
+	// skill (PST_PROFILE_SKILL):
+	PUSH_PACKED
+	struct ProfileSkill
+	{
+		u32 m_characterID; // 4 bytes
+		u32 m_skillIndex; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+		// variable part (PST_PROFILE_SKILL_PROPERTY):
+		PUSH_PACKED
+		struct ProfileSkillProperty
+		{
+			u32 m_skillPropertyIndex; // 4 bytes
+			u32 m_level; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_properties_count; // 2 bytes
+		ProfileSkillProperty m_properties[1]; // 8 bytes
+	};
+	POP_PACKED
+	ProfileSkill skill; // 20 bytes
 	// logger 0x988efa
 };
 POP_PACKED
 ASSERT_SIZE(SA_SkillUpgrade, 28);
-
 PUSH_PACKED
 struct SA_SkillUpgradeIngame
 {
 	enum { NET_ID = 62133 };
 	u32 result; // 4 bytes
 	u32 mainID; // 4 bytes
-	// mainSkill: variable-size (string/vector)
+	// mainSkill (PST_PROFILE_SKILL):
+	PUSH_PACKED
+	struct ProfileSkill
+	{
+		u32 m_characterID; // 4 bytes
+		u32 m_skillIndex; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+		// variable part:
+		PUSH_PACKED
+		struct ProfileSkillProperty
+		{
+			u32 m_skillPropertyIndex; // 4 bytes
+			u32 m_level; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_properties_count; // 2 bytes
+		ProfileSkillProperty m_properties[1]; // 8 bytes
+	};
+	POP_PACKED
+	ProfileSkill mainSkill; // 20 bytes (PST_PROFILE_SKILL, incl. m_properties[1])
 	u32 subID; // 4 bytes
-	// subSkill: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u8 unk_1; // 1 bytes
-	u8 unk_2; // 1 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u8 unk_9; // 1 bytes
-	u8 unk_10; // 1 bytes
-	u16 unk_11; // 2 bytes
-	u32 unk_12; // 4 bytes
-	u32 unk_13; // 4 bytes
+	ProfileSkill subSkill; // 20 bytes (PST_PROFILE_SKILL, incl. m_properties[1])
 	// logger 0x989015
 };
 POP_PACKED
 ASSERT_SIZE(SA_SkillUpgradeIngame, 52);
-
 PUSH_PACKED
 struct SA_TitleSelect
 {
@@ -4377,18 +4777,23 @@ struct SA_WeaponUnlock
 {
 	enum { NET_ID = 62139 };
 	u32 result; // 4 bytes
-	// newWeapon: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
+	// newWeapon (PST_PROFILE_WEAPON):
+	PUSH_PACKED
+	struct ProfileWeapon
+	{
+		u32 characterID; // 4 bytes
+		u32 weaponType; // 4 bytes
+		u32 weaponIndex; // 4 bytes
+		u32 grade; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+	};
+	POP_PACKED
+	ProfileWeapon newWeapon; // 18 bytes
 	// logger 0x98a767
 };
 POP_PACKED
 ASSERT_SIZE(SA_WeaponUnlock, 22);
-
 PUSH_PACKED
 struct SA_WeaponEquip
 {
@@ -4485,13 +4890,12 @@ struct SA_MastergearRename
 	enum { NET_ID = 62147 };
 	u32 result; // 4 bytes
 	u8 masterGearNo; // 1 bytes
-	// newName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 newName_len; // 2 bytes (wide string count)
+	wchar_t newName[1]; // 2 bytes
 	// logger 0x98453e
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_MastergearRename, 9);
 PUSH_PACKED
 struct SA_MastergearRepair
 {
@@ -4508,17 +4912,30 @@ struct SA_MastergearAdd
 {
 	enum { NET_ID = 62149 };
 	u32 result; // 4 bytes
-	// newMasterGear: variable-size (string/vector)
-	u8 unk_0; // 1 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
+	// newMasterGear (PST_PROFILE_MASTERGEAR):
+	PUSH_PACKED
+	struct MasterGear
+	{
+		u8 masterGearNo; // 1 bytes
+		u16 name_len; // 2 bytes
+		wchar_t name[1]; // 2 bytes (wide string)
+		u16 slots_count; // 2 bytes
+		// variable part (vector of PST_PROFILE_MASTERGEAR_SLOT):
+		PUSH_PACKED
+		struct Slot
+		{
+			u32 gearType; // 4 bytes
+			u32 gearItemID; // 4 bytes
+		};
+		POP_PACKED
+		Slot slots[1]; // 8 bytes
+	};
+	POP_PACKED
+	MasterGear newMasterGear; // 15 bytes
 	// logger 0x98444a
 };
 POP_PACKED
-ASSERT_SIZE(SA_MastergearAdd, 17);
-
+ASSERT_SIZE(SA_MastergearAdd, 19);
 PUSH_PACKED
 struct SA_CharacterUnlock
 {
@@ -4535,18 +4952,32 @@ struct SA_SkillUnlock
 {
 	enum { NET_ID = 62151 };
 	u32 result; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
-	u8 unk_3; // 1 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
+	// variable part (PST_PROFILE_SKILL):
+	PUSH_PACKED
+	struct ProfileSkill
+	{
+		u32 m_characterID; // 4 bytes
+		u32 m_skillIndex; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+		// variable part (PST_PROFILE_SKILL_PROPERTY):
+		PUSH_PACKED
+		struct Property
+		{
+			u32 m_skillPropertyIndex; // 4 bytes
+			u32 m_level; // 4 bytes
+		};
+		POP_PACKED
+		u16 m_properties_count; // 2 bytes
+		Property m_properties[1]; // 8 bytes
+	};
+	POP_PACKED
+	u16 newSkills_count; // 2 bytes
+	ProfileSkill newSkills[1]; // 20 bytes
 	// logger 0x988d86
 };
 POP_PACKED
-ASSERT_SIZE(SA_SkillUnlock, 24);
-
+ASSERT_SIZE(SA_SkillUnlock, 26);
 PUSH_PACKED
 struct SA_SkillSelect
 {
@@ -4627,19 +5058,27 @@ struct SN_RestartVoteStart
 	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
 	u32 stageRule; // 4 bytes
-	u32 voteTimeMS; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u8 unk_1; // 1 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
+	// variable part (ST_SORTIE_USERINFO):
+	PUSH_PACKED
+	struct SortieUserInfo
+	{
+		u32 userId; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u8 isBot; // 1 bytes (bool)
+		u32 tier; // 4 bytes
+		u32 tierGroupRanking; // 4 bytes
+		u32 tierSeriesFlag; // 4 bytes
+		f32 pvpRate; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_allies_count; // 2 bytes
+	SortieUserInfo m_allies[1]; // 25 bytes
+	u16 voteTimeMS; // 2 bytes
 	// logger 0x9a2be4
 };
 POP_PACKED
-ASSERT_SIZE(SN_RestartVoteStart, 41);
-
+ASSERT_SIZE(SN_RestartVoteStart, 45);
 PUSH_PACKED
 struct SN_RestartVoteFinish
 {
@@ -4655,12 +5094,13 @@ PUSH_PACKED
 struct SN_RestartVoteUpdate
 {
 	enum { NET_ID = 62161 };
-	u8 field_0; // 1 bytes
+	// variable part (voteList): vector of u8 votes
+	u16 voteList_count; // 2 bytes
+	u8 voteList[1]; // 1 bytes
 	// logger 0x9a2df4
 };
 POP_PACKED
-ASSERT_SIZE(SN_RestartVoteUpdate, 1);
-
+ASSERT_SIZE(SN_RestartVoteUpdate, 3);
 PUSH_PACKED
 struct SA_RestartGame
 {
@@ -4724,14 +5164,13 @@ PUSH_PACKED
 struct SN_RestartPvpEntryUpdate
 {
 	enum { NET_ID = 62168 };
-	// nickname: variable-size (string/vector)
-	u16 isJoined; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 isJoined; // 1 bytes (bool)
 	// logger 0x9a28c4
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_RestartPvpEntryUpdate, 5);
 PUSH_PACKED
 struct SN_RestartPvpGameInfo
 {
@@ -4802,92 +5241,90 @@ struct SA_PartyInvite
 {
 	enum { NET_ID = 62180 };
 	u32 retval; // 4 bytes
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
 	// logger 0x98540f
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_PartyInvite, 8);
 PUSH_PACKED
 struct SA_PartyInviteRecommend
 {
 	enum { NET_ID = 62181 };
 	u32 retval; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
 	// logger 0x9854e1
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_PartyInviteRecommend, 8);
 PUSH_PACKED
 struct SN_PartyInviteResponse
 {
 	enum { NET_ID = 62182 };
-	// account: variable-size (string/vector)
-	u16 accept; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// account: wide string (validator helper 0xa19080: u16 count, then count*2 wchar bytes)
+	u16 account_len; // 2 bytes
+	wchar_t account[1]; // 2 bytes each
+	u8 accept; // 1 bytes (bool)
 	// logger 0x99d10b
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyInviteResponse, 5);
 PUSH_PACKED
 struct SN_PartyInvite
 {
 	enum { NET_ID = 62183 };
 	u32 channelID; // 4 bytes
-	// inviterNick: variable-size (string/vector)
-	u16 gameType; // 2 bytes
+	// inviterNick (wide string):
+	u16 inviterNick_len; // 2 bytes
+	wchar_t inviterNick[1]; // 2 bytes
+	// stageIndexes (VEC of u32):
+	u16 stageIndexes_count; // 2 bytes
+	u32 stageIndexes[1]; // 4 bytes
+	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
 	u32 stageRule; // 4 bytes
 	u32 partyID; // 4 bytes
 	u32 teamType; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x99cd47
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyInvite, 34);
 PUSH_PACKED
 struct SN_PartyInviteRecommend
 {
 	enum { NET_ID = 62184 };
-	// inviterNickname: variable-size (string/vector)
-	// inviteeNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 inviterNickname_len; // 2 bytes
+	wchar_t inviterNickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
 	// logger 0x99cf68
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyInviteRecommend, 8);
 PUSH_PACKED
 struct SA_PartyInviteRecommendResponse
 {
 	enum { NET_ID = 62185 };
 	u32 retval; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
 	// logger 0x9855b3
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_PartyInviteRecommendResponse, 8);
 PUSH_PACKED
 struct SN_PartyInviteRecommendResponse
 {
 	enum { NET_ID = 62186 };
-	// inviteeNickname: variable-size (string/vector)
-	u16 accept; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// inviteeNickname (wide string):
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes
+	u8 accept; // 1 bytes (bool)
 	// logger 0x99d039
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyInviteRecommendResponse, 5);
 PUSH_PACKED
 struct SA_PartyJoin
 {
@@ -4897,54 +5334,52 @@ struct SA_PartyJoin
 	u32 stageType; // 4 bytes
 	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
+	// variable part (ST_SORTIE_USERINFO):
+	PUSH_PACKED
+	struct SortieUserInfo
+	{
+		u32 userId; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u8 isBot; // 1 bytes (bool)
+		u32 tier; // 4 bytes
+		u32 tierGroupRanking; // 4 bytes
+		u32 tierSeriesFlag; // 4 bytes
+		u32 pvpRate; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_allies_count; // 2 bytes
+	SortieUserInfo m_allies[1]; // 23 + 2*nickname_len bytes
 	u32 alliesTeamType; // 4 bytes
-	u16 enemiesTeamType; // 2 bytes
-	u8 isSpectator; // 1 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u8 unk_7; // 1 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u32 unk_12; // 4 bytes
-	u32 unk_13; // 4 bytes
-	u16 unk_14; // 2 bytes
-	u8 unk_15; // 1 bytes
-	u32 unk_16; // 4 bytes
-	u32 unk_17; // 4 bytes
-	u32 unk_18; // 4 bytes
-	u32 unk_19; // 4 bytes
-	u8 unk_20; // 1 bytes
-	// logger 0x985685
+	u16 m_enemies_count; // 2 bytes
+	SortieUserInfo m_enemies[1]; // 23 + 2*nickname_len bytes
+	u32 enemiesTeamType; // 4 bytes
+	u16 m_spectators_count; // 2 bytes
+	SortieUserInfo m_spectators[1]; // 23 + 2*nickname_len bytes
+	u8 isSpectator; // 1 bytes (bool)
+	// logger 0x985685 (LogPacket_SN_PartyJoin)
 };
 POP_PACKED
-ASSERT_SIZE(SA_PartyJoin, 98);
-
+// variable size: 29 fixed + 3 * (2 + n * (23 + 2*nickname_len)) — no static assert
+// variable size: 29 fixed + 3 * (2 + n * (23 + 2*nickname_len)) — no static assert
 PUSH_PACKED
 struct SN_PartyJoin
 {
 	enum { NET_ID = 62188 };
 	u32 userId; // 4 bytes
-	// username: variable-size (string/vector)
-	u16 isBot; // 2 bytes
-	u8 creatureIndex; // 1 bytes
-	u32 isOwner; // 4 bytes
-	u8 gameType; // 1 bytes
+	u16 username_len; // 2 bytes
+	wchar_t username[1]; // 2 bytes
+	u8 isBot; // 1 bytes (bool)
+	u32 creatureIndex; // 4 bytes
+	u8 isOwner; // 1 bytes (bool)
+	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
 	u32 teamType; // 4 bytes
-	u32 teamSlotIndex; // 4 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u8 teamSlotIndex; // 1 bytes
 	// logger 0x99d1dd
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyJoin, 27);
 PUSH_PACKED
 struct SA_PartyLeave
 {
@@ -4960,14 +5395,13 @@ struct SN_PartyLeave
 {
 	enum { NET_ID = 62190 };
 	u32 userId; // 4 bytes
-	// username: variable-size (string/vector)
-	u16 isOwner; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 username_len; // 2 bytes
+	wchar_t username[1]; // 2 bytes (wide string)
+	u8 isOwner; // 1 bytes (bool)
 	// logger 0x99d497
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_PartyLeave, 9);
 PUSH_PACKED
 struct SA_PartyAddBot
 {
@@ -5034,17 +5468,22 @@ struct SA_QuickRunArena
 {
 	enum { NET_ID = 62197 };
 	u32 retval; // 4 bytes
-	// partyInfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
+	// partyInfo (ST_MODIFY_PARTYINFO):
+	PUSH_PACKED
+	struct ModifyPartyInfo
+	{
+		u16 stageIndexes_count; // 2 bytes
+		u32 stageIndexes[1]; // 4 bytes (VEC)
+		u32 gameType; // 4 bytes
+		u32 gameDefinitionMode; // 4 bytes
+		u8 selectSortieMasterType; // 1 bytes
+	};
+	POP_PACKED
+	ModifyPartyInfo partyInfo; // 15 bytes (with 1 stageIndex)
 	// logger 0x9869cb
 };
 POP_PACKED
 ASSERT_SIZE(SA_QuickRunArena, 19);
-
 PUSH_PACKED
 struct SN_EnqueueTrollPenalty
 {
@@ -5113,15 +5552,14 @@ struct SN_ChannelChattingChannel
 {
 	enum { NET_ID = 62207 };
 	u32 channelType; // 4 bytes
-	// channelName: variable-size (string/vector)
-	// password: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 channelName_len; // 2 bytes
+	wchar_t channelName[1]; // 2 bytes
+	u16 password_len; // 2 bytes
+	wchar_t password[1]; // 2 bytes
 	// logger 0x98f0c1
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_ChannelChattingChannel, 12);
 PUSH_PACKED
 struct SA_MasterUnpick
 {
@@ -5138,15 +5576,22 @@ struct SN_MasterUnpick
 {
 	enum { NET_ID = 62211 };
 	u32 userId; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
+	// variable part (ST_MASTER_SELECT_INFO):
+	PUSH_PACKED
+	struct MasterSelectInfo
+	{
+		u32 characterID; // 4 bytes
+		u32 creatureIndex; // 4 bytes
+		u32 skillSlot1; // 4 bytes
+		u32 skillSlot2; // 4 bytes
+	};
+	POP_PACKED
+	u16 m_characterSelectInfos_count; // 2 bytes
+	MasterSelectInfo m_characterSelectInfos[1]; // 16 bytes
 	// logger 0x99ae22
 };
 POP_PACKED
-ASSERT_SIZE(SN_MasterUnpick, 20);
-
+ASSERT_SIZE(SN_MasterUnpick, 22);
 PUSH_PACKED
 struct SA_MasterUnpickAll
 {
@@ -5162,15 +5607,22 @@ struct SN_MasterUnpickAll
 {
 	enum { NET_ID = 62213 };
 	u32 userId; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
+	// variable part (PST_MASTER_SELECT_INFO):
+	PUSH_PACKED
+	struct MasterSelectInfo
+	{
+		u32 characterID; // 4 bytes
+		u32 creatureIndex; // 4 bytes
+		u32 skillSlot1; // 4 bytes
+		u32 skillSlot2; // 4 bytes
+	};
+	POP_PACKED
+	u16 masters_count; // 2 bytes
+	MasterSelectInfo masters[1]; // 16 bytes
 	// logger 0x99af91
 };
 POP_PACKED
-ASSERT_SIZE(SN_MasterUnpickAll, 20);
-
+ASSERT_SIZE(SN_MasterUnpickAll, 22);
 PUSH_PACKED
 struct SA_SortieRoomBreakup
 {
@@ -5197,18 +5649,23 @@ struct SA_WeaponUpgrade
 {
 	enum { NET_ID = 62220 };
 	u32 result; // 4 bytes
-	// weaponInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
+	// weaponInfo (PST_PROFILE_WEAPON):
+	PUSH_PACKED
+	struct PST_ProfileWeapon
+	{
+		u32 characterID; // 4 bytes
+		u32 weaponType; // 4 bytes
+		u32 weaponIndex; // 4 bytes
+		u32 grade; // 4 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+		u8 isActivated; // 1 bytes (bool)
+	};
+	POP_PACKED
+	PST_ProfileWeapon weaponInfo; // 18 bytes
 	// logger 0x98a85b
 };
 POP_PACKED
 ASSERT_SIZE(SA_WeaponUpgrade, 22);
-
 PUSH_PACKED
 struct SA_InventoryExpand
 {
@@ -5225,12 +5682,13 @@ PUSH_PACKED
 struct SN_DespawnMonsters
 {
 	enum { NET_ID = 62222 };
-	u32 field_0; // 4 bytes
+	// variable part (u32 vector, count=u16):
+	u16 clearIDs_count; // 2 bytes
+	u32 clearIDs[1]; // 4 bytes
 	// logger 0x99103e
 };
 POP_PACKED
-ASSERT_SIZE(SN_DespawnMonsters, 4);
-
+ASSERT_SIZE(SN_DespawnMonsters, 6);
 PUSH_PACKED
 struct SN_DespawnMonster
 {
@@ -5258,56 +5716,76 @@ struct SA_RequestSummaryInfoEach
 {
 	enum { NET_ID = 62226 };
 	u32 summaryIndex; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	i64 unk_5; // 8 bytes
+	// variable part (LogPST_SummaryInfo):
+	PUSH_PACKED
+	struct SummaryInfo
+	{
+		u32 summaryIndex; // 4 bytes
+		u32 stageIndex; // 4 bytes
+		u32 summaryType; // 4 bytes
+		u32 summaryData; // 4 bytes
+		u8 rewardReceived; // 1 bytes (bool)
+		i64 completedDate; // 8 bytes
+	};
+	POP_PACKED
+	u16 summaryInfoList_count; // 2 bytes
+	SummaryInfo summaryInfoList[1]; // 25 bytes
 	// logger 0x986e4a
 };
 POP_PACKED
-ASSERT_SIZE(SA_RequestSummaryInfoEach, 29);
-
+ASSERT_SIZE(SA_RequestSummaryInfoEach, 31);
 PUSH_PACKED
 struct SN_SummaryUpdate
 {
 	enum { NET_ID = 62228 };
-	// summaryInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	i64 unk_5; // 8 bytes
+	// summaryInfo (PST_SUMMARY_INFO, logger 0x9a68a6 -> LogPST_SummaryInfo):
+	PUSH_PACKED
+	struct SummaryInfo
+	{
+		u32 summaryIndex; // 4 bytes
+		u32 stageIndex; // 4 bytes
+		u32 summaryType; // 4 bytes
+		u32 summaryData; // 4 bytes
+		u8 rewardReceived; // 1 bytes (bool)
+		i64 completedDate; // 8 bytes
+	};
+	POP_PACKED
+	SummaryInfo summaryInfo; // 25 bytes
 	// logger 0x9a68a6
 };
 POP_PACKED
 ASSERT_SIZE(SN_SummaryUpdate, 25);
-
 PUSH_PACKED
 struct SN_AddStatus
 {
 	enum { NET_ID = 62230 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
-	u32 field_10; // 4 bytes
-	u32 field_11; // 4 bytes
-	u32 field_12; // 4 bytes
-	u32 field_13; // 4 bytes
-	u32 field_14; // 4 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes (bit0=!extraGraphInfo)
+	// extraGraphInfo (PST_STATUS_GRAPH_DETAIL, present if !(bits & 1)):
+	PUSH_PACKED
+	struct StatusGraphDetail
+	{
+		f32 totalRatio; // 4 bytes
+		float3 defeatFrom; // 12 bytes
+		float3 defeatTo; // 12 bytes
+		f32 defeatDist; // 4 bytes
+		f32 defeatOriginDist; // 4 bytes
+		f32 defeatDurationTime; // 4 bytes
+	};
+	POP_PACKED
+	StatusGraphDetail extraGraphInfo; // 40 bytes
+	u32 statusID; // 4 bytes
+	u8 bEnabled; // 1 bytes (bool)
+	u32 targetID; // 4 bytes
+	u32 casterID; // 4 bytes
+	u8 isOverlap; // 1 bytes (bool)
+	u8 overlapCount; // 1 bytes
+	u8 customValue; // 1 bytes
+	f32 durationTime; // 4 bytes
+	f32 elapsedTime; // 4 bytes
+	// logger 0x98b802
 };
 POP_PACKED
-ASSERT_SIZE(SN_AddStatus, 60);
+ASSERT_SIZE(SN_AddStatus, 65);
 
 PUSH_PACKED
 struct SN_ModifyStatus
@@ -5368,43 +5846,27 @@ struct SN_BroadcastDamage
 	u32 defID; // 4 bytes
 	u32 attID; // 4 bytes
 	u32 remoteDocIndex; // 4 bytes
-	// remotePos: variable-size (string/vector)
-	// remoteDir: variable-size (string/vector)
-	// remoteForceDir: variable-size (string/vector)
-	// hitPos: variable-size (string/vector)
-	// hitDir: variable-size (string/vector)
+	float3 remotePos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 remoteDir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 remoteForceDir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 hitPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 hitDir; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 damageType; // 4 bytes
 	u32 skillDocID; // 4 bytes
 	u32 nRagePoint; // 4 bytes
 	u32 nRelativeElement; // 4 bytes
-	// hitNodeName: variable-size (string/vector)
+	u16 hitNodeName_len; // 2 bytes
+	char hitNodeName[1]; // 1 bytes (ANSI string)
 	u32 damage; // 4 bytes
-	// partName: variable-size (string/vector)
+	u16 partName_len; // 2 bytes
+	wchar_t partName[1]; // 2 bytes (wide string)
 	u32 partDamage; // 4 bytes
 	u32 masterGroupingDamage; // 4 bytes
 	u32 optionalResultOfHit; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u16 unk_11; // 2 bytes
-	u32 unk_12; // 4 bytes
-	u16 unk_13; // 2 bytes
-	u32 unk_14; // 4 bytes
-	u32 unk_15; // 4 bytes
-	u32 unk_16; // 4 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
 	// logger 0x98da4c
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_BroadcastDamage, 119);
 PUSH_PACKED
 struct SN_BroadcastNonRemoteDamage
 {
@@ -5428,15 +5890,11 @@ struct SN_RemoteActivated
 	u32 remoteID; // 4 bytes
 	u32 defID; // 4 bytes
 	u32 penetrationCount; // 4 bytes
-	// remotePos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 remotePos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x9a1227
 };
 POP_PACKED
 ASSERT_SIZE(SN_RemoteActivated, 24);
-
 PUSH_PACKED
 struct SA_ChannelChat
 {
@@ -5452,113 +5910,131 @@ struct SN_ChatChannelJoin
 {
 	enum { NET_ID = 62240 };
 	u32 channelType; // 4 bytes
-	// chatChannelName: variable-size (string/vector)
-	// password: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 chatChannelName_len; // 2 bytes
+	wchar_t chatChannelName[1]; // 2 bytes
+	u16 password_len; // 2 bytes
+	wchar_t password[1]; // 2 bytes
 	// logger 0x98f841
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_ChatChannelJoin, 12);
 PUSH_PACKED
 struct SN_ChatChannelLeave
 {
 	enum { NET_ID = 62241 };
 	u32 channelType; // 4 bytes
-	// chatChannelName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 chatChannelName_len; // 2 bytes
+	wchar_t chatChannelName[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
 	// logger 0x98f93b
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_ChatChannelLeave, 8);
 PUSH_PACKED
 struct SN_ChatChannelUserJoin
 {
 	enum { NET_ID = 62243 };
-	// channelName: variable-size (string/vector)
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 channelName_len; // 2 bytes
+	wchar_t channelName[1]; // 2 bytes (wide string)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string)
 	// logger 0x98fb30
 };
 POP_PACKED
+
+
 
 PUSH_PACKED
 struct SN_ChatChannelUserLeave
 {
 	enum { NET_ID = 62244 };
-	// channelName: variable-size (string/vector)
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// channelName: wide string
+	u16 channelName_len; // 2 bytes
+	wchar_t channelName[1]; // 2 bytes
+	// nickname: wide string
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
 	// logger 0x98fc01
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_ChatChannelUserLeave, 8);
 PUSH_PACKED
 struct SN_FriendAdded
 {
 	enum { NET_ID = 62245 };
-	// newFriendInfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	i64 unk_3; // 8 bytes
+	// newFriendInfo (ST_FRIEND_USERINFO):
+	PUSH_PACKED
+	struct FriendUserinfo
+	{
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u32 leaderCreatureIndex; // 4 bytes
+		u8 state; // 1 bytes
+		u16 level; // 2 bytes
+		u8 isFavorite; // 1 bytes (bool)
+		u8 isComrade; // 1 bytes (bool)
+		u8 isOnLeavePenalty; // 1 bytes (bool)
+		i64 lastLogoutDate; // 8 bytes
+	};
+	POP_PACKED
+	FriendUserinfo newFriendInfo; // 22 bytes
 	// logger 0x992deb
 };
 POP_PACKED
-ASSERT_SIZE(SN_FriendAdded, 16);
-
+ASSERT_SIZE(SN_FriendAdded, 22);
 PUSH_PACKED
 struct SA_FriendRemove
 {
 	enum { NET_ID = 62246 };
 	u32 retval; // 4 bytes
-	// targetNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// targetNickname: variable-size (wide string)
+	u16 targetNickname_len; // 2 bytes
+	wchar_t targetNickname[1]; // 2 bytes
 	// logger 0x97fdbc
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendRemove, 8);
 PUSH_PACKED
 struct SA_CommunityBlockAdd
 {
 	enum { NET_ID = 62247 };
 	u32 retval; // 4 bytes
-	// userinfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
+	// userinfo (ST_BLOCK_USERINFO: nickname wide string, wire = 2 + 2*len):
+	PUSH_PACKED
+	struct UserInfo
+	{
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+	};
+	POP_PACKED
+	UserInfo userinfo; // variable tail: 2 + 2*len bytes
 	// logger 0x97e70d
 };
 POP_PACKED
-ASSERT_SIZE(SA_CommunityBlockAdd, 6);
-
+// variable-length (wide string) — fixed prefix 6 bytes; ASSERT_SIZE not applicable
+// variable-length (wide string) — fixed prefix 6 bytes; ASSERT_SIZE not applicable
 PUSH_PACKED
 struct SA_CommunityBlockRemove
 {
 	enum { NET_ID = 62248 };
 	u32 retval; // 4 bytes
-	// userinfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
+	u16 userinfo_len; // 2 bytes
+	wchar_t userinfo[1]; // 2 bytes (wide string, wire = 2 + count*2)
 	// logger 0x97e801
 };
 POP_PACKED
-ASSERT_SIZE(SA_CommunityBlockRemove, 6);
-
+ASSERT_SIZE(SA_CommunityBlockRemove, 8);
 PUSH_PACKED
 struct SN_FriendRemoved
 {
 	enum { NET_ID = 62249 };
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes each
 	// logger 0x9932bd
 };
 POP_PACKED
+
+
 
 PUSH_PACKED
 struct SA_FriendStateChange
@@ -5574,29 +6050,29 @@ PUSH_PACKED
 struct SN_FriendStateChanged
 {
 	enum { NET_ID = 62251 };
-	// nickname: variable-size (string/vector)
-	u16 newState; // 2 bytes
-	u8 isOnLeavePenalty; // 1 bytes
-	u8 stateUpdatedTime; // 1 bytes
-	i64 unk_0; // 8 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// nickname: variable-size (wide string)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 newState; // 1 bytes
+	u8 isOnLeavePenalty; // 1 bytes (bool)
+	i64 stateUpdatedTime; // 8 bytes
 	// logger 0x993646
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_FriendStateChanged, 14);
 PUSH_PACKED
 struct SN_FriendNicknameChanged
 {
 	enum { NET_ID = 62252 };
-	// oldNickname: variable-size (string/vector)
-	// newNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 oldNickname_len; // 2 bytes
+	wchar_t oldNickname[1]; // 2 bytes
+	u16 newNickname_len; // 2 bytes
+	wchar_t newNickname[1]; // 2 bytes
 	// logger 0x9930ca
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_FriendNicknameChanged, 8);
 PUSH_PACKED
 struct SA_CommunityStatusMessage
 {
@@ -5621,217 +6097,274 @@ PUSH_PACKED
 struct SN_CommunityStatusMessage
 {
 	enum { NET_ID = 62255 };
-	// nickname: variable-size (string/vector)
-	// msg: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// nickname (wide string):
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	// msg (wide string):
+	u16 msg_len; // 2 bytes
+	wchar_t msg[1]; // 2 bytes
 	// logger 0x99001d
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_CommunityStatusMessage, 8);
 PUSH_PACKED
 struct SN_FriendLeaderChanged
 {
 	enum { NET_ID = 62256 };
-	// nickname: variable-size (string/vector)
-	u16 creatureIndex; // 2 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
+	u32 creatureIndex; // 4 bytes
 	// logger 0x992eb4
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_FriendLeaderChanged, 8);
 PUSH_PACKED
 struct SN_RecommendedfriendList
 {
 	enum { NET_ID = 62260 };
-	u16 field_0; // 2 bytes
-	u32 field_1; // 4 bytes
+	// variable part (ST_FRIENDCANDIDATE_INFO):
+	PUSH_PACKED
+	struct Candidate
+	{
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes (wide string, wire = 2 + len*2)
+		u32 leaderCreatureIndex; // 4 bytes
+	};
+	POP_PACKED
+	u16 candidates_count; // 2 bytes
+	Candidate candidates[1]; // 8 bytes (min element)
 	// logger 0x9a097a
 };
 POP_PACKED
-ASSERT_SIZE(SN_RecommendedfriendList, 6);
-
+ASSERT_SIZE(SN_RecommendedfriendList, 10);
 PUSH_PACKED
 struct SA_FriendRequest
 {
 	enum { NET_ID = 62262 };
 	u32 retval; // 4 bytes
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
 	// logger 0x97fe8e
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendRequest, 8);
 PUSH_PACKED
 struct SN_FriendRequested
 {
 	enum { NET_ID = 62263 };
-	// userInfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
+	// userInfo (ST_FRIEND_REQUEST_INFO, LogPST_FriendRequestInfo 0x9a9bdd):
+	PUSH_PACKED
+	struct FriendRequestInfo
+	{
+		u16 nickname_len; // 2 bytes (wchar count)
+		wchar_t nickname[1]; // 2 bytes (wide string, 2*nickname_len bytes on wire)
+		u32 leaderCreatureIndex; // 4 bytes
+	};
+	POP_PACKED
+	FriendRequestInfo userInfo; // 8 bytes
 	// logger 0x993365
 };
 POP_PACKED
-ASSERT_SIZE(SN_FriendRequested, 6);
-
+ASSERT_SIZE(SN_FriendRequested, 8);
 PUSH_PACKED
 struct SA_FriendRespond
 {
 	enum { NET_ID = 62264 };
 	u32 retval; // 4 bytes
-	// nickname: variable-size (string/vector)
-	u16 bAccept; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// nickname: wide string (u16 char count + wchar payload, 2 + count*2)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 bAccept; // 1 bytes (bool)
 	// logger 0x980054
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendRespond, 9);
 PUSH_PACKED
 struct SN_FriendResponded
 {
 	enum { NET_ID = 62265 };
-	// nickname: variable-size (string/vector)
-	u16 accept; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 accept; // 1 bytes
 	// logger 0x993574
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_FriendResponded, 5);
 PUSH_PACKED
 struct SA_FriendRequestLeaderInfo
 {
 	enum { NET_ID = 62266 };
 	u32 retval; // 4 bytes
-	// charinfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u8 unk_10; // 1 bytes
-	u8 unk_11; // 1 bytes
-	u16 unk_12; // 2 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
+	// charinfo (PST_LEADER_INFO):
+	PUSH_PACKED
+	struct LeaderInfo
+	{
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2*len bytes (wide string)
+		u16 statusMessage_len; // 2 bytes
+		wchar_t statusMessage[1]; // 2*len bytes (wide string)
+		u16 level; // 2 bytes
+		u32 creatureIndex; // 4 bytes
+		u32 power; // 4 bytes
+		u32 viability; // 4 bytes
+		u32 tierType; // 4 bytes
+		// variable part (PST_PROFILE_SKILL):
+		PUSH_PACKED
+		struct Skill
+		{
+			u32 m_characterID; // 4 bytes
+			u32 m_skillIndex; // 4 bytes
+			u8 isUnlocked; // 1 bytes (bool)
+			u8 isActivated; // 1 bytes (bool)
+			// variable part (PST_PROFILE_SKILL_PROPERTY):
+			PUSH_PACKED
+			struct Property
+			{
+				u32 m_skillPropertyIndex; // 4 bytes
+				u32 m_level; // 4 bytes
+			};
+			POP_PACKED
+			u16 m_properties_count; // 2 bytes
+			Property m_properties[1]; // 8 bytes
+		};
+		POP_PACKED
+		u16 skills_count; // 2 bytes
+		Skill skills[1]; // 14 bytes
+	};
+	POP_PACKED
+	LeaderInfo charinfo; // variable-size (strings + nested VECs)
 	// logger 0x97ff60
 };
 POP_PACKED
-ASSERT_SIZE(SA_FriendRequestLeaderInfo, 48);
-
 PUSH_PACKED
 struct SA_RequestLeaderInfo
 {
 	enum { NET_ID = 62267 };
 	u32 retval; // 4 bytes
-	// charinfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u8 unk_10; // 1 bytes
-	u8 unk_11; // 1 bytes
-	u16 unk_12; // 2 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
+	// charinfo (PST_LEADER_INFO):
+	PUSH_PACKED
+	struct LeaderInfo
+	{
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes (wide string)
+		u16 statusMessage_len; // 2 bytes
+		wchar_t statusMessage[1]; // 2 bytes (wide string)
+		u16 level; // 2 bytes
+		u32 creatureIndex; // 4 bytes
+		u32 power; // 4 bytes
+		u32 viability; // 4 bytes
+		u32 tierType; // 4 bytes
+		u16 skills_count; // 2 bytes
+		// variable part (PST_PROFILE_SKILL):
+		PUSH_PACKED
+		struct Skill
+		{
+			u32 m_characterID; // 4 bytes
+			u32 m_skillIndex; // 4 bytes
+			u8 isUnlocked; // 1 bytes (bool)
+			u8 isActivated; // 1 bytes (bool)
+			u16 m_properties_count; // 2 bytes
+			// variable part (PST_PROFILE_SKILL_PROPERTY):
+			PUSH_PACKED
+			struct Property
+			{
+				u32 m_skillPropertyIndex; // 4 bytes
+				u32 m_level; // 4 bytes
+			};
+			POP_PACKED
+			Property m_properties[1]; // 8 bytes
+		};
+		POP_PACKED
+		Skill skills[1]; // 20 bytes
+	};
+	POP_PACKED
+	LeaderInfo charinfo; // variable
 	// logger 0x986c62
 };
 POP_PACKED
-ASSERT_SIZE(SA_RequestLeaderInfo, 48);
-
+ASSERT_SIZE(SA_RequestLeaderInfo, 52);
 PUSH_PACKED
 struct SA_FriendSetComrade
 {
 	enum { NET_ID = 62268 };
 	u32 retval; // 4 bytes
-	// friendNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 friendNickname_len; // 2 bytes
+	wchar_t friendNickname[1]; // 2 bytes (wide string, VEC convention)
 	// logger 0x98014f
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendSetComrade, 8);
 PUSH_PACKED
 struct SA_FriendUnsetComrade
 {
 	enum { NET_ID = 62269 };
 	u32 retval; // 4 bytes
-	// friendNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 friendNickname_len; // 2 bytes
+	wchar_t friendNickname[1]; // 2 bytes
 	// logger 0x98039c
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendUnsetComrade, 8);
 PUSH_PACKED
 struct SA_FriendSetFavorite
 {
 	enum { NET_ID = 62270 };
 	u32 result; // 4 bytes
-	// friendNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 friendNickname_len; // 2 bytes
+	wchar_t friendNickname[1]; // 2 bytes
 	// logger 0x980221
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendSetFavorite, 8);
 PUSH_PACKED
 struct SA_FriendUnsetFavorite
 {
 	enum { NET_ID = 62271 };
 	u32 result; // 4 bytes
-	// friendNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 friendNickname_len; // 2 bytes
+	wchar_t friendNickname[1]; // 2 bytes each
 	// logger 0x98046e
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_FriendUnsetFavorite, 8);
 PUSH_PACKED
 struct SN_FriendPartycreation
 {
 	enum { NET_ID = 62272 };
-	// friendNickname: variable-size (string/vector)
-	u16 stageIndex; // 2 bytes
-	u32 gameType; // 4 bytes
+	u16 friendNickname_len; // 2 bytes
+	wchar_t friendNickname[1]; // 2 bytes (wide string, u16 count + count*2 wchar)
+	u32 stageIndex; // 4 bytes
+	u8 gameType; // 1 bytes
 	u8 gameDefType; // 1 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x99319b
 };
 POP_PACKED
+ASSERT_SIZE(SN_FriendPartycreation, 10);
 
 PUSH_PACKED
 struct SA_RequestMissionReward
 {
 	enum { NET_ID = 62273 };
 	u32 result; // 4 bytes
-	// mission: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	i64 unk_1; // 8 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
+	// mission (PST_MISSION_INFO):
+	PUSH_PACKED
+	struct MissionInfo
+	{
+		u32 index; // 4 bytes
+		i64 progressCount; // 8 bytes
+		u16 changedCount; // 2 bytes
+		u8 isCleared; // 1 bytes
+		u8 isRewarded; // 1 bytes
+	};
+	POP_PACKED
+	MissionInfo mission; // 16 bytes
 	// logger 0x986d56
 };
 POP_PACKED
 ASSERT_SIZE(SA_RequestMissionReward, 20);
-
 PUSH_PACKED
 struct SN_PvpAvailableReportCount
 {
@@ -5858,13 +6391,21 @@ struct SN_GlobalNotice
 	enum { NET_ID = 62277 };
 	u32 chatType; // 4 bytes
 	u16 durationMS; // 2 bytes
-	u8 unk_0; // 1 bytes
-	u16 unk_1; // 2 bytes
+	// variable part (PST_GLOBAL_NOTICE):
+	PUSH_PACKED
+	struct Notice
+	{
+		u8 locale; // 1 bytes
+		u16 message_len; // 2 bytes
+		wchar_t message[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 noticeList_count; // 2 bytes
+	Notice noticeList[1]; // 5 bytes
 	// logger 0x995d9a
 };
 POP_PACKED
-ASSERT_SIZE(SN_GlobalNotice, 9);
-
+ASSERT_SIZE(SN_GlobalNotice, 13);
 PUSH_PACKED
 struct SN_ExpGain
 {
@@ -5880,44 +6421,72 @@ struct SA_GetUserinfo
 {
 	enum { NET_ID = 62280 };
 	u32 result; // 4 bytes
-	// nickname: variable-size (string/vector)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string)
 	u16 level; // 2 bytes
-	u16 achievementScore; // 2 bytes
-	u32 tierGrade; // 4 bytes
-	// statusMessage: variable-size (string/vector)
-	u8 creatureIndex; // 1 bytes
-	u16 power; // 2 bytes
+	u32 achievementScore; // 4 bytes
+	u8 tierGrade; // 1 bytes
+	u16 statusMessage_len; // 2 bytes
+	wchar_t statusMessage[1]; // 2 bytes (wide string)
+	u32 creatureIndex; // 4 bytes
+	u32 power; // 4 bytes
 	u32 viability; // 4 bytes
-	u32 skinId; // 4 bytes
-	// weapon: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u8 unk_1; // 1 bytes
-	u32 unk_2; // 4 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
-	u32 unk_6; // 4 bytes
-	u8 unk_7; // 1 bytes
-	u8 unk_8; // 1 bytes
-	u32 unk_9; // 4 bytes
-	u8 unk_10; // 1 bytes
-	u32 unk_11; // 4 bytes
-	u32 unk_12; // 4 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
-	u8 unk_15; // 1 bytes
-	i64 unk_16; // 8 bytes
-	u16 unk_17; // 2 bytes
-	u8 unk_18; // 1 bytes
-	u32 unk_19; // 4 bytes
-	u8 unk_20; // 1 bytes
-	u32 unk_21; // 4 bytes
-	u8 unk_22; // 1 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u8 skinId; // 1 bytes
+	// variable part (ST_SKILLINFO):
+	PUSH_PACKED
+	struct SkillInfo
+	{
+		u32 index; // 4 bytes
+		u8 level; // 1 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 skills_count; // 2 bytes
+	SkillInfo skills[1]; // 6 bytes
+	// variable part (ST_WEAPONINFO):
+	PUSH_PACKED
+	struct WeaponInfo
+	{
+		u8 type; // 1 bytes
+		u32 index; // 4 bytes
+		u8 grade; // 1 bytes
+		u8 isUnlocked; // 1 bytes (bool)
+	};
+	POP_PACKED
+	WeaponInfo weapon; // 7 bytes
+	// variable part (PST_PROFILE_ITEM):
+	PUSH_PACKED
+	struct ProfileItem
+	{
+		u32 m_itemID; // 4 bytes
+		u8 m_invenType; // 1 bytes
+		u32 m_slot; // 4 bytes
+		u32 m_itemIndex; // 4 bytes
+		u32 m_count; // 4 bytes
+		u32 m_propertyGroupIndex; // 4 bytes
+		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
+		i64 m_lifeEndTimeUTC; // 8 bytes
+		// variable part (PST_ITEM_PROPERTY):
+		PUSH_PACKED
+		struct ItemProperty
+		{
+			u8 Type; // 1 bytes
+			u32 TypeDetail; // 4 bytes
+			u8 ValueType; // 1 bytes
+			f32 Value; // 4 bytes
+			u8 Fixed; // 1 bytes (bool)
+		};
+		POP_PACKED
+		u16 m_properties_count; // 2 bytes
+		ItemProperty m_properties[1]; // 11 bytes
+	};
+	POP_PACKED
+	u16 masterGears_count; // 2 bytes
+	ProfileItem masterGears[1]; // 43 bytes
 	// logger 0x982a08
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_GetUserinfo, 92);
 PUSH_PACKED
 struct SA_JukeboxEnqueue
 {
@@ -5932,27 +6501,29 @@ PUSH_PACKED
 struct SN_OpenEventMasters
 {
 	enum { NET_ID = 62286 };
-	u32 field_0; // 4 bytes
+	// variable part (VEC of u32 event master IDs):
+	u16 openedEventMasters_count; // 2 bytes
+	u32 openedEventMasters[1]; // 4 bytes
 	// logger 0x99cb16
 };
 POP_PACKED
-ASSERT_SIZE(SN_OpenEventMasters, 4);
-
+ASSERT_SIZE(SN_OpenEventMasters, 6);
 PUSH_PACKED
 struct SA_CreateGuild
 {
 	enum { NET_ID = 62287 };
 	u32 result; // 4 bytes
-	// guildName: variable-size (string/vector)
-	// guildTag: variable-size (string/vector)
-	u16 masterTopPvpTierGrade; // 2 bytes
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes (wide string)
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes
+	u8 masterTopPvpTierGrade; // 1 bytes
 	u16 masterTopPvpTierPoint; // 2 bytes
-	u16 masterAchievementScore; // 2 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u32 masterAchievementScore; // 4 bytes
 	// logger 0x97ea47
 };
 POP_PACKED
+ASSERT_SIZE(SA_CreateGuild, 19);
 
 PUSH_PACKED
 struct SA_DissolveGuild
@@ -6000,208 +6571,242 @@ struct SA_KickGuildmember
 {
 	enum { NET_ID = 62292 };
 	u32 result; // 4 bytes
-	// nicknameKickedOut: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nicknameKickedOut_len; // 2 bytes
+	wchar_t nicknameKickedOut[1]; // 2 bytes (wide string, 0xa19080 reader)
 	// logger 0x9842fb
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_KickGuildmember, 8);
 PUSH_PACKED
 struct SA_JoinGuild
 {
 	enum { NET_ID = 62293 };
 	u32 result; // 4 bytes
-	// guildName: variable-size (string/vector)
-	u16 guildJoinType; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 guildName_len; // 2 bytes (wide string char count)
+	wchar_t guildName[1]; // 2 bytes (wide string, reader 0xa19080: u16 count + count*2 wchar payload)
+	u8 guildJoinType; // 1 bytes
 	// logger 0x984157
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_JoinGuild, 9);
 PUSH_PACKED
 struct SA_GetGuildjoinrequestlist
 {
 	enum { NET_ID = 62294 };
 	u32 result; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
-	u16 unk_6; // 2 bytes
+	// variable part (ST_GUILDJOINREQUEST):
+	PUSH_PACKED
+	struct GuildJoinRequest
+	{
+		u16 candidateNickname_len; // 2 bytes
+		wchar_t candidateNickname[1]; // 2 bytes
+		u16 lvl; // 2 bytes
+		u16 leaderClassType; // 2 bytes
+		u16 masterCount; // 2 bytes
+		u32 achievementScore; // 4 bytes
+		u8 topPvpTierGrade; // 1 bytes
+		u16 topPvpTierPoint; // 2 bytes
+	};
+	POP_PACKED
+	u16 guildJoinRequestList_count; // 2 bytes
+	GuildJoinRequest guildJoinRequestList[1]; // 17 bytes
 	// logger 0x980fcf
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildjoinrequestlist, 19);
-
+ASSERT_SIZE(SA_GetGuildjoinrequestlist, 23);
 PUSH_PACKED
 struct SA_RespondGuildjoinrequest
 {
 	enum { NET_ID = 62295 };
 	u32 result; // 4 bytes
-	u8 isApproval; // 1 bytes
-	// candidate: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u16 unk_10; // 2 bytes
-	u16 unk_11; // 2 bytes
-	i64 unk_12; // 8 bytes
+	u8 isApproval; // 1 bytes (bool)
+	// candidate (ST_GUILDMEMBER_PROFILE, logger 0x9aa587):
+	PUSH_PACKED
+	struct GuildmemberProfile
+	{
+		// variable part (wide string):
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u32 membershipId; // 4 bytes
+		u16 lvl; // 2 bytes
+		u16 leaderClassType; // 2 bytes
+		u16 masterCount; // 2 bytes
+		u32 achievementScore; // 4 bytes
+		u8 topPvpTierGrade; // 1 bytes
+		u16 topPvpTierPoint; // 2 bytes
+		u32 contributedGuildPoint; // 4 bytes
+		u32 contributedGuildFund; // 4 bytes
+		u16 guildPvpWin; // 2 bytes
+		u16 guildPvpPlay; // 2 bytes
+		i64 lastLogoutDate; // 8 bytes
+	};
+	POP_PACKED
+	GuildmemberProfile candidate; // 41 bytes (count + arr[1] + 37 fixed)
 	// logger 0x9872dc
 };
 POP_PACKED
-ASSERT_SIZE(SA_RespondGuildjoinrequest, 44);
-
+ASSERT_SIZE(SA_RespondGuildjoinrequest, 46);
 PUSH_PACKED
 struct SA_InviteGuildmember
 {
 	enum { NET_ID = 62296 };
 	u32 result; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes
 	// logger 0x98354b
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_InviteGuildmember, 8);
 PUSH_PACKED
 struct SA_GetGuildinvitationlist
 {
 	enum { NET_ID = 62297 };
 	u32 result; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
+	// variable part (ST_GUILDINVITATION):
+	PUSH_PACKED
+	struct GuildInvitation
+	{
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes
+		u16 inviterName_len; // 2 bytes
+		wchar_t inviterName[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 guildInvitationList_count; // 2 bytes
+	GuildInvitation guildInvitationList[1]; // 8 bytes
 	// logger 0x980e5b
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildinvitationlist, 8);
-
+ASSERT_SIZE(SA_GetGuildinvitationlist, 14);
 PUSH_PACKED
 struct SA_RespondGuildinvitation
 {
 	enum { NET_ID = 62298 };
 	u32 result; // 4 bytes
-	u8 accept; // 1 bytes
-	// guildName: variable-size (string/vector)
-	// guildTag: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u8 accept; // 1 bytes (bool)
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes
 	// logger 0x9871b9
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_RespondGuildinvitation, 13);
 PUSH_PACKED
 struct SA_GetGuildemblemlist
 {
 	enum { NET_ID = 62301 };
 	u32 result; // 4 bytes
-	u32 unk_0; // 4 bytes
+	u16 guildEmblemList_count; // 2 bytes
+	u32 guildEmblemList[1]; // 4 bytes
 	// logger 0x980bb1
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildemblemlist, 8);
-
+ASSERT_SIZE(SA_GetGuildemblemlist, 10);
 PUSH_PACKED
 struct SA_GetGuildpublicprofile
 {
 	enum { NET_ID = 62303 };
 	u32 result; // 4 bytes
-	// guildName: variable-size (string/vector)
-	// guildTag: variable-size (string/vector)
-	u16 emblemIndex; // 2 bytes
-	u16 guildLvl; // 2 bytes
-	u32 memberMax; // 4 bytes
-	// ownerNickname: variable-size (string/vector)
-	u8 createdDate; // 1 bytes
-	u8 dissolutionDate; // 1 bytes
-	u16 joinType; // 2 bytes
-	// guildInterest: variable-size (string/vector)
-	// guildIntro: variable-size (string/vector)
-	i64 memberNum; // 8 bytes
-	i64 unk_0; // 8 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 4 variable-size field(s) after the fixed prefix
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes
+	u32 emblemIndex; // 4 bytes
+	u8 guildLvl; // 1 bytes
+	u8 memberMax; // 1 bytes
+	u16 ownerNickname_len; // 2 bytes
+	wchar_t ownerNickname[1]; // 2 bytes
+	i64 createdDate; // 8 bytes
+	i64 dissolutionDate; // 8 bytes
+	u8 joinType; // 1 bytes
+	// ST_GUILD_INTEREST (fixed 7 bools):
+	u8 likePveStage; // 1 bytes (bool)
+	u8 likeDefence; // 1 bytes (bool)
+	u8 likePvpNormal; // 1 bytes (bool)
+	u8 likePvpOccupy; // 1 bytes (bool)
+	u8 likePvpGot; // 1 bytes (bool)
+	u8 likePvpRank; // 1 bytes (bool)
+	u8 likeOlympic; // 1 bytes (bool)
+	u16 guildIntro_len; // 2 bytes
+	wchar_t guildIntro[1]; // 2 bytes
+	u8 memberNum; // 1 bytes
 	// logger 0x9818a8
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_GetGuildpublicprofile, 51);
 PUSH_PACKED
 struct SA_GetGuildpublicprofileFromUser
 {
 	enum { NET_ID = 62304 };
 	u32 result; // 4 bytes
-	// guildName: variable-size (string/vector)
-	// guildTag: variable-size (string/vector)
-	u16 emblemIndex; // 2 bytes
-	u16 guildLvl; // 2 bytes
-	u32 memberMax; // 4 bytes
-	// ownerNickname: variable-size (string/vector)
-	u8 createdDate; // 1 bytes
-	u8 dissolutionDate; // 1 bytes
-	u16 joinType; // 2 bytes
-	// guildInterest: variable-size (string/vector)
-	// guildIntro: variable-size (string/vector)
-	i64 memberNum; // 8 bytes
-	// memberNickname: variable-size (string/vector)
-	i64 unk_0; // 8 bytes
-	u8 unk_1; // 1 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	u16 unk_4; // 2 bytes
-	// NOTE: 5 variable-size field(s) after the fixed prefix
+	u16 guildName_len; wchar_t guildName[1]; // variable (wide string)
+	u16 guildTag_len; wchar_t guildTag[1]; // variable (wide string)
+	u32 emblemIndex; // 4 bytes
+	u8 guildLvl; // 1 bytes
+	u8 memberMax; // 1 bytes
+	u16 ownerNickname_len; wchar_t ownerNickname[1]; // variable (wide string)
+	i64 createdDate; // 8 bytes
+	i64 dissolutionDate; // 8 bytes
+	u8 joinType; // 1 bytes
+	// ST_GUILD_INTEREST (7 bytes, LogST_GuildInterest 0x9ab21f):
+	PUSH_PACKED
+	struct GuildInterest
+	{
+		u8 likePveStage; // 1 bytes (bool)
+		u8 likeDefence; // 1 bytes (bool)
+		u8 likePvpNormal; // 1 bytes (bool)
+		u8 likePvpOccupy; // 1 bytes (bool)
+		u8 likePvpGot; // 1 bytes (bool)
+		u8 likePvpRank; // 1 bytes (bool)
+		u8 likeOlympic; // 1 bytes (bool)
+	};
+	POP_PACKED
+	GuildInterest guildInterest; // 7 bytes
+	u16 guildIntro_len; wchar_t guildIntro[1]; // variable (wide string)
+	u8 memberNum; // 1 bytes
+	u16 memberNickname_len; wchar_t memberNickname[1]; // variable (wide string)
 	// logger 0x981b60
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_GetGuildpublicprofileFromUser, 55);
 PUSH_PACKED
 struct SA_EditGuildnotice
 {
 	enum { NET_ID = 62305 };
 	u32 result; // 4 bytes
-	// guildNotice: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
-	// logger 0x97f54f
+	u16 guildNotice_len; // 2 bytes
+	wchar_t guildNotice[1]; // 2 bytes (wide string, wire = 2 + len*2)
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_EditGuildnotice, 8);
 PUSH_PACKED
 struct SA_EditGuildintro
 {
 	enum { NET_ID = 62306 };
 	u32 result; // 4 bytes
-	// guildIntro: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// wide string guildIntro:
+	u16 guildIntro_len; // 2 bytes
+	wchar_t guildIntro[1]; // 2 bytes
 	// logger 0x97f311
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_EditGuildintro, 8);
 PUSH_PACKED
 struct SA_EditGuildtag
 {
 	enum { NET_ID = 62307 };
 	u32 result; // 4 bytes
-	// guildTag: variable-size (string/vector)
-	u16 guildFundCost; // 2 bytes
+	// variable part (wide string):
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes (string)
+	u32 guildFundCost; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x97f621
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_EditGuildtag, 16);
 PUSH_PACKED
 struct SA_SetGuildinterest
 {
@@ -6240,30 +6845,28 @@ struct SA_SetGuildmemberclass
 {
 	enum { NET_ID = 62311 };
 	u32 result; // 4 bytes
-	// memberNickname: variable-size (string/vector)
-	u16 oldMembershipId; // 2 bytes
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes
+	u32 oldMembershipId; // 4 bytes
 	u32 newMembershipId; // 4 bytes
-	// className: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2 bytes
 	// logger 0x988908
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_SetGuildmemberclass, 20);
 PUSH_PACKED
 struct SA_SetGuildmaster
 {
 	enum { NET_ID = 62312 };
 	u32 result; // 4 bytes
 	u32 myMembershipId; // 4 bytes
-	// newMasterNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 newMasterNickname_len; // 2 bytes
+	wchar_t newMasterNickname[1]; // 2 bytes (wide string)
 	// logger 0x98880f
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_SetGuildmaster, 12);
 PUSH_PACKED
 struct SA_CreateGuildmembership
 {
@@ -6271,14 +6874,29 @@ struct SA_CreateGuildmembership
 	u32 result; // 4 bytes
 	u32 membershipId; // 4 bytes
 	u8 iconIndex; // 1 bytes
-	// className: variable-size (string/vector)
-	// rights: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2 bytes (wide string)
+	// rights (ST_GuildmemberRights):
+	PUSH_PACKED
+	struct Rights
+	{
+		u8 hasInviteRight; // 1 bytes (bool)
+		u8 hasExpelRight; // 1 bytes (bool)
+		u8 hasMembershipChgRight; // 1 bytes (bool)
+		u8 hasClassAssignRight; // 1 bytes (bool)
+		u8 hasNoticeChgRight; // 1 bytes (bool)
+		u8 hasIntroChgRight; // 1 bytes (bool)
+		u8 hasInterestChgRight; // 1 bytes (bool)
+		u8 hasFundManageRight; // 1 bytes (bool)
+		u8 hasJoinTypeChgRight; // 1 bytes (bool)
+		u8 hasEmblemChgRight; // 1 bytes (bool)
+	};
+	POP_PACKED
+	Rights rights; // 10 bytes
 	// logger 0x97ebba
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_CreateGuildmembership, 23);
 PUSH_PACKED
 struct SA_DeleteGuildmembership
 {
@@ -6286,14 +6904,22 @@ struct SA_DeleteGuildmembership
 	u32 result; // 4 bytes
 	u32 membershipId; // 4 bytes
 	u32 regularMembershipId; // 4 bytes
-	// regularClassName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 regularClassName_len; // 2 bytes (wchar count)
+	wchar_t regularClassName[1]; // 2 bytes (wide string, reader 0xa19080: 2 + count*2)
+	// variable part (VEC of wide strings):
+	PUSH_PACKED
+	struct ReassignedMemberNickname
+	{
+		u16 len; // 2 bytes
+		wchar_t data[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 reassignedMemberNicknames_count; // 2 bytes
+	ReassignedMemberNickname reassignedMemberNicknames[1]; // 4 bytes (per element: u16 len + wchar data)
 	// logger 0x97ef60
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_DeleteGuildmembership, 22);
 PUSH_PACKED
 struct SA_EditGuildmembership
 {
@@ -6301,14 +6927,29 @@ struct SA_EditGuildmembership
 	u32 result; // 4 bytes
 	u32 membershipId; // 4 bytes
 	u8 iconIndex; // 1 bytes
-	// className: variable-size (string/vector)
-	// rights: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2 bytes (wide string)
+	// rights (ST_GUILDMEMBER_RIGHTS): 10 x u8 bool flags
+	PUSH_PACKED
+	struct GuildmemberRights
+	{
+		u8 hasInviteRight; // 1 bytes (bool)
+		u8 hasExpelRight; // 1 bytes (bool)
+		u8 hasMembershipChgRight; // 1 bytes (bool)
+		u8 hasClassAssignRight; // 1 bytes (bool)
+		u8 hasNoticeChgRight; // 1 bytes (bool)
+		u8 hasIntroChgRight; // 1 bytes (bool)
+		u8 hasInterestChgRight; // 1 bytes (bool)
+		u8 hasFundManageRight; // 1 bytes (bool)
+		u8 hasJoinTypeChgRight; // 1 bytes (bool)
+		u8 hasEmblemChgRight; // 1 bytes (bool)
+	};
+	POP_PACKED
+	GuildmemberRights rights; // 10 bytes
 	// logger 0x97f3e3
 };
 POP_PACKED
-
+ASSERT_SIZE(SA_EditGuildmembership, 23);
 PUSH_PACKED
 struct SA_DonateToGuild
 {
@@ -6351,15 +6992,22 @@ struct SA_GetGuildskilllist
 {
 	enum { NET_ID = 62319 };
 	u32 result; // 4 bytes
-	u8 unk_0; // 1 bytes
-	u8 unk_1; // 1 bytes
-	i64 unk_2; // 8 bytes
-	u16 unk_3; // 2 bytes
+	// variable part (ST_GUILD_SKILL):
+	PUSH_PACKED
+	struct GuildSkill
+	{
+		u8 type; // 1 bytes
+		u8 lvl; // 1 bytes
+		i64 expiryDate; // 8 bytes
+		u16 extensionCount; // 2 bytes
+	};
+	POP_PACKED
+	u16 guildSkills_count; // 2 bytes
+	GuildSkill guildSkills[1]; // 12 bytes
 	// logger 0x982531
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildskilllist, 16);
-
+ASSERT_SIZE(SA_GetGuildskilllist, 18);
 PUSH_PACKED
 struct SA_BuyGuildskill
 {
@@ -6397,20 +7045,28 @@ struct SA_GetGuildrank
 {
 	enum { NET_ID = 62323 };
 	u32 result; // 4 bytes
-	u8 rankingType; // 1 bytes
+	u8 rankingType; // 1 bytes (bool)
 	u16 seasonNo; // 2 bytes
-	// rankInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
+	// variable part (ST_GUILD_RANKINFO):
+	PUSH_PACKED
+	struct GuildRankInfo
+	{
+		u32 rankNo; // 4 bytes
+		u32 prevRankNo; // 4 bytes
+		u16 guildTag_len; // 2 bytes
+		wchar_t guildTag[1]; // 2 bytes
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes
+		u16 guildOwnerNickname_len; // 2 bytes
+		wchar_t guildOwnerNickname[1]; // 2 bytes
+		u32 rankingValue; // 4 bytes
+	};
+	POP_PACKED
+	GuildRankInfo rankInfo;
 	// logger 0x981e43
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildrank, 25);
-
+ASSERT_SIZE(SA_GetGuildrank, 31);
 PUSH_PACKED
 struct SA_GetGuildranklist
 {
@@ -6422,47 +7078,98 @@ struct SA_GetGuildranklist
 	u8 rowsPerPage; // 1 bytes
 	u32 maxPage; // 4 bytes
 	i64 latestUpdateTime; // 8 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
+	// variable part (ST_GUILD_RANKINFO):
+	PUSH_PACKED
+	struct GuildRankInfo
+	{
+		u32 rankNo; // 4 bytes
+		u32 prevRankNo; // 4 bytes
+		u16 guildTag_len; // 2 bytes
+		wchar_t guildTag[1]; // 2 bytes
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes
+		u16 guildOwnerNickname_len; // 2 bytes
+		wchar_t guildOwnerNickname[1]; // 2 bytes
+		u32 rankingValue; // 4 bytes
+	};
+	POP_PACKED
+	u16 guildRankList_count; // 2 bytes
+	GuildRankInfo guildRankList[1]; // 24 bytes
 	// logger 0x98212b
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildranklist, 42);
-
+ASSERT_SIZE(SA_GetGuildranklist, 50);
 PUSH_PACKED
 struct SA_GetGuildrankrewardinfo
 {
 	enum { NET_ID = 62325 };
 	u32 result; // 4 bytes
 	u8 rankingType; // 1 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
+	// variable part (ST_RANKING_REWARD):
+	PUSH_PACKED
+	struct RankingReward
+	{
+		u32 firstRankNo; // 4 bytes
+		u32 lastRankNo; // 4 bytes
+		// variable part (ST_REWARD_ITEM):
+		PUSH_PACKED
+		struct RewardItem
+		{
+			u32 m_ItemType; // 4 bytes
+			u32 m_ItemIndex; // 4 bytes
+			u32 m_ItemAmount; // 4 bytes
+		};
+		POP_PACKED
+		u16 items_count; // 2 bytes
+		RewardItem items[1]; // 12 bytes
+	};
+	POP_PACKED
+	u16 rewards_count; // 2 bytes
+	RankingReward rewards[1]; // 22 bytes
 	// logger 0x98238f
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetGuildrankrewardinfo, 27);
-
+ASSERT_SIZE(SA_GetGuildrankrewardinfo, 29);
 PUSH_PACKED
 struct SA_GetRecommendedguildlist
 {
 	enum { NET_ID = 62326 };
 	u32 result; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (ST_GUILD_SEARCH_INFO):
+	PUSH_PACKED
+	struct GuildSearchInfo
+	{
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes (wide string)
+		u16 guildTag_len; // 2 bytes
+		wchar_t guildTag[1]; // 2 bytes (wide string)
+		u32 emblemIndex; // 4 bytes
+		u8 guildLvl; // 1 bytes
+		u8 joinType; // 1 bytes
+		u8 memberNum; // 1 bytes
+		u8 memberMax; // 1 bytes
+		// nested (ST_GUILD_INTEREST):
+		PUSH_PACKED
+		struct Interest
+		{
+			u8 likePveStage; // 1 bytes (bool)
+			u8 likeDefence; // 1 bytes (bool)
+			u8 likePvpNormal; // 1 bytes (bool)
+			u8 likePvpOccupy; // 1 bytes (bool)
+			u8 likePvpGot; // 1 bytes (bool)
+			u8 likePvpRank; // 1 bytes (bool)
+			u8 likeOlympic; // 1 bytes (bool)
+		};
+		POP_PACKED
+		Interest interest; // 7 bytes
+	};
+	POP_PACKED
+	u16 guilds_count; // 2 bytes
+	GuildSearchInfo guilds[1]; // variable (wide strings)
 	// logger 0x982899
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetRecommendedguildlist, 12);
-
+// ASSERT_SIZE omitted: guilds[] elements contain variable-length wide strings
 PUSH_PACKED
 struct SA_SearchGuild
 {
@@ -6471,14 +7178,38 @@ struct SA_SearchGuild
 	u32 pageNo; // 4 bytes
 	u8 rowsPerPage; // 1 bytes
 	u32 maxPage; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (ST_GUILD_SEARCHINFO):
+	PUSH_PACKED
+	struct GuildSearchInfo
+	{
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes (wide)
+		u16 guildTag_len; // 2 bytes
+		wchar_t guildTag[1]; // 2 bytes (wide)
+		u32 emblemIndex; // 4 bytes
+		u8 guildLvl; // 1 bytes
+		u8 joinType; // 1 bytes
+		u8 memberNum; // 1 bytes
+		u8 memberMax; // 1 bytes
+		// interest (ST_GUILD_INTEREST; wire = 4 bytes):
+		PUSH_PACKED
+		struct Interest
+		{
+			u8 likePveStage; // 1 bytes (bool)
+			u8 likeDefence; // 1 bytes (bool)
+			u8 likePvpNormal; // 1 bytes (bool)
+			u8 likePvpOccupy; // 1 bytes (bool)
+		};
+		POP_PACKED
+		Interest interest; // 4 bytes
+	};
+	POP_PACKED
+	u16 guilds_count; // 2 bytes
+	GuildSearchInfo guilds[1]; // variable (16 + 2*len_name + 2*len_tag per element)
 	// logger 0x987fe2
 };
 POP_PACKED
-ASSERT_SIZE(SA_SearchGuild, 21);
-
+ASSERT_SIZE(SA_SearchGuild, 35);
 PUSH_PACKED
 struct SA_GetPlayingGuildpvplist
 {
@@ -6487,23 +7218,35 @@ struct SA_GetPlayingGuildpvplist
 	u16 pageNo; // 2 bytes
 	u8 rowsPerPage; // 1 bytes
 	u16 maxPageNo; // 2 bytes
-	u32 unk_0; // 4 bytes
-	i64 unk_1; // 8 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u16 unk_5; // 2 bytes
-	u16 unk_6; // 2 bytes
-	u32 unk_7; // 4 bytes
-	u16 unk_8; // 2 bytes
-	u32 unk_9; // 4 bytes
-	u16 unk_10; // 2 bytes
-	u16 unk_11; // 2 bytes
+	// variable part (ST_GUILDPVP_SESSION): guildPvpList
+	PUSH_PACKED
+	struct Team
+	{
+		u32 guildId; // 4 bytes
+		u16 guildName_len; // 2 bytes
+		wchar_t guildName[1]; // 2 bytes
+		u32 guildEmblemIndex; // 4 bytes
+		// variable part: nicknameList (vector of wide strings)
+		u16 nicknameList_count; // 2 bytes
+		u16 nicknameList_len[1]; // 2 bytes
+		wchar_t nicknameList[1][1]; // 2 bytes
+	};
+	POP_PACKED
+	PUSH_PACKED
+	struct Session
+	{
+		u32 instanceId; // 4 bytes
+		i64 createdDate; // 8 bytes
+		Team redTeam; // 18 bytes + var
+		Team blueTeam; // 18 bytes + var
+	};
+	POP_PACKED
+	u16 guildPvpList_count; // 2 bytes
+	Session guildPvpList[1]; // 48 bytes
 	// logger 0x9826a5
 };
 POP_PACKED
-ASSERT_SIZE(SA_GetPlayingGuildpvplist, 49);
-
+ASSERT_SIZE(SA_GetPlayingGuildpvplist, 59);
 PUSH_PACKED
 struct SA_WatchGuildpvp
 {
@@ -6532,126 +7275,135 @@ PUSH_PACKED
 struct SN_GuildInvitation
 {
 	enum { NET_ID = 62332 };
-	// guildName: variable-size (string/vector)
-	// inviterName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes (wide string)
+	u16 inviterName_len; // 2 bytes
+	wchar_t inviterName[1]; // 2 bytes (wide string)
 	// logger 0x997d4e
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildInvitation, 8);
 PUSH_PACKED
 struct SN_GuildJoinapproval
 {
 	enum { NET_ID = 62333 };
-	// guildName: variable-size (string/vector)
-	// guildTag: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes (wide string)
+	u16 guildTag_len; // 2 bytes
+	wchar_t guildTag[1]; // 2 bytes (wide string)
 	// logger 0x997e1f
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildJoinapproval, 8);
 PUSH_PACKED
 struct SN_GuildtagChanged
 {
 	enum { NET_ID = 62334 };
-	// tag: variable-size (string/vector)
-	u16 guildFundCost; // 2 bytes
+	u16 tag_len; // 2 bytes
+	wchar_t tag[1]; // 2 bytes (wide string)
+	u32 guildFundCost; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x997c57
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildtagChanged, 12);
 PUSH_PACKED
 struct SN_GuildNotice
 {
 	enum { NET_ID = 62335 };
-	// notice: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
-	// logger 0x997fc5
+	// notice: wide string (u16 char count + wchar payload)
+	u16 notice_len; // 2 bytes
+	wchar_t notice[1]; // 2 bytes per char
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildNotice, 4);
 PUSH_PACKED
 struct SN_GuildmemberJoin
 {
 	enum { NET_ID = 62336 };
-	// newMember: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u16 unk_10; // 2 bytes
-	u16 unk_11; // 2 bytes
-	i64 unk_12; // 8 bytes
+	// newMember (ST_GUILDMEMBER_PROFILE):
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string)
+	u32 membershipId; // 4 bytes
+	u16 lvl; // 2 bytes
+	u16 leaderClassType; // 2 bytes
+	u16 masterCount; // 2 bytes
+	u32 achievementScore; // 4 bytes
+	u8 topPvpTierGrade; // 1 bytes
+	u16 topPvpTierPoint; // 2 bytes
+	u32 contributedGuildPoint; // 4 bytes
+	u32 contributedGuildFund; // 4 bytes
+	u16 guildPvpWin; // 2 bytes
+	u16 guildPvpPlay; // 2 bytes
+	i64 lastLogoutDate; // 8 bytes
 	// logger 0x996ffa
 };
 POP_PACKED
-ASSERT_SIZE(SN_GuildmemberJoin, 39);
-
+ASSERT_SIZE(SN_GuildmemberJoin, 41);
 PUSH_PACKED
 struct SN_GuildmemberQuit
 {
 	enum { NET_ID = 62337 };
-	// nickname: variable-size (string/vector)
-	u16 isKickedOut; // 2 bytes
-	u8 unk_0; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
+	u8 isKickedOut; // 1 bytes (bool)
 	// logger 0x9970c3
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmemberQuit, 5);
 PUSH_PACKED
 struct SN_GuildmemberChgnickname
 {
 	enum { NET_ID = 62339 };
-	// oldNickname: variable-size (string/vector)
-	// newNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 oldNickname_len; // 2 bytes
+	wchar_t oldNickname[1]; // 2 bytes (variable)
+	u16 newNickname_len; // 2 bytes
+	wchar_t newNickname[1]; // 2 bytes (variable)
 	// logger 0x996f29
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmemberChgnickname, 8);
 PUSH_PACKED
 struct SN_GuildmemberChgleaderclass
 {
 	enum { NET_ID = 62340 };
-	// nickname: variable-size (string/vector)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (variable)
 	u16 newLeaderClass; // 2 bytes
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x996e57
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmemberChgleaderclass, 6);
 PUSH_PACKED
 struct SN_GuildmembershipAdded
 {
 	enum { NET_ID = 62341 };
 	u32 membershipId; // 4 bytes
 	u8 iconIndex; // 1 bytes
-	// className: variable-size (string/vector)
-	// rights: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// className: wide string
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2 bytes
+	// rights (ST_GUILDMEMBER_RIGHTS):
+	PUSH_PACKED
+	struct GuildmemberRights
+	{
+		u8 hasInviteRight; // 1 bytes (bool)
+		u8 hasExpelRight; // 1 bytes (bool)
+		u8 hasMembershipChgRight; // 1 bytes (bool)
+		u8 hasClassAssignRight; // 1 bytes (bool)
+		u8 hasNoticeChgRight; // 1 bytes (bool)
+		u8 hasIntroChgRight; // 1 bytes (bool)
+		u8 hasInterestChgRight; // 1 bytes (bool)
+		u8 hasFundManageRight; // 1 bytes (bool)
+		u8 hasJoinTypeChgRight; // 1 bytes (bool)
+		u8 hasEmblemChgRight; // 1 bytes (bool)
+	};
+	POP_PACKED
+	GuildmemberRights rights; // 10 bytes
 	// logger 0x996a03
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmembershipAdded, 19);
 PUSH_PACKED
 struct SN_GuildmembershipRemoved
 {
@@ -6668,56 +7420,73 @@ struct SN_GuildmembershipModified
 	enum { NET_ID = 62343 };
 	u32 membershipId; // 4 bytes
 	u8 iconIndex; // 1 bytes
-	// className: variable-size (string/vector)
-	// rights: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide string):
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2*len bytes
+	// rights (ST_GUILDMEMBER_RIGHTS):
+	PUSH_PACKED
+	struct Rights
+	{
+		u8 hasInviteRight; // 1 bytes (bool)
+		u8 hasExpelRight; // 1 bytes (bool)
+		u8 hasMembershipChgRight; // 1 bytes (bool)
+		u8 hasClassAssignRight; // 1 bytes (bool)
+		u8 hasNoticeChgRight; // 1 bytes (bool)
+		u8 hasIntroChgRight; // 1 bytes (bool)
+		u8 hasInterestChgRight; // 1 bytes (bool)
+		u8 hasFundManageRight; // 1 bytes (bool)
+		u8 hasJoinTypeChgRight; // 1 bytes (bool)
+		u8 hasEmblemChgRight; // 1 bytes (bool)
+	};
+	POP_PACKED
+	Rights rights; // 10 bytes
 	// logger 0x996b48
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmembershipModified, 19);
 PUSH_PACKED
 struct SN_GuildmemberChgclass
 {
 	enum { NET_ID = 62344 };
 	u32 oldMembershipId; // 4 bytes
 	u32 newMembershipId; // 4 bytes
-	// className: variable-size (string/vector)
-	// memberNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// variable part:
+	u16 className_len; // 2 bytes
+	wchar_t className[1]; // 2 bytes (wide string)
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes (wide string)
 	// logger 0x996d36
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmemberChgclass, 16);
 PUSH_PACKED
 struct SN_GuildmasterDelegation
 {
 	enum { NET_ID = 62345 };
-	// formerMasterNickname: variable-size (string/vector)
-	u16 formerMasterMembershipId; // 2 bytes
-	// newMasterNickname: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// formerMasterNickname:
+	u16 formerMasterNickname_len; // 2 bytes
+	wchar_t formerMasterNickname[1]; // 2 bytes (1 wchar, wide string)
+	u32 formerMasterMembershipId; // 4 bytes
+	// newMasterNickname:
+	u16 newMasterNickname_len; // 2 bytes
+	wchar_t newMasterNickname[1]; // 2 bytes (1 wchar, wide string)
 	// logger 0x99690b
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildmasterDelegation, 12);
 PUSH_PACKED
 struct SN_GuildfundAdded
 {
 	enum { NET_ID = 62346 };
-	// memberNickname: variable-size (string/vector)
-	u16 guildFundGain; // 2 bytes
+	// variable part (wide string):
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes (wide string, 2 + count*2 wire)
+	u32 guildFundGain; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x996814
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildfundAdded, 12);
 PUSH_PACKED
 struct SN_GuildemblemChange
 {
@@ -6753,86 +7522,99 @@ PUSH_PACKED
 struct SN_GuildskillAcquired
 {
 	enum { NET_ID = 62350 };
-	// memberNickname: variable-size (string/vector)
-	u16 skillType; // 2 bytes
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes each (wide string)
+	u8 skillType; // 1 bytes
 	u8 skillLvl; // 1 bytes
-	u8 timeLimitHour; // 1 bytes
-	u16 expiryDate; // 2 bytes
-	i64 guildFundCost; // 8 bytes
+	u16 timeLimitHour; // 2 bytes
+	i64 expiryDate; // 8 bytes
+	u32 guildFundCost; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x99775a
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildskillAcquired, 24);
 PUSH_PACKED
 struct SN_GuildskillUpgraded
 {
 	enum { NET_ID = 62351 };
-	// memberNickname: variable-size (string/vector)
-	u16 skillType; // 2 bytes
+	// variable part (wide string):
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes
+	u8 skillType; // 1 bytes
 	u8 skillLvl; // 1 bytes
-	u8 timeLimitHour; // 1 bytes
-	u16 expiryDate; // 2 bytes
-	i64 guildFundCost; // 8 bytes
+	u16 timeLimitHour; // 2 bytes
+	i64 expiryDate; // 8 bytes
+	u32 guildFundCost; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x997abb
 };
 POP_PACKED
+ASSERT_SIZE(SN_GuildskillUpgraded, 24);
 
 PUSH_PACKED
 struct SN_GuildskillExtended
 {
 	enum { NET_ID = 62352 };
-	// memberNickname: variable-size (string/vector)
-	u16 skillType; // 2 bytes
+	// variable part (memberNickname):
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes (wide string, reader 0xa19080)
+	u8 skillType; // 1 bytes
 	u8 skillLvl; // 1 bytes
-	u8 skillExtensionCount; // 1 bytes
+	u16 skillExtensionCount; // 2 bytes
 	u16 extensionTimeHour; // 2 bytes
-	u16 skillExpiryDate; // 2 bytes
-	i64 guildFundCost; // 8 bytes
+	i64 skillExpiryDate; // 8 bytes
+	u32 guildFundCost; // 4 bytes
 	u32 totalGuildFund; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
 	// logger 0x9978f6
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildskillExtended, 26);
 PUSH_PACKED
 struct SN_GuildconstraintChange
 {
 	enum { NET_ID = 62353 };
 	i64 changeDate; // 8 bytes
-	// constraint: variable-size (string/vector)
-	u8 unk_0; // 1 bytes
-	u8 unk_1; // 1 bytes
-	u8 unk_2; // 1 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
+	// constraint (ST_GUILD_CONSTRAINT):
+	PUSH_PACKED
+	struct Constraint
+	{
+		u8 maxMember; // 1 bytes
+		u8 maxEmblemLevel; // 1 bytes
+		u8 maxGuildMissionLevel; // 1 bytes
+		u16 maxDailyStagePlayGuildPoint; // 2 bytes
+		u16 maxDailyArenaPlayGuildPoint; // 2 bytes
+	};
+	POP_PACKED
+	Constraint constraint; // 7 bytes
 	// logger 0x9965a1
 };
 POP_PACKED
 ASSERT_SIZE(SN_GuildconstraintChange, 15);
-
 PUSH_PACKED
 struct SN_GuildmissionCompleted
 {
 	enum { NET_ID = 62354 };
-	// memberNickname: variable-size (string/vector)
 	u8 missionIndex; // 1 bytes
 	u32 rewardedGuildFund; // 4 bytes
 	u16 totalGuildFund; // 2 bytes
 	u16 contributedGuildFund; // 2 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// variable part (vector of wide strings):
+	PUSH_PACKED
+	struct Nickname
+	{
+		u16 len; // 2 bytes
+		wchar_t str[1]; // 2 bytes
+	};
+	POP_PACKED
+	u16 memberNicknames_count; // 2 bytes
+	Nickname memberNicknames[1]; // 4 bytes
+	u16 memberNickname_len; // 2 bytes
+	wchar_t memberNickname[1]; // 2 bytes
 	// logger 0x9972db
 };
 POP_PACKED
+ASSERT_SIZE(SN_GuildmissionCompleted, 19);
 
 PUSH_PACKED
 struct SN_GuildpvpResult
@@ -6843,13 +7625,17 @@ struct SN_GuildpvpResult
 	u16 win; // 2 bytes
 	u16 draw; // 2 bytes
 	u16 lose; // 2 bytes
-	// oppGuildName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	// variable part (members: VEC of wide strings, each u16 len + len*2 wchars):
+	u16 members_count; // 2 bytes
+	wchar_t members[1][1]; // variable-size (wide string elements)
+	// variable part (oppGuildName: wide string):
+	u16 oppGuildName_len; // 2 bytes
+	wchar_t oppGuildName[1]; // variable
 	// logger 0x997542
 };
 POP_PACKED
+// ASSERT_SIZE omitted: variable-size (string vector + wide string)
+// ASSERT_SIZE omitted: variable-size (string vector + wide string)
 
 PUSH_PACKED
 struct SN_GuildpointandfundChange
@@ -6879,66 +7665,59 @@ PUSH_PACKED
 struct SN_GuildchannelLeave
 {
 	enum { NET_ID = 62359 };
-	// guildName: variable-size (string/vector)
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 guildName_len; // 2 bytes
+	wchar_t guildName[1]; // 2 bytes (wide string, wire 2 + 2*len)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes (wide string, wire 2 + 2*len)
 	// logger 0x9964d0
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_GuildchannelLeave, 8);
 PUSH_PACKED
 struct SN_PlayerBlink
 {
 	enum { NET_ID = 62362 };
 	u32 entityID; // 4 bytes
 	u32 targetID; // 4 bytes
-	// CurPos: variable-size (string/vector)
-	// NewPos: variable-size (string/vector)
-	// NewDir: variable-size (string/vector)
+	float3 CurPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 NewPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	// NewDir (ST_POS2: fX, fY):
+	PUSH_PACKED
+	struct Pos2
+	{
+		f32 fX; // 4 bytes
+		f32 fY; // 4 bytes
+	};
+	POP_PACKED
+	Pos2 NewDir; // 8 bytes
 	f32 nSpeed; // 4 bytes
 	u32 nState; // 4 bytes
-	u32 bGhostBlink; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u8 unk_7; // 1 bytes
+	u8 bGhostBlink; // 1 bytes (bool)
 	// logger 0x99d9d0
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerBlink, 49);
-
 PUSH_PACKED
 struct SN_InvalidRemoteLog
 {
 	enum { NET_ID = 62363 };
-	// log: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 log_len; // 2 bytes (wchar count)
+	wchar_t log[1]; // 2 bytes (wide string, count*2 payload)
 	// logger 0x998b5b
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_InvalidRemoteLog, 4);
 PUSH_PACKED
 struct SN_SyncActionMove
 {
 	enum { NET_ID = 62366 };
 	u32 entityID; // 4 bytes
 	u32 targetID; // 4 bytes
-	// TargetPos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 TargetPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x9a6d35
 };
 POP_PACKED
 ASSERT_SIZE(SN_SyncActionMove, 20);
-
 PUSH_PACKED
 struct SN_SyncStanceType
 {
@@ -6960,17 +7739,13 @@ struct SN_AiSyncMoveMotion
 	u32 dwMotionTypeKey; // 4 bytes
 	u32 dwAIMoveType; // 4 bytes
 	u32 dwAIMoveVariationType; // 4 bytes
-	// vPos: variable-size (string/vector)
+	float3 vPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 isAttack; // 4 bytes
 	u32 targetId; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
 	// logger 0x98c9c1
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSyncMoveMotion, 40);
-
 PUSH_PACKED
 struct SN_AiSyncBehaviorMotion
 {
@@ -6978,43 +7753,28 @@ struct SN_AiSyncBehaviorMotion
 	u32 entityID; // 4 bytes
 	u32 dwMotionType; // 4 bytes
 	u8 stance; // 1 bytes
-	// vPos: variable-size (string/vector)
-	// vDir: variable-size (string/vector)
-	// vUpperDir: variable-size (string/vector)
-	// p3nPos: variable-size (string/vector)
+	float3 vPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 vDir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 vUpperDir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 p3nPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 isAttack; // 4 bytes
 	u32 targetId; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
 	// logger 0x98c369
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSyncBehaviorMotion, 65);
-
 PUSH_PACKED
 struct SN_AiSyncCooltime
 {
 	enum { NET_ID = 62370 };
 	u32 entityID; // 4 bytes
-	// cooltimeID: variable-size (string/vector)
-	u16 fCooltime; // 2 bytes
+	u16 cooltimeID_len; // 2 bytes (wide string, variable: 2 + 2*count)
+	wchar_t cooltimeID[1]; // 2 bytes
+	f32 fCooltime; // 4 bytes
 	u32 nodeID; // 4 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
-	// logger 0x98c77e
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_AiSyncCooltime, 16);
 PUSH_PACKED
 struct SN_AiSyncSpeedRatio
 {
@@ -7054,30 +7814,17 @@ struct SN_AiSyncTarpos
 	enum { NET_ID = 62374 };
 	u32 entityID; // 4 bytes
 	u32 dwSentTime; // 4 bytes
-	// vSPos: variable-size (string/vector)
-	// vPos: variable-size (string/vector)
-	// vDir: variable-size (string/vector)
-	// vUpperDir: variable-size (string/vector)
+	float3 vSPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 vPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 vDir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 vUpperDir; // 12 bytes (ST_POS3: fX, fY, fZ)
 	f32 fSpeed; // 4 bytes
 	f32 fFrameRate; // 4 bytes
 	f32 fUpForce; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
 	// logger 0x98d020
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSyncTarpos, 68);
-
 PUSH_PACKED
 struct SN_AiSyncTarget
 {
@@ -7094,13 +7841,12 @@ struct SN_AiAddCom
 {
 	enum { NET_ID = 62376 };
 	u32 entityID; // 4 bytes
-	// strComName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 strComName_len; // 2 bytes
+	wchar_t strComName[1]; // 2 bytes (wide string, reader 0xa19080)
 	// logger 0x98be42
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_AiAddCom, 8);
 PUSH_PACKED
 struct SN_AiSyncBodyYaw
 {
@@ -7129,15 +7875,11 @@ struct SN_AiSyncPhy
 	enum { NET_ID = 62379 };
 	u32 entityID; // 4 bytes
 	f32 fradian; // 4 bytes
-	// vPos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 vPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x98cba1
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSyncPhy, 20);
-
 PUSH_PACKED
 struct SN_AiSetTarget
 {
@@ -7155,28 +7897,22 @@ struct SN_AiSyncMonsterSkillTarget
 	enum { NET_ID = 62381 };
 	u32 entityID; // 4 bytes
 	u32 targetID; // 4 bytes
-	// targetPos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 targetPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x98c8a6
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSyncMonsterSkillTarget, 20);
-
 PUSH_PACKED
 struct SN_AiSetActionState
 {
 	enum { NET_ID = 62382 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u16 field_2; // 2 bytes
-	u16 field_3; // 2 bytes
-	u16 field_4; // 2 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes
+	u32 entityID; // 4 bytes
+	i16 motionType; // 2 bytes
+	i16 lowerBodyYaw; // 2 bytes
+	u16 moveSpeed; // 2 bytes
+	float3 pos; // 12 bytes (ST_POS3)
+	// logger 0x98bfe5
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSetActionState, 23);
@@ -7187,15 +7923,11 @@ struct SN_AiSetMovetargetpos
 	enum { NET_ID = 62383 };
 	u32 entityID; // 4 bytes
 	u32 movePresetType; // 4 bytes
-	// moveTargetPos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 moveTargetPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x98c17d
 };
 POP_PACKED
 ASSERT_SIZE(SN_AiSetMovetargetpos, 20);
-
 PUSH_PACKED
 struct SN_AiChangeMoveType
 {
@@ -7214,34 +7946,29 @@ struct SN_RemoteSyncCreateFromCreatorId
 	u32 ParentEntity; // 4 bytes
 	u32 OwnerEntity; // 4 bytes
 	u32 RemoteSeedID; // 4 bytes
-	// FirePosition: variable-size (string/vector)
-	u32 FireRotationX; // 4 bytes
-	u32 FireRotationY; // 4 bytes
-	u32 FireRotationZ; // 4 bytes
-	// TargetPosition: variable-size (string/vector)
-	// FireObject: variable-size (string/vector)
+	float3 FirePosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireRotationX; // 2 bytes
+	u16 FireRotationY; // 2 bytes
+	u16 FireRotationZ; // 2 bytes
+	float3 TargetPosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireObject_len; // 2 bytes
+	wchar_t FireObject[1]; // 2 bytes (wide string)
 	u16 Scale; // 2 bytes
-	u16 LifeTime; // 2 bytes
-	u16 HitInvalidTarget; // 2 bytes
-	u32 RemoteCreatorID; // 4 bytes
-	u32 ErrorAngleX; // 4 bytes
-	u32 ErrorAngleY; // 4 bytes
-	u16 ChargingLevel; // 2 bytes
-	u16 GaugeLevel; // 2 bytes
-	u32 FiringCount; // 4 bytes
-	u32 ComboCount; // 4 bytes
-	u16 TargetEntity; // 2 bytes
-	u16 RemoteCreateFlags; // 2 bytes
-	u16 unk_0; // 2 bytes
-	u8 unk_1; // 1 bytes
-	u8 unk_2; // 1 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	f32 LifeTime; // 4 bytes
+	u32 HitInvalidTarget; // 4 bytes
+	u16 RemoteCreatorID; // 2 bytes
+	u16 ErrorAngleX; // 2 bytes
+	u16 ErrorAngleY; // 2 bytes
+	u8 ChargingLevel; // 1 bytes
+	u8 GaugeLevel; // 1 bytes
+	u16 FiringCount; // 2 bytes
+	u8 ComboCount; // 1 bytes
+	u32 TargetEntity; // 4 bytes
+	u8 RemoteCreateFlags; // 1 bytes
 	// logger 0x9a18e1
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_RemoteSyncCreateFromCreatorId, 72);
 PUSH_PACKED
 struct SN_RemoteSyncCreateFromRemoteDoc
 {
@@ -7249,29 +7976,23 @@ struct SN_RemoteSyncCreateFromRemoteDoc
 	u32 ParentEntity; // 4 bytes
 	u32 OwnerEntity; // 4 bytes
 	u32 RemoteSeedID; // 4 bytes
-	// FirePosition: variable-size (string/vector)
-	u32 FireRotationX; // 4 bytes
-	u32 FireRotationY; // 4 bytes
-	u32 FireRotationZ; // 4 bytes
-	// TargetPosition: variable-size (string/vector)
-	// FireObject: variable-size (string/vector)
+	float3 FirePosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireRotationX; // 2 bytes
+	u16 FireRotationY; // 2 bytes
+	u16 FireRotationZ; // 2 bytes
+	float3 TargetPosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireObject_len; // 2 bytes
+	wchar_t FireObject[1]; // 2 bytes
 	u16 Scale; // 2 bytes
-	u16 LifeTime; // 2 bytes
-	u16 HitInvalidTarget; // 2 bytes
+	f32 LifeTime; // 4 bytes
+	u32 HitInvalidTarget; // 4 bytes
 	u32 RemoteDocIndex; // 4 bytes
 	u32 TargetEntity; // 4 bytes
-	u32 RemoteCreateFlags; // 4 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u8 RemoteCreateFlags; // 1 bytes (bool)
 	// logger 0x9a1cfb
 };
 POP_PACKED
+ASSERT_SIZE(SN_RemoteSyncCreateFromRemoteDoc, 65);
 
 PUSH_PACKED
 struct SN_RemoteSnapshotFromRemoteDoc
@@ -7280,65 +8001,59 @@ struct SN_RemoteSnapshotFromRemoteDoc
 	u32 ParentEntity; // 4 bytes
 	u32 OwnerEntity; // 4 bytes
 	u32 RemoteSeedID; // 4 bytes
-	// FirePosition: variable-size (string/vector)
-	u32 FireRotationX; // 4 bytes
-	u32 FireRotationY; // 4 bytes
-	u32 FireRotationZ; // 4 bytes
-	// TargetPosition: variable-size (string/vector)
-	// FireObject: variable-size (string/vector)
+	float3 FirePosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireRotationX; // 2 bytes
+	u16 FireRotationY; // 2 bytes
+	u16 FireRotationZ; // 2 bytes
+	float3 TargetPosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireObject_len; // 2 bytes
+	wchar_t FireObject[1]; // 2 bytes (wide string, variable)
 	u16 Scale; // 2 bytes
-	u16 LifeTime; // 2 bytes
-	u16 DurationTime; // 2 bytes
+	u32 LifeTime; // 4 bytes
+	u32 DurationTime; // 4 bytes
 	u32 HitInvalidTarget; // 4 bytes
 	u32 RemoteDocIndex; // 4 bytes
 	u32 TargetEntity; // 4 bytes
-	u16 RemoteCreateFlags; // 2 bytes
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u8 unk_6; // 1 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u8 RemoteCreateFlags; // 1 bytes
 	// logger 0x9a1590
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_RemoteSnapshotFromRemoteDoc, 69);
 PUSH_PACKED
-struct SN_UNKNOWN_62388
+struct SN_RemoteSyncTarget
 {
 	enum { NET_ID = 62388 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes (bit3=!MoveDir)
+	u32 remoteID; // 4 bytes
+	u32 targetEntity; // 4 bytes
+	float3 DestPos; // 12 bytes (ST_POS3)
+	float3 MoveDir; // 12 bytes (ST_POS3, present if !(bits & 8))
+	// logger 0x9a2163
 };
 POP_PACKED
-ASSERT_SIZE(SN_UNKNOWN_62388, 33);
+ASSERT_SIZE(SN_RemoteSyncTarget, 33);
 
 PUSH_PACKED
 struct SN_RemoteSyncForecastCollision
 {
 	enum { NET_ID = 62389 };
-	u32 field_0; // 4 bytes
-	u32 field_1; // 4 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u8 field_6; // 1 bytes
+	// variable part (ST_REMOTE_COLLISION_INFO):
+	PUSH_PACKED
+	struct RemoteCollisionInfo
+	{
+		u32 remoteID; // 4 bytes
+		u32 targetEntity; // 4 bytes
+		float3 DestPos; // 12 bytes (ST_POS3: fX, fY, fZ)
+		f32 TimeOfImpact; // 4 bytes
+		u8 Destroy; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 m_CollisionInfo_count; // 2 bytes
+	RemoteCollisionInfo m_CollisionInfo[1]; // 25 bytes
 	// logger 0x9a201d
 };
 POP_PACKED
-ASSERT_SIZE(SN_RemoteSyncForecastCollision, 25);
-
+ASSERT_SIZE(SN_RemoteSyncForecastCollision, 27);
 PUSH_PACKED
 struct SA_CharacterSkinSelect
 {
@@ -7415,16 +8130,12 @@ struct SN_RevivePlayer
 	u32 activeID; // 4 bytes
 	u32 inactiveID; // 4 bytes
 	u32 followID; // 4 bytes
-	u8 reviveBySelf; // 1 bytes
-	// position: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	u8 reviveBySelf; // 1 bytes (bool)
+	float3 position; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x9a3099
 };
 POP_PACKED
 ASSERT_SIZE(SN_RevivePlayer, 29);
-
 PUSH_PACKED
 struct SN_RevivePlayerAtStartingPoint
 {
@@ -7432,15 +8143,11 @@ struct SN_RevivePlayerAtStartingPoint
 	u32 usn; // 4 bytes
 	u32 activeID; // 4 bytes
 	u32 inactiveID; // 4 bytes
-	// position: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 position; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x9a322b
 };
 POP_PACKED
 ASSERT_SIZE(SN_RevivePlayerAtStartingPoint, 24);
-
 PUSH_PACKED
 struct SN_RespawnDelaytime
 {
@@ -7467,12 +8174,17 @@ struct SN_StartGameNotQualified
 {
 	enum { NET_ID = 62402 };
 	u32 reason; // 4 bytes
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (members:VEC of wide strings, wire elem = u16 len + wchar[len]):
+	u16 members_count; // 2 bytes
+	struct
+	{
+		u16 len; // 2 bytes
+		wchar_t str[1]; // 2 bytes
+	} members[1]; // 4 bytes
 	// logger 0x9a6170
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_StartGameNotQualified, 10);
 PUSH_PACKED
 struct SQ_KickFromGameserver
 {
@@ -7487,25 +8199,39 @@ PUSH_PACKED
 struct SN_WarehouseItemUpdate
 {
 	enum { NET_ID = 62405 };
-	u32 field_0; // 4 bytes
-	u8 field_1; // 1 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u8 field_6; // 1 bytes
-	i64 field_7; // 8 bytes
-	u16 field_8; // 2 bytes
-	u8 field_9; // 1 bytes
-	u32 field_10; // 4 bytes
-	u8 field_11; // 1 bytes
-	u32 field_12; // 4 bytes
-	u8 field_13; // 1 bytes
+	// variable part (ST_PROFILE_ITEM):
+	PUSH_PACKED
+	struct Item
+	{
+		u32 m_itemID; // 4 bytes
+		u8 m_invenType; // 1 bytes
+		u32 m_slot; // 4 bytes
+		u32 m_itemIndex; // 4 bytes
+		u32 m_count; // 4 bytes
+		u32 m_propertyGroupIndex; // 4 bytes
+		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
+		i64 m_lifeEndTimeUTC; // 8 bytes
+		u16 m_properties_count; // 2 bytes
+		// variable part (ST_ITEM_PROPERTY):
+		PUSH_PACKED
+		struct Property
+		{
+			u8 _Type; // 1 bytes
+			u32 _TypeDetail; // 4 bytes
+			u8 _ValueType; // 1 bytes
+			f32 _Value; // 4 bytes
+			u8 _Fixed; // 1 bytes (bool)
+		};
+		POP_PACKED
+		Property m_properties[1]; // 11 bytes
+	};
+	POP_PACKED
+	u16 updatedItemList_count; // 2 bytes
+	Item updatedItemList[1]; // 43 bytes
 	// logger 0x9a85b4
 };
 POP_PACKED
-ASSERT_SIZE(SN_WarehouseItemUpdate, 43);
-
+ASSERT_SIZE(SN_WarehouseItemUpdate, 45);
 PUSH_PACKED
 struct SA_WarehouseExpand
 {
@@ -7531,19 +8257,27 @@ PUSH_PACKED
 struct SN_RewardItemList
 {
 	enum { NET_ID = 62410 };
+	// variable part (ST_REWARD_ITEM):
+	PUSH_PACKED
+	struct RewardItem
+	{
+		u32 m_ItemType; // 4 bytes
+		u32 m_ItemIndex; // 4 bytes
+		u32 m_ItemAmount; // 4 bytes
+	};
+	POP_PACKED
+	u16 rewardItemList_count; // 2 bytes
+	RewardItem rewardItemList[1]; // 12 bytes
 	u32 spSlotIndex; // 4 bytes
-	u32 vipSlotCount; // 4 bytes
-	u32 guildSkillSlotCount; // 4 bytes
-	u32 pcCafeSlotCount; // 4 bytes
-	u8 unk_0; // 1 bytes
-	u8 unk_1; // 1 bytes
-	u8 unk_2; // 1 bytes
-	u32 unk_3; // 4 bytes
+	u8 vipSlotCount; // 1 bytes
+	u8 guildSkillSlotCount; // 1 bytes
+	u8 pcCafeSlotCount; // 1 bytes
+	u16 pcCafeUserIds_count; // 2 bytes
+	u32 pcCafeUserIds[1]; // 4 bytes
 	// logger 0x9a336d
 };
 POP_PACKED
-ASSERT_SIZE(SN_RewardItemList, 23);
-
+ASSERT_SIZE(SN_RewardItemList, 27);
 PUSH_PACKED
 struct SN_RewardStageStart
 {
@@ -7577,48 +8311,78 @@ struct SA_RewardSelectSlot
 	enum { NET_ID = 62413 };
 	u32 retval; // 4 bytes
 	u32 slotIndex; // 4 bytes
-	// rewardItem: variable-size (string/vector)
-	u32 isSpecialSlot; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
+	// rewardItem (ST_REWARD_ITEM: m_ItemType, m_ItemIndex, m_ItemAmount):
+	PUSH_PACKED
+	struct RewardItem
+	{
+		u32 m_ItemType; // 4 bytes
+		u32 m_ItemIndex; // 4 bytes
+		u32 m_ItemAmount; // 4 bytes
+	};
+	POP_PACKED
+	RewardItem rewardItem; // 12 bytes
+	u8 isSpecialSlot; // 1 bytes (bool)
 	// logger 0x987b98
 };
 POP_PACKED
 ASSERT_SIZE(SA_RewardSelectSlot, 21);
-
 PUSH_PACKED
 struct SA_RewardSelectSlotAllRandom
 {
 	enum { NET_ID = 62414 };
 	u32 retval; // 4 bytes
+	// variable part (u32 VEC):
+	u16 slotIndexes_count; // 2 bytes
+	u32 slotIndexes[1]; // 4 bytes
+	// variable part (ST_REWARD_ITEM):
+	PUSH_PACKED
+	struct RewardItem
+	{
+		u32 m_ItemType; // 4 bytes
+		u32 m_ItemIndex; // 4 bytes
+		u32 m_ItemAmount; // 4 bytes
+	};
+	POP_PACKED
+	u16 rewardItems_count; // 2 bytes
+	RewardItem rewardItems[1]; // 12 bytes
 	u32 spSlotIndex; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
 	// logger 0x987cde
 };
 POP_PACKED
-ASSERT_SIZE(SA_RewardSelectSlotAllRandom, 24);
-
+ASSERT_SIZE(SA_RewardSelectSlotAllRandom, 28);
 PUSH_PACKED
 struct SN_RewardStageEnd
 {
 	enum { NET_ID = 62415 };
+	// variable part (ST_REWARD_ITEM):
+	PUSH_PACKED
+	struct RewardItem
+	{
+		u32 m_ItemType; // 4 bytes
+		u32 m_ItemIndex; // 4 bytes
+		u32 m_ItemAmount; // 4 bytes
+	};
+	POP_PACKED
+	u16 rewardItemList_count; // 2 bytes
+	RewardItem rewardItemList[1]; // 12 bytes
+	// variable part (ST_REWARD_SELECT_INFO):
+	PUSH_PACKED
+	struct RewardSelectInfo
+	{
+		u32 usn; // 4 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u16 pickedItemIndexes_count; // 2 bytes
+		u32 pickedItemIndexes[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 otherSelectList_count; // 2 bytes
+	RewardSelectInfo otherSelectList[1]; // 14 bytes
 	u32 spSlotIndex; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u16 unk_4; // 2 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
 	// logger 0x9a35f7
 };
 POP_PACKED
-ASSERT_SIZE(SN_RewardStageEnd, 28);
-
+ASSERT_SIZE(SN_RewardStageEnd, 34);
 PUSH_PACKED
 struct SA_RewardBuyChance
 {
@@ -7662,31 +8426,42 @@ struct SN_MailList
 	enum { NET_ID = 62419 };
 	u8 packetNum; // 1 bytes
 	u8 mailboxType; // 1 bytes
-	i64 unk_0; // 8 bytes
-	i64 unk_1; // 8 bytes
-	i64 unk_2; // 8 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
-	u16 unk_6; // 2 bytes
-	u16 unk_7; // 2 bytes
-	u16 unk_8; // 2 bytes
-	u32 unk_9; // 4 bytes
+	// variable part (ST_MAIL_EX):
+	PUSH_PACKED
+	struct MailEx
+	{
+		i64 mailId; // 8 bytes
+		i64 sendUTCDate; // 8 bytes
+		i64 expireUTCDate; // 8 bytes
+		u8 isRead; // 1 bytes (bool)
+		u8 isGMMail; // 1 bytes (bool)
+		u8 hasAttachment; // 1 bytes (bool)
+		u16 fromNickname_len; // 2 bytes
+		wchar_t fromNickname[1]; // 2 bytes
+		u16 subject_len; // 2 bytes
+		wchar_t subject[1]; // 2 bytes
+		u16 items_count; // 2 bytes
+		u32 items[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 mailList_count; // 2 bytes
+	MailEx mailList[1]; // 41 bytes
 	// logger 0x99a0bd
 };
 POP_PACKED
-ASSERT_SIZE(SN_MailList, 39);
-
+ASSERT_SIZE(SN_MailList, 45);
 PUSH_PACKED
 struct SN_MailBlocklist
 {
 	enum { NET_ID = 62420 };
 	u8 packetNum; // 1 bytes
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (VEC of wide strings):
+	u16 blockNicknameList_count; // 2 bytes
+	wchar_t blockNicknameList[1]; // 2 bytes (1 wchar)
 	// logger 0x999d11
 };
 POP_PACKED
+ASSERT_SIZE(SN_MailBlocklist, 5);
 
 PUSH_PACKED
 struct SN_MailWriteResult
@@ -7703,27 +8478,34 @@ struct SN_MailRead
 {
 	enum { NET_ID = 62422 };
 	i64 mailId; // 8 bytes
-	u8 isRead; // 1 bytes
-	u8 isGMMail; // 1 bytes
-	// fromNickname: variable-size (string/vector)
-	// subject: variable-size (string/vector)
-	// content: variable-size (string/vector)
-	u16 sendUTCDate; // 2 bytes
-	u16 expireUTCDate; // 2 bytes
-	u16 money; // 2 bytes
+	u8 isRead; // 1 bytes (bool)
+	u8 isGMMail; // 1 bytes (bool)
+	u16 fromNickname_len; // 2 bytes
+	wchar_t fromNickname[1]; // 2 bytes (wide string)
+	u16 subject_len; // 2 bytes
+	wchar_t subject[1]; // 2 bytes (wide string)
+	u16 content_len; // 2 bytes
+	wchar_t content[1]; // 2 bytes (wide string)
+	i64 sendUTCDate; // 8 bytes
+	i64 expireUTCDate; // 8 bytes
+	i64 money; // 8 bytes
 	i64 exp; // 8 bytes
 	i64 ccoin; // 8 bytes
-	i64 guildFund; // 8 bytes
-	i64 unk_0; // 8 bytes
-	i64 unk_1; // 8 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	// NOTE: 3 variable-size field(s) after the fixed prefix
+	u32 guildFund; // 4 bytes
+	// variable part (ST_MAIL_ITEM):
+	PUSH_PACKED
+	struct MailItem
+	{
+		u32 itemIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 itemList_count; // 2 bytes
+	MailItem itemList[1]; // 8 bytes
 	// logger 0x99a480
 };
 POP_PACKED
-
+ASSERT_SIZE(SN_MailRead, 76);
 PUSH_PACKED
 struct SN_MailGetAttachmentResult
 {
@@ -7731,15 +8513,22 @@ struct SN_MailGetAttachmentResult
 	u32 nErrorType; // 4 bytes
 	i64 mailId; // 8 bytes
 	i64 expireUTCDate; // 8 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
+	// takenItems/remainItems: VEC<ST_MailItem>
+	PUSH_PACKED
+	struct ST_MailItem
+	{
+		u32 itemIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 takenItems_count; // 2 bytes
+	ST_MailItem takenItems[1]; // 8 bytes
+	u16 remainItems_count; // 2 bytes
+	ST_MailItem remainItems[1]; // 8 bytes
 	// logger 0x999e5a
 };
 POP_PACKED
-ASSERT_SIZE(SN_MailGetAttachmentResult, 36);
-
+ASSERT_SIZE(SN_MailGetAttachmentResult, 40);
 PUSH_PACKED
 struct SN_MailMoveResult
 {
@@ -7754,22 +8543,24 @@ PUSH_PACKED
 struct SN_GameEventActivated
 {
 	enum { NET_ID = 62427 };
-	u32 field_0; // 4 bytes
+	// eventIndexList: VEC<u32>
+	u16 eventIndexList_count; // 2 bytes
+	u32 eventIndexList[1]; // 4 bytes
 	// logger 0x9944c3
 };
 POP_PACKED
-ASSERT_SIZE(SN_GameEventActivated, 4);
-
+ASSERT_SIZE(SN_GameEventActivated, 6);
 PUSH_PACKED
 struct SN_GameEventPending
 {
 	enum { NET_ID = 62428 };
-	u32 field_0; // 4 bytes
+	// variable part (VEC of u32 event indices):
+	u16 eventIndexList_count; // 2 bytes
+	u32 eventIndexList[1]; // 4 bytes
 	// logger 0x994677
 };
 POP_PACKED
-ASSERT_SIZE(SN_GameEventPending, 4);
-
+ASSERT_SIZE(SN_GameEventPending, 6);
 PUSH_PACKED
 struct SN_GameEventStart
 {
@@ -7818,94 +8609,91 @@ struct SN_NotifyCooltime
 {
 	enum { NET_ID = 62433 };
 	u32 characterID; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
+	// coolTimeList: VEC<PST_Cooltime>
+	PUSH_PACKED
+	struct PST_Cooltime
+	{
+		u32 coolTimeType; // 4 bytes
+		u32 coolTimeID; // 4 bytes
+		u32 leftCoolTime; // 4 bytes
+		u32 totalCoolTime; // 4 bytes
+	};
+	POP_PACKED
+	u16 coolTimeList_count; // 2 bytes
+	PST_Cooltime coolTimeList[1]; // 16 bytes
 	// logger 0x99c2e8
 };
 POP_PACKED
-ASSERT_SIZE(SN_NotifyCooltime, 20);
-
+ASSERT_SIZE(SN_NotifyCooltime, 22);
 PUSH_PACKED
 struct SN_MailListNewInbox
 {
 	enum { NET_ID = 62434 };
 	u8 mailboxType; // 1 bytes
-	i64 unk_0; // 8 bytes
-	i64 unk_1; // 8 bytes
-	i64 unk_2; // 8 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
-	u8 unk_5; // 1 bytes
-	u16 unk_6; // 2 bytes
-	u16 unk_7; // 2 bytes
-	u16 unk_8; // 2 bytes
-	u32 unk_9; // 4 bytes
+	// variable part (ST_MAIL_EX):
+	PUSH_PACKED
+	struct MailEx
+	{
+		i64 mailId; // 8 bytes
+		i64 sendUTCDate; // 8 bytes
+		i64 expireUTCDate; // 8 bytes
+		u8 isRead; // 1 bytes (bool)
+		u8 isGMMail; // 1 bytes (bool)
+		u8 hasAttachment; // 1 bytes (bool)
+		u16 fromNickname_len; // 2 bytes
+		wchar_t fromNickname[1]; // 2 bytes
+		u16 subject_len; // 2 bytes
+		wchar_t subject[1]; // 2 bytes
+		u16 items_count; // 2 bytes
+		u32 items[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 mailList_count; // 2 bytes
+	MailEx mailList[1]; // 41 bytes
 	// logger 0x99a261
 };
 POP_PACKED
-ASSERT_SIZE(SN_MailListNewInbox, 38);
-
+ASSERT_SIZE(SN_MailListNewInbox, 44);
 PUSH_PACKED
 struct SN_PlayerServerPosition
 {
 	enum { NET_ID = 62435 };
-	// Pos: variable-size (string/vector)
-	// MoveDir: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
+	float3 Pos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	// ST_POS2:
+	f32 fMoveDirX; // 4 bytes (fX)
+	f32 fMoveDirY; // 4 bytes (fY)
 	// logger 0x99dbf6
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerServerPosition, 20);
-
 PUSH_PACKED
 struct SN_RemoteServerPosition
 {
 	enum { NET_ID = 62436 };
 	i64 remoteServerID; // 8 bytes
-	// pos: variable-size (string/vector)
-	// dir: variable-size (string/vector)
-	u32 boundType; // 4 bytes
-	u32 durationType; // 4 bytes
-	u32 colorType; // 4 bytes
-	// dim: variable-size (string/vector)
-	u32 flag; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
-	u8 unk_3; // 1 bytes
-	u8 unk_4; // 1 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u8 unk_8; // 1 bytes
+	float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	float3 dir; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u8 boundType; // 1 bytes
+	u8 durationType; // 1 bytes
+	u8 colorType; // 1 bytes
+	float3 dim; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u8 flag; // 1 bytes
 	// logger 0x9a1369
 };
 POP_PACKED
 ASSERT_SIZE(SN_RemoteServerPosition, 48);
-
 PUSH_PACKED
 struct SN_MonsterServerPosition
 {
 	enum { NET_ID = 62437 };
 	u32 monsterID; // 4 bytes
-	// Pos: variable-size (string/vector)
-	// MoveDir: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
+	float3 Pos; // 12 bytes (ST_POS3: fX, fY, fZ)
+	f32 MoveDir_fX; // 4 bytes (ST_POS2: fX)
+	f32 MoveDir_fY; // 4 bytes (ST_POS2: fY)
 	// logger 0x99bbdb
 };
 POP_PACKED
 ASSERT_SIZE(SN_MonsterServerPosition, 24);
-
 PUSH_PACKED
 struct SN_MonsterServerChase
 {
@@ -7946,72 +8734,112 @@ PUSH_PACKED
 struct SA_PvpRecord
 {
 	enum { NET_ID = 62441 };
-	u8 field_0; // 1 bytes
-	u8 field_1; // 1 bytes
-	u32 field_2; // 4 bytes
-	u32 field_3; // 4 bytes
-	u32 field_4; // 4 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
-	u32 field_10; // 4 bytes
-	u8 field_11; // 1 bytes
-	u32 field_12; // 4 bytes
-	u32 field_13; // 4 bytes
-	u32 field_14; // 4 bytes
-	u32 field_15; // 4 bytes
+	// variable part (ST_PVP_RECORD):
+	PUSH_PACKED
+	struct PvpRecord
+	{
+		u8 gameType; // 1 bytes
+		u8 pvpSaveType; // 1 bytes
+		u32 winCount; // 4 bytes
+		u32 loseCount; // 4 bytes
+		u32 drawCount; // 4 bytes
+		u32 leaveCount; // 4 bytes
+		u32 killCount; // 4 bytes
+		u32 deathCount; // 4 bytes
+		u32 assistCount; // 4 bytes
+		u32 score; // 4 bytes
+		u32 data1; // 4 bytes
+	};
+	POP_PACKED
+	u16 stPvpRecords_count; // 2 bytes
+	PvpRecord stPvpRecords[1]; // 38 bytes
+	// variable part (ST_PVP_OLYMPIC_RECORD):
+	PUSH_PACKED
+	struct PvpOlympicRecord
+	{
+		u8 pvpSaveType; // 1 bytes
+		u32 firstCount; // 4 bytes
+		u32 secondCount; // 4 bytes
+		u32 thirdCount; // 4 bytes
+		u32 timeRecord; // 4 bytes
+	};
+	POP_PACKED
+	u16 stPvpOlympicRecords_count; // 2 bytes
+	PvpOlympicRecord stPvpOlympicRecords[1]; // 17 bytes
 	// logger 0x9867c6
 };
 POP_PACKED
-ASSERT_SIZE(SA_PvpRecord, 55);
-
+ASSERT_SIZE(SA_PvpRecord, 59);
 PUSH_PACKED
 struct SA_PvpDetailRecord
 {
 	enum { NET_ID = 62442 };
 	u32 gameType; // 4 bytes
 	u8 pvpSaveType; // 1 bytes
-	// stPvpMasterRecord: variable-size (string/vector)
+	// stPvpMasterRecord (ST_PVP_MASTER_RECORD):
+	PUSH_PACKED
+	struct PvpMasterRecord
+	{
+		u32 mostPlayClass; // 4 bytes
+		u32 mostPlayCount; // 4 bytes
+		u32 mostWinClass; // 4 bytes
+		u32 mostWinCount; // 4 bytes
+	};
+	POP_PACKED
+	PvpMasterRecord stPvpMasterRecord; // 16 bytes
+	// variable part (ST_PVP_RECENT_RECORD):
+	PUSH_PACKED
+	struct PvpRecentRecord
+	{
+		u8 resultType; // 1 bytes
+		u32 fstClass; // 4 bytes
+		u32 scndClass; // 4 bytes
+		u16 myScore; // 2 bytes
+		u16 myTeamScore; // 2 bytes
+		u16 enemyTeamScore; // 2 bytes
+		u8 myTeamPlayerCount; // 1 bytes
+		u8 enemyTeamPlayerCount; // 1 bytes
+		u8 killCount; // 1 bytes
+		u8 deathCount; // 1 bytes
+		u8 assistCount; // 1 bytes
+		u8 occupyCount; // 1 bytes
+		u32 pvpSpecificRecord; // 4 bytes
+		i64 beginTimeStamp; // 8 bytes
+	};
+	POP_PACKED
+	u16 recentGames_count; // 2 bytes
+	PvpRecentRecord recentGames[1]; // 33 bytes
 	u32 olympicTotalPlayCount; // 4 bytes
 	u32 olympicWorldRecord; // 4 bytes
-	// olympicWorldRecordNickname: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u8 unk_2; // 1 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u16 unk_5; // 2 bytes
-	u16 unk_6; // 2 bytes
-	u16 unk_7; // 2 bytes
-	u32 unk_8; // 4 bytes
-	i64 unk_9; // 8 bytes
-	u32 unk_10; // 4 bytes
-	u32 unk_11; // 4 bytes
-	u16 unk_12; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 olympicWorldRecordNickname_len; // 2 bytes
+	wchar_t olympicWorldRecordNickname[1]; // 2 bytes
 	// logger 0x9863cc
 };
 POP_PACKED
+ASSERT_SIZE(SA_PvpDetailRecord, 68);
 
 PUSH_PACKED
 struct SN_SummaryRewardResult
 {
 	enum { NET_ID = 62443 };
 	u32 result; // 4 bytes
-	// summaryInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u8 unk_4; // 1 bytes
-	i64 unk_5; // 8 bytes
+	// summaryInfo (PST_SUMMARY_INFO):
+	PUSH_PACKED
+	struct SummaryInfo
+	{
+		u32 summaryIndex; // 4 bytes
+		u32 stageIndex; // 4 bytes
+		u32 summaryType; // 4 bytes
+		u32 summaryData; // 4 bytes
+		u8 rewardReceived; // 1 bytes (bool)
+		i64 completedDate; // 8 bytes
+	};
+	POP_PACKED
+	SummaryInfo summaryInfo; // 25 bytes
 	// logger 0x9a67b2
 };
 POP_PACKED
 ASSERT_SIZE(SN_SummaryRewardResult, 29);
-
 PUSH_PACKED
 struct SN_ReduceCooltime
 {
@@ -8030,17 +8858,13 @@ struct SN_BroadcastGamePingData
 {
 	enum { NET_ID = 62445 };
 	u32 characterID; // 4 bytes
-	// pingPos: variable-size (string/vector)
+	float3 pingPos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 targetID; // 4 bytes
 	u32 pingData; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
 	// logger 0x98dfd9
 };
 POP_PACKED
 ASSERT_SIZE(SN_BroadcastGamePingData, 24);
-
 PUSH_PACKED
 struct SN_BroadcastEvade
 {
@@ -8061,14 +8885,14 @@ struct SN_ErrorMessage
 	u8 type; // 1 bytes
 	u32 duration; // 4 bytes
 	u32 errCode; // 4 bytes
-	// param1: variable-size (string/vector)
-	// param2: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 param1_len; // 2 bytes
+	wchar_t param1[1]; // 2 bytes
+	u16 param2_len; // 2 bytes
+	wchar_t param2[1]; // 2 bytes
 	// logger 0x9920a9
 };
 POP_PACKED
+ASSERT_SIZE(SN_ErrorMessage, 17);
 
 PUSH_PACKED
 struct SN_BushObjectState
@@ -8112,14 +8936,21 @@ struct SN_SortieMasterBanPhaseStart
 	u32 enemiesLeaderUserId; // 4 bytes
 	u32 timeSec; // 4 bytes
 	u32 banCount; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (PST_SORTIE_CHARACTER_SLOT_INFO):
+	PUSH_PACKED
+	struct SortieCharacterSlotInfo
+	{
+		u32 creatureIndex; // 4 bytes
+		u16 slotStates_count; // 2 bytes
+		u32 slotStates[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 enemiesSlotInfos_count; // 2 bytes
+	SortieCharacterSlotInfo enemiesSlotInfos[1]; // 10 bytes
 	// logger 0x9a4b2a
 };
 POP_PACKED
-ASSERT_SIZE(SN_SortieMasterBanPhaseStart, 26);
-
+ASSERT_SIZE(SN_SortieMasterBanPhaseStart, 28);
 PUSH_PACKED
 struct SN_SortieMasterAssignPhaseStart
 {
@@ -8128,14 +8959,21 @@ struct SN_SortieMasterAssignPhaseStart
 	u32 enemiesLeaderUserId; // 4 bytes
 	u32 timeSec; // 4 bytes
 	u32 assignCount; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (ST_SORTIE_CHARACTER_SLOT_INFO):
+	PUSH_PACKED
+	struct SlotInfo
+	{
+		u32 creatureIndex; // 4 bytes
+		u16 slotStates_count; // 2 bytes
+		u32 slotStates[1]; // 4 bytes
+	};
+	POP_PACKED
+	u16 enemiesSlotInfos_count; // 2 bytes
+	SlotInfo enemiesSlotInfos[1]; // 10 bytes
 	// logger 0x9a4761
 };
 POP_PACKED
-ASSERT_SIZE(SN_SortieMasterAssignPhaseStart, 26);
-
+ASSERT_SIZE(SN_SortieMasterAssignPhaseStart, 28);
 PUSH_PACKED
 struct SA_SortieMasterBan
 {
@@ -8182,173 +9020,245 @@ PUSH_PACKED
 struct SN_SortieMasterBanPhaseEnd
 {
 	enum { NET_ID = 62463 };
-	// alliesBanInfo: variable-size (string/vector)
-	// enemiesBanInfo: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
+	// variable part (ST_SORTIE_MASTER_BAN_INFO): u16 count + u32 per element
+	u16 alliesBanInfo_count; // 2 bytes
+	u32 alliesBanInfo[1]; // 4 bytes
+	u16 enemiesBanInfo_count; // 2 bytes
+	u32 enemiesBanInfo[1]; // 4 bytes
 	// logger 0x9a4a18
 };
 POP_PACKED
 ASSERT_SIZE(SN_SortieMasterBanPhaseEnd, 12);
-
 PUSH_PACKED
 struct SN_SortieMasterAssignPhaseEnd
 {
 	enum { NET_ID = 62464 };
-	// alliesAssignInfo: variable-size (string/vector)
-	// enemiesAssignInfo: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u32 unk_7; // 4 bytes
-	u16 unk_8; // 2 bytes
-	u32 unk_9; // 4 bytes
+	// alliesAssignInfo / enemiesAssignInfo (PST_SORTIE_MASTER_ASSIGN_INFO):
+	PUSH_PACKED
+	struct AssignInfo
+	{
+		u32 assignedUserId; // 4 bytes
+		u16 candidateUserIds_count; // 2 bytes
+		u32 candidateUserIds[1]; // 4 bytes (VEC)
+		u16 assignCreatureIndexes_count; // 2 bytes
+		u32 assignCreatureIndexes[1]; // 4 bytes (VEC)
+	};
+	POP_PACKED
+	AssignInfo alliesAssignInfo; // 16 bytes
+	AssignInfo enemiesAssignInfo; // 16 bytes
 	// logger 0x9a464f
 };
 POP_PACKED
 ASSERT_SIZE(SN_SortieMasterAssignPhaseEnd, 32);
-
 PUSH_PACKED
 struct SA_TierStageRecord
 {
 	enum { NET_ID = 62470 };
 	u8 seasonId; // 1 bytes
-	// stageRecord: variable-size (string/vector)
-	u8 sectorId; // 1 bytes
-	u8 unk_0; // 1 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u8 unk_9; // 1 bytes
-	u16 unk_10; // 2 bytes
-	u16 unk_11; // 2 bytes
-	u32 unk_12; // 4 bytes
-	u32 unk_13; // 4 bytes
-	u32 unk_14; // 4 bytes
-	u32 unk_15; // 4 bytes
-	u32 unk_16; // 4 bytes
+	// stageRecord (PST_TIER_STAGE_RECORD):
+	PUSH_PACKED
+	struct StageRecord
+	{
+		u8 pvpSaveType; // 1 bytes
+		u8 tierType; // 1 bytes
+		u16 tierPoint; // 2 bytes
+		u16 sectorId; // 2 bytes
+		u8 sectorRanking; // 1 bytes
+		u32 seasonalWin; // 4 bytes
+		u32 seasonalDraw; // 4 bytes
+		u32 seasonalLose; // 4 bytes
+		u32 seasonalLeave; // 4 bytes
+	};
+	POP_PACKED
+	StageRecord stageRecord; // 23 bytes
+	u32 sectorId; // 4 bytes
+	// variable part (PST_TIER_SECTOR_RANKING_NODE):
+	PUSH_PACKED
+	struct RankingNode
+	{
+		u8 sectorRanking; // 1 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u16 tierPoint; // 2 bytes
+		u32 totalWin; // 4 bytes
+		u32 recentWin; // 4 bytes
+		u32 recentLose; // 4 bytes
+		u32 recentDraw; // 4 bytes
+		u32 recentLeave; // 4 bytes
+	};
+	POP_PACKED
+	u16 sectorRankingList_count; // 2 bytes
+	RankingNode sectorRankingList[1]; // 27 bytes
 	// logger 0x989966
 };
 POP_PACKED
-ASSERT_SIZE(SA_TierStageRecord, 53);
-
+ASSERT_SIZE(SA_TierStageRecord, 57);
 PUSH_PACKED
 struct SA_PvpRanking
 {
 	enum { NET_ID = 62471 };
 	u8 seasonId; // 1 bytes
 	u8 pvpSaveType; // 1 bytes
-	u8 unk_0; // 1 bytes
-	u16 unk_1; // 2 bytes
-	u8 unk_2; // 1 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
+	// variable part (SA_PVP_RANKING rankingList):
+	PUSH_PACKED
+	struct PvpRanking
+	{
+		u8 ranking; // 1 bytes
+		u16 nickname_len; // 2 bytes
+		wchar_t nickname[1]; // 2 bytes
+		u8 tierType; // 1 bytes
+		u16 tierPoint; // 2 bytes
+		u32 totalWin; // 4 bytes
+		u32 recentWin; // 4 bytes
+		u32 recentLose; // 4 bytes
+		u32 recentDraw; // 4 bytes
+		u32 recentLeave; // 4 bytes
+	};
+	POP_PACKED
+	u16 rankingList_count; // 2 bytes
+	PvpRanking rankingList[1]; // 28 bytes
 	// logger 0x986622
 };
 POP_PACKED
-ASSERT_SIZE(SA_PvpRanking, 28);
-
+ASSERT_SIZE(SA_PvpRanking, 32);
 PUSH_PACKED
 struct SA_PveRanking
 {
 	enum { NET_ID = 62475 };
 	u32 stageId; // 4 bytes
-	u32 packetNum; // 4 bytes
-	// highScore: variable-size (string/vector)
-	u32 highScoreClearRankType; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u16 unk_5; // 2 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
-	u32 unk_9; // 4 bytes
-	u16 unk_10; // 2 bytes
-	u32 unk_11; // 4 bytes
-	u32 unk_12; // 4 bytes
-	u16 unk_13; // 2 bytes
+	u8 packetNum; // 1 bytes
+	// highScore (ST_PVE_RANKING):
+	PUSH_PACKED
+	struct PveRanking
+	{
+		u32 ranking; // 4 bytes
+		u32 totalScore; // 4 bytes
+		u32 playTime; // 4 bytes
+		u32 deathCount; // 4 bytes
+		// variable part (ST_MEMBER):
+		PUSH_PACKED
+		struct Member
+		{
+			u32 mainClassType; // 4 bytes
+			u32 subClassType; // 4 bytes
+			u16 nickname_len; // 2 bytes
+			wchar_t nickname[1]; // 2 bytes
+		};
+		POP_PACKED
+		u16 member_count; // 2 bytes
+		Member member[1]; // 12 bytes
+	};
+	POP_PACKED
+	u8 highScoreClearRankType; // 1 bytes
+	// variable part (ST_PVE_RANKING):
+	u16 rankingList_count; // 2 bytes
+	PveRanking rankingList[1]; // 30 bytes
 	// logger 0x986113
 };
 POP_PACKED
-ASSERT_SIZE(SA_PveRanking, 60);
-
+ASSERT_SIZE(SA_PveRanking, 38);
 PUSH_PACKED
 struct SA_MyPveRanking
 {
 	enum { NET_ID = 62476 };
 	u32 stageIndex; // 4 bytes
-	// highScore: variable-size (string/vector)
-	u32 highScoreClearRankType; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u8 unk_7; // 1 bytes
+	// highScore (ST_PVE_RANKING):
+	PUSH_PACKED
+	struct PveRanking
+	{
+		u32 ranking; // 4 bytes
+		u32 totalScore; // 4 bytes
+		u32 playTime; // 4 bytes
+		u32 deathCount; // 4 bytes
+		// variable part (ST_MEMBER):
+		PUSH_PACKED
+		struct Member
+		{
+			u32 mainClassType; // 4 bytes
+			u32 subClassType; // 4 bytes
+			u16 nickname_len; // 2 bytes
+			wchar_t nickname[1]; // 2 bytes
+		};
+		POP_PACKED
+		u16 member_count; // 2 bytes
+		Member member[1]; // 12 bytes
+	};
+	POP_PACKED
+	PveRanking highScore; // 30 bytes
+	u8 highScoreClearRankType; // 1 bytes
 	// logger 0x984b97
 };
 POP_PACKED
-ASSERT_SIZE(SA_MyPveRanking, 33);
-
+ASSERT_SIZE(SA_MyPveRanking, 35);
 PUSH_PACKED
 struct SN_PveLastgameRanking
 {
 	enum { NET_ID = 62477 };
 	u32 stageId; // 4 bytes
 	u8 packetNum; // 1 bytes
+	// variable part (ST_PVE_RANKING):
+	PUSH_PACKED
+	struct PveRanking
+	{
+		u32 ranking; // 4 bytes
+		u32 totalScore; // 4 bytes
+		u32 playTime; // 4 bytes
+		u32 deathCount; // 4 bytes
+		// variable part (ST_MEMBER):
+		PUSH_PACKED
+		struct Member
+		{
+			u32 mainClassType; // 4 bytes
+			u32 subClassType; // 4 bytes
+			u16 nickname_len; // 2 bytes
+			wchar_t nickname[1]; // 2 bytes
+		};
+		POP_PACKED
+		u16 member_count; // 2 bytes
+		Member member[1]; // 12 bytes
+	};
+	POP_PACKED
+	u16 rankingList_count; // 2 bytes
+	PveRanking rankingList[1]; // 30 bytes
 	u32 ranking; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u16 unk_6; // 2 bytes
-	u32 unk_7; // 4 bytes
 	// logger 0x99f7ea
 };
 POP_PACKED
-ASSERT_SIZE(SN_PveLastgameRanking, 37);
-
+ASSERT_SIZE(SN_PveLastgameRanking, 41);
 PUSH_PACKED
 struct SN_DefenceLastgameRanking
 {
 	enum { NET_ID = 62478 };
 	u32 stageId; // 4 bytes
 	u8 packetNum; // 1 bytes
+	// variable part (ST_DEFENCE_RANKING):
+	PUSH_PACKED
+	struct Ranking
+	{
+		u32 ranking; // 4 bytes
+		u32 clearStepIndex; // 4 bytes
+		u32 clearTime; // 4 bytes
+		// variable part (ST_MEMBER):
+		PUSH_PACKED
+		struct Member
+		{
+			u32 mainClassType; // 4 bytes
+			u32 subClassType; // 4 bytes
+			u16 nickname_len; // 2 bytes
+			wchar_t nickname[1]; // 2 bytes
+		};
+		POP_PACKED
+		u16 member_count; // 2 bytes
+		Member member[1]; // 12 bytes
+	};
+	POP_PACKED
+	u16 rankingList_count; // 2 bytes
+	Ranking rankingList[1]; // 26 bytes
 	u32 ranking; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u16 unk_2; // 2 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u16 unk_5; // 2 bytes
-	u32 unk_6; // 4 bytes
 	// logger 0x990cfb
 };
 POP_PACKED
-ASSERT_SIZE(SN_DefenceLastgameRanking, 33);
-
+ASSERT_SIZE(SN_DefenceLastgameRanking, 37);
 PUSH_PACKED
 struct SN_UNKNOWN_62479
 {
@@ -8379,12 +9289,13 @@ PUSH_PACKED
 struct SN_ActiveIngameEventList
 {
 	enum { NET_ID = 62480 };
-	u32 field_0; // 4 bytes
+	// variable part (VEC of u32):
+	u16 eventIndexList_count; // 2 bytes
+	u32 eventIndexList[1]; // 4 bytes
 	// logger 0x98b64c
 };
 POP_PACKED
-ASSERT_SIZE(SN_ActiveIngameEventList, 4);
-
+ASSERT_SIZE(SN_ActiveIngameEventList, 6);
 PUSH_PACKED
 struct SN_PveTodayStageInfo
 {
@@ -8430,49 +9341,55 @@ PUSH_PACKED
 struct SN_PvpEventAnnouncement
 {
 	enum { NET_ID = 62488 };
-	// stAnnounceMent: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
+	// stAnnounceMent (ST_PVP_ANNOUNCEMENT):
+	PUSH_PACKED
+	struct PvpAnnouncement
+	{
+		u32 announcementType; // 4 bytes
+		u32 announcementData; // 4 bytes
+		u32 score; // 4 bytes
+		u32 attackerID; // 4 bytes
+		u32 attackeeID; // 4 bytes
+		u8 isAllDead; // 1 bytes (bool)
+	};
+	POP_PACKED
+	PvpAnnouncement stAnnounceMent; // 21 bytes
 	// logger 0x99fcd2
 };
 POP_PACKED
 ASSERT_SIZE(SN_PvpEventAnnouncement, 21);
-
 PUSH_PACKED
 struct SA_ChatChannelInvite
 {
 	enum { NET_ID = 62489 };
 	u32 retval; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// inviteeNickname (wide string, reader 0xa19080):
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes (wire: 2 + count*2)
 	// logger 0x97e42d
 };
 POP_PACKED
+ASSERT_SIZE(SA_ChatChannelInvite, 8);
 
 PUSH_PACKED
 struct SN_ChatChannelInvite
 {
 	enum { NET_ID = 62490 };
-	// inviterName: variable-size (string/vector)
-	// channelID: variable-size (string/vector)
-	u16 channelCenter; // 2 bytes
-	u16 channelType; // 2 bytes
-	// channelName: variable-size (string/vector)
-	// channelPassword: variable-size (string/vector)
-	u32 bInvite; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u8 unk_3; // 1 bytes
-	// NOTE: 4 variable-size field(s) after the fixed prefix
+	u16 inviterName_len; // 2 bytes
+	wchar_t inviterName[1]; // 2 bytes
+	u16 channelID_len; // 2 bytes
+	wchar_t channelID[1]; // 2 bytes
+	u32 channelCenter; // 4 bytes
+	u32 channelType; // 4 bytes
+	u16 channelName_len; // 2 bytes
+	wchar_t channelName[1]; // 2 bytes
+	u16 channelPassword_len; // 2 bytes
+	wchar_t channelPassword[1]; // 2 bytes
+	u8 bInvite; // 1 bytes (bool)
 	// logger 0x98f5af
 };
 POP_PACKED
+ASSERT_SIZE(SN_ChatChannelInvite, 25);
 
 PUSH_PACKED
 struct SA_ChatChannelInviteFeedback
@@ -8489,14 +9406,14 @@ struct SN_ChatChannelInviteFeedback
 {
 	enum { NET_ID = 62492 };
 	u32 errorCode; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	// channelName: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2*len bytes (wide string)
+	u16 channelName_len; // 2 bytes
+	wchar_t channelName[1]; // 2*len bytes (wide string)
 	// logger 0x98f747
 };
 POP_PACKED
+// variable length: 4 + (2 + 2*inviteeNickname_len) + (2 + 2*channelName_len); no static ASSERT_SIZE
 
 PUSH_PACKED
 struct SN_InteractionStatus
@@ -8553,29 +9470,21 @@ struct SQ_TeleportObject
 {
 	enum { NET_ID = 62497 };
 	u32 objectID; // 4 bytes
-	// pos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x9a9180
 };
 POP_PACKED
 ASSERT_SIZE(SQ_TeleportObject, 16);
-
 PUSH_PACKED
 struct SN_PlayerSyncTeleport
 {
 	enum { NET_ID = 62498 };
 	u32 objectID; // 4 bytes
-	// pos: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	// logger 0x99e57b
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerSyncTeleport, 16);
-
 PUSH_PACKED
 struct SN_ChangeBattleState
 {
@@ -8615,32 +9524,35 @@ struct SN_ScoreUpdate
 	enum { NET_ID = 62504 };
 	u32 usn; // 4 bytes
 	u32 teamType; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
+	// variable part (PST_SCORE_PAIR):
+	PUSH_PACKED
+	struct ScorePair
+	{
+		u32 type; // 4 bytes
+		u32 value; // 4 bytes
+	};
+	POP_PACKED
+	u16 records_count; // 2 bytes
+	ScorePair records[1]; // 8 bytes
 	// logger 0x9a3d3a
 };
 POP_PACKED
-ASSERT_SIZE(SN_ScoreUpdate, 16);
-
+ASSERT_SIZE(SN_ScoreUpdate, 18);
 PUSH_PACKED
 struct SN_AIMonsterSyncMove
 {
 	enum { NET_ID = 62505 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u16 field_2; // 2 bytes
-	u16 field_3; // 2 bytes
-	u16 field_4; // 2 bytes
-	u16 field_5; // 2 bytes
-	u16 field_6; // 2 bytes
-	u32 field_7; // 4 bytes
-	u32 field_8; // 4 bytes
-	u32 field_9; // 4 bytes
-	u32 field_10; // 4 bytes
-	u32 field_11; // 4 bytes
-	u32 field_12; // 4 bytes
-	u8 field_13; // 1 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes
+	u32 monsterID; // 4 bytes
+	i16 upperBodyPitch; // 2 bytes
+	i16 upperBodyYaw; // 2 bytes
+	i16 lowerBodyYaw; // 2 bytes
+	i16 angularSpeed; // 2 bytes
+	u16 linearSpeed; // 2 bytes
+	float3 currPos; // 12 bytes (ST_POS3)
+	float3 goalPos; // 12 bytes (ST_POS3)
+	u8 movingFlags; // 1 bytes
+	// logger 0x98ba71
 };
 POP_PACKED
 ASSERT_SIZE(SN_AIMonsterSyncMove, 40);
@@ -8649,13 +9561,13 @@ PUSH_PACKED
 struct SN_AIMonsterSyncTurn
 {
 	enum { NET_ID = 62506 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u16 field_2; // 2 bytes
-	u16 field_3; // 2 bytes
-	u16 field_4; // 2 bytes
-	u16 field_5; // 2 bytes
-	// logger none
+	u8 excludedFieldBits; // 1 bytes
+	u32 monsterID; // 4 bytes
+	i16 upperBodyPitch; // 2 bytes
+	i16 upperBodyYaw; // 2 bytes
+	i16 lowerBodyYaw; // 2 bytes
+	i16 angularSpeed; // 2 bytes
+	// logger 0x98bccb
 };
 POP_PACKED
 ASSERT_SIZE(SN_AIMonsterSyncTurn, 13);
@@ -8666,54 +9578,75 @@ struct SA_ItemTrade
 	enum { NET_ID = 62507 };
 	u32 result; // 4 bytes
 	i64 goldAmount; // 8 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (vector of LogPST_ItemSimpleInfo @0x97a37a):
+	PUSH_PACKED
+	struct ItemSimpleInfo
+	{
+		u32 itemId; // 4 bytes
+		u32 itemDocIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 tradedItemList_count; // 2 bytes
+	ItemSimpleInfo tradedItemList[1]; // 12 bytes
 	// logger 0x983d19
 };
 POP_PACKED
-ASSERT_SIZE(SA_ItemTrade, 24);
-
+ASSERT_SIZE(SA_ItemTrade, 26);
 PUSH_PACKED
 struct SA_ItemCraft
 {
 	enum { NET_ID = 62508 };
 	u8 craftingItemType; // 1 bytes
 	u32 result; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (ItemSimpleInfo):
+	PUSH_PACKED
+	struct ItemSimpleInfo
+	{
+		u32 itemId; // 4 bytes
+		u32 itemDocIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 craftedItemList_count; // 2 bytes
+	ItemSimpleInfo craftedItemList[1]; // 12 bytes
 	// logger 0x983715
 };
 POP_PACKED
-ASSERT_SIZE(SA_ItemCraft, 17);
-
+ASSERT_SIZE(SA_ItemCraft, 19);
 PUSH_PACKED
 struct SA_ItemDisassemble
 {
 	enum { NET_ID = 62509 };
 	u8 craftingItemType; // 1 bytes
 	u32 result; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
+	// variable part (PST_ITEM_SIMPLE_INFO):
+	PUSH_PACKED
+	struct ItemSimpleInfo
+	{
+		u32 itemId; // 4 bytes
+		u32 itemDocIndex; // 4 bytes
+		u32 itemCount; // 4 bytes
+	};
+	POP_PACKED
+	u16 dissolvedItemList_count; // 2 bytes
+	ItemSimpleInfo dissolvedItemList[1]; // 12 bytes
 	// logger 0x983960
 };
 POP_PACKED
-ASSERT_SIZE(SA_ItemDisassemble, 17);
-
+ASSERT_SIZE(SA_ItemDisassemble, 19);
 PUSH_PACKED
 struct SA_OlympicBestRecord
 {
 	enum { NET_ID = 62510 };
 	u32 personalRecord; // 4 bytes
 	u32 worldRecord; // 4 bytes
-	// worldRecordNickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 worldRecordNickname_len; // 2 bytes (u16 wchar count)
+	wchar_t worldRecordNickname[1]; // 2 bytes (wide string, count*2 payload)
 	// logger 0x9850a4
 };
 POP_PACKED
+ASSERT_SIZE(SA_OlympicBestRecord, 12);
 
 PUSH_PACKED
 struct SA_DefenceBestRecord
@@ -8732,16 +9665,23 @@ PUSH_PACKED
 struct SN_OlympicIngameRecords
 {
 	enum { NET_ID = 62512 };
-	u32 field_0; // 4 bytes
-	u8 field_1; // 1 bytes
-	u32 field_2; // 4 bytes
-	u8 field_3; // 1 bytes
-	u8 field_4; // 1 bytes
+	// variable part (ST_OLYMPIC_RECORD):
+	PUSH_PACKED
+	struct OlympicRecord
+	{
+		u32 usn; // 4 bytes
+		u8 ranking; // 1 bytes
+		u32 record; // 4 bytes
+		u8 isFinished; // 1 bytes (bool)
+		u8 isDisconnected; // 1 bytes (bool)
+	};
+	POP_PACKED
+	u16 rankingList_count; // 2 bytes
+	OlympicRecord rankingList[1]; // 11 bytes
 	// logger 0x99c9d8
 };
 POP_PACKED
-ASSERT_SIZE(SN_OlympicIngameRecords, 11);
-
+ASSERT_SIZE(SN_OlympicIngameRecords, 13);
 PUSH_PACKED
 struct SA_PveRefillBattery
 {
@@ -8808,20 +9748,24 @@ struct SN_TransformCharacter
 	u32 SkillSlot1; // 4 bytes
 	u32 SkillSlot2; // 4 bytes
 	u32 ugSkill; // 4 bytes
-	// initStat: variable-size (string/vector)
-	u16 baseMoveSpeed; // 2 bytes
-	u8 action; // 1 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u8 unk_2; // 1 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
+	// initStat (ST_BASE_STAT):
+	PUSH_PACKED
+	struct Stat
+	{
+		u8 type; // 1 bytes
+		f32 value; // 4 bytes
+	};
+	POP_PACKED
+	u16 maxStats_count; // 2 bytes
+	Stat maxStats[1]; // 5 bytes
+	u16 curStats_count; // 2 bytes
+	Stat curStats[1]; // 5 bytes
+	f32 baseMoveSpeed; // 4 bytes
+	u8 action; // 1 bytes (bool)
 	// logger 0x9a751e
 };
 POP_PACKED
 ASSERT_SIZE(SN_TransformCharacter, 47);
-
 PUSH_PACKED
 struct SN_ChangeCharacterMode
 {
@@ -8832,36 +9776,54 @@ struct SN_ChangeCharacterMode
 	u32 skillSlot1; // 4 bytes
 	u32 skillSlot2; // 4 bytes
 	u32 ugSkill; // 4 bytes
-	// initStat: variable-size (string/vector)
-	u16 baseMoveSpeed; // 2 bytes
+	// initStat (ST_BASE_STAT):
+	PUSH_PACKED
+	struct Stat
+	{
+		u8 type; // 1 bytes
+		f32 value; // 4 bytes
+	};
+	POP_PACKED
+	u16 maxStats_count; // 2 bytes
+	Stat maxStats[1]; // 5 bytes
+	u16 curStats_count; // 2 bytes
+	Stat curStats[1]; // 5 bytes
+	f32 baseMoveSpeed; // 4 bytes
 	u8 action; // 1 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u8 unk_2; // 1 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
 	// logger 0x98ed6a
 };
 POP_PACKED
 ASSERT_SIZE(SN_ChangeCharacterMode, 43);
-
 PUSH_PACKED
 struct SN_ItemOptiongroupList
 {
 	enum { NET_ID = 62520 };
-	u32 field_0; // 4 bytes
-	u16 field_1; // 2 bytes
-	u8 field_2; // 1 bytes
-	u32 field_3; // 4 bytes
-	u8 field_4; // 1 bytes
-	u32 field_5; // 4 bytes
-	u32 field_6; // 4 bytes
+	// variable part (optionGroupList VEC of PST_ITEM_OPTIONGROUP):
+	PUSH_PACKED
+	struct OptionGroup
+	{
+		u32 optionGroupIndex; // 4 bytes
+		// variable part (fixed VEC of PST_ITEM_OPTIONGROUP_PROPERTY):
+		PUSH_PACKED
+		struct Property
+		{
+			u8 propType; // 1 bytes
+			u32 propTypeDetail; // 4 bytes
+			u8 valueType; // 1 bytes
+			f32 minValue; // 4 bytes
+			f32 maxValue; // 4 bytes
+		};
+		POP_PACKED
+		u16 fixed_count; // 2 bytes
+		Property fixed[1]; // 14 bytes
+	};
+	POP_PACKED
+	u16 optionGroupList_count; // 2 bytes
+	OptionGroup optionGroupList[1]; // 20 bytes
 	// logger 0x998e02
 };
 POP_PACKED
-ASSERT_SIZE(SN_ItemOptiongroupList, 20);
-
+ASSERT_SIZE(SN_ItemOptiongroupList, 22);
 PUSH_PACKED
 struct SA_Honor
 {
@@ -8889,22 +9851,18 @@ struct SN_DynamicSyncAniTrack
 	u32 oid; // 4 bytes
 	u32 aniTrackType; // 4 bytes
 	u32 pathIndex; // 4 bytes
-	u8 isPlaying; // 1 bytes
+	u8 isPlaying; // 1 bytes (bool)
 	f32 aniMoveSpeedTimeSec; // 4 bytes
 	f32 progress; // 4 bytes
-	// pos: variable-size (string/vector)
+	float3 pos; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u32 curLoopCount; // 4 bytes
 	u32 maxLoopCount; // 4 bytes
-	u32 serverTime; // 4 bytes
-	u32 startTime; // 4 bytes
-	u32 unk_0; // 4 bytes
-	i64 unk_1; // 8 bytes
-	i64 unk_2; // 8 bytes
+	i64 serverTime; // 8 bytes
+	i64 startTime; // 8 bytes
 	// logger 0x9917b0
 };
 POP_PACKED
 ASSERT_SIZE(SN_DynamicSyncAniTrack, 57);
-
 PUSH_PACKED
 struct SN_DisconnectReason
 {
@@ -8939,34 +9897,36 @@ PUSH_PACKED
 struct SN_UserReturnToCity
 {
 	enum { NET_ID = 62528 };
-	// nickname: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// nickname: wide string (wire = u16 char count + count*2 wchar bytes)
+	u16 nickname_len; // 2 bytes
+	wchar_t nickname[1]; // 2 bytes
 	// logger 0x9a8188
 };
 POP_PACKED
+
 
 PUSH_PACKED
 struct SN_NcguardMsg
 {
 	enum { NET_ID = 62529 };
-	u8 field_0; // 1 bytes
+	// variable part (byte string reader 0x00a13580 = u16 len + len bytes):
+	u16 msg_count; // 2 bytes
+	char msg[1]; // 1 bytes
 	// logger 0x99bf4e
 };
 POP_PACKED
-ASSERT_SIZE(SN_NcguardMsg, 1);
-
+ASSERT_SIZE(SN_NcguardMsg, 3);
 PUSH_PACKED
 struct SN_TenprotectPunishment
 {
 	enum { NET_ID = 62530 };
 	u8 punishMode; // 1 bytes
-	// punishReason: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 punishReason_len; // 2 bytes
+	char punishReason[1]; // 1 bytes (ANSI string)
 	// logger 0x9a6f50
 };
 POP_PACKED
+ASSERT_SIZE(SN_TenprotectPunishment, 4);
 
 PUSH_PACKED
 struct SN_UNKNOWN_62531
@@ -9093,18 +10053,23 @@ PUSH_PACKED
 struct SN_PvpAiModeEventAnnouncement
 {
 	enum { NET_ID = 62541 };
-	// stAnnounceMent: variable-size (string/vector)
-	u32 unk_0; // 4 bytes
-	u32 unk_1; // 4 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u8 unk_5; // 1 bytes
+	// stAnnounceMent (ST_PVP_ANNOUNCEMENT):
+	PUSH_PACKED
+	struct PvpAnnouncement
+	{
+		u32 announcementType; // 4 bytes
+		u32 announcementData; // 4 bytes
+		u32 score; // 4 bytes
+		u32 attackerID; // 4 bytes
+		u32 attackeeID; // 4 bytes
+		u8 isAllDead; // 1 bytes (bool)
+	};
+	POP_PACKED
+	PvpAnnouncement stAnnounceMent; // 21 bytes
 	// logger 0x99fb34
 };
 POP_PACKED
 ASSERT_SIZE(SN_PvpAiModeEventAnnouncement, 21);
-
 PUSH_PACKED
 struct SN_DateChanged
 {
@@ -9127,28 +10092,43 @@ PUSH_PACKED
 struct SN_Calendar
 {
 	enum { NET_ID = 62544 };
-	i64 field_0; // 8 bytes
-	u16 field_1; // 2 bytes
-	u8 field_2; // 1 bytes
-	u32 field_3; // 4 bytes
-	i64 field_4; // 8 bytes
-	i64 field_5; // 8 bytes
+	// variable part (calendar:VEC):
+	PUSH_PACKED
+	struct CalendarElement
+	{
+		i64 dateTime; // 8 bytes
+		// variable part (calendarData:VEC):
+		PUSH_PACKED
+		struct CalendarSchedule
+		{
+			u8 dataType; // 1 bytes
+			u32 index; // 4 bytes
+			i64 startDateTime; // 8 bytes
+			i64 endDateTime; // 8 bytes
+		};
+		POP_PACKED
+		u16 calendarData_count; // 2 bytes
+		CalendarSchedule calendarData[1]; // 21 bytes
+	};
+	POP_PACKED
+	u16 calendar_count; // 2 bytes
+	CalendarElement calendar[1]; // 31 bytes
 	// logger 0x98e453
 };
 POP_PACKED
-ASSERT_SIZE(SN_Calendar, 31);
-
+ASSERT_SIZE(SN_Calendar, 33);
 PUSH_PACKED
 struct SN_StageSkillAvailable
 {
 	enum { NET_ID = 62546 };
+	// variable part (STAGE_SKILL_LIST: vector of u32):
+	u16 stageSkillList_count; // 2 bytes
+	u32 stageSkillList[1]; // 4 bytes
 	u32 currentSkillIndex; // 4 bytes
-	u32 unk_0; // 4 bytes
 	// logger 0x9a5e99
 };
 POP_PACKED
-ASSERT_SIZE(SN_StageSkillAvailable, 8);
-
+ASSERT_SIZE(SN_StageSkillAvailable, 10);
 PUSH_PACKED
 struct SA_StageSkillSelect
 {
@@ -9184,34 +10164,43 @@ PUSH_PACKED
 struct SN_AvailableAccountEquipmentList
 {
 	enum { NET_ID = 62550 };
-	u8 field_0; // 1 bytes
-	u32 field_1; // 4 bytes
-	u16 field_2; // 2 bytes
+	// variable part (PST_ACCOUNT_EQUIPMENT):
+	PUSH_PACKED
+	struct Equipment
+	{
+		u8 etcType; // 1 bytes
+		u32 docIndex; // 4 bytes
+		u16 count; // 2 bytes
+	};
+	POP_PACKED
+	u16 itemList_count; // 2 bytes
+	Equipment itemList[1]; // 7 bytes
 	// logger 0x98d6b5
 };
 POP_PACKED
-ASSERT_SIZE(SN_AvailableAccountEquipmentList, 7);
-
+ASSERT_SIZE(SN_AvailableAccountEquipmentList, 9);
 PUSH_PACKED
 struct SN_ItemLifetimeExpired
 {
 	enum { NET_ID = 62551 };
-	u32 field_0; // 4 bytes
+	// itemDocIndexList (ST_VEC of u32 doc indexes):
+	u16 itemDocIndexList_count; // 2 bytes
+	u32 itemDocIndexList[1]; // 4 bytes
 	// logger 0x998cf7
 };
 POP_PACKED
-ASSERT_SIZE(SN_ItemLifetimeExpired, 4);
-
+ASSERT_SIZE(SN_ItemLifetimeExpired, 6);
 PUSH_PACKED
 struct SN_EffectLifetimeExpired
 {
 	enum { NET_ID = 62552 };
-	u32 field_0; // 4 bytes
+	// variable part (VEC of u32 effect item doc indexes):
+	u16 effectItemDocIndexList_count; // 2 bytes
+	u32 effectItemDocIndexList[1]; // 4 bytes
 	// logger 0x991a1d
 };
 POP_PACKED
-ASSERT_SIZE(SN_EffectLifetimeExpired, 4);
-
+ASSERT_SIZE(SN_EffectLifetimeExpired, 6);
 PUSH_PACKED
 struct SN_Gauge
 {
@@ -9231,13 +10220,20 @@ PUSH_PACKED
 struct SN_EffectLifetimeList
 {
 	enum { NET_ID = 62554 };
-	u32 field_0; // 4 bytes
-	i64 field_1; // 8 bytes
+	// variable part (PST_EFFECT_LIFETIME):
+	PUSH_PACKED
+	struct EffectLifetime
+	{
+		u32 effectItemDocIndex; // 4 bytes
+		i64 expireDateTime; // 8 bytes
+	};
+	POP_PACKED
+	u16 effectItemDocIndexList_count; // 2 bytes
+	EffectLifetime effectItemDocIndexList[1]; // 12 bytes
 	// logger 0x991b28
 };
 POP_PACKED
-ASSERT_SIZE(SN_EffectLifetimeList, 12);
-
+ASSERT_SIZE(SN_EffectLifetimeList, 14);
 PUSH_PACKED
 struct SN_MonsterRespawnTime
 {
@@ -9300,12 +10296,13 @@ struct SN_MonsterMineralLossTiming
 {
 	enum { NET_ID = 62560 };
 	u32 tagID; // 4 bytes
-	u32 unk_0; // 4 bytes
+	// variable part (vector of u32):
+	u16 lossTiming_count; // 2 bytes
+	u32 lossTiming[1]; // 4 bytes
 	// logger 0x99b8a5
 };
 POP_PACKED
-ASSERT_SIZE(SN_MonsterMineralLossTiming, 8);
-
+ASSERT_SIZE(SN_MonsterMineralLossTiming, 10);
 PUSH_PACKED
 struct SN_PveTimeOverWarning
 {
@@ -9436,33 +10433,50 @@ PUSH_PACKED
 struct SN_GmDisabledMasters
 {
 	enum { NET_ID = 62572 };
-	u32 field_0; // 4 bytes
+	// variable part (VEC of u32):
+	u16 masterList_count; // 2 bytes
+	u32 masterList[1]; // 4 bytes
 	// logger 0x995f3c
 };
 POP_PACKED
-ASSERT_SIZE(SN_GmDisabledMasters, 4);
-
+ASSERT_SIZE(SN_GmDisabledMasters, 6);
 PUSH_PACKED
 struct SN_GmDisabledSkins
 {
 	enum { NET_ID = 62573 };
-	u16 field_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (wide-string vector, per-element label PST_CHARACTER_SKIN_INFO):
+	u16 skinKeyList_count; // 2 bytes
+	PUSH_PACKED
+	struct PST_CHARACTER_SKIN_INFO
+	{
+		u16 len; // 2 bytes
+		wchar_t str[1]; // 2 bytes
+	};
+	POP_PACKED
+	PST_CHARACTER_SKIN_INFO skinKeyList[1]; // 4 bytes
 	// logger 0x996047
 };
 POP_PACKED
+ASSERT_SIZE(SN_GmDisabledSkins, 6);
 
 PUSH_PACKED
 struct SN_GmDisabledStages
 {
 	enum { NET_ID = 62574 };
-	u32 field_0; // 4 bytes
-	u8 field_1; // 1 bytes
+	// variable part (ST_GM_DISABLED_STAGE):
+	PUSH_PACKED
+	struct GmDisabledStage
+	{
+		u32 stageIndex; // 4 bytes
+		u8 gameType; // 1 bytes
+	};
+	POP_PACKED
+	u16 stageList_count; // 2 bytes
+	GmDisabledStage stageList[1]; // 5 bytes
 	// logger 0x996160
 };
 POP_PACKED
-ASSERT_SIZE(SN_GmDisabledStages, 5);
-
+ASSERT_SIZE(SN_GmDisabledStages, 7);
 PUSH_PACKED
 struct SN_CharacterPropertyPoint
 {
@@ -9529,71 +10543,86 @@ struct SN_CharacterPropertyInfo
 {
 	enum { NET_ID = 62584 };
 	u32 characterId; // 4 bytes
-	u8 unk_0; // 1 bytes
-	u8 unk_1; // 1 bytes
+	// variable part (ST_CHARACTER_PROPERTY_INFO):
+	PUSH_PACKED
+	struct PropertyInfo
+	{
+		u8 propertyIndex; // 1 bytes
+		u8 propertyLevel; // 1 bytes
+	};
+	POP_PACKED
+	u16 propertyInfos_count; // 2 bytes
+	PropertyInfo propertyInfos[1]; // 2 bytes
 	// logger 0x98f1bb
 };
 POP_PACKED
-ASSERT_SIZE(SN_CharacterPropertyInfo, 6);
-
+ASSERT_SIZE(SN_CharacterPropertyInfo, 8);
 PUSH_PACKED
 struct SN_GameRecordInfoList
 {
 	enum { NET_ID = 62585 };
-	u32 field_0; // 4 bytes
-	u16 field_1; // 2 bytes
-	u8 field_2; // 1 bytes
+	// variable part (ST_PACKET_REC_INFO):
+	PUSH_PACKED
+	struct PacketRecInfo
+	{
+		u32 elapsedTime; // 4 bytes
+		u16 packetData_len; // 2 bytes
+		u8 packetData[1]; // 1 bytes
+	};
+	POP_PACKED
+	u16 packetRecInfos_count; // 2 bytes
+	PacketRecInfo packetRecInfos[1]; // 7 bytes
 	// logger 0x9957f0
 };
 POP_PACKED
-ASSERT_SIZE(SN_GameRecordInfoList, 7);
-
+ASSERT_SIZE(SN_GameRecordInfoList, 9);
 PUSH_PACKED
 struct SA_ChatGetInviteeGameaccountid
 {
 	enum { NET_ID = 62586 };
 	u32 result; // 4 bytes
 	u32 inviteeCenterId; // 4 bytes
-	// inviteeNickname: variable-size (string/vector)
-	// inviteeGameAccountId: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	// NOTE: 2 variable-size field(s) after the fixed prefix
+	u16 inviteeNickname_len; // 2 bytes
+	wchar_t inviteeNickname[1]; // 2 bytes
+	u16 inviteeGameAccountId_len; // 2 bytes
+	char inviteeGameAccountId[1]; // 1 bytes
 	// logger 0x97e5a8
 };
 POP_PACKED
+ASSERT_SIZE(SA_ChatGetInviteeGameaccountid, 15);
 
 PUSH_PACKED
 struct SA_UseCoupon
 {
 	enum { NET_ID = 62587 };
 	u32 result; // 4 bytes
-	// couponKey: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// variable part (ANSI string):
+	u16 couponKey_len; // 2 bytes
+	char couponKey[1]; // len bytes
 	// logger 0x98a008
 };
 POP_PACKED
+ASSERT_SIZE(SA_UseCoupon, 7);
 
 PUSH_PACKED
 struct SN_NotifyChattingChannelStatus
 {
 	enum { NET_ID = 62588 };
-	// channelId: variable-size (string/vector)
-	// channelCenter: variable-size (string/vector)
-	// password: variable-size (string/vector)
-	// token: variable-size (string/vector)
-	// argument: variable-size (string/vector)
-	u16 reason; // 2 bytes
-	u16 unk_0; // 2 bytes
-	u16 unk_1; // 2 bytes
-	u16 unk_2; // 2 bytes
-	u16 unk_3; // 2 bytes
-	u32 unk_4; // 4 bytes
-	// NOTE: 5 variable-size field(s) after the fixed prefix
+	u16 channelId_len; // 2 bytes
+	wchar_t channelId[1]; // 2 bytes
+	u16 channelCenter_len; // 2 bytes
+	wchar_t channelCenter[1]; // 2 bytes
+	u16 password_len; // 2 bytes
+	wchar_t password[1]; // 2 bytes
+	u16 token_len; // 2 bytes
+	wchar_t token[1]; // 2 bytes
+	u16 argument_len; // 2 bytes
+	wchar_t argument[1]; // 2 bytes
+	u32 reason; // 4 bytes
 	// logger 0x99c178
 };
 POP_PACKED
+ASSERT_SIZE(SN_NotifyChattingChannelStatus, 24);
 
 PUSH_PACKED
 struct SN_DefenceModeIngameInfo
@@ -9610,38 +10639,56 @@ PUSH_PACKED
 struct SA_RequestToken
 {
 	enum { NET_ID = 62590 };
-	// authnToken: variable-size (string/vector)
-	u16 unk_0; // 2 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	// authnToken (byte string, wire = u16 len + len bytes):
+	u16 authnToken_len; // 2 bytes
+	char authnToken[1]; // 1 bytes (variable)
 	// logger 0x986fb9
 };
 POP_PACKED
+
 
 PUSH_PACKED
 struct SN_HudEventList
 {
 	enum { NET_ID = 62591 };
-	u8 field_0; // 1 bytes
-	u16 field_1; // 2 bytes
-	u16 field_2; // 2 bytes
+	// variable part (PST_HUD_EVENT):
+	PUSH_PACKED
+	struct Event
+	{
+		u8 eventType; // 1 bytes
+		u16 bannerUrl_len; // 2 bytes
+		char bannerUrl[1]; // 1 bytes
+		u16 parameter_len; // 2 bytes
+		char parameter[1]; // 1 bytes
+	};
+	POP_PACKED
+	u16 eventList_count; // 2 bytes
+	Event eventList[1]; // 7 bytes
 	// logger 0x998167
 };
 POP_PACKED
-ASSERT_SIZE(SN_HudEventList, 5);
-
+ASSERT_SIZE(SN_HudEventList, 9);
 PUSH_PACKED
 struct SN_CshopEventList
 {
 	enum { NET_ID = 62592 };
-	u8 field_0; // 1 bytes
-	u8 field_1; // 1 bytes
-	u32 field_2; // 4 bytes
-	u16 field_3; // 2 bytes
+	// variable part (PST_CSHOP_EVENT):
+	PUSH_PACKED
+	struct Event
+	{
+		u8 eventType; // 1 bytes
+		u8 positionType; // 1 bytes
+		u32 goodsId; // 4 bytes
+		u16 bannerUrl_len; // 2 bytes
+		char bannerUrl[1]; // 1 bytes
+	};
+	POP_PACKED
+	u16 eventList_count; // 2 bytes
+	Event eventList[1]; // 9 bytes
 	// logger 0x99038e
 };
 POP_PACKED
-ASSERT_SIZE(SN_CshopEventList, 8);
-
+ASSERT_SIZE(SN_CshopEventList, 11);
 PUSH_PACKED
 struct SA_UserReport
 {
@@ -9687,20 +10734,27 @@ struct SN_PraiseInfo
 {
 	enum { NET_ID = 62597 };
 	u32 durationMs; // 4 bytes
-	u32 unk_0; // 4 bytes
-	u16 unk_1; // 2 bytes
-	u32 unk_2; // 4 bytes
-	u32 unk_3; // 4 bytes
-	u32 unk_4; // 4 bytes
-	u32 unk_5; // 4 bytes
-	u32 unk_6; // 4 bytes
-	u32 unk_7; // 4 bytes
-	u32 unk_8; // 4 bytes
+	// variable part (PST_PRAISE_TARGET_INFO):
+	PUSH_PACKED
+	struct PraiseTargetInfo
+	{
+		u32 usn; // 4 bytes
+		u16 nickName_len; // 2 bytes
+		wchar_t nickName[1]; // 2 bytes (wide string)
+		u32 teamType; // 4 bytes
+		u32 activeCreatureIndex; // 4 bytes
+		u32 inActiveCreatureIndex; // 4 bytes
+		u32 praiseType; // 4 bytes
+		u32 value; // 4 bytes
+		u32 praiseRelationType; // 4 bytes
+		u32 relationValue; // 4 bytes
+	};
+	POP_PACKED
+	u16 praiseTargetInfos_count; // 2 bytes
+	PraiseTargetInfo praiseTargetInfos[1]; // 34 + 2*nickName_len bytes
 	// logger 0x99ea82
 };
 POP_PACKED
-ASSERT_SIZE(SN_PraiseInfo, 38);
-
 PUSH_PACKED
 struct SN_PraiseStart
 {
@@ -9725,13 +10779,13 @@ PUSH_PACKED
 struct SN_Praise
 {
 	enum { NET_ID = 62600 };
-	// nickName: variable-size (string/vector)
-	u16 praiseCount; // 2 bytes
-	u32 unk_0; // 4 bytes
-	// NOTE: 1 variable-size field(s) after the fixed prefix
+	u16 nickName_len; // 2 bytes
+	wchar_t nickName[1]; // 2 bytes
+	u32 praiseCount; // 4 bytes
 	// logger 0x99e9b2
 };
 POP_PACKED
+
 
 PUSH_PACKED
 struct SA_PauseGame

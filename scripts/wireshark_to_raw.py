@@ -40,7 +40,10 @@ def packet_serialize_cl(netid, data):
     else:
         p = common.PacketReader(data)
         p.read_header() # skip header
-        f(netid, p)
+        try:
+            f(netid, p)
+        except struct.error:
+            print('    (!) payload shorter than struct')
     print('')
 
 def packet_serialize_sv(netid, data):
@@ -59,7 +62,10 @@ def packet_serialize_sv(netid, data):
     else:
         p = common.PacketReader(data)
         p.read_header() # skip header
-        f(netid, p)
+        try:
+            f(netid, p)
+        except struct.error:
+            print('    (!) payload shorter than struct')
     print('')
 
     # SN_DoConnectGameServer

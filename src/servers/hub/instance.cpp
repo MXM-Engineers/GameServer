@@ -449,13 +449,13 @@ void RoomInstance::Replicate()
 
 			for(int mi = 0; mi < _MASTER_COUNT; mi++) {
 				if(user.masters[mi].classType != ClassType::NONE) {
-					pickTeam.characterSelectInfos[mi].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masters[mi].classType);
+					pickTeam.characterSelectInfos[mi].characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masters[mi].classType);
 					pickTeam.characterSelectInfos[mi].creatureIndex = CreatureIndex(100000000 + (i32)user.masters[mi].classType);
 					pickTeam.characterSelectInfos[mi].skillSlot1 = user.masters[mi].skills[0];
 					pickTeam.characterSelectInfos[mi].skillSlot2 = user.masters[mi].skills[1];
 				}
 				else {
-					pickTeam.characterSelectInfos[mi].localMasterID = LocalActorID::INVALID;
+					pickTeam.characterSelectInfos[mi].characterID = LocalActorID::INVALID;
 					pickTeam.characterSelectInfos[mi].creatureIndex = CreatureIndex::Invalid;
 					pickTeam.characterSelectInfos[mi].skillSlot1 = SkillID::INVALID;
 					pickTeam.characterSelectInfos[mi].skillSlot2 = SkillID::INVALID;
@@ -466,7 +466,7 @@ void RoomInstance::Replicate()
 			Sv::SN_MasterPick pickEnemy = pickTeam;
 			pickEnemy.characterSelectInfos[0].skillSlot1 = SkillID::INVALID;
 			pickEnemy.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
-			pickEnemy.characterSelectInfos[1].localMasterID = LocalActorID::INVALID;
+			pickEnemy.characterSelectInfos[1].characterID = LocalActorID::INVALID;
 			pickEnemy.characterSelectInfos[1].creatureIndex = CreatureIndex::Invalid;
 			pickEnemy.characterSelectInfos[1].skillSlot1 = SkillID::INVALID;
 			pickEnemy.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;

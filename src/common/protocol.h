@@ -596,7 +596,7 @@ struct CQ_LoadingComplete
 	enum { NET_ID = 60033 };
 };
 
-struct CN_MapIsLoaded
+struct CA_CityLobbyJoinCity
 {
 	enum { NET_ID = 60034 };
 };
@@ -645,9 +645,10 @@ struct SetNickname
 struct CheckDupNickname
 {
 	enum { NET_ID = 60050 };
+	u16 nicknameLen;
+	wchar nickname[1]; // length is nicknameLen
 
-	u16 nick_len;
-	wchar nick[1];
+
 };
 
 struct CQ_GetCharacterInfo
@@ -797,6 +798,7 @@ struct CQ_PlayerJump
 	float3 startPos;
 };
 
+
 struct CN_ChannelChatMessage
 {
 	enum { NET_ID = 60114 };
@@ -908,7 +910,7 @@ struct CQ_RequestCalendar
 ASSERT_SIZE(CQ_RequestCalendar, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60004
+struct CQ_UserLoginByNp
 {
 	enum { NET_ID = 60004 };
 	u16 field1_len; // 2 bytes
@@ -920,7 +922,7 @@ struct CQ_UNKNOWN_60004
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60006
+struct CQ_StationLatency
 {
 	enum { NET_ID = 60006 };
 	u32 elapsedMs; // 4 bytes
@@ -934,7 +936,7 @@ struct CQ_UNKNOWN_60006
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60010
+struct CQ_HandoverAuthRequestToSpectator
 {
 	enum { NET_ID = 60010 };
 	u16 nick_len; // 2 bytes
@@ -951,7 +953,7 @@ struct CQ_UNKNOWN_60011
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60012
+struct CQ_ItemMerge
 {
 	enum { NET_ID = 60012 };
 	u32 field1_id_id; // 4 bytes
@@ -959,75 +961,76 @@ struct CQ_UNKNOWN_60012
 	u32 computedCount; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60012, 12);
+ASSERT_SIZE(CQ_ItemMerge, 12);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60013
+struct CN_EnterCityChannelForce
 {
 	enum { NET_ID = 60013 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60015
+struct CQ_ItemUse
 {
 	enum { NET_ID = 60015 };
 	u32 objectId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60015, 4);
+ASSERT_SIZE(CQ_ItemUse, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60017
+struct CQ_SellShopItem
 {
 	enum { NET_ID = 60017 };
-	u32 field1_sessionId_sessionId; // 4 bytes
-	// vec_u16<{u32,u32}>: variable-size (u16 count + count x u32)
-	u16 u32PairList_count; // 2 bytes
-	u32 u32PairList[1]; // 4 bytes each
+	u32 shopRef;
+	// u16 count + count x {u32,u32}
+	VEC(u32, sellEntries); // 8 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60019
+struct CA_PrepareHandoverToChannel
 {
 	enum { NET_ID = 60019 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60020
+struct CQ_GetGroundItem
 {
 	enum { NET_ID = 60020 };
 	u32 srcEntityId; // 4 bytes
 	u32 targetEntityId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60020, 8);
+ASSERT_SIZE(CQ_GetGroundItem, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60025
+struct CQ_ReturnToGame
 {
 	enum { NET_ID = 60025 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60026
+struct CQ_ReturnToCity
 {
 	enum { NET_ID = 60026 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60027
+struct CQ_HandoverToChannel
 {
 	enum { NET_ID = 60027 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60028
+struct CN_CommunityChat
 {
 	enum { NET_ID = 60028 };
 	u32 cmdType_const4; // 4 bytes
@@ -1039,7 +1042,7 @@ struct CA_UNKNOWN_60028
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60029
+struct CQ_BuyShopItem
 {
 	enum { NET_ID = 60029 };
 	u32 playerId; // 4 bytes
@@ -1047,49 +1050,49 @@ struct CQ_UNKNOWN_60029
 	u32 opFlag; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60029, 12);
+ASSERT_SIZE(CQ_BuyShopItem, 12);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60030
+struct CQ_BuyCShopItem
 {
 	enum { NET_ID = 60030 };
 	u32 objectId; // 4 bytes
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60030, 8);
+ASSERT_SIZE(CQ_BuyCShopItem, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60031
+struct CQ_ItemDelete
 {
 	enum { NET_ID = 60031 };
 	u32 itemId; // 4 bytes
 	u32 count; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60031, 8);
+ASSERT_SIZE(CQ_ItemDelete, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60036
+struct CN_RequestShopItemList
 {
 	enum { NET_ID = 60036 };
 	u32 npcId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60036, 4);
+ASSERT_SIZE(CN_RequestShopItemList, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60037
+struct CQ_ItemChange
 {
 	enum { NET_ID = 60037 };
 	u32 itemIdA; // 4 bytes
 	u32 itemIdB; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60037, 8);
+ASSERT_SIZE(CQ_ItemChange, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60039
+struct CQ_PreCastSkill
 {
 	enum { NET_ID = 60039 };
 	u32 skillId; // 4 bytes
@@ -1099,19 +1102,21 @@ struct CN_UNKNOWN_60039
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60041
+struct CQ_ExecuteSkill
 {
 	enum { NET_ID = 60041 };
-	u16 nick_len; // 2 bytes
-	wchar_t nick[1]; // 2 bytes each (wide string: u16 len + len*2)
-	u32 instantKey; // 4 bytes
-	u32 param3; // 4 bytes
-	u8 param4; // 1 bytes (bool)
+	u32 charID;
+	u32 skillID;
+	float3 targetPos;
+	VEC(u32, targetIDs);
+	u32 unkParams[13];
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60042
+struct CQ_SwitchOnToggleSkill
 {
 	enum { NET_ID = 60042 };
 	u16 nick_len; // 2 bytes
@@ -1121,14 +1126,14 @@ struct CN_UNKNOWN_60042
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60043
+struct CQ_SwitchOffToggleSkill
 {
 	enum { NET_ID = 60043 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60044
+struct CQ_PlayerCancelStance
 {
 	enum { NET_ID = 60044 };
 	u32 field1_id_id; // 4 bytes
@@ -1136,35 +1141,38 @@ struct CN_UNKNOWN_60044
 	u32 computedCount; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60044, 12);
+ASSERT_SIZE(CQ_PlayerCancelStance, 12);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60045
+struct CQ_RequestSummaryInfoEach
 {
 	enum { NET_ID = 60045 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60046
+struct CQ_RequestSummaryReward
 {
 	enum { NET_ID = 60046 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60047
+struct CQ_AntiHackAuth
 {
 	enum { NET_ID = 60047 };
-	u32 objectId; // 4 bytes
+	VEC(u8, authData); // blob
+
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60047, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60048
 {
-	enum { NET_ID = 60048 };
+	VEC(u8, unkBlob); // blob
+
+
 };
 POP_PACKED
 
@@ -1225,7 +1233,7 @@ struct CQ_UNKNOWN_60058
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60060
+struct CQ_GearEquip
 {
 	enum { NET_ID = 60060 };
 	u32 cmdType_const4; // 4 bytes
@@ -1237,7 +1245,7 @@ struct CQ_UNKNOWN_60060
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60061
+struct CQ_GearUnequip
 {
 	enum { NET_ID = 60061 };
 	u32 playerId; // 4 bytes
@@ -1245,79 +1253,83 @@ struct CQ_UNKNOWN_60061
 	u32 opFlag; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60061, 12);
+ASSERT_SIZE(CQ_GearUnequip, 12);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60062
+struct CQ_GearSwap
 {
 	enum { NET_ID = 60062 };
 	u32 objectId; // 4 bytes
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60062, 8);
+ASSERT_SIZE(CQ_GearSwap, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60065
+struct CQ_MasterGearRepair
 {
 	enum { NET_ID = 60065 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60066
+struct CQ_MasterGearRename
 {
-	enum { NET_ID = 60066 };
+	u8 gearSlot;
+	u16 newNameLen;
+	wchar newName[1]; // length is newNameLen
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60067
+struct CQ_MasterGearAdd
 {
 	enum { NET_ID = 60067 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60068
+struct CQ_CharacterUnlock
 {
 	enum { NET_ID = 60068 };
 	u32 npcId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60068, 4);
+ASSERT_SIZE(CQ_CharacterUnlock, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60069
+struct CQ_SkillUnlock
 {
 	enum { NET_ID = 60069 };
 	u32 itemIdA; // 4 bytes
 	u32 itemIdB; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60069, 8);
+ASSERT_SIZE(CQ_SkillUnlock, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60070
+struct CQ_SkillSelect
 {
 	enum { NET_ID = 60070 };
 	u32 skillId; // 4 bytes
 	u32 castId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60070, 8);
+ASSERT_SIZE(CQ_SkillSelect, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60077
+struct CQ_PartySwapTeam
 {
 	enum { NET_ID = 60077 };
 	u32 field1_id_id; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60077, 4);
+ASSERT_SIZE(CQ_PartySwapTeam, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60078
+struct CQ_PartyInvite
 {
 	enum { NET_ID = 60078 };
 	u32 field1; // 4 bytes
@@ -1325,10 +1337,10 @@ struct CQ_UNKNOWN_60078
 	u32 field3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60078, 12);
+ASSERT_SIZE(CQ_PartyInvite, 12);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60079
+struct CQ_PartyInviteResponse
 {
 	enum { NET_ID = 60079 };
 	u32 byteBlob; // 4 bytes (unclassified writer u16 count + N x u8)
@@ -1336,10 +1348,14 @@ struct CQ_UNKNOWN_60079
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60080
+struct CQ_PartyInviteRecommendResponse
 {
 	enum { NET_ID = 60080 };
-	u32 byteBlob; // 4 bytes (unclassified writer u16 count + N x u8)
+	u16 targetNameLen;
+	wchar targetName[1]; // length is targetNameLen
+	u8 bAccept;
+
+
 };
 POP_PACKED
 
@@ -1360,75 +1376,75 @@ struct CQ_UNKNOWN_60082
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60083
+struct CQ_RejectPartyRoom
 {
 	enum { NET_ID = 60083 };
 	u32 characterId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60083, 4);
+ASSERT_SIZE(CQ_RejectPartyRoom, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60084
+struct CQ_JoinPartyAsSpectator
 {
 	enum { NET_ID = 60084 };
 	u32 newLeaderProfileId; // 4 bytes
 	u32 secondId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60084, 8);
+ASSERT_SIZE(CQ_JoinPartyAsSpectator, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60085
+struct CQ_LeavePartyRoom
 {
 	enum { NET_ID = 60085 };
 	u32 field1_id_id; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60085, 4);
+ASSERT_SIZE(CQ_LeavePartyRoom, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60086
+struct CQ_BreakUpPartyRoom
 {
 	enum { NET_ID = 60086 };
 	u32 objectId; // 4 bytes
 	u32 slotOrParam; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60086, 8);
+ASSERT_SIZE(CQ_BreakUpPartyRoom, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60087
+struct CQ_PartyKickAll
 {
 	enum { NET_ID = 60087 };
 	u32 field1_id_id; // 4 bytes
 	u32 field2_state_state; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60087, 8);
+ASSERT_SIZE(CQ_PartyKickAll, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60088
+struct CQ_QuickRunArena
 {
 	enum { NET_ID = 60088 };
 	u32 posX; // 4 bytes
 	u32 posY; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60088, 8);
+ASSERT_SIZE(CQ_QuickRunArena, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60091
+struct CQ_RestartGame
 {
 	enum { NET_ID = 60091 };
 	u32 memberProfileId; // 4 bytes
 	u32 secondId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60091, 8);
+ASSERT_SIZE(CQ_RestartGame, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60092
+struct CQ_RestartVote
 {
 	enum { NET_ID = 60092 };
 	u8 flagByte; // 1 bytes (bool)
@@ -1436,7 +1452,7 @@ struct CQ_UNKNOWN_60092
 	u32 countOrParam; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60092, 9);
+ASSERT_SIZE(CQ_RestartVote, 9);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60093
@@ -1449,7 +1465,7 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60093, 5);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60094
+struct CQ_RestartVote2
 {
 	enum { NET_ID = 60094 };
 	u8 field1; // 1 bytes (bool)
@@ -1457,7 +1473,7 @@ struct CQ_UNKNOWN_60094
 	u8 field3; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60094, 3);
+ASSERT_SIZE(CQ_RestartVote2, 3);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60095
@@ -1479,7 +1495,7 @@ struct CQ_UNKNOWN_60096
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60098
+struct CQ_CancelMatching
 {
 	enum { NET_ID = 60098 };
 	u8 flagByte; // 1 bytes (bool)
@@ -1488,39 +1504,39 @@ struct CQ_UNKNOWN_60098
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60099
+struct CQ_CancelMatchingTrollPenalty
 {
 	enum { NET_ID = 60099 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60104
+struct CQ_WeaponUpgrade
 {
 	enum { NET_ID = 60104 };
 	u32 memberId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60104, 4);
+ASSERT_SIZE(CQ_WeaponUpgrade, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60105
+struct CQ_InventoryExpand
 {
 	enum { NET_ID = 60105 };
 	u32 field1_id_id; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60105, 4);
+ASSERT_SIZE(CQ_InventoryExpand, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60106
+struct CQ_InventoryRearrange
 {
 	enum { NET_ID = 60106 };
 	u32 roomTypeOrStageId; // 4 bytes
 	u32 option; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60106, 8);
+ASSERT_SIZE(CQ_InventoryRearrange, 8);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60107
@@ -1531,17 +1547,49 @@ struct CN_UNKNOWN_60107
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60108
+struct CN_RemoteActivated
 {
 	enum { NET_ID = 60108 };
-	u8 optionId; // 1 bytes (bool)
-	u8 boolValue; // 1 bytes (bool)
+	u32 unkU32_1;
+	u32 unkU32_2;
+	u32 unkU32_3;
+	u32 unkU32_4;
+	u32 unkU32_5;
+	u32 unkU32_6;
+	u32 unkU32_7;
+	u32 unkU32_8;
+	u32 unkU32_9;
+	u32 unkU32_10;
+	u16 unkWstrLen;
+	wchar unkWstr[1]; // length is unkWstrLen
+	u16 unkStrLen;
+	char unkStr[1]; // length is unkStrLen
+	u32 unkU32_13;
+	u32 unkU32_14;
+	u32 unkU32_15;
+	u32 unkU32_16;
+	u32 unkU32_17;
+	u32 unkU32_18;
+	u32 unkU32_19;
+	u32 unkU32_20;
+	u32 unkU32_21;
+	u32 unkU32_22;
+	u32 unkU32_23;
+	u32 unkU32_24;
+	u32 unkU32_25;
+	u32 unkU32_26;
+	u32 unkU32_27;
+	u32 unkU32_28;
+	u32 unkU32_29;
+	u32 unkU32_30;
+	u32 unkU32_31;
+
+
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60108, 2);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60109
+struct CN_RemoteHitRemote
 {
 	enum { NET_ID = 60109 };
 	u32 field1; // 4 bytes
@@ -1550,10 +1598,10 @@ struct CN_UNKNOWN_60109
 	u8 flag2; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60109, 10);
+ASSERT_SIZE(CN_RemoteHitRemote, 10);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60110
+struct CQ_DestroyRemote
 {
 	enum { NET_ID = 60110 };
 	u32 targetName; // 4 bytes (unclassified writer wstring)
@@ -1562,7 +1610,7 @@ struct CN_UNKNOWN_60110
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60111
+struct CQ_RequestSpAction
 {
 	enum { NET_ID = 60111 };
 	u32 targetName; // 4 bytes (unclassified writer wstring)
@@ -1579,7 +1627,7 @@ struct CN_UNKNOWN_60112
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60115
+struct CQ_SelectSkin
 {
 	enum { NET_ID = 60115 };
 	u32 roomIdOrInviterId; // 4 bytes
@@ -1599,7 +1647,7 @@ struct CQ_UNKNOWN_60116
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60117
+struct CQ_FriendStateChange
 {
 	enum { NET_ID = 60117 };
 };
@@ -1624,7 +1672,7 @@ struct CQ_UNKNOWN_60119
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60120
+struct CQ_FriendSetComrade
 {
 	enum { NET_ID = 60120 };
 	u16 textField_len; // 2 bytes
@@ -1633,7 +1681,7 @@ struct CQ_UNKNOWN_60120
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60121
+struct CQ_FriendUnsetComrade
 {
 	enum { NET_ID = 60121 };
 	u16 textField_len; // 2 bytes
@@ -1642,7 +1690,7 @@ struct CQ_UNKNOWN_60121
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60122
+struct CQ_FriendSetFavorite
 {
 	enum { NET_ID = 60122 };
 	u16 textField_len; // 2 bytes
@@ -1651,7 +1699,7 @@ struct CQ_UNKNOWN_60122
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60123
+struct CQ_FriendUnsetFavorite
 {
 	enum { NET_ID = 60123 };
 	u16 textField_len; // 2 bytes
@@ -1660,7 +1708,7 @@ struct CQ_UNKNOWN_60123
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60124
+struct CQ_FriendRemove
 {
 	enum { NET_ID = 60124 };
 	u16 textField_len; // 2 bytes
@@ -1669,7 +1717,7 @@ struct CQ_UNKNOWN_60124
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60125
+struct CQ_CommunityStatusMessage
 {
 	enum { NET_ID = 60125 };
 	u16 textField_len; // 2 bytes
@@ -1678,7 +1726,7 @@ struct CQ_UNKNOWN_60125
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60126
+struct CQ_CommunityChannelMove
 {
 	enum { NET_ID = 60126 };
 	u16 targetNick_len; // 2 bytes
@@ -1687,7 +1735,7 @@ struct CQ_UNKNOWN_60126
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60127
+struct CQ_CommunityBlockAdd
 {
 	enum { NET_ID = 60127 };
 	u16 textField_len; // 2 bytes
@@ -1696,7 +1744,7 @@ struct CA_UNKNOWN_60127
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60128
+struct CQ_GetUserInfo
 {
 	enum { NET_ID = 60128 };
 	u16 textField_len; // 2 bytes
@@ -1705,7 +1753,7 @@ struct CA_UNKNOWN_60128
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60129
+struct CQ_JukeboxEnqueue
 {
 	enum { NET_ID = 60129 };
 	u16 textField_len; // 2 bytes
@@ -1730,7 +1778,7 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60132, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60133
+struct CQ_CreateGuild
 {
 	enum { NET_ID = 60133 };
 	u16 textField1_len; // 2 bytes
@@ -1741,7 +1789,7 @@ struct CQ_UNKNOWN_60133
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60134
+struct CQ_DissolveGuild
 {
 	enum { NET_ID = 60134 };
 };
@@ -1755,7 +1803,7 @@ struct CQ_UNKNOWN_60135
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60137
+struct CQ_KickGuildMember
 {
 	enum { NET_ID = 60137 };
 	u16 textField_len; // 2 bytes
@@ -1764,7 +1812,7 @@ struct CQ_UNKNOWN_60137
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60138
+struct CQ_QuitGuild
 {
 	enum { NET_ID = 60138 };
 };
@@ -1780,14 +1828,14 @@ struct CQ_UNKNOWN_60139
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60140
+struct CQ_GetGuildJoinRequestList
 {
 	enum { NET_ID = 60140 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60141
+struct CQ_RespondGuildJoinRequest
 {
 	enum { NET_ID = 60141 };
 	u16 valueAsString_len; // 2 bytes
@@ -1797,7 +1845,7 @@ struct CQ_UNKNOWN_60141
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60142
+struct CQ_InviteGuildMember
 {
 	enum { NET_ID = 60142 };
 	u16 textField_len; // 2 bytes
@@ -1806,14 +1854,14 @@ struct CQ_UNKNOWN_60142
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60143
+struct CQ_GetGuildInvitationList
 {
 	enum { NET_ID = 60143 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60144
+struct CQ_RespondGuildInvitation
 {
 	enum { NET_ID = 60144 };
 	u16 valueAsString_len; // 2 bytes
@@ -1823,14 +1871,14 @@ struct CQ_UNKNOWN_60144
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60147
+struct CQ_GetGuildMemberStatusList
 {
 	enum { NET_ID = 60147 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60149
+struct CQ_GetGuildPublicProfile
 {
 	enum { NET_ID = 60149 };
 	u16 textField_len; // 2 bytes
@@ -1848,7 +1896,7 @@ struct CQ_UNKNOWN_60150
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60152
+struct CQ_EditGuildNotice
 {
 	enum { NET_ID = 60152 };
 	u16 textField_len; // 2 bytes
@@ -1857,7 +1905,7 @@ struct CQ_UNKNOWN_60152
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60153
+struct CQ_EditGuildIntro
 {
 	enum { NET_ID = 60153 };
 	u16 textField_len; // 2 bytes
@@ -1866,7 +1914,7 @@ struct CQ_UNKNOWN_60153
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60154
+struct CQ_EditGuildTag
 {
 	enum { NET_ID = 60154 };
 	u16 textField_len; // 2 bytes
@@ -1875,7 +1923,7 @@ struct CQ_UNKNOWN_60154
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60155
+struct CQ_SetGuildInterest
 {
 	enum { NET_ID = 60155 };
 	u32 entity7ByteRecord; // 4 bytes (unclassified writer bytes[7])
@@ -1883,25 +1931,25 @@ struct CQ_UNKNOWN_60155
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60156
+struct CQ_SetGuildEmblem
 {
 	enum { NET_ID = 60156 };
 	u32 field1_id_id; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60156, 4);
+ASSERT_SIZE(CQ_SetGuildEmblem, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60157
+struct CQ_SetGuildJoinType
 {
 	enum { NET_ID = 60157 };
 	u8 stateByte; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60157, 1);
+ASSERT_SIZE(CQ_SetGuildJoinType, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60158
+struct CQ_CreateGuildMembership
 {
 	enum { NET_ID = 60158 };
 	u32 targetName; // 4 bytes (unclassified writer wstring)
@@ -1911,7 +1959,7 @@ struct CQ_UNKNOWN_60158
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60159
+struct CQ_DeleteGuildMembership
 {
 	enum { NET_ID = 60159 };
 	u32 name; // 4 bytes (unclassified writer wstring)
@@ -1919,7 +1967,7 @@ struct CQ_UNKNOWN_60159
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60160
+struct CQ_EditGuildMembership
 {
 	enum { NET_ID = 60160 };
 	u8 gradeIndex; // 1 bytes (bool)
@@ -1929,16 +1977,16 @@ struct CQ_UNKNOWN_60160
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60161
+struct CQ_DonateToGuild
 {
 	enum { NET_ID = 60161 };
 	u32 gradeId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60161, 4);
+ASSERT_SIZE(CQ_DonateToGuild, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60162
+struct CQ_ExtendGuildLimitedSkill
 {
 	enum { NET_ID = 60162 };
 	u32 gradeId; // 4 bytes
@@ -1949,23 +1997,23 @@ struct CQ_UNKNOWN_60162
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60163
+struct CQ_BuyGuildSkill
 {
 	enum { NET_ID = 60163 };
 	u32 targetId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60163, 4);
+ASSERT_SIZE(CQ_BuyGuildSkill, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60164
+struct CQ_GetGuildRankList
 {
 	enum { NET_ID = 60164 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60165
+struct CQ_GetGuildRank
 {
 	enum { NET_ID = 60165 };
 	u8 settingA; // 1 bytes (bool)
@@ -1973,10 +2021,10 @@ struct CQ_UNKNOWN_60165
 	u8 settingC; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60165, 3);
+ASSERT_SIZE(CQ_GetGuildRank, 3);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60166
+struct CQ_GetRecommendedGuildList
 {
 	enum { NET_ID = 60166 };
 	u8 settingA; // 1 bytes (bool)
@@ -1984,10 +2032,10 @@ struct CQ_UNKNOWN_60166
 	u8 settingB; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60166, 4);
+ASSERT_SIZE(CQ_GetRecommendedGuildList, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60168
+struct CQ_GetGuildRankingList
 {
 	enum { NET_ID = 60168 };
 	u8 category; // 1 bytes (bool)
@@ -1996,26 +2044,29 @@ struct CQ_UNKNOWN_60168
 	u8 value8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60168, 8);
+ASSERT_SIZE(CQ_GetGuildRankingList, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60169
+struct CQ_GetGuildRanking
 {
 	enum { NET_ID = 60169 };
-	u8 category; // 1 bytes (bool)
-	u16 inputValue; // 2 bytes
-	u32 storedName; // 4 bytes (unclassified writer wstring)
+	u8 rankingType;
+	u16 seasonNo;
+	u16 unkQueryOrGuildNameLen;
+	wchar unkQueryOrGuildName[1]; // length is unkQueryOrGuildNameLen
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60170
+struct CQ_ChatChannelInviteFeedback
 {
 	enum { NET_ID = 60170 };
 	u8 category; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60170, 1);
+ASSERT_SIZE(CQ_ChatChannelInviteFeedback, 1);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60171
@@ -2097,7 +2148,7 @@ struct CA_UNKNOWN_60177
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60180
+struct CQ_WeaponState
 {
 	enum { NET_ID = 60180 };
 	u32 field0; // 4 bytes
@@ -2108,255 +2159,253 @@ struct CN_UNKNOWN_60180
 	u32 field4; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60180, 18);
+ASSERT_SIZE(CQ_WeaponState, 18);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60181
+struct CQ_SyncActionMove
 {
 	enum { NET_ID = 60181 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field2_count; // 2 bytes
-	u32 field2[1]; // 4 bytes each
+	u32 actorID;
+	u32 actionID;
+	float3 destPos;
+
+
 };
+ASSERT_SIZE(CQ_SyncActionMove, 20);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60182
+struct CQ_AISyncMoveMotion
 {
 	enum { NET_ID = 60182 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	u32 field1; // 4 bytes
-	u32 field2; // 4 bytes
-	u32 field3; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field5_count; // 2 bytes
-	u32 field5[1]; // 4 bytes each
-	u32 field5_3; // 4 bytes
-	u32 field6; // 4 bytes
+	u32 actorID;
+	u32 unkU32b;
+	u32 unkU32c;
+	u32 unkU32d;
+	u32 unkU32e;
+	float3 motionVec;
+	u32 unkTail1;
+	u32 unkTail2;
+
+
 };
+ASSERT_SIZE(CQ_AISyncMoveMotion, 40);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60183
+struct CQ_AISyncBehaviorMotion
 {
 	enum { NET_ID = 60183 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	u8 field1; // 1 bytes (bool)
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field4_count; // 2 bytes
-	u32 field4[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field5_count; // 2 bytes
-	u32 field5[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field6_count; // 2 bytes
-	u32 field6[1]; // 4 bytes each
-	u32 field6_3; // 4 bytes
-	u32 field7; // 4 bytes
+	u32 actorID;
+	u32 behaviorID;
+	u8 unkU8;
+	float3 pos1;
+	float3 pos2;
+	float3 pos3;
+	float3 pos4;
+	u32 unkTail1;
+	u32 unkTail2;
+
+
 };
+ASSERT_SIZE(CQ_AISyncBehaviorMotion, 65);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60184
+struct CQ_AISyncSpeedRatio
 {
 	enum { NET_ID = 60184 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60184, 8);
+ASSERT_SIZE(CQ_AISyncSpeedRatio, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60185
+struct CQ_AISyncRotateRatio
 {
 	enum { NET_ID = 60185 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60185, 8);
+ASSERT_SIZE(CQ_AISyncRotateRatio, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60186
+struct CQ_AISyncSceneRoot
 {
 	enum { NET_ID = 60186 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60186, 8);
+ASSERT_SIZE(CQ_AISyncSceneRoot, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60187
+struct CQ_AISyncTarPos
 {
 	enum { NET_ID = 60187 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field2_count; // 2 bytes
-	u32 field2[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field4_count; // 2 bytes
-	u32 field4[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field5_count; // 2 bytes
-	u32 field5[1]; // 4 bytes each
-	u32 field5_3; // 4 bytes
-	u32 field6; // 4 bytes
-	u32 field7; // 4 bytes
+	u32 actorID;
+	u32 unkU32;
+	float3 tarPos1;
+	float3 tarPos2;
+	float3 tarPos3;
+	float3 tarPos4;
+	u32 unkTail1;
+	u32 unkTail2;
+	u32 unkTail3;
+
+
 };
+ASSERT_SIZE(CQ_AISyncTarPos, 68);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60188
+struct CQ_AISyncTarPosToServer
 {
 	enum { NET_ID = 60188 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field2_count; // 2 bytes
-	u32 field2[1]; // 4 bytes each
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	u32 field3_3; // 4 bytes
-	u32 field4; // 4 bytes
-	u32 field5; // 4 bytes
-	u32 field6; // 4 bytes
+	u32 actorID;
+	u32 unkU32;
+	float3 tarPos;
+	float2 unkVec2;
+	u32 unkTail1;
+	u32 unkTail2;
+	u32 unkTail3;
+	u32 unkTail4;
+
+
 };
+ASSERT_SIZE(CQ_AISyncTarPosToServer, 44);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60189
+struct CQ_RemoteSyncCreateFromCreatorId
 {
 	enum { NET_ID = 60189 };
 	u32 entityValue; // 4 bytes
 	u32 ownerId; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60189, 8);
+ASSERT_SIZE(CQ_RemoteSyncCreateFromCreatorId, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60191
+struct CQ_RemoteSyncTarget
 {
 	enum { NET_ID = 60191 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60191, 8);
+ASSERT_SIZE(CQ_RemoteSyncTarget, 8);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60193
 {
 	enum { NET_ID = 60193 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field2_count; // 2 bytes
-	u32 field2[1]; // 4 bytes each
+	u32 unkA;
+	u32 unkB;
+	float3 unkPos;
+
+
 };
+ASSERT_SIZE(CN_UNKNOWN_60193, 20);
+
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60195
+struct CQ_GamePlayerSyncPhy
 {
 	enum { NET_ID = 60195 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	u32 field1; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	u16 field3_3; // 2 bytes
-	u16 field4; // 2 bytes
-	u16 field5; // 2 bytes
-	u16 field6; // 2 bytes
-	u16 field7; // 2 bytes
-	u16 field8; // 2 bytes
-	u16 field9; // 2 bytes
-	u16 field10; // 2 bytes
-	u16 field11; // 2 bytes
-	u32 field12; // 4 bytes (unclassified writer wstring)
-	u16 field13; // 2 bytes
-	u32 field14; // 4 bytes
-	u32 field15; // 4 bytes
-	u16 field16; // 2 bytes
-	u16 field17; // 2 bytes
-	u16 field18; // 2 bytes
-	u8 field19; // 1 bytes (bool)
-	u8 field20; // 1 bytes (bool)
-	u16 field21; // 2 bytes
-	u8 field22; // 1 bytes (bool)
-	u32 field23; // 4 bytes
-	u32 field24; // 4 bytes
-	u32 field25; // 4 bytes
-	u32 field26; // 4 bytes
-	u32 field27; // 4 bytes
-	u8 field28; // 1 bytes (bool)
-	u8 field29; // 1 bytes (bool)
+	u32 unkId1;
+	u32 unkId2;
+	u32 unkId3;
+	float3 currPos;
+	u16 unkShort1;
+	u16 unkShort2;
+	u16 unkShort3;
+	u16 unkShort4;
+	u16 unkShort5;
+	u16 unkShort6;
+	u16 unkShort7;
+	u16 unkShort8;
+	u16 unkShort9;
+	u16 charNameLen;
+	wchar charName[1]; // length is charNameLen
+	u16 unkU16;
+	u32 unkA;
+	u32 unkB;
+	u16 unkU16b;
+	u16 unkU16c;
+	u16 unkU16d;
+	u8 unkU8a;
+	u8 unkU8b;
+	u16 unkU16e;
+	u8 unkU8c;
+	u32 unkC;
+	u32 unkD0;
+	u32 unkD1;
+	u32 unkD2;
+	u32 unkD3;
+	u8 unkU8d;
+	u8 unkU8e;
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60196
+struct CQ_GamePlayerSyncStatus
 {
 	enum { NET_ID = 60196 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	u32 field1; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	u16 field3_3; // 2 bytes
-	u16 field4; // 2 bytes
-	u16 field5; // 2 bytes
-	u16 field6; // 2 bytes
-	u16 field7; // 2 bytes
-	u16 field8; // 2 bytes
-	u16 field9; // 2 bytes
-	u16 field10; // 2 bytes
-	u16 field11; // 2 bytes
-	u32 field12; // 4 bytes (unclassified writer wstring)
-	u16 field13; // 2 bytes
-	u32 field14; // 4 bytes
-	u32 field15; // 4 bytes
-	u32 field16; // 4 bytes
-	u32 field17; // 4 bytes
-	u32 field18; // 4 bytes
-	u32 field19; // 4 bytes
-	u32 field20; // 4 bytes
-	u32 field21; // 4 bytes
-	u8 field22; // 1 bytes (bool)
-	u8 field23; // 1 bytes (bool)
+	u32 unkId1;
+	u32 unkId2;
+	u32 unkId3;
+	float3 currPos;
+	u16 unkShort1;
+	u16 unkShort2;
+	u16 unkShort3;
+	u16 unkShort4;
+	u16 unkShort5;
+	u16 unkShort6;
+	u16 unkShort7;
+	u16 unkShort8;
+	u16 unkShort9;
+	u16 charNameLen;
+	wchar charName[1]; // length is charNameLen
+	u16 unkU16;
+	u32 unkA;
+	u32 unkB;
+	u32 unkC;
+	u32 unkD;
+	u32 unkE;
+	u32 unkF;
+	u32 unkG;
+	u8 unkU8a;
+	u8 unkU8b;
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60197
+struct CQ_RevivePartyMemberUseMyLifeCount
 {
 	enum { NET_ID = 60197 };
-	u32 flags; // 4 bytes (unclassified writer u8 flags)
-	u32 flags_3; // 4 bytes
-	u32 field1; // 4 bytes
-	// vec3 (3 x u32): variable-size (u16 count + count x u32)
-	u16 field3_count; // 2 bytes
-	u32 field3[1]; // 4 bytes each
-	// vec3 (3 x u32), optional: variable-size (u16 count + count x u32)
-	u16 field4_count; // 2 bytes
-	u32 field4[1]; // 4 bytes each
-	u32 field4_3; // 4 bytes (unclassified writer u32, optional)
+	u8 bPresenceFlags;
+	u32 unkID1;
+	u32 targetMemberID;
+	float3 revivePos;
+	float3 optionalPos;
+	u32 lifeCount;
+
+
 };
+
 POP_PACKED
 
 PUSH_PACKED
@@ -2368,23 +2417,23 @@ struct CN_UNKNOWN_60198
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60199
+struct CQ_SinglemodeGameHello
 {
 	enum { NET_ID = 60199 };
 	u32 requestValue; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60199, 4);
+ASSERT_SIZE(CQ_SinglemodeGameHello, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60200
+struct CQ_SinglemodeSelectedCharacter
 {
 	enum { NET_ID = 60200 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60200, 8);
+ASSERT_SIZE(CQ_SinglemodeSelectedCharacter, 8);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60201
@@ -2467,28 +2516,28 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60207, 20);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60208
+struct CQ_RewardSelectSlot
 {
 	enum { NET_ID = 60208 };
-	u32 field0; // 4 bytes
+	u32 slotIndex; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60208, 4);
+ASSERT_SIZE(CQ_RewardSelectSlot, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60209
+struct CQ_RewardSelectSlotAllRandom
 {
 	enum { NET_ID = 60209 };
-	u32 field0; // 4 bytes
+	u32 unkBoxID; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60209, 4);
+ASSERT_SIZE(CQ_RewardSelectSlotAllRandom, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60211
 {
 	enum { NET_ID = 60211 };
-	u32 field0; // 4 bytes
+	u32 unk1; // 4 bytes
 };
 POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60211, 4);
@@ -2547,7 +2596,7 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60218, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60219
+struct CQ_MailWrite
 {
 	enum { NET_ID = 60219 };
 	u32 wstring_1; // 4 bytes (unclassified writer wstring)
@@ -2557,41 +2606,41 @@ struct CQ_UNKNOWN_60219
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60220
+struct CQ_MailRead
 {
 	enum { NET_ID = 60220 };
 	u64 target_user_id_u64; // 8 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60220, 8);
+ASSERT_SIZE(CQ_MailRead, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60221
+struct CQ_MailMove
 {
 	enum { NET_ID = 60221 };
 	u64 queued_id_u64; // 8 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60221, 8);
+ASSERT_SIZE(CQ_MailMove, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60222
+struct CQ_MailGetAttachmentMulti
 {
 	enum { NET_ID = 60222 };
-	// vector<u64>: variable-size (u16 count + count x u32)
-	u16 queued_id_list_count; // 2 bytes
-	u32 queued_id_list[1]; // 4 bytes each
+	VEC(u64, attachmentUIDs);
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60223
+struct CQ_MailGetNewMail
 {
 	enum { NET_ID = 60223 };
-	u8 mail_action_u8; // 1 bytes (bool)
-	// vector<u64>: variable-size (u16 count + count x u32)
-	u16 mail_id_list_count; // 2 bytes
-	u32 mail_id_list[1]; // 4 bytes each
+	u8 unkFlag;
+	VEC(u64, mailUIDs);
+
+
 };
 POP_PACKED
 
@@ -2610,13 +2659,13 @@ struct CQ_UNKNOWN_60225
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60226
+struct CQ_WarehouseItemDelete
 {
 	enum { NET_ID = 60226 };
 	u32 amount_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60226, 4);
+ASSERT_SIZE(CQ_WarehouseItemDelete, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60227
@@ -2686,29 +2735,29 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60233, 24);
 
 PUSH_PACKED
-struct CA_UNKNOWN_60234
+struct CQ_Heartbeat
 {
 	enum { NET_ID = 60234 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60236
+struct CQ_SortieMasterBan
 {
 	enum { NET_ID = 60236 };
 	u32 input_value_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60236, 4);
+ASSERT_SIZE(CQ_SortieMasterBan, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60237
+struct CQ_SortieMasterAssign
 {
 	enum { NET_ID = 60237 };
 	u32 input_value_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60237, 4);
+ASSERT_SIZE(CQ_SortieMasterAssign, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60238
@@ -2774,61 +2823,65 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60244, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60246
+struct CQ_CompleteNonSyncEvents
 {
 	enum { NET_ID = 60246 };
 	u32 param_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60246, 4);
+ASSERT_SIZE(CQ_CompleteNonSyncEvents, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60247
+struct CQ_InteractionCasting
 {
 	enum { NET_ID = 60247 };
 	u32 self_entity_id_u32; // 4 bytes
 	u32 target_entity_id_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60247, 8);
+ASSERT_SIZE(CQ_InteractionCasting, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60248
+struct CQ_InteractionCancel
 {
 	enum { NET_ID = 60248 };
 	u32 param_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60248, 4);
+ASSERT_SIZE(CQ_InteractionCancel, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60249
+struct CQ_PlayerSyncTeleport
 {
 	enum { NET_ID = 60249 };
-	u32 entity_id_u32; // 4 bytes
-	float3 position_vec3; // 12 bytes
+	u32 objectID;
+	float3 pos;
+
+
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60249, 16);
+ASSERT_SIZE(CQ_PlayerSyncTeleport, 16);
 
 PUSH_PACKED
-struct CA_UNKNOWN_60250
+struct CQ_SaveSettings
 {
 	enum { NET_ID = 60250 };
-	u8 payload_kind_u8; // 1 bytes (bool)
-	u32 compressed_blob; // 4 bytes (unclassified writer blob[u8])
+	u8 unkFlag;
+	VEC(u8, settingsData); // blob
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60251
+struct CQ_RefreshWaitingQueue
 {
 	enum { NET_ID = 60251 };
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60252
+struct CQ_ItemTrade
 {
 	enum { NET_ID = 60252 };
 	u32 context_id_u32; // 4 bytes
@@ -2836,10 +2889,10 @@ struct CQ_UNKNOWN_60252
 	u8 param_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60252, 9);
+ASSERT_SIZE(CQ_ItemTrade, 9);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60253
+struct CQ_SkinChipDissolve
 {
 	enum { NET_ID = 60253 };
 	u8 zero_u8; // 1 bytes (bool)
@@ -2847,19 +2900,22 @@ struct CQ_UNKNOWN_60253
 	u8 count_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60253, 6);
+ASSERT_SIZE(CQ_SkinChipDissolve, 6);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60254
+struct CQ_OlympicBestRecord
 {
 	enum { NET_ID = 60254 };
-	u8 flag_u8; // 1 bytes (bool)
-	u32 triple_entry_list_u32u32u32; // 4 bytes (unclassified writer array u16 count + N x {u32,u32,u32})
+	u8 unkFlag;
+	// u16 count + count x (3 x u32)
+	VEC(u32, records); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60255
+struct CQ_PveRefillBattery
 {
 	enum { NET_ID = 60255 };
 };
@@ -2902,7 +2958,10 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60261
 {
 	enum { NET_ID = 60261 };
-	u32 text_wstring; // 4 bytes (unclassified writer wstring)
+	u16 textLen;
+	wchar text[1]; // length is textLen
+
+
 };
 POP_PACKED
 
@@ -2910,8 +2969,11 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60262
 {
 	enum { NET_ID = 60262 };
-	u32 text_wstring; // 4 bytes (unclassified writer wstring)
-	u8 flag_u8; // 1 bytes (bool)
+	u16 textLen;
+	wchar text[1]; // length is textLen
+	u8 category;
+
+
 };
 POP_PACKED
 
@@ -2919,7 +2981,10 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60263
 {
 	enum { NET_ID = 60263 };
-	u32 player_name_wstring; // 4 bytes (unclassified writer wstring)
+	u16 textLen;
+	wchar text[1]; // length is textLen
+
+
 };
 POP_PACKED
 
@@ -2931,10 +2996,12 @@ struct CN_UNKNOWN_60264
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60265
+struct CQ_NcguardData
 {
 	enum { NET_ID = 60265 };
-	u32 compressed_blob; // 4 bytes (unclassified writer blob[u8])
+	VEC(u8, guardPayload); // blob
+
+
 };
 POP_PACKED
 
@@ -2957,13 +3024,13 @@ struct CA_UNKNOWN_60267
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60268
+struct CQ_RequestVoting
 {
 	enum { NET_ID = 60268 };
 	u32 param_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60268, 4);
+ASSERT_SIZE(CQ_RequestVoting, 4);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60269
@@ -2975,14 +3042,14 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60269, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60270
+struct CQ_Vote
 {
 	enum { NET_ID = 60270 };
 	u32 zero_u32; // 4 bytes
 	u32 boolean_state_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60270, 8);
+ASSERT_SIZE(CQ_Vote, 8);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60271
@@ -2992,45 +3059,45 @@ struct CQ_UNKNOWN_60271
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60273
+struct CQ_CalendarDetail
 {
 	enum { NET_ID = 60273 };
 	u32 value_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60273, 4);
+ASSERT_SIZE(CQ_CalendarDetail, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60274
+struct CQ_StageSkillSelect
 {
 	enum { NET_ID = 60274 };
 	u32 object_id_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60274, 4);
+ASSERT_SIZE(CQ_StageSkillSelect, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60276
+struct CQ_NP_CharacterSkinUnlock
 {
 	enum { NET_ID = 60276 };
 	u32 item_id_u32; // 4 bytes
 	u32 char_id_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60276, 8);
+ASSERT_SIZE(CQ_NP_CharacterSkinUnlock, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60277
+struct CQ_NP_WarehouseExpand
 {
 	enum { NET_ID = 60277 };
 	u32 target_handle_u32; // 4 bytes
 	u32 flag_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60277, 8);
+ASSERT_SIZE(CQ_NP_WarehouseExpand, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60278
+struct CQ_NP_InventoryExpand
 {
 	enum { NET_ID = 60278 };
 	u32 player_id_u32; // 4 bytes
@@ -3038,105 +3105,241 @@ struct CN_UNKNOWN_60278
 	u16 unknown_u16; // 2 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60278, 8);
+ASSERT_SIZE(CQ_NP_InventoryExpand, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60279
+struct CQ_NP_ReviveByCoin
 {
 	enum { NET_ID = 60279 };
 	u8 guide_mission_flag_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60279, 1);
+ASSERT_SIZE(CQ_NP_ReviveByCoin, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60280
+struct CQ_NP_RewardBuyChance
 {
 	enum { NET_ID = 60280 };
 	u8 tiredness_flag_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60280, 1);
+ASSERT_SIZE(CQ_NP_RewardBuyChance, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60281
+struct CQ_NP_RewardOpenAllSlots
 {
 	enum { NET_ID = 60281 };
 	u8 state_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60281, 1);
+ASSERT_SIZE(CQ_NP_RewardOpenAllSlots, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60282
+struct CQ_BuyGift
 {
 	enum { NET_ID = 60282 };
 	u8 amount_u8; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60282, 1);
+ASSERT_SIZE(CQ_BuyGift, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60283
+struct CQ_MasterTrainingEvent
 {
 	enum { NET_ID = 60283 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60284
+struct CQ_PromotionAttend
 {
 	enum { NET_ID = 60284 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60285
+struct CQ_CharacterPropertyUpgrade
 {
 	enum { NET_ID = 60285 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60286
+struct CQ_CharacterPropertyReset
 {
 	enum { NET_ID = 60286 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60287
+struct CQ_ChatGetInviteeGameAccountID
 {
 	enum { NET_ID = 60287 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60288
+struct CQ_UseCoupon
 {
 	enum { NET_ID = 60288 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60289
+struct CQ_NotifyChattingChannelStatus
 {
 	enum { NET_ID = 60289 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60290
+struct CQ_RequestToken
 {
 	enum { NET_ID = 60290 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
@@ -3144,7 +3347,24 @@ PUSH_PACKED
 struct CN_UNKNOWN_60291
 {
 	enum { NET_ID = 60291 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
@@ -3152,7 +3372,24 @@ PUSH_PACKED
 struct CN_UNKNOWN_60292
 {
 	enum { NET_ID = 60292 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
@@ -3172,10 +3409,27 @@ struct CQ_UNKNOWN_60294
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60295
+struct CQ_TirednessRequest
 {
 	enum { NET_ID = 60295 };
-	u32 record_struct; // 4 bytes (unclassified writer struct)
+	u32 unkDword1;
+	u32 unkDword2;
+	u64 unkQword;
+	u16 unkWord1;
+	u32 unkDword3;
+	u32 unkDword4;
+	u32 unkDword5;
+	u32 unkDword6;
+	u32 unkDword7;
+	u32 unkDword8;
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	// u16 count + count x (3 x u32)
+	VEC(u32, unkTripleVec); // 12 bytes per element
+
+
 };
 POP_PACKED
 
@@ -3225,10 +3479,12 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60301
 {
 	enum { NET_ID = 60301 };
-	u32 name_string; // 4 bytes (unclassified writer string)
-	// vector: variable-size (u16 count + count x u32)
-	u16 entry_list_count; // 2 bytes
-	u32 entry_list[1]; // 4 bytes each
+	u16 unkStrLen;
+	char unkStr[1]; // length is unkStrLen
+	// u16 count + count x 13-byte struct elements
+	VEC(u8, unkStructVec); // stride 13B
+
+
 };
 POP_PACKED
 
@@ -3236,13 +3492,21 @@ PUSH_PACKED
 struct CA_UNKNOWN_60302
 {
 	enum { NET_ID = 60302 };
-	u32 text0_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text1_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text2_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text3_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text4_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text5_wstring; // 4 bytes (unclassified writer wstring)
-	u16 status_u16; // 2 bytes
+	u16 unkWstr1Len;
+	wchar unkWstr1[1]; // length is unkWstr1Len
+	u16 unkWstr2Len;
+	wchar unkWstr2[1]; // length is unkWstr2Len
+	u16 unkWstr3Len;
+	wchar unkWstr3[1]; // length is unkWstr3Len
+	u16 unkWstr4Len;
+	wchar unkWstr4[1]; // length is unkWstr4Len
+	u16 unkWstr5Len;
+	wchar unkWstr5[1]; // length is unkWstr5Len
+	u16 unkWstr6Len;
+	wchar unkWstr6[1]; // length is unkWstr6Len
+	u32 unkDword;
+
+
 };
 POP_PACKED
 
@@ -3274,10 +3538,12 @@ PUSH_PACKED
 struct CN_UNKNOWN_60306
 {
 	enum { NET_ID = 60306 };
-	u16 cutscene_id_u16; // 2 bytes
+	u32 unkValue;
+
+
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60306, 2);
+ASSERT_SIZE(CN_UNKNOWN_60306, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60307
@@ -3319,10 +3585,12 @@ PUSH_PACKED
 struct CA_UNKNOWN_60312
 {
 	enum { NET_ID = 60312 };
-	u32 text_wstring; // 4 bytes (unclassified writer wstring)
-	// vector: variable-size (u16 count + count x u32)
-	u16 record_list_count; // 2 bytes
-	u32 record_list[1]; // 4 bytes each
+	u16 unkWstrLen;
+	wchar unkWstr[1]; // length is unkWstrLen
+	// u16 count + count x 4-byte struct elements
+	VEC(u8, unkEntryVec); // stride 4B
+
+
 };
 POP_PACKED
 

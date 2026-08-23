@@ -44,7 +44,7 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
 		HANDLE_CASE(CN_ReadyToLoadGameMap);
 		HANDLE_CASE(CA_SetGameGvt);
-		HANDLE_CASE(CN_MapIsLoaded);
+		HANDLE_CASE(CA_CityLobbyJoinCity);
 		HANDLE_CASE(CQ_GetCharacterInfo);
 		HANDLE_CASE(CN_UpdatePosition);
 		HANDLE_CASE(CN_ChannelChatMessage);
@@ -317,9 +317,9 @@ void HubPacketHandler::HandlePacket_CA_SetGameGvt(ClientHandle clientHd, const N
 	NT_LOG("[client%x] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientHd, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
-void HubPacketHandler::HandlePacket_CN_MapIsLoaded(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CA_CityLobbyJoinCity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CN_MapIsLoaded ::", clientHd);
+	NT_LOG("[client%x] Client :: CA_CityLobbyJoinCity ::", clientHd);
 	replication->SetPlayerAsInGame(clientHd);
 }
 

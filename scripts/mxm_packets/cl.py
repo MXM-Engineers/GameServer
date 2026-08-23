@@ -279,7 +279,7 @@ class ClientSerializer:
         print('}')
     def serialize_60015(netid, p: common.PacketReader):
         print('CQ_ItemUse {')
-        print('    field1=%d' % p.read_u32())
+        print('    itemInstanceUID=%d' % p.read_u32())
         print('}')
     def serialize_60017(netid, p: common.PacketReader):
         print('CQ_SellShopItem {')

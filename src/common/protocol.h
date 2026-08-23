@@ -974,7 +974,7 @@ PUSH_PACKED
 struct CQ_ItemUse
 {
 	enum { NET_ID = 60015 };
-	u32 objectId; // 4 bytes
+	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 };
 POP_PACKED
 ASSERT_SIZE(CQ_ItemUse, 4);
@@ -1056,7 +1056,7 @@ PUSH_PACKED
 struct CQ_BuyCShopItem
 {
 	enum { NET_ID = 60030 };
-	u32 objectId; // 4 bytes
+	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
@@ -1259,7 +1259,7 @@ PUSH_PACKED
 struct CQ_GearSwap
 {
 	enum { NET_ID = 60062 };
-	u32 objectId; // 4 bytes
+	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
@@ -1407,7 +1407,7 @@ PUSH_PACKED
 struct CQ_BreakUpPartyRoom
 {
 	enum { NET_ID = 60086 };
-	u32 objectId; // 4 bytes
+	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 slotOrParam; // 4 bytes
 };
 POP_PACKED

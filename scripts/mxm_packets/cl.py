@@ -1143,13 +1143,13 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60239(netid, p: common.PacketReader):
-        print('Cl_60239 {')
-        print('    field1=%d' % p.read_u8())
+        print('CN_EnterCityScene {')
+        print('    unkZero=%d' % p.read_u8())
         print('}')
     def serialize_60240(netid, p: common.PacketReader):
-        print('Cl_60240 {')
-        print('    field1=%d' % p.read_u8())
-        print('    field2=%d' % p.read_u8())
+        print('CN_SceneEnter {')
+        print('    unkZero=%d' % p.read_u8())
+        print('    sceneId=%d' % p.read_u8())
         print('}')
     def serialize_60241(netid, p: common.PacketReader):
         print('Cl_60241 {')

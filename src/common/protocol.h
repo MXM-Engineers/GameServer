@@ -2785,23 +2785,26 @@ struct CQ_UNKNOWN_60238
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60239
+// Fired from City_Scene_OnEnter when the client enters the city scene (constant 0).
+struct CN_EnterCityScene
 {
 	enum { NET_ID = 60239 };
-	u8 request_type_u8; // 1 bytes (bool)
+	u8 unkZero; // 1 byte: always 0
 };
 POP_PACKED
-ASSERT_SIZE(CA_UNKNOWN_60239, 1);
+ASSERT_SIZE(CN_EnterCityScene, 1);
 
 PUSH_PACKED
-struct CA_UNKNOWN_60240
+// Sibling scene-entered notification for scene types 2/3 (dispatcher FUN_0080a20a:
+// type 1 -> CN_EnterCityScene(0), type 2 -> (0,1), type 3 -> (0,2)).
+struct CN_SceneEnter
 {
 	enum { NET_ID = 60240 };
-	u8 fixed_zero_u8; // 1 bytes (bool)
-	u8 subtype_u8; // 1 bytes (bool)
+	u8 unkZero; // 1 byte: always 0
+	u8 sceneId; // 1 byte: 0-based scene id (observed 1 and 2)
 };
 POP_PACKED
-ASSERT_SIZE(CA_UNKNOWN_60240, 2);
+ASSERT_SIZE(CN_SceneEnter, 2);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60241

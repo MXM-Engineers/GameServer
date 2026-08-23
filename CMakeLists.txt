@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.26)
 
 project(PrivateMxM LANGUAGES C CXX)
 
@@ -88,6 +88,22 @@ function(copy_physx_dlls target)
 				"$<TARGET_FILE_DIR:${target}>/${dll}")
 	endforeach()
 endfunction()
+
+# Sync gamedata/ into build/gamedata so servers can resolve "gamedata" from
+# their CWD (they run from build/). The stamp output lets ninja skip the step
+# entirely when nothing changed; copy_directory_if_different only rewrites
+# files that actually changed.
+set(GAMEDATA_SRC ${CMAKE_SOURCE_DIR}/gamedata)
+set(GAMEDATA_DST ${CMAKE_SOURCE_DIR}/build/gamedata)
+set(GAMEDATA_STAMP ${CMAKE_BINARY_DIR}/gamedata.synced)
+file(GLOB_RECURSE GAMEDATA_FILES CONFIGURE_DEPENDS "${GAMEDATA_SRC}/*")
+add_custom_command(
+	OUTPUT "${GAMEDATA_STAMP}"
+	COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${GAMEDATA_SRC}" "${GAMEDATA_DST}"
+	COMMAND ${CMAKE_COMMAND} -E touch "${GAMEDATA_STAMP}"
+	DEPENDS ${GAMEDATA_FILES}
+	COMMENT "Syncing gamedata -> build/gamedata")
+add_custom_target(sync_gamedata DEPENDS "${GAMEDATA_STAMP}")
 
 # Keep server executables and tools in build/ regardless of config/preset
 # (debug targets carry the _dbg postfix, so Debug and Release never collide).

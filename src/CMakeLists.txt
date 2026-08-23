@@ -67,6 +67,7 @@ target_compile_definitions(hub_srv PRIVATE ${SERVER_COMMON_DEFINES})
 if(MSVC)
 	target_sources(hub_srv PRIVATE ${NATVIS})
 endif()
+add_dependencies(hub_srv sync_gamedata)
 mxm_debug_suffix(hub_srv)
 
 # ---- GameServer (game_srv) ----
@@ -89,6 +90,7 @@ if(MSVC)
 	target_sources(game_srv PRIVATE ${NATVIS})
 endif()
 copy_physx_dlls(game_srv)
+add_dependencies(game_srv sync_gamedata)
 mxm_debug_suffix(game_srv)
 
 # ---- MatchMaker (mm_srv) ----

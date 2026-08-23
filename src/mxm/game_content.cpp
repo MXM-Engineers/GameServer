@@ -11,7 +11,7 @@ constexpr eastl::hash<const char*> strHash;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
-static Path gameDataDir = L"../gamedata";
+static Path gameDataDir = L"gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {

@@ -279,7 +279,7 @@ class ClientSerializer:
         print('}')
     def serialize_60015(netid, p: common.PacketReader):
         print('CQ_ItemUse {')
-        print('    itemInstanceUID=%d' % p.read_u32())
+        print('    itemInstanceUID=0x%08x' % p.read_u32())
         print('}')
     def serialize_60017(netid, p: common.PacketReader):
         print('CQ_SellShopItem {')
@@ -1199,13 +1199,13 @@ class ClientSerializer:
     def serialize_60252(netid, p: common.PacketReader):
         print('CQ_ItemTrade {')
         print('    unkContextId=%d' % p.read_u32())
-        print('    itemDocId=%d' % p.read_u32())
+        print('    itemDocId=0x%08x' % p.read_u32())
         print('    count=%d' % p.read_u8())
         print('}')
     def serialize_60253(netid, p: common.PacketReader):
         print('CQ_SkinChipDissolve {')
         print('    unkZero=%d' % p.read_u8())
-        print('    chipItemDocId=%d' % p.read_u32())
+        print('    chipItemDocId=0x%08x' % p.read_u32())
         print('    craftCount=%d' % p.read_u8())
         print('}')
     def serialize_60254(netid, p: common.PacketReader):

@@ -996,8 +996,8 @@ class ClientSerializer:
         print('    field1=<unknown>')
         print('}')
     def serialize_60199(netid, p: common.PacketReader):
-        print('CQ_SinglemodeGameHello {')
-        print('    field1=%d' % p.read_u32())
+        print('CN_PlayerTagMaster {')
+        print('    masterActorID=%d' % p.read_u32())
         print('}')
     def serialize_60200(netid, p: common.PacketReader):
         print('CQ_SinglemodeSelectedCharacter {')

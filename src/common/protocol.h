@@ -2431,13 +2431,14 @@ struct CN_UNKNOWN_60198
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_SinglemodeGameHello
+struct CN_PlayerTagMaster
 {
 	enum { NET_ID = 60199 };
-	u32 requestValue; // 4 bytes
+	LocalActorID masterActorID; // 4 bytes: master switched to via tag (21000-range); 0 sent at match start before CQ_GameIsReady
 };
 POP_PACKED
-ASSERT_SIZE(CQ_SinglemodeGameHello, 4);
+
+ASSERT_SIZE(CN_PlayerTagMaster, 4);
 
 PUSH_PACKED
 struct CQ_SinglemodeSelectedCharacter

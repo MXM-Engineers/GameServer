@@ -2884,9 +2884,9 @@ PUSH_PACKED
 struct CQ_ItemTrade
 {
 	enum { NET_ID = 60252 };
-	u32 context_id_u32; // 4 bytes
-	u32 entry_id_u32; // 4 bytes
-	u8 param_u8; // 1 bytes (bool)
+	u32 unkContextId; // 4 bytes: game-state singleton +0xA88, gated on TIREDNESS_NOT_AVAILABLE; observed 5007
+	u32 itemDocId; // 4 bytes: item doc index (e.g. 241020015), family of server-echoed itemIndex 136020015
+	u8 count; // 1 byte: quantity or flag, observed 1
 };
 POP_PACKED
 ASSERT_SIZE(CQ_ItemTrade, 9);

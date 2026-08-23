@@ -1192,9 +1192,9 @@ class ClientSerializer:
     
     def serialize_60252(netid, p: common.PacketReader):
         print('CQ_ItemTrade {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u8())
+        print('    unkContextId=%d' % p.read_u32())
+        print('    itemDocId=%d' % p.read_u32())
+        print('    count=%d' % p.read_u8())
         print('}')
     def serialize_60253(netid, p: common.PacketReader):
         print('CQ_SkinChipDissolve {')

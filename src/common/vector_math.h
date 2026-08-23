@@ -41,7 +41,7 @@ inline float2 v2f(const vec2& v2)
 
 struct MeshFile
 {
-	const u8* fileData;
+	const u8* fileData = nullptr;
 
 	struct Vertex
 	{

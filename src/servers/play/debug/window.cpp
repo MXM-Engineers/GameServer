@@ -127,6 +127,7 @@ struct Window
 	bool ui_bGameStates = true;
 	bool ui_bPhysicsTest = false;
 	bool ui_bAreas = false;
+	bool bInitialized = false;
 
 	Window(i32 width, i32 height):
 		winWidth(width),
@@ -208,6 +209,7 @@ bool Window::Init()
 
 	testSubject.actor = testScene.CreateDynamicBody(100, 300, vec3(0));
 	testSubject.Reset();
+	bInitialized = true;
 	return true;
 }
 
@@ -717,6 +719,8 @@ void Window::UpdatePhysics()
 
 void Window::Frame()
 {
+	if(!bInitialized) return;
+
 	ProfileNewFrame("Window");
 	ProfileFunction();
 
@@ -734,6 +738,8 @@ void Window::Frame()
 
 void Window::OnEvent(const sapp_event& event)
 {
+	if(!bInitialized) return;
+
 	if(event.type == SAPP_EVENTTYPE_KEY_DOWN) {
 		// quit on escape
 		if(event.key_code == sapp_keycode::SAPP_KEYCODE_ESCAPE) {
@@ -771,11 +777,12 @@ void Window::OnEvent(const sapp_event& event)
 
 void Window::Cleanup()
 {
+	if(!bInitialized) return;
+
 	rdr.Cleanup();
 	simgui_shutdown();
 	sg_shutdown();
 }
-
 static Window* g_pWindow = nullptr;
 
 void WindowInit()

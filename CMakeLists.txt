@@ -89,6 +89,17 @@ function(copy_physx_dlls target)
 	endforeach()
 endfunction()
 
+# Keep server executables and tools in build/ regardless of config/preset
+# (debug targets carry the _dbg postfix, so Debug and Release never collide).
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+# Multi-config generators (Visual Studio) append $<CONFIG> unless overridden:
+if(CMAKE_CONFIGURATION_TYPES)
+	foreach(_cfg ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER ${_cfg} _CFG_UPPER)
+		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${_CFG_UPPER} ${CMAKE_SOURCE_DIR}/build)
+	endforeach()
+endif()
+
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(tools)

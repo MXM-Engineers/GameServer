@@ -1227,10 +1227,9 @@ class ClientSerializer:
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60261(netid, p: common.PacketReader):
-        print('Cl_60261 {')
-        print('    text=%s' % p.read_wstr())
+        print('CQ_Honor {')
+        print('    nickName=%s' % p.read_wstr())
         print('}')
-    
     def serialize_60262(netid, p: common.PacketReader):
         print('Cl_60262 {')
         print('    text=%s' % p.read_wstr())

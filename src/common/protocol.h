@@ -2976,11 +2976,11 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60260, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60261
+struct CQ_Honor
 {
 	enum { NET_ID = 60261 };
-	u16 textLen;
-	wchar text[1]; // length is textLen
+	u16 nickName_len; // honored player's nickname
+	wchar nickName[1]; // length is nickName_len
 
 
 };

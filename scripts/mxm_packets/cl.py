@@ -1539,10 +1539,10 @@ class ClientSerializer:
         print('    field2=%d' % p.read_u16())
         print('}')
     def serialize_60298(netid, p: common.PacketReader):
-        print('Cl_60298 {')
-        print('    actorID=%d' % p.read_u32())
+        print('CQ_MasterSupplyRequest {')
+        print('    masterActorID=%d' % p.read_u32())
         n = p.read_u16()
-        print('    values_count=%d' % n)
+        print('    supplies_count=%d' % n)
         for _ in range(n):
             print('        %d' % p.read_u8())
         print('}')

@@ -3470,10 +3470,11 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60297, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60298
+struct CQ_MasterSupplyRequest
 {
 	enum { NET_ID = 60298 };
-	LocalActorID actorID; // 4 bytes: target master in 21000-21500 range (observed 21015/21016)
+	LocalActorID masterActorID; // 4 bytes: own profile master (FIRST_SELF_MASTER range); observed 21015/21016
+	// supplies: list of supply slot ids to grant; typically N copies of one id (UI builds deficit runs)
 	// blob: variable-size (u16 count + count x u8)
 	u16 byte_list_count; // 2 bytes
 	u8 byte_list[1]; // 1 bytes each

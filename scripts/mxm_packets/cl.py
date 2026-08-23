@@ -1165,8 +1165,8 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60244(netid, p: common.PacketReader):
-        print('Cl_60244 {')
-        print('    field1=%d' % p.read_u32())
+        print('CN_Ping {')
+        print('    rttMs=%d' % p.read_u32())
         print('}')
     def serialize_60246(netid, p: common.PacketReader):
         print('CQ_CompleteNonSyncEvents {')

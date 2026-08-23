@@ -2828,13 +2828,13 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60243, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60244
+struct CN_Ping
 {
 	enum { NET_ID = 60244 };
-	u32 param_u32; // 4 bytes
+	u32 rttMs; // 4 bytes: median of >=10 accumulated latency samples (FUN_01a9804a); HUD logs 'Update HUD RTT : %d'; >249ms triggers bad-network warning
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60244, 4);
+ASSERT_SIZE(CN_Ping, 4);
 
 PUSH_PACKED
 struct CQ_CompleteNonSyncEvents

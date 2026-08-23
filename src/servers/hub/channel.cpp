@@ -365,10 +365,29 @@ void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
+	// The alpha inserts classType BETWEEN characterID and skinIndex, so its
+	// CQ_SET_LEADER is three dwords where retail's struct is two. Casting
+	// retail's struct over it silently lands classType in skinIndex: the master
+	// still changes, so nothing looks broken, but the skin is always wrong.
+	//
+	// Confirmed off the wire (trace/lane_*_cl_60053.raw, 12-byte payload):
+	//   2b520000 23000000 00000000  -> characterID 21035, classType 35, skin 0
+	//   12520000 0a000000 02000000  -> characterID 21010, classType 10, skin 2
+	// The second one is the tell: retail's layout reads that skin as 10.
+	ConstBuffer request(packetData, packetSize);
+	const LocalActorID characterID = request.Read<LocalActorID>();
 
-	game->OnPlayerSetLeaderCharacter(clientHd, leader.characterID, leader.skinIndex);
+	if(server->GetCodec(clientHd).SetLeaderHasClassType() && request.CanRead(sizeof(i32) * 2)) {
+		request.Read<ClassType>();  // redundant: derived from characterID below
+	}
+
+	const SkinIndex skinIndex = request.CanRead(sizeof(SkinIndex))
+			? request.Read<SkinIndex>()
+			: SkinIndex::DEFAULT;
+
+	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientHd, (u32)characterID, (i32)skinIndex);
+
+	game->OnPlayerSetLeaderCharacter(clientHd, characterID, skinIndex);
 }
 
 void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

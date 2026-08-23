@@ -229,11 +229,17 @@ void Replication::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID mast
 	else {
 		// NOTE: only seems to close the master window
 		// SA_LeaderCharacter
-		Sv::SA_SetLeader leader;
-		leader.result = 0;
-		leader.leaderID = laiLeader;
-		leader.skinIndex = skinIndex;
-		SendPacket(clientHd, leader);
+		// The alpha inserts classType before skinIndex, making this four dwords
+		// instead of three; retail's 12 bytes are one short and the client exits.
+		// See the hub's copy of this function for the full derivation.
+		PacketWriter<Sv::SA_SetLeader> packet;
+		packet.Write<i32>(0);         // result
+		packet.Write<LocalActorID>(laiLeader);
+		if(server->GetCodec(clientHd).SetLeaderHasClassType()) {
+			packet.Write<ClassType>(classType);
+		}
+		packet.Write<SkinIndex>(skinIndex);
+		SendPacket(clientHd, packet);
 	}
 }
 
@@ -242,13 +248,19 @@ void Replication::SendChatMessageToAll(const wchar* senderName, i32 chatType, co
 	// TODO: restrict message length
 	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
-	packet.Write<i32>(chatType); // chatType
-	packet.WriteStringObj(senderName);
-	packet.Write<u8>(0); // senderStaffType
-	packet.WriteStringObj(msg, msgLen);
-
+	// staffType is retail-only and sits BETWEEN two strings, so sending it to an
+	// alpha client shifts chatMsg by a byte and the text arrives as CJK garbage.
+	// Built per recipient: a retail and an alpha client can share a match.
 	for(int clientID= 0; clientID < MAX_PLAYERS; clientID++) {
 		if(playerState[clientID].cur < PlayerState::IN_GAME) continue;
+
+		packet.size = 0;
+		packet.Write<i32>(chatType); // chatType
+		packet.WriteStringObj(senderName);
+		if(server->GetCodec(clientHandle[clientID]).ChatHasStaffType()) {
+			packet.Write<u8>(0); // senderStaffType
+		}
+		packet.WriteStringObj(msg, msgLen);
 
 		SendPacket(clientHandle[clientID], packet);
 	}
@@ -265,7 +277,9 @@ void Replication::SendChatMessageToClient(ClientHandle toClientHd, const wchar* 
 
 	packet.Write<EChatType>(chatType); // chatType
 	packet.WriteStringObj(senderName);
-	packet.Write<u8>(0); // senderStaffType
+	if(server->GetCodec(toClientHd).ChatHasStaffType()) {
+		packet.Write<u8>(0); // senderStaffType -- retail only
+	}
 	packet.WriteStringObj(msg, msgLen);
 
 	SendPacket(toClientHd, packet);
@@ -306,7 +320,9 @@ void Replication::SendChatWhisperToClient(ClientHandle destClientHd, const wchar
 	PacketWriter<Sv::SN_WhisperReceive> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
-	packet.Write<u8>(0); // staffType
+	if(server->GetCodec(destClientHd).ChatHasStaffType()) {
+		packet.Write<u8>(0); // staffType -- retail only
+	}
 	packet.WriteStringObj(msg); // msg
 
 	SendPacket(destClientHd, packet);

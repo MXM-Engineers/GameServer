@@ -7,6 +7,8 @@ struct CConfigGame
 	i32 DevMode = false;
 	i32 DevQuickConnect = false;
 	i32 TraceNetwork = false;
+	// Build assumed for a new connection until CQ_FirstHello identifies it.
+	char DefaultClientVersion[16] = "retail";
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;
 	f32 DbgCamPosX = 0;

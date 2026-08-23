@@ -291,11 +291,28 @@ void HubReplication::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID m
 	else {
 		// NOTE: only seems to close the master window
 		// SA_LeaderCharacter
-		Sv::SA_SetLeader leader;
-		leader.result = 0;
-		leader.leaderID = laiLeader;
-		leader.skinIndex = skinIndex;
-		SendPacket(clientHd, leader);
+		// The alpha's SA_SET_LEADER is FOUR dwords, retail's is three: it has a
+		// classType between leaderID and skinIndex, mirroring the same insertion
+		// in CQ_SET_LEADER (see channel.cpp). Its deserializer at 0x8129f3 does
+		// four `push 4; call 0x62d801` (ensure-n-available) reads into
+		// obj+0/+4/+8/+0xc, so retail's 12-byte payload fails the fourth and the
+		// client exits with
+		//   [TLFATAL] Serialization error on received packet:SA_SET_LEADER
+		// Field names are the client's own, from its packet echo:
+		//   SA_SET_LEADER[(result:0)(leaderID:21035)(classType:35)(skinIndex:0)]
+		//
+		// Only reachable by changing master while already in the city. pyserver
+		// has the same latent bug -- its in_game branch sends three dwords too,
+		// and that path was apparently never exercised.
+		PacketWriter<Sv::SA_SetLeader> packet;
+		packet.Write<i32>(0);         // result
+		packet.Write<LocalActorID>(laiLeader);
+		if(server->GetCodec(clientHd).SetLeaderHasClassType()) {
+			packet.Write<ClassType>(classType);
+		}
+		packet.Write<SkinIndex>(skinIndex);
+
+		SendPacket(clientHd, packet);
 	}
 }
 
@@ -305,13 +322,22 @@ void HubReplication::SendChatMessageToAll(const wchar* senderName, i32 chatType,
 
 	PacketWriter<Sv::SN_ChatChannelMessage> packet;
 
-	packet.Write<i32>(chatType); // chatType
-	packet.WriteStringObj(senderName);
-	packet.Write<u8>(0); // senderStaffType
-	packet.WriteStringObj(msg, msgLen);
-
+	// staffType is retail-only, and it sits BETWEEN two strings -- see
+	// ProtocolCodec::ChatHasStaffType(). Sending it to an alpha client shifts
+	// chatMsg by one byte and the text arrives as CJK garbage.
+	//
+	// Built per recipient rather than once, because a retail and an alpha client
+	// can be in the same channel and they need different bytes.
 	for(int clientID= 0; clientID < MAX_CLIENTS; clientID++) {
 		if(playerState[clientID] != PlayerState::IN_GAME) continue;
+
+		packet.size = 0;
+		packet.Write<i32>(chatType); // chatType
+		packet.WriteStringObj(senderName);
+		if(server->GetCodec(playerClientHd[clientID]).ChatHasStaffType()) {
+			packet.Write<u8>(0); // senderStaffType
+		}
+		packet.WriteStringObj(msg, msgLen);
 
 		SendPacket(playerClientHd[clientID], packet);
 	}
@@ -328,7 +354,9 @@ void HubReplication::SendChatMessageToClient(ClientHandle toClientHd, const wcha
 
 	packet.Write<i32>(chatType); // chatType
 	packet.WriteStringObj(senderName);
-	packet.Write<u8>(0); // senderStaffType
+	if(server->GetCodec(toClientHd).ChatHasStaffType()) {
+		packet.Write<u8>(0); // senderStaffType -- retail only, see ChatHasStaffType()
+	}
 	packet.WriteStringObj(msg, msgLen);
 
 	SendPacket(toClientHd, packet);
@@ -350,7 +378,9 @@ void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wc
 	PacketWriter<Sv::SN_WhisperReceive> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
-	packet.Write<u8>(0); // staffType
+	if(server->GetCodec(destClientHd).ChatHasStaffType()) {
+		packet.Write<u8>(0); // staffType -- retail only, see ChatHasStaffType()
+	}
 	packet.WriteStringObj(msg); // msg
 
 	SendPacket(destClientHd, packet);
@@ -510,7 +540,18 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	{
 		PacketWriter<Sv::SN_MyGuild> packet;
 
-		packet.WriteStringObj(L"Alpha");
+		// A non-empty guildTag makes the client immediately fire
+		// CQ_GetGuildProfile / _MemberList / _HistoryList, and SA_GetGuildProfile
+		// is a ~20-field structure with six embedded strings whose alpha layout
+		// we have not recovered. Answering it wrong is fatal -- the client
+		// raises [TLFATAL] Serialization error and exits. An empty tag makes it
+		// skip the whole exchange. Report no guild until the layout is known.
+		if(server->GetCodec(clientHd).version == ClientVersion::ALPHA) {
+			packet.WriteStringObj(L"");
+		}
+		else {
+			packet.WriteStringObj(L"Alpha");
+		}
 		packet.Write<i64>(0);
 		packet.Write<u8>(0);
 
@@ -630,6 +671,15 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<i32>(-1); // tutorialState
 		packet.Write<i32>(3600); // masterGearDurability
 		packet.Write<u8>(0); // badgeType
+
+		// The alpha's SN_AccountInfo has two more fields after badgeType. The
+		// struct above (retail's) stops 5 bytes short, and a short payload is
+		// fatal: the client raises [TLFATAL] Serialization error and exits
+		// 0x80000003. Field names are the client's own, from its packet echo.
+		if(server->GetCodec(clientHd).AccountInfoHasActivity()) {
+			packet.Write<i32>(0); // activityPoint
+			packet.Write<u8>(0);  // activityRewardedState
+		}
 
 		SendPacket(clientHd, packet);
 	}
@@ -1589,6 +1639,16 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 {
 	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
 
+	// The alpha's Player entry has NO isBot byte -- same class of delta as the
+	// chat staffType: retail inserted a u8 mid-structure. Recovered from the
+	// deserializer at 0x821df0, which reads
+	//   u64 sortieUID, 4x i32, then three count+loop groups of
+	//   { i32 userID, wstring nickname, 4x i32 }, then i32 + u8 + u8.
+	// The three loop-back jumps delimit allies/enemies/spectators and the
+	// trailing ensure(1)/ensure(1) pins elementMain/elementSub, so the only
+	// difference from retail's struct is the missing isBot.
+	const bool hasIsBot = server->GetCodec(clientHd).PlayerHasIsBot();
+
 	packet.Write(matchingParty.sortieUID); // sortieID
 	packet.Write(StageIndex::CombatArena); // stageIndex
 	packet.Write(GameType::PVP_Rank); // gametype
@@ -1607,7 +1667,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 		if(p.team == 0) {
 			packet.Write(UserID(i + 1)); // userID
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
-			packet.Write<u8>(p.isBot); // isBot
+			if(hasIsBot) packet.Write<u8>(p.isBot); // isBot -- retail only
 			packet.Write<i32>(0); // tier
 			packet.Write<i32>(0); // tierGroupRanking
 			packet.Write<i32>(0); // tierSeriesFlag
@@ -1627,7 +1687,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 		if(p.team == 1) {
 			packet.Write(UserID(i + 1)); // userID
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
-			packet.Write<u8>(p.isBot); // isBot
+			if(hasIsBot) packet.Write<u8>(p.isBot); // isBot -- retail only
 			packet.Write<i32>(0); // tier
 			packet.Write<i32>(0); // tierGroupRanking
 			packet.Write<i32>(0); // tierSeriesFlag

@@ -9,6 +9,7 @@ bool CConfigHub::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DefaultClientVersion=%15s", DefaultClientVersion) == 1) return true;
 	return false;
 }
 
@@ -84,6 +85,7 @@ void CConfigHub::Print() const
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
+	LOG("	DefaultClientVersion=%s", DefaultClientVersion);
 	LOG("}");
 }
 

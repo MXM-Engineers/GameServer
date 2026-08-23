@@ -8,6 +8,7 @@ bool CConfigGame::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DefaultClientVersion=%15s", DefaultClientVersion) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
 
@@ -98,6 +99,7 @@ void CConfigGame::Print() const
 	LOG("	DevMode=%d", DevMode);
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
+	LOG("	DefaultClientVersion=%s", DefaultClientVersion);
 	LOG("	WindowWidth=%d", WindowWidth);
 	LOG("	WindowHeight=%d", WindowHeight);
 	LOG("	DbgCamPosX=%f", DbgCamPosX);

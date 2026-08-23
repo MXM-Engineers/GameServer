@@ -251,7 +251,17 @@ void InstancePool::Lane::Update()
 		}
 
 		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
+			// A copy, not a const ref into the recv buffer: the wire netID gets
+			// rewritten to canonical here so every switch(header.netID)
+			// downstream -- coordinator, hub instance, room instance -- stays
+			// build-agnostic. This is the ONLY inbound translation point for
+			// client traffic; the matchmaker pumps below are server<->server
+			// and deliberately untranslated.
+			const u8* packetStart = reader.cursor;
+			NetHeader header = reader.Read<NetHeader>();
+			const u16 wireNetID = header.netID;
+			header.netID = server->GetCodec(chunkInfo.clientHd).ToCanonical(wireNetID);
+
 			const i32 packetDataSize = header.size - sizeof(NetHeader);
 
 			if(!reader.CanRead(packetDataSize)) {
@@ -261,7 +271,12 @@ void InstancePool::Lane::Update()
 			}
 
 			if(Config().TraceNetwork) {
-				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				// wireNetID, not the canonical one, so traces stay directly
+				// comparable with pyserver's captures of the same flow. Dump
+				// from packetStart: `header` is now a local copy, so writing
+				// header.size bytes from &header would emit stack garbage
+				// (and the canonical ID) instead of what the client sent.
+				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, wireNetID)), packetStart, header.size);
 				server->packetCounter++;
 			}
 
@@ -638,13 +653,25 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
-	// TODO: verify version, protocol, etc
+	// Identify the build from the very first packet. netID 60002 is one of the
+	// 36 that did not move, so this packet is readable in either dialect --
+	// which is the only reason detection can happen this early.
+	const ClientVersion version = DetectClientVersion(clHello.dwProtocolCRC, clHello.dwErrorCRC,
+	                                                  clHello.version, packetSize);
+	server->SetClientVersion(clientHd, version);
+	const ProtocolCodec codec = server->GetCodec(clientHd);
+	LOG("[client%x] client build: %s (protocolCRC=%x errorCRC=%x version=%x size=%d)",
+	    clientHd, ClientVersionName(version), clHello.dwProtocolCRC, clHello.dwErrorCRC,
+	    clHello.version, packetSize);
+
 	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
 	Sv::SA_FirstHello hello;
-	hello.dwProtocolCRC = 0x28845199;
-	hello.dwErrorCRC    = 0x93899e2c;
+	// Echo the client's own CRCs rather than hardcoding retail's. Correct for
+	// any build, and both values feed CreateLeaKey16 (see PacketEncryption.md).
+	hello.dwProtocolCRC = clHello.dwProtocolCRC;
+	hello.dwErrorCRC    = clHello.dwErrorCRC;
 	hello.serverType    = 1;
 	hello.clientIp[0] = info.ip[3];
 	hello.clientIp[1] = info.ip[2];
@@ -654,7 +681,13 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	hello.clientPort = info.port;
 	hello.tqosWorldId = 1;
 
-	SendPacket(clientHd, hello);
+	// The alpha's SA_FirstHello has no tqosWorldId -- that string does not
+	// occur anywhere in the alpha image in either encoding. Send the struct
+	// short rather than maintaining a second one; it is the trailing field.
+	const u16 helloSize = codec.HasTqosWorldId()
+			? (u16)sizeof(hello)
+			: (u16)(sizeof(hello) - sizeof(hello.tqosWorldId));
+	server->SendPacketData(clientHd, Sv::SA_FirstHello::NET_ID, helloSize, &hello);
 }
 
 void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -670,8 +703,11 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 	// TODO: check authentication
 
 	// send authentication result
+	// The accept value is build-specific: the alpha does `sub eax,0x55` at
+	// 0x008c6179 feeding "[HANDOVER] AUTH result (%d)", so retail's 91 shows
+	// up there as result 6 and the handover never completes.
 	Sv::SA_AuthResult auth;
-	auth.result = 91;
+	auth.result = server->GetCodec(clientHd).AuthAccept();
 	SendPacket(clientHd, auth);
 
 	// TODO: fetch account data

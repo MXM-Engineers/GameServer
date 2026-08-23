@@ -71,6 +71,9 @@ ClientHandle Server::ListenerAddClient(SOCKET s, const sockaddr& addr_)
 
 			clientSocket[clientID] = s;
 
+			// Assume the configured build until CQ_FirstHello identifies it.
+			clientCodec[clientID] = defaultCodec;
+
 			client.addr = addr_;
 
 			if(client.recvPendingProcessingBuff.data == nullptr) {
@@ -279,13 +282,26 @@ void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, co
 	const i32 clientID = TryGetClientID(clientHd);
 	if(clientID == -1) return;
 
+	// Canonical -> this client's wire ID. The ONLY outbound translation point
+	// for client traffic; InnerConnection::SendPacketData below is server<->server
+	// and deliberately does not translate.
+	const u16 wireID = clientCodec[clientID].ToWire(netID);
+	if(wireID == NETID_ABSENT) {
+		// Dropping is the safe failure. A packet the client has no case for
+		// either parses as some unrelated packet or raises [TLFATAL] and kills
+		// it; either way sending is worse than not.
+		WARN("packet %d does not exist in the %s client, dropped",
+		     netID, ClientVersionName(clientCodec[clientID].version));
+		return;
+	}
+
 	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
 	u8 sendBuff[8192];
 	ASSERT(packetTotalSize <= sizeof(sendBuff));
 
 	NetHeader header;
 	header.size = packetTotalSize;
-	header.netID = netID;
+	header.netID = wireID;
 	memmove(sendBuff, &header, sizeof(header));
 	memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 

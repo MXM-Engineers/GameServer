@@ -690,7 +690,9 @@ void RoomInstance::SendDbgMsg(ClientHandle clientHd, const wchar* msg)
 
 	packet.Write<i32>(1); // chatType
 	packet.WriteStringObj(L"System");
-	packet.Write<u8>(0); // senderStaffType
+	if(server->GetCodec(clientHd).ChatHasStaffType()) {
+		packet.Write<u8>(0); // senderStaffType -- retail only, see ChatHasStaffType()
+	}
 	packet.WriteStringObj(msg);
 
 	SendPacket(clientHd, packet);

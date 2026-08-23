@@ -1,6 +1,7 @@
 #pragma once
 #include "base.h"
 #include "utils.h"
+#include "protocol_version.h"
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_hash_map.h>
@@ -152,6 +153,9 @@ struct Server
 	eastl::array<SOCKET,MAX_CLIENTS> clientSocket;
 	eastl::array<ClientNet,MAX_CLIENTS> clientNet;
 	eastl::array<ClientInfo,MAX_CLIENTS> clientInfo;
+	// Per-connection, so a retail and an alpha client can be served at once.
+	// Seeded from defaultCodec on connect, then narrowed by CQ_FirstHello.
+	eastl::array<ProtocolCodec,MAX_CLIENTS> clientCodec;
 
 	hash_map<ClientHandle,i32,MAX_CLIENTS*4> clientHandle2IDMap;
 	hash_map<i32,ClientHandle,MAX_CLIENTS*4> clientID2HandleMap;
@@ -166,6 +170,8 @@ struct Server
 
 	i32 packetCounter = 0;
 	bool doTraceNetwork = false;
+	// What a new connection is assumed to be until CQ_FirstHello says otherwise.
+	ProtocolCodec defaultCodec;
 
 	bool Init();
 	void Cleanup();
@@ -217,7 +223,25 @@ struct Server
 	{
 		SendPacketData(clientHd, Packet::NET_ID, sizeof(packet), &packet);
 	}
+	// netID is CANONICAL; the translation to this client's build happens inside.
 	void SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, const void* packetData);
+
+	// The codec belongs to the connection, so it is looked up by handle.
+	// Returns a retail (identity) codec for an unknown handle rather than
+	// asserting -- callers hit this while a client is disconnecting.
+	inline ProtocolCodec GetCodec(ClientHandle clientHd) const
+	{
+		const i32 clientID = TryGetClientID(clientHd);
+		if(clientID == -1) return ProtocolCodec();
+		return clientCodec[clientID];
+	}
+
+	inline void SetClientVersion(ClientHandle clientHd, ClientVersion v)
+	{
+		const i32 clientID = TryGetClientID(clientHd);
+		if(clientID == -1) return;
+		clientCodec[clientID] = ProtocolCodec(v);
+	}
 
 private:
 	inline i32 GetClientID(ClientHandle clientHd) const

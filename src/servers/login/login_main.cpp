@@ -11,10 +11,15 @@ struct Config
 	u8 gameServerIP[4] = { 127, 0, 0, 1 };
 	i32 gameServerPort = 11900;
 	i32 traceNetwork = 0;
+	// Build assumed for a new connection before CQ_FirstHello identifies it.
+	// Detection makes this mostly cosmetic, but it decides what an unknown
+	// client is treated as. "retail" or "alpha".
+	char defaultClientVersion[16] = "retail";
 
 	bool ParseLine(const char* line)
 	{
 		if(EA::StdC::Sscanf(line, "ListenPort=%d", &listenPort) == 1) return true;
+		if(EA::StdC::Sscanf(line, "DefaultClientVersion=%15s", defaultClientVersion) == 1) return true;
 		i32 ip[4];
 		if(EA::StdC::Sscanf(line, "GameServerIP=%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]) == 4) {
 			gameServerIP[0] = ip[0];
@@ -82,6 +87,7 @@ struct Config
 		LOG("	GameServerIP=%d.%d.%d.%d", gameServerIP[0], gameServerIP[1], gameServerIP[2], gameServerIP[3]);
 		LOG("	GameServerPort=%d", gameServerPort);
 		LOG("	TraceNetwork=%d", traceNetwork);
+		LOG("	DefaultClientVersion=%s", defaultClientVersion);
 		LOG("}");
 	}
 };
@@ -100,6 +106,10 @@ struct Client
 	bool running = true;
 
 	WideString nickname;
+	// The login server predates Server/ClientHandle and rolls its own socket
+	// handling, so it carries its own codec instead of Server::clientCodec.
+	// Seeded from config, then narrowed by CQ_FirstHello.
+	ProtocolCodec codec;
 
 	void Run()
 	{
@@ -149,12 +159,18 @@ struct Client
 		ConstBuffer buff(recvBuff, recvLen);
 		while(buff.CanRead(sizeof(NetHeader))) {
 			const u8* data = buff.cursor;
-			const NetHeader& header = buff.Read<NetHeader>();
+			// A copy, not a const ref: the wire netID is rewritten to canonical
+			// so HandlePacket's switch stays build-agnostic. Only inbound
+			// translation point on this server.
+			NetHeader header = buff.Read<NetHeader>();
+			const u16 wireNetID = header.netID;
+			header.netID = codec.ToCanonical(wireNetID);
 			const u8* packetData = buff.ReadRaw(header.size - sizeof(NetHeader));
 
 			if(g_Config.traceNetwork) {
 				static i32 counter = 0;
-				fileSaveBuff(FormatPath(FMT("trace/login_%d_cl_%d.raw", counter, header.netID)), data, header.size);
+				// wireNetID, so traces stay comparable with pyserver's captures.
+				fileSaveBuff(FormatPath(FMT("trace/login_%d_cl_%d.raw", counter, wireNetID)), data, header.size);
 				counter++;
 			}
 
@@ -168,19 +184,57 @@ struct Client
 
 		switch(header.netID) {
 			case Cl::CQ_FirstHello::NET_ID: {
+				const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 				LOG("Client :: Hello");
 
+				// Identify the build from the first packet. netID 60002 is one
+				// of the 36 that did not move, so this is readable in either
+				// dialect -- which is what makes detection possible this early.
+				const ClientVersion version = DetectClientVersion(clHello.dwProtocolCRC,
+						clHello.dwErrorCRC, clHello.version, packetSize);
+				codec = ProtocolCodec(version);
+				LOG("Client build: %s (protocolCRC=%x errorCRC=%x version=%x size=%d)",
+				    ClientVersionName(version), clHello.dwProtocolCRC, clHello.dwErrorCRC,
+				    clHello.version, packetSize);
+
 				Sv::SA_FirstHello hello;
-				hello.dwProtocolCRC = 0x28845199;
-				hello.dwErrorCRC    = 0x93899e2c;
+				// Echo the client's own CRCs instead of hardcoding retail's.
+				hello.dwProtocolCRC = clHello.dwProtocolCRC;
+				hello.dwErrorCRC    = clHello.dwErrorCRC;
 				hello.serverType    = 0;
-				memmove(hello.clientIp, clientIp, sizeof(hello.clientIp));
+				// This server sends clientIp in natural order while the hub
+				// coordinator reverses it, from identically-filled source data,
+				// so one of the two is wrong. For the alpha the hub is right:
+				// reversed gives 0x7F000001 and the client logs
+				// "Client IP is 127.0.0.1"; natural order gives 0x0100007F.
+				//
+				// Deliberately NOT "fixed" for retail. Retail works today with
+				// natural order here, the evidence for reversing comes from the
+				// alpha client, and changing retail's bytes as a side effect of
+				// adding alpha support is not this change's job. Keeping it
+				// version-gated is what lets server/retail_regress.py show the
+				// retail stream is byte-identical to an unmodified build.
+				if(codec.ClientIpIsReversed()) {
+					hello.clientIp[0] = clientIp[3];
+					hello.clientIp[1] = clientIp[2];
+					hello.clientIp[2] = clientIp[1];
+					hello.clientIp[3] = clientIp[0];
+				}
+				else {
+					memmove(hello.clientIp, clientIp, sizeof(hello.clientIp));
+				}
 				STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(clientIp));
 				hello.clientPort = clientPort;
 				hello.tqosWorldId = 1;
 
 				LOG("Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
-				SendPacket(hello);
+
+				// No tqosWorldId in the alpha; it is the trailing field, so
+				// sending the struct short is enough.
+				const u16 helloSize = codec.HasTqosWorldId()
+						? (u16)sizeof(hello)
+						: (u16)(sizeof(hello) - sizeof(hello.tqosWorldId));
+				SendPacketData(Sv::SA_FirstHello::NET_ID, helloSize, &hello);
 			} break;
 
 			case Cl::CQ_UserLogin::NET_ID: {
@@ -199,7 +253,11 @@ struct Client
 
 				LOG("Server :: SA_UserloginResult");
 				Sv::SA_UserloginResult accept;
-				accept.result = 0x33;
+				// Build-specific accept value. The alpha's handler at
+				// 0x0063a706 is `cmp eax,0x31 / jne`, and it reports failure as
+				// "[LOGIN] ... received error result. (N23<nResult-0x31>)" --
+				// retail's 0x33 shows up there as N2302.
+				accept.result = codec.UserLoginAccept();
 				SendPacket(accept);
 			} break;
 
@@ -313,13 +371,21 @@ struct Client
 
 	void SendPacketData(u16 netID, u16 packetSize, const void* packetData)
 	{
+		// Canonical -> this client's wire ID. Only outbound translation point.
+		const u16 wireID = codec.ToWire(netID);
+		if(wireID == NETID_ABSENT) {
+			WARN("packet %d does not exist in the %s client, dropped",
+			     netID, ClientVersionName(codec.version));
+			return;
+		}
+
 		const i32 packetTotalSize = packetSize+sizeof(NetHeader);
 		u8 sendBuff[8192];
 		ASSERT(packetTotalSize <= sizeof(sendBuff));
 
 		NetHeader header;
 		header.size = packetTotalSize;
-		header.netID = netID;
+		header.netID = wireID;
 		memmove(sendBuff, &header, sizeof(header));
 		memmove(sendBuff+sizeof(NetHeader), packetData, packetSize);
 
@@ -451,6 +517,9 @@ int main(int argc, char** argv)
 		client.clientID = 0;
 		client.sock = clientSocket;
 		client.addr = clientAddr;
+		// Reset per connection: `client` is static and reused, so a stale codec
+		// from a previous session would otherwise leak into the next one.
+		client.codec = ProtocolCodec(ClientVersionFromString(g_Config.defaultClientVersion));
 
 		LOG("New connection (%s)", GetIpString(clientAddr));
 		EA::Thread::Thread thread;

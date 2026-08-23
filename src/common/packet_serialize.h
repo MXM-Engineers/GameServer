@@ -45,7 +45,13 @@ inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, co
 	SER("	dwProtocolCRC=%x", buff.Read<u32>());
 	SER("	dwErrorCRC=%x", buff.Read<u32>());
 	SER("	version=%x", buff.Read<u32>());
-	SER("	unknown=%d", buff.Read<u8>());
+	// The trailing byte is retail-only: the alpha's CQ_FirstHello is 12 bytes,
+	// three u32 and nothing else. Reading it unconditionally asserts inside
+	// ConstBuffer::Read. A trace formatter must never be able to kill the
+	// server over a short packet.
+	if(buff.CanRead(sizeof(u8))) {
+		SER("	unknown=%d", buff.Read<u8>());
+	}
 	SER("}");
 
 	return str.data();

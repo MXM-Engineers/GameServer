@@ -181,7 +181,13 @@ void InstancePool::Lane::Update()
 		}
 
 		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
+			// A copy, not a const ref: the wire netID is rewritten to canonical here
+			// so every switch(header.netID) downstream stays build-agnostic. Only
+			// inbound translation point for client traffic on this server.
+			const u8* packetStart = reader.cursor;
+			NetHeader header = reader.Read<NetHeader>();
+			const u16 wireNetID = header.netID;
+			header.netID = server->GetCodec(chunkInfo.clientHd).ToCanonical(wireNetID);
 			const i32 packetDataSize = header.size - sizeof(NetHeader);
 
 			if(!reader.CanRead(packetDataSize)) {
@@ -191,7 +197,7 @@ void InstancePool::Lane::Update()
 			}
 
 			if(Config().TraceNetwork) {
-				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				fileSaveBuff(FormatPath(FMT("trace/lane_%d_cl_%d.raw", server->packetCounter, wireNetID)), packetStart, header.size);
 				server->packetCounter++;
 			}
 
@@ -436,7 +442,13 @@ void Coordinator::Update()
 		}
 
 		while(reader.CanRead(sizeof(NetHeader))) {
-			const NetHeader& header = reader.Read<NetHeader>();
+			// A copy, not a const ref: the wire netID is rewritten to canonical here
+			// so every switch(header.netID) downstream stays build-agnostic. Only
+			// inbound translation point for client traffic on this server.
+			const u8* packetStart = reader.cursor;
+			NetHeader header = reader.Read<NetHeader>();
+			const u16 wireNetID = header.netID;
+			header.netID = server->GetCodec(chunkInfo.clientHd).ToCanonical(wireNetID);
 			const i32 packetDataSize = header.size - sizeof(NetHeader);
 
 			if(!reader.CanRead(packetDataSize)) {
@@ -446,7 +458,7 @@ void Coordinator::Update()
 			}
 
 			if(Config().TraceNetwork) {
-				fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, header.netID)), &header, header.size);
+				fileSaveBuff(FormatPath(FMT("trace/game_%d_cl_%d.raw", server->packetCounter, wireNetID)), packetStart, header.size);
 				server->packetCounter++;
 			}
 
@@ -541,13 +553,22 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
-	// TODO: verify version, protocol, etc
+	// Identify the build from the first packet, same as the hub. The client opens
+	// a fresh connection to this server for the match, so it re-handshakes here
+	// and the codec has to be established again per connection.
+	const ClientVersion version = DetectClientVersion(clHello.dwProtocolCRC, clHello.dwErrorCRC,
+	                                                  clHello.version, packetSize);
+	server->SetClientVersion(clientHd, version);
+	const ProtocolCodec codec = server->GetCodec(clientHd);
+	LOG("[client%x] client build: %s", clientHd, ClientVersionName(version));
+
 	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
 	Sv::SA_FirstHello hello;
-	hello.dwProtocolCRC = 0x28845199;
-	hello.dwErrorCRC    = 0x93899e2c;
+	// Echo the client's own CRCs rather than hardcoding retail's.
+	hello.dwProtocolCRC = clHello.dwProtocolCRC;
+	hello.dwErrorCRC    = clHello.dwErrorCRC;
 	hello.serverType = 2;
 	hello.clientIp[0] = info.ip[3];
 	hello.clientIp[1] = info.ip[2];
@@ -557,7 +578,12 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	hello.clientPort = info.port;
 	hello.tqosWorldId = 1;
 
-	SendPacket(clientHd, hello);
+	// No tqosWorldId in the alpha; it is the trailing field, so sending the
+	// struct short is enough.
+	const u16 helloSize = codec.HasTqosWorldId()
+			? (u16)sizeof(hello)
+			: (u16)(sizeof(hello) - sizeof(hello.tqosWorldId));
+	server->SendPacketData(clientHd, Sv::SA_FirstHello::NET_ID, helloSize, &hello);
 }
 
 void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

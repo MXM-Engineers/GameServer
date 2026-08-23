@@ -59,6 +59,8 @@ int main(int argc, char** argv)
 	}
 	g_Server = &server;
 	server.doTraceNetwork = Config().TraceNetwork;
+	server.defaultCodec = ProtocolCodec(ClientVersionFromString(Config().DefaultClientVersion));
+	LOG("Default client build: %s", ClientVersionName(server.defaultCodec.version));
 
 	Listener listen(&server);
 	g_Listener = &listen;

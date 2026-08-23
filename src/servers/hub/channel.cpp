@@ -46,7 +46,7 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CA_SetGameGvt);
 		HANDLE_CASE(CA_CityLobbyJoinCity);
 		HANDLE_CASE(CQ_GetCharacterInfo);
-		HANDLE_CASE(CN_UpdatePosition);
+		HANDLE_CASE(CN_GamePlayerSyncByInt);
 		HANDLE_CASE(CN_ChannelChatMessage);
 		HANDLE_CASE(CQ_SetLeaderCharacter);
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
@@ -337,10 +337,10 @@ void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, c
 	game->OnPlayerGetCharacterInfo(clientHd, actorUID);
 }
 
-void HubPacketHandler::HandlePacket_CN_UpdatePosition(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_GamePlayerSyncByInt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
+	const Cl::CN_GamePlayerSyncByInt& update = SafeCast<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: CN_GamePlayerSyncByInt :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {

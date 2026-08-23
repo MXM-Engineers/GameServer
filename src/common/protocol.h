@@ -544,7 +544,7 @@ struct CN_ReadyToLoadGameMap
 	enum { NET_ID = 60021 };
 };
 
-struct CN_UpdatePosition
+struct CN_GamePlayerSyncByInt
 {
 	enum { NET_ID = 60022 };
 
@@ -557,7 +557,7 @@ struct CN_UpdatePosition
 	ActionStateID nState;
 	i32 nActionIDX;
 };
-ASSERT_SIZE(CN_UpdatePosition, 56);
+ASSERT_SIZE(CN_GamePlayerSyncByInt, 56);
 
 PUSH_PACKED
 struct CN_GamePlayerSyncActionStateOnly

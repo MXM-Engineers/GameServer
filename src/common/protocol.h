@@ -2895,9 +2895,9 @@ PUSH_PACKED
 struct CQ_SkinChipDissolve
 {
 	enum { NET_ID = 60253 };
-	u8 zero_u8; // 1 bytes (bool)
-	u32 craft_id_u32; // 4 bytes
-	u8 count_u8; // 1 bytes (bool)
+	u8 unkZero; // 1 byte: UI caller hardcodes 0
+	u32 chipItemDocId; // 4 bytes: skin-chip item doc index (e.g. 240000002)
+	u8 craftCount; // 1 byte: dissolve count, clamped by 'craft max count over' check in UI
 };
 POP_PACKED
 ASSERT_SIZE(CQ_SkinChipDissolve, 6);

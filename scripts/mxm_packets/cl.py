@@ -1204,9 +1204,9 @@ class ClientSerializer:
         print('}')
     def serialize_60253(netid, p: common.PacketReader):
         print('CQ_SkinChipDissolve {')
-        print('    field1=%d' % p.read_u8())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u8())
+        print('    unkZero=%d' % p.read_u8())
+        print('    chipItemDocId=%d' % p.read_u32())
+        print('    craftCount=%d' % p.read_u8())
         print('}')
     def serialize_60254(netid, p: common.PacketReader):
         print('CQ_OlympicBestRecord {')

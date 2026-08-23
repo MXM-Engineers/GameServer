@@ -44,7 +44,7 @@ class ClientSerializer:
         print('}')
     def serialize_60022(netid, p: common.PacketReader):
         print('CN_GamePlayerSyncByInt {')
-        print('    characterID=%d' % p.read_u32())
+        print('    characterID=0x%08x' % p.read_u32())
         print('    p3nPos=%s' % read_Vec3(p))
         print('    p3nDir=%s' % read_Vec3(p))
         print('    p3nEye=%s' % read_Vec3(p))
@@ -69,7 +69,7 @@ class ClientSerializer:
         print('}')
     def serialize_60040(netid, p: common.PacketReader):
         print('CQ_PlayerCastSkill {')
-        print('    playerID=%d' % p.read_u32())
+        print('    playerID=0x%08x' % p.read_u32())
         print('    skillID=%d' % p.read_u32())
         print('    p3npos=%s' % read_Vec3(p))
         n = p.read_u16()
@@ -167,7 +167,7 @@ class ClientSerializer:
         print('}')
     def serialize_60178(netid, p: common.PacketReader):
         print('CN_GameUpdatePosition {')
-        print('    entityID=%d' % p.read_u32())
+        print('    entityID=0x%08x' % p.read_u32())
         print('    currPos=%s' % read_Vec3(p))
         print('    unkVec2a=%s' % read_Vec2(p))
         print('    unkVec2b=%s' % read_Vec2(p))
@@ -181,7 +181,7 @@ class ClientSerializer:
     
     def serialize_60179(netid, p: common.PacketReader):
         print('CN_GameUpdateRotation {')
-        print('    entityID=%d' % p.read_u32())
+        print('    entityID=0x%08x' % p.read_u32())
         print('    rotation=%s' % read_Vec2(p))
         print('    unkU32=%d' % p.read_u32())
         print('}')
@@ -829,14 +829,14 @@ class ClientSerializer:
         print('}')
     def serialize_60181(netid, p: common.PacketReader):
         print('CQ_SyncActionMove {')
-        print('    actorID=%d' % p.read_u32())
+        print('    actorID=0x%08x' % p.read_u32())
         print('    actionID=%d' % p.read_u32())
         print('    destPos=%s' % read_Vec3(p))
         print('}')
     
     def serialize_60182(netid, p: common.PacketReader):
         print('CQ_AISyncMoveMotion {')
-        print('    actorID=%d' % p.read_u32())
+        print('    actorID=0x%08x' % p.read_u32())
         print('    unkU32b=%d' % p.read_u32())
         print('    unkU32c=%d' % p.read_u32())
         print('    unkU32d=%d' % p.read_u32())
@@ -848,7 +848,7 @@ class ClientSerializer:
     
     def serialize_60183(netid, p: common.PacketReader):
         print('CQ_AISyncBehaviorMotion {')
-        print('    actorID=%d' % p.read_u32())
+        print('    actorID=0x%08x' % p.read_u32())
         print('    behaviorID=%d' % p.read_u32())
         print('    unkU8=%d' % p.read_u8())
         print('    pos1=%s' % read_Vec3(p))
@@ -876,7 +876,7 @@ class ClientSerializer:
         print('}')
     def serialize_60187(netid, p: common.PacketReader):
         print('CQ_AISyncTarPos {')
-        print('    actorID=%d' % p.read_u32())
+        print('    actorID=0x%08x' % p.read_u32())
         print('    unkU32=%d' % p.read_u32())
         print('    tarPos1=%s' % read_Vec3(p))
         print('    tarPos2=%s' % read_Vec3(p))
@@ -889,7 +889,7 @@ class ClientSerializer:
     
     def serialize_60188(netid, p: common.PacketReader):
         print('CQ_AISyncTarPosToServer {')
-        print('    actorID=%d' % p.read_u32())
+        print('    actorID=0x%08x' % p.read_u32())
         print('    unkU32=%d' % p.read_u32())
         print('    tarPos=%s' % read_Vec3(p))
         print('    unkVec2=%s' % read_Vec2(p))
@@ -1183,7 +1183,7 @@ class ClientSerializer:
         print('}')
     def serialize_60249(netid, p: common.PacketReader):
         print('CQ_PlayerSyncTeleport {')
-        print('    objectID=%d' % p.read_u32())
+        print('    objectID=0x%08x' % p.read_u32())
         print('    pos=%s' % read_Vec3(p))
         print('}')
     

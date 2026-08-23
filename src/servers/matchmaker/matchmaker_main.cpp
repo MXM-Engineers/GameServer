@@ -333,7 +333,7 @@ struct Matchmaker
 				}
 
 				if(!found) {
-					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+					WARN("Player not found in room (accountUID=0x%08x sortieUID=%llu)", packet.accountUID, packet.sortieUID);
 				}
 			} break;
 
@@ -359,7 +359,7 @@ struct Matchmaker
 				}
 
 				if(!found) {
-					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+					WARN("Player not found in room (accountUID=0x%08x sortieUID=%llu)", packet.accountUID, packet.sortieUID);
 				}
 			} break;
 

@@ -92,7 +92,7 @@ void GamePacketHandler::HandlePacket_CN_GameMapLoaded(ClientHandle clientHd, con
 void GamePacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=%d", clientHd, (u32)req.characterID);
+	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=0x%08x", clientHd, (u32)req.characterID);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -109,7 +109,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CN_GameUpdatePosition :: {", clientHd);
-	NT_LOG("	characterID=%d", (u32)update.characterID);
+	NT_LOG("	characterID=0x%08x", (u32)update.characterID);
 	NT_LOG("	p3nPos=(%g, %g, %g)", update.p3nPos.x, update.p3nPos.y, update.p3nPos.z);
 	NT_LOG("	p3nDir=(%g, %g)", update.p3nDir.x, update.p3nDir.y);
 	NT_LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
@@ -149,7 +149,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd
 	ProfileFunction();
 
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_GameUpdateRotation :: { characterID=%u upperYaw=%f upperPitch=%f bodyYaw=%f }", clientHd, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
+	NT_LOG("[client%x] Client :: CN_GameUpdateRotation :: { characterID=0x%08x upperYaw=%f upperPitch=%f bodyYaw=%f }", clientHd, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -180,7 +180,7 @@ void GamePacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd
 void GamePacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
+	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=0x%08x skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientHd, leader.characterID, leader.skinIndex);
 }
@@ -192,7 +192,7 @@ void GamePacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHand
 	const char* stateStr = ActionStateToString(sync.state);
 
 	NT_LOG("[client%x] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientHd);
-	NT_LOG("	characterID=%d", (u32)sync.characterID);
+	NT_LOG("	characterID=0x%08x", (u32)sync.characterID);
 	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
 	NT_LOG("	bApply=%d", sync.bApply);
 	NT_LOG("	param1=%d", sync.param1);

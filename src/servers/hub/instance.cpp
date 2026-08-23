@@ -186,12 +186,12 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			packet.Write<u8>(1); // masterGearNo
 			packet.WriteStringObj(L"Default");
 			const Sv::SN_ProfileMasterGears::Slot slots[] = {
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
 			};
 			packet.WriteVec(slots, ARRAY_COUNT(slots));
 

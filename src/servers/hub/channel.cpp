@@ -326,7 +326,7 @@ void HubPacketHandler::HandlePacket_CA_CityLobbyJoinCity(ClientHandle clientHd, 
 void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=%d", clientHd, (u32)req.characterID);
+	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=0x%08x", clientHd, (u32)req.characterID);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -340,7 +340,7 @@ void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, c
 void HubPacketHandler::HandlePacket_CN_GamePlayerSyncByInt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CN_GamePlayerSyncByInt& update = SafeCast<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_GamePlayerSyncByInt :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
+	NT_LOG("[client%x] Client :: CN_GamePlayerSyncByInt :: { characterID=0x%08x p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -366,7 +366,7 @@ void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd,
 void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
+	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=0x%08x skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientHd, leader.characterID, leader.skinIndex);
 }
@@ -378,7 +378,7 @@ void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandl
 	const char* stateStr = ActionStateToString(sync.state);
 
 	NT_LOG("[client%x] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientHd);
-	NT_LOG("	characterID=%d", (u32)sync.characterID);
+	NT_LOG("	characterID=0x%08x", (u32)sync.characterID);
 	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
 	NT_LOG("	bApply=%d", sync.bApply);
 	NT_LOG("	param1=%d", sync.param1);

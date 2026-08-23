@@ -74,7 +74,7 @@ inline const char* PacketSerialize<Cl::CQ_PlayerCastSkill>(const void* packetDat
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("CQ_PlayerCastSkill(%d, %d) :: {", Cl::CQ_PlayerCastSkill::NET_ID, packetSize);
-	SER("	playerID=%d", buff.Read<LocalActorID>());
+	SER("	playerID=0x%08x", buff.Read<LocalActorID>());
 	SER("	skillID=%d", buff.Read<SkillID>());
 	SER("	p3nPos=%s", PS::ToStr(buff.Read<float3>()));
 
@@ -123,7 +123,7 @@ inline const char* PacketSerialize<Sv::SN_GameCreateActor>(const void* packetDat
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GameCreateActor(%d, %d) :: {", Sv::SN_GameCreateActor::NET_ID, packetSize);
-	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("	objectID=0x%08x", buff.Read<LocalActorID>());
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
@@ -131,7 +131,7 @@ inline const char* PacketSerialize<Sv::SN_GameCreateActor>(const void* packetDat
 	SER("	p3nDir=%s", PS::ToStr(buff.Read<float3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
-	SER("	ownerID=%d", buff.Read<i32>());
+	SER("	ownerID=0x%08x", buff.Read<i32>());
 	SER("	bDirectionToNearPC=%d", buff.Read<u8>());
 	SER("	AiWanderDistOverride=%d", buff.Read<i32>());
 	SER("	tagID=%d", buff.Read<i32>());
@@ -183,8 +183,8 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GameCreateSubActor(%d, %d) :: {", Sv::SN_GameCreateSubActor::NET_ID, packetSize);
-	SER("	objectID=%d", buff.Read<LocalActorID>());
-	SER("	mainEntityID=%d", buff.Read<LocalActorID>());
+	SER("	objectID=0x%08x", buff.Read<LocalActorID>());
+	SER("	mainEntityID=0x%08x", buff.Read<LocalActorID>());
 	SER("	nType=%d", buff.Read<i32>());
 	SER("	nIDX=%d", buff.Read<CreatureIndex>());
 	SER("	dwLocalID=%d", buff.Read<i32>());
@@ -192,7 +192,7 @@ inline const char* PacketSerialize<Sv::SN_GameCreateSubActor>(const void* packet
 	SER("	p3nDir=%s", PS::ToStr(buff.Read<float3>()));
 	SER("	spawnType=%d", buff.Read<i32>());
 	SER("	actionState=%d", buff.Read<i32>());
-	SER("	ownerID=%d", buff.Read<i32>());
+	SER("	ownerID=0x%08x", buff.Read<i32>());
 	SER("	tagID=%d", buff.Read<i32>());
 	SER("	faction=%d", buff.Read<i32>());
 	SER("	classType=%d", buff.Read<i32>());
@@ -260,7 +260,7 @@ inline const char* PacketSerialize<Sv::SN_GameEnterActor>(const void* packetData
 		SER("	}");
 	}
 
-	SER("	objectID=%d",  buff.Read<i32>())
+	SER("	objectID=0x%08x",  buff.Read<i32>())
 	SER("	p3nPos=%s",  PS::ToStr(buff.Read<float3>()))
 	SER("	p3nDir=%s",  PS::ToStr(buff.Read<float3>()))
 	SER("	p2nMoveDir=%s",  PS::ToStr(buff.Read<float2>()))
@@ -327,7 +327,7 @@ inline const char* PacketSerialize<Sv::SN_GameLeaveActor>(const void* packetData
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GameLeaveActor(%d, %d) :: {", Sv::SN_GameLeaveActor::NET_ID, packetSize);
-	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("	objectID=0x%08x", buff.Read<LocalActorID>());
 	SER("}");
 
 	return str.data();
@@ -340,7 +340,7 @@ inline const char* PacketSerialize<Sv::SN_StatusSnapshot>(const void* packetData
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_StatusSnapshot(%d, %d) :: {", Sv::SN_PlayerSkillSlot::NET_ID, packetSize);
-	SER("	objectID=%d", buff.Read<LocalActorID>());
+	SER("	objectID=0x%08x", buff.Read<LocalActorID>());
 
 	const u16 count = buff.Read<u16>();
 	SER("	statusArray(%d)=[", count);
@@ -369,7 +369,7 @@ inline const char* PacketSerialize<Sv::SN_CastSkill>(const void* packetData, con
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_CastSkill(%d, %d) :: {", Sv::SN_CastSkill::NET_ID, packetSize);
-	SER("	entityID=%d", buff.Read<LocalActorID>());
+	SER("	entityID=0x%08x", buff.Read<LocalActorID>());
 	SER("	ret=%d", buff.Read<i32>());
 	SER("	skillID=%d", buff.Read<SkillID>());
 	SER("	costLevel=%u", buff.Read<u8>());
@@ -404,7 +404,7 @@ inline const char* PacketSerialize<Sv::SN_ExecuteSkill>(const void* packetData, 
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_ExecuteSkill(%d, %d) :: {", Sv::SN_ExecuteSkill::NET_ID, packetSize);
-	SER("	entityID=%d", buff.Read<LocalActorID>());
+	SER("	entityID=0x%08x", buff.Read<LocalActorID>());
 	SER("	ret=%d", buff.Read<i32>());
 	SER("	skillID=%d", buff.Read<SkillID>());
 	SER("	costLevel=%u", buff.Read<u8>());
@@ -447,7 +447,7 @@ inline const char* PacketSerialize<Sv::SA_CastSkill>(const void* packetData, con
 	Sv::SA_CastSkill cast = SafeCast<Sv::SA_CastSkill>(packetData, packetSize);
 
 	SER("SA_CastSkill(%d, %d) :: {", Sv::SA_CastSkill::NET_ID, packetSize);
-	SER("	characterID=%d", cast.characterID);
+	SER("	characterID=0x%08x", cast.characterID);
 	SER("	ret=%d", cast.ret);
 	SER("	skillID=%d", cast.skillIndex);
 	SER("}");
@@ -462,7 +462,7 @@ inline const char* PacketSerialize<Sv::SN_PlayerSkillSlot>(const void* packetDat
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_PlayerSkillSlot(%d, %d) :: {", Sv::SN_PlayerSkillSlot::NET_ID, packetSize);
-	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
 
 	const u16 slotList_count = buff.Read<u16>();
 	SER("	slotList(%d)=[", slotList_count);
@@ -529,7 +529,7 @@ inline const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData
 
 	for(int i = 0; i < ingameUsers_len; i++) {
 		SER("	{");
-		SER("		userID=%d", buff.Read<i32>());
+		SER("		userID=0x%08x", buff.Read<i32>());
 		SER("		nick='%S'", buff.ReadWideStringObj().data());
 		SER("		team=%d", buff.Read<u8>());
 		SER("		isBot=%d", buff.Read<u8>());
@@ -541,7 +541,7 @@ inline const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData
 
 	for(int i = 0; i < ingamePlayers_len; i++) {
 		SER("	{");
-		SER("		userID=%d", buff.Read<i32>());
+		SER("		userID=0x%08x", buff.Read<i32>());
 		SER("		mainCreatureIndex=%d", buff.Read<CreatureIndex>());
 		SER("		mainSkinIndex=%d", buff.Read<SkinIndex>());
 		SER("		mainSkillIndex1=%d", buff.Read<SkillID>());
@@ -584,7 +584,7 @@ inline const char* PacketSerialize<Sv::SN_GamePlayerEquipWeapon>(const void* pac
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GamePlayerEquipWeapon(%d, %d) :: {", Sv::SN_GamePlayerEquipWeapon::NET_ID, packetSize);
-	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
 	SER("	weaponIndex=%d", buff.Read<WeaponIndex>());
 	SER("	additionnalOverHeatGauge=%d", buff.Read<i32>());
 	SER("	additionnalOverHeatGaugeRatio=%d", buff.Read<i32>());
@@ -600,7 +600,7 @@ inline const char* PacketSerialize<Sv::SN_GamePlayerStock>(const void* packetDat
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GamePlayerStock(%d, %d) :: {", Sv::SN_GamePlayerStock::NET_ID, packetSize);
-	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
 	SER("	name='%S'", buff.ReadWideStringObj().data());
 	SER("	classType=%d", buff.Read<ClassType>());
 	SER("	displayTitleIDX=%d", buff.Read<i32>());
@@ -624,9 +624,9 @@ inline const char* PacketSerialize<Sv::SN_GamePlayerTag>(const void* packetData,
 
 	SER("SN_GamePlayerTag(%d, %d) :: {", Sv::SN_GamePlayerTag::NET_ID, packetSize);
 	SER("	result=%d", packet.result);
-	SER("	mainID=%u", packet.mainID);
-	SER("	subID=%u", packet.subID);
-	SER("	attackerID=%u", packet.attackerID);
+	SER("	mainID=0x%08x", packet.mainID);
+	SER("	subID=0x%08x", packet.subID);
+	SER("	attackerID=0x%08x", packet.attackerID);
 	SER("}");
 
 	return str.data();
@@ -646,7 +646,7 @@ inline const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetD
 	for(int i = 0; i < count; i++) {
 		const Sv::SN_ProfileCharacters::Character chara = buff.Read<Sv::SN_ProfileCharacters::Character>();
 		SER("	{");
-		SER("		characterID=%d", chara.characterID);
+		SER("		characterID=0x%08x", chara.characterID);
 		SER("		creatureIndex=%d", chara.creatureIndex);
 		SER("		skillShot1=%d", chara.skillShot1);
 		SER("		skillShot2=%d", chara.skillShot2);
@@ -681,7 +681,7 @@ inline const char* PacketSerialize<Sv::SN_ProfileWeapons>(const void* packetData
 	for(int i = 0; i < count; i++) {
 		const Sv::SN_ProfileWeapons::Weapon weap = buff.Read<Sv::SN_ProfileWeapons::Weapon>();
 		SER("	{");
-		SER("		characterID=%d", weap.characterID);
+		SER("		characterID=0x%08x", weap.characterID);
 		SER("		weaponType=%d", weap.weaponType);
 		SER("		weaponIndex=%d", weap.weaponIndex);
 		SER("		grade=%d", weap.grade);
@@ -710,7 +710,7 @@ inline const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData,
 
 	for(int i = 0; i < skills_count; i++) {
 		SER("	{");
-		SER("		characterID=%d", buff.Read<LocalActorID>());
+		SER("		characterID=0x%08x", buff.Read<LocalActorID>());
 		SER("		skillIndex=%d", buff.Read<SkillID>());
 		SER("		isUnlocked=%d", buff.Read<u8>());
 		SER("		isActivated=%d", buff.Read<u8>());
@@ -737,11 +737,11 @@ inline const char* PacketSerialize<Sv::SN_NotifyPcDetailInfos>(const void* packe
 
 	for(int i = 0; i < count; i++) {
 		SER("	{");
-		SER("		userID=%d", buff.Read<i32>());
+		SER("		userID=0x%08x", buff.Read<i32>());
 		Sv::SN_NotifyPcDetailInfos::ST_PcInfo mainPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
 		Sv::SN_NotifyPcDetailInfos::ST_PcInfo subPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
-		SER("		mainPc=(characterID=%d docID=%d classType=%d hp=%d maxHp=%d)", mainPc.characterID, mainPc.docID, mainPc.classType, mainPc.hp, mainPc.maxHp);
-		SER("		subPc=(characterID=%d docID=%d classType=%d hp=%d maxHp=%d)", subPc.characterID, subPc.docID, subPc.classType, subPc.hp, subPc.maxHp);
+		SER("		mainPc=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", mainPc.characterID, mainPc.docID, mainPc.classType, mainPc.hp, mainPc.maxHp);
+		SER("		subPc=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", subPc.characterID, subPc.docID, subPc.classType, subPc.hp, subPc.maxHp);
 		SER("		remainTagCooltimeMS=%d", buff.Read<i32>());
 		SER("		canCastSkillSlotUG=%d", buff.Read<u8>());
 		SER("	},");
@@ -760,7 +760,7 @@ inline const char* PacketSerialize<Sv::SN_WeaponState>(const void* packetData, c
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_WeaponState(%d, %d) :: {", Sv::SN_WeaponState::NET_ID, packetSize);
-	SER("	ownerID=%d", buff.Read<LocalActorID>());
+	SER("	ownerID=0x%08x", buff.Read<LocalActorID>());
 	SER("	weaponID=%d", buff.Read<i32>());
 	SER("	state=%d", buff.Read<i32>());
 	SER("	chargeLevel=%d", buff.Read<u8>());
@@ -805,7 +805,7 @@ inline const char* PacketSerialize<Sv::SN_PlayerSyncMove>(const void* packetData
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_PlayerSyncMove(%d, %d) :: {", Sv::SN_PlayerSyncMove::NET_ID, packetSize);
-	SER("	characterID=%d", buff.Read<LocalActorID>());
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
 	SER("	destPos=%s", PS::ToStr(buff.Read<float3>()));
 	SER("	moveDir=%s", PS::ToStr(buff.Read<float2>()));
 	SER("	upperDir=%s", PS::ToStr(buff.Read<float2>()));
@@ -860,7 +860,7 @@ inline const char* PacketSerialize<Sv::SA_PartyCreate>(const void* packetData, c
 
 	SER("SA_PartyCreate(%d, %d) :: {", Sv::SA_PartyCreate::NET_ID, packetSize);
 	SER("	retval=%d", buff.Read<i32>());
-	SER("	ownerUserID=%d", buff.Read<i32>());
+	SER("	ownerUserID=0x%08x", buff.Read<i32>());
 	SER("	stageType=%d", buff.Read<i32>());
 	SER("}");
 
@@ -1219,7 +1219,7 @@ inline const char* PacketSerialize<Sv::SA_MasterPick>(const void* packetData, co
 
 	SER("SA_MasterPick(%d, %d) :: {", Sv::SA_MasterPick::NET_ID, packetSize);
 	SER("	retval=%d", buff.Read<i32>());
-	SER("	localMasterID=%d", buff.Read<i32>());
+	SER("	localMasterID=0x%08x", buff.Read<i32>());
 	SER("}");
 
 	return str.data();
@@ -1232,12 +1232,12 @@ inline const char* PacketSerialize<Sv::SN_MasterPick>(const void* packetData, co
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_MasterPick(%d, %d) :: {", Sv::SN_MasterPick::NET_ID, packetSize);
-	SER("	userID=%d", buff.Read<UserID>());
+	SER("	userID=0x%08x", buff.Read<UserID>());
 	const u16 count = buff.Read<u16>();
 	SER("	characterSelectInfos(%d)=[", count);
 	for(int i = 0; i < count; i++) {
 		SER("		{");
-		SER("			localMasterID=%d", buff.Read<LocalActorID>());
+		SER("			localMasterID=0x%08x", buff.Read<LocalActorID>());
 		SER("			creatureIndex=%d", buff.Read<CreatureIndex>());
 		SER("			skillSlot1=%d", buff.Read<SkillID>());
 		SER("			skillSlot2=%d", buff.Read<SkillID>());
@@ -1282,7 +1282,7 @@ inline const char* PacketSerialize<Sv::SN_ReadySortieRoom>(const void* packetDat
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_ReadySortieRoom(%d, %d) :: {", Sv::SN_ReadySortieRoom::NET_ID, packetSize);
-	SER("	userID=%d", buff.Read<UserID>());
+	SER("	userID=0x%08x", buff.Read<UserID>());
 	SER("	ready=%u", buff.Read<u8>());
 	SER("}");
 
@@ -1296,7 +1296,7 @@ inline const char* PacketSerialize<Sv::SN_LoadingProgressData>(const void* packe
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_LoadingProgressData(%d, %d) :: {", Sv::SN_LoadingProgressData::NET_ID, packetSize);
-	SER("	userID=%u", buff.Read<UserID>());
+	SER("	userID=0x%08x", buff.Read<UserID>());
 	SER("	nick='%ls'", buff.ReadWideStringObj().data());
 	SER("	progressData=%u", buff.Read<u8>());
 	SER("	activeCreatureIndex=%u", buff.Read<CreatureIndex>());
@@ -1418,7 +1418,7 @@ inline const char* PacketSerialize<Sv::SN_UpdateGameOwner>(const void* packetDat
 	const Sv::SN_UpdateGameOwner& packet = *(Sv::SN_UpdateGameOwner*)packetData;
 
 	SER("SN_UpdateGameOwner(%d, %d) :: {", Sv::SN_UpdateGameOwner::NET_ID, packetSize);
-	SER("	userID=%d", packet.userID);
+	SER("	userID=0x%08x", packet.userID);
 	SER("}");
 
 	return str.data();
@@ -1499,8 +1499,8 @@ inline const char* PacketSerialize<In::MR_PartyCreated>(const void* packetData, 
 
 	SER("MR_PartyCreated(%d, %d) :: {", In::MR_PartyCreated::NET_ID, packetSize);
 	SER("	result=%u", packet.result);
-	SER("	partyUID=%u", packet.partyUID);
-	SER("	leader=%u", packet.leader);
+	SER("	partyUID=0x%08x", packet.partyUID);
+	SER("	leader=0x%08x", packet.leader);
 	SER("}");
 
 	return str.data();
@@ -1514,7 +1514,7 @@ inline const char* PacketSerialize<In::MR_PartyEnqueued>(const void* packetData,
 
 	SER("MR_PartyEnqueued(%d, %d) :: {", In::MR_PartyEnqueued::NET_ID, packetSize);
 	SER("	result=%u", packet.result);
-	SER("	partyUID=%u", packet.partyUID);
+	SER("	partyUID=0x%08x", packet.partyUID);
 	SER("}");
 
 	return str.data();
@@ -1527,7 +1527,7 @@ inline const char* PacketSerialize<In::HQ_PartyCreate>(const void* packetData, c
 	In::HQ_PartyCreate packet = SafeCast<In::HQ_PartyCreate>(packetData, packetSize);
 
 	SER("HQ_PartyCreate(%d, %d) :: {", In::HQ_PartyCreate::NET_ID, packetSize);
-	SER("	leader=%u", packet.leader);
+	SER("	leader=0x%08x", packet.leader);
 	SER("}");
 
 	return str.data();
@@ -1540,7 +1540,7 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 	In::HQ_PartyEnqueue packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
 	SER("HQ_PartyEnqueue(%d, %d) :: {", In::HQ_PartyEnqueue::NET_ID, packetSize);
-	SER("	partyUID=%u", packet.partyUID);
+	SER("	partyUID=0x%08x", packet.partyUID);
 	SER("}");
 
 	return str.data();
@@ -1553,13 +1553,13 @@ inline const char* PacketSerialize<In::MN_MatchingPartyFound>(const void* packet
 	const In::MN_MatchingPartyFound& packet = SafeCast<In::MN_MatchingPartyFound>(packetData, packetSize);
 
 	SER("MN_MatchingPartyFound(%d, %d) :: {", In::MN_MatchingPartyFound::NET_ID, packetSize);
-	SER("	partyUID=%u", packet.partyUID);
+	SER("	partyUID=0x%08x", packet.partyUID);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("	playerList(%d)=[", packet.playerCount);
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
 		SER("	{");
 		SER("		name='%.*ls'", p->name.len, p->name.data);
-		SER("		accountUID=%u", p->accountUID);
+		SER("		accountUID=0x%08x", p->accountUID);
 		SER("		team=%u", p->team);
 		SER("		isBot=%u", p->isBot);
 		SER("	},");
@@ -1577,7 +1577,7 @@ inline const char* PacketSerialize<In::HN_PlayerRoomFound>(const void* packetDat
 	const In::HN_PlayerRoomFound& packet = SafeCast<In::HN_PlayerRoomFound>(packetData, packetSize);
 
 	SER("HN_PlayerNotifyRoomFound(%d, %d) :: {", In::HN_PlayerRoomFound::NET_ID, packetSize);
-	SER("	accountUID=%u", packet.accountUID);
+	SER("	accountUID=0x%08x", packet.accountUID);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("}");
 
@@ -1591,7 +1591,7 @@ inline const char* PacketSerialize<In::HN_PlayerRoomConfirm>(const void* packetD
 	const In::HN_PlayerRoomConfirm& packet = SafeCast<In::HN_PlayerRoomConfirm>(packetData, packetSize);
 
 	SER("HN_PlayerRoomConfirm(%d, %d) :: {", In::HN_PlayerRoomConfirm::NET_ID, packetSize);
-	SER("	accountUID=%u", packet.accountUID);
+	SER("	accountUID=0x%08x", packet.accountUID);
 	SER("	confirm=%u", packet.confirm);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("}");
@@ -1611,7 +1611,7 @@ inline const char* PacketSerialize<In::MN_RoomCreated>(const void* packetData, c
 	for(auto* p = packet.playerList.begin(); p != packet.playerList.begin()+packet.playerCount; ++p) {
 		SER("	{");
 		SER("		name='%.*ls'", p->name.len, p->name.data);
-		SER("		accountUID=%u", p->accountUID);
+		SER("		accountUID=0x%08x", p->accountUID);
 		SER("		team=%u", p->team);
 		SER("		isBot=%u", p->isBot);
 		SER("	},");
@@ -1633,7 +1633,7 @@ inline const char* PacketSerialize<In::HQ_RoomCreateGame>(const void* packetData
 	SER("	players(%d)=[", packet.playerCount);
 	for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
 		SER("	{");
-		SER("		accountUID=%u", p->accountUID);
+		SER("		accountUID=0x%08x", p->accountUID);
 		SER("		team=%u", p->team);
 		SER("		isBot=%u", p->isBot);
 		SER("		masters[0]=%d", p->masters[0]);
@@ -1649,7 +1649,7 @@ inline const char* PacketSerialize<In::HQ_RoomCreateGame>(const void* packetData
 
 	SER("	spectators(%d)=[", packet.playerCount);
 	for(auto* p = packet.spectators.begin(); p != packet.spectators.begin()+packet.spectatorCount; ++p) {
-		SER("	accountUID=%u,", *p);
+		SER("	accountUID=0x%08x,", *p);
 	}
 	SER("	]");
 	SER("}");
@@ -1669,7 +1669,7 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 	for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
 		SER("	{");
 		SER("		name='%.*ls'", p->name.len, p->name.data);
-		SER("		accountUID=%u", p->accountUID);
+		SER("		accountUID=0x%08x", p->accountUID);
 		SER("		team=%u", p->team);
 		SER("		isBot=%u", p->isBot);
 		SER("		masters[0]=%d", p->masters[0]);
@@ -1686,7 +1686,7 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 
 	SER("	spectators(%d)=[", packet.playerCount);
 	for(auto* p = packet.spectators.begin(); p != packet.spectators.begin()+packet.spectatorCount; ++p) {
-		SER("	accountUID=%u,", *p);
+		SER("	accountUID=0x%08x,", *p);
 	}
 	SER("	]");
 	SER("}");

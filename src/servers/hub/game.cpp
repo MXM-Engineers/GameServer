@@ -159,7 +159,7 @@ void HubGame::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterAc
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(playerActorUID[userID] != characterActorUID) {
-		WARN("Client sent an invalid characterID (userID=%d characterID=%d)", userID, (u32)characterActorUID);
+		WARN("Client sent an invalid characterID (userID=0x%08x characterID=0x%08x)", userID, (u32)characterActorUID);
 		return;
 	}
 

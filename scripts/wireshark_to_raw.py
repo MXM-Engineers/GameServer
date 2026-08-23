@@ -44,6 +44,8 @@ def packet_serialize_cl(netid, data):
             f(netid, p)
         except struct.error:
             print('    (!) payload shorter than struct')
+        except UnicodeDecodeError:
+            print('    (!) undecodable payload (encrypted?)')
     print('')
 
 def packet_serialize_sv(netid, data):

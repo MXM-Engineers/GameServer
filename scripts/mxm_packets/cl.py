@@ -1540,9 +1540,9 @@ class ClientSerializer:
         print('}')
     def serialize_60298(netid, p: common.PacketReader):
         print('Cl_60298 {')
-        print('    field1=%d' % p.read_u32())
+        print('    actorID=%d' % p.read_u32())
         n = p.read_u16()
-        print('    field2_count=%d' % n)
+        print('    values_count=%d' % n)
         for _ in range(n):
             print('        %d' % p.read_u8())
         print('}')

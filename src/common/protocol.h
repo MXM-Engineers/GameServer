@@ -3473,7 +3473,7 @@ PUSH_PACKED
 struct CN_UNKNOWN_60298
 {
 	enum { NET_ID = 60298 };
-	u32 id_u32; // 4 bytes
+	LocalActorID actorID; // 4 bytes: target master in 21000-21500 range (observed 21015/21016)
 	// blob: variable-size (u16 count + count x u8)
 	u16 byte_list_count; // 2 bytes
 	u8 byte_list[1]; // 1 bytes each

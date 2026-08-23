@@ -1374,11 +1374,12 @@ struct CQ_PartyInviteRecommendResponse
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60081
+struct CQ_PartyAddBot
 {
 	enum { NET_ID = 60081 };
-	u32 newNickname; // 4 bytes (unclassified writer wstring)
+
 };
+
 POP_PACKED
 
 PUSH_PACKED
@@ -1451,11 +1452,10 @@ PUSH_PACKED
 struct CQ_RestartGame
 {
 	enum { NET_ID = 60091 };
-	u32 memberProfileId; // 4 bytes
-	u32 secondId; // 4 bytes
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_RestartGame, 8);
+
 
 PUSH_PACKED
 struct CQ_RestartVote
@@ -1661,9 +1661,11 @@ struct CQ_UNKNOWN_60116
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_FriendStateChange
-{
-	enum { NET_ID = 60117 };
+struct CQ_FriendRequestRespond
+{	u16 playerNameLen;
+	wchar playerName[1]; // length is playerNameLen
+	u8 accepted;
+
 };
 POP_PACKED
 
@@ -1758,7 +1760,7 @@ struct CQ_CommunityBlockAdd
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_GetUserInfo
+struct CN_UNKNOWN_60128
 {
 	enum { NET_ID = 60128 };
 	u16 textField_len; // 2 bytes
@@ -1783,13 +1785,15 @@ struct CQ_UNKNOWN_60131
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60132
+struct CQ_GetUserInfo
 {
 	enum { NET_ID = 60132 };
-	u32 field1_id_id; // 4 bytes
+	u32 userId;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60132, 4);
+ASSERT_SIZE(CQ_GetUserInfo, 4);
+
 
 PUSH_PACKED
 struct CQ_CreateGuild
@@ -2038,7 +2042,7 @@ POP_PACKED
 ASSERT_SIZE(CQ_GetGuildRank, 3);
 
 PUSH_PACKED
-struct CQ_GetRecommendedGuildList
+struct CN_UNKNOWN_60166
 {
 	enum { NET_ID = 60166 };
 	u8 settingA; // 1 bytes (bool)
@@ -2046,7 +2050,7 @@ struct CQ_GetRecommendedGuildList
 	u8 settingB; // 1 bytes (bool)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_GetRecommendedGuildList, 4);
+ASSERT_SIZE(CN_UNKNOWN_60166, 4);
 
 PUSH_PACKED
 struct CQ_GetGuildRankingList
@@ -2083,13 +2087,15 @@ POP_PACKED
 ASSERT_SIZE(CQ_ChatChannelInviteFeedback, 1);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60171
+struct CQ_GetRecommendedGuildList
 {
 	enum { NET_ID = 60171 };
-	u8 actionType; // 1 bytes (bool)
+	u8 requestedCount;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60171, 1);
+ASSERT_SIZE(CQ_GetRecommendedGuildList, 1);
+
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60172
@@ -2376,32 +2382,32 @@ PUSH_PACKED
 struct CQ_GamePlayerSyncStatus
 {
 	enum { NET_ID = 60196 };
-	u32 unkId1;
-	u32 unkId2;
-	u32 unkId3;
+	u32 syncId1;
+	u32 syncId2;
+	u32 syncId3;
 	float3 currPos;
-	u16 unkShort1;
-	u16 unkShort2;
-	u16 unkShort3;
-	u16 unkShort4;
-	u16 unkShort5;
-	u16 unkShort6;
-	u16 unkShort7;
-	u16 unkShort8;
-	u16 unkShort9;
+	u16 deltaPosX;
+	u16 deltaPosY;
+	u16 deltaPosZ;
+	u16 yawOrSpeedA;
+	u16 pitchOrSpeedB;
+	u16 speedC;
+	u16 secondDeltaX;
+	u16 secondDeltaY;
+	u16 secondDeltaZ;
 	u16 charNameLen;
 	wchar charName[1]; // length is charNameLen
 	u16 unkU16;
-	u32 unkA;
-	u32 unkB;
-	u32 unkC;
-	u32 unkD;
-	u32 unkE;
-	u32 unkF;
-	u32 unkG;
-	u8 unkU8a;
-	u8 unkU8b;
-
+	u32 statA;
+	u32 statB;
+	u32 statC;
+	u32 statD;
+	u32 statE;
+	u32 statF;
+	u32 statG;
+	u32 statH;
+	u8 flagByte1;
+	u8 flagByte2;
 
 };
 POP_PACKED
@@ -2543,13 +2549,13 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60208, 4);
 
 PUSH_PACKED
-struct CQ_RewardSelectSlotAllRandom
+struct CN_UNKNOWN_60209
 {
 	enum { NET_ID = 60209 };
 	u32 unkBoxID; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_RewardSelectSlotAllRandom, 4);
+ASSERT_SIZE(CN_UNKNOWN_60209, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60211
@@ -2584,9 +2590,9 @@ POP_PACKED
 ASSERT_SIZE(CQ_RewardSelectSlot, 4);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60215
+struct CQ_RewardSelectSlotAllRandom
 {
-	enum { NET_ID = 60215 };
+
 };
 POP_PACKED
 
@@ -2605,13 +2611,15 @@ struct CQ_RewardRequestFinish
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60218
+struct CQ_MailShowList
 {
 	enum { NET_ID = 60218 };
-	u8 option_index_u8; // 1 bytes (bool)
+	u8 mailboxType;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60218, 1);
+ASSERT_SIZE(CQ_MailShowList, 1);
+
 
 PUSH_PACKED
 struct CQ_MailWrite
@@ -2652,12 +2660,11 @@ struct CQ_MailGetAttachmentMulti
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_MailGetNewMail
+struct CQ_MailMove
 {
 	enum { NET_ID = 60223 };
-	u8 unkFlag;
+	u8 moveType;
 	VEC(u64, mailUIDs);
-
 
 };
 POP_PACKED
@@ -2670,9 +2677,9 @@ struct CQ_UNKNOWN_60224
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60225
+struct CQ_RequestMissionList
 {
-	enum { NET_ID = 60225 };
+
 };
 POP_PACKED
 
@@ -2695,21 +2702,23 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60227, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60228
+struct CQ_PvpRecord
 {
-	enum { NET_ID = 60228 };
+
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60229
+struct CQ_PvpDetailRecord
 {
 	enum { NET_ID = 60229 };
-	u32 action_code_u32; // 4 bytes
-	u8 slot_value_u8; // 1 bytes (bool)
+	u32 gameType;
+	u8 pvpSaveType;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60229, 5);
+ASSERT_SIZE(CQ_PvpDetailRecord, 5);
+
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60230
@@ -2826,13 +2835,15 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60242, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60243
+struct CQ_PveRanking
 {
 	enum { NET_ID = 60243 };
-	u32 entity_id_u32; // 4 bytes
+	u32 pveStageDocId;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60243, 4);
+ASSERT_SIZE(CQ_PveRanking, 4);
+
 
 PUSH_PACKED
 struct CN_Ping
@@ -2938,7 +2949,7 @@ POP_PACKED
 PUSH_PACKED
 struct CQ_PveRefillBattery
 {
-	enum { NET_ID = 60255 };
+
 };
 POP_PACKED
 
@@ -3073,9 +3084,9 @@ POP_PACKED
 ASSERT_SIZE(CQ_Vote, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60271
+struct CQ_CalendarSyncNotify
 {
-	enum { NET_ID = 60271 };
+
 };
 POP_PACKED
 
@@ -3165,32 +3176,31 @@ POP_PACKED
 ASSERT_SIZE(CQ_BuyGift, 1);
 
 PUSH_PACKED
-struct CQ_MasterTrainingEvent
+struct CQ_NpBuyCshopItem
 {
 	enum { NET_ID = 60283 };
-	u32 unkDword1;
-	u32 unkDword2;
-	u64 unkQword;
-	u16 unkWord1;
-	u32 unkDword3;
-	u32 unkDword4;
-	u32 unkDword5;
-	u32 unkDword6;
-	u32 unkDword7;
-	u32 unkDword8;
-	u16 unkWstr1Len;
-	wchar unkWstr1[1]; // length is unkWstr1Len
-	u16 unkWstr2Len;
-	wchar unkWstr2[1]; // length is unkWstr2Len
+	u32 unkSerial;
+	u32 constOne;
+	u64 unkF64WholeNumber;
+	u16 unkCategory;
+	u32 unusedClassType;
+	u32 unusedSkinIndex;
+	u32 zeroDword1;
+	u32 zeroDword2;
+	u32 zeroDword3;
+	u32 zeroDword4;
+	u16 emptyWstr1Len;
+	wchar emptyWstr1[1]; // length is emptyWstr1Len
+	u16 emptyWstr2Len;
+	wchar emptyWstr2[1]; // length is emptyWstr2Len
 	// u16 count + count x (3 x u32)
-	VEC(u32, unkTripleVec); // 12 bytes per element
-
+	VEC(u32, buyItems); // 12 bytes per element
 
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_PromotionAttend
+struct CN_UNKNOWN_60284
 {
 	enum { NET_ID = 60284 };
 	u32 unkDword1;
@@ -3265,26 +3275,25 @@ struct CQ_CharacterPropertyReset
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_ChatGetInviteeGameAccountID
+struct CQ_NpCharacterSkinUnlock
 {
 	enum { NET_ID = 60287 };
-	u32 unkDword1;
-	u32 unkDword2;
-	u64 unkQword;
-	u16 unkWord1;
-	u32 unkDword3;
-	u32 unkDword4;
-	u32 unkDword5;
-	u32 unkDword6;
-	u32 unkDword7;
-	u32 unkDword8;
-	u16 unkWstr1Len;
-	wchar unkWstr1[1]; // length is unkWstr1Len
-	u16 unkWstr2Len;
-	wchar unkWstr2[1]; // length is unkWstr2Len
+	u32 unkSerial;
+	u32 constOne;
+	u64 unkF64WholeNumber;
+	u16 unkCategory;
+	u32 classType;
+	u32 skinIndex;
+	u32 zeroDword1;
+	u32 zeroDword2;
+	u32 zeroDword3;
+	u32 zeroDword4;
+	u16 emptyWstr1Len;
+	wchar emptyWstr1[1]; // length is emptyWstr1Len
+	u16 emptyWstr2Len;
+	wchar emptyWstr2[1]; // length is emptyWstr2Len
 	// u16 count + count x (3 x u32)
-	VEC(u32, unkTripleVec); // 12 bytes per element
-
+	VEC(u32, skinItems); // 12 bytes per element
 
 };
 POP_PACKED
@@ -3467,14 +3476,16 @@ struct CN_UNKNOWN_60296
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60297
+struct CQ_PromotionAttend
 {
 	enum { NET_ID = 60297 };
-	u16 param0_u16; // 2 bytes
-	u16 param1_u16; // 2 bytes
+	u16 unkWord1;
+	u16 unkWord2;
+
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60297, 4);
+ASSERT_SIZE(CQ_PromotionAttend, 4);
+
 
 PUSH_PACKED
 struct CQ_MasterSupplyRequest
@@ -3560,15 +3571,15 @@ struct CQ_UNKNOWN_60305
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60306
+struct CQ_AchieveCutsceneEnd
 {
 	enum { NET_ID = 60306 };
-	u32 unkValue;
-
+	u32 cutsceneOrAchieveId;
 
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60306, 4);
+ASSERT_SIZE(CQ_AchieveCutsceneEnd, 4);
+
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60307

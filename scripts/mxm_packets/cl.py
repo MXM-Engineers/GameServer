@@ -120,7 +120,7 @@ class ClientSerializer:
         print('}')
     
     def serialize_60081(netid, p: common.PacketReader):
-        print('Cl_60081 {')
+        print('CQ_PartyAddBot {')
         print('}')
     def serialize_60089(netid, p: common.PacketReader):
         print('CA_SortieRoomFound {')
@@ -657,9 +657,10 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60132(netid, p: common.PacketReader):
-        print('Cl_60132 {')
-        print('    field1=%d' % p.read_u32())
+        print('CQ_GetUserInfo {')
+        print('    userId=%d' % p.read_u32())
         print('}')
+
     def serialize_60133(netid, p: common.PacketReader):
         print('CQ_CreateGuild {')
         print('    field1=%s' % p.read_wstr())
@@ -781,9 +782,10 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u8())
         print('}')
     def serialize_60171(netid, p: common.PacketReader):
-        print('Cl_60171 {')
-        print('    field1=%d' % p.read_u8())
+        print('CQ_GetRecommendedGuildList {')
+        print('    requestedCount=%d' % p.read_u8())
         print('}')
+
     def serialize_60172(netid, p: common.PacketReader):
         print('Cl_60172 {')
         print('    field1=<unknown>')
@@ -953,32 +955,33 @@ class ClientSerializer:
     
     def serialize_60196(netid, p: common.PacketReader):
         print('CQ_GamePlayerSyncStatus {')
-        print('    unkId1=%d' % p.read_u32())
-        print('    unkId2=%d' % p.read_u32())
-        print('    unkId3=%d' % p.read_u32())
+        print('    syncId1=%d' % p.read_u32())
+        print('    syncId2=%d' % p.read_u32())
+        print('    syncId3=%d' % p.read_u32())
         print('    currPos=%s' % read_Vec3(p))
-        print('    unkShort1=%d' % p.read_u16())
-        print('    unkShort2=%d' % p.read_u16())
-        print('    unkShort3=%d' % p.read_u16())
-        print('    unkShort4=%d' % p.read_u16())
-        print('    unkShort5=%d' % p.read_u16())
-        print('    unkShort6=%d' % p.read_u16())
-        print('    unkShort7=%d' % p.read_u16())
-        print('    unkShort8=%d' % p.read_u16())
-        print('    unkShort9=%d' % p.read_u16())
+        print('    deltaPosX=%d' % p.read_u16())
+        print('    deltaPosY=%d' % p.read_u16())
+        print('    deltaPosZ=%d' % p.read_u16())
+        print('    yawOrSpeedA=%d' % p.read_u16())
+        print('    pitchOrSpeedB=%d' % p.read_u16())
+        print('    speedC=%d' % p.read_u16())
+        print('    secondDeltaX=%d' % p.read_u16())
+        print('    secondDeltaY=%d' % p.read_u16())
+        print('    secondDeltaZ=%d' % p.read_u16())
         print('    charName=%s' % p.read_wstr())
         print('    unkU16=%d' % p.read_u16())
-        print('    unkA=%d' % p.read_u32())
-        print('    unkB=%d' % p.read_u32())
-        print('    unkC=%d' % p.read_u32())
-        print('    unkD=%d' % p.read_u32())
-        print('    unkE=%d' % p.read_u32())
-        print('    unkF=%d' % p.read_u32())
-        print('    unkG=%d' % p.read_u32())
-        print('    unkU8a=%d' % p.read_u8())
-        print('    unkU8b=%d' % p.read_u8())
+        print('    statA=%d' % p.read_u32())
+        print('    statB=%d' % p.read_u32())
+        print('    statC=%d' % p.read_u32())
+        print('    statD=%d' % p.read_u32())
+        print('    statE=%d' % p.read_u32())
+        print('    statF=%d' % p.read_u32())
+        print('    statG=%d' % p.read_u32())
+        print('    statH=%d' % p.read_u32())
+        print('    flagByte1=%d' % p.read_u8())
+        print('    flagByte2=%d' % p.read_u8())
         print('}')
-    
+
     def serialize_60197(netid, p: common.PacketReader):
         print('CQ_RevivePartyMemberUseMyLifeCount {')
         bPresenceFlags = p.read_u8()
@@ -1068,9 +1071,10 @@ class ClientSerializer:
         print('    slotIndex=%d' % p.read_u32())
         print('}')
     def serialize_60218(netid, p: common.PacketReader):
-        print('Cl_60218 {')
-        print('    field1=%d' % p.read_u8())
+        print('CQ_MailShowList {')
+        print('    mailboxType=%d' % p.read_u8())
         print('}')
+
     def serialize_60219(netid, p: common.PacketReader):
         print('CQ_MailWrite {')
         print('    field1=<unknown>')
@@ -1094,7 +1098,7 @@ class ClientSerializer:
         print('}')
     
     def serialize_60223(netid, p: common.PacketReader):
-        print('CQ_MailGetNewMail {')
+        print('CQ_MailMove {')
         print('    unkFlag=%d' % p.read_u8())
         n = p.read_u16()
         print('    mailUIDs_count=%d' % n)
@@ -1111,10 +1115,11 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60229(netid, p: common.PacketReader):
-        print('Cl_60229 {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u8())
+        print('CQ_PvpDetailRecord {')
+        print('    gameType=%d' % p.read_u32())
+        print('    pvpSaveType=%d' % p.read_u8())
         print('}')
+
     def serialize_60230(netid, p: common.PacketReader):
         print('Cl_60230 {')
         print('    field1=%d' % p.read_u32())
@@ -1161,9 +1166,10 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60243(netid, p: common.PacketReader):
-        print('Cl_60243 {')
-        print('    field1=%d' % p.read_u32())
+        print('CQ_PveRanking {')
+        print('    pveStageDocId=%d' % p.read_u32())
         print('}')
+
     def serialize_60244(netid, p: common.PacketReader):
         print('CN_Ping {')
         print('    rttMs=%d' % p.read_u32())
@@ -1301,25 +1307,25 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u8())
         print('}')
     def serialize_60283(netid, p: common.PacketReader):
-        print('CQ_MasterTrainingEvent {')
-        print('    unkDword1=%d' % p.read_u32())
-        print('    unkDword2=%d' % p.read_u32())
-        print('    unkQword=0x%016x' % int.from_bytes(p.read_raw(8), 'little'))
-        print('    unkWord1=%d' % p.read_u16())
-        print('    unkDword3=%d' % p.read_u32())
-        print('    unkDword4=%d' % p.read_u32())
-        print('    unkDword5=%d' % p.read_u32())
-        print('    unkDword6=%d' % p.read_u32())
-        print('    unkDword7=%d' % p.read_u32())
-        print('    unkDword8=%d' % p.read_u32())
-        print('    unkWstr1=%s' % p.read_wstr())
-        print('    unkWstr2=%s' % p.read_wstr())
+        print('CQ_NpBuyCshopItem {')
+        print('    unkSerial=%d' % p.read_u32())
+        print('    constOne=%d' % p.read_u32())
+        print('    unkF64WholeNumber=0x%016x' % int.from_bytes(p.read_raw(8), 'little'))
+        print('    unkCategory=%d' % p.read_u16())
+        print('    unusedClassType=%d' % p.read_u32())
+        print('    unusedSkinIndex=%d' % p.read_u32())
+        print('    zeroDword1=%d' % p.read_u32())
+        print('    zeroDword2=%d' % p.read_u32())
+        print('    zeroDword3=%d' % p.read_u32())
+        print('    zeroDword4=%d' % p.read_u32())
+        print('    emptyWstr1=%s' % p.read_wstr())
+        print('    emptyWstr2=%s' % p.read_wstr())
         n = p.read_u16()
-        print('    unkTripleVec_count=%d' % n)
+        print('    buyItems_count=%d' % n)
         for _ in range(n):
             print('        (%d, %d, %d)' % (p.read_u32(), p.read_u32(), p.read_u32()))
         print('}')
-    
+
     def serialize_60284(netid, p: common.PacketReader):
         print('CQ_PromotionAttend {')
         print('    unkDword1=%d' % p.read_u32())
@@ -1381,25 +1387,25 @@ class ClientSerializer:
         print('}')
     
     def serialize_60287(netid, p: common.PacketReader):
-        print('CQ_ChatGetInviteeGameAccountID {')
-        print('    unkDword1=%d' % p.read_u32())
-        print('    unkDword2=%d' % p.read_u32())
-        print('    unkQword=0x%016x' % int.from_bytes(p.read_raw(8), 'little'))
-        print('    unkWord1=%d' % p.read_u16())
-        print('    unkDword3=%d' % p.read_u32())
-        print('    unkDword4=%d' % p.read_u32())
-        print('    unkDword5=%d' % p.read_u32())
-        print('    unkDword6=%d' % p.read_u32())
-        print('    unkDword7=%d' % p.read_u32())
-        print('    unkDword8=%d' % p.read_u32())
-        print('    unkWstr1=%s' % p.read_wstr())
-        print('    unkWstr2=%s' % p.read_wstr())
+        print('CQ_NpCharacterSkinUnlock {')
+        print('    unkSerial=%d' % p.read_u32())
+        print('    constOne=%d' % p.read_u32())
+        print('    unkF64WholeNumber=0x%016x' % int.from_bytes(p.read_raw(8), 'little'))
+        print('    unkCategory=%d' % p.read_u16())
+        print('    classType=%d' % p.read_u32())
+        print('    skinIndex=%d' % p.read_u32())
+        print('    zeroDword1=%d' % p.read_u32())
+        print('    zeroDword2=%d' % p.read_u32())
+        print('    zeroDword3=%d' % p.read_u32())
+        print('    zeroDword4=%d' % p.read_u32())
+        print('    emptyWstr1=%s' % p.read_wstr())
+        print('    emptyWstr2=%s' % p.read_wstr())
         n = p.read_u16()
-        print('    unkTripleVec_count=%d' % n)
+        print('    skinItems_count=%d' % n)
         for _ in range(n):
             print('        (%d, %d, %d)' % (p.read_u32(), p.read_u32(), p.read_u32()))
         print('}')
-    
+
     def serialize_60288(netid, p: common.PacketReader):
         print('CQ_UseCoupon {')
         print('    unkDword1=%d' % p.read_u32())
@@ -1533,10 +1539,11 @@ class ClientSerializer:
         print('    field5=<unknown>')
         print('}')
     def serialize_60297(netid, p: common.PacketReader):
-        print('Cl_60297 {')
-        print('    field1=%d' % p.read_u16())
-        print('    field2=%d' % p.read_u16())
+        print('CQ_PromotionAttend {')
+        print('    unkWord1=%d' % p.read_u16())
+        print('    unkWord2=%d' % p.read_u16())
         print('}')
+
     def serialize_60298(netid, p: common.PacketReader):
         print('CQ_MasterSupplyRequest {')
         print('    masterActorID=%d' % p.read_u32())
@@ -1571,10 +1578,10 @@ class ClientSerializer:
         print('    field3=<unknown>')
         print('}')
     def serialize_60306(netid, p: common.PacketReader):
-        print('Cl_60306 {')
-        print('    unkValue=%d' % p.read_u32())
+        print('CQ_AchieveCutsceneEnd {')
+        print('    cutsceneOrAchieveId=%d' % p.read_u32())
         print('}')
-    
+
     def serialize_60308(netid, p: common.PacketReader):
         print('Cl_60308 {')
         print('    field1=<unknown>')
@@ -1686,10 +1693,11 @@ class ClientSerializer:
         print('    field2=%s' % p.read_wstr())
         print('}')
     def serialize_60117(netid, p: common.PacketReader):
-        print('CQ_FriendStateChange {')
-        print('    field1=%s' % p.read_wstr())
-        print('    field2=%d' % p.read_u8())
+        print('CQ_FriendRequestRespond {')
+        print('    playerName=%s' % p.read_wstr())
+        print('    accepted=%d' % p.read_u8())
         print('}')
+
     def serialize_60118(netid, p: common.PacketReader):
         print('Cl_60118 {')
         print('    field1=%d' % p.read_u32())
@@ -1731,7 +1739,7 @@ class ClientSerializer:
         print('Cl_60213 {')
         print('}')
     def serialize_60215(netid, p: common.PacketReader):
-        print('Cl_60215 {')
+        print('CQ_RewardSelectSlotAllRandom {')
         print('}')
     def serialize_60216(netid, p: common.PacketReader):
         print('Cl_60216 {')
@@ -1743,10 +1751,10 @@ class ClientSerializer:
         print('Cl_60224 {')
         print('}')
     def serialize_60225(netid, p: common.PacketReader):
-        print('Cl_60225 {')
+        print('CQ_RequestMissionList {')
         print('}')
     def serialize_60228(netid, p: common.PacketReader):
-        print('Cl_60228 {')
+        print('CQ_PvpRecord {')
         print('}')
     def serialize_60231(netid, p: common.PacketReader):
         print('CN_RewardStageReady {')
@@ -1776,7 +1784,7 @@ class ClientSerializer:
         print('Cl_60267 {')
         print('}')
     def serialize_60271(netid, p: common.PacketReader):
-        print('Cl_60271 {')
+        print('CQ_CalendarSyncNotify {')
         print('}')
     def serialize_60293(netid, p: common.PacketReader):
         print('Cl_60293 {')

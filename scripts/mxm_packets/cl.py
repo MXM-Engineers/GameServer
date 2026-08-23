@@ -1560,16 +1560,11 @@ class ClientSerializer:
         print('}')
     
     def serialize_60302(netid, p: common.PacketReader):
-        print('Cl_60302 {')
-        print('    unkWstr1=%s' % p.read_wstr())
-        print('    unkWstr2=%s' % p.read_wstr())
-        print('    unkWstr3=%s' % p.read_wstr())
-        print('    unkWstr4=%s' % p.read_wstr())
-        print('    unkWstr5=%s' % p.read_wstr())
-        print('    unkWstr6=%s' % p.read_wstr())
-        print('    unkDword=%d' % p.read_u32())
+        print('CN_NotifyMyVoiceStatus {')
+        for i in range(1, 7):
+            print('    voiceStr%d=%s' % (i, p.read_wstr()))
+        print('    voiceKind=%d' % p.read_u32())
         print('}')
-    
     def serialize_60304(netid, p: common.PacketReader):
         print('Cl_60304 {')
         print('    field1=<unknown>')

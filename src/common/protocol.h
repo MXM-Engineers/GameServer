@@ -3504,22 +3504,25 @@ struct CQ_UNKNOWN_60301
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60302
+struct CN_NotifyMyVoiceStatus
 {
 	enum { NET_ID = 60302 };
-	u16 unkWstr1Len;
-	wchar unkWstr1[1]; // length is unkWstr1Len
-	u16 unkWstr2Len;
-	wchar unkWstr2[1]; // length is unkWstr2Len
-	u16 unkWstr3Len;
-	wchar unkWstr3[1]; // length is unkWstr3Len
-	u16 unkWstr4Len;
-	wchar unkWstr4[1]; // length is unkWstr4Len
-	u16 unkWstr5Len;
-	wchar unkWstr5[1]; // length is unkWstr5Len
-	u16 unkWstr6Len;
-	wchar unkWstr6[1]; // length is unkWstr6Len
-	u32 unkDword;
+	// voice-chat state notification: five context strings (channel/session/token - empty when offline)
+	// + own character name; u32 = status/kind (0..3, see Voice_Notify* wrappers). Client debug:
+	// '[VOICE] reqNotifyMyVoiceStatus'
+	u16 voiceStr1Len;
+	wchar voiceStr1[1]; // length is voiceStr1Len
+	u16 voiceStr2Len;
+	wchar voiceStr2[1]; // length is voiceStr2Len
+	u16 voiceStr3Len;
+	wchar voiceStr3[1]; // length is voiceStr3Len
+	u16 voiceStr4Len;
+	wchar voiceStr4[1]; // length is voiceStr4Len
+	u16 voiceStr5Len;
+	wchar voiceStr5[1]; // length is voiceStr5Len
+	u16 voiceStr6Len;
+	wchar voiceStr6[1]; // length is voiceStr6Len
+	u32 voiceKind; // status/kind tag: 0|1 = my mic status, 2 = channel info, 3 = invitees
 
 
 };

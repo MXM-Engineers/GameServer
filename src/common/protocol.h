@@ -1192,20 +1192,15 @@ struct CQ_UNKNOWN_60054
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60055
+struct CQ_SkillUpgradeIngame
 {
 	enum { NET_ID = 60055 };
-	u32 entityId; // 4 bytes
-	u32 actionId; // 4 bytes
-	u8 bApply; // 1 bytes (bool)
-	u32 param1; // 4 bytes
-	u32 param2; // 4 bytes
-	u32 param3; // 4 bytes
-	u32 param4; // 4 bytes
-	u32 param5; // 4 bytes
+	u32 unkIngameContext; // 4 bytes: session-constant from game context (FUN_01a37e2b); observed 1 (EU/NA) and 8 (Titan Ruins)
+	u32 skillUpgradeId; // 4 bytes: upgraded skill/option id; observed 0, 1 and 12
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60055, 29);
+
+ASSERT_SIZE(CQ_SkillUpgradeIngame, 8);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60056

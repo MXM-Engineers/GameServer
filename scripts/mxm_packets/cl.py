@@ -386,9 +386,9 @@ class ClientSerializer:
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60055(netid, p: common.PacketReader):
-        print('Cl_60055 {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
+        print('CQ_SkillUpgradeIngame {')
+        print('    unkIngameContext=%d' % p.read_u32())
+        print('    skillUpgradeId=%d' % p.read_u32())
         print('}')
     def serialize_60056(netid, p: common.PacketReader):
         print('Cl_60056 {')

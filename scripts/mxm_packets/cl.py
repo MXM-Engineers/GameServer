@@ -1752,7 +1752,7 @@ class ClientSerializer:
         print('Cl_60231 {')
         print('}')
     def serialize_60234(netid, p: common.PacketReader):
-        print('CQ_Heartbeat {')
+        print('CA_Heartbeat {')
         print('}')
     def serialize_60238(netid, p: common.PacketReader):
         print('Cl_60238 {')

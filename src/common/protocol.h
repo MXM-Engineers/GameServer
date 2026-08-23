@@ -2735,7 +2735,7 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60233, 24);
 
 PUSH_PACKED
-struct CQ_Heartbeat
+struct CA_Heartbeat
 {
 	enum { NET_ID = 60234 };
 };

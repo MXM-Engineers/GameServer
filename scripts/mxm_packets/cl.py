@@ -1082,8 +1082,8 @@ class ClientSerializer:
         print('    field1=%d' % p.read_i64())
         print('}')
     def serialize_60221(netid, p: common.PacketReader):
-        print('CQ_MailMove {')
-        print('    field1=%d' % p.read_i64())
+        print('CQ_MailGetAttachment {')
+        print('    mailUID=%d' % p.read_i64())
         print('}')
     def serialize_60222(netid, p: common.PacketReader):
         print('CQ_MailGetAttachmentMulti {')
@@ -1218,8 +1218,8 @@ class ClientSerializer:
         print('}')
     
     def serialize_60259(netid, p: common.PacketReader):
-        print('Cl_60259 {')
-        print('    field1=%d' % p.read_u8())
+        print('CQ_SelectBadge {')
+        print('    badgeType=%d' % p.read_u8())
         print('}')
     def serialize_60260(netid, p: common.PacketReader):
         print('Cl_60260 {')
@@ -1737,7 +1737,7 @@ class ClientSerializer:
         print('Cl_60216 {')
         print('}')
     def serialize_60217(netid, p: common.PacketReader):
-        print('Cl_60217 {')
+        print('CQ_RewardRequestFinish {')
         print('}')
     def serialize_60224(netid, p: common.PacketReader):
         print('Cl_60224 {')
@@ -1749,7 +1749,7 @@ class ClientSerializer:
         print('Cl_60228 {')
         print('}')
     def serialize_60231(netid, p: common.PacketReader):
-        print('Cl_60231 {')
+        print('CN_RewardStageReady {')
         print('}')
     def serialize_60234(netid, p: common.PacketReader):
         print('CA_Heartbeat {')

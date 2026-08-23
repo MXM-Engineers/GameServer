@@ -2598,7 +2598,7 @@ struct CN_UNKNOWN_60216
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60217
+struct CQ_RewardRequestFinish
 {
 	enum { NET_ID = 60217 };
 };
@@ -2633,13 +2633,13 @@ POP_PACKED
 ASSERT_SIZE(CQ_MailRead, 8);
 
 PUSH_PACKED
-struct CQ_MailMove
+struct CQ_MailGetAttachment
 {
 	enum { NET_ID = 60221 };
-	u64 queued_id_u64; // 8 bytes
+	u64 mailUID; // 8 bytes: single mail uid; answered by SN_MailGetAttachmentResult(62423)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_MailMove, 8);
+ASSERT_SIZE(CQ_MailGetAttachment, 8);
 
 PUSH_PACKED
 struct CQ_MailGetAttachmentMulti
@@ -2722,7 +2722,7 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60230, 8);
 
 PUSH_PACKED
-struct CN_UNKNOWN_60231
+struct CN_RewardStageReady
 {
 	enum { NET_ID = 60231 };
 };
@@ -2957,13 +2957,13 @@ struct CQ_UNKNOWN_60257
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60259
+struct CQ_SelectBadge
 {
 	enum { NET_ID = 60259 };
-	u8 value_u8; // 1 bytes (bool)
+	u8 badgeType; // 1 byte: selected badge type (observed 1, 3); acked by SA_SelectBadge(62515)
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60259, 1);
+ASSERT_SIZE(CQ_SelectBadge, 1);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60260

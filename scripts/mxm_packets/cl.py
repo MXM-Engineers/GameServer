@@ -1064,8 +1064,8 @@ class ClientSerializer:
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60214(netid, p: common.PacketReader):
-        print('Cl_60214 {')
-        print('    field1=%d' % p.read_u32())
+        print('CQ_RewardSelectSlot {')
+        print('    slotIndex=%d' % p.read_u32())
         print('}')
     def serialize_60218(netid, p: common.PacketReader):
         print('Cl_60218 {')

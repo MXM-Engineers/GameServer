@@ -2531,13 +2531,16 @@ POP_PACKED
 ASSERT_SIZE(CQ_UNKNOWN_60207, 20);
 
 PUSH_PACKED
-struct CQ_RewardSelectSlot
+// NOTE: old-version ID mapping called this CQ_RewardSelectSlot, but that packet is
+// 60214 in this binary (+6 drift; strict SA_RewardSelectSlot(62413) ack pairing).
+// Never observed on the wire. Alpha 60202 = CN_INVENTORY_REARRANGE.
+struct CN_UNKNOWN_60208
 {
 	enum { NET_ID = 60208 };
-	u32 slotIndex; // 4 bytes
+	u32 unkValue; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_RewardSelectSlot, 4);
+ASSERT_SIZE(CN_UNKNOWN_60208, 4);
 
 PUSH_PACKED
 struct CQ_RewardSelectSlotAllRandom
@@ -2572,13 +2575,13 @@ struct CQ_UNKNOWN_60213
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60214
+struct CQ_RewardSelectSlot
 {
 	enum { NET_ID = 60214 };
-	u32 uiValue; // 4 bytes
+	u32 slotIndex; // 4 bytes: selected reward slot (observed 6-13); always acked by SA_RewardSelectSlot(62413)
 };
 POP_PACKED
-ASSERT_SIZE(CN_UNKNOWN_60214, 4);
+ASSERT_SIZE(CQ_RewardSelectSlot, 4);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60215

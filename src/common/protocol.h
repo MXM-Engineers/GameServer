@@ -51,6 +51,25 @@ enum class WeaponIndex: i32
 	INVALID = 0,
 };
 
+// Inventory-stack instance uid assigned by the server; bit30 set (0x40000000 tag).
+// Same id space as SN_ItemUpdate.m_itemID; echoed verbatim by client packets (e.g. CQ_ItemUse).
+enum class ItemUID: u32
+{
+	INVALID = 0
+};
+
+// Static item content id from game data (m_itemIndex family, e.g. 136020015).
+enum class ItemDocIndex: u32
+{
+	INVALID = 0
+};
+
+// Dropped-ground-item entity uid; distinct tag space (bit31+30 set, 0xC0000000 | seq).
+enum class GroundItemUID: u32
+{
+	INVALID = 0
+};
+
 enum class ClassType: i32
 {
 	NONE = -1,
@@ -974,7 +993,7 @@ PUSH_PACKED
 struct CQ_ItemUse
 {
 	enum { NET_ID = 60015 };
-	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
+	ItemUID itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 };
 POP_PACKED
 ASSERT_SIZE(CQ_ItemUse, 4);
@@ -1056,7 +1075,7 @@ PUSH_PACKED
 struct CQ_BuyCShopItem
 {
 	enum { NET_ID = 60030 };
-	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
+	ItemUID itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
@@ -1254,7 +1273,7 @@ PUSH_PACKED
 struct CQ_GearSwap
 {
 	enum { NET_ID = 60062 };
-	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
+	ItemUID itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 actionParam; // 4 bytes
 };
 POP_PACKED
@@ -1402,7 +1421,7 @@ PUSH_PACKED
 struct CQ_BreakUpPartyRoom
 {
 	enum { NET_ID = 60086 };
-	u32 itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
+	ItemUID itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
 	u32 slotOrParam; // 4 bytes
 };
 POP_PACKED
@@ -4601,7 +4620,7 @@ struct SN_ProfileMasterGears
 	struct Slot
 	{
 		i32 gearType;
-		u32 gearItemID;
+		ItemUID gearItemID;
 	};
 
 	struct Gear
@@ -5915,7 +5934,7 @@ struct SN_CreateGroundItem
 	u8 excludedFieldBits; // 1 bytes (bit0=!startPos, bit1=!destPos)
 	float3 startPos; // 12 bytes (ST_POS3, present if !(bits & 1))
 	float3 destPos; // 12 bytes (ST_POS3, present if !(bits & 2))
-	u32 itemID; // 4 bytes
+	GroundItemUID itemID; // 4 bytes
 	u32 dropType; // 4 bytes
 	u32 nIndex; // 4 bytes
 	u32 count; // 4 bytes
@@ -6381,8 +6400,8 @@ struct SA_ItemUse
 	PUSH_PACKED
 	struct ItemSimpleInfo
 	{
-		u32 itemId; // 4 bytes
-		u32 itemDocIndex; // 4 bytes
+		ItemUID itemId; // 4 bytes
+		ItemDocIndex itemDocIndex; // 4 bytes
 		u32 itemCount; // 4 bytes
 	};
 	POP_PACKED
@@ -6892,7 +6911,7 @@ PUSH_PACKED
 struct SN_DestroyGroundItem
 {
 	enum { NET_ID = 62094 };
-	u32 itemID; // 4 bytes
+	GroundItemUID itemID; // 4 bytes
 	// logger 0x9911f2
 };
 POP_PACKED
@@ -6907,7 +6926,7 @@ struct SN_GroundItemsSnapshot
 	struct GroundItem
 	{
 		u32 docIndex; // 4 bytes
-		u32 itemID; // 4 bytes
+		GroundItemUID itemID; // 4 bytes
 		u32 dropType; // 4 bytes
 		u32 count; // 4 bytes
 		u32 ownerID; // 4 bytes
@@ -7067,7 +7086,7 @@ struct SN_GetPublicGroundItem
 {
 	enum { NET_ID = 62111 };
 	u32 playerID; // 4 bytes
-	u32 itemID; // 4 bytes
+	GroundItemUID itemID; // 4 bytes
 	// logger 0x995cc9
 };
 POP_PACKED
@@ -7104,8 +7123,8 @@ struct SN_ItemAcquisition
 	PUSH_PACKED
 	struct ItemInfo
 	{
-		u32 itemId; // 4 bytes
-		u32 itemDocIndex; // 4 bytes
+		ItemUID itemId; // 4 bytes
+		ItemDocIndex itemDocIndex; // 4 bytes
 		u32 itemCount; // 4 bytes
 	};
 	POP_PACKED
@@ -7122,10 +7141,10 @@ struct SN_ItemUpdate
 	PUSH_PACKED
 	struct ProfileItem
 	{
-		u32 m_itemID; // 4 bytes
+		ItemUID m_itemID; // 4 bytes
 		u8 m_invenType; // 1 bytes
 		u32 m_slot; // 4 bytes
-		u32 m_itemIndex; // 4 bytes
+		ItemDocIndex m_itemIndex; // 4 bytes
 		u32 m_count; // 4 bytes
 		u32 m_propertyGroupIndex; // 4 bytes
 		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
@@ -7235,10 +7254,10 @@ struct SN_ExtraCharacters
 	PUSH_PACKED
 	struct ProfileItem
 	{
-		u32 m_itemID; // 4 bytes
+		ItemUID m_itemID; // 4 bytes
 		u8 m_invenType; // 1 bytes
 		u32 m_slot; // 4 bytes
-		u32 m_itemIndex; // 4 bytes
+		ItemDocIndex m_itemIndex; // 4 bytes
 		u32 m_count; // 4 bytes
 		u32 m_propertyGroupIndex; // 4 bytes
 		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
@@ -7289,7 +7308,7 @@ struct SN_ExtraCharacters
 	struct MasterGearSlot
 	{
 		u32 gearType; // 4 bytes
-		u32 gearItemID; // 4 bytes
+		ItemUID gearItemID; // 4 bytes
 	};
 	POP_PACKED
 	PUSH_PACKED
@@ -7510,7 +7529,7 @@ struct SA_GearEquip
 	enum { NET_ID = 62141 };
 	u32 result; // 4 bytes
 	u8 masterGearNo; // 1 bytes
-	u32 gearItemID; // 4 bytes
+	ItemUID gearItemID; // 4 bytes
 	u32 slot; // 4 bytes
 	// logger 0x98063b
 };
@@ -7622,7 +7641,7 @@ struct SA_MastergearAdd
 		struct Slot
 		{
 			u32 gearType; // 4 bytes
-			u32 gearItemID; // 4 bytes
+			ItemUID gearItemID; // 4 bytes
 		};
 		POP_PACKED
 		Slot slots[1]; // 8 bytes
@@ -9155,10 +9174,10 @@ struct SA_GetUserinfo
 	PUSH_PACKED
 	struct ProfileItem
 	{
-		u32 m_itemID; // 4 bytes
+		ItemUID m_itemID; // 4 bytes
 		u8 m_invenType; // 1 bytes
 		u32 m_slot; // 4 bytes
-		u32 m_itemIndex; // 4 bytes
+		ItemDocIndex m_itemIndex; // 4 bytes
 		u32 m_count; // 4 bytes
 		u32 m_propertyGroupIndex; // 4 bytes
 		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
@@ -10900,10 +10919,10 @@ struct SN_WarehouseItemUpdate
 	PUSH_PACKED
 	struct Item
 	{
-		u32 m_itemID; // 4 bytes
+		ItemUID m_itemID; // 4 bytes
 		u8 m_invenType; // 1 bytes
 		u32 m_slot; // 4 bytes
-		u32 m_itemIndex; // 4 bytes
+		ItemDocIndex m_itemIndex; // 4 bytes
 		u32 m_count; // 4 bytes
 		u32 m_propertyGroupIndex; // 4 bytes
 		u8 m_isLifeTimeAbsolute; // 1 bytes (bool)
@@ -11107,7 +11126,7 @@ PUSH_PACKED
 struct SA_WarehouseItemChange
 {
 	enum { NET_ID = 62418 };
-	u32 orgItemID; // 4 bytes
+	ItemUID orgItemID; // 4 bytes
 	u32 orgInvenType; // 4 bytes
 	u32 targetInvenType; // 4 bytes
 	u32 targetSlot; // 4 bytes
@@ -12279,8 +12298,8 @@ struct SA_ItemTrade
 	PUSH_PACKED
 	struct ItemSimpleInfo
 	{
-		u32 itemId; // 4 bytes
-		u32 itemDocIndex; // 4 bytes
+		ItemUID itemId; // 4 bytes
+		ItemDocIndex itemDocIndex; // 4 bytes
 		u32 itemCount; // 4 bytes
 	};
 	POP_PACKED
@@ -12300,8 +12319,8 @@ struct SA_ItemCraft
 	PUSH_PACKED
 	struct ItemSimpleInfo
 	{
-		u32 itemId; // 4 bytes
-		u32 itemDocIndex; // 4 bytes
+		ItemUID itemId; // 4 bytes
+		ItemDocIndex itemDocIndex; // 4 bytes
 		u32 itemCount; // 4 bytes
 	};
 	POP_PACKED
@@ -12321,8 +12340,8 @@ struct SA_ItemDisassemble
 	PUSH_PACKED
 	struct ItemSimpleInfo
 	{
-		u32 itemId; // 4 bytes
-		u32 itemDocIndex; // 4 bytes
+		ItemUID itemId; // 4 bytes
+		ItemDocIndex itemDocIndex; // 4 bytes
 		u32 itemCount; // 4 bytes
 	};
 	POP_PACKED

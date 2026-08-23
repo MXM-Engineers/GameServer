@@ -922,7 +922,7 @@ struct CQ_UserLoginByNp
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_StationLatency
+struct CN_StationLatency
 {
 	enum { NET_ID = 60006 };
 	u32 elapsedMs; // 4 bytes

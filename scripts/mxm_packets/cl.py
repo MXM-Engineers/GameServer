@@ -236,16 +236,22 @@ class ClientSerializer:
         print('    field2=%s' % p.read_wstr())
         print('}')
     def serialize_60006(netid, p: common.PacketReader):
-        print('CQ_StationLatency {')
-        print('    field1=%d' % p.read_u32())
+        print('CN_StationLatency {')
+        print('    elapsedMs=%d' % p.read_u32())
         n = p.read_u16()
-        print('    field2_count=%d' % n)
+        print('    stationPings_count=%d' % n)
         for _ in range(n):
-            print('        %d' % p.read_u32())
+            ip = p.read_u32()
+            rtt = p.read_u16()
+            print('        ip=%d.%d.%d.%d rtt=%dms' % (ip & 0xff, (ip >> 8) & 0xff, (ip >> 16) & 0xff, (ip >> 24) & 0xff, rtt))
         n = p.read_u16()
-        print('    field3_count=%d' % n)
+        print('    stationStats_count=%d' % n)
         for _ in range(n):
-            print('        %d' % p.read_u32())
+            id2 = p.read_u32()
+            a = p.read_u16()
+            b = p.read_u16()
+            v = p.read_f32()
+            print('        entry={ id=0x%08x counter=%d unkU16=%d value=%g }' % (id2, a, b, v))
         print('}')
     def serialize_60007(netid, p: common.PacketReader):
         print('EnterQueue {')

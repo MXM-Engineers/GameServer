@@ -1,4 +1,6 @@
 #include <mxm/game_content.h>
+#include <common/packet_serialize.h>
+#include <common/packet_validator.h>
 #include "instance.h"
 #include "account.h"
 #include "matchmaker_connector.h"
@@ -530,7 +532,12 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 
 	switch(header.netID) {
 		case Cl::CQ_MasterPick::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterPick>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterPick (size=%d)", clientHd, packetSize);
+				break;
+			}
 			const Cl::CQ_MasterPick& packet = SafeCast<Cl::CQ_MasterPick>(packetData, packetSize);
+			NT_LOG("[client%x] Client :: CQ_MasterPick :: localMasterID=0x%08x", clientHd, (u32)packet.localMasterID);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
@@ -544,7 +551,12 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		} break;
 
 		case Cl::CQ_MasterUnpick::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterUnpick>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterUnpick (size=%d)", clientHd, packetSize);
+				break;
+			}
 			const Cl::CQ_MasterUnpick& packet = SafeCast<Cl::CQ_MasterUnpick>(packetData, packetSize);
+			NT_LOG("[client%x] Client :: CQ_MasterUnpick :: localMasterID=0x%08x", clientHd, (u32)packet.localMasterID);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
@@ -553,12 +565,22 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		} break;
 
 		case Cl::CQ_MasterReset::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterReset>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterReset (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: CQ_MasterReset ::", clientHd);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 			ResetMasters(user);
 		} break;
 
 		case Cl::CQ_ReadySortieRoom::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_ReadySortieRoom>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_ReadySortieRoom (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: CQ_ReadySortieRoom ::", clientHd);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 			SetReady(user);
@@ -567,11 +589,16 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		case Cl::CQ_RoomEquipSkill::NET_ID:
 		case Cl::CQ_RoomSwapSkill::NET_ID:
 		case Cl::CQ_RoomEquipWeapon::NET_ID: {
+			NT_LOG("[client%x] Client :: CQ_RoomEquip* :: size=%d", clientHd, packetSize);
 			SendDbgMsg(clientHd, L"Feature not implemented right now sorry :(");
 		} break;
 
 		case Cl::CN_ChannelChatMessage::NET_ID: {
-			// TODO: replicate chat messages
+			if(!ValidatePacket<Cl::CN_ChannelChatMessage>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CN_ChannelChatMessage (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_ChannelChatMessage>(packetData, packetSize));
 		} break;
 
 		default: {

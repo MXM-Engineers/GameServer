@@ -1,4 +1,5 @@
 #include <common/packet_serialize.h>
+#include <common/packet_validator.h>
 #include <common/inner_protocol.h>
 #include <mxm/game_content.h>
 #include <zlib.h>
@@ -635,6 +636,10 @@ void Coordinator::PushClientToHubInstance(ClientHandle clientHd)
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_FirstHello>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_FirstHello (size=%d)", packetSize);
+		return;
+	}
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
@@ -659,6 +664,10 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 
 void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_Authenticate>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_Authenticate (size=%d)", packetSize);
+		return;
+	}
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));

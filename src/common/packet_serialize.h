@@ -1271,6 +1271,34 @@ inline const char* PacketSerialize<Cl::CN_SortieRoomConfirm>(const void* packetD
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_WhisperSend>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_WhisperSend(%d, %d) :: {", Cl::CQ_WhisperSend::NET_ID, packetSize);
+	SER("	destNick='%ls'", buff.ReadWideStringObj().data());
+	SER("	msg='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_ChannelChatMessage>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CN_ChannelChatMessage(%d, %d) :: {", Cl::CN_ChannelChatMessage::NET_ID, packetSize);
+	SER("	chatType=%d", buff.Read<i32>());
+	SER("	msg='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_EnqueueMatchingQueue>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();

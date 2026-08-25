@@ -1,6 +1,7 @@
 #include "channel.h"
 
 #include "coordinator.h"
+#include <common/packet_validator.h>
 #include <mxm/game_content.h>
 #include "game.h"
 
@@ -107,6 +108,10 @@ void HubPacketHandler::OnMatchmakerPacket(const NetHeader& header, const u8* pac
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildProfile>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildProfile (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
 
 	// SA_GetGuildProfile
@@ -187,6 +192,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildMemberList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildMemberList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
@@ -248,6 +257,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildHistoryList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildHistoryList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
@@ -264,6 +277,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildRankingSeasonList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
 
@@ -282,6 +299,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle cl
 
 void HubPacketHandler::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_TierRecord>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_TierRecord (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
 
 	// SA_TierRecord
@@ -301,30 +322,50 @@ void HubPacketHandler::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const N
 
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ReadyToLoadCharacter>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ReadyToLoadCharacter (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CN_ReadyToLoadCharacter ::", clientHd);
 	game->OnPlayerReadyToLoad(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ReadyToLoadGameMap>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ReadyToLoadGameMap (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CN_ReadyToLoadGame ::", clientHd);
 	game->OnPlayerReadyToLoad(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CA_SetGameGvt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_SetGameGvt>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_SetGameGvt (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientHd, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
 void HubPacketHandler::HandlePacket_CA_CityLobbyJoinCity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_CityLobbyJoinCity>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_CityLobbyJoinCity (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CA_CityLobbyJoinCity ::", clientHd);
 	replication->SetPlayerAsInGame(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetCharacterInfo>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetCharacterInfo (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=0x%08x", clientHd, (u32)req.characterID);
 
@@ -339,6 +380,10 @@ void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, c
 
 void HubPacketHandler::HandlePacket_CN_GamePlayerSyncByInt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GamePlayerSyncByInt (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CN_GamePlayerSyncByInt& update = SafeCast<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CN_GamePlayerSyncByInt :: { characterID=0x%08x p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
@@ -353,6 +398,10 @@ void HubPacketHandler::HandlePacket_CN_GamePlayerSyncByInt(ClientHandle clientHd
 
 void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ChannelChatMessage>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ChannelChatMessage (size=%d)", clientHd, packetSize);
+		return;
+	}
 	ConstBuffer buff(packetData, packetSize);
 	i32 chatType = buff.Read<i32>();
 	const u16 msgLen = buff.Read<u16>();
@@ -365,6 +414,10 @@ void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_SetLeaderCharacter>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_SetLeaderCharacter (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=0x%08x skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
 
@@ -373,6 +426,10 @@ void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GamePlayerSyncActionStateOnly (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
 	const char* stateStr = ActionStateToString(sync.state);
@@ -399,6 +456,10 @@ void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandl
 
 void HubPacketHandler::HandlePacket_CQ_JukeboxQueueSong(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_JukeboxQueueSong>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_JukeboxQueueSong (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientHd, (i32)queue.songID);
 
@@ -407,6 +468,11 @@ void HubPacketHandler::HandlePacket_CQ_JukeboxQueueSong(ClientHandle clientHd, c
 
 void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_WhisperSend>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_WhisperSend (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_WhisperSend>(packetData, packetSize));
 	ConstBuffer buff(packetData, packetSize);
 	WideString destNick;
 	eastl::fixed_string<wchar,256,true> msg;
@@ -424,6 +490,10 @@ void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RTT_Time>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RTT_Time (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RTT_Time :: { time=%u }", clientHd, rtt.time);
 
@@ -435,12 +505,20 @@ void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const Net
 
 void HubPacketHandler::HandlePacket_CQ_LoadingProgressData(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_LoadingProgressData>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_LoadingProgressData (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_LoadingProgressData :: { progress=%u }", clientHd, loading.progress);
 }
 
 void HubPacketHandler::HandlePacket_CQ_RequestCalendar(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RequestCalendar>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RequestCalendar (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RequestCalendar& req = SafeCast<Cl::CQ_RequestCalendar>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RequestCalendar :: { filetimeUTC=%llu }", clientHd, req.filetimeUTC);
 
@@ -449,6 +527,10 @@ void HubPacketHandler::HandlePacket_CQ_RequestCalendar(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RequestAreaPopularity>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RequestAreaPopularity (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RequestAreaPopularity& req = SafeCast<Cl::CQ_RequestAreaPopularity>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientHd, req.areaID);
 
@@ -457,6 +539,10 @@ void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(ClientHandle client
 
 void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyCreate>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyCreate (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientHd, create.entrySysID, create.stageType);
 
@@ -465,6 +551,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyModify>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyModify (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
 
 	Sv::SA_PartyModify packet;
@@ -474,6 +564,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_PartyOptionModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyOptionModify>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyOptionModify (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_PartyOptionModify& req = SafeCast<Cl::CQ_PartyOptionModify>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyOptionModify>(packetData, packetSize));
 
@@ -486,6 +580,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyOptionModify(ClientHandle clientHd, 
 
 void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_EnqueueGame>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_EnqueueGame (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CQ_EnqueueGame :: { }", clientHd);
 
 	game->OnEnqueueGame(clientHd);
@@ -493,6 +591,10 @@ void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CA_SortieRoomFound(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_SortieRoomFound>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_SortieRoomFound (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CA_SortieRoomFound& packet = SafeCast<Cl::CA_SortieRoomFound>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CA_SortieRoomFound>(packetData, packetSize));
 
@@ -501,6 +603,10 @@ void HubPacketHandler::HandlePacket_CA_SortieRoomFound(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CN_SortieRoomConfirm(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_SortieRoomConfirm>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_SortieRoomConfirm (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CN_SortieRoomConfirm& packet = SafeCast<Cl::CN_SortieRoomConfirm>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_SortieRoomConfirm>(packetData, packetSize));
 

@@ -254,7 +254,7 @@ struct Client
 
 			case Cl::CQ_SetIspName::NET_ID: {
 				if(!ValidatePacket<Cl::CQ_SetIspName>(packetData, packetSize)) {
-					LOG("WARNING: invalid ConfirmGatewayInfo (size=%d)", packetSize);
+					LOG("WARNING: invalid CQ_SetIspName (size=%d)", packetSize);
 					break;
 				}
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_SetIspName>(packetData, packetSize));
@@ -285,7 +285,7 @@ struct Client
 
 			case Cl::CQ_EnterWaitingQueue::NET_ID: {
 				if(!ValidatePacket<Cl::CQ_EnterWaitingQueue>(packetData, packetSize)) {
-					LOG("WARNING: invalid EnterQueue (size=%d)", packetSize);
+					LOG("WARNING: invalid CQ_EnterWaitingQueue (size=%d)", packetSize);
 					break;
 				}
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_EnterWaitingQueue>(packetData, packetSize));

@@ -73,3 +73,111 @@ inline bool ValidatePacket<Cl::CQ_EnterWaitingQueue>(const void* packetData, i32
 	buff.ReadRaw(c2 * 10);
 	return true;
 }
+template<>
+inline bool ValidatePacket<Cl::CN_ReadyToLoadCharacter>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CN_ReadyToLoadGameMap>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CA_CityLobbyJoinCity>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_EnqueueGame>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_MasterReset>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_GetGuildProfile>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_GetGuildMemberList>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_GetGuildHistoryList>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_TierRecord>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_Authenticate>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 len = buff.Read<u16>();
+	if(!buff.CanRead(len * sizeof(wchar))) return false;
+	buff.ReadRaw(len * sizeof(wchar));
+	return buff.CanRead(sizeof(i32));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CN_ChannelChatMessage>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(i32))) return false;
+	buff.ReadRaw(sizeof(i32));
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 len = buff.Read<u16>();
+	return buff.CanRead(len * sizeof(wchar));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_WhisperSend>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	for(int i = 0; i < 2; i++) {
+		if(!buff.CanRead(sizeof(u16))) return false;
+		const u16 len = buff.Read<u16>();
+		if(!buff.CanRead(len * sizeof(wchar))) return false;
+		buff.ReadRaw(len * sizeof(wchar));
+	}
+	return true;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_PartyModify>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 count = buff.Read<u16>();
+	if(!buff.CanRead(count * sizeof(i32))) return false;
+	buff.ReadRaw(count * sizeof(i32));
+	return buff.CanRead(sizeof(i32) + sizeof(i32) + sizeof(u8));
+}

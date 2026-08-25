@@ -218,11 +218,11 @@ class ClientSerializer:
     
     def serialize_60003(netid, p: common.PacketReader):
         print('CQ_UserLogin {')
-        print('    field1=%s' % p.read_wstr())
-        print('    field2=%s' % p.read_wstr())
-        print('    field3=%s' % p.read_wstr())
-        print('    field4=%s' % p.read_wstr())
-        print('    field5=%d' % p.read_u32())
+        print('    nick="%s"' % p.read_wstr())
+        print('    password="%s"' % p.read_wstr())
+        print('    type="%s"' % p.read_wstr())
+        print('    extra="%s"' % p.read_wstr())
+        print('    unknown=%d' % p.read_u32())
         print('}')
     def serialize_60004(netid, p: common.PacketReader):
         print('CQ_UserLoginByNp {')
@@ -231,9 +231,9 @@ class ClientSerializer:
         print('    field3=%d' % p.read_u32())
         print('}')
     def serialize_60005(netid, p: common.PacketReader):
-        print('ConfirmGatewayInfo {')
-        print('    field1=%s' % p.read_wstr())
-        print('    field2=%s' % p.read_wstr())
+        print('CQ_SetIspName {')
+        print('    ispName="%s"' % p.read_wstr())
+        print('    w2="%s"' % p.read_wstr())
         print('}')
     def serialize_60006(netid, p: common.PacketReader):
         print('CN_StationLatency {')
@@ -254,17 +254,23 @@ class ClientSerializer:
             print('        entry={ id=0x%08x counter=%d unkU16=%d value=%g }' % (id2, a, b, v))
         print('}')
     def serialize_60007(netid, p: common.PacketReader):
-        print('EnterQueue {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
+        print('CQ_EnterWaitingQueue {')
+        print('    var1=%d' % p.read_u32())
+        print('    var2=%d' % p.read_u32())
         n = p.read_u16()
-        print('    field3_count=%d' % n)
+        print('    latencies_count=%d' % n)
         for _ in range(n):
-            print('        %d' % p.read_u32())
+            ip = p.read_u32()
+            rtt = p.read_u16()
+            print('        ip=%d.%d.%d.%d rtt=%dms' % (ip & 0xff, (ip >> 8) & 0xff, (ip >> 16) & 0xff, (ip >> 24) & 0xff, rtt))
         n = p.read_u16()
-        print('    field4_count=%d' % n)
+        print('    extras_count=%d' % n)
         for _ in range(n):
-            print('        %d' % p.read_u32())
+            a = p.read_u32()
+            b = p.read_u16()
+            c = p.read_u16()
+            d = p.read_u16()
+            print('        { a=%d b=%d c=%d d=%d }' % (a, b, c, d))
         print('}')
     def serialize_60010(netid, p: common.PacketReader):
         print('CQ_HandoverAuthRequestToSpectator {')
@@ -1625,7 +1631,7 @@ class ClientSerializer:
         print('CQ_HandoverToChannel {')
         print('}')
     def serialize_60035(netid, p: common.PacketReader):
-        print('ConfirmLogin {')
+        print('CQ_ServerVersionInfo {')
         print('}')
     def serialize_60043(netid, p: common.PacketReader):
         print('CQ_SwitchOffToggleSkill {')

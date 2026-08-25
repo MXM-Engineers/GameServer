@@ -491,20 +491,19 @@ struct CQ_UserLogin
 	wchar password[1];
 	u16 type_len;
 	wchar type[1];
-
-	u8 unk[5];
+	u16 extra_len;
+	wchar extra[1];
+	u32 unknown;
 };
 
-struct ConfirmLogin
+struct CQ_ServerVersionInfo
 {
 	enum { NET_ID = 60035 };
 };
 
 
-// 12147 client builder Send_ConfirmGatewayInfo: two wide strings
-// (session fields at +0xc28/+0xc40; empty in the login flow -> 4-byte packet).
 PUSH_PACKED
-struct ConfirmGatewayInfo
+struct CQ_SetIspName
 {
 	enum { NET_ID = 60005 };
 
@@ -515,10 +514,8 @@ struct ConfirmGatewayInfo
 };
 POP_PACKED
 
-// 12147 client builder Send_EnterQueue: u32 + u32 + VEC<8B-stride,6B wire> + VEC<12B-stride,10B wire>
-// (ping collector results; counts vary). Fixed prefix is 8 bytes.
 PUSH_PACKED
-struct EnterQueue
+struct CQ_EnterWaitingQueue
 {
 	enum { NET_ID = 60007 };
 
@@ -4076,7 +4073,7 @@ struct SA_CastSkill
 ASSERT_SIZE(SA_CastSkill, 12);
 
 PUSH_PACKED
-struct SA_VersionInfo
+struct SA_ServerVersionInfo
 {
 	enum { NET_ID = 62047 };
 	u16 m_VersionName_len; // 2 bytes (wchar count)
@@ -5695,9 +5692,8 @@ struct SN_ClientSettings
 	u8 data[1]; // xml compressed with zlib
 };
 
-// QueueStatus: client parser reads u8 + 3x u32 (13 bytes)
 PUSH_PACKED
-struct QueueStatus
+struct SA_EnterWaitingQueue
 {
 	enum { NET_ID = 62501 };
 
@@ -5707,7 +5703,7 @@ struct QueueStatus
 	u32 var4;
 };
 POP_PACKED
-ASSERT_SIZE(QueueStatus, 13);
+ASSERT_SIZE(SA_EnterWaitingQueue, 13);
 
 struct SN_AccountEquipmentList
 {

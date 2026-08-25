@@ -52,6 +52,185 @@ inline const char* PacketSerialize<Cl::CQ_FirstHello>(const void* packetData, co
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_UserLogin>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_UserLogin(%d, %d) :: {", Cl::CQ_UserLogin::NET_ID, packetSize);
+	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("	password='%ls'", buff.ReadWideStringObj().data());
+	SER("	type='%ls'", buff.ReadWideStringObj().data());
+	SER("	extra='%ls'", buff.ReadWideStringObj().data());
+	SER("	unknown=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_UserloginResult>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_UserloginResult(%d, %d) :: {", Sv::SA_UserloginResult::NET_ID, packetSize);
+	SER("	result=%%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_EnterWaitingQueue>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_EnterWaitingQueue(%d, %d) :: {", Sv::SA_EnterWaitingQueue::NET_ID, packetSize);
+	SER("	var1=%%u", buff.Read<u8>());
+	SER("	var2=%%u", buff.Read<u32>());
+	SER("	var3=%%u", buff.Read<u32>());
+	SER("	var4=%%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_ServerVersionInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_ServerVersionInfo(%d, %d) :: {", Sv::SA_ServerVersionInfo::NET_ID, packetSize);
+	SER("	versionName='%%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_TgchatServerInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_TgchatServerInfo(%d, %d) :: {", Sv::SN_TgchatServerInfo::NET_ID, packetSize);
+	const u16 hostLen = buff.Read<u16>();
+	SER("	host='%%.*s'", hostLen, buff.ReadRaw(hostLen));
+	SER("	port=%%u", buff.Read<u16>());
+	SER("	gameID=%%d", buff.Read<i32>());
+	SER("	serverID=%%d", buff.Read<i32>());
+	SER("	userID=%%u", buff.Read<u32>());
+	SER("	gamename='%%ls'", buff.ReadWideStringObj().data());
+	SER("	chatname='%%ls'", buff.ReadWideStringObj().data());
+	SER("	playncname='%%ls'", buff.ReadWideStringObj().data());
+	const u16 sigLen = buff.Read<u16>();
+	SER("	signature_len=%%u", sigLen);
+	buff.ReadRaw(sigLen);
+	SER("	serverType=%%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_StationList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_StationList(%d, %d) :: {", Sv::SN_StationList::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	stationList(%%u)=[", count);
+	for(int i = 0; i < count; i++) {
+		const u32 idc = buff.Read<u32>();
+		const u16 sc = buff.Read<u16>();
+		SER("		{ idc=%%u stations(%%u)=[", idc, sc);
+		for(int j = 0; j < sc; j++) {
+			SER("			{ gameServerIp=(%%u.%%u.%%u.%%u) pingServerIp=(%%u.%%u.%%u.%%u) port=%%u }",
+				buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(),
+				buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(), buff.Read<u8>(),
+				buff.Read<u16>());
+		}
+		SER("		] }");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_DoConnectChannelServer>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_DoConnectChannelServer(%d, %d) :: {", Sv::SN_DoConnectChannelServer::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	addresses(%%u)=[", count);
+	for(int i = 0; i < count; i++) {
+		const u32 ip = buff.Read<u32>();
+		const u16 port = buff.Read<u16>();
+		const u16 ispLen = buff.Read<u16>();
+		SER("		{ ip=%%u port=%%u isp='%%.*ls' }", ip, port, ispLen, (wchar*)buff.ReadRaw(ispLen * sizeof(wchar)));
+	}
+	SER("	]");
+	SER("	nick='%%ls'", buff.ReadWideStringObj().data());
+	SER("	instantKey=%%u", buff.Read<u32>());
+	SER("	reasonCode=%%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_ServerVersionInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("CQ_ServerVersionInfo(%d, %d) :: {}", Cl::CQ_ServerVersionInfo::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_SetIspName>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_SetIspName(%d, %d) :: {", Cl::CQ_SetIspName::NET_ID, packetSize);
+	SER("	w1='%ls'", buff.ReadWideStringObj().data());
+	SER("	w2='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_EnterWaitingQueue>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_EnterWaitingQueue(%d, %d) :: {", Cl::CQ_EnterWaitingQueue::NET_ID, packetSize);
+	SER("	var1=%d", buff.Read<i32>());
+	SER("	var2=%u", buff.Read<u32>());
+	const u16 c1 = buff.Read<u16>();
+	SER("	latencies(%u)=[", c1);
+	for(int i = 0; i < c1; i++) SER("		{ ip=%u rtt=%u }", buff.Read<u32>(), buff.Read<u16>());
+	SER("	]");
+	const u16 c2 = buff.Read<u16>();
+	SER("	extras(%u)=[", c2);
+	for(int i = 0; i < c2; i++) SER("		{ a=%u b=%u c=%u d=%u }", buff.Read<u32>(), buff.Read<u16>(), buff.Read<u16>(), buff.Read<u16>());
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Cl::CQ_AuthenticateGameServer>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -911,7 +1090,7 @@ inline const char* PacketSerialize<Sv::SA_FirstHello>(const void* packetData, co
 
 	const Sv::SA_FirstHello& packet = *(Sv::SA_FirstHello*)packetData;
 
-	SER("SA_FirstHello(%d, %d) :: {", Sv::SA_AreaPopularity::NET_ID, packetSize);
+	SER("SA_FirstHello(%d, %d) :: {", Sv::SA_FirstHello::NET_ID, packetSize);
 	SER("	dwProtocolCRC=%u", packet.dwProtocolCRC);
 	SER("	dwErrorCRC=%u", packet.dwErrorCRC);
 	SER("	serverType=%u", (u32)packet.serverType);

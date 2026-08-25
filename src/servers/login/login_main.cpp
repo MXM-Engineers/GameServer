@@ -167,19 +167,20 @@ struct Client
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {
-			case Cl::CQ_FirstHello::NET_ID: {
-				LOG("Client :: Hello");
+				case Cl::CQ_FirstHello::NET_ID: {
+				const Cl::CQ_FirstHello& req = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
+				LOG("Client :: Hello :: protocolCrc=%x errorCrc=%x version=%x", req.dwProtocolCRC, req.dwErrorCRC, req.version);
 
 				Sv::SA_FirstHello hello;
 				hello.dwProtocolCRC = 0x28845199;
 				hello.dwErrorCRC    = 0x93899e2c;
-				hello.serverType    = 0;
+				hello.serverType    = Sv::ServerType::Login;
 				memmove(hello.clientIp, clientIp, sizeof(hello.clientIp));
 				STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(clientIp));
 				hello.clientPort = clientPort;
 				hello.tqosWorldId = 1;
 
-				LOG("Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
+				LOG("Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", hello.dwProtocolCRC, hello.dwErrorCRC, (i32)hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
 				SendPacket(hello);
 			} break;
 
@@ -210,14 +211,16 @@ struct Client
 				{
 					PacketWriter<Sv::SN_TgchatServerInfo> packet;
 
-					// host
-					const wchar* host = L"127.0.0.1";
-					packet.Write<u16>(0);
-					//packet.WriteRaw(host, 9 * sizeof(wchar));
+					// host (ANSI byte string, length in bytes)
+					const char* host = "127.0.0.1";
+					packet.Write<u16>(9);
+					packet.WriteRaw(host, 9);
 
-					packet.Write<u16>(255); // port
+					// chat server: point at a dead port - the hub does not implement the NPChat
+					// protocol, so the client chat connect must fail cleanly (no hub handshake).
+					packet.Write<u16>(12999); // port (no chat server)
 					packet.Write<i32>(61); // gameID
-					packet.Write<i32>(0); // serverID
+					packet.Write<i32>(1); // serverID
 					packet.Write<u32>(424242); // userID
 
 					packet.WriteStringObj(L"Alpha"); // gamename
@@ -245,8 +248,26 @@ struct Client
 			} break;
 
 			case Cl::ConfirmGatewayInfo::NET_ID: {
-				const Cl::ConfirmGatewayInfo& confirm = SafeCast<Cl::ConfirmGatewayInfo>(packetData, packetSize);
-				LOG("Client :: Cl::ConfirmGatewayInfo :: var=%d", confirm.var);
+				// 12147 client: two wide strings (builder Send_ConfirmGatewayInfo); login flow
+				// sends both empty (4 bytes). Variable size, so validate manually.
+				{
+					ConstBuffer request(packetData, packetSize);
+					if(request.CanRead(2)) {
+						const u16 w1Len = request.Read<u16>();
+						if(!request.CanRead(w1Len * sizeof(wchar))) {
+							LOG("ConfirmGatewayInfo: bad w1 len %u", w1Len);
+						}
+						else request.ReadRaw(w1Len * sizeof(wchar));
+						if(request.CanRead(2)) {
+							const u16 w2Len = request.Read<u16>();
+							if(!request.CanRead(w2Len * sizeof(wchar))) {
+								LOG("ConfirmGatewayInfo: bad w2 len %u", w2Len);
+							}
+							else request.ReadRaw(w2Len * sizeof(wchar));
+						}
+					}
+				}
+				LOG("Client :: Cl::ConfirmGatewayInfo");
 
 				LOG("Server :: Sv::SN_StationList");
 				PacketWriter<Sv::SN_StationList> packet;
@@ -257,7 +278,6 @@ struct Client
 				station.idc = 12345678;
 				station.stations_count = 1;
 				auto& addr = station.stations[0]; // alias
-				// 92.88.247.43
 				addr.gameServerIp[0] = g_Config.gameServerIP[0];
 				addr.gameServerIp[1] = g_Config.gameServerIP[1];
 				addr.gameServerIp[2] = g_Config.gameServerIP[2];
@@ -274,8 +294,26 @@ struct Client
 			} break;
 
 			case Cl::EnterQueue::NET_ID: {
-				const Cl::EnterQueue& enter = SafeCast<Cl::EnterQueue>(packetData, packetSize);
-				LOG("Client :: Cl::EnterQueue :: var1=%d gameIp=(%s) unk=%d pingIp=(%s) port=%d unk2=%d stationID=%d", enter.var1, IpToString(enter.gameIp), enter.unk, IpToString(enter.pingIp), enter.port, enter.unk2, enter.stationID);
+				// 12147 client: u32 + u32 + VEC<6B> + VEC<10B> (ping results). Variable size,
+				// so validate the structure manually before replying.
+				{
+					ConstBuffer request(packetData, packetSize);
+					if(request.CanRead(8)) {
+						const i32 var1 = request.Read<i32>();
+						const u32 var2 = request.Read<u32>();
+						LOG("Client :: Cl::EnterQueue :: var1=%d var2=%u", var1, var2);
+					}
+					if(request.CanRead(2)) {
+						const u16 c1 = request.Read<u16>();
+						if(!request.CanRead(c1 * 6)) LOG("EnterQueue: bad latency vec (%u x 6B)", c1);
+						else request.ReadRaw(c1 * 6);
+					}
+					if(request.CanRead(2)) {
+						const u16 c2 = request.Read<u16>();
+						if(!request.CanRead(c2 * 10)) LOG("EnterQueue: bad extra vec (%u x 10B)", c2);
+						else request.ReadRaw(c2 * 10);
+					}
+				}
 
 				LOG("Server :: Sv::QueueStatus");
 				Sv::QueueStatus status;

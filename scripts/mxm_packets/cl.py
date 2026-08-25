@@ -13,22 +13,22 @@ class ClientSerializer:
 
     def serialize_60002(netid, p: common.PacketReader):
         print('CQ_FirstHello {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u32())
-        print('    field4=%d' % p.read_u8())
+        print('    dwProtocolCRC=%#x' % p.read_u32())
+        print('    dwErrorCRC=%#x' % p.read_u32())
+        print('    version=%#x' % p.read_u32())
+        print('    unknown=%d' % p.read_u8())
         print('}')
     def serialize_60008(netid, p: common.PacketReader):
         print('CQ_Authenticate {')
-        print('    field1=%s' % p.read_wstr())
+        print('    name="%s"' % p.read_wstr())
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60009(netid, p: common.PacketReader):
         print('CQ_AuthenticateGameServer {')
-        print('    field1=%s' % p.read_wstr())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u32())
-        print('    field4=%d' % p.read_u8())
+        print('    name="%s"' % p.read_wstr())
+        print('    instantKey=%d' % p.read_u32())
+        print('    var=%u' % p.read_u32())
+        print('    b1=%d' % p.read_u8())
         print('}')
     def serialize_60014(netid, p: common.PacketReader):
         print('CN_ReadyToLoadCharacter {')
@@ -38,9 +38,9 @@ class ClientSerializer:
         print('}')
     def serialize_60024(netid, p: common.PacketReader):
         print('CA_SetGameGvt {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u32())
+        print('    sendTime=%d' % p.read_i32())
+        print('    virtualTime=%d' % p.read_i32())
+        print('    unk=%d' % p.read_i32())
         print('}')
     def serialize_60022(netid, p: common.PacketReader):
         print('CN_GamePlayerSyncByInt {')
@@ -87,20 +87,20 @@ class ClientSerializer:
         print('}')
     def serialize_60051(netid, p: common.PacketReader):
         print('CQ_GetCharacterInfo {')
-        print('    field1=%d' % p.read_u32())
+        print('    characterID=%d' % p.read_i32())
         print('}')
     def serialize_60053(netid, p: common.PacketReader):
         print('CQ_GamePlayerTag {')
-        print('    field1=%d' % p.read_u32())
+        print('    characterID=%d' % p.read_i32())
         print('}')
     def serialize_60073(netid, p: common.PacketReader):
         print('CQ_RequestAreaPopularity {')
-        print('    field1=%d' % p.read_u32())
+        print('    area=%d' % p.read_i32())
         print('}')
     def serialize_60074(netid, p: common.PacketReader):
         print('CQ_PartyCreate {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
+        print('    entrySysID=%d' % p.read_i32())
+        print('    stageType=%d' % p.read_i32())
         print('}')
     def serialize_60075(netid, p: common.PacketReader):
         print('CQ_PartyModify {')
@@ -163,7 +163,7 @@ class ClientSerializer:
         print('}')
     def serialize_60167(netid, p: common.PacketReader):
         print('CQ_GetGuildRankingSeasonList {')
-        print('    field1=%d' % p.read_u8())
+        print('    rankingType=%d' % p.read_u8())
         print('}')
     def serialize_60178(netid, p: common.PacketReader):
         print('CN_GameUpdatePosition {')
@@ -188,7 +188,7 @@ class ClientSerializer:
     
     def serialize_60180(netid, p: common.PacketReader):
         print('CQ_WeaponState {')
-        print('    field1=%d' % p.read_u32())
+        print('    charcterID=%d' % p.read_i32())
         print('    field2=%d' % p.read_u32())
         print('    field3=%d' % p.read_u8())
         print('    field4=%d' % p.read_u8())
@@ -197,11 +197,11 @@ class ClientSerializer:
         print('}')
     def serialize_60235(netid, p: common.PacketReader):
         print('CQ_LoadingProgressData {')
-        print('    field1=%d' % p.read_u8())
+        print('    progress=%d' % p.read_u8())
         print('}')
     def serialize_60245(netid, p: common.PacketReader):
         print('CQ_RTT_Time {')
-        print('    field1=%d' % p.read_u32())
+        print('    time=%d' % p.read_i32())
         print('}')
     def serialize_60265(netid, p: common.PacketReader):
         print('CQ_NcguardData {')

@@ -180,8 +180,9 @@ client_spitter = PacketSpitter('cl')
 server_spitter = PacketSpitter('sv')
 
 scan_list = [
-    '11900',
-    '12101'
+    '10900', # login server (serverType=0)
+    '11900', # hub server (serverType=1)
+    '12101'  # game server (serverType=2)
 ]
 
 last_time = 0

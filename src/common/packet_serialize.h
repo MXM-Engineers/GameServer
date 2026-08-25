@@ -914,7 +914,7 @@ inline const char* PacketSerialize<Sv::SA_FirstHello>(const void* packetData, co
 	SER("SA_FirstHello(%d, %d) :: {", Sv::SA_AreaPopularity::NET_ID, packetSize);
 	SER("	dwProtocolCRC=%u", packet.dwProtocolCRC);
 	SER("	dwErrorCRC=%u", packet.dwErrorCRC);
-	SER("	serverType=%u", packet.serverType);
+	SER("	serverType=%u", (u32)packet.serverType);
 	SER("	clientIp=(%u.%u.%u.%u)", packet.clientIp[0], packet.clientIp[1], packet.clientIp[2], packet.clientIp[3]);
 	SER("	clientPort=%u", packet.clientPort);
 	SER("	tqosWorldId=%u", packet.tqosWorldId);

@@ -872,7 +872,7 @@ bool GameXmlContent::LoadAnimationData()
 
 		const ClassType masterClassType = ClassTypeFromString(classStr.data());
 		if(masterClassType != prevMasterClassType) {
-			LOG("%s:", classStr.data());
+			VERBOSE("%s:", classStr.data());
 
 			if(actionSliceCount > 0) {
 				actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
@@ -920,8 +920,8 @@ bool GameXmlContent::LoadAnimationData()
 					}
 				}
 
-				LOG("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
-				LOG("		seqLength=%f", curAction->seqLength);
+				VERBOSE("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
+				VERBOSE("		seqLength=%f", curAction->seqLength);
 
 				accumulatedDelay = 0.0f;
 			}
@@ -986,23 +986,23 @@ bool GameXmlContent::LoadAnimationData()
 
 		curAction->commands.push_back(cmd);
 
-		LOG("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
+		VERBOSE("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
 		switch(cmd.type) {
 			case ActionCommand::Type::STATE_BLOCK: {
 
 			} break;
 
 			case ActionCommand::Type::MOVE: {
-				LOG("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
-				LOG("		  param2=%d", cmd.move.param2);
+				VERBOSE("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
+				VERBOSE("		  param2=%d", cmd.move.param2);
 			} break;
 
 			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
-				LOG("		  distance=%f", cmd.graphMoveHorz.distance);
+				VERBOSE("		  distance=%f", cmd.graphMoveHorz.distance);
 			} break;
 
 			case ActionCommand::Type::ROTATESPEED: {
-				LOG("		  speed=%d", cmd.rotateSpeed.speed);
+				VERBOSE("		  speed=%d", cmd.rotateSpeed.speed);
 			} break;
 		}
 	}
@@ -1041,7 +1041,7 @@ bool GameXmlContent::LoadRemoteData()
 
 		remote.ID = RemoteIdx(ID);
 
-		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
+		VERBOSE("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
 
 		for(XMLElement* pComp = pEntityInfo->FirstChildElement();
 			pComp;
@@ -1065,8 +1065,8 @@ bool GameXmlContent::LoadRemoteData()
 					(_VsNPC_Monster << Remote::VS_NPC_MONSTER) |
 					(_VsPC << Remote::VS_PLAYER_CHARACTER);
 
-				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
-				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
+				VERBOSE("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
+				VERBOSE("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
 			}
 
 			else if((EA::StdC::Strcmp("RemoteComData2", compName) == 0)) {
@@ -1079,8 +1079,8 @@ bool GameXmlContent::LoadRemoteData()
 					remote.behaviorType = Remote::BehaviourTypeFromString(_BehaviorType);
 				}
 
-				LOG("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
-				LOG("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
+				VERBOSE("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
+				VERBOSE("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
 			}
 		}
 

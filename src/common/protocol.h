@@ -479,7 +479,6 @@ struct CQ_FirstHello
 	u8 unknown;
 };
 POP_PACKED
-
 ASSERT_SIZE(CQ_FirstHello, 13);
 
 struct CQ_UserLogin
@@ -490,7 +489,7 @@ struct CQ_UserLogin
 	wchar nick[1];
 	u16 password_len;
 	wchar password[1];
-	u16 tpye_len;
+	u16 type_len;
 	wchar type[1];
 
 	u8 unk[5];
@@ -502,31 +501,37 @@ struct ConfirmLogin
 };
 
 
-// ?
+// 12147 client builder Send_ConfirmGatewayInfo: two wide strings
+// (session fields at +0xc28/+0xc40; empty in the login flow -> 4-byte packet).
+PUSH_PACKED
 struct ConfirmGatewayInfo
 {
 	enum { NET_ID = 60005 };
-	i32 var;
+
+	u16 w1_len;
+	wchar w1[1]; // w1_len wide chars
+	u16 w2_len;
+	wchar w2[1]; // w2_len wide chars
 };
+POP_PACKED
 
-ASSERT_SIZE(ConfirmGatewayInfo, 4);
-
+// 12147 client builder Send_EnterQueue: u32 + u32 + VEC<8B-stride,6B wire> + VEC<12B-stride,10B wire>
+// (ping collector results; counts vary). Fixed prefix is 8 bytes.
 PUSH_PACKED
 struct EnterQueue
 {
 	enum { NET_ID = 60007 };
 
 	i32 var1;
-	u8 gameIp[4];
-	u16 unk;
-	u8 pingIp[4];
-	u16 port; // ?
-	u16 unk2;
-	i32 stationID;
-	u8 unk3[8];
+	u32 var2;
+
+	u16 latency_count; // vec1: u16 count, then count * {u32 ip, u16 rtt} (6 wire bytes each)
+	u8 latencies[1];
+
+	u16 extra_count; // vec2: u16 count, then count * {u32, u16, u16, u16} (10 wire bytes each)
+	u8 extras[1];
 };
 POP_PACKED
-ASSERT_SIZE(EnterQueue, 30);
 
 struct CQ_Authenticate
 {
@@ -3648,6 +3653,14 @@ POP_PACKED
 // Server packets
 namespace Sv {
 
+// SA_FirstHello.serverType
+enum class ServerType: u8
+{
+	Login = 0,
+	Hub = 1,
+	Game = 2,
+};
+
 PUSH_PACKED
 struct SA_FirstHello
 {
@@ -3655,7 +3668,7 @@ struct SA_FirstHello
 
 	u32 dwProtocolCRC;
 	u32 dwErrorCRC;
-	u8 serverType;
+	ServerType serverType;
 	u8 clientIp[4];
 	u16 clientPort;
 	u8 tqosWorldId;
@@ -5682,15 +5695,16 @@ struct SN_ClientSettings
 	u8 data[1]; // xml compressed with zlib
 };
 
-// maybe?
+// QueueStatus: client parser reads u8 + 3x u32 (13 bytes)
 PUSH_PACKED
 struct QueueStatus
 {
 	enum { NET_ID = 62501 };
 
-	i32 var1;
-	u8 unk[5];
-	i32 var2;
+	u8 var1;
+	u32 var2;
+	u32 var3;
+	u32 var4;
 };
 POP_PACKED
 ASSERT_SIZE(QueueStatus, 13);

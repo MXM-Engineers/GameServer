@@ -548,7 +548,7 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
-	hello.serverType = 2;
+	hello.serverType = Sv::ServerType::Game;
 	hello.clientIp[0] = info.ip[3];
 	hello.clientIp[1] = info.ip[2];
 	hello.clientIp[2] = info.ip[1];

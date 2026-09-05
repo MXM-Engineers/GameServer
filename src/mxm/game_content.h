@@ -306,6 +306,40 @@ struct GameXmlContent
 	eastl::fixed_vector<EntrySystem,32,false> entrySystems;
 	eastl::fixed_vector<AreaStages,64,false> areaStages;
 
+	struct GuildLevelInfo
+	{
+		i32 level;
+		i32 requirePoint;
+		i32 medalGiftCount;
+	};
+
+	struct GuildSkillLevel
+	{
+		i32 level;
+		i32 unlockGuildLevel;
+		i32 cost;
+		i32 value;
+	};
+
+	struct GuildSkillInfo
+	{
+		eastl::fixed_string<char,64,false> key;
+		eastl::fixed_vector<GuildSkillLevel,12,false> levels;
+	};
+
+	eastl::fixed_vector<GuildLevelInfo,16,false> guildLevels;
+	eastl::fixed_vector<GuildSkillInfo,16,false> guildSkills;
+	eastl::fixed_vector<i32,64,false> validGuildEmblems;
+	i32 guildBaseMemberCap = 10;
+	i32 guildActivityCapWeekday = 100;
+	i32 guildActivityCapWeekend = 250;
+	i32 guildRollcallPoint = 50;
+	i32 guildDonationUnit = 100;
+
+	i32 GuildLevelForPoints(i32 points) const;
+	i32 GuildSkillValue(const char* key, i32 level) const;
+	bool IsValidGuildEmblem(i32 emblem) const;
+
 	bool FindQueueStage(i32 entryID, i32* outStageIndex) const;
 	bool HasEntrySystem(i32 entryID) const;
 
@@ -327,6 +361,7 @@ private:
 
 	bool LoadMasterDefinitions();
 	bool LoadEntrySystems();
+	bool LoadGuildData();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();

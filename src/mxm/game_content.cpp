@@ -848,6 +848,102 @@ bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
 	return false;
 }
 
+bool GameXmlContent::LoadGuildData()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/GAMEINFO/Guild.xml", doc)) return false;
+
+	XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement("ST_GUILDINFO");
+	if(!pInfo) return false;
+
+	for(XMLElement* pLvl = pInfo->FirstChildElement("_GuildLevel");
+		pLvl;
+		pLvl = pLvl->NextSiblingElement("_GuildLevel")) {
+		GuildLevelInfo lvl;
+		if(pLvl->QueryIntAttribute("DATAKEY", &lvl.level) != XML_SUCCESS) continue;
+		pLvl->QueryIntAttribute("_RequireGuildPoint", &lvl.requirePoint);
+		pLvl->QueryIntAttribute("_GuildMedalGiftCount", &lvl.medalGiftCount);
+		if(guildLevels.size() < guildLevels.capacity()) guildLevels.push_back(lvl);
+	}
+
+	XMLElement* pSkillSet = pInfo->FirstChildElement("_GuildSkillSet");
+	if(pSkillSet) {
+		for(XMLElement* pSkill = pSkillSet->FirstChildElement("_GuildSkill");
+			pSkill;
+			pSkill = pSkill->NextSiblingElement("_GuildSkill")) {
+			GuildSkillInfo skill;
+			const char* key = pSkill->Attribute("DATAKEY");
+			if(!key) continue;
+			skill.key = key;
+			for(XMLElement* pLvl = pSkill->FirstChildElement("_GuildSkillLevel");
+				pLvl;
+				pLvl = pLvl->NextSiblingElement("_GuildSkillLevel")) {
+				GuildSkillLevel sl;
+				if(pLvl->QueryIntAttribute("DATAKEY", &sl.level) != XML_SUCCESS) continue;
+				pLvl->QueryIntAttribute("_UnlockGuildLevel", &sl.unlockGuildLevel);
+				pLvl->QueryIntAttribute("_Cost", &sl.cost);
+				pLvl->QueryIntAttribute("_Value", &sl.value);
+				if(skill.levels.size() < skill.levels.capacity()) skill.levels.push_back(sl);
+			}
+			if(guildSkills.size() < guildSkills.capacity()) guildSkills.push_back(skill);
+		}
+	}
+
+	for(XMLElement* pEmblem = pInfo->FirstChildElement("_ValidGuildEmblem");
+		pEmblem;
+		pEmblem = pEmblem->NextSiblingElement("_ValidGuildEmblem")) {
+		i32 emblem = 0;
+		if(pEmblem->QueryIntAttribute("DATA", &emblem) != XML_SUCCESS) continue;
+		if(emblem != 0 && validGuildEmblems.size() < validGuildEmblems.capacity()) validGuildEmblems.push_back(emblem);
+	}
+
+	if(XMLElement* pMem = pInfo->FirstChildElement("_GuildMembership")) {
+		pMem->QueryIntAttribute("_Capacity", &guildBaseMemberCap);
+	}
+	if(XMLElement* pAct = pInfo->FirstChildElement("_MaxGuildActivityPointPerDay")) {
+		if(XMLElement* pStage = pAct->FirstChildElement("_Stage")) {
+			pStage->QueryIntAttribute("_Weekday", &guildActivityCapWeekday);
+		}
+	}
+	if(XMLElement* pPt = pInfo->FirstChildElement("_GuildPointReward")) {
+		pPt->QueryIntAttribute("_RollcallPoint", &guildRollcallPoint);
+	}
+	if(XMLElement* pDon = pInfo->FirstChildElement("_GuildDonation")) {
+		pDon->QueryIntAttribute("_Unit", &guildDonationUnit);
+	}
+
+	LOG("Loaded %d guild levels, %d skills, %d emblems", (i32)guildLevels.size(), (i32)guildSkills.size(), (i32)validGuildEmblems.size());
+	return true;
+}
+
+i32 GameXmlContent::GuildLevelForPoints(i32 points) const
+{
+	i32 level = 1;
+	for(auto& l : guildLevels) {
+		if(points >= l.requirePoint && l.level > level) level = l.level;
+	}
+	return level;
+}
+
+i32 GameXmlContent::GuildSkillValue(const char* key, i32 level) const
+{
+	for(auto& s : guildSkills) {
+		if(s.key != key) continue;
+		for(auto& l : s.levels) {
+			if(l.level == level) return l.value;
+		}
+	}
+	return 0;
+}
+
+bool GameXmlContent::IsValidGuildEmblem(i32 emblem) const
+{
+	for(auto e : validGuildEmblems) {
+		if(e == emblem) return true;
+	}
+	return false;
+}
+
 bool GameXmlContent::LoadJukeboxSongs()
 {
 	XMLDocument doc;
@@ -1222,6 +1318,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadEntrySystems();
+	if(!r) return false;
+
+	r = LoadGuildData();
 	if(!r) return false;
 
 	r = LoadCollisionMeshes();

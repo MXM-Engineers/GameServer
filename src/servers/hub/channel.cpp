@@ -1,4 +1,5 @@
 #include "channel.h"
+#include "guild.h"
 
 #include "coordinator.h"
 #include <common/packet_validator.h>
@@ -119,16 +120,17 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, co
 	{
 		PacketWriter<Sv::SA_GetGuildProfile,512> packet;
 
+		const Guild& guild = GetAlphaGuild();
 		packet.Write<i32>(0); // result;
-		packet.WriteStringObj(L"Alpha testers"); // guildName
-		packet.WriteStringObj(L"Alpha"); // guildTag
-		packet.Write<i32>(100203); // emblemIndex
-		packet.Write<u8>(10); // guildLvl
-		packet.Write<u8>(120); // memberMax
-		packet.WriteStringObj(L"Malachi"); // ownerNickname
-		packet.Write<i64>(131474874000000000); // createdDate
-		packet.Write<i64>(0); // dissolutionDate
-		packet.Write<u8>(0); // joinType
+		packet.WriteStringObj(guild.name);
+		packet.WriteStringObj(guild.tag);
+		packet.Write<i32>(guild.emblemIndex);
+		packet.Write<u8>(guild.lvl);
+		packet.Write<u8>(guild.memberMax);
+		packet.WriteStringObj(guild.ownerNickname);
+		packet.Write<i64>(guild.createdDate);
+		packet.Write<i64>(guild.dissolutionDate);
+		packet.Write<u8>(guild.joinType);
 
 		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
 		guildInterest.likePveStage = 1;
@@ -140,52 +142,42 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, co
 		guildInterest.likeOlympic = 1;
 		packet.Write(guildInterest);
 
-		packet.WriteStringObj(L"This is a great intro"); // guildIntro
-		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
-		packet.Write<i32>(460281); // guildPoint
-		packet.Write<i32>(9999); // guildFund
+		packet.WriteStringObj(guild.intro);
+		packet.WriteStringObj(guild.notice);
+		packet.Write<i32>(guild.point);
+		packet.Write<i32>(guild.fund);
 
 		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
-		guildPvpRecord.rp = 5;
-		guildPvpRecord.win = 4;
-		guildPvpRecord.draw = 3;
-		guildPvpRecord.lose = 2;
+		guildPvpRecord.rp = 0;
+		guildPvpRecord.win = 0;
+		guildPvpRecord.draw = 0;
+		guildPvpRecord.lose = 0;
 		packet.Write(guildPvpRecord);
 
-		packet.Write<i32>(-1); // guildRankNo
+		packet.Write<i32>(guild.rankNo);
 
-		packet.Write<u16>(1); // guildMemberClassList_count
-		// guildMemberClassList[0]
-		packet.Write<i32>(12456); // id
-		packet.Write<u8>(3); // type
-		packet.Write<u8>(2); // iconIndex
-		packet.WriteStringObj(L"Malachi");
+		packet.Write<u16>((u16)GetAlphaGuildRanks().size());
+		for(auto& rank : GetAlphaGuildRanks()) {
+			packet.Write<i32>(rank.id);
+			packet.Write<GuildRankType>(rank.type);
+			packet.Write<u8>(rank.iconIndex);
+			packet.WriteStringObj(rank.name);
+			packet.Write(rank.rights);
+		}
 
-		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
-		rights.hasInviteRight = 1;
-		rights.hasExpelRight = 1;
-		rights.hasMembershipChgRight = 1;
-		rights.hasClassAssignRight = 1;
-		rights.hasNoticeChgRight = 1;
-		rights.hasIntroChgRight = 1;
-		rights.hasInterestChgRight = 1;
-		rights.hasFundManageRight = 1;
-		rights.hasJoinTypeRight = 1;
-		rights.hasEmblemRight = 1;
-		packet.Write(rights);
+		packet.Write<u16>((u16)guild.skills.size());
+		for(auto& skill : guild.skills) {
+			packet.Write<u8>((u8)skill.type);
+			packet.Write<u8>(skill.level);
+			packet.Write<i64>(0); // expiryDate
+			packet.Write<u16>(0); // extensionCount
+		}
 
-		packet.Write<u16>(1); // guildSkills_count
-		// guildSkills[0]
-		packet.Write<u8>(1); // type
-		packet.Write<u8>(9); // level
-		packet.Write<i64>(0); // expiryDate
-		packet.Write<u16>(0); // extensionCount
-
-		packet.Write<i32>(7); // curDailyStageGuildPoint
-		packet.Write<i32>(500); // maxDailyStageGuildPoint
-		packet.Write<i32>(2); // curDailyArenaGuildPoint
-		packet.Write<i32>(450); // maxDailyArenaGuildPoint
-		packet.Write<u8>(1); // todayRollCallCount
+		packet.Write<i32>(0); // curDailyStageGuildPoint
+		packet.Write<i32>(guild.maxDailyStage);
+		packet.Write<i32>(0); // curDailyArenaGuildPoint
+		packet.Write<i32>(guild.maxDailyArena);
+		packet.Write<u8>(0); // todayRollCallCount
 
 		SendPacket(clientHd, packet);
 	}
@@ -205,52 +197,38 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd,
 
 		packet.Write<i32>(0); // result
 
-		packet.Write<u16>(3); // guildMemberProfileList_count
+		const Guild& guild = GetAlphaGuild();
+		const i32 userID = game->plidMap->Get(clientHd);
+		const WideString& nick = game->playerAccountData[userID]->nickname;
+		packet.Write<u16>(2); // guildMemberProfileList_count
 
-		// guildMemberProfileList[0]
-		packet.WriteStringObj(L"Malachi");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
+		packet.WriteStringObj(guild.owner.nick);
+		packet.Write<i32>(guild.owner.membershipID);
+		packet.Write<u16>(guild.owner.lvl);
+		packet.Write<u16>(guild.owner.leaderClassType);
+		packet.Write<u16>(guild.owner.masterCount);
+		packet.Write<i32>(guild.owner.achievementScore);
 		packet.Write<u8>(0); // topPvpTierGrade
 		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<i32>(0); // contributedGuildPoint
+		packet.Write<i32>(0); // contributedGuildFund
 		packet.Write<u16>(0); // guildPvpWin
 		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+		packet.Write<i64>(0); // lastLogoutDate
 
-		// guildMemberProfileList[1]
-		packet.WriteStringObj(L"Delta-47");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
+		packet.WriteStringObj(nick.data(), nick.size());
+		packet.Write<i32>(guild.newMemberRankID); // membershipID
+		packet.Write<u16>(1); // lvl
+		packet.Write<u16>(0); // leaderClassType
+		packet.Write<u16>(0); // masterCount
+		packet.Write<i32>(0); // achievementScore
 		packet.Write<u8>(0); // topPvpTierGrade
 		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<i32>(0); // contributedGuildPoint
+		packet.Write<i32>(0); // contributedGuildFund
 		packet.Write<u16>(0); // guildPvpWin
 		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[2]
-		packet.WriteStringObj(L"LordSk");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+		packet.Write<i64>(0); // lastLogoutDate
 
 		SendPacket(clientHd, packet);
 	}

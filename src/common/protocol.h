@@ -396,6 +396,12 @@ enum class StageRule: i32
 	Max = 2
 };
 
+enum class GuildRankType : u8
+{
+	Default = 2,
+	Custom = 3,
+};
+
 enum class GameType: i32
 {
 	INVALID = 0,

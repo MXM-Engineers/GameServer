@@ -1047,13 +1047,10 @@ void Replication::FrameDifference()
 
 		// tagging
 		if(cur.mainCharaID != prev.mainCharaID) {
-			const ClientHandle upClientHd = cur.clientHd;
 			const ActorUID upMainUID = cur.masters[cur.mainCharaID];
 			const ActorUID upSubUID = cur.masters[cur.mainCharaID ^ 1];
 			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]); // @Speed
 			ASSERT(chara);
-			const vec3 upPos = chara->pos;
-			const RotationHumanoid upRot = chara->rotation;
 
 			Sv::SN_GamePlayerTag tag;
 			tag.result = 128;
@@ -1070,61 +1067,10 @@ void Replication::FrameDifference()
 
 				SendPacket(clientHd, tag);
 
-				if(clientHd != upClientHd) { // ignore self
-					Sv::SN_GameLeaveActor leave;
-					leave.objectID = tag.subID;
-					SendPacket(clientHd, leave);
-
-					// Sv::SN_GameEnterActor
-					{
-						PacketWriter<Sv::SN_GameEnterActor,512> packet;
-						packet.Write<u8>(0x1); // excludedBits
-						packet.Write<LocalActorID>(tag.mainID); // objectID
-						packet.Write<float3>(v2f(upPos)); //  p3nPos
-						packet.Write<RotationHumanoid>(RotConvertToMxm(upRot)); //  p3nDir
-						packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveDir
-						packet.Write<float2>(v2f(vec2(0, 0))); //  p2nMoveUpperDir
-						packet.Write<float3>(v2f(vec3(0))); //  p3nMoveTargetPos
-						packet.Write<u8>(0); //  isBattleState
-						packet.Write<f32>(620.0f); //  baseMoveSpeed
-						packet.Write<ActionStateID>(ActionStateID::TAG_IN_EXECUTE_BEHAVIORSTATE); //  actionState
-						packet.Write<i32>(0); //  aiTargetID
-
-						// statSnapshot
-						typedef Sv::SN_GameEnterActor::ST_StatData Stat;
-						eastl::array<Stat, 9> curStats = {
-							Stat{ 0, 1270 },
-							Stat{ 37, 13.2f },
-							Stat{ 35, 1000 },
-							Stat{ 2, 200 },
-							Stat{ 6, 0 },
-							Stat{ 10, 0 },
-							Stat{ 64, 0 },
-							Stat{ 7, 0 },
-							Stat{ 14, 10 },
-						};
-						eastl::array<Stat, 9> maxStats = {
-							Stat{ 0, 1270 },
-							Stat{ 37, 120 },
-							Stat{ 35, 1000 },
-							Stat{ 2, 200 },
-							Stat{ 6, 49.0077f },
-							Stat{ 10, 150 },
-							Stat{ 64, 150 },
-							Stat{ 7, 76.5 },
-							Stat{ 14, 100 },
-						};
-						eastl::array<Stat, 0> addPrivate;
-						eastl::array<Stat, 0> mulPrivate;
-
-						packet.WriteVec(curStats.data(), curStats.size());
-						packet.WriteVec(maxStats.data(), maxStats.size());
-						packet.WriteVec(addPrivate.data(), addPrivate.size());
-						packet.WriteVec(mulPrivate.data(), mulPrivate.size());
-
-						SendPacket(clientHd, packet);
-					}
-				}
+				// Retail behavior (Titan Ruins capture): remote viewers receive ONLY the
+				// SN_GamePlayerTag swap announcement - both masters already exist client-side.
+				// Sending a destructive GameLeaveActor here removes the player's visible actor
+				// without a valid re-bind, making tagged-out bots disappear.
 			}
 		}
 

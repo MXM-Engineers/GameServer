@@ -4526,6 +4526,13 @@ class ServerSerializer:
         while count > 0:
             s += '%d, ' % (p.read_i32())
             count -= 1
+        print('    regionNewMaster=[%s]' % s)
+
+        count = p.read_u16()
+        s = ''
+        while count > 0:
+            s += '%d, ' % (p.read_i32())
+            count -= 1
         print('    eventBanMaster=[%s]' % s)
 
         print('    checkPeriodSec=%d' % p.read_i32())

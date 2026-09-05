@@ -216,15 +216,13 @@ struct Client
 					PacketWriter<Sv::SN_TgchatServerInfo> packet;
 
 					// host (ANSI byte string, length in bytes)
-					const char* host = "127.0.0.1";
-					packet.Write<u16>(9);
-					packet.WriteRaw(host, 9);
+					const char* host = "0.0.0.0";
+					packet.Write<u16>(7);
+					packet.WriteRaw(host, 7);
 
-					// chat server: point at a dead port - the hub does not implement the NPChat
-					// protocol, so the client chat connect must fail cleanly (no hub handshake).
-					packet.Write<u16>(12999); // port (no chat server)
+					packet.Write<u16>(0);
 					packet.Write<i32>(61); // gameID
-					packet.Write<i32>(1); // serverID
+					packet.Write<i32>(0); // serverID
 					packet.Write<u32>(424242); // userID
 
 					packet.WriteStringObj(L"Alpha"); // gamename
@@ -271,11 +269,11 @@ struct Client
 				addr.gameServerIp[1] = g_Config.gameServerIP[1];
 				addr.gameServerIp[2] = g_Config.gameServerIP[2];
 				addr.gameServerIp[3] = g_Config.gameServerIP[3];
-				addr.pingServerIp[0] = g_Config.gameServerIP[0];
-				addr.pingServerIp[1] = g_Config.gameServerIP[1];
-				addr.pingServerIp[2] = g_Config.gameServerIP[2];
-				addr.pingServerIp[3] = g_Config.gameServerIP[3];
-				addr.port = 12900; // ping server port
+				addr.pingServerIp[0] = 0;
+				addr.pingServerIp[1] = 0;
+				addr.pingServerIp[2] = 0;
+				addr.pingServerIp[3] = 0;
+				addr.port = 0;
 
 				packet.Write(station); // station
 

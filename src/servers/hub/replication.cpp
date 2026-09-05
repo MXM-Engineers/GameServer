@@ -375,24 +375,23 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<u8>(0); // rewardCCoinMethod
 		packet.Write<u8>(1); // pveRewardSlotOpenBuyChanceMethod
 
-		packet.Write<u16>(3); // regionBanMaster_count
-		packet.Write<i32>(100000041); // regionBanMaster[0]
-		packet.Write<i32>(100000042); // regionBanMaster[1]
-		packet.Write<i32>(100000043); // regionBanMaster[2]
+		packet.Write<u16>((u16)Config().regionBanMaster.size());
+		for(auto id : Config().regionBanMaster) packet.Write<i32>(id);
 
-		packet.Write<u16>(1); // regionNewMaster_count
-		packet.Write<i32>(100000038); // intList2[0]
+		packet.Write<u16>((u16)Config().regionNewMaster.size());
+		for(auto id : Config().regionNewMaster) packet.Write<i32>(id);
 
-		packet.Write<u16>(0); // eventBanMaster_count
+		packet.Write<u16>((u16)Config().eventBanMaster.size());
+		for(auto id : Config().eventBanMaster) packet.Write<i32>(id);
 
-		packet.Write<i32>(5);	// checkPeriodSec
-		packet.Write<i32>(10);	// maxTalkCount
-		packet.Write<i32>(120); // blockPeriodSec
+		packet.Write<i32>(0x50000); // checkPeriodSec
+		packet.Write<i32>(0xA0000); // maxTalkCount
+		packet.Write<i32>(0x780000); // blockPeriodSec
 
 		packet.Write<u16>(0); // regionBanSkinList_count
 		packet.Write<u16>(0); // pcCafeSkinList_count
 
-		packet.Write<u8>(1); // useFatigueSystem
+		packet.Write<u8>(0); // useFatigueSystem
 
 		SendPacket(clientHd, packet);
 	}

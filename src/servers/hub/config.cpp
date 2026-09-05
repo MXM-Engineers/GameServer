@@ -2,6 +2,24 @@
 #include <EASTL/fixed_string.h>
 #include <EAStdC/EASprintf.h>
 
+static bool ParseIdList(const char* line, const char* key, eastl::fixed_vector<i32,16>& out)
+{
+	const size_t keyLen = strlen(key);
+	if(strncmp(line, key, keyLen) != 0) return false;
+	out.clear();
+	const char* p = line + keyLen;
+	while(*p) {
+		while(*p == ' ' || *p == ',') p++;
+		if(!*p) break;
+		char* end = nullptr;
+		long v = strtol(p, &end, 10);
+		if(end == p) break;
+		if(out.size() < out.capacity()) out.push_back((i32)v);
+		p = end;
+	}
+	return true;
+}
+
 bool CConfigHub::ParseLine(const char* line)
 {
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
@@ -9,6 +27,9 @@ bool CConfigHub::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
+	if(ParseIdList(line, "RegionBanMaster=", regionBanMaster)) return true;
+	if(ParseIdList(line, "RegionNewMaster=", regionNewMaster)) return true;
+	if(ParseIdList(line, "EventBanMaster=", eventBanMaster)) return true;
 	return false;
 }
 
@@ -59,6 +80,13 @@ bool CConfigHub::LoadConfigFile()
 	return true;
 }
 
+static void AppendIdList(eastl::fixed_string<char,4096,false>& out, const char* key, const eastl::fixed_vector<i32,16>& list)
+{
+	out.append_sprintf("%s=", key);
+	for(auto id : list) out.append_sprintf("%d,", id);
+	out.append_sprintf("\n");
+}
+
 bool CConfigHub::SaveConfigFile()
 {
 	eastl::fixed_string<char,4096,false> out;
@@ -67,6 +95,9 @@ bool CConfigHub::SaveConfigFile()
 	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("LobbyMap=%d\n", LobbyMap);
+	AppendIdList(out, "RegionBanMaster", regionBanMaster);
+	AppendIdList(out, "RegionNewMaster", regionNewMaster);
+	AppendIdList(out, "EventBanMaster", eventBanMaster);
 
 	bool r = fileSaveBuff(CONFIG_PATH, out.data(), out.size());
 	if(!r) {
@@ -74,6 +105,13 @@ bool CConfigHub::SaveConfigFile()
 		return false;
 	}
 	return true;
+}
+
+static void LogIdList(const char* key, const eastl::fixed_vector<i32,16>& list)
+{
+	eastl::fixed_string<char,256,false> tmp;
+	for(auto id : list) tmp.append_sprintf("%d,", id);
+	LOG("	%s=%s", key, tmp.data());
 }
 
 void CConfigHub::Print() const
@@ -84,6 +122,9 @@ void CConfigHub::Print() const
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
+	LogIdList("RegionBanMaster", regionBanMaster);
+	LogIdList("RegionNewMaster", regionNewMaster);
+	LogIdList("EventBanMaster", eventBanMaster);
 	LOG("}");
 }
 

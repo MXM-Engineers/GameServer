@@ -8,4 +8,4 @@ MxM private server stack. The client (MXMClient_DP_p3.exe) is the wire authority
 - Packet structs carry the real prefixes (`CA_`/`CQ_`/`CN_` for client packets, `SA_`/`SN_`/`SQ_` for server packets) as named by the client's loggers in Ghidra.
 - Validate incoming packets with `ValidatePacket<T>` before parsing, then NT_LOG them with `PacketSerialize<T>` once, then use the values.
 - Header-only packets (0-byte payload) skip validation but still get NT_LOG'd.
-- Servers run from `build/`.
+- Servers run from `build/`. Ports: login 10900, hub 11900, mm 13900.

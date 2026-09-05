@@ -651,12 +651,9 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
 	hello.serverType    = Sv::ServerType::Hub;
-	hello.clientIp[0] = info.ip[3];
-	hello.clientIp[1] = info.ip[2];
-	hello.clientIp[2] = info.ip[1];
-	hello.clientIp[3] = info.ip[0];
+	memmove(hello.clientIp, info.ip.data(), sizeof(hello.clientIp));
 	STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(info.ip));
-	hello.clientPort = info.port;
+	hello.clientPort = htons(info.port);
 	hello.tqosWorldId = 1;
 
 	SendPacket(clientHd, hello);

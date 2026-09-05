@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="190009000">
+    <ST_WORLD_AREA_INFO _Index="190009000" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190000015">
+      <_StageList _StageName="CS_SINGLEMODE" _NormalStageIndex="200000000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000000">
+    <ST_WORLD_AREA_INFO _Index="190000000" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsRandomArea="True" _IconAlias="arealist_random_stage" _Name="STR_AREALIST_NAME_190000000">
+      <_StageList _StageName="무작위 스테이지" _EasyStageIndex="200020000" _NormalStageIndex="200020001" _HardStageIndex="200020002" _ExtremeStageIndex="200020003" _HellStageIndex="200020004" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000001">
+    <ST_WORLD_AREA_INFO _Index="190000001" _IsTest="False" _RandomPVEArea="True" _AddRandomPVEStage="True" _IsTicketArea="True" _UIIndex="1" _AreaTag="TODAY" _IconAlias="arealist_factory" _UseBattery="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000001">
+      <_StageList _StageName="칼리고 가공구역" _EasyStageIndex="200002300" _NormalStageIndex="200002301" _HardStageIndex="200002302" _ExtremeStageIndex="200002303" _HellStageIndex="200002304" _SummaryIndex="220002300" />
+      <_StageList _StageName="칼리고 배전시설" _EasyStageIndex="200002200" _NormalStageIndex="200002201" _HardStageIndex="200002202" _ExtremeStageIndex="200002203" _HellStageIndex="200002204" _SummaryIndex="220002200" />
+      <_StageList _StageName="칼리고 정비" _EasyStageIndex="200002100" _NormalStageIndex="200002101" _HardStageIndex="200002102" _ExtremeStageIndex="200002103" _HellStageIndex="200002104" _SummaryIndex="220002100" />
+      <_StageList _StageName="칼리고 통제" _EasyStageIndex="200002500" _NormalStageIndex="200002501" _HardStageIndex="200002502" _ExtremeStageIndex="200002503" _HellStageIndex="200002504" _SummaryIndex="220002500" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000002">
+    <ST_WORLD_AREA_INFO _Index="190000002" _IsTest="False" _RandomPVEArea="True" _AddRandomPVEStage="True" _IsTicketArea="True" _UIIndex="1" _AreaTag="TODAY" _IconAlias="arealist_lacrimosa" _UseBattery="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000002">
+      <_StageList _StageName="라크리모사 시가지" _EasyStageIndex="200004100" _NormalStageIndex="200004101" _HardStageIndex="200004102" _ExtremeStageIndex="200004103" _HellStageIndex="200004104" _SummaryIndex="220004100" />
+      <_StageList _StageName="라크리모사 전력소" _EasyStageIndex="200004200" _NormalStageIndex="200004201" _HardStageIndex="200004202" _ExtremeStageIndex="200004203" _HellStageIndex="200004204" _SummaryIndex="220004200" />
+      <_StageList _StageName="메자닌 타워" _EasyStageIndex="200004300" _NormalStageIndex="200004301" _HardStageIndex="200004302" _ExtremeStageIndex="200004303" _HellStageIndex="200004304" _SummaryIndex="220004300" />
+      <_StageList _StageName="라크리모사 역" _EasyStageIndex="200004400" _NormalStageIndex="200004401" _HardStageIndex="200004402" _ExtremeStageIndex="200004403" _HellStageIndex="200004404" _SummaryIndex="220004400" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000003">
+    <ST_WORLD_AREA_INFO _Index="190000003" _IsTest="False" _RandomPVEArea="True" _AddRandomPVEStage="True" _IsTicketArea="True" _UIIndex="1" _AreaTag="TODAY" _IconAlias="arealist_ventus" _UseBattery="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000003">
+      <_StageList _StageName="벤투스 배양실" _EasyStageIndex="200003300" _NormalStageIndex="200003301" _HardStageIndex="200003302" _ExtremeStageIndex="200003303" _HellStageIndex="200003304" _SummaryIndex="220003300" />
+      <_StageList _StageName="벤투스 연구동" _EasyStageIndex="200003200" _NormalStageIndex="200003201" _HardStageIndex="200003202" _ExtremeStageIndex="200003203" _HellStageIndex="200003204" _SummaryIndex="220003200" />
+      <_StageList _StageName="벤투스 시험장" _EasyStageIndex="200003400" _NormalStageIndex="200003401" _HardStageIndex="200003402" _ExtremeStageIndex="200003403" _HellStageIndex="200003404" _SummaryIndex="220003400" />
+      <_StageList _StageName="벤투스 폐기장" _EasyStageIndex="200003500" _NormalStageIndex="200003501" _HardStageIndex="200003502" _ExtremeStageIndex="200003503" _HellStageIndex="200003504" _SummaryIndex="220003500" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000004">
+    <ST_WORLD_AREA_INFO _Index="190000004" _IsTest="False" _RandomPVEArea="True" _AddRandomPVEStage="True" _IsTicketArea="True" _UIIndex="1" _AreaTag="TODAY" _IconAlias="arealist_charis" _UseBattery="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000004">
+      <_StageList _StageName="카리스 숲" _EasyStageIndex="200005100" _NormalStageIndex="200005101" _HardStageIndex="200005102" _ExtremeStageIndex="200005103" _HellStageIndex="200005104" _SummaryIndex="220005100" />
+      <_StageList _StageName="카리스 계곡" _EasyStageIndex="200005200" _NormalStageIndex="200005201" _HardStageIndex="200005202" _ExtremeStageIndex="200005203" _HellStageIndex="200005204" _SummaryIndex="220005200" />
+      <_StageList _StageName="카리스 부락" _EasyStageIndex="200005400" _NormalStageIndex="200005401" _HardStageIndex="200005402" _ExtremeStageIndex="200005403" _HellStageIndex="200005404" _SummaryIndex="220005400" />
+      <_StageList _StageName="카리스 동굴" _EasyStageIndex="200005500" _NormalStageIndex="200005501" _HardStageIndex="200005502" _ExtremeStageIndex="200005503" _HellStageIndex="200005504" _SummaryIndex="220005500" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000005">
+    <ST_WORLD_AREA_INFO _Index="190000005" _IsTest="False" _RandomPVEArea="True" _AddRandomPVEStage="True" _IsTicketArea="True" _UIIndex="1" _AreaTag="TODAY" _IconAlias="arealist_nuran" _UseBattery="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000005">
+      <_StageList _StageName="누란 외곽" _EasyStageIndex="200010100" _NormalStageIndex="200010101" _HardStageIndex="200010102" _ExtremeStageIndex="200010103" _HellStageIndex="200010104" _SummaryIndex="220010100" />
+      <_StageList _StageName="누란 격전지" _EasyStageIndex="200010400" _NormalStageIndex="200010401" _HardStageIndex="200010402" _ExtremeStageIndex="200010403" _HellStageIndex="200010404" _SummaryIndex="220010400" />
+      <_StageList _StageName="누란 폐허" _EasyStageIndex="200010200" _NormalStageIndex="200010201" _HardStageIndex="200010202" _ExtremeStageIndex="200010203" _HellStageIndex="200010204" _SummaryIndex="220010200" />
+      <_StageList _StageName="누란 구시가지" _EasyStageIndex="200010300" _NormalStageIndex="200010301" _HardStageIndex="200010302" _ExtremeStageIndex="200010303" _HellStageIndex="200010304" _SummaryIndex="220010300" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000006">
+    <ST_WORLD_AREA_INFO _Index="190000006" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_bns" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000006">
+      <_StageList _StageName="바다뱀 보급기지" _NormalStageIndex="200007101" _ExtremeStageIndex="200007103" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000007">
+    <ST_WORLD_AREA_INFO _Index="190000007" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_tof" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000007">
+      <_StageList _StageName="불의 신전" _NormalStageIndex="200007201" _ExtremeStageIndex="200007203" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000008">
+    <ST_WORLD_AREA_INFO _Index="190000008" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_gludio" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000008">
+      <_StageList _StageName="글루디오 던전" _NormalStageIndex="200007301" _ExtremeStageIndex="200007303" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000009">
+    <ST_WORLD_AREA_INFO _Index="190000009" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_ant" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000009">
+      <_StageList _StageName="개미굴" _NormalStageIndex="200007401" _ExtremeStageIndex="200007403" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000010">
+    <ST_WORLD_AREA_INFO _Index="190000010" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_gw2" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000010">
+      <_StageList _StageName="아스칼론 지하 묘지" _NormalStageIndex="200007501" _ExtremeStageIndex="200007503" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190000011">
+    <ST_WORLD_AREA_INFO _Index="190000011" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _AreaTag="SPECIAL" _IconAlias="arealist_independence" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190000011">
+      <_StageList _StageName="인디펜던스 항" _NormalStageIndex="200007601" _ExtremeStageIndex="200007603" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190001000">
+    <ST_WORLD_AREA_INFO _Index="190001000" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IconAlias="arealist_defence" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190001000">
+      <_StageList _StageName="나티움 방어전" _HellStageIndex="200011109" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002101">
+    <ST_WORLD_AREA_INFO _Index="190002101" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190002101" />
+  </INFO>
+  <INFO ID="190002201">
+    <ST_WORLD_AREA_INFO _Index="190002201" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsBattleLogEnabled="True" _IsSchedulable="True" _Name="STR_AREALIST_NAME_190002201">
+      <_StageList _StageName="종합 데스매치" _NormalStageIndex="200020102" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002202">
+    <ST_WORLD_AREA_INFO _Index="190002202" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsPvpAiEnabled="True" _IsSchedulable="True" _Name="STR_AREALIST_NAME_190002202">
+      <_StageList _StageName="종합 데스매치" _NormalStageIndex="200020102" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002204">
+    <ST_WORLD_AREA_INFO _Index="190002204" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsPvpAiEnabled="True" _Name="STR_AREALIST_NAME_190002204">
+      <_StageList _StageName="종합 데스매치" _NormalStageIndex="200020104" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002211">
+    <ST_WORLD_AREA_INFO _Index="190002211" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsBattleLogEnabled="True" _IsSchedulable="True" _Name="STR_AREALIST_NAME_190002211">
+      <_StageList _StageName="티탄의 유적" _NormalStageIndex="200101000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002212">
+    <ST_WORLD_AREA_INFO _Index="190002212" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsPvpAiEnabled="True" _IsSchedulable="True" _Name="STR_AREALIST_NAME_190002212">
+      <_StageList _StageName="티탄의 유적" _NormalStageIndex="200101000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002213">
+    <ST_WORLD_AREA_INFO _Index="190002213" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsPvpRankEnabled="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002213">
+      <_StageList _StageName="티탄의 유적" _NormalStageIndex="200101000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002214">
+    <ST_WORLD_AREA_INFO _Index="190002214" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsPvpGuildEnabled="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002214">
+      <_StageList _StageName="티탄의 유적" _NormalStageIndex="200101000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002231">
+    <ST_WORLD_AREA_INFO _Index="190002231" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsBattleLogEnabled="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002231">
+      <_StageList _StageName="종합 점령전" _NormalStageIndex="200006112" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002232">
+    <ST_WORLD_AREA_INFO _Index="190002232" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002232">
+      <_StageList _StageName="티탄의 유적 - 광란" _NormalStageIndex="200101340" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002233">
+    <ST_WORLD_AREA_INFO _Index="190002233" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsPvpArenaArea="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002233">
+      <_StageList _StageName="티탄의 유적 - 격돌" _NormalStageIndex="200101350" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190004100">
+    <ST_WORLD_AREA_INFO _Index="190004100" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190004100">
+      <_StageList _StageName="무작위 아레나" _NormalStageIndex="200021000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190002200">
+    <ST_WORLD_AREA_INFO _Index="190002200" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IsBattleLogEnabled="True" _IsSchedulable="True" _ScheduleVisible="True" _Name="STR_AREALIST_NAME_190002200">
+      <_StageList _StageName="종합 운동회" _NormalStageIndex="200006203" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009204">
+    <ST_WORLD_AREA_INFO _Index="190009204" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009204">
+      <_StageList _StageName="티탄의 유적 튜토리얼 초급" _NormalStageIndex="200101320" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009205">
+    <ST_WORLD_AREA_INFO _Index="190009205" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009205">
+      <_StageList _StageName="티탄의 유적 튜토리얼 중급" _NormalStageIndex="200101330" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190003000">
+    <ST_WORLD_AREA_INFO _Index="190003000" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IconAlias="arealist_training" _Name="STR_AREALIST_NAME_190003000">
+      <_StageList _StageName="드레드기온" _EasyStageIndex="200008000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190003001">
+    <ST_WORLD_AREA_INFO _Index="190003001" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190003001">
+      <_StageList _StageName="드레드기온 전투 훈련실" _NormalStageIndex="200008100" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190004000">
+    <ST_WORLD_AREA_INFO _Index="190004000" _IsTest="False" _RandomPVEArea="False" _AddRandomPVEStage="False" _IconAlias="arealist_training" _Name="STR_AREALIST_NAME_190004000">
+      <_StageList _StageName="마스터 훈련실" _NormalStageIndex="200000100" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009101">
+    <ST_WORLD_AREA_INFO _Index="190009101" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009101">
+      <_StageList _StageName="Slave of Test" _NormalStageIndex="200009200" />
+      <_StageList _StageName="Slave of Test - 이지" _NormalStageIndex="200009210" />
+      <_StageList _StageName="Slave of Test - 노말" _NormalStageIndex="200009211" />
+      <_StageList _StageName="Slave of Test - 하드" _NormalStageIndex="200009212" />
+      <_StageList _StageName="Slave of Test - 익스" _NormalStageIndex="200009213" />
+      <_StageList _StageName="Slave of Test - 지옥" _NormalStageIndex="200009214" />
+      <_StageList _StageName="보스러쉬 매화" _HellStageIndex="200010306" />
+      <_StageList _StageName="보스러쉬 난초" _HellStageIndex="200010307" />
+      <_StageList _StageName="보스러쉬 국화" _HellStageIndex="200010308" />
+      <_StageList _StageName="보스러쉬 대나무" _HellStageIndex="200010309" />
+      <_StageList _StageName="보스러쉬 이벤트" _HellStageIndex="200010310" />
+      <_StageList _StageName="나티움 방어전 V2 M16" _HellStageIndex="200011109" />
+      <_StageList _StageName="캐릭터 최적화 테스트" _NormalStageIndex="200009205" />
+      <_StageList _StageName="명도 단계 테스트" _NormalStageIndex="200009206" />
+      <_StageList _StageName="스테이지 샘플러" _NormalStageIndex="200009207" />
+      <_StageList _StageName="네비메쉬 테스트맵" _NormalStageIndex="200010297" />
+      <_StageList _StageName="카메라월 테스트맵" _NormalStageIndex="200010305" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009201">
+    <ST_WORLD_AREA_INFO _Index="190009201" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009201">
+      <_StageList _StageName="전투 훈련실" _NormalStageIndex="200020100" />
+      <_StageList _StageName="전투 훈련실_부시" _NormalStageIndex="200020101" />
+      <_StageList _StageName="전투 훈련실_포탈형" _NormalStageIndex="200020103" />
+      <_StageList _StageName="코어 점령전" _NormalStageIndex="200006103" />
+      <_StageList _StageName="제단 점령전" _NormalStageIndex="200006101" />
+      <_StageList _StageName="워포그 테스트" _NormalStageIndex="200009201" />
+      <_StageList _StageName="티탄의 유적 이벤트 모드 - 광란" _NormalStageIndex="200101340" />
+      <_StageList _StageName="티탄의 유적 이벤트 모드 - 격돌" _NormalStageIndex="200101350" />
+      <_StageList _StageName="Titan Ruins" _NormalStageIndex="200101000" />
+      <_StageList _StageName="티탄의 유적 튜토리얼 초급" _NormalStageIndex="200101320" />
+      <_StageList _StageName="티탄의 유적 튜토리얼 상급" _NormalStageIndex="200101330" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009202">
+    <ST_WORLD_AREA_INFO _Index="190009202" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009202">
+      <_StageList _StageName="ML Turret" _NormalStageIndex="200009202" />
+      <_StageList _StageName="ML" _NormalStageIndex="200009204" />
+      <_StageList _StageName="AI Learning용 테스트 1vs1" _NormalStageIndex="200009305" />
+      <_StageList _StageName="AI Learning용 테스트 3vs3" _NormalStageIndex="200009306" />
+      <_StageList _StageName="FFA" _NormalStageIndex="200019000" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009203">
+    <ST_WORLD_AREA_INFO _Index="190009203" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009203">
+      <_StageList _StageName="운동회 - 사탕 먹기" _NormalStageIndex="200006211" />
+      <_StageList _StageName="운동회 - 탄막 피하기" _NormalStageIndex="200006201" />
+      <_StageList _StageName="운동회 - 줄넘기" _NormalStageIndex="200006202" />
+      <_StageList _StageName="운동회 - 달리기" _NormalStageIndex="200006200" />
+      <_StageList _StageName="운동회 - 달리기_2번" _NormalStageIndex="200006205" />
+      <_StageList _StageName="운동회 - 가로 달리기" _NormalStageIndex="200006206" />
+      <_StageList _StageName="운동회 - 사라지는 바닥" _NormalStageIndex="200006215" />
+      <_StageList _StageName="운동회 - 단 생존" _NormalStageIndex="200006213" />
+      <_StageList _StageName="운동회 - 가로 피하기" _NormalStageIndex="200006214" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009103">
+    <ST_WORLD_AREA_INFO _Index="190009103" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009103">
+      <_StageList _StageName="칼리고 가공구역" _EasyStageIndex="200102300" _NormalStageIndex="200102301" _HardStageIndex="200102302" _ExtremeStageIndex="200102303" _HellStageIndex="200102304" />
+      <_StageList _StageName="칼리고 배전시설" _EasyStageIndex="200102200" _NormalStageIndex="200102201" _HardStageIndex="200102202" _ExtremeStageIndex="200102203" _HellStageIndex="200102204" />
+      <_StageList _StageName="칼리고 정비구역" _EasyStageIndex="200102100" _NormalStageIndex="200102101" _HardStageIndex="200102102" _ExtremeStageIndex="200102103" _HellStageIndex="200102104" />
+      <_StageList _StageName="칼리고 통제구역" _EasyStageIndex="200102500" _NormalStageIndex="200102501" _HardStageIndex="200102502" _ExtremeStageIndex="200102503" _HellStageIndex="200102504" />
+      <_StageList _StageName="라크리모사 시가지" _EasyStageIndex="200104100" _NormalStageIndex="200104101" _HardStageIndex="200104102" _ExtremeStageIndex="200104103" _HellStageIndex="200104104" />
+      <_StageList _StageName="라크리모사 전력소" _EasyStageIndex="200104200" _NormalStageIndex="200104201" _HardStageIndex="200104202" _ExtremeStageIndex="200104203" _HellStageIndex="200104204" />
+      <_StageList _StageName="메자닌 타워" _EasyStageIndex="200104300" _NormalStageIndex="200104301" _HardStageIndex="200104302" _ExtremeStageIndex="200104303" _HellStageIndex="200104304" />
+      <_StageList _StageName="라크리모사 역" _EasyStageIndex="200104400" _NormalStageIndex="200104401" _HardStageIndex="200104402" _ExtremeStageIndex="200104403" _HellStageIndex="200104404" />
+      <_StageList _StageName="벤투스 배양실" _EasyStageIndex="200103300" _NormalStageIndex="200103301" _HardStageIndex="200103302" _ExtremeStageIndex="200103303" _HellStageIndex="200103304" />
+      <_StageList _StageName="벤투스 연구동" _EasyStageIndex="200103200" _NormalStageIndex="200103201" _HardStageIndex="200103202" _ExtremeStageIndex="200103203" _HellStageIndex="200103204" />
+      <_StageList _StageName="벤투스 시험장" _EasyStageIndex="200103400" _NormalStageIndex="200103401" _HardStageIndex="200103402" _ExtremeStageIndex="200103403" _HellStageIndex="200103404" />
+      <_StageList _StageName="벤투스 폐기장" _EasyStageIndex="200103500" _NormalStageIndex="200103501" _HardStageIndex="200103502" _ExtremeStageIndex="200103503" _HellStageIndex="200103504" />
+      <_StageList _StageName="카리스 숲" _EasyStageIndex="200105100" _NormalStageIndex="200105101" _HardStageIndex="200105102" _ExtremeStageIndex="200105103" _HellStageIndex="200105104" />
+      <_StageList _StageName="카리스 계곡" _EasyStageIndex="200105200" _NormalStageIndex="200105201" _HardStageIndex="200105202" _ExtremeStageIndex="200105203" _HellStageIndex="200105204" />
+      <_StageList _StageName="카리스 부락" _EasyStageIndex="200105400" _NormalStageIndex="200105401" _HardStageIndex="200105402" _ExtremeStageIndex="200105403" _HellStageIndex="200105404" />
+      <_StageList _StageName="카리스 동굴" _EasyStageIndex="200105500" _NormalStageIndex="200105501" _HardStageIndex="200105502" _ExtremeStageIndex="200105503" _HellStageIndex="200105504" />
+      <_StageList _StageName="누란 외곽" _EasyStageIndex="200110100" _NormalStageIndex="200110101" _HardStageIndex="200110102" _ExtremeStageIndex="200110103" _HellStageIndex="200110104" />
+      <_StageList _StageName="누란 격전지" _EasyStageIndex="200110400" _NormalStageIndex="200110401" _HardStageIndex="200110402" _ExtremeStageIndex="200110403" _HellStageIndex="200110404" />
+      <_StageList _StageName="누란 폐허" _EasyStageIndex="200110200" _NormalStageIndex="200110201" _HardStageIndex="200110202" _ExtremeStageIndex="200110203" _HellStageIndex="200110204" />
+      <_StageList _StageName="누란 구시가지" _EasyStageIndex="200110300" _NormalStageIndex="200110301" _HardStageIndex="200110302" _ExtremeStageIndex="200110303" _HellStageIndex="200110304" />
+      <_StageList _StageName="바다뱀 보급기지" _NormalStageIndex="200107101" _ExtremeStageIndex="200107103" />
+      <_StageList _StageName="불의 신전" _NormalStageIndex="200107201" _ExtremeStageIndex="200107203" />
+      <_StageList _StageName="글루디오 던전" _NormalStageIndex="200107301" _ExtremeStageIndex="200107303" />
+      <_StageList _StageName="개미굴" _NormalStageIndex="200107401" _ExtremeStageIndex="200107403" />
+      <_StageList _StageName="아스칼론 지하 묘지" _NormalStageIndex="200107501" _ExtremeStageIndex="200107503" />
+      <_StageList _StageName="인디펜던스 항" _NormalStageIndex="200107601" _ExtremeStageIndex="200107603" />
+      <_StageList _StageName="티탄 보스" _NormalStageIndex="200101311" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+  <INFO ID="190009110">
+    <ST_WORLD_AREA_INFO _Index="190009110" _IsTest="True" _RandomPVEArea="False" _AddRandomPVEStage="False" _Name="STR_AREALIST_NAME_190009110" _IconAlias="arealist_independence">
+      <_StageList _StageName="바다뱀 보급기지" _NormalStageIndex="200007101" _ExtremeStageIndex="200007103" />
+      <_StageList _StageName="불의 신전" _NormalStageIndex="200007201" _ExtremeStageIndex="200007203" />
+      <_StageList _StageName="글루디오 던전" _NormalStageIndex="200007301" _ExtremeStageIndex="200007303" />
+      <_StageList _StageName="개미굴" _NormalStageIndex="200007401" _ExtremeStageIndex="200007403" />
+      <_StageList _StageName="아스칼론 지하 묘지" _NormalStageIndex="200007501" _ExtremeStageIndex="200007503" />
+      <_StageList _StageName="인디펜던스 항" _NormalStageIndex="200007601" _ExtremeStageIndex="200007603" />
+    </ST_WORLD_AREA_INFO>
+  </INFO>
+</ENTITY_FILE>

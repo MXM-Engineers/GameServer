@@ -1569,14 +1569,14 @@ void HubReplication::SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUs
 	SendPacket(clientHd, packet);
 }
 
-void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
+void HubReplication::SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex)
 {
 	Sv::SA_EnqueueGame packet;
 	packet.retval = 0;
 	SendPacket(clientHd, packet);
 
 	Sv::SN_EnqueueMatchingQueue matching;
-	matching.stageIndex = StageIndex::CombatArena;
+	matching.stageIndex = stageIndex;
 	matching.currentMatchingTimeMs = 0;
 	matching.avgMatchingTimeMs = 121634;
 	matching.disableMatchExpansion = 0;

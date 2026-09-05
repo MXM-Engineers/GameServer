@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="60100001">
+    <ST_AREA_EVENT _Index="60100001">
+      <_ENTRYSYSTEM _Index="210036889" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000001" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="60100002">
+    <ST_AREA_EVENT _Index="60100002">
+      <_ENTRYSYSTEM _Index="210036889" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000002" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="60100003">
+    <ST_AREA_EVENT _Index="60100003">
+      <_ENTRYSYSTEM _Index="210036889" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000003" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="60100004">
+    <ST_AREA_EVENT _Index="60100004">
+      <_ENTRYSYSTEM _Index="210036889" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000004" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="60100005">
+    <ST_AREA_EVENT _Index="60100005">
+      <_ENTRYSYSTEM _Index="210036889" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000005" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600002">
+    <ST_AREA_EVENT _Index="70600002" _SchedulePriority="3" _IconAlias="sport" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_70600002">
+      <_ENTRYSYSTEM _Index="210037003" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002200" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600005">
+    <ST_AREA_EVENT _Index="70600005">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002201" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600006">
+    <ST_AREA_EVENT _Index="70600006">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002202" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600008">
+    <ST_AREA_EVENT _Index="70600008">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002211" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600009">
+    <ST_AREA_EVENT _Index="70600009">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002212" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600010">
+    <ST_AREA_EVENT _Index="70600010">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002213" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600011">
+    <ST_AREA_EVENT _Index="70600011" _SchedulePriority="2" _IconAlias="guild_pvp" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_70600011">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002214" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600012">
+    <ST_AREA_EVENT _Index="70600012" _SchedulePriority="2" _IconAlias="capture" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_70600012">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002231" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600013">
+    <ST_AREA_EVENT _Index="70600013" _SchedulePriority="2" _IconAlias="titan_rampage" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_70600013">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002232" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="70600014">
+    <ST_AREA_EVENT _Index="70600014" _SchedulePriority="2" _IconAlias="titan_crash" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_70600014">
+      <_ENTRYSYSTEM _Index="210036812" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190002233" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602001">
+    <ST_AREA_EVENT _Index="80602001" _SchedulePriority="4" _IconAlias="bns" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602001">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000006" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602002">
+    <ST_AREA_EVENT _Index="80602002" _SchedulePriority="4" _IconAlias="flame" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602002">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000007" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602003">
+    <ST_AREA_EVENT _Index="80602003" _SchedulePriority="4" _IconAlias="gludio" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602003">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000008" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602004">
+    <ST_AREA_EVENT _Index="80602004" _SchedulePriority="4" _IconAlias="ant" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602004">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000009" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602005">
+    <ST_AREA_EVENT _Index="80602005" _SchedulePriority="4" _IconAlias="defence" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602005">
+      <_ENTRYSYSTEM _Index="210037006" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190001000" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602006">
+    <ST_AREA_EVENT _Index="80602006" _SchedulePriority="4" _IconAlias="gw2" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602006">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000010" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+  <INFO ID="80602007">
+    <ST_AREA_EVENT _Index="80602007" _SchedulePriority="4" _IconAlias="coh" _ThumbnailText="STR_SCHEDULE_THUMBNAIL_80602007">
+      <_ENTRYSYSTEM _Index="210037000" />
+      <_AREA_LIST>
+        <_AREA _AreaIndex="190000011" />
+      </_AREA_LIST>
+    </ST_AREA_EVENT>
+  </INFO>
+</ENTITY_FILE>

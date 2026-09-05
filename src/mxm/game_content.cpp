@@ -745,6 +745,109 @@ bool GameXmlContent::LoadPvpDeathmach()
 	return LoadMapByID(&mapPvpDeathMatch, 160000094);
 }
 
+bool GameXmlContent::LoadEntrySystems()
+{
+	XMLDocument docEntry;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/EntrySystemEX.xml", docEntry)) return false;
+
+	for(XMLElement* pInfo = docEntry.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		EntrySystem entry;
+		if(pInfo->QueryIntAttribute("ID", &entry.ID) != XML_SUCCESS) continue;
+		for(XMLElement* pArea = pInfo->FirstChildElement()->FirstChildElement("_Area");
+			pArea;
+			pArea = pArea->NextSiblingElement("_Area")) {
+			i32 areaID = 0;
+			if(pArea->QueryIntAttribute("DATA", &areaID) != XML_SUCCESS) continue;
+			if(entry.areas.size() < entry.areas.capacity()) entry.areas.push_back(areaID);
+		}
+		if(entrySystems.size() < entrySystems.capacity()) entrySystems.push_back(entry);
+	}
+
+	XMLDocument docArea;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/AREALIST.xml", docArea)) return false;
+
+	for(XMLElement* pInfo = docArea.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		AreaStages area;
+		if(pInfo->QueryIntAttribute("ID", &area.ID) != XML_SUCCESS) continue;
+		for(XMLElement* pStage = pInfo->FirstChildElement()->FirstChildElement("_StageList");
+			pStage;
+			pStage = pStage->NextSiblingElement("_StageList")) {
+			i32 stageID = 0;
+			if(pStage->QueryIntAttribute("_NormalStageIndex", &stageID) != XML_SUCCESS) continue;
+			if(stageID != 0 && area.stages.size() < area.stages.capacity()) area.stages.push_back(stageID);
+		}
+		if(areaStages.size() < areaStages.capacity()) areaStages.push_back(area);
+	}
+
+	XMLDocument docSchedule;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/SCHEDULE.xml", docSchedule)) return false;
+
+	for(XMLElement* pInfo = docSchedule.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		XMLElement* pEvent = pInfo->FirstChildElement();
+		if(!pEvent) continue;
+		XMLElement* pEntry = pEvent->FirstChildElement("_ENTRYSYSTEM");
+		if(!pEntry) continue;
+		i32 entryID = 0;
+		if(pEntry->QueryIntAttribute("_Index", &entryID) != XML_SUCCESS) continue;
+		XMLElement* pAreaList = pEvent->FirstChildElement("_AREA_LIST");
+		if(!pAreaList) continue;
+		for(auto& entry : entrySystems) {
+			if(entry.ID != entryID) continue;
+			for(XMLElement* pArea = pAreaList->FirstChildElement("_AREA");
+				pArea;
+				pArea = pArea->NextSiblingElement("_AREA")) {
+				i32 areaID = 0;
+				if(pArea->QueryIntAttribute("_AreaIndex", &areaID) != XML_SUCCESS) continue;
+				if(areaID != 0 && entry.scheduleAreas.size() < entry.scheduleAreas.capacity()) entry.scheduleAreas.push_back(areaID);
+			}
+		}
+	}
+
+	LOG("Loaded %d entry systems, %d areas", (i32)entrySystems.size(), (i32)areaStages.size());
+	return true;
+}
+
+bool GameXmlContent::HasEntrySystem(i32 entryID) const
+{
+	for(auto& entry : entrySystems) {
+		if(entry.ID == entryID) return true;
+	}
+	return false;
+}
+
+bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
+{
+	for(auto& entry : entrySystems) {
+		if(entry.ID != entryID) continue;
+		for(auto areaID : entry.areas) {
+			for(auto& area : areaStages) {
+				if(area.ID != areaID) continue;
+				for(auto stageID : area.stages) {
+					*outStageIndex = stageID;
+					return true;
+				}
+			}
+		}
+		for(auto areaID : entry.scheduleAreas) {
+			for(auto& area : areaStages) {
+				if(area.ID != areaID) continue;
+				for(auto stageID : area.stages) {
+					*outStageIndex = stageID;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	return false;
+}
+
 bool GameXmlContent::LoadJukeboxSongs()
 {
 	XMLDocument doc;
@@ -1116,6 +1219,9 @@ bool GameXmlContent::Load()
 	if (!r) return false;
 
 	r = LoadJukeboxSongs();
+	if(!r) return false;
+
+	r = LoadEntrySystems();
 	if(!r) return false;
 
 	r = LoadCollisionMeshes();

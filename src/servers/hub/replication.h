@@ -207,7 +207,7 @@ struct HubReplication
 	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
-	void SendPartyEnqueue(ClientHandle clientHd);
+	void SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex);
 	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty);
 
 	void OnClientDisconnect(ClientHandle clientHd);

@@ -283,9 +283,23 @@ void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 	replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
 }
 
+static StageIndex ResolveQueueStage(EntrySystemID entry, StageType stageType)
+{
+	(void)stageType;
+	i32 stageID = 0;
+	GetGameXmlContent().FindQueueStage((i32)entry, &stageID);
+	return (StageIndex)stageID;
+}
+
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)
 {
 	const i32 userID = plidMap->Get(clientHd);
+	if(!GetGameXmlContent().HasEntrySystem((i32)entry)) {
+		WARN("[client%x] WARNING: unknown entrySysID (%d)", clientHd, (i32)entry);
+		return;
+	}
+	pendingPartyEntry[userID] = entry;
+	pendingPartyStage[userID] = stageType;
 
 	// TODO: validate args
 	const Account& acc = *playerAccountData[userID];
@@ -312,7 +326,10 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 	const i32 userID = plidMap->Get(clientHd);
 
 	// TODO: validate args
-	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID);
+	const PartyUID partyUID = playerMap[userID]->partyUID;
+	if(partyUID == PartyUID::INVALID) return;
+	if(partyMap.find(partyUID) == partyMap.end()) return;
+	matchmaker->QueryPartyEnqueue(partyUID);
 }
 
 void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
@@ -346,18 +363,20 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 	party.memberList.push_back(member);
 
 	partyMap.emplace(partyUID, --partyList.end());
+	party.stageIndex = ResolveQueueStage(pendingPartyEntry[userID], pendingPartyStage[userID]);
 
 	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
 }
 
 void HubGame::MmOnPartyEnqueued(PartyUID partyUID)
 {
-	// TODO: find and skip if not found
-	Party& party = *partyMap.at(partyUID);
+	auto f = partyMap.find(partyUID);
+	if(f == partyMap.end()) return;
+	Party& party = *f->second;
 	foreach_const(m, party.memberList) {
 		// TODO: check if on this hub
 		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
-		replication.SendPartyEnqueue(clientHd);
+		replication.SendPartyEnqueue(clientHd, party.stageIndex);
 	}
 }
 

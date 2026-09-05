@@ -290,6 +290,25 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
+	struct EntrySystem
+	{
+		i32 ID;
+		eastl::fixed_vector<i32,8,false> areas;
+		eastl::fixed_vector<i32,8,false> scheduleAreas;
+	};
+
+	struct AreaStages
+	{
+		i32 ID;
+		eastl::fixed_vector<i32,16,false> stages;
+	};
+
+	eastl::fixed_vector<EntrySystem,32,false> entrySystems;
+	eastl::fixed_vector<AreaStages,64,false> areaStages;
+
+	bool FindQueueStage(i32 entryID, i32* outStageIndex) const;
+	bool HasEntrySystem(i32 entryID) const;
+
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
 	FileBuffer filePvpDeathNmWall04;
@@ -307,6 +326,7 @@ private:
 	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 
 	bool LoadMasterDefinitions();
+	bool LoadEntrySystems();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();

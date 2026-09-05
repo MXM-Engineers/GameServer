@@ -44,6 +44,7 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
 		HANDLE_CASE(CN_ReadyToLoadGameMap);
+		HANDLE_CASE(CN_EnterCityScene);
 		HANDLE_CASE(CA_SetGameGvt);
 		HANDLE_CASE(CA_CityLobbyJoinCity);
 		HANDLE_CASE(CQ_GetCharacterInfo);
@@ -328,6 +329,15 @@ void HubPacketHandler::HandlePacket_CN_ReadyToLoadCharacter(ClientHandle clientH
 	}
 	NT_LOG("[client%x] Client :: CN_ReadyToLoadCharacter ::", clientHd);
 	game->OnPlayerReadyToLoad(clientHd);
+}
+
+void HubPacketHandler::HandlePacket_CN_EnterCityScene(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CN_EnterCityScene>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_EnterCityScene (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: CN_EnterCityScene ::", clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

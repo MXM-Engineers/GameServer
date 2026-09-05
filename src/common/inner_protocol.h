@@ -182,6 +182,7 @@ struct MN_MatchingPartyFound
 	// TODO: some useful stuff here
 	PartyUID partyUID;
 	SortieUID sortieUID;
+	GameType gameType;
 	u8 playerCount;
 	eastl::array<RoomUser,16> playerList;
 };

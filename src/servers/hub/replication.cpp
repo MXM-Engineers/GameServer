@@ -1584,13 +1584,13 @@ void HubReplication::SendPartyEnqueue(ClientHandle clientHd, StageIndex stageInd
 	SendPacket(clientHd, matching);
 }
 
-void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty)
+void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs)
 {
 	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
 
 	packet.Write(matchingParty.sortieUID); // sortieID
-	packet.Write(StageIndex::CombatArena); // stageIndex
-	packet.Write(GameType::PVP_Rank); // gametype
+	packet.Write(stageIndex);
+	packet.Write(matchingParty.gameType);
 	packet.Write(GameDefinition::System); // gameDefinitionType
 	packet.Write(StageRule::Unfair); // stageRule
 
@@ -1604,7 +1604,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
 		if(p.team == 0) {
-			packet.Write(UserID(i + 1)); // userID
+			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot
 			packet.Write<i32>(0); // tier
@@ -1624,7 +1624,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
 		if(p.team == 1) {
-			packet.Write(UserID(i + 1)); // userID
+			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot
 			packet.Write<i32>(0); // tier
@@ -1639,7 +1639,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 
 	// NOTE: if timeToWaitInSec is 0 there is no popup to accept
 	packet.Write<i32>(30); // timeToWaitInSec
-	packet.Write<u8>(0); // elementMain
+	packet.Write<u8>(1); // elementMain
 	packet.Write<u8>(0); // elementSub
 
 	SendPacket(clientHd, packet);

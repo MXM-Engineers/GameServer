@@ -490,6 +490,13 @@ struct Matchmaker
 				In::MN_MatchingPartyFound resp;
 				resp.partyUID = *puid;
 				resp.sortieUID = room.UID;
+				resp.gameType = GameType::PvP_Normal;
+				foreach_const(bpl, room.playerList) {
+					if(bpl->isBot) {
+						resp.gameType = GameType::PVP_Tutorial;
+						break;
+					}
+				}
 
 				resp.playerCount = 0;
 				foreach(pl, room.playerList) {

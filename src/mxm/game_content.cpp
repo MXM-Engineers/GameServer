@@ -755,6 +755,10 @@ bool GameXmlContent::LoadEntrySystems()
 		pInfo = pInfo->NextSiblingElement()) {
 		EntrySystem entry;
 		if(pInfo->QueryIntAttribute("ID", &entry.ID) != XML_SUCCESS) continue;
+		if(XMLElement* pSys = pInfo->FirstChildElement()) {
+			const char* t = pSys->Attribute("_EntryType");
+			if(t) entry.entryType = t;
+		}
 		for(XMLElement* pArea = pInfo->FirstChildElement()->FirstChildElement("_Area");
 			pArea;
 			pArea = pArea->NextSiblingElement("_Area")) {
@@ -809,9 +813,11 @@ bool GameXmlContent::LoadEntrySystems()
 		}
 	}
 
-	LOG("Loaded %d entry systems, %d areas", (i32)entrySystems.size(), (i32)areaStages.size());
-	return true;
+LOG("Loaded %d entry systems, %d areas", (i32)entrySystems.size(), (i32)areaStages.size());
+return true;
 }
+
+
 
 bool GameXmlContent::HasEntrySystem(i32 entryID) const
 {
@@ -847,6 +853,46 @@ bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
 	}
 	return false;
 }
+
+bool GameXmlContent::LoadBotCreatures()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/CREATURE_MONSTER_BOT.xml", doc)) return false;
+
+	for(XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		XMLElement* pEntity = pInfo->FirstChildElement("EntityComData");
+		if(!pEntity) continue;
+		const char* keyName = pEntity->Attribute("KEYNAME");
+		if(!keyName || !EA::StdC::Strstr(keyName, "DeathMatch")) continue;
+
+		i32 id = 0;
+		if(pInfo->QueryIntAttribute("ID", &id) != XML_SUCCESS) continue;
+
+		XMLElement* pStats = pInfo->FirstChildElement("StatsComData");
+		if(!pStats) continue;
+		const char* className = nullptr;
+		pStats->QueryStringAttribute("_class", &className);
+		if(!className) continue;
+
+		auto found = masterClassStringMap.find(strHash(className));
+		if(found == masterClassStringMap.end()) continue;
+		if(deathMatchBotIndex.find(found->second->classType) != deathMatchBotIndex.end()) continue;
+		deathMatchBotIndex.emplace(found->second->classType, (CreatureIndex)id);
+	}
+
+	LOG("Loaded %d deathmatch bot creatures", (i32)deathMatchBotIndex.size());
+	return true;
+}
+
+CreatureIndex GameXmlContent::FindDeathMatchBotIndex(ClassType classType) const
+{
+	auto found = deathMatchBotIndex.find(classType);
+	if(found == deathMatchBotIndex.end()) return CreatureIndex::Invalid;
+	return found->second;
+}
+
 
 bool GameXmlContent::LoadGuildData()
 {
@@ -1319,6 +1365,10 @@ bool GameXmlContent::Load()
 
 	r = LoadEntrySystems();
 	if(!r) return false;
+
+	r = LoadBotCreatures();
+	if(!r) return false;
+
 
 	r = LoadGuildData();
 	if(!r) return false;

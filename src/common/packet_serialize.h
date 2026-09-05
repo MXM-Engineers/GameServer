@@ -1350,7 +1350,20 @@ inline const char* PacketSerialize<Sv::SN_SortieMasterPickPhaseStart>(const void
 
 	SER("SN_SortieMasterPickPhaseStart(%d, %d) :: {", Sv::SN_SortieMasterPickPhaseStart::NET_ID, packetSize);
 	SER("	isRandomPick=%u", buff.Read<u8>());
-	SER("	...");
+	const u16 count = buff.Read<u16>();
+	SER("	alliesSlotInfos(%d)=[", count);
+	for(int i = 0; i < count; i++) {
+		SER("		{");
+		SER("			creatureIndex=%d", buff.Read<CreatureIndex>());
+		const u16 slotStates_count = buff.Read<u16>();
+		SER("			slotStates(%d)=[", slotStates_count);
+		for(int j = 0; j < slotStates_count; j++) {
+			SER("				%d,", buff.Read<i32>());
+		}
+		SER("			]");
+		SER("		},");
+	}
+	SER("	]");
 	SER("}");
 
 	return str.data();
@@ -1469,7 +1482,7 @@ inline const char* PacketSerialize<Sv::SN_SortieCharacterSlotInfo>(const void* p
 		SER("		{");
 		SER("			creatureIndex=%d", buff.Read<CreatureIndex>());
 		const u16 slotStates_count = buff.Read<u16>();
-		SER("			slotSlates(%d)=[", slotStates_count);
+		SER("			slotStates(%d)=[", slotStates_count);
 		for(int j = 0; j < slotStates_count; j++) {
 			SER("				%d,", buff.Read<i32>());
 		}

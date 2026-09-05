@@ -5556,6 +5556,7 @@ struct SN_MasterRotationInfo
 	CreatureIndex vipRotation[1];
 };
 
+PUSH_PACKED
 struct SN_SortieCharacterSlotInfo
 {
 	enum { NET_ID = 62462 };
@@ -5563,20 +5564,24 @@ struct SN_SortieCharacterSlotInfo
 	struct SlotInfo {
 		CreatureIndex creatureIndex;
 		u16 slotStates_count;
-		i32 slotSlates[1];
+		i32 slotStates[1];
 	};
 
 	u16 slotInfos_count;
 	SlotInfo slotInfos[1];
 };
+POP_PACKED
 
+PUSH_PACKED
 struct SN_SortieMasterPickPhaseStart
 {
 	enum { NET_ID = 62465 };
 
 	u8 isRandomPick;
 	u16 alliesSlotInfos_count;
+	SN_SortieCharacterSlotInfo::SlotInfo alliesSlotInfos[1];
 };
+POP_PACKED
 
 struct SN_SortieMasterPickPhaseEnd
 {

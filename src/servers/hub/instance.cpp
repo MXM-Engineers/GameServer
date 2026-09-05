@@ -254,9 +254,13 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 
 		{
 			PacketWriter<Sv::SN_SortieMasterPickPhaseStart> packet;
-			packet.Write<u8>(0); // isRandomPick
-			packet.Write<u16>(0); // alliesSlot_count
-
+			packet.Write<u8>(0);
+			packet.Write<u16>((u16)allowedMastersSet.size());
+			foreach_const(m, allowedMastersSet) {
+				packet.Write(CreatureIndex(100000000 + (i32)*m));
+				packet.Write<u16>(1);
+				packet.Write<i32>(0);
+			}
 			SendPacket(user.clientHd, packet);
 		}
 
@@ -374,21 +378,18 @@ void RoomInstance::Update(Time localTime_)
 
 			{
 				PacketWriter<Sv::SN_SortiePrepareBotInfo> packet;
-
-				u16 botCount = 0;
-				foreach_const(u, userList) {
-					if(u->isBot) {
-						botCount++;
-					}
+				const GameXmlContent& content = GetGameXmlContent();
+				eastl::fixed_vector<CreatureIndex,16,false> botIndexes;
+				foreach_const(bu, userList) {
+					if(!bu->isBot) continue;
+					const CreatureIndex botIndex = content.FindDeathMatchBotIndex(bu->masters[0].classType);
+					if(botIndex == CreatureIndex::Invalid) continue;
+					botIndexes.push_back(botIndex);
 				}
-
-				packet.Write<u16>(botCount);
-				foreach_const(u, userList) {
-					if(u->isBot) {
-						packet.Write<UserID>(u->userID);
-					}
+				packet.Write<u16>((u16)botIndexes.size());
+				foreach_const(id, botIndexes) {
+					packet.Write<CreatureIndex>(*id);
 				}
-
 				SendPacket(user.clientHd, packet);
 			}
 

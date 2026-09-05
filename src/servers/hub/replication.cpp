@@ -1539,19 +1539,55 @@ void HubReplication::SendCalendar(ClientHandle clientHd)
 
 void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 {
-	// SA_AreaPopularity
+	const GameXmlContent& content = GetGameXmlContent();
+	bool known = false;
+	for(auto& area : content.areaStages) {
+		if(area.ID == (i32)areaID) { known = true; break; }
+	}
+
 	{
 		Sv::SA_AreaPopularity packet;
-		packet.errCode = 0;
+		packet.errCode = known ? 0 : 1;
 		SendPacket(clientHd, packet);
 	}
 
-	// SN_AreaPopularity
 	{
 		PacketWriter<Sv::SN_AreaPopularity> packet;
 
 		packet.Write<u32>(areaID);
-		packet.WriteVec((Sv::SN_AreaPopularity*)nullptr, 0);
+		if(!known) {
+			packet.Write<u16>(0);
+			SendPacket(clientHd, packet);
+			return;
+		}
+		i32 gameType = 1;
+		for(auto& entry : content.entrySystems) {
+			for(auto id : entry.areas) {
+				if(id != (i32)areaID) continue;
+				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
+			}
+			for(auto id : entry.scheduleAreas) {
+				if(id != (i32)areaID) continue;
+				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
+			}
+		}
+		u16 count = 0;
+		for(auto& area : content.areaStages) {
+			if(area.ID != (i32)areaID) continue;
+			for(auto stageID : area.stages) {
+				(void)stageID;
+				count++;
+			}
+		}
+		packet.Write<u16>(count);
+		for(auto& area : content.areaStages) {
+			if(area.ID != (i32)areaID) continue;
+			for(auto stageID : area.stages) {
+				packet.Write<i32>(stageID);
+				packet.Write<i32>(gameType);
+				packet.Write<i32>(1);
+			}
+		}
 
 		SendPacket(clientHd, packet);
 	}

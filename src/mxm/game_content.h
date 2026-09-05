@@ -280,6 +280,8 @@ struct GameXmlContent
 	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
+	eastl::fixed_hash_map<ClassType,CreatureIndex,100> deathMatchBotIndex;
+
 	eastl::fixed_vector<MapList, 500, false> maplists;
 	eastl::fixed_hash_map<SkillID, SkillNormalModel, 500> skillMap;
 	eastl::fixed_vector<Action, 2000, false> actionList;
@@ -293,6 +295,7 @@ struct GameXmlContent
 	struct EntrySystem
 	{
 		i32 ID;
+		eastl::fixed_string<char,32,false> entryType;
 		eastl::fixed_vector<i32,8,false> areas;
 		eastl::fixed_vector<i32,8,false> scheduleAreas;
 	};
@@ -342,6 +345,8 @@ struct GameXmlContent
 
 	bool FindQueueStage(i32 entryID, i32* outStageIndex) const;
 	bool HasEntrySystem(i32 entryID) const;
+	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
+
 
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
@@ -361,6 +366,8 @@ private:
 
 	bool LoadMasterDefinitions();
 	bool LoadEntrySystems();
+	bool LoadBotCreatures();
+
 	bool LoadGuildData();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();

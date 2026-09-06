@@ -554,75 +554,50 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		}
 	}
 
-	// SN_GameFieldReady
 	{
 		PacketWriter<Sv::SN_GameFieldReady,4096> packet;
 
-		packet.Write<i32>(1); // InGameID=449
-		packet.Write(GameType::PVP_Tutorial); // GameType=
-		packet.Write<i32>(190002102); // AreaIndex=190002202
-		packet.Write<StageIndex>(StageIndex(200020104)); // StageIndex
-		packet.Write(GameDefinition::System); // GameDefinitionType=
-		packet.Write<u8>(6); // initPlayerCount=6
-		packet.Write<u8>(1); // CanEscape=1
-		packet.Write<u8>(0); // IsTrespass=0
-		packet.Write<u8>(0); // IsSpectator=0
+		packet.Write<i32>(inGameID);
+		packet.Write(gameType);
+		packet.Write<i32>(areaIndex);
+		packet.Write(stageIndex);
+		packet.Write(GameDefinition::System);
+		packet.Write<u8>((u8)frameCur->playerList.size());
+		packet.Write<u8>(canEscape);
+		packet.Write<u8>(isTrespass);
+		packet.Write<u8>(player->team == 2);
 
-		// InGameUsers
 		packet.Write<u16>(frameCur->playerList.size());
 
 		foreach_const(pit, frameCur->playerList) {
-			packet.Write(pit->userID); //userID
-			packet.WriteStringObj(pit->name.data()); // nickname
-			packet.Write<u8>(3 + pit->team); // team
-			packet.Write<u8>(pit->clientHd == ClientHandle::INVALID); // isBot
+			packet.Write(pit->userID);
+			packet.WriteStringObj(pit->name.data());
+			packet.Write<u8>(3 + pit->team);
+			packet.Write<u8>(pit->clientHd == ClientHandle::INVALID);
 		}
 
-		// IngamePlayers
 		packet.Write<u16>(frameCur->playerList.size());
 
 		foreach_const(pit, frameCur->playerList) {
-			const bool self = pit->clientHd == clientHd;
 			const Player& p = *pit;
 
-			const GameXmlContent::Master& pmmain = content.GetMaster(p.mainClass);
-			const GameXmlContent::Master& pmsub = content.GetMaster(p.subClass);
-
-			packet.Write(pit->userID); //userID
-			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.mainClass)); //mainCreatureIndex
-			packet.Write<SkinIndex>(p.mainSkin); //mainSkinIndex
-
-			if(self) {
-				packet.Write<SkillID>(pmmain.skillIDs[0]); //mainSkillindex1
-				packet.Write<SkillID>(pmmain.skillIDs[1]); //mainSkillIndex2
-			}
-			else {
-				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
-				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
-			}
-
-
-			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.subClass)); //subCreatureIndex
-			packet.Write<SkinIndex>(p.subSkin); //subSkinIndex
-
-			if(self) {
-				packet.Write<SkillID>(pmsub.skillIDs[0]); //subSkillIndex1
-				packet.Write<SkillID>(pmsub.skillIDs[1]); //subSkillIndex2
-			}
-			else {
-				packet.Write<SkillID>(SkillID::INVALID); //mainSkillindex1
-				packet.Write<SkillID>(SkillID::INVALID); //mainSkillIndex2
-			}
-
-			packet.Write<i32>(-1); //stageSkillIndex1
-			packet.Write<i32>(-1); //stageSkillIndex2
-			packet.Write<i32>(-1); //supportKitIndex
-			packet.Write<u8>(pit->clientHd == ClientHandle::INVALID); //isBot
+			packet.Write(p.userID);
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.mainClass));
+			packet.Write<SkinIndex>(p.mainSkin);
+			packet.Write<SkillID>(p.skills[0]);
+			packet.Write<SkillID>(p.skills[1]);
+			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)p.subClass));
+			packet.Write<SkinIndex>(p.subSkin);
+			packet.Write<SkillID>(p.skills[2]);
+			packet.Write<SkillID>(p.skills[3]);
+			packet.Write<SkillID>(stageSkills[0]);
+			packet.Write<SkillID>(stageSkills[1]);
+			packet.Write<i32>(supportKitIndex);
+			packet.Write<u8>(p.clientHd == ClientHandle::INVALID);
 		}
 
-		// IngameGuilds
 		packet.Write<u16>(0);
-		packet.Write<u32>(180000); // surrenderAbleTime
+		packet.Write<i32>(surrenderAbleTime);
 
 		SendPacket(clientHd, packet);
 	}

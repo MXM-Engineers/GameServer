@@ -283,14 +283,6 @@ void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 	replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
 }
 
-static StageIndex ResolveQueueStage(EntrySystemID entry, StageType stageType)
-{
-	(void)stageType;
-	i32 stageID = 0;
-	GetGameXmlContent().FindQueueStage((i32)entry, &stageID);
-	return (StageIndex)stageID;
-}
-
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)
 {
 	const i32 userID = plidMap->Get(clientHd);
@@ -325,11 +317,14 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// TODO: validate args
 	const PartyUID partyUID = playerMap[userID]->partyUID;
 	if(partyUID == PartyUID::INVALID) return;
-	if(partyMap.find(partyUID) == partyMap.end()) return;
-	matchmaker->QueryPartyEnqueue(partyUID);
+	auto f = partyMap.find(partyUID);
+	if(f == partyMap.end()) return;
+	const Party& party = *f->second;
+	ASSERT(party.areaIndex != 0);
+	ASSERT(party.stageIndex != StageIndex(0));
+	matchmaker->QueryPartyEnqueue(partyUID, party.areaIndex, party.stageIndex);
 }
 
 void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
@@ -363,7 +358,13 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 	party.memberList.push_back(member);
 
 	partyMap.emplace(partyUID, --partyList.end());
-	party.stageIndex = ResolveQueueStage(pendingPartyEntry[userID], pendingPartyStage[userID]);
+	party.entry = pendingPartyEntry[userID];
+	party.stageType = pendingPartyStage[userID];
+	i32 areaID = 0;
+	i32 stageID = 0;
+	ASSERT(GetGameXmlContent().FindQueueAreaStage((i32)party.entry, &areaID, &stageID));
+	party.areaIndex = areaID;
+	party.stageIndex = (StageIndex)stageID;
 
 	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
 }

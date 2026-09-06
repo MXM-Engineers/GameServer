@@ -343,7 +343,7 @@ struct GameXmlContent
 	i32 GuildSkillValue(const char* key, i32 level) const;
 	bool IsValidGuildEmblem(i32 emblem) const;
 
-	bool FindQueueStage(i32 entryID, i32* outStageIndex) const;
+	bool FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* outStageIndex) const;
 	bool HasEntrySystem(i32 entryID) const;
 	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
 

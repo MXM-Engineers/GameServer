@@ -378,7 +378,6 @@ enum class MapIndex: i32
 
 enum class StageIndex: i32
 {
-	CombatArena = 200020102,
 };
 
 enum class StageType: i32
@@ -4199,9 +4198,9 @@ struct SN_GameFieldReady
 
 	struct User
 	{
-		i32 userID;
-		u16 nick_len;
-		wchar nick[1];
+		i32 userId;
+		u16 nickname_len;
+		wchar nickname[1];
 		u8 team;
 		u8 isBot;
 	};
@@ -4209,13 +4208,13 @@ struct SN_GameFieldReady
 	PUSH_PACKED
 	struct Player
 	{
-		i32 userID;
+		i32 userId;
 		CreatureIndex mainCreatureIndex;
 		SkinIndex mainSkinIndex;
 		SkillID mainSkillIndex1;
 		SkillID mainSkillIndex2;
 		CreatureIndex subCreatureIndex;
-		SkinIndex subSkinIndex1;
+		SkinIndex subSkinIndex;
 		SkillID subSkillIndex1;
 		SkillID subSkillIndex2;
 		SkillID stageSkillIndex1;
@@ -4236,7 +4235,7 @@ struct SN_GameFieldReady
 		i32 guildPvpRankNo;
 	};
 
-	i32 gameID;
+	i32 inGameID;
 	GameType gameType;
 	i32 areaIndex;
 	StageIndex stageIndex;
@@ -4249,9 +4248,9 @@ struct SN_GameFieldReady
 	u16 ingameUsers_len;
 	User IngameUsers[1];
 	u16 ingamePlayers_len;
-	User ingamePlayers[1];
+	Player IngamePlayers[1];
 	u16 ingameGuilds_len;
-	User IngameGuilds[1];
+	Guild IngameGuilds[1];
 
 	i32 surrenderAbleTime;
 };

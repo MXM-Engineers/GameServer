@@ -13,6 +13,18 @@ const CreatureIndex CI_WALL = CreatureIndex(110042602);
 void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle, MAX_PLAYERS>& playerClientHdList)
 {
 	replication.Init(server_);
+	ASSERT(gameInfo.gameType != GameType::INVALID);
+	ASSERT(gameInfo.areaIndex != 0);
+	ASSERT(gameInfo.stageIndex != StageIndex(0));
+	replication.inGameID = (i32)(u64)gameInfo.sortieUID;
+	replication.gameType = gameInfo.gameType;
+	replication.areaIndex = gameInfo.areaIndex;
+	replication.stageIndex = gameInfo.stageIndex;
+	replication.canEscape = gameInfo.canEscape;
+	replication.isTrespass = 0;
+	replication.surrenderAbleTime = gameInfo.surrenderAbleTime;
+	replication.stageSkills.fill(SkillID::INVALID);
+	replication.supportKitIndex = -1;
 	world.Init(&replication);
 
 	LoadMap();

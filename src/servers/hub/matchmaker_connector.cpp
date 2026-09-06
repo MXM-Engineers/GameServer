@@ -60,6 +60,8 @@ void MatchmakerConnector::Update()
 				case Query::Type::PartyEnqueue: {
 					In::HQ_PartyEnqueue packet;
 					packet.partyUID = q->PartyEnqueue.partyUID;
+					packet.areaIndex = q->PartyEnqueue.areaIndex;
+					packet.stageIndex = q->PartyEnqueue.stageIndex;
 					conn.SendPacket(packet);
 				} break;
 
@@ -129,8 +131,7 @@ void MatchmakerConnector::QueryPartyCreate(const WideString& name, AccountUID le
 	queries.push_back(query);
 }
 
-// Thread: Any Lane
-void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
+void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, i32 areaIndex, StageIndex stageIndex)
 {
 	DBG_ASSERT(partyUID != PartyUID::INVALID);
 
@@ -139,6 +140,8 @@ void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
 
 	Query query(queryUID, Query::Type::PartyEnqueue);
 	query.PartyEnqueue.partyUID = partyUID;
+	query.PartyEnqueue.areaIndex = areaIndex;
+	query.PartyEnqueue.stageIndex = stageIndex;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);

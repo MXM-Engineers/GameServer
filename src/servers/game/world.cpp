@@ -133,6 +133,7 @@ void World::Replicate()
 		rep.mainSkin = player.mainSkin;
 		rep.subClass = player.subClass;
 		rep.subSkin = player.subSkin;
+		rep.skills = player.skills;
 
 		rep.masters = {
 			player.characters[0]->UID,

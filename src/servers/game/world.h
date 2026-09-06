@@ -75,7 +75,8 @@ struct World
 		const ClassType subClass;
 		const SkinIndex subSkin;
 
-		const eastl::array<ColliderSize,2> colliderSize; // used when checking for gameplay collisions, not movement
+		const eastl::array<ColliderSize,2> colliderSize;
+		const eastl::array<SkillID,4> skills;
 
 		u8 level;
 		u32 experience;
@@ -86,7 +87,6 @@ struct World
 		Input input;
 		PhysicsDynamicBody* body = nullptr;
 
-		// book keeping
 		struct {
 			vec2 moveDir = vec2(0);
 			f32 moveSpeed = 0;
@@ -105,7 +105,8 @@ struct World
 			mainSkin(desc.skins[0]),
 			subClass(desc.masters[1]),
 			subSkin(desc.skins[1]),
-			colliderSize(desc.colliderSize)
+			colliderSize(desc.colliderSize),
+			skills(desc.skills)
 		{
 
 		}

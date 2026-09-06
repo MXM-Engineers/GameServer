@@ -4947,7 +4947,7 @@ class ServerSerializer:
             print('      userID=0x%08x' % p.read_u32())
             print('      mainCreatureIndex=%d' % p.read_i32())
             print('      mainSkinIndex=%d' % p.read_i32())
-            print('      mainSkillindex1=%d' % p.read_i32())
+            print('      mainSkillIndex1=%d' % p.read_i32())
             print('      mainSkillIndex2=%d' % p.read_i32())
             print('      subCreatureIndex=%d' % p.read_i32())
             print('      subSkinIndex=%d' % p.read_i32())

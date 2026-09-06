@@ -51,6 +51,8 @@ struct MatchmakerConnector
 
 			struct {
 				PartyUID partyUID;
+				i32 areaIndex;
+				StageIndex stageIndex;
 			} PartyEnqueue;
 
 			struct {
@@ -90,7 +92,7 @@ struct MatchmakerConnector
 	void Update();
 
 	void QueryPartyCreate(const WideString& name, AccountUID leader);
-	void QueryPartyEnqueue(PartyUID partyUID);
+	void QueryPartyEnqueue(PartyUID partyUID, i32 areaIndex, StageIndex stageIndex);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);
 	void QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount);

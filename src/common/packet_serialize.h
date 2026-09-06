@@ -693,63 +693,62 @@ inline const char* PacketSerialize<Sv::SN_GameFieldReady>(const void* packetData
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_GameFieldReady(%d, %d) :: {", Sv::SN_GameFieldReady::NET_ID, packetSize);
-	SER("	gameID=%d", buff.Read<i32>());
-	SER("	gameType=%d", buff.Read<i32>());
-	SER("	areaIndex=%d", buff.Read<i32>());
-	SER("	stageIndex=%d", buff.Read<i32>());
-	SER("	gameDefinitionType=%d", buff.Read<i32>());
-	SER("	initPlayerCount=%d", buff.Read<u8>());
-	SER("	canEscape=%d", buff.Read<u8>());
-	SER("	isTrespass=%d", buff.Read<u8>());
-	SER("	isSpectator=%d", buff.Read<u8>());
+	SER("	InGameID=%d", buff.Read<i32>());
+	SER("	GameType=%d", buff.Read<i32>());
+	SER("	AreaIndex=%d", buff.Read<i32>());
+	SER("	StageIndex=%d", buff.Read<i32>());
+	SER("	GameDefinitionType=%d", buff.Read<i32>());
+	SER("	initPlayerCount=%u", buff.Read<u8>());
+	SER("	CanEscape=%u", buff.Read<u8>());
+	SER("	IsTrespass=%u", buff.Read<u8>());
+	SER("	IsSpectator=%u", buff.Read<u8>());
 
 	const u16 ingameUsers_len = buff.Read<u16>();
 	SER("	IngameUsers(%d)=[", ingameUsers_len);
-
 	for(int i = 0; i < ingameUsers_len; i++) {
 		SER("	{");
-		SER("		userID=0x%08x", buff.Read<i32>());
-		SER("		nick='%S'", buff.ReadWideStringObj().data());
-		SER("		team=%d", buff.Read<u8>());
-		SER("		isBot=%d", buff.Read<u8>());
+		SER("		userId=0x%08x", buff.Read<i32>());
+		SER("		nickname='%S'", buff.ReadWideStringObj().data());
+		SER("		team=%u", buff.Read<u8>());
+		SER("		isBot=%u", buff.Read<u8>());
 		SER("	},");
 	}
+	SER("	]");
 
 	const u16 ingamePlayers_len = buff.Read<u16>();
 	SER("	IngamePlayers(%d)=[", ingamePlayers_len);
-
 	for(int i = 0; i < ingamePlayers_len; i++) {
 		SER("	{");
-		SER("		userID=0x%08x", buff.Read<i32>());
+		SER("		userId=0x%08x", buff.Read<i32>());
 		SER("		mainCreatureIndex=%d", buff.Read<CreatureIndex>());
 		SER("		mainSkinIndex=%d", buff.Read<SkinIndex>());
 		SER("		mainSkillIndex1=%d", buff.Read<SkillID>());
 		SER("		mainSkillIndex2=%d", buff.Read<SkillID>());
 		SER("		subCreatureIndex=%d", buff.Read<CreatureIndex>());
-		SER("		subSkinIndex1=%d", buff.Read<SkinIndex>());
+		SER("		subSkinIndex=%d", buff.Read<SkinIndex>());
 		SER("		subSkillIndex1=%d", buff.Read<SkillID>());
 		SER("		subSkillIndex2=%d", buff.Read<SkillID>());
 		SER("		stageSkillIndex1=%d", buff.Read<SkillID>());
 		SER("		stageSkillIndex2=%d", buff.Read<SkillID>());
 		SER("		supportKitIndex=%d", buff.Read<i32>());
-		SER("		isBot=%d", buff.Read<u8>());
+		SER("		isBot=%u", buff.Read<u8>());
 		SER("	},");
 	}
+	SER("	]");
 
 	const u16 ingameGuilds_len = buff.Read<u16>();
 	SER("	IngameGuilds(%d)=[", ingameGuilds_len);
-
 	for(int i = 0; i < ingameGuilds_len; i++) {
 		SER("	{");
-		SER("		teamType=%d", buff.Read<u8>());
+		SER("		teamType=%u", buff.Read<u8>());
 		SER("		guildName='%S'", buff.ReadWideStringObj().data());
 		SER("		guildTag='%S'", buff.ReadWideStringObj().data());
 		SER("		guildEmblemIndex=%d", buff.Read<i32>());
 		SER("		guildPvpRankNo=%d", buff.Read<i32>());
 		SER("	},");
 	}
-
 	SER("	]");
+
 	SER("	surrenderAbleTime=%d", buff.Read<i32>());
 	SER("}");
 
@@ -1761,6 +1760,8 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 
 	SER("HQ_PartyEnqueue(%d, %d) :: {", In::HQ_PartyEnqueue::NET_ID, packetSize);
 	SER("	partyUID=0x%08x", packet.partyUID);
+	SER("	areaIndex=%d", packet.areaIndex);
+	SER("	stageIndex=%d", (i32)packet.stageIndex);
 	SER("}");
 
 	return str.data();
@@ -1909,6 +1910,11 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 		SER("	accountUID=0x%08x,", *p);
 	}
 	SER("	]");
+	SER("	gameType=%d", (i32)packet.gameType);
+	SER("	areaIndex=%d", packet.areaIndex);
+	SER("	stageIndex=%d", (i32)packet.stageIndex);
+	SER("	canEscape=%u", packet.canEscape);
+	SER("	surrenderAbleTime=%d", packet.surrenderAbleTime);
 	SER("}");
 
 	return str.data();

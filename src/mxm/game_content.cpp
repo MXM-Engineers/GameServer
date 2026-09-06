@@ -827,7 +827,7 @@ bool GameXmlContent::HasEntrySystem(i32 entryID) const
 	return false;
 }
 
-bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
+bool GameXmlContent::FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* outStageIndex) const
 {
 	for(auto& entry : entrySystems) {
 		if(entry.ID != entryID) continue;
@@ -835,6 +835,7 @@ bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
 				for(auto stageID : area.stages) {
+					*outAreaIndex = area.ID;
 					*outStageIndex = stageID;
 					return true;
 				}
@@ -844,6 +845,7 @@ bool GameXmlContent::FindQueueStage(i32 entryID, i32* outStageIndex) const
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
 				for(auto stageID : area.stages) {
+					*outAreaIndex = area.ID;
 					*outStageIndex = stageID;
 					return true;
 				}

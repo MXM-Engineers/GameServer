@@ -49,6 +49,7 @@ struct Replication
 		SkinIndex mainSkin;
 		ClassType subClass;
 		SkinIndex subSkin;
+		eastl::array<SkillID,4> skills;
 
 		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> masters;
 		u8 mainCharaID;
@@ -208,6 +209,16 @@ struct Replication
 	eastl::array<PlayerLocalInfo,MAX_PLAYERS> playerLocalInfo;
 
 	hash_map<ClientHandle, i32, MAX_PLAYERS> playerMap;
+
+	i32 inGameID = 0;
+	GameType gameType = GameType::INVALID;
+	i32 areaIndex = 0;
+	StageIndex stageIndex = StageIndex(0);
+	u8 canEscape = 0;
+	u8 isTrespass = 0;
+	i32 surrenderAbleTime = 0;
+	eastl::array<SkillID,2> stageSkills = { SkillID::INVALID, SkillID::INVALID };
+	i32 supportKitIndex = -1;
 
 	void Init(Server* server_);
 

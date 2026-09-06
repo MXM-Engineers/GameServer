@@ -631,6 +631,14 @@ void Coordinator::CreateDevGame()
 	game.sortieUID = SortieUID(1);
 	game.playerCount = 6;
 	game.spectatorCount = 0;
+	game.gameType = GameType::PVP_Tutorial;
+	i32 areaID = 0;
+	i32 stageID = 0;
+	ASSERT(content.FindQueueAreaStage((i32)EntrySystemID::ARENA_3v3, &areaID, &stageID));
+	game.areaIndex = areaID;
+	game.stageIndex = (StageIndex)stageID;
+	game.canEscape = 1;
+	game.surrenderAbleTime = 180000;
 
 	auto& p = game.players[0];
 	p.name.Copy(WideString(L"LordSk")); // TODO: we really need an account system (sorry Delta)

@@ -212,8 +212,9 @@ struct Replication
 
 	i32 inGameID = 0;
 	GameType gameType = GameType::INVALID;
-	i32 areaIndex = 0;
+	AreaIndex areaIndex = AreaIndex(0);
 	StageIndex stageIndex = StageIndex(0);
+	MapIndex mapIndex = MapIndex(0);
 	u8 canEscape = 0;
 	u8 isTrespass = 0;
 	i32 surrenderAbleTime = 0;

@@ -83,8 +83,9 @@ struct HQ_PartyEnqueue
 	enum { NET_ID = 1003 };
 
 	PartyUID partyUID;
-	i32 areaIndex;
+	AreaIndex areaIndex;
 	StageIndex stageIndex;
+	MapIndex mapIndex;
 };
 
 PUSH_PACKED
@@ -219,8 +220,9 @@ struct MQ_CreateGame
 	eastl::array<Player,10> players;
 	eastl::array<AccountUID,6> spectators;
 	GameType gameType;
-	i32 areaIndex;
+	AreaIndex areaIndex;
 	StageIndex stageIndex;
+	MapIndex mapIndex;
 	u8 canEscape;
 	i32 surrenderAbleTime;
 };

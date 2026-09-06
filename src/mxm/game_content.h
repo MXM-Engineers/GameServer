@@ -222,7 +222,7 @@ struct GameXmlContent
 
 	struct MapList
 	{
-		i32 index;
+		MapIndex index;
 		MapType mapType;
 		GameSubModeType gameSubModeType;
 		eastl::fixed_string<char, 256> levelFile;
@@ -296,18 +296,25 @@ struct GameXmlContent
 	{
 		i32 ID;
 		eastl::fixed_string<char,32,false> entryType;
-		eastl::fixed_vector<i32,8,false> areas;
-		eastl::fixed_vector<i32,8,false> scheduleAreas;
+		eastl::fixed_vector<AreaIndex,8,false> areas;
+		eastl::fixed_vector<AreaIndex,8,false> scheduleAreas;
 	};
 
 	struct AreaStages
 	{
-		i32 ID;
-		eastl::fixed_vector<i32,16,false> stages;
+		AreaIndex ID;
+		eastl::fixed_vector<StageIndex,16,false> stages;
+	};
+
+	struct StageMaps
+	{
+		StageIndex ID;
+		eastl::fixed_vector<MapIndex,8,false> maps;
 	};
 
 	eastl::fixed_vector<EntrySystem,32,false> entrySystems;
 	eastl::fixed_vector<AreaStages,64,false> areaStages;
+	eastl::fixed_vector<StageMaps,512,false> stageMaps;
 
 	struct GuildLevelInfo
 	{
@@ -343,10 +350,10 @@ struct GameXmlContent
 	i32 GuildSkillValue(const char* key, i32 level) const;
 	bool IsValidGuildEmblem(i32 emblem) const;
 
-	bool FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* outStageIndex) const;
+	bool FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const;
+	bool FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const;
 	bool HasEntrySystem(i32 entryID) const;
 	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
-
 
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
@@ -354,8 +361,7 @@ struct GameXmlContent
 	FileBuffer fileCylinderCollision;
 
 	bool Load();
-
-	const MapList* FindMapListByID(i32 index) const;
+	const MapList* FindMapListByID(MapIndex index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
 	const Master& GetMaster(ClassType classType) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
@@ -366,6 +372,7 @@ private:
 
 	bool LoadMasterDefinitions();
 	bool LoadEntrySystems();
+	bool LoadStageMaps();
 	bool LoadBotCreatures();
 
 	bool LoadGuildData();
@@ -379,8 +386,8 @@ private:
 	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
 	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
 	bool LoadMapList();
-	bool LoadMapByID(Map* map, i32 index);
-	bool LoadLobby(i32 index);
+	bool LoadMapByID(Map* map, MapIndex index);
+	bool LoadLobby(MapIndex index);
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();

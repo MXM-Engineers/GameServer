@@ -204,7 +204,7 @@ struct HubReplication
 	void SendGameReady(ClientHandle clientHd);
 
 	void SendCalendar(ClientHandle clientHd);
-	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
+	void SendAreaPopularity(ClientHandle clientHd, AreaIndex areaID);
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
 	void SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex);

@@ -150,7 +150,7 @@ void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
 void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 {
 	Sv::SN_UpdateGameOwner owner;
-	owner.userID = 1;
+	owner.userId = 1;
 	SendPacket(clientHd, owner);
 
 	Sv::SN_LobbyStartGame lobby;
@@ -159,7 +159,7 @@ void Replication::SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = stageIndex;
+	cityMapInfo.CityMapID = stageIndex;
 	SendPacket(clientHd, cityMapInfo);
 
 	/*
@@ -559,7 +559,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 		packet.Write<i32>(inGameID);
 		packet.Write(gameType);
-		packet.Write<i32>(areaIndex);
+		packet.Write(areaIndex);
 		packet.Write(stageIndex);
 		packet.Write(GameDefinition::System);
 		packet.Write<u8>((u8)frameCur->playerList.size());

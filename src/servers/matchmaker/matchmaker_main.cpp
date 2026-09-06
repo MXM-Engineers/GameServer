@@ -60,8 +60,9 @@ struct Matchmaker
 		};
 
 		eastl::fixed_vector<Member,5,false> memberList;
-		i32 areaIndex = 0;
+		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 
 		Party(PartyUID UID_): UID(UID_) {}
 	};
@@ -105,8 +106,9 @@ struct Matchmaker
 		};
 
 		const SortieUID UID;
-		i32 areaIndex = 0;
+		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 		eastl::fixed_vector<Player,16,false> playerList;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
@@ -305,10 +307,12 @@ struct Matchmaker
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
 				Party& party = *partyMap.at(packet.partyUID);
-				ASSERT(packet.areaIndex != 0);
+				ASSERT(packet.areaIndex != AreaIndex(0));
 				ASSERT(packet.stageIndex != StageIndex(0));
+				ASSERT(packet.mapIndex != MapIndex(0));
 				party.areaIndex = packet.areaIndex;
 				party.stageIndex = packet.stageIndex;
+				party.mapIndex = packet.mapIndex;
 				matchingPartyList.push_back(packet.partyUID);
 
 				eastl::fixed_set<ClientHandle,5,false> setInstance;
@@ -458,10 +462,12 @@ struct Matchmaker
 			Room& room = *(--roomList.end());
 			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
 			roomMap.emplace(room.UID, --roomList.end());
-			ASSERT(party.areaIndex != 0);
+			ASSERT(party.areaIndex != AreaIndex(0));
 			ASSERT(party.stageIndex != StageIndex(0));
+			ASSERT(party.mapIndex != MapIndex(0));
 			room.areaIndex = party.areaIndex;
 			room.stageIndex = party.stageIndex;
+			room.mapIndex = party.mapIndex;
 
 			foreach_const(pl, party.memberList) {
 				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
@@ -582,6 +588,7 @@ struct Matchmaker
 		}
 		packet.areaIndex = room.areaIndex;
 		packet.stageIndex = room.stageIndex;
+		packet.mapIndex = room.mapIndex;
 		packet.canEscape = packet.gameType != GameType::PVP_Rank;
 		packet.surrenderAbleTime = 180000;
 

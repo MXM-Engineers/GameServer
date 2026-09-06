@@ -14,12 +14,14 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 {
 	replication.Init(server_);
 	ASSERT(gameInfo.gameType != GameType::INVALID);
-	ASSERT(gameInfo.areaIndex != 0);
+	ASSERT(gameInfo.areaIndex != AreaIndex(0));
 	ASSERT(gameInfo.stageIndex != StageIndex(0));
+	ASSERT(gameInfo.mapIndex != MapIndex(0));
 	replication.inGameID = (i32)(u64)gameInfo.sortieUID;
 	replication.gameType = gameInfo.gameType;
 	replication.areaIndex = gameInfo.areaIndex;
 	replication.stageIndex = gameInfo.stageIndex;
+	replication.mapIndex = gameInfo.mapIndex;
 	replication.canEscape = gameInfo.canEscape;
 	replication.isTrespass = 0;
 	replication.surrenderAbleTime = gameInfo.surrenderAbleTime;
@@ -368,7 +370,7 @@ void Game::OnPlayerDisconnect(ClientHandle clientHd)
 
 void Game::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication.SendLoadPvpMap(clientHd, MapIndex::PVP_DEATHMATCH);
+	replication.SendLoadPvpMap(clientHd, replication.mapIndex);
 }
 
 void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)

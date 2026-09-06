@@ -376,6 +376,10 @@ enum class MapIndex: i32
 	PVP_DEATHMATCH = 160000094,
 };
 
+enum class AreaIndex: i32
+{
+};
+
 enum class StageIndex: i32
 {
 };
@@ -724,7 +728,7 @@ struct CQ_RequestAreaPopularity
 {
 	enum { NET_ID = 60073 };
 
-	u32 areaID; // TODO: type ID
+	AreaIndex areaID;
 };
 ASSERT_SIZE(CQ_RequestAreaPopularity, 4);
 
@@ -3699,10 +3703,9 @@ struct SA_AuthResult
 {
 	enum { NET_ID = 62005 };
 
-	i32 result;
+	i32 nResult;
 };
-
-ASSERT_SIZE(SA_UserloginResult, 4);
+ASSERT_SIZE(SA_AuthResult, 4);
 
 struct SN_RegionServicePolicy
 {
@@ -4237,7 +4240,7 @@ struct SN_GameFieldReady
 
 	i32 inGameID;
 	GameType gameType;
-	i32 areaIndex;
+	AreaIndex areaIndex;
 	StageIndex stageIndex;
 	GameDefinition gameDefinitionType;
 	u8 initPlayerCount;
@@ -4328,7 +4331,7 @@ struct SN_CityMapInfo
 {
 	enum { NET_ID = 62091 };
 
-	MapIndex cityMapID;
+	MapIndex CityMapID;
 };
 ASSERT_SIZE(SN_CityMapInfo, 4);
 
@@ -4696,13 +4699,13 @@ struct SN_AreaPopularity
 
 	struct Popularity
 	{
-		i32 stageIndex;
+		StageIndex stageIndex;
 		i32 gameType;
 		i32 popularityLevel;
 	};
 	ASSERT_SIZE(Popularity, 12);
 
-	u32 areaID;
+	AreaIndex areaID;
 	u16 popularityCount;
 	Popularity popularities[1];
 };
@@ -4876,7 +4879,7 @@ struct SN_UpdateGameOwner
 {
 	enum { NET_ID = 62224 };
 
-	i32 userID;
+	i32 userId;
 };
 ASSERT_SIZE(SN_UpdateGameOwner, 4);
 
@@ -4888,7 +4891,7 @@ struct SN_SummaryInfoLatest
 	struct Info
 	{
 		i32 summaryIndex;
-		i32 stageIndex;
+		StageIndex stageIndex;
 		i32 summaryType;
 		i32 summaryData;
 		u8 rewardReceived;
@@ -5470,14 +5473,14 @@ struct SN_UpdateEntrySystem
 	struct Area
 	{
 		u8 areaKey;
-		i32 areaIndex;
+		AreaIndex areaIndex;
 	};
 	POP_PACKED
 
-	struct StageIndex
+	struct StageInfo
 	{
 		u8 areaKey;
-		i32 stageIndex;
+		StageIndex stageIndex;
 		u16 gametypeCount;
 		u8 gametypes[1];
 	};
@@ -5488,7 +5491,7 @@ struct SN_UpdateEntrySystem
 		u16 areaListCount;
 		Area areaList[1];
 		u16 stageListCount;
-		StageIndex stageList[1];
+		StageInfo stageList[1];
 	};
 
 	u16 entrySystemListCount;
@@ -7812,7 +7815,7 @@ PUSH_PACKED
 struct SN_RestartVoteStart
 {
 	enum { NET_ID = 62159 };
-	u32 stageIndex; // 4 bytes
+	StageIndex stageIndex; // 4 bytes
 	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
 	u32 stageRule; // 4 bytes
@@ -7933,7 +7936,7 @@ PUSH_PACKED
 struct SN_RestartPvpGameInfo
 {
 	enum { NET_ID = 62169 };
-	u32 stageIndex; // 4 bytes
+	StageIndex stageIndex; // 4 bytes
 	u8 gameType; // 1 bytes
 	u8 gameDefType; // 1 bytes
 	// logger 0x9a2996
@@ -8038,7 +8041,7 @@ struct SN_PartyInvite
 	wchar_t inviterNick[1]; // 2 bytes
 	// stageIndexes (VEC of u32):
 	u16 stageIndexes_count; // 2 bytes
-	u32 stageIndexes[1]; // 4 bytes
+	StageIndex stageIndexes[1]; // 4 bytes
 	u32 gameType; // 4 bytes
 	u32 gameDefinitionType; // 4 bytes
 	u32 stageRule; // 4 bytes
@@ -8231,7 +8234,7 @@ struct SA_QuickRunArena
 	struct ModifyPartyInfo
 	{
 		u16 stageIndexes_count; // 2 bytes
-		u32 stageIndexes[1]; // 4 bytes (VEC)
+		StageIndex stageIndexes[1]; // 4 bytes (VEC)
 		u32 gameType; // 4 bytes
 		u32 gameDefinitionMode; // 4 bytes
 		u8 selectSortieMasterType; // 1 bytes
@@ -8479,7 +8482,7 @@ struct SA_RequestSummaryInfoEach
 	struct SummaryInfo
 	{
 		u32 summaryIndex; // 4 bytes
-		u32 stageIndex; // 4 bytes
+		StageIndex stageIndex; // 4 bytes
 		u32 summaryType; // 4 bytes
 		u32 summaryData; // 4 bytes
 		u8 rewardReceived; // 1 bytes (bool)
@@ -8501,7 +8504,7 @@ struct SN_SummaryUpdate
 	struct SummaryInfo
 	{
 		u32 summaryIndex; // 4 bytes
-		u32 stageIndex; // 4 bytes
+		StageIndex stageIndex; // 4 bytes
 		u32 summaryType; // 4 bytes
 		u32 summaryData; // 4 bytes
 		u8 rewardReceived; // 1 bytes (bool)
@@ -9094,7 +9097,7 @@ struct SN_FriendPartycreation
 	enum { NET_ID = 62272 };
 	u16 friendNickname_len; // 2 bytes
 	wchar_t friendNickname[1]; // 2 bytes (wide string, u16 count + count*2 wchar)
-	u32 stageIndex; // 4 bytes
+	StageIndex stageIndex; // 4 bytes
 	u8 gameType; // 1 bytes
 	u8 gameDefType; // 1 bytes
 	// logger 0x99319b
@@ -11469,7 +11472,7 @@ struct SN_RegameData
 {
 	enum { NET_ID = 62439 };
 	u32 ownerUserId; // 4 bytes
-	u32 areaIndex; // 4 bytes
+	AreaIndex areaIndex; // 4 bytes
 	// logger 0x9a0d0a
 };
 POP_PACKED
@@ -11480,7 +11483,7 @@ struct SN_RegameAvailable
 {
 	enum { NET_ID = 62440 };
 	u32 gameType; // 4 bytes
-	u32 stageIndex; // 4 bytes
+	StageIndex stageIndex; // 4 bytes
 	u8 bRetry; // 1 bytes
 	u8 reasonCode; // 1 bytes
 	// logger 0x9a0be7
@@ -11586,7 +11589,7 @@ struct SN_SummaryRewardResult
 	struct SummaryInfo
 	{
 		u32 summaryIndex; // 4 bytes
-		u32 stageIndex; // 4 bytes
+		StageIndex stageIndex; // 4 bytes
 		u32 summaryType; // 4 bytes
 		u32 summaryData; // 4 bytes
 		u8 rewardReceived; // 1 bytes (bool)
@@ -11919,7 +11922,7 @@ PUSH_PACKED
 struct SA_MyPveRanking
 {
 	enum { NET_ID = 62476 };
-	u32 stageIndex; // 4 bytes
+	StageIndex stageIndex; // 4 bytes
 	// highScore (ST_PVE_RANKING):
 	PUSH_PACKED
 	struct PveRanking
@@ -13225,7 +13228,7 @@ struct SN_GmDisabledStages
 	PUSH_PACKED
 	struct GmDisabledStage
 	{
-		u32 stageIndex; // 4 bytes
+		StageIndex stageIndex; // 4 bytes
 		u8 gameType; // 1 bytes
 	};
 	POP_PACKED

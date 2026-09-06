@@ -677,7 +677,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 	// send authentication result
 	Sv::SA_AuthResult auth;
-	auth.result = 91;
+	auth.nResult = 91;
 	SendPacket(clientHd, auth);
 
 	// TODO: fetch account data

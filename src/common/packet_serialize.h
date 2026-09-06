@@ -1102,6 +1102,18 @@ inline const char* PacketSerialize<Sv::SA_FirstHello>(const void* packetData, co
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SA_AuthResult>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_AuthResult(%d, %d) :: {", Sv::SA_AuthResult::NET_ID, packetSize);
+	SER("	nResult=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+template<>
 inline const char* PacketSerialize<Sv::SA_CalendarDetail>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1637,7 +1649,7 @@ inline const char* PacketSerialize<Sv::SN_UpdateGameOwner>(const void* packetDat
 	const Sv::SN_UpdateGameOwner& packet = *(Sv::SN_UpdateGameOwner*)packetData;
 
 	SER("SN_UpdateGameOwner(%d, %d) :: {", Sv::SN_UpdateGameOwner::NET_ID, packetSize);
-	SER("	userID=0x%08x", packet.userID);
+	SER("	userId=0x%08x", packet.userId);
 	SER("}");
 
 	return str.data();
@@ -1665,7 +1677,7 @@ inline const char* PacketSerialize<Sv::SN_CityMapInfo>(const void* packetData, c
 	const Sv::SN_CityMapInfo& packet = *(Sv::SN_CityMapInfo*)packetData;
 
 	SER("SN_CityMapInfo(%d, %d) :: {", Sv::SN_CityMapInfo::NET_ID, packetSize);
-	SER("	cityMapID=%d", packet.cityMapID);
+	SER("	CityMapID=%d", packet.CityMapID);
 	SER("}");
 
 	return str.data();
@@ -1760,8 +1772,9 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 
 	SER("HQ_PartyEnqueue(%d, %d) :: {", In::HQ_PartyEnqueue::NET_ID, packetSize);
 	SER("	partyUID=0x%08x", packet.partyUID);
-	SER("	areaIndex=%d", packet.areaIndex);
+	SER("	areaIndex=%d", (i32)packet.areaIndex);
 	SER("	stageIndex=%d", (i32)packet.stageIndex);
+	SER("	mapIndex=%d", (i32)packet.mapIndex);
 	SER("}");
 
 	return str.data();
@@ -1911,8 +1924,9 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 	}
 	SER("	]");
 	SER("	gameType=%d", (i32)packet.gameType);
-	SER("	areaIndex=%d", packet.areaIndex);
+	SER("	areaIndex=%d", (i32)packet.areaIndex);
 	SER("	stageIndex=%d", (i32)packet.stageIndex);
+	SER("	mapIndex=%d", (i32)packet.mapIndex);
 	SER("	canEscape=%u", packet.canEscape);
 	SER("	surrenderAbleTime=%d", packet.surrenderAbleTime);
 	SER("}");
@@ -2153,7 +2167,6 @@ DEFAULT_SERIALIZE(Sv::SN_PlayerSyncActionStateOnly);
 DEFAULT_SERIALIZE(Sv::SN_JukeboxPlay);
 DEFAULT_SERIALIZE(Sv::SN_JukeboxEnqueuedList);
 DEFAULT_SERIALIZE(Sv::SN_TownHudStatistics);
-DEFAULT_SERIALIZE(Sv::SA_AuthResult);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildProfile);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildMemberList);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildHistoryList);

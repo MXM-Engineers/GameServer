@@ -520,7 +520,7 @@ void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(ClientHandle client
 		return;
 	}
 	const Cl::CQ_RequestAreaPopularity& req = SafeCast<Cl::CQ_RequestAreaPopularity>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientHd, req.areaID);
+	NT_LOG("[client%x] Client :: CQ_RequestAreaPopularity :: { area=%d }", clientHd, (i32)req.areaID);
 
 	replication->SendAreaPopularity(clientHd, req.areaID);
 }

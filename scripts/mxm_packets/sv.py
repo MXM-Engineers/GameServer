@@ -3692,8 +3692,8 @@ class ServerSerializer:
 
     def serialize_62482(netid, p: common.PacketReader):
         print('SA_RTT_Time {')
-        print('    clientTimeStamp=%u' % p.read_u32())
-        print('    serverTimeStamp=%d' % p.read_i64())
+        print('    clientTimestamp=%u' % p.read_u32())
+        print('    serverTimestamp=%d' % p.read_i64())
         print('}')
 
     def serialize_62483(netid, p: common.PacketReader):
@@ -4481,7 +4481,7 @@ class ServerSerializer:
         print('}')
     def serialize_62005(netid, p: common.PacketReader):
         print('SA_AuthResult {')
-        print('    result=%d' % p.read_i32())
+        print('    nResult=%d' % p.read_i32())
         print('}')
 
     def serialize_62006(netid, p: common.PacketReader):
@@ -5020,7 +5020,7 @@ class ServerSerializer:
 
     def serialize_62091(netid, p: common.PacketReader):
         print('SN_CityMapInfo {')
-        print('    cityMapID=%d' % p.read_i32())
+        print('    CityMapID=%d' % p.read_i32())
         print('}')
 
     def serialize_62097(netid, p: common.PacketReader):
@@ -5489,7 +5489,7 @@ class ServerSerializer:
 
     def serialize_62224(netid, p: common.PacketReader):
         print('SN_UpdateGameOwner {')
-        print('    userID=0x%08x' % p.read_u32())
+        print('    userId=0x%08x' % p.read_u32())
         print('}')
 
     def serialize_62227(netid, p: common.PacketReader):

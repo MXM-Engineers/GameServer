@@ -595,14 +595,14 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 		WARN("[client%x] Client failed to authenticate", clientHd);
 
 		Sv::SA_AuthResult auth;
-		auth.result = 0;
+		auth.nResult = 0;
 		SendPacket(clientHd, auth);
 		server->DisconnectClient(clientHd);
 		return;
 	}
 
 	Sv::SA_AuthResult auth;
-	auth.result = 91;
+	auth.nResult = 91;
 	SendPacket(clientHd, auth);
 
 	LOG("[client%x] Client authenticated (accountuID=%u sortieUID=%llu)", clientHd, accountUID, sortieUID);
@@ -632,11 +632,12 @@ void Coordinator::CreateDevGame()
 	game.playerCount = 6;
 	game.spectatorCount = 0;
 	game.gameType = GameType::PVP_Tutorial;
-	i32 areaID = 0;
-	i32 stageID = 0;
+	AreaIndex areaID = AreaIndex(0);
+	StageIndex stageID = StageIndex(0);
 	ASSERT(content.FindQueueAreaStage((i32)EntrySystemID::ARENA_3v3, &areaID, &stageID));
 	game.areaIndex = areaID;
-	game.stageIndex = (StageIndex)stageID;
+	game.stageIndex = stageID;
+	game.mapIndex = MapIndex::PVP_DEATHMATCH;
 	game.canEscape = 1;
 	game.surrenderAbleTime = 180000;
 

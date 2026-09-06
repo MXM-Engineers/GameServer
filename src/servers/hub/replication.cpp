@@ -194,16 +194,16 @@ void HubReplication::SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex)
 		packet.Write<u16>(10);
 
 		const Sv::SN_SummaryInfoLatest::Info infoList[10] = {
-			{ 220002200, 200002201, 3, 220002201, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002204, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002205, 0, (i64)0xa6605c00 },
-			{ 220005100, 200005101, 3, 220005101, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005102, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005105, 0, (i64)0x6a2bfc00 },
-			{ 220003300, 200003301, 3, 220003301, 0, (i64)0xe0c7fa00 },
-			{ 220003300, 200003301, 3, 220003305, 0, (i64)0xe0c7fa00 },
-			{ 220004100, 200004101, 3, 220004101, 0, (i64)0x9eea8400 },
-			{ 220004100, 200004101, 3, 220004105, 0, (i64)0x9eea8400 },
+			{ 220002200, StageIndex(200002201), 3, 220002201, 0, (i64)0xa6605c00 },
+			{ 220002200, StageIndex(200002201), 3, 220002204, 0, (i64)0xa6605c00 },
+			{ 220002200, StageIndex(200002201), 3, 220002205, 0, (i64)0xa6605c00 },
+			{ 220005100, StageIndex(200005101), 3, 220005101, 0, (i64)0x6a2bfc00 },
+			{ 220005100, StageIndex(200005101), 3, 220005102, 0, (i64)0x6a2bfc00 },
+			{ 220005100, StageIndex(200005101), 3, 220005105, 0, (i64)0x6a2bfc00 },
+			{ 220003300, StageIndex(200003301), 3, 220003301, 0, (i64)0xe0c7fa00 },
+			{ 220003300, StageIndex(200003301), 3, 220003305, 0, (i64)0xe0c7fa00 },
+			{ 220004100, StageIndex(200004101), 3, 220004101, 0, (i64)0x9eea8400 },
+			{ 220004100, StageIndex(200004101), 3, 220004105, 0, (i64)0x9eea8400 },
 		};
 
 		packet.WriteRaw(infoList, sizeof(infoList));
@@ -233,7 +233,7 @@ void HubReplication::SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = (MapIndex)Config().LobbyMap;
+	cityMapInfo.CityMapID = (MapIndex)Config().LobbyMap;
 	SendPacket(clientHd, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
@@ -794,7 +794,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 2, 190009205 }
+				{ 2, AreaIndex(190009205) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -810,7 +810,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 3, 190009204 }
+				{ 3, AreaIndex(190009204) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -826,7 +826,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 4, 190004000 }
+				{ 4, AreaIndex(190004000) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -842,12 +842,12 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 5, 190000006 },
-				{ 6, 190000007 },
-				{ 7, 190000008 },
-				{ 8, 190000009 },
-				{ 9, 190000010 },
-				{ 10, 190000011 },
+				{ 5, AreaIndex(190000006) },
+				{ 6, AreaIndex(190000007) },
+				{ 7, AreaIndex(190000008) },
+				{ 8, AreaIndex(190000009) },
+				{ 9, AreaIndex(190000010) },
+				{ 10, AreaIndex(190000011) },
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -931,7 +931,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 11, 190001000 }
+				{ 11, AreaIndex(190001000) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -947,7 +947,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 1, 190002101 }
+				{ 1, AreaIndex(190002101) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -978,7 +978,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 18, 190002200 }
+				{ 18, AreaIndex(190002200) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -1537,12 +1537,12 @@ void HubReplication::SendCalendar(ClientHandle clientHd)
 	}
 }
 
-void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
+void HubReplication::SendAreaPopularity(ClientHandle clientHd, AreaIndex areaID)
 {
 	const GameXmlContent& content = GetGameXmlContent();
 	bool known = false;
 	for(auto& area : content.areaStages) {
-		if(area.ID == (i32)areaID) { known = true; break; }
+		if(area.ID == areaID) { known = true; break; }
 	}
 
 	{
@@ -1554,7 +1554,7 @@ void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 	{
 		PacketWriter<Sv::SN_AreaPopularity> packet;
 
-		packet.Write<u32>(areaID);
+		packet.Write(areaID);
 		if(!known) {
 			packet.Write<u16>(0);
 			SendPacket(clientHd, packet);
@@ -1563,17 +1563,17 @@ void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 		i32 gameType = 1;
 		for(auto& entry : content.entrySystems) {
 			for(auto id : entry.areas) {
-				if(id != (i32)areaID) continue;
+				if(id != areaID) continue;
 				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
 			}
 			for(auto id : entry.scheduleAreas) {
-				if(id != (i32)areaID) continue;
+				if(id != areaID) continue;
 				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
 			}
 		}
 		u16 count = 0;
 		for(auto& area : content.areaStages) {
-			if(area.ID != (i32)areaID) continue;
+			if(area.ID != areaID) continue;
 			for(auto stageID : area.stages) {
 				(void)stageID;
 				count++;
@@ -1581,9 +1581,9 @@ void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
 		}
 		packet.Write<u16>(count);
 		for(auto& area : content.areaStages) {
-			if(area.ID != (i32)areaID) continue;
+			if(area.ID != areaID) continue;
 			for(auto stageID : area.stages) {
-				packet.Write<i32>(stageID);
+				packet.Write(stageID);
 				packet.Write<i32>(gameType);
 				packet.Write<i32>(1);
 			}

@@ -42,8 +42,9 @@ struct HubGame
 		const PartyUID UID;
 		EntrySystemID entry;
 		StageType stageType;
-		i32 areaIndex = 0;
+		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 
 		eastl::fixed_vector<Member,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on

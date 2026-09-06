@@ -322,9 +322,10 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 	auto f = partyMap.find(partyUID);
 	if(f == partyMap.end()) return;
 	const Party& party = *f->second;
-	ASSERT(party.areaIndex != 0);
+	ASSERT(party.areaIndex != AreaIndex(0));
 	ASSERT(party.stageIndex != StageIndex(0));
-	matchmaker->QueryPartyEnqueue(partyUID, party.areaIndex, party.stageIndex);
+	ASSERT(party.mapIndex != MapIndex(0));
+	matchmaker->QueryPartyEnqueue(partyUID, party.areaIndex, party.stageIndex, party.mapIndex);
 }
 
 void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
@@ -360,11 +361,14 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 	partyMap.emplace(partyUID, --partyList.end());
 	party.entry = pendingPartyEntry[userID];
 	party.stageType = pendingPartyStage[userID];
-	i32 areaID = 0;
-	i32 stageID = 0;
+	AreaIndex areaID = AreaIndex(0);
+	StageIndex stageID = StageIndex(0);
+	MapIndex mapID = MapIndex(0);
 	ASSERT(GetGameXmlContent().FindQueueAreaStage((i32)party.entry, &areaID, &stageID));
+	ASSERT(GetGameXmlContent().FindStageMap(stageID, &mapID));
 	party.areaIndex = areaID;
-	party.stageIndex = (StageIndex)stageID;
+	party.stageIndex = stageID;
+	party.mapIndex = mapID;
 
 	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
 }

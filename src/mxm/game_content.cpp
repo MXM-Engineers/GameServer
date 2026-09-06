@@ -592,7 +592,9 @@ bool GameXmlContent::LoadMapList()
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
 		MapList mapList;
-		pMapElt->QueryAttribute("_Index", &mapList.index);
+		i32 mapDocID = 0;
+		pMapElt->QueryAttribute("_Index", &mapDocID);
+		mapList.index = MapIndex(mapDocID);
 
 		const char* levelFileTemp;
 		pMapElt->QueryStringAttribute("_LevelFile", &levelFileTemp);
@@ -619,11 +621,11 @@ bool GameXmlContent::LoadMapList()
 	return true;
 }
 
-bool GameXmlContent::LoadMapByID(Map* map, i32 index)
+bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 {
 	const MapList* mapList = FindMapListByID(index);
 	if (!mapList){
-		LOG("ERROR(LoadMapByID): Map not found %d", index);
+		LOG("ERROR(LoadMapByID): Map not found %d", (i32)index);
 		return false;
 	}
 
@@ -717,17 +719,17 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 }
 
 
-bool GameXmlContent::LoadLobby(i32 index)
+bool GameXmlContent::LoadLobby(MapIndex index)
 {
 	const MapList* map = FindMapListByID(index);
 	if (!map) {
-		LOG("ERROR(LoadLobby): Map not found %d", index);
+		LOG("ERROR(LoadLobby): Map not found %d", (i32)index);
 		return false;
 	};
 
 	if (map->mapType != MapType::MAP_CITY)
 	{
-		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
+		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", (i32)index);
 		return false;
 	}
 
@@ -736,13 +738,13 @@ bool GameXmlContent::LoadLobby(i32 index)
 
 bool GameXmlContent::LoadPvpDeathmach()
 {
-	const MapList* map = FindMapListByID(160000094);
+	const MapList* map = FindMapListByID(MapIndex::PVP_DEATHMATCH);
 	if (!map) {
-		LOG("ERROR(LoadPvpDeathmach): Map not found %d", 160000094);
+		LOG("ERROR(LoadPvpDeathmach): Map not found %d", (i32)MapIndex::PVP_DEATHMATCH);
 		return false;
 	};
 
-	return LoadMapByID(&mapPvpDeathMatch, 160000094);
+	return LoadMapByID(&mapPvpDeathMatch, MapIndex::PVP_DEATHMATCH);
 }
 
 bool GameXmlContent::LoadEntrySystems()
@@ -764,7 +766,7 @@ bool GameXmlContent::LoadEntrySystems()
 			pArea = pArea->NextSiblingElement("_Area")) {
 			i32 areaID = 0;
 			if(pArea->QueryIntAttribute("DATA", &areaID) != XML_SUCCESS) continue;
-			if(entry.areas.size() < entry.areas.capacity()) entry.areas.push_back(areaID);
+			if(entry.areas.size() < entry.areas.capacity()) entry.areas.push_back(AreaIndex(areaID));
 		}
 		if(entrySystems.size() < entrySystems.capacity()) entrySystems.push_back(entry);
 	}
@@ -776,13 +778,15 @@ bool GameXmlContent::LoadEntrySystems()
 		pInfo;
 		pInfo = pInfo->NextSiblingElement()) {
 		AreaStages area;
-		if(pInfo->QueryIntAttribute("ID", &area.ID) != XML_SUCCESS) continue;
+		i32 areaDocID = 0;
+		if(pInfo->QueryIntAttribute("ID", &areaDocID) != XML_SUCCESS) continue;
+		area.ID = AreaIndex(areaDocID);
 		for(XMLElement* pStage = pInfo->FirstChildElement()->FirstChildElement("_StageList");
 			pStage;
 			pStage = pStage->NextSiblingElement("_StageList")) {
 			i32 stageID = 0;
 			if(pStage->QueryIntAttribute("_NormalStageIndex", &stageID) != XML_SUCCESS) continue;
-			if(stageID != 0 && area.stages.size() < area.stages.capacity()) area.stages.push_back(stageID);
+			if(stageID != 0 && area.stages.size() < area.stages.capacity()) area.stages.push_back(StageIndex(stageID));
 		}
 		if(areaStages.size() < areaStages.capacity()) areaStages.push_back(area);
 	}
@@ -808,7 +812,7 @@ bool GameXmlContent::LoadEntrySystems()
 				pArea = pArea->NextSiblingElement("_AREA")) {
 				i32 areaID = 0;
 				if(pArea->QueryIntAttribute("_AreaIndex", &areaID) != XML_SUCCESS) continue;
-				if(areaID != 0 && entry.scheduleAreas.size() < entry.scheduleAreas.capacity()) entry.scheduleAreas.push_back(areaID);
+				if(areaID != 0 && entry.scheduleAreas.size() < entry.scheduleAreas.capacity()) entry.scheduleAreas.push_back(AreaIndex(areaID));
 			}
 		}
 	}
@@ -827,7 +831,7 @@ bool GameXmlContent::HasEntrySystem(i32 entryID) const
 	return false;
 }
 
-bool GameXmlContent::FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* outStageIndex) const
+bool GameXmlContent::FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const
 {
 	for(auto& entry : entrySystems) {
 		if(entry.ID != entryID) continue;
@@ -835,8 +839,8 @@ bool GameXmlContent::FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* out
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
 				for(auto stageID : area.stages) {
-					*outAreaIndex = area.ID;
-					*outStageIndex = stageID;
+					*outAreaIndex = AreaIndex(area.ID);
+					*outStageIndex = StageIndex(stageID);
 					return true;
 				}
 			}
@@ -845,13 +849,58 @@ bool GameXmlContent::FindQueueAreaStage(i32 entryID, i32* outAreaIndex, i32* out
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
 				for(auto stageID : area.stages) {
-					*outAreaIndex = area.ID;
-					*outStageIndex = stageID;
+					*outAreaIndex = AreaIndex(area.ID);
+					*outStageIndex = StageIndex(stageID);
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	return false;
+}
+
+bool GameXmlContent::LoadStageMaps()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/STAGELIST.xml", doc)) return false;
+
+	for(XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		StageMaps stage;
+		i32 stageDocID = 0;
+		if(pInfo->QueryIntAttribute("ID", &stageDocID) != XML_SUCCESS) continue;
+		stage.ID = StageIndex(stageDocID);
+		XMLElement* pStage = pInfo->FirstChildElement();
+		if(!pStage) continue;
+		XMLElement* pWorldMap = pStage->FirstChildElement("_WORLD_STAGE_MAP");
+		if(!pWorldMap) continue;
+		for(XMLElement* pGroup = pWorldMap->FirstChildElement("_WORLD_STAGE_MAP_GROUP");
+			pGroup;
+			pGroup = pGroup->NextSiblingElement("_WORLD_STAGE_MAP_GROUP")) {
+			for(XMLElement* pMap = pGroup->FirstChildElement("_WORLD_STAGE_MAPINFO");
+				pMap;
+				pMap = pMap->NextSiblingElement("_WORLD_STAGE_MAPINFO")) {
+				i32 mapID = 0;
+				if(pMap->QueryIntAttribute("_Index", &mapID) != XML_SUCCESS) continue;
+				if(mapID != 0 && stage.maps.size() < stage.maps.capacity()) stage.maps.push_back(MapIndex(mapID));
+			}
+		}
+		if(!stage.maps.empty() && stageMaps.size() < stageMaps.capacity()) stageMaps.push_back(stage);
+	}
+
+	LOG("Loaded %d stage maps", (i32)stageMaps.size());
+	return true;
+}
+
+bool GameXmlContent::FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const
+{
+	for(auto& stage : stageMaps) {
+		if(stage.ID != stageID) continue;
+		if(stage.maps.empty()) return false;
+		*outMapIndex = stage.maps[0];
+		return true;
 	}
 	return false;
 }
@@ -1356,7 +1405,7 @@ bool GameXmlContent::Load()
 	r = LoadMapList();
 	if (!r) return false;
 
-	r = LoadLobby(160000042);
+	r = LoadLobby(MapIndex::LOBBY_NORMAL);
 	if (!r) return false;
 
 	r = LoadPvpDeathmach();
@@ -1366,6 +1415,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadEntrySystems();
+	if(!r) return false;
+
+	r = LoadStageMaps();
 	if(!r) return false;
 
 	r = LoadBotCreatures();
@@ -1516,7 +1568,7 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 	return SkillType::INVALID;
 }
 
-const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const
+const GameXmlContent::MapList* GameXmlContent::FindMapListByID(MapIndex index) const
 {
 	foreach(it, maplists) {
 		if (it->index == index) {

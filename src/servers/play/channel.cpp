@@ -1,5 +1,7 @@
 #include "channel.h"
 #include <common/packet_serialize.h>
+#include <common/packet_validator.h>
+
 
 #include "coordinator.h"
 #include <mxm/game_content.h>
@@ -67,32 +69,49 @@ void GamePacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& head
 		} break;
 	}
 
-#undef HANDLE_CASE
+#undef CASE
 }
 
 void GamePacketHandler::HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CN_ReadyToLoadGame ::", clientHd);
+	if(!ValidatePacket<Cl::CN_ReadyToLoadGameMap>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ReadyToLoadGameMap (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_ReadyToLoadGameMap>(packetData, packetSize));
 	game->OnPlayerReadyToLoad(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CA_SetGameGvt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_SetGameGvt>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_SetGameGvt (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CA_SetGameGvt>(packetData, packetSize));
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientHd, gvt.sendTime, gvt.virtualTime, gvt.unk);
+	(void)gvt;
 }
 
 void GamePacketHandler::HandlePacket_CN_GameMapLoaded(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CN_GameMapLoaded ::", clientHd);
+	if(!ValidatePacket<Cl::CN_GameMapLoaded>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GameMapLoaded (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_GameMapLoaded>(packetData, packetSize));
 	game->OnPlayerGameMapLoaded(clientHd);
 	replication->SetPlayerAsInGame(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetCharacterInfo>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetCharacterInfo (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetCharacterInfo>(packetData, packetSize));
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=0x%08x", clientHd, (u32)req.characterID);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -107,18 +126,12 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 {
 	ProfileFunction();
 
+	if(!ValidatePacket<Cl::CN_GameUpdatePosition>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GameUpdatePosition (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_GameUpdatePosition>(packetData, packetSize));
 	Cl::CN_GameUpdatePosition update = SafeCast<Cl::CN_GameUpdatePosition>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_GameUpdatePosition :: {", clientHd);
-	NT_LOG("	characterID=0x%08x", (u32)update.characterID);
-	NT_LOG("	p3nPos=(%g, %g, %g)", update.p3nPos.x, update.p3nPos.y, update.p3nPos.z);
-	NT_LOG("	p3nDir=(%g, %g)", update.p3nDir.x, update.p3nDir.y);
-	NT_LOG("	rot=(upperYaw=%g, upperPitch=%g, bodyYaw=%g)", update.upperYaw, update.upperPitch, update.bodyYaw);
-	NT_LOG("	nSpeed=%g", update.nSpeed);
-	NT_LOG("	unk1=%u", update.unk1);
-	NT_LOG("	actionState=%s (%d)", ActionStateToString(update.actionState), update.actionState);
-	NT_LOG("	localTimeS=%g", update.localTimeS);
-	NT_LOG("	unk2=%u", update.unk2);
-	NT_LOG("}");
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -126,19 +139,6 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 		return;
 	}
 
-	/*
-	const f64 serverTime = TimeDiffSec(TimeRelNow());
-	const i32 clientID = plidMap.Get(clientHd);
-	f64 clientDelta = (f64)update.localTimeS - clientTime[clientID].posClient;
-	f64 serverDelta = serverTime - clientTime[clientID].posServer;
-
-	clientTime[clientID].posClient = update.localTimeS;
-	clientTime[clientID].posServer = serverTime;
-
-	LOG("clientDelta=%g serverDelta=%g", clientDelta, serverDelta);
-	*/
-
-	// transform rotation for our coordinate system
 	RotationHumanoid rot = RotConvertToWorld({ update.upperYaw, update.upperPitch, update.bodyYaw });
 
 	game->OnPlayerUpdatePosition(clientHd, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, update.localTimeS);
@@ -148,8 +148,12 @@ void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd
 {
 	ProfileFunction();
 
+	if(!ValidatePacket<Cl::CN_GameUpdateRotation>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GameUpdateRotation (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_GameUpdateRotation>(packetData, packetSize));
 	Cl::CN_GameUpdateRotation update = SafeCast<Cl::CN_GameUpdateRotation>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_GameUpdateRotation :: { characterID=0x%08x upperYaw=%f upperPitch=%f bodyYaw=%f }", clientHd, (u32)update.characterID, update.upperYaw, update.upperPitch, update.bodyYaw);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -157,7 +161,6 @@ void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd
 		return;
 	}
 
-	// transform rotation for our coordinate system
 	RotationHumanoid rot;
 	rot.upperYaw = MxmYawToWorldYaw(update.upperYaw);
 	rot.upperPitch = MxmPitchToWorldPitch(update.upperPitch);
@@ -167,40 +170,39 @@ void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd
 
 void GamePacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ChannelChatMessage>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ChannelChatMessage (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_ChannelChatMessage>(packetData, packetSize));
 	ConstBuffer buff(packetData, packetSize);
 	i32 chatType = buff.Read<i32>();
 	const u16 msgLen = buff.Read<u16>();
 	const wchar* msg = (wchar*)buff.ReadRaw(msgLen * 2);
-
-	NT_LOG("[client%x] Client :: CN_ChannelChatMessage :: chatType=%d msg='%.*S'", clientHd, chatType, msgLen, msg);
 
 	game->OnPlayerChatMessage(clientHd, chatType, msg, msgLen);
 }
 
 void GamePacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_SetLeaderCharacter>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_SetLeaderCharacter (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_SetLeaderCharacter>(packetData, packetSize));
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=0x%08x skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientHd, leader.characterID, leader.skinIndex);
 }
 
 void GamePacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GamePlayerSyncActionStateOnly (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize));
 	Cl::CN_GamePlayerSyncActionStateOnly sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
-
-	const char* stateStr = ActionStateToString(sync.state);
-
-	NT_LOG("[client%x] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientHd);
-	NT_LOG("	characterID=0x%08x", (u32)sync.characterID);
-	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
-	NT_LOG("	bApply=%d", sync.bApply);
-	NT_LOG("	param1=%d", sync.param1);
-	NT_LOG("	param2=%d", sync.param2);
-	NT_LOG("	i4=%d", sync.i4);
-	NT_LOG("	rotate=%g", sync.rotate);
-	NT_LOG("	upperRotate=%g", sync.upperRotate);
-	NT_LOG("}");
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, sync.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -215,6 +217,11 @@ void GamePacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHand
 
 void GamePacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_WhisperSend>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_WhisperSend (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_WhisperSend>(packetData, packetSize));
 	ConstBuffer buff(packetData, packetSize);
 	WideString destNick;
 	eastl::fixed_string<wchar,256,true> msg;
@@ -232,70 +239,86 @@ void GamePacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const
 
 void GamePacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RTT_Time>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RTT_Time (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_RTT_Time>(packetData, packetSize));
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_RTT_Time :: { time=%u }", clientHd, rtt.time);
-
-
-	const i64 serverTime = (i64)TimeDiffMs(TimeRelNow());
-	/*const i32 clientID = plidMap.Get(clientHd);
-	i64 clientDelta = (i64)rtt.time - (i64)clientTime[clientID].rttClient;
-	i64 serverDelta = serverTime - clientTime[clientID].rttServer;
-
-	clientTime[clientID].rttClient = rtt.time;
-	clientTime[clientID].rttServer = serverTime;
-
-	LOG("clientDelta=%lld serverDelta=%lld", clientDelta, serverDelta);*/
 
 	Sv::SA_RTT_Time answer;
 	answer.clientTimestamp = rtt.time;
-	answer.serverTimestamp = serverTime;
-	LOG("[client%x] Server :: %s", clientHd, PacketSerialize<Sv::SA_RTT_Time>(&answer, sizeof(answer)));
-	server->SendPacket(clientHd, answer);
+	answer.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
+	SendPacket(clientHd, answer);
 }
 
 void GamePacketHandler::HandlePacket_CQ_LoadingProgressData(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_LoadingProgressData :: { progress=%u }", clientHd, loading.progress);
+	if(!ValidatePacket<Cl::CQ_LoadingProgressData>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_LoadingProgressData (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_LoadingProgressData>(packetData, packetSize));
 }
 
 void GamePacketHandler::HandlePacket_CQ_LoadingComplete(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CQ_LoadingComplete", clientHd);
+	if(!ValidatePacket<Cl::CQ_LoadingComplete>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_LoadingComplete (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_LoadingComplete>(packetData, packetSize));
 	game->OnPlayerLoadingComplete(clientHd);
 	replication->SetPlayerLoaded(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CQ_GameIsReady(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CQ_GameIsReady", clientHd);
+	if(!ValidatePacket<Cl::CQ_GameIsReady>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GameIsReady (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GameIsReady>(packetData, packetSize));
 	game->OnPlayerGameIsReady(clientHd);
 }
 
 void GamePacketHandler::HandlePacket_CQ_GamePlayerTag(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GamePlayerTag>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GamePlayerTag (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GamePlayerTag>(packetData, packetSize));
 	const Cl::CQ_GamePlayerTag& tag = SafeCast<Cl::CQ_GamePlayerTag>(packetData, packetSize);
-
-	NT_LOG("[client%x] Client :: CQ_GamePlayerTag :: localActorID=%d", clientHd, tag.characterID);
 	game->OnPlayerTag(clientHd, replication->GetWorldActorUID(clientHd, tag.characterID));
 }
 
 void GamePacketHandler::HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PlayerJump>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PlayerJump (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PlayerJump>(packetData, packetSize));
 	ConstBuffer buff(packetData, packetSize);
 	const u8 excludedFieldBits = buff.Read<u8>();
 	const i32 actionID = buff.Read<i32>();
+	(void)excludedFieldBits;
+	(void)actionID;
 	const LocalActorID actorID = buff.Read<LocalActorID>();
 	const f32 rotate = buff.Read<f32>();
 	const f32 moveDirX = buff.Read<f32>();
 	const f32 moveDirY = buff.Read<f32>();
 
-	NT_LOG("[client%x] Client :: CQ_PlayerJump :: localActorID=%d", clientHd, actorID);
 	game->OnPlayerJump(clientHd, replication->GetWorldActorUID(clientHd, actorID), rotate, moveDirX, moveDirY);
 }
 
 void GamePacketHandler::HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PlayerCastSkill>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PlayerCastSkill (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PlayerCastSkill>(packetData, packetSize));
 
 	PlayerInputCastSkill cast;
@@ -314,7 +337,6 @@ void GamePacketHandler::HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, c
 
 	posInfo = buff.Read<Cl::CQ_PlayerCastSkill::PosStruct>();
 
-	// convert rotation
 	RotationHumanoid rot = RotConvertToWorld({ posInfo.rot.x, posInfo.rot.y, posInfo.rot.z });
 	posInfo.rot = { rot.upperYaw, rot.upperPitch, rot.bodyYaw };
 

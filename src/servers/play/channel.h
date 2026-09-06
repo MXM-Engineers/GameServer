@@ -1,5 +1,7 @@
 #pragma once
 #include "game.h"
+#include <common/packet_serialize.h>
+
 
 struct GamePacketHandler
 {
@@ -46,4 +48,17 @@ private:
 	void HandlePacket_CQ_GamePlayerTag(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_PlayerJump(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_PlayerCastSkill(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	template<typename Packet>
+	inline void SendPacket(ClientHandle clientHd, const Packet& packet)
+	{
+		SendPacketData<Packet>(clientHd, sizeof(packet), &packet);
+	}
+
+	template<typename Packet>
+	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
+	{
+		NT_LOG("[client%x] Play :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
+		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
+	}
 };

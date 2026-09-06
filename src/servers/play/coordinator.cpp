@@ -1,5 +1,7 @@
 #include <mxm/game_content.h>
 #include <common/packet_serialize.h>
+#include <common/packet_validator.h>
+
 #include <common/inner_protocol.h>
 #include <zlib.h>
 
@@ -538,10 +540,14 @@ void Coordinator::HandleMatchmakerPacket(const NetHeader& header, const u8* pack
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_FirstHello>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_FirstHello (size=%d)", packetSize);
+		return;
+	}
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
+	(void)clHello;
 
-	// TODO: verify version, protocol, etc
 	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
 
@@ -562,16 +568,18 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 
 void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_AuthenticateGameServer>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_AuthenticateGameServer (size=%d)", packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_AuthenticateGameServer>(packetData, packetSize));
 
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
+	(void)nick;
 	const u32 instantKey = request.Read<u32>();
-	//i32 var2 = request.Read<i32>();
-	//u8 b1 = request.Read<u8>();
 
-	// check authentication
 	AccountUID accountUID = AccountUID::INVALID;
 	SortieUID sortieUID = SortieUID::INVALID;
 	foreach(e, pendingClientQueue) {
@@ -583,7 +591,6 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 		}
 	}
 
-	// failed to authenticate
 	if(accountUID == AccountUID::INVALID) {
 		WARN("[client%x] Client failed to authenticate", clientHd);
 
@@ -594,7 +601,6 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 		return;
 	}
 
-	// authentication success
 	Sv::SA_AuthResult auth;
 	auth.result = 91;
 	SendPacket(clientHd, auth);

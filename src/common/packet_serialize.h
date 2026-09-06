@@ -1942,6 +1942,148 @@ inline const char* PacketSerialize<In::MN_MatchCreated>(const void* packetData, 
 	return str.data();
 }
 
+template<>
+inline const char* PacketSerialize<Cl::CA_SetGameGvt>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CA_SetGameGvt(%d, %d) :: {", Cl::CA_SetGameGvt::NET_ID, packetSize);
+	SER("	sendTime=%d", buff.Read<i32>());
+	SER("	virtualTime=%d", buff.Read<i32>());
+	SER("	unk=%d", buff.Read<i32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_GetCharacterInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_GetCharacterInfo(%d, %d) :: {", Cl::CQ_GetCharacterInfo::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_GameUpdatePosition>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CN_GameUpdatePosition(%d, %d) :: {", Cl::CN_GameUpdatePosition::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("	p3nPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("	p3nDir=%s", PS::ToStr(buff.Read<float2>()));
+	SER("	upperYaw=%g", buff.Read<f32>());
+	SER("	upperPitch=%g", buff.Read<f32>());
+	SER("	bodyYaw=%g", buff.Read<f32>());
+	SER("	nSpeed=%g", buff.Read<f32>());
+	SER("	unk1=%u", buff.Read<u8>());
+	SER("	actionState=%d", buff.Read<ActionStateID>());
+	SER("	localTimeS=%g", buff.Read<f32>());
+	SER("	unk2=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_GameUpdateRotation>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CN_GameUpdateRotation(%d, %d) :: {", Cl::CN_GameUpdateRotation::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("	upperYaw=%g", buff.Read<f32>());
+	SER("	upperPitch=%g", buff.Read<f32>());
+	SER("	bodyYaw=%g", buff.Read<f32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_SetLeaderCharacter>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_SetLeaderCharacter(%d, %d) :: {", Cl::CQ_SetLeaderCharacter::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("	skinIndex=%d", buff.Read<SkinIndex>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_GamePlayerSyncActionStateOnly>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CN_GamePlayerSyncActionStateOnly(%d, %d) :: {", Cl::CN_GamePlayerSyncActionStateOnly::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("	state=%d", buff.Read<ActionStateID>());
+	SER("	bApply=%u", buff.Read<u8>());
+	SER("	param1=%d", buff.Read<i32>());
+	SER("	param2=%d", buff.Read<i32>());
+	SER("	i4=%d", buff.Read<i32>());
+	SER("	rotate=%g", buff.Read<f32>());
+	SER("	upperRotate=%g", buff.Read<f32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_RTT_Time>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_RTT_Time(%d, %d) :: {", Cl::CQ_RTT_Time::NET_ID, packetSize);
+	SER("	time=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_LoadingProgressData>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_LoadingProgressData(%d, %d) :: {", Cl::CQ_LoadingProgressData::NET_ID, packetSize);
+	SER("	progress=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_GamePlayerTag>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_GamePlayerTag(%d, %d) :: {", Cl::CQ_GamePlayerTag::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_PlayerJump>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_PlayerJump(%d, %d) :: {", Cl::CQ_PlayerJump::NET_ID, packetSize);
+	const u8 excludedFieldBits = buff.Read<u8>();
+	SER("	excludedFieldBits=%u", excludedFieldBits);
+	SER("	actionID=%d", buff.Read<i32>());
+	SER("	actorID=0x%08x", buff.Read<LocalActorID>());
+	SER("	rotate=%g", buff.Read<f32>());
+	SER("	moveDirX=%g", buff.Read<f32>());
+	SER("	moveDirY=%g", buff.Read<f32>());
+	if(!(excludedFieldBits & 0x10)) {
+		SER("	startPos=%s", PS::ToStr(buff.Read<float3>()));
+	}
+	SER("}");
+	return str.data();
+}
+
 #define DEFAULT_SERIALIZE(PACKET)\
 	template<>\
 	inline const char* PacketSerialize<PACKET>(const void* packetData, const i32 packetSize)\
@@ -2016,6 +2158,10 @@ DEFAULT_SERIALIZE(Cl::CQ_GetGuildProfile);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildMemberList);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildHistoryList);
 DEFAULT_SERIALIZE(Cl::CQ_TierRecord);
+DEFAULT_SERIALIZE(Cl::CN_ReadyToLoadGameMap);
+DEFAULT_SERIALIZE(Cl::CN_GameMapLoaded);
+DEFAULT_SERIALIZE(Cl::CQ_LoadingComplete);
+DEFAULT_SERIALIZE(Cl::CQ_GameIsReady);
 DEFAULT_SERIALIZE(Sv::SN_Unknown_62472);
 DEFAULT_SERIALIZE(Sv::SN_UpdateEntrySystem);
 

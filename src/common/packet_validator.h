@@ -181,3 +181,67 @@ inline bool ValidatePacket<Cl::CQ_PartyModify>(const void* packetData, i32 packe
 	buff.ReadRaw(count * sizeof(i32));
 	return buff.CanRead(sizeof(i32) + sizeof(i32) + sizeof(u8));
 }
+
+template<>
+inline bool ValidatePacket<Cl::CN_GameMapLoaded>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_LoadingComplete>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_GameIsReady>(const void* packetData, i32 packetSize)
+{
+	(void)packetData;
+	return packetSize == 0;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_AuthenticateGameServer>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 len = buff.Read<u16>();
+	if(!buff.CanRead(len * sizeof(wchar))) return false;
+	buff.ReadRaw(len * sizeof(wchar));
+	if(!buff.CanRead(sizeof(u32))) return false;
+	buff.ReadRaw(sizeof(u32));
+	if(!buff.CanRead(sizeof(i32))) return false;
+	buff.ReadRaw(sizeof(i32));
+	return buff.CanRead(sizeof(u8));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_PlayerJump>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u8))) return false;
+	const u8 excludedFieldBits = buff.Read<u8>();
+	if(!buff.CanRead(20)) return false;
+	buff.ReadRaw(20);
+	if(!(excludedFieldBits & 0x10)) {
+		if(!buff.CanRead(12)) return false;
+		buff.ReadRaw(12);
+	}
+	return true;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_PlayerCastSkill>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(LocalActorID) + sizeof(SkillID) + sizeof(float3) + sizeof(u16))) return false;
+	buff.ReadRaw(sizeof(LocalActorID) + sizeof(SkillID) + sizeof(float3));
+	const u16 count = buff.Read<u16>();
+	if(!buff.CanRead(count * sizeof(LocalActorID))) return false;
+	buff.ReadRaw(count * sizeof(LocalActorID));
+	return buff.CanRead(sizeof(Cl::CQ_PlayerCastSkill::PosStruct));
+}
+

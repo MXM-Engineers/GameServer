@@ -64,8 +64,8 @@ class ClientSerializer:
         print('}')
     def serialize_60038(netid, p: common.PacketReader):
         print('CN_PlayerTagCompleted {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
+        print('    actorID=%d' % p.read_u32())
+        print('    unk=%d' % p.read_i32())
         print('}')
     def serialize_60040(netid, p: common.PacketReader):
         print('CQ_PlayerCastSkill {')
@@ -188,12 +188,12 @@ class ClientSerializer:
     
     def serialize_60180(netid, p: common.PacketReader):
         print('CQ_WeaponState {')
-        print('    charcterID=%d' % p.read_i32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u8())
-        print('    field4=%d' % p.read_u8())
-        print('    field5=%d' % p.read_u32())
-        print('    field6=%d' % p.read_u32())
+        print('    unk0=%d' % p.read_u32())
+        print('    unk1=%d' % p.read_u32())
+        print('    unk2=%d' % p.read_u8())
+        print('    unk3=%d' % p.read_u8())
+        print('    unk4=%d' % p.read_u32())
+        print('    unk5=%d' % p.read_u32())
         print('}')
     def serialize_60235(netid, p: common.PacketReader):
         print('CQ_LoadingProgressData {')
@@ -1787,7 +1787,7 @@ class ClientSerializer:
         print('Cl_60264 {')
         print('}')
     def serialize_60267(netid, p: common.PacketReader):
-        print('Cl_60267 {')
+        print('CN_DisconnectByClient {')
         print('}')
     def serialize_60271(netid, p: common.PacketReader):
         print('CQ_CalendarSyncNotify {')

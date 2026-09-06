@@ -39,7 +39,7 @@ struct Matchmaker
 		{
 			Undecided = 0,
 			HubServer = 1,
-			PlayServer = 2
+			GameServer = 2
 		};
 
 		Type type; // TODO: timeout when undecided for a while
@@ -216,7 +216,7 @@ struct Matchmaker
 		switch(conn.type) {
 			case Connection::Type::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
 			case Connection::Type::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
-			case Connection::Type::PlayServer: OnPacketPlay(conn, header, packetData, packetSize); break;
+			case Connection::Type::GameServer: OnPacketGame(conn, header, packetData, packetSize); break;
 
 			default: {
 				ASSERT_MSG(0, "case not handled");
@@ -242,20 +242,20 @@ struct Matchmaker
 				LOG("[client%x] New Hub connection", conn.clientHd);
 			} break;
 
-			case In::PQ_Handshake::NET_ID: {
-				NT_LOG("[client%x] PQ_Handshake", conn.clientHd);
+			case In::GQ_Handshake::NET_ID: {
+				NT_LOG("[client%x] GQ_Handshake", conn.clientHd);
 
 				// TODO: check white list
 				// TODO: validate args
-				const In::PQ_Handshake& packet = SafeCast<In::PQ_Handshake>(packetData, packetSize);
-				conn.type = Connection::Type::PlayServer;
+				const In::GQ_Handshake& packet = SafeCast<In::GQ_Handshake>(packetData, packetSize);
+				conn.type = Connection::Type::GameServer;
 				conn.listenPort = packet.listenPort;
 
 				In::MR_Handshake resp;
 				resp.result = 1;
 				SendPacket(conn.clientHd, resp);
 
-				LOG("[client%x] New Play connection", conn.clientHd);
+				LOG("[client%x] New Game connection", conn.clientHd);
 			} break;
 
 			default: {
@@ -395,12 +395,12 @@ struct Matchmaker
 		}
 	}
 
-	void OnPacketPlay(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
+	void OnPacketGame(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
 	{
 		switch(header.netID) {
-			case In::PR_GameCreated::NET_ID: {
-				NT_LOG("[play%x] %s", conn.clientHd, PacketSerialize<In::PR_GameCreated>(packetData, packetSize));
-				const In::PR_GameCreated& packet = SafeCast<In::PR_GameCreated>(packetData, packetSize);
+			case In::GR_GameCreated::NET_ID: {
+				NT_LOG("[game%x] %s", conn.clientHd, PacketSerialize<In::GR_GameCreated>(packetData, packetSize));
+				const In::GR_GameCreated& packet = SafeCast<In::GR_GameCreated>(packetData, packetSize);
 
 				// TODO: validate args?
 
@@ -586,15 +586,15 @@ struct Matchmaker
 		}
 
 		// TODO: choose game server based on load
-		Connection* conn = GetAvailablePlayServer();
+		Connection* conn = GetAvailableGameServer();
 		ASSERT(conn);
 		SendPacket(conn->clientHd, packet);
 	}
 
-	Connection* GetAvailablePlayServer()
+	Connection* GetAvailableGameServer()
 	{
 		foreach(c, connList) {
-			if(c->type == Connection::Type::PlayServer) {
+			if(c->type == Connection::Type::GameServer) {
 				return &*c;
 			}
 		}

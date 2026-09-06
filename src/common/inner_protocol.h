@@ -5,7 +5,7 @@
 
 // MQ, MR: Matchmaker Query, Response
 // HQ, HR: Hub server Query, Response
-// PQ, PR: Play server Query, Response
+// GQ, GR: Game server Query, Response
 
 enum class AccountUID: u32 {
 	INVALID = 0
@@ -134,7 +134,7 @@ struct HQ_RoomCreateGame
 };
 POP_PACKED
 
-struct PQ_Handshake
+struct GQ_Handshake
 {
 	enum { NET_ID = 2001 };
 
@@ -142,7 +142,7 @@ struct PQ_Handshake
 	u16 listenPort;
 };
 
-struct PR_GameCreated
+struct GR_GameCreated
 {
 	enum { NET_ID = 2002 };
 

@@ -168,7 +168,7 @@ private:
 	template<typename Packet>
 	inline void SendPacketData(ClientHandle clientHd, u16 packetSize, const void* packetData)
 	{
-		NT_LOG("[client%x] Play :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
+		NT_LOG("[client%x] Game :: %s", clientHd, PacketSerialize<Packet>(packetData, packetSize));
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 };

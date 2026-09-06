@@ -25,7 +25,7 @@ bool MatchmakerConnector::Init()
 
 	conn.async.StartReceiving(); // TODO: move this to ConnectTo()?
 
-	In::PQ_Handshake handshake;
+	In::GQ_Handshake handshake;
 	handshake.magic = In::MagicHandshake;
 	handshake.listenPort = Config().ListenPort;
 	conn.SendPacket(handshake);
@@ -53,7 +53,7 @@ void MatchmakerConnector::Update()
 		foreach_const(q, queries) {
 			switch(q->type) {
 				case Query::Type::GameCreated: {
-					In::PR_GameCreated packet;
+					In::GR_GameCreated packet;
 					packet.sortieUID = q->GameCreated.sortieUID;
 					conn.SendPacket(packet);
 				} break;

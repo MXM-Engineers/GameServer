@@ -18,10 +18,10 @@ file(GLOB_RECURSE HUB_SOURCES CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/hub/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/hub/*.c
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/hub/*.cpp)
-file(GLOB_RECURSE PLAY_SOURCES CONFIGURE_DEPENDS
-	${CMAKE_CURRENT_SOURCE_DIR}/servers/play/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/servers/play/*.c
-	${CMAKE_CURRENT_SOURCE_DIR}/servers/play/*.cpp)
+file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
+	${CMAKE_CURRENT_SOURCE_DIR}/servers/game/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/servers/game/*.c
+	${CMAKE_CURRENT_SOURCE_DIR}/servers/game/*.cpp)
 file(GLOB_RECURSE MM_SOURCES CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/matchmaker/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/matchmaker/*.c
@@ -72,17 +72,17 @@ mxm_debug_suffix(hub_srv)
 
 # ---- GameServer (game_srv) ----
 add_executable(game_srv
-	${COMMON_SOURCES} ${MXM_SOURCES} ${PLAY_SOURCES}
+	${COMMON_SOURCES} ${MXM_SOURCES} ${GAME_SOURCES}
 	${EXTERNAL_DIR}/tinyxml2-8.0.0/tinyxml2.cpp
 	${EXTERNAL_DIR}/tracy-0.8/TracyClient.cpp)
 if(WIN32)
-	target_sources(game_srv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/servers/play/game_rc.rc)
+	target_sources(game_srv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/servers/game/game_rc.rc)
 endif()
 target_include_directories(game_srv PRIVATE
 	${SERVER_COMMON_INCLUDES}
 	${EXTERNAL_DIR}/sokol
 	${EXTERNAL_DIR}/imgui-1.81
-	${CMAKE_CURRENT_SOURCE_DIR}/servers/play)
+	${CMAKE_CURRENT_SOURCE_DIR}/servers/game)
 target_link_libraries(game_srv PRIVATE
 	${SERVER_COMMON_LINKS} ${SERVER_COMMON_LINKS_WIN} imgui sokol physx)
 target_compile_definitions(game_srv PRIVATE ${SERVER_COMMON_DEFINES})

@@ -59,7 +59,7 @@
     - This would replace the "physics engine" while navigating
 
 # Matchmaking
-* ✅ matchmaker connector for play servers
+* ✅ matchmaker connector for game servers
 * ✅ create game when matchmaker requests it
     - ✅ Actually create game when everyone is connected to the instance
     - ✅ Send account / game info and start loading

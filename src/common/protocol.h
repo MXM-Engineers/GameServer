@@ -632,7 +632,7 @@ struct CN_PlayerTagCompleted
 {
 	enum { NET_ID = 60038 };
 
-	LocalActorID playerID;
+	LocalActorID actorID;
 	i32 unk;
 };
 ASSERT_SIZE(CN_PlayerTagCompleted, 8);
@@ -2179,12 +2179,12 @@ PUSH_PACKED
 struct CQ_WeaponState
 {
 	enum { NET_ID = 60180 };
-	u32 field0; // 4 bytes
-	u32 field0_3; // 4 bytes
-	u8 field1; // 1 bytes (bool)
-	u8 field2; // 1 bytes (bool)
-	u32 field3; // 4 bytes
-	u32 field4; // 4 bytes
+	u32 unk0;
+	u32 unk1;
+	u8 unk2;
+	u8 unk3;
+	u32 unk4;
+	u32 unk5;
 };
 POP_PACKED
 ASSERT_SIZE(CQ_WeaponState, 18);
@@ -3057,7 +3057,7 @@ struct CA_UNKNOWN_60266
 POP_PACKED
 
 PUSH_PACKED
-struct CA_UNKNOWN_60267
+struct CN_DisconnectByClient
 {
 	enum { NET_ID = 60267 };
 };

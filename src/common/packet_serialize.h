@@ -1915,12 +1915,12 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 }
 
 template<>
-inline const char* PacketSerialize<In::PR_GameCreated>(const void* packetData, const i32 packetSize)
+inline const char* PacketSerialize<In::GR_GameCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
-	const In::PR_GameCreated& packet = SafeCast<In::PR_GameCreated>(packetData, packetSize);
+	const In::GR_GameCreated& packet = SafeCast<In::GR_GameCreated>(packetData, packetSize);
 
-	SER("PR_GameCreated(%d, %d) :: {", In::PR_GameCreated::NET_ID, packetSize);
+	SER("GR_GameCreated(%d, %d) :: {", In::GR_GameCreated::NET_ID, packetSize);
 	SER("	sortieUID=%llu", packet.sortieUID);
 	SER("}");
 

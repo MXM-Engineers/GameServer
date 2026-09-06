@@ -826,9 +826,9 @@ inline const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetD
 		SER("	{");
 		SER("		characterID=0x%08x", chara.characterID);
 		SER("		creatureIndex=%d", chara.creatureIndex);
-		SER("		skillShot1=%d", chara.skillShot1);
-		SER("		skillShot2=%d", chara.skillShot2);
-		SER("		classType=%d", chara.classType);
+		SER("		skillSlot1=%d", chara.skillSlot1);
+		SER("		skillSlot2=%d", chara.skillSlot2);
+		SER("		class=%d", chara.classType);
 		SER("		x=%f", chara.x);
 		SER("		y=%f", chara.y);
 		SER("		z=%f", chara.z);
@@ -1113,6 +1113,29 @@ inline const char* PacketSerialize<Sv::SA_AuthResult>(const void* packetData, co
 
 	return str.data();
 }
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AccountInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_AccountInfo(%d, %d) :: {", Sv::SN_AccountInfo::NET_ID, packetSize);
+	SER("	Nickname='%S'", buff.ReadWideStringObj().data());
+	SER("	inventoryLineCountTab0=%d", buff.Read<i32>());
+	SER("	inventoryLineCountTab1=%d", buff.Read<i32>());
+	SER("	inventoryLineCountTab2=%d", buff.Read<i32>());
+	SER("	displayTitleIndex=%d", buff.Read<i32>());
+	SER("	statTitleIndex=%d", buff.Read<i32>());
+	SER("	warehouseLineCount=%d", buff.Read<i32>());
+	SER("	tutorialState=%d", buff.Read<i32>());
+	SER("	masterGearDurability=%d", buff.Read<i32>());
+	SER("	badgeType=%u", buff.Read<u8>());
+	SER("}");
+
+	return str.data();
+}
+
 template<>
 inline const char* PacketSerialize<Sv::SA_CalendarDetail>(const void* packetData, const i32 packetSize)
 {
@@ -1878,6 +1901,12 @@ inline const char* PacketSerialize<In::HQ_RoomCreateGame>(const void* packetData
 		SER("		skills[1]=%d", p->skills[1]);
 		SER("		skills[2]=%d", p->skills[2]);
 		SER("		skills[3]=%d", p->skills[3]);
+		SER("		weapons[0]=%d", p->weapons[0]);
+		SER("		weapons[1]=%d", p->weapons[1]);
+		SER("		masterGearNo[0]=%u", p->masterGearNo[0]);
+		SER("		masterGearNo[1]=%u", p->masterGearNo[1]);
+		SER("		characterType[0]=%d", p->characterType[0]);
+		SER("		characterType[1]=%d", p->characterType[1]);
 		SER("	},");
 	}
 
@@ -1914,6 +1943,12 @@ inline const char* PacketSerialize<In::MQ_CreateGame>(const void* packetData, co
 		SER("		skills[1]=%d", p->skills[1]);
 		SER("		skills[2]=%d", p->skills[2]);
 		SER("		skills[3]=%d", p->skills[3]);
+		SER("		weapons[0]=%d", p->weapons[0]);
+		SER("		weapons[1]=%d", p->weapons[1]);
+		SER("		masterGearNo[0]=%u", p->masterGearNo[0]);
+		SER("		masterGearNo[1]=%u", p->masterGearNo[1]);
+		SER("		characterType[0]=%d", p->characterType[0]);
+		SER("		characterType[1]=%d", p->characterType[1]);
 		SER("	},");
 	}
 	SER("	]");
@@ -2128,7 +2163,6 @@ DEFAULT_SERIALIZE(Sv::SA_WhisperSend);
 DEFAULT_SERIALIZE(Sv::SN_WhisperReceive);
 DEFAULT_SERIALIZE(Sv::SN_ProfileItems);
 DEFAULT_SERIALIZE(Sv::SN_ProfileMasterGears);
-DEFAULT_SERIALIZE(Sv::SN_AccountInfo);
 DEFAULT_SERIALIZE(Sv::SN_AccountEquipmentList);
 DEFAULT_SERIALIZE(Sv::SA_LoadingComplete);
 DEFAULT_SERIALIZE(Sv::SN_GameStart);

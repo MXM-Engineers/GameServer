@@ -62,6 +62,9 @@ struct RoomInstance
 			ClassType classType = ClassType::NONE;
 			SkinIndex skin = SkinIndex::DEFAULT;
 			eastl::array<SkillID,2> skills = { SkillID::INVALID, SkillID::INVALID };
+			WeaponIndex weapon = WeaponIndex::INVALID;
+			u8 masterGearNo = 1;
+			i32 characterType = 1;
 		};
 
 		const ClientHandle clientHd;

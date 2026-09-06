@@ -460,8 +460,8 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
 			chara.creatureIndex = it->ID;
-			chara.skillShot1 = it->skillIDs[0];
-			chara.skillShot2 = it->skillIDs[1];
+			chara.skillSlot1 = it->skillIDs[0];
+			chara.skillSlot2 = it->skillIDs[1];
 			chara.classType = it->classType;
 			chara.x = 0;
 			chara.y = 0;
@@ -619,11 +619,11 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<i32>(4); // inventoryLineCountTab1
 		packet.Write<i32>(4); // inventoryLineCountTab2
 #if 0
-		packet.Write<i32>(320080005); // displayTitlteIndex
-		packet.Write<i32>(320080005); // statTitleIndex
-#else // disable title
-		packet.Write<i32>(0); // displayTitlteIndex
-		packet.Write<i32>(0); // statTitleIndex
+		packet.Write<i32>(320080005);
+		packet.Write<i32>(320080005);
+#else
+		packet.Write<i32>(-1);
+		packet.Write<i32>(-1);
 #endif
 		packet.Write<i32>(1); // warehouseLineCount
 		packet.Write<i32>(-1); // tutorialState

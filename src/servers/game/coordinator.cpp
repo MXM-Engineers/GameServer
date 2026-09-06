@@ -611,7 +611,6 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 
 void Coordinator::CreateDevGame()
 {
-	// create a game to quickly connect to
 	const GameXmlContent& content = GetGameXmlContent();
 
 	const eastl::fixed_set<ClassType,100,false> allowedMastersSet = {
@@ -627,40 +626,55 @@ void Coordinator::CreateDevGame()
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
 	memset(&teamMasterPickCount, 0x0, sizeof(teamMasterPickCount));
 
+	auto fillLoadout = [&](In::MQ_CreateGame::Player& pl, int slot, const GameXmlContent::Master& master) {
+		pl.masters[slot] = master.classType;
+		ASSERT(master.skillIDs.size() >= 2);
+		pl.skills[slot * 2] = master.skillIDs[0];
+		pl.skills[slot * 2 + 1] = master.skillIDs[1];
+		ASSERT(master.weaponIDs.size() >= 2);
+		pl.weapons[slot] = master.weaponIDs[1];
+		pl.masterGearNo[slot] = 1;
+		pl.characterType[slot] = 1;
+	};
+
 	In::MQ_CreateGame game;
 	game.sortieUID = SortieUID(1);
-	game.playerCount = 6;
 	game.spectatorCount = 0;
-	game.gameType = GameType::PVP_Tutorial;
+
 	AreaIndex areaID = AreaIndex(0);
 	StageIndex stageID = StageIndex(0);
+	MapIndex mapID = MapIndex(0);
 	ASSERT(content.FindQueueAreaStage((i32)EntrySystemID::ARENA_3v3, &areaID, &stageID));
+	const GameXmlContent::StageMaps* stage = content.FindStageMaps(stageID);
+	ASSERT(stage);
+	ASSERT(stage->joinMemberMax > 0);
+	ASSERT(content.FindStageMap(stageID, &mapID));
+	const i32 teamSize = stage->joinMemberMax;
+	ASSERT(teamSize * 2 <= (i32)game.players.size());
+	game.playerCount = (u8)(teamSize * 2);
 	game.areaIndex = areaID;
 	game.stageIndex = stageID;
-	game.mapIndex = MapIndex::PVP_DEATHMATCH;
-	game.canEscape = 1;
+	game.mapIndex = mapID;
+	game.gameType = GameType::PVP_Tutorial;
+	game.canEscape = game.gameType != GameType::PVP_Rank;
 	game.surrenderAbleTime = 180000;
 
 	auto& p = game.players[0];
-	p.name.Copy(WideString(L"LordSk")); // TODO: we really need an account system (sorry Delta)
+	p.name.Copy(WideString(L"LordSk"));
 	p.accountUID = AccountUID(0x1337);
 	p.team = 0;
 	p.isBot = 0;
-	p.masters[0] = ClassType::LAUNCHER;
-	p.masters[1] = ClassType::ASSASSIN;
-	teamMasterPickCount[0][(i32)ClassType::LAUNCHER] = 1;
-	teamMasterPickCount[0][(i32)ClassType::ASSASSIN] = 1;
 	p.skins.fill(SkinIndex::DEFAULT);
-	p.skills[0] = SkillID(180350010);
-	p.skills[1] = SkillID(180350030);
-	p.skills[2] = SkillID(180030020);
-	p.skills[3] = SkillID(180030030);
+	fillLoadout(p, 0, content.GetMaster(ClassType::LAUNCHER));
+	fillLoadout(p, 1, content.GetMaster(ClassType::ASSASSIN));
+	teamMasterPickCount[0][(i32)p.masters[0]]++;
+	teamMasterPickCount[0][(i32)p.masters[1]]++;
 
 	for(int bi = 1; bi < game.playerCount; bi++) {
 		auto& bot = game.players[bi];
 		bot.name.Copy(WideString(LFMT(L"Bot%d", bi)));
 		bot.accountUID = AccountUID::INVALID;
-		bot.team = bi > 2;
+		bot.team = bi >= teamSize;
 		bot.isBot = true;
 		bot.masters[0] = ClassType::NONE;
 		bot.masters[1] = ClassType::NONE;
@@ -679,14 +693,10 @@ void Coordinator::CreateDevGame()
 
 						const GameXmlContent::Master& master = *content.masterClassTypeMap.at(classType);
 						if(bot.masters[0] == ClassType::NONE) {
-							bot.masters[0] = classType;
-							bot.skills[0] = master.skillIDs[0];
-							bot.skills[1] = master.skillIDs[1];
+							fillLoadout(bot, 0, master);
 						}
 						else if(bot.masters[0] != classType){
-							bot.masters[1] = classType;
-							bot.skills[2] = master.skillIDs[0];
-							bot.skills[3] = master.skillIDs[1];
+							fillLoadout(bot, 1, master);
 						}
 					}
 					break;

@@ -125,7 +125,9 @@ struct HQ_RoomCreateGame
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
-		// TODO weapon
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	SortieUID sortieUID;
@@ -211,7 +213,9 @@ struct MQ_CreateGame
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
-		// TODO weapon
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	SortieUID sortieUID;

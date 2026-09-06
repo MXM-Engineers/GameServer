@@ -49,6 +49,9 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		desc.masters = p.masters;
 		desc.skins = p.skins;
 		desc.skills = p.skills;
+		desc.weapons = p.weapons;
+		desc.masterGearNo = p.masterGearNo;
+		desc.characterType = p.characterType;
 
 		const auto& master0 = xml.GetMaster(p.masters[0]);
 		const auto& master1 = xml.GetMaster(p.masters[1]);

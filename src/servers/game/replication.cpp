@@ -365,39 +365,39 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 		PacketWriter<Sv::SN_ProfileCharacters> packet;
 
-		packet.Write<u16>(2); // charaList_count
+		packet.Write<u16>(2);
 
 		{
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->mainClass);
-			chara.creatureIndex = CreatureIndex(100000000 + (i32)player->mainClass);
-			chara.skillShot1 = masterMain.skillIDs[0];
-			chara.skillShot2 = masterMain.skillIDs[1];
+			chara.creatureIndex = masterMain.ID;
+			chara.skillSlot1 = player->skills[0];
+			chara.skillSlot2 = player->skills[1];
 			chara.classType = player->mainClass;
 			chara.x = actorMain->pos.x;
 			chara.y = actorMain->pos.y;
 			chara.z = actorMain->pos.z;
-			chara.characterType = 1;
+			chara.characterType = player->mainCharacterType;
 			chara.skinIndex = player->mainSkin;
-			chara.weaponIndex = masterMain.weaponIDs[1];
-			chara.masterGearNo = 1;
+			chara.weaponIndex = player->mainWeapon;
+			chara.masterGearNo = player->mainMasterGearNo;
 			packet.Write(chara);
 		}
 
 		{
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->subClass);
-			chara.creatureIndex = CreatureIndex(100000000 + (i32)player->subClass);
-			chara.skillShot1 = masterSub.skillIDs[0];
-			chara.skillShot2 = masterSub.skillIDs[1];
+			chara.creatureIndex = masterSub.ID;
+			chara.skillSlot1 = player->skills[2];
+			chara.skillSlot2 = player->skills[3];
 			chara.classType = player->subClass;
 			chara.x = actorSub->pos.x;
 			chara.y = actorSub->pos.y;
 			chara.z = actorSub->pos.z;
-			chara.characterType = 1;
+			chara.characterType = player->subCharacterType;
 			chara.skinIndex = player->subSkin;
-			chara.weaponIndex = masterSub.weaponIDs[1];
-			chara.masterGearNo = 1;
+			chara.weaponIndex = player->subWeapon;
+			chara.masterGearNo = player->subMasterGearNo;
 			packet.Write(chara);
 		}
 
@@ -413,7 +413,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		Sv::SN_ProfileWeapons::Weapon weap;
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->mainClass);
 		weap.weaponType = 1;
-		weap.weaponIndex = masterMain.weaponIDs[1];
+		weap.weaponIndex = player->mainWeapon;
 		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
@@ -421,7 +421,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->subClass);
 		weap.weaponType = 1;
-		weap.weaponIndex = masterSub.weaponIDs[1];
+		weap.weaponIndex = player->subWeapon;
 		weap.grade = 0;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;

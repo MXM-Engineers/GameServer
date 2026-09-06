@@ -50,6 +50,12 @@ struct Replication
 		ClassType subClass;
 		SkinIndex subSkin;
 		eastl::array<SkillID,4> skills;
+		WeaponIndex mainWeapon;
+		WeaponIndex subWeapon;
+		u8 mainMasterGearNo;
+		u8 subMasterGearNo;
+		i32 mainCharacterType;
+		i32 subCharacterType;
 
 		eastl::array<ActorUID, PLAYER_CHARACTER_COUNT> masters;
 		u8 mainCharaID;

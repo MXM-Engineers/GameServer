@@ -309,6 +309,7 @@ struct GameXmlContent
 	struct StageMaps
 	{
 		StageIndex ID;
+		i32 joinMemberMax = 0;
 		eastl::fixed_vector<MapIndex,8,false> maps;
 	};
 
@@ -352,6 +353,7 @@ struct GameXmlContent
 
 	bool FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const;
 	bool FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const;
+	const StageMaps* FindStageMaps(StageIndex stageID) const;
 	bool HasEntrySystem(i32 entryID) const;
 	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
 

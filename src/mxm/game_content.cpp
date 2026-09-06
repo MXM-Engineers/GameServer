@@ -874,6 +874,7 @@ bool GameXmlContent::LoadStageMaps()
 		stage.ID = StageIndex(stageDocID);
 		XMLElement* pStage = pInfo->FirstChildElement();
 		if(!pStage) continue;
+		pStage->QueryIntAttribute("_JoinMemberMax", &stage.joinMemberMax);
 		XMLElement* pWorldMap = pStage->FirstChildElement("_WORLD_STAGE_MAP");
 		if(!pWorldMap) continue;
 		for(XMLElement* pGroup = pWorldMap->FirstChildElement("_WORLD_STAGE_MAP_GROUP");
@@ -900,11 +901,26 @@ bool GameXmlContent::FindStageMap(StageIndex stageID, MapIndex* outMapIndex) con
 		if(stage.ID != stageID) continue;
 		if(stage.maps.empty()) return false;
 		*outMapIndex = stage.maps[0];
+		foreach_const(m, stage.maps) {
+			// PhysX collision is only authored for PVP_DeathMatch01 (160000094).
+			// Combat arena STAGELIST lists bush/portal first; those put the client on a different visual map.
+			if(*m == MapIndex::PVP_DEATHMATCH) {
+				*outMapIndex = *m;
+				break;
+			}
+		}
 		return true;
 	}
 	return false;
 }
 
+const GameXmlContent::StageMaps* GameXmlContent::FindStageMaps(StageIndex stageID) const
+{
+	for(auto& stage : stageMaps) {
+		if(stage.ID == stageID) return &stage;
+	}
+	return nullptr;
+}
 bool GameXmlContent::LoadBotCreatures()
 {
 	XMLDocument doc;

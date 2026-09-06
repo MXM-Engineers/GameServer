@@ -43,6 +43,9 @@ struct World
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<ColliderSize,2> colliderSize;
 		eastl::array<SkillID,4> skills;
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	struct Player
@@ -77,6 +80,12 @@ struct World
 
 		const eastl::array<ColliderSize,2> colliderSize;
 		const eastl::array<SkillID,4> skills;
+		const WeaponIndex mainWeapon;
+		const WeaponIndex subWeapon;
+		const u8 mainMasterGearNo;
+		const u8 subMasterGearNo;
+		const i32 mainCharacterType;
+		const i32 subCharacterType;
 
 		u8 level;
 		u32 experience;
@@ -106,7 +115,13 @@ struct World
 			subClass(desc.masters[1]),
 			subSkin(desc.skins[1]),
 			colliderSize(desc.colliderSize),
-			skills(desc.skills)
+			skills(desc.skills),
+			mainWeapon(desc.weapons[0]),
+			subWeapon(desc.weapons[1]),
+			mainMasterGearNo(desc.masterGearNo[0]),
+			subMasterGearNo(desc.masterGearNo[1]),
+			mainCharacterType(desc.characterType[0]),
+			subCharacterType(desc.characterType[1])
 		{
 
 		}

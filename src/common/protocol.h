@@ -4400,22 +4400,20 @@ PUSH_PACKED
 struct SN_AccountInfo
 {
 	enum { NET_ID = 62106 };
-	u16 Nickname_len; // 2 bytes
-	wchar_t Nickname[1]; // 2 bytes (wide string)
-	u32 inventoryLineCountTab0; // 4 bytes
-	u32 inventoryLineCountTab1; // 4 bytes
-	u32 inventoryLineCountTab2; // 4 bytes
-	u32 displayTitleIndex; // 4 bytes
-	u32 statTitleIndex; // 4 bytes
-	u32 warehouseLineCount; // 4 bytes
-	u32 tutorialState; // 4 bytes
-	u32 masterGearDurability; // 4 bytes
-	u8 badgeType; // 1 bytes
-	// logger 0x98ade0
+	u16 Nickname_len;
+	wchar Nickname[1];
+	i32 inventoryLineCountTab0;
+	i32 inventoryLineCountTab1;
+	i32 inventoryLineCountTab2;
+	i32 displayTitleIndex;
+	i32 statTitleIndex;
+	i32 warehouseLineCount;
+	i32 tutorialState;
+	i32 masterGearDurability;
+	u8 badgeType;
 };
 POP_PACKED
 ASSERT_SIZE(SN_AccountInfo, 37);
-;
 
 struct SN_AccountExtraInfo
 {
@@ -4547,8 +4545,8 @@ struct SN_ProfileCharacters
 	{
 		LocalActorID characterID;
 		CreatureIndex creatureIndex;
-		SkillID skillShot1;
-		SkillID skillShot2;
+		SkillID skillSlot1;
+		SkillID skillSlot2;
 		ClassType classType;
 		f32 x;
 		f32 y;
@@ -4560,9 +4558,10 @@ struct SN_ProfileCharacters
 	};
 	POP_PACKED
 
-	u16 charaList_count;
-	Character chara[1];
+	u16 characters_len;
+	Character characters[1];
 };
+ASSERT_SIZE(SN_ProfileCharacters::Character, 45);
 
 PUSH_PACKED
 struct PST_Property

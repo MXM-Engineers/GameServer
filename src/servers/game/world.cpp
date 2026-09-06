@@ -134,6 +134,12 @@ void World::Replicate()
 		rep.subClass = player.subClass;
 		rep.subSkin = player.subSkin;
 		rep.skills = player.skills;
+		rep.mainWeapon = player.mainWeapon;
+		rep.subWeapon = player.subWeapon;
+		rep.mainMasterGearNo = player.mainMasterGearNo;
+		rep.subMasterGearNo = player.subMasterGearNo;
+		rep.mainCharacterType = player.mainCharacterType;
+		rep.subCharacterType = player.subCharacterType;
 
 		rep.masters = {
 			player.characters[0]->UID,

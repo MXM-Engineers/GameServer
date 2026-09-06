@@ -127,8 +127,8 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 				Sv::SN_ProfileCharacters::Character chara;
 				chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
 				chara.creatureIndex = master.ID;
-				chara.skillShot1 = master.skillIDs[0];
-				chara.skillShot2 = master.skillIDs[1];
+				chara.skillSlot1 = master.skillIDs[0];
+				chara.skillSlot2 = master.skillIDs[1];
 				chara.classType = master.classType;
 				chara.x = 0;
 				chara.y = 0;
@@ -351,6 +351,12 @@ void RoomInstance::Update(Time localTime_)
 				rp.skills[1] = u->masters[0].skills[1];
 				rp.skills[2] = u->masters[1].skills[0];
 				rp.skills[3] = u->masters[1].skills[1];
+				rp.weapons[0] = u->masters[0].weapon;
+				rp.weapons[1] = u->masters[1].weapon;
+				rp.masterGearNo[0] = u->masters[0].masterGearNo;
+				rp.masterGearNo[1] = u->masters[1].masterGearNo;
+				rp.characterType[0] = u->masters[0].characterType;
+				rp.characterType[1] = u->masters[1].characterType;
 				rpList.push_back(rp);
 			}
 
@@ -648,11 +654,19 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Main().classType = classType;
 			user->Main().skills[0] = master.skillIDs[0];
 			user->Main().skills[1] = master.skillIDs[1];
+			ASSERT(master.weaponIDs.size() >= 2);
+			user->Main().weapon = master.weaponIDs[1];
+			user->Main().masterGearNo = 1;
+			user->Main().characterType = 1;
 		}
-		else if(user->Main().classType != classType) { // no duplicate masters
+		else if(user->Main().classType != classType) {
 			user->Sub().classType = classType;
 			user->Sub().skills[0] = master.skillIDs[0];
 			user->Sub().skills[1] = master.skillIDs[1];
+			ASSERT(master.weaponIDs.size() >= 2);
+			user->Sub().weapon = master.weaponIDs[1];
+			user->Sub().masterGearNo = 1;
+			user->Sub().characterType = 1;
 		}
 		else {
 			return false;

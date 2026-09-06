@@ -38,9 +38,28 @@ bool GameXmlContent::LoadMasterDefinitions()
 			i32 skillID;
 			pSkillElt->QueryAttribute("_Index", &skillID);
 			master.skillIDs.push_back((SkillID)skillID);
-
+			const char* unlock = pSkillElt->Attribute("_UnLock");
+			u8 unlocked = 1;
+			if(unlock && (unlock[0] == 'F' || unlock[0] == 'f')) unlocked = 0;
+			master.skillUnlocked.push_back(unlocked);
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while(pSkillElt);
+
+		XMLElement* pEquip = pNodeMaster->FirstChildElement("EquipComData");
+		if(pEquip) {
+			for(XMLElement* pDef = pEquip->FirstChildElement("_DefaultWeaponIndex"); pDef; pDef = pDef->NextSiblingElement("_DefaultWeaponIndex")) {
+				i32 wid = 0;
+				if(pDef->QueryIntAttribute("DATA", &wid) == XML_SUCCESS && master.defaultWeaponIDs.size() < master.defaultWeaponIDs.capacity()) {
+					master.defaultWeaponIDs.push_back((WeaponIndex)wid);
+				}
+			}
+			for(XMLElement* pFair = pEquip->FirstChildElement("_FairPvPWeaponIndex"); pFair; pFair = pFair->NextSiblingElement("_FairPvPWeaponIndex")) {
+				i32 wid = 0;
+				if(pFair->QueryIntAttribute("DATA", &wid) == XML_SUCCESS && master.fairPvpWeaponIDs.size() < master.fairPvpWeaponIDs.capacity()) {
+					master.fairPvpWeaponIDs.push_back((WeaponIndex)wid);
+				}
+			}
+		}
 
 		// save master data
 		master.ID = (CreatureIndex)masterID;
@@ -901,14 +920,6 @@ bool GameXmlContent::FindStageMap(StageIndex stageID, MapIndex* outMapIndex) con
 		if(stage.ID != stageID) continue;
 		if(stage.maps.empty()) return false;
 		*outMapIndex = stage.maps[0];
-		foreach_const(m, stage.maps) {
-			// PhysX collision is only authored for PVP_DeathMatch01 (160000094).
-			// Combat arena STAGELIST lists bush/portal first; those put the client on a different visual map.
-			if(*m == MapIndex::PVP_DEATHMATCH) {
-				*outMapIndex = *m;
-				break;
-			}
-		}
 		return true;
 	}
 	return false;
@@ -1609,6 +1620,23 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 	auto found = masterClassTypeMap.find(classType);
 	ASSERT(found != masterClassTypeMap.end());
 	return *found->second;
+}
+
+i32 GameXmlContent::WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const
+{
+	const Master& master = GetMaster(classType);
+	const i32 fam = (i32)weaponIndex / 10;
+	auto match = [&](const eastl::fixed_vector<WeaponIndex,3,false>& ids) -> i32 {
+		for(int i = 0; i < (int)ids.size(); i++) {
+			if(ids[i] == weaponIndex || (i32)ids[i] / 10 == fam) return i + 1;
+		}
+		return 0;
+	};
+	i32 t = match(master.fairPvpWeaponIDs);
+	if(t != 0) return t;
+	t = match(master.defaultWeaponIDs);
+	if(t != 0) return t;
+	return 1;
 }
 
 const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType, ActionStateID actionID) const

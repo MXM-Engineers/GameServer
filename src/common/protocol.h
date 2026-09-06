@@ -4573,7 +4573,9 @@ struct PST_Property
 	u8 fixed;
 };
 POP_PACKED
+ASSERT_SIZE(PST_Property, 11);
 
+PUSH_PACKED
 struct PST_ProfileItem
 {
 	i32 itemID;
@@ -4584,17 +4586,18 @@ struct PST_ProfileItem
 	i32 propertyGroupIndex;
 	u8 isLifeTimeAbsolute;
 	i64 lifeEndTimeUTC;
-
-	u16 properties_count;
+	u16 properties_len;
 	PST_Property properties[1];
 };
+POP_PACKED
+ASSERT_SIZE(PST_ProfileItem, 43);
 
 struct SN_ProfileItems
 {
 	enum { NET_ID = 62125 };
 
 	u8 packetNum;
-	u16 items_count;
+	u16 items_len;
 	PST_ProfileItem items[1];
 };
 
@@ -4614,35 +4617,41 @@ struct SN_ProfileWeapons
 	};
 	POP_PACKED
 
-	u16 weaponList_count;
-	Weapon weaponList[1];
+	u16 weapons_len;
+	Weapon weapons[1];
 };
+ASSERT_SIZE(SN_ProfileWeapons::Weapon, 18);
 
 struct SN_ProfileSkills
 {
 	enum { NET_ID = 62127 };
 
+	PUSH_PACKED
 	struct Property
 	{
-		i32 skillIndex;
+		i32 skillPropertyIndex;
 		i32 level;
 	};
+	POP_PACKED
 
+	PUSH_PACKED
 	struct Skill
 	{
 		LocalActorID characterID;
 		SkillID skillIndex;
 		u8 isUnlocked;
 		u8 isActivated;
-
-		u16 properties_count;
+		u16 properties_len;
 		Property properties[1];
 	};
+	POP_PACKED
 
 	u8 packetNum;
-	u16 skills_count;
+	u16 skills_len;
 	Skill skills[1];
 };
+ASSERT_SIZE(SN_ProfileSkills::Property, 8);
+ASSERT_SIZE(SN_ProfileSkills::Skill, 20);
 
 struct SN_ProfileTitles
 {

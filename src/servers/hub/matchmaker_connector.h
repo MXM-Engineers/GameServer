@@ -27,6 +27,7 @@ struct MatchmakerConnector
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
 		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
 		eastl::array<u8,2> masterGearNo;
 		eastl::array<i32,2> characterType;
 	};

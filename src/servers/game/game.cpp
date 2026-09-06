@@ -22,6 +22,9 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	replication.areaIndex = gameInfo.areaIndex;
 	replication.stageIndex = gameInfo.stageIndex;
 	replication.mapIndex = gameInfo.mapIndex;
+	if(Config().DevForcedMap != 0) {
+		replication.mapIndex = (MapIndex)Config().DevForcedMap;
+	}
 	replication.canEscape = gameInfo.canEscape;
 	replication.isTrespass = 0;
 	replication.surrenderAbleTime = gameInfo.surrenderAbleTime;
@@ -50,6 +53,7 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		desc.skins = p.skins;
 		desc.skills = p.skills;
 		desc.weapons = p.weapons;
+		desc.weaponGrades = p.weaponGrades;
 		desc.masterGearNo = p.masterGearNo;
 		desc.characterType = p.characterType;
 

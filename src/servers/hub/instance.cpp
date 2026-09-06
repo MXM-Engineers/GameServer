@@ -216,19 +216,14 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 
 			foreach_const(it, allowedMastersSet) {
 				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
-
-				LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
-
-				// TODO: I'm not quite sure why we can't have the skills be locked, right now they appear as unlocked
-				// even if isUnlocked and isActivated is set to 0
-				int si = 0;
-				foreach_const(s, master.skillIDs) {
-					packet.Write(characterID); // characterID
-					packet.Write(*s); // skillIndex
-					packet.Write<u8>(si != 2 && si != 3); // isUnlocked
-					packet.Write<u8>(si != 2 && si != 3); // isActivated
-					packet.Write<u16>(0); // properties_count
-					si++;
+				const LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+				for(int si = 0; si < (int)master.skillIDs.size(); si++) {
+					packet.Write(characterID);
+					packet.Write(master.skillIDs[si]);
+					const u8 unlocked = (si < (int)master.skillUnlocked.size()) ? master.skillUnlocked[si] : (u8)1;
+					packet.Write<u8>(unlocked);
+					packet.Write<u8>(1);
+					packet.Write<u16>(0);
 				}
 			}
 
@@ -353,6 +348,8 @@ void RoomInstance::Update(Time localTime_)
 				rp.skills[3] = u->masters[1].skills[1];
 				rp.weapons[0] = u->masters[0].weapon;
 				rp.weapons[1] = u->masters[1].weapon;
+				rp.weaponGrades[0] = u->masters[0].weaponGrade;
+				rp.weaponGrades[1] = u->masters[1].weaponGrade;
 				rp.masterGearNo[0] = u->masters[0].masterGearNo;
 				rp.masterGearNo[1] = u->masters[1].masterGearNo;
 				rp.characterType[0] = u->masters[0].characterType;
@@ -654,8 +651,13 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Main().classType = classType;
 			user->Main().skills[0] = master.skillIDs[0];
 			user->Main().skills[1] = master.skillIDs[1];
-			ASSERT(master.weaponIDs.size() >= 2);
-			user->Main().weapon = master.weaponIDs[1];
+			if(!master.fairPvpWeaponIDs.empty()) user->Main().weapon = master.fairPvpWeaponIDs[0];
+			else if(!master.defaultWeaponIDs.empty()) user->Main().weapon = master.defaultWeaponIDs[0];
+			else {
+				ASSERT(!master.weaponIDs.empty());
+				user->Main().weapon = master.weaponIDs.size() > 1 ? master.weaponIDs[1] : master.weaponIDs[0];
+			}
+			user->Main().weaponGrade = 0;
 			user->Main().masterGearNo = 1;
 			user->Main().characterType = 1;
 		}
@@ -663,8 +665,13 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Sub().classType = classType;
 			user->Sub().skills[0] = master.skillIDs[0];
 			user->Sub().skills[1] = master.skillIDs[1];
-			ASSERT(master.weaponIDs.size() >= 2);
-			user->Sub().weapon = master.weaponIDs[1];
+			if(!master.fairPvpWeaponIDs.empty()) user->Sub().weapon = master.fairPvpWeaponIDs[0];
+			else if(!master.defaultWeaponIDs.empty()) user->Sub().weapon = master.defaultWeaponIDs[0];
+			else {
+				ASSERT(!master.weaponIDs.empty());
+				user->Sub().weapon = master.weaponIDs.size() > 1 ? master.weaponIDs[1] : master.weaponIDs[0];
+			}
+			user->Sub().weaponGrade = 0;
 			user->Sub().masterGearNo = 1;
 			user->Sub().characterType = 1;
 		}

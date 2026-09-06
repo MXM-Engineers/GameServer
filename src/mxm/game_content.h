@@ -179,10 +179,12 @@ struct GameXmlContent
 		ClassType classType;
 		eastl::fixed_string<char,64,false> className;
 		eastl::fixed_vector<SkillID,32,false> skillIDs;
+		eastl::fixed_vector<u8,32,false> skillUnlocked;
 		eastl::fixed_vector<SkinIndex,20,false> skinIDs;
 		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
+		eastl::fixed_vector<WeaponIndex,3,false> defaultWeaponIDs;
+		eastl::fixed_vector<WeaponIndex,3,false> fairPvpWeaponIDs;
 
-		// TODO: make this inline
 		CharacterModel character;
 	};
 
@@ -366,6 +368,7 @@ struct GameXmlContent
 	const MapList* FindMapListByID(MapIndex index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
 	const Master& GetMaster(ClassType classType) const;
+	i32 WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
 	const Remote& GetRemote(RemoteIdx remoteID) const;
 

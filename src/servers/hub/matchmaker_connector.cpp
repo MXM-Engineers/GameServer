@@ -103,6 +103,7 @@ void MatchmakerConnector::Update()
 							player.skins = rp.skins;
 							player.skills = rp.skills;
 							player.weapons = rp.weapons;
+							player.weaponGrades = rp.weaponGrades;
 							player.masterGearNo = rp.masterGearNo;
 							player.characterType = rp.characterType;
 							packet.players[packet.playerCount++] = player;

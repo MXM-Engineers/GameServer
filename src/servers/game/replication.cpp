@@ -408,21 +408,21 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 	{
 		PacketWriter<Sv::SN_ProfileWeapons,4096> packet;
 
-		packet.Write<u16>(2); // weaponList_count
+		packet.Write<u16>(2);
 
 		Sv::SN_ProfileWeapons::Weapon weap;
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->mainClass);
-		weap.weaponType = 1;
+		weap.weaponType = content.WeaponTypeOf(player->mainClass, player->mainWeapon);
 		weap.weaponIndex = player->mainWeapon;
-		weap.grade = 0;
+		weap.grade = player->mainWeaponGrade;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
 		packet.Write(weap);
 
 		weap.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->subClass);
-		weap.weaponType = 1;
+		weap.weaponType = content.WeaponTypeOf(player->subClass, player->subWeapon);
 		weap.weaponIndex = player->subWeapon;
-		weap.grade = 0;
+		weap.grade = player->subWeaponGrade;
 		weap.isUnlocked = 1;
 		weap.isActivated = 1;
 		packet.Write(weap);
@@ -447,45 +447,21 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		packet.Write<u8>(1); // packetNum
 
 		const i32 skillCount = masterMain.skillIDs.size() + masterSub.skillIDs.size();
-		packet.Write<u16>(skillCount); // skills_count
+		packet.Write<u16>((u16)skillCount);
 
-		struct SkillStatus {
-			u8 isUnlocked;
-			u8 isActivated;
+		auto writeSkills = [&](const GameXmlContent::Master& master) {
+			const LocalActorID characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+			for(int si = 0; si < (int)master.skillIDs.size(); si++) {
+				packet.Write(characterID);
+				packet.Write(master.skillIDs[si]);
+				const u8 unlocked = (si < (int)master.skillUnlocked.size()) ? master.skillUnlocked[si] : (u8)1;
+				packet.Write<u8>(unlocked);
+				packet.Write<u8>(1);
+				packet.Write<u16>(0);
+			}
 		};
-
-		// NOTE: not having all skills enabled here is important. There are 5 skills per master selectable at a time.
-		const SkillStatus skillStatusList[7] = {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-		};
-
-		i32 skillStatusID = 0;
-		foreach(skill, masterMain.skillIDs) {
-			packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)masterMain.classType)); // characterID
-			packet.Write<SkillID>(*skill);
-			packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-			packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-			packet.Write<u16>(0); // properties_count
-
-			skillStatusID++;
-		}
-
-		skillStatusID = 0;
-		foreach(skill, masterSub.skillIDs) {
-			packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)masterSub.classType)); // characterID
-			packet.Write<SkillID>(*skill);
-			packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-			packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-			packet.Write<u16>(0); // properties_count
-
-			skillStatusID++;
-		}
+		writeSkills(masterMain);
+		writeSkills(masterSub);
 
 		SendPacket(clientHd, packet);
 	}

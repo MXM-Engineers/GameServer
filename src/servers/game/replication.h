@@ -52,6 +52,8 @@ struct Replication
 		eastl::array<SkillID,4> skills;
 		WeaponIndex mainWeapon;
 		WeaponIndex subWeapon;
+		i32 mainWeaponGrade;
+		i32 subWeaponGrade;
 		u8 mainMasterGearNo;
 		u8 subMasterGearNo;
 		i32 mainCharacterType;

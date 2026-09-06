@@ -88,6 +88,7 @@ struct Matchmaker
 					SkillID::INVALID
 				};
 				WeaponIndex weapon = WeaponIndex::INVALID;
+				i32 weaponGrade = 0;
 				u8 masterGearNo = 1;
 				i32 characterType = 1;
 			};
@@ -400,6 +401,8 @@ struct Matchmaker
 					p.masters[1].skills[1] = pp.skills[3];
 					p.masters[0].weapon = pp.weapons[0];
 					p.masters[1].weapon = pp.weapons[1];
+					p.masters[0].weaponGrade = pp.weaponGrades[0];
+					p.masters[1].weaponGrade = pp.weaponGrades[1];
 					p.masters[0].masterGearNo = pp.masterGearNo[0];
 					p.masters[1].masterGearNo = pp.masterGearNo[1];
 					p.masters[0].characterType = pp.characterType[0];
@@ -621,6 +624,8 @@ struct Matchmaker
 				player.skills[3] = p->masters[1].skills[1];
 				player.weapons[0] = p->masters[0].weapon;
 				player.weapons[1] = p->masters[1].weapon;
+				player.weaponGrades[0] = p->masters[0].weaponGrade;
+				player.weaponGrades[1] = p->masters[1].weaponGrade;
 				player.masterGearNo[0] = p->masters[0].masterGearNo;
 				player.masterGearNo[1] = p->masters[1].masterGearNo;
 				player.characterType[0] = p->masters[0].characterType;

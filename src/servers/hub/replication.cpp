@@ -561,14 +561,14 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<u16>(skillCount); // skills_count
 
 		foreach_const(it, content.masters) {
-			int si = 0;
-			foreach_const(skill, it->skillIDs) {
-				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
-				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(si != 2 && si != 3); // isUnlocked
-				packet.Write<u8>(si != 2 && si != 3); // isActivated
-				packet.Write<u16>(0); // properties_count
-				si++;
+			const LocalActorID characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
+			for(int si = 0; si < (int)it->skillIDs.size(); si++) {
+				packet.Write(characterID);
+				packet.Write(it->skillIDs[si]);
+				const u8 unlocked = (si < (int)it->skillUnlocked.size()) ? it->skillUnlocked[si] : (u8)1;
+				packet.Write<u8>(unlocked);
+				packet.Write<u8>(1);
+				packet.Write<u16>(0);
 			}
 		}
 

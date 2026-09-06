@@ -136,6 +136,8 @@ void World::Replicate()
 		rep.skills = player.skills;
 		rep.mainWeapon = player.mainWeapon;
 		rep.subWeapon = player.subWeapon;
+		rep.mainWeaponGrade = player.mainWeaponGrade;
+		rep.subWeaponGrade = player.subWeaponGrade;
 		rep.mainMasterGearNo = player.mainMasterGearNo;
 		rep.subMasterGearNo = player.subMasterGearNo;
 		rep.mainCharacterType = player.mainCharacterType;

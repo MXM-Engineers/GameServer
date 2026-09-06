@@ -631,8 +631,13 @@ void Coordinator::CreateDevGame()
 		ASSERT(master.skillIDs.size() >= 2);
 		pl.skills[slot * 2] = master.skillIDs[0];
 		pl.skills[slot * 2 + 1] = master.skillIDs[1];
-		ASSERT(master.weaponIDs.size() >= 2);
-		pl.weapons[slot] = master.weaponIDs[1];
+		if(!master.fairPvpWeaponIDs.empty()) pl.weapons[slot] = master.fairPvpWeaponIDs[0];
+		else if(!master.defaultWeaponIDs.empty()) pl.weapons[slot] = master.defaultWeaponIDs[0];
+		else {
+			ASSERT(!master.weaponIDs.empty());
+			pl.weapons[slot] = master.weaponIDs.size() > 1 ? master.weaponIDs[1] : master.weaponIDs[0];
+		}
+		pl.weaponGrades[slot] = 0;
 		pl.masterGearNo[slot] = 1;
 		pl.characterType[slot] = 1;
 	};

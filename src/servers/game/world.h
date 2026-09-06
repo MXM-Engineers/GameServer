@@ -44,6 +44,7 @@ struct World
 		eastl::array<ColliderSize,2> colliderSize;
 		eastl::array<SkillID,4> skills;
 		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
 		eastl::array<u8,2> masterGearNo;
 		eastl::array<i32,2> characterType;
 	};
@@ -82,6 +83,8 @@ struct World
 		const eastl::array<SkillID,4> skills;
 		const WeaponIndex mainWeapon;
 		const WeaponIndex subWeapon;
+		const i32 mainWeaponGrade;
+		const i32 subWeaponGrade;
 		const u8 mainMasterGearNo;
 		const u8 subMasterGearNo;
 		const i32 mainCharacterType;
@@ -118,6 +121,8 @@ struct World
 			skills(desc.skills),
 			mainWeapon(desc.weapons[0]),
 			subWeapon(desc.weapons[1]),
+			mainWeaponGrade(desc.weaponGrades[0]),
+			subWeaponGrade(desc.weaponGrades[1]),
 			mainMasterGearNo(desc.masterGearNo[0]),
 			subMasterGearNo(desc.masterGearNo[1]),
 			mainCharacterType(desc.characterType[0]),

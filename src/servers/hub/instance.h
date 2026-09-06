@@ -63,6 +63,7 @@ struct RoomInstance
 			SkinIndex skin = SkinIndex::DEFAULT;
 			eastl::array<SkillID,2> skills = { SkillID::INVALID, SkillID::INVALID };
 			WeaponIndex weapon = WeaponIndex::INVALID;
+			i32 weaponGrade = 0;
 			u8 masterGearNo = 1;
 			i32 characterType = 1;
 		};

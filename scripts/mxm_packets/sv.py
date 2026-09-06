@@ -5295,14 +5295,14 @@ class ServerSerializer:
             print('      skillIndex=%d' % p.read_i32())
             print('      isUnlocked=%d' % p.read_u8())
             print('      isActivated=%d' % p.read_u8())
-
             prop_count = p.read_u16()
+            nprop = prop_count
             s = ''
             while prop_count > 0:
-                s += '(skillIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
+                s += '(skillPropertyIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
                 prop_count -= 1
 
-            print('      properties(%d)=[%s]' % (prop_count, s))
+            print('      properties(%d)=[%s]' % (nprop, s))
 
             print('    },')
             count -= 1

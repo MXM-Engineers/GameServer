@@ -69,10 +69,47 @@ bool GameXmlContent::LoadMasterDefinitions()
 		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
 
 		masterClassTypeMap.emplace(master.classType, &master);
+		masterIdMap.emplace(master.ID, &master);
+
 	}
 
 	return true;
 }
+
+bool GameXmlContent::LoadCharacterBaseStats()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/CHARACTER_BASE_STATS.xml", doc)) return false;
+
+	XMLElement* root = doc.FirstChildElement();
+	ASSERT(root);
+	for(XMLElement* info = root->FirstChildElement(); info; info = info->NextSiblingElement()) {
+		i32 id = 0;
+		if(info->QueryAttribute("ID", &id) != XML_SUCCESS) continue;
+		auto found = masterIdMap.find((CreatureIndex)id);
+		if(found == masterIdMap.end()) {
+			WARN("CHARACTER_BASE_STATS unknown master %d", id);
+			continue;
+		}
+		Master& master = *found->second;
+
+		for(XMLElement* st = info->FirstChildElement("STAT"); st; st = st->NextSiblingElement("STAT")) {
+			i32 type = 0;
+			f32 value = 0.f;
+			st->QueryAttribute("type", &type);
+			st->QueryAttribute("value", &value);
+			ASSERT(master.baseStats.size() < master.baseStats.capacity());
+			master.baseStats.push_back({ (u8)type, value });
+
+		}
+	}
+
+	foreach(it, masters) {
+		ASSERT(!it->baseStats.empty());
+	}
+	return true;
+}
+
 
 bool GameXmlContent::LoadMasterSkinsDefinitions()
 {
@@ -683,6 +720,16 @@ bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 			spawn.faction = StringToFaction(teamString);
 		}
 
+		pSpawnElt->QueryAttribute("dwType", &spawn.entityType);
+		pSpawnElt->QueryAttribute("dwSpawnAnim", &spawn.spawnAnim);
+		pSpawnElt->QueryAttribute("AIWanderDistOverride", &spawn.wanderDist);
+		pSpawnElt->QueryAttribute("_TagID", &spawn.tagID);
+		const char* actionStr = nullptr;
+		if(pSpawnElt->QueryStringAttribute("strActionState", &actionStr) == XML_SUCCESS && actionStr) {
+			spawn.actionState = ActionStateFromString(actionStr);
+		}
+
+
 		map->creatures.push_back(spawn);
 	}
 
@@ -705,6 +752,16 @@ bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
 			spawn.faction = StringToFaction(teamString);
 		}
+
+		pSpawnElt->QueryAttribute("dwType", &spawn.entityType);
+		pSpawnElt->QueryAttribute("dwSpawnAnim", &spawn.spawnAnim);
+		pSpawnElt->QueryAttribute("AIWanderDistOverride", &spawn.wanderDist);
+		pSpawnElt->QueryAttribute("_TagID", &spawn.tagID);
+		const char* actionStr = nullptr;
+		if(pSpawnElt->QueryStringAttribute("strActionState", &actionStr) == XML_SUCCESS && actionStr) {
+			spawn.actionState = ActionStateFromString(actionStr);
+		}
+
 
 		map->dynamic.push_back(spawn);
 	}
@@ -1419,6 +1476,10 @@ bool GameXmlContent::Load()
 
 	bool r = LoadMasterDefinitions();
 	if(!r) return false;
+
+	r = LoadCharacterBaseStats();
+	if(!r) return false;
+
 
 	r = LoadMasterSkinsDefinitions();
 	if(!r) return false;

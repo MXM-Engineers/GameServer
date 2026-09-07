@@ -161,6 +161,18 @@ void World::Replicate()
 			rch.playerIndex = player.index;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
+			rch.hp = chara.hp;
+			rch.hpMax = chara.hpMax;
+			rch.seed = chara.seed;
+			rch.localID = chara.localID;
+			rch.spawnAnim = chara.spawnAnim;
+			rch.ownerID = chara.ownerID;
+			rch.dirToNearPC = chara.dirToNearPC;
+			rch.wanderDist = chara.wanderDist;
+			rch.tagID = chara.tagID;
+
+
+
 
 			rch.pos = player.body->GetWorldPos();
 			rch.moveDir = player.movement.moveDir;
@@ -183,6 +195,18 @@ void World::Replicate()
 			rch.playerIndex = player.index;
 			rch.classType = chara.classType;
 			rch.skinIndex = chara.skinIndex;
+			rch.hp = chara.hp;
+			rch.hpMax = chara.hpMax;
+			rch.seed = chara.seed;
+			rch.localID = chara.localID;
+			rch.spawnAnim = chara.spawnAnim;
+			rch.ownerID = chara.ownerID;
+			rch.dirToNearPC = chara.dirToNearPC;
+			rch.wanderDist = chara.wanderDist;
+			rch.tagID = chara.tagID;
+
+
+
 
 			rch.pos = player.body->GetWorldPos();
 			rch.moveDir = player.movement.moveDir;
@@ -217,6 +241,15 @@ void World::Replicate()
 		rfl.dir = actor.rot;
 		rfl.localID = actor.localID;
 		rfl.faction = actor.faction;
+		rfl.spawnAnim = actor.spawnAnim;
+		rfl.ownerID = actor.ownerID;
+		rfl.dirToNearPC = actor.dirToNearPC;
+		rfl.wanderDist = actor.wanderDist;
+		rfl.tagID = actor.tagID;
+		rfl.actionState = actor.actionState;
+		rfl.seed = actor.seed;
+		rfl.entityType = actor.entityType;
+
 
 		replication->FramePushNpcActor(rfl);
 	}
@@ -233,6 +266,14 @@ void World::Replicate()
 		rfl.localID = actor.localID;
 		rfl.faction = actor.faction;
 		rfl.action = actor.action;
+		rfl.spawnAnim = actor.spawnAnim;
+		rfl.ownerID = actor.ownerID;
+		rfl.dirToNearPC = actor.dirToNearPC;
+		rfl.wanderDist = actor.wanderDist;
+		rfl.tagID = actor.tagID;
+		rfl.seed = actor.seed;
+		rfl.entityType = actor.entityType;
+
 
 		replication->FramePushDynamicActor(rfl);
 	}
@@ -277,10 +318,22 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 	main.parent = &player;
 	main.classType = player.mainClass;
 	main.skinIndex = player.mainSkin;
+	main.hp = 2400;
+	main.hpMax = 2400;
+	main.seed = (i32)RandUint();
+
+
+
 
 	sub.parent = &player;
 	sub.classType = player.subClass;
 	sub.skinIndex = player.subSkin;
+	sub.hp = 2400;
+	sub.hpMax = 2400;
+	sub.seed = (i32)RandUint();
+
+
+
 	return player;
 }
 

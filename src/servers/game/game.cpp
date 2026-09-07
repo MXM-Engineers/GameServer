@@ -315,6 +315,15 @@ bool Game::LoadMap()
 		actor.pos = it->pos;
 		actor.rot = it->rot;
 		actor.faction = it->faction;
+		actor.spawnAnim = it->spawnAnim;
+		actor.wanderDist = it->wanderDist;
+		actor.tagID = it->tagID;
+		actor.ownerID = it->ownerID;
+		actor.dirToNearPC = it->dirToNearPC;
+		actor.actionState = it->actionState;
+		actor.entityType = it->entityType;
+		actor.seed = (i32)RandUint();
+
 	}
 
 	foreach(it, content.mapPvpDeathMatch.dynamic) {
@@ -323,6 +332,15 @@ bool Game::LoadMap()
 		actor.pos = it->pos;
 		actor.rot = it->rot;
 		actor.faction = it->faction;
+		actor.spawnAnim = it->spawnAnim;
+		actor.wanderDist = it->wanderDist;
+		actor.tagID = it->tagID;
+		actor.ownerID = it->ownerID;
+		actor.dirToNearPC = it->dirToNearPC;
+		actor.action = it->actionState;
+		actor.entityType = it->entityType;
+		actor.seed = (i32)RandUint();
+
 	}
 
 	// spawn walls dynamically
@@ -390,8 +408,9 @@ void Game::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 		const World::ActorMaster& chara = **chit;
 
 		if(chara.UID == actorUID) {
-			// TODO: health
-			replication.SendCharacterInfo(clientHd, chara.UID, (CreatureIndex)(100000000 + (i32)chara.classType), chara.classType, 2400, 2400);
+			replication.SendCharacterInfo(clientHd, chara.UID, CreatureIndex(100000000 + (i32)chara.classType), chara.classType, chara.hp, chara.hpMax);
+
+
 
 			return;
 		}
@@ -615,15 +634,20 @@ void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 {
 	const i32 READY_WAIT = 3000;
 
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
+
 	if(phase == Phase::WaitingForFirstPlayer) {
 		phase = Phase::WaitingForReady;
 		phaseTime = TimeAdd(localTime, TimeMsToTime(READY_WAIT));
-		replication.SendGameReady(clientHd, READY_WAIT, 0);
+		replication.SendGameReady(clientHd, READY_WAIT, 0, player.userID);
 	}
 	else {
-		replication.SendGameReady(clientHd, READY_WAIT, MAX(0, READY_WAIT - (i32)TimeDurationMs(localTime, phaseTime)));
+		replication.SendGameReady(clientHd, READY_WAIT, MAX(0, READY_WAIT - (i32)TimeDurationMs(localTime, phaseTime)), player.userID);
 	}
 }
+
 
 bool Game::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len)
 {

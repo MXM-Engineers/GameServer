@@ -954,6 +954,69 @@ inline const char* PacketSerialize<Sv::SN_ProfileSkills>(const void* packetData,
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_ProfileMasterGears>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ProfileMasterGears(%d, %d) :: {", Sv::SN_ProfileMasterGears::NET_ID, packetSize);
+
+	const u16 count = buff.Read<u16>();
+	SER("	masterGears(%d)=[", count);
+
+	for(int i = 0; i < count; i++) {
+		SER("	{");
+		SER("		masterGearNo=%u", buff.Read<u8>());
+		SER("		name='%S'", buff.ReadWideStringObj().data());
+		const u16 slotCount = buff.Read<u16>();
+		SER("		slots(%d)=[", slotCount);
+		for(int s = 0; s < slotCount; s++) {
+			SER("		{");
+			SER("			gearType=%d", buff.Read<i32>());
+			SER("			gearItemID=0x%08x", buff.Read<ItemUID>());
+			SER("		},");
+		}
+		SER("		]");
+		SER("	},");
+	}
+
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AccountEquipmentList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_AccountEquipmentList(%d, %d) :: {", Sv::SN_AccountEquipmentList::NET_ID, packetSize);
+	SER("	supportKitDocIndex=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_Money>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_Money(%d, %d) :: {", Sv::SN_Money::NET_ID, packetSize);
+	SER("	nMoney=%lld", buff.Read<i64>());
+	SER("	nReason=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+
+
+
+template<>
 inline const char* PacketSerialize<Sv::SN_NotifyPcDetailInfos>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -966,13 +1029,13 @@ inline const char* PacketSerialize<Sv::SN_NotifyPcDetailInfos>(const void* packe
 
 	for(int i = 0; i < count; i++) {
 		SER("	{");
-		SER("		userID=0x%08x", buff.Read<i32>());
-		Sv::SN_NotifyPcDetailInfos::ST_PcInfo mainPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
-		Sv::SN_NotifyPcDetailInfos::ST_PcInfo subPc = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
-		SER("		mainPc=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", mainPc.characterID, mainPc.docID, mainPc.classType, mainPc.hp, mainPc.maxHp);
-		SER("		subPc=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", subPc.characterID, subPc.docID, subPc.classType, subPc.hp, subPc.maxHp);
+		SER("		userId=0x%08x", buff.Read<UserID>());
+		Sv::SN_NotifyPcDetailInfos::ST_PcInfo mainPC = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
+		Sv::SN_NotifyPcDetailInfos::ST_PcInfo subPC = buff.Read<Sv::SN_NotifyPcDetailInfos::ST_PcInfo>();
+		SER("		mainPC=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", mainPC.characterID, mainPC.docID, mainPC.classType, mainPC.hp, mainPC.maxHp);
+		SER("		subPC=(characterID=0x%08x docID=%d classType=%d hp=%d maxHp=%d)", subPC.characterID, subPC.docID, subPC.classType, subPC.hp, subPC.maxHp);
 		SER("		remainTagCooltimeMS=%d", buff.Read<i32>());
-		SER("		canCastSkillSlotUG=%d", buff.Read<u8>());
+		SER("		canCastSkillSlotUG=%u", buff.Read<u8>());
 		SER("	},");
 	}
 
@@ -1009,13 +1072,13 @@ inline const char* PacketSerialize<Sv::SN_InitScoreBoard>(const void* packetData
 	SER("SN_InitScoreBoard(%d, %d) :: {", Sv::SN_InitScoreBoard::NET_ID, packetSize);
 
 	const u16 count = buff.Read<u16>();
-	SER("	userInfos(%d)=[", count);
+	SER("	ScoreBoardUserInfos(%d)=[", count);
 
 	for(int i = 0; i < count; i++) {
 		SER("	{");
-		SER("		usn=%d", buff.Read<i32>());
-		SER("		name='%S'", buff.ReadWideStringObj().data());
-		SER("		teamType=%d", buff.Read<i32>());
+		SER("		usn=0x%08x", buff.Read<UserID>());
+		SER("		nickname='%S'", buff.ReadWideStringObj().data());
+		SER("		teamType=%d", buff.Read<TeamType>());
 		SER("		mainCreatureIndex=%d", buff.Read<CreatureIndex>());
 		SER("		subCreatureIndex=%d", buff.Read<CreatureIndex>());
 		SER("	},");
@@ -1062,6 +1125,165 @@ inline const char* PacketSerialize<Sv::SA_RTT_Time>(const void* packetData, cons
 
 	return str.data();
 }
+
+template<>
+inline const char* PacketSerialize<Sv::SN_NotifyIngameSkillPoint>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_NotifyIngameSkillPoint& p = *(Sv::SN_NotifyIngameSkillPoint*)packetData;
+
+	SER("SN_NotifyIngameSkillPoint(%d, %d) :: {", Sv::SN_NotifyIngameSkillPoint::NET_ID, packetSize);
+	SER("	userId=0x%08x", p.userId);
+	SER("	skillPoint=%d", p.skillPoint);
+	SER("}");
+
+	return str.data();
+}
+
+
+template<>
+inline const char* PacketSerialize<Sv::SA_GameReady>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SA_GameReady& p = *(Sv::SA_GameReady*)packetData;
+
+	SER("SA_GameReady(%d, %d) :: {", Sv::SA_GameReady::NET_ID, packetSize);
+	SER("	waitingTimeMS=%d", p.waitingTimeMS);
+	SER("	serverTimestamp=%lld", p.serverTimestamp);
+	SER("	readyElapsedMS=%d", p.readyElapsedMS);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_NotifyTimestamp>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_NotifyTimestamp& p = *(Sv::SN_NotifyTimestamp*)packetData;
+
+	SER("SN_NotifyTimestamp(%d, %d) :: {", Sv::SN_NotifyTimestamp::NET_ID, packetSize);
+	SER("	serverTimestamp=%lld", p.serverTimestamp);
+	SER("	curCount=%d", p.curCount);
+	SER("	maxCount=%d", p.maxCount);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_NotifyAasRestricted>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_NotifyAasRestricted& p = *(Sv::SN_NotifyAasRestricted*)packetData;
+
+	SER("SN_NotifyAasRestricted(%d, %d) :: {", Sv::SN_NotifyAasRestricted::NET_ID, packetSize);
+	SER("	isRestrictedByAAS=%u", p.isRestrictedByAAS);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_GetCharacterInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SA_GetCharacterInfo& p = *(Sv::SA_GetCharacterInfo*)packetData;
+
+	SER("SA_GetCharacterInfo(%d, %d) :: {", Sv::SA_GetCharacterInfo::NET_ID, packetSize);
+	SER("	characterID=0x%08x", p.characterID);
+	SER("	docIndex=%d", p.docIndex);
+	SER("	classType=%d", p.classType);
+	SER("	hp=%d", p.hp);
+	SER("	maxHp=%d", p.maxHp);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_LeaderCharacter>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SN_LeaderCharacter& p = *(Sv::SN_LeaderCharacter*)packetData;
+
+	SER("SN_LeaderCharacter(%d, %d) :: {", Sv::SN_LeaderCharacter::NET_ID, packetSize);
+	SER("	leaderID=0x%08x", p.leaderID);
+	SER("	skinIndex=%d", p.skinIndex);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_SetLeader>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	const Sv::SA_SetLeader& p = *(Sv::SA_SetLeader*)packetData;
+
+	SER("SA_SetLeader(%d, %d) :: {", Sv::SA_SetLeader::NET_ID, packetSize);
+	SER("	result=%d", p.result);
+	SER("	leaderID=0x%08x", p.leaderID);
+	SER("	skinIndex=%d", p.skinIndex);
+	SER("}");
+
+	return str.data();
+}
+
+
+
+
+
+template<>
+inline const char* PacketSerialize<Sv::SN_InitIngameModeInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_InitIngameModeInfo(%d, %d) :: {", Sv::SN_InitIngameModeInfo::NET_ID, packetSize);
+	SER("	transformationVotingPlayerCoolTimeByVotingFail=%d", buff.Read<i32>());
+	SER("	transformationVotingTeamCoolTimeByTransformationEnd=%d", buff.Read<i32>());
+	SER("	playerCoolTimeByTransformationEnd=%d", buff.Read<i32>());
+	SER("	currentTransformationVotingPlayerCoolTimeByVotingFail=%d", buff.Read<i32>());
+	SER("	currentTransformationVotingTeamCoolTimeByTransformationEnd=%d", buff.Read<i32>());
+	SER("	currentPlayerCoolTimeByTransformationEnd=%d", buff.Read<i32>());
+	SER("	chPropertyResetCoolTime=%d", buff.Read<i32>());
+	SER("	transformationPieceCount=%u", buff.Read<u8>());
+
+	const u16 titanDocIndexsCount = buff.Read<u16>();
+	SER("	titanDocIndexs(%u)=[", titanDocIndexsCount);
+	for(u16 i = 0; i < titanDocIndexsCount; i++) {
+		SER("		%d,", buff.Read<i32>());
+	}
+	SER("	]");
+	SER("	nextTitanIndex=%d", buff.Read<i8>());
+
+	const u16 limitExceptionStatCount = buff.Read<u16>();
+	SER("	limitExceptionStat(%u)=[", limitExceptionStatCount);
+	for(u16 i = 0; i < limitExceptionStatCount; i++) {
+		SER("	{");
+		SER("		statType=%d", buff.Read<i32>());
+		SER("		min=%g", buff.Read<f32>());
+		SER("		max=%g", buff.Read<f32>());
+		SER("		incRatioMin=%g", buff.Read<f32>());
+		SER("		incRatioMax=%g", buff.Read<f32>());
+		SER("	},");
+	}
+	SER("	]");
+	SER("}");
+
+	return str.data();
+}
+
+
+
 
 template<>
 inline const char* PacketSerialize<Sv::SA_ResultSpAction>(const void* packetData, const i32 packetSize)
@@ -1601,11 +1823,11 @@ inline const char* PacketSerialize<Sv::SN_LoadingProgressData>(const void* packe
 	ConstBuffer buff(packetData, packetSize);
 
 	SER("SN_LoadingProgressData(%d, %d) :: {", Sv::SN_LoadingProgressData::NET_ID, packetSize);
-	SER("	userID=0x%08x", buff.Read<UserID>());
-	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("	usn=0x%08x", buff.Read<UserID>());
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
 	SER("	progressData=%u", buff.Read<u8>());
-	SER("	activeCreatureIndex=%u", buff.Read<CreatureIndex>());
-	SER("	inactiveCreatureIndex=%u", buff.Read<CreatureIndex>());
+	SER("	activeCreatureIndex=%d", buff.Read<CreatureIndex>());
+	SER("	inactiveCreatureIndex=%d", buff.Read<CreatureIndex>());
 	SER("	isSpectator=%u", buff.Read<u8>());
 	SER("}");
 
@@ -2216,22 +2438,14 @@ DEFAULT_SERIALIZE(Sv::SQ_CityLobbyJoinCity);
 DEFAULT_SERIALIZE(Sv::SN_ChatChannelMessage);
 DEFAULT_SERIALIZE(Sv::SA_WhisperSend);
 DEFAULT_SERIALIZE(Sv::SN_WhisperReceive);
-DEFAULT_SERIALIZE(Sv::SN_ProfileMasterGears);
-DEFAULT_SERIALIZE(Sv::SN_AccountEquipmentList);
 DEFAULT_SERIALIZE(Sv::SA_LoadingComplete);
 DEFAULT_SERIALIZE(Sv::SN_GameStart);
 DEFAULT_SERIALIZE(Sv::SN_SpawnPosForMinimap);
-DEFAULT_SERIALIZE(Sv::SN_InitIngameModeInfo);
 DEFAULT_SERIALIZE(Sv::SN_ScanEnd);
 DEFAULT_SERIALIZE(Sv::SN_SetGameGvt);
-DEFAULT_SERIALIZE(Sv::SA_GetCharacterInfo);
-DEFAULT_SERIALIZE(Sv::SN_LeaderCharacter);
-DEFAULT_SERIALIZE(Sv::SA_SetLeader);
-DEFAULT_SERIALIZE(Sv::SN_Money);
-DEFAULT_SERIALIZE(Sv::SA_GameReady);
-DEFAULT_SERIALIZE(Sv::SN_NotifyIngameSkillPoint);
-DEFAULT_SERIALIZE(Sv::SN_NotifyTimestamp);
-DEFAULT_SERIALIZE(Sv::SN_NotifyAasRestricted);
+
+
+
 DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTurn);
 DEFAULT_SERIALIZE(Sv::SN_DestroyEntity);
 DEFAULT_SERIALIZE(Sv::SN_RegionServicePolicy);

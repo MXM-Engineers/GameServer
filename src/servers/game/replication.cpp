@@ -370,7 +370,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		{
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->mainClass);
-			chara.creatureIndex = masterMain.ID;
+			chara.creatureIndex = CreatureIndex(100000000 + (i32)player->mainClass);
 			chara.skillSlot1 = player->skills[0];
 			chara.skillSlot2 = player->skills[1];
 			chara.classType = player->mainClass;
@@ -387,7 +387,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 		{
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)player->subClass);
-			chara.creatureIndex = masterSub.ID;
+			chara.creatureIndex = CreatureIndex(100000000 + (i32)player->subClass);
 			chara.skillSlot1 = player->skills[2];
 			chara.skillSlot2 = player->skills[3];
 			chara.classType = player->subClass;
@@ -470,23 +470,7 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 	{
 		PacketWriter<Sv::SN_ProfileMasterGears,4096> packet;
 
-		packet.Write<u16>(1); // masterGears_count
-
-		packet.Write<u8>(1); // masterGearNo
-		packet.WriteStringObj(L""); // name
-		packet.Write<u16>(6); // slots_count
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(-1); // gearType
-		packet.Write<i32>(0); // gearItemID
-		packet.Write<i32>(80); // gearType
-		packet.Write<i32>(1073741825); // gearItemID
+		packet.Write<u16>(0);
 
 		SendPacket(clientHd, packet);
 	}
@@ -494,14 +478,14 @@ void Replication::SendAccountDataPvp(ClientHandle clientHd)
 	// SN_AccountEquipmentList
 	{
 		PacketWriter<Sv::SN_AccountEquipmentList,4096> packet;
-		packet.Write<i32>(-1); // supportKitDocIndex
+		packet.Write<i32>(supportKitIndex);
 		SendPacket(clientHd, packet);
 	}
 
 	// SN_Money
 	{
 		Sv::SN_Money money;
-		money.nMoney = 666;
+		money.nMoney = 0;
 		money.nReason = 1;
 		SendPacket(clientHd, money);
 	}
@@ -585,89 +569,79 @@ void Replication::SendPvpLoadingComplete(ClientHandle clientHd)
 	const Player* player = frameCur->FindPlayer(playerIndex);
 	ASSERT(player);
 
-	// SN_NotifyPcDetailInfos
 	{
 		PacketWriter<Sv::SN_NotifyPcDetailInfos,1024> packet;
 
-		u16 playerCount = 0;
-		foreach_const(pl, frameCur->playerList) {
-			const Player& p = *pl;
-			if(p.team == player->team) {
-				playerCount++;
-			}
-		}
-
-		packet.Write<u16>(playerCount); // pcList_count
+		packet.Write<u16>((u16)frameCur->playerList.size());
 
 		foreach_const(pl, frameCur->playerList) {
 			const Player& p = *pl;
-			if(p.team == player->team) {
-				const ActorMaster* main = frameCur->FindMaster(p.masters[0]);
-				const ActorMaster* sub = frameCur->FindMaster(p.masters[1]);
-				ASSERT(main);
-				ASSERT(sub);
-
-				packet.Write<UserID>(p.userID); // userID
-				// mainPC
-				packet.Write<LocalActorID>(GetLocalActorID(clientHd, main->actorUID)); // characterID
-				packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType)); // docID
-				packet.Write<ClassType>(main->classType); // classType
-				packet.Write<i32>(2400); // hp
-				packet.Write<i32>(2400); // maxHp
-				// subPC
-				packet.Write<LocalActorID>(GetLocalActorID(clientHd, sub->actorUID)); // characterID
-				packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType)); // docID
-				packet.Write<ClassType>(sub->classType); // classType
-				packet.Write<i32>(2400); // hp
-				packet.Write<i32>(2400); // maxHp
-
-				packet.Write<i32>(0); // remainTagCooltimeMS
-				packet.Write<u8>(0); // canCastSkillSlotUG
-			}
-		}
-
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_InitScoreBoard
-	{
-		PacketWriter<Sv::SN_InitScoreBoard,4096> packet;
-
-		packet.Write<u16>(frameCur->playerList.size()); // userInfos_count
-
-		foreach_const(pl, frameCur->playerList) {
-			const Player& player = *pl;
-			const ActorMaster* main = frameCur->FindMaster(player.masters[0]);
-			const ActorMaster* sub = frameCur->FindMaster(player.masters[1]);
+			const ActorMaster* main = frameCur->FindMaster(p.masters[0]);
+			const ActorMaster* sub = frameCur->FindMaster(p.masters[1]);
 			ASSERT(main);
 			ASSERT(sub);
 
-			packet.Write<UserID>(player.userID); // usn
-			packet.WriteStringObj(player.name.data());
-			packet.Write<i32>(3 + player.team); // teamType | TODO: team
-			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType)); // mainCreatureIndex
-			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType)); // subCreatureIndex
+			packet.Write<UserID>(p.userID);
+			packet.Write<LocalActorID>(GetLocalActorID(clientHd, main->actorUID));
+			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType));
+			packet.Write<ClassType>(main->classType);
+			packet.Write<i32>(main->hp);
+			packet.Write<i32>(main->hpMax);
+			packet.Write<LocalActorID>(GetLocalActorID(clientHd, sub->actorUID));
+			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType));
+
+			packet.Write<ClassType>(sub->classType);
+			packet.Write<i32>(sub->hp);
+			packet.Write<i32>(sub->hpMax);
+
+			packet.Write<i32>(0);
+			packet.Write<u8>(0);
 		}
 
 
 		SendPacket(clientHd, packet);
 	}
 
-	// SA_LoadingComplete
+	{
+		PacketWriter<Sv::SN_InitScoreBoard,4096> packet;
+
+		packet.Write<u16>(frameCur->playerList.size());
+
+		foreach_const(pl, frameCur->playerList) {
+			const Player& p = *pl;
+			const ActorMaster* main = frameCur->FindMaster(p.masters[0]);
+			const ActorMaster* sub = frameCur->FindMaster(p.masters[1]);
+			ASSERT(main);
+			ASSERT(sub);
+			ASSERT(p.team == 0 || p.team == 1);
+
+			packet.Write<UserID>(p.userID);
+			packet.WriteStringObj(p.name.data());
+			packet.Write<TeamType>(p.team == 0 ? TeamType::RED : TeamType::BLUE);
+			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)main->classType));
+			packet.Write<CreatureIndex>(CreatureIndex(100000000 + (i32)sub->classType));
+		}
+
+
+		SendPacket(clientHd, packet);
+	}
+
+
 	SendPacketData<Sv::SA_LoadingComplete>(clientHd,  0, nullptr);
 }
 
-void Replication::SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed)
+
+void Replication::SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed, UserID userId)
 {
 	Sv::SA_GameReady ready;
-	ready.waitingTimeMs = waitTime;
+	ready.waitingTimeMS = waitTime;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	ready.readyElapsedMs = elapsed;
+	ready.readyElapsedMS = elapsed;
 	SendPacket(clientHd, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
-	notify.userID = 1;
+	notify.userId = userId;
+
 	notify.skillPoint = 1;
 	SendPacket(clientHd, notify);
 }
@@ -1277,132 +1251,29 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<EntityType>(EntityType::CREATURE); // nType
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
-			packet.Write<i32>(-1); // dwLocalID
-			// TODO: localID?
-
-			packet.Write(actor.pos); // p3nPos
+			packet.Write<i32>(actor.localID);
+			packet.Write(actor.pos);
 			packet.Write(WorldYawToMxmYaw(actor.rotation.upperYaw));
 			packet.Write(WorldPitchToMxmPitch(actor.rotation.upperPitch));
 			packet.Write(WorldYawToMxmYaw(actor.rotation.bodyYaw));
-			packet.Write<i32>(-1); // spawnType
-			packet.Write<ActionStateID>(actor.actionState); // actionState
-			packet.Write<i32>(0); // ownerID
-			packet.Write<u8>(0); // bDirectionToNearPC
-			packet.Write<i32>(-1); // AiWanderDistOverride
-			packet.Write<i32>(-1); // tagID
+			packet.Write<i32>(actor.spawnAnim);
+			packet.Write<ActionStateID>(actor.actionState);
+			packet.Write<i32>(actor.ownerID);
+			packet.Write<u8>(actor.dirToNearPC);
+			packet.Write<i32>(actor.wanderDist);
+			packet.Write<i32>(actor.tagID);
+
 			packet.Write<i32>(3 + parent.team); // faction
 			packet.Write<ClassType>(actor.classType); // classType
 			packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
-			packet.Write<i32>(0); // seed
+			packet.Write<i32>(actor.seed);
 
-			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-			// initStat ------------------------
-			/*
-			packet.Write<u16>(53); // maxStats_count
-
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 3, 0 }); //
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 124 });
-			packet.Write(Stat{ 7, 93.75f });
-			packet.Write(Stat{ 8, 0 }); //
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 12, 0 }); //
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 100.5 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 17, 0 }); //
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 20, 0 }); //
-			packet.Write(Stat{ 21, 0 }); //
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 36, 0 }); //
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 40, 0 }); //
-			packet.Write(Stat{ 41, 0 }); //
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 44, 15 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 56, 0 }); //
-			packet.Write(Stat{ 57, 0 });
-			packet.Write(Stat{ 50, 0 });
-			packet.Write(Stat{ 51, 0 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 150 });
+			WriteInitStat(packet, GetGameXmlContent().GetMaster(actor.classType).baseStats);
 
 
 
-			packet.Write(Stat{ 27, 0 });
-			packet.Write(Stat{ 47, 0 });
-			packet.Write(Stat{ 49, 0 });
-			packet.Write(Stat{ 48, 0 });
 
-			packet.Write(Stat{ 46, 0 });
-			packet.Write(Stat{ 45, 0 });
-			packet.Write(Stat{ 26, 0 });
-			packet.Write(Stat{ 25, 0 });
-
-			packet.Write(Stat{ 60, 0 });
-			packet.Write(Stat{ 61, 0 });
-			packet.Write(Stat{ 62, 0 });
-
-			packet.Write(Stat{ 53, 0 });
-			packet.Write(Stat{ 58, 0 });
-			packet.Write(Stat{ 65, 0 });
-
-
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 37, 0 });*/
-
-			packet.Write<u16>(26); // maxStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 124 });
-			packet.Write(Stat{ 7, 93.7846f });
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 101 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 44, 15 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 150 });
-
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 2400 });
-			//packet.Write(Stat{ 37, 0 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 2, 200 });
-			// ------------------------------------
 
 			packet.Write<u8>(1); // isInSight
 			packet.Write<u8>(0); // isDead
@@ -1426,58 +1297,27 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 			packet.Write<LocalActorID>(parentLocalActorID); // mainEntityID
 			packet.Write<EntityType>(EntityType::CREATURE); // nType
 			packet.Write<CreatureIndex>((CreatureIndex)(100000000 + (i32)actor.classType)); // nIDX
-			packet.Write<i32>(-1); // dwLocalID
-
-			packet.Write(actor.pos); // p3nPos
+			packet.Write<i32>(actor.localID);
+			packet.Write(actor.pos);
 			packet.Write(WorldYawToMxmYaw(actor.rotation.upperYaw));
 			packet.Write(WorldPitchToMxmPitch(actor.rotation.upperPitch));
 			packet.Write(WorldYawToMxmYaw(actor.rotation.bodyYaw));
-			packet.Write<i32>(-1); // spawnType
-			packet.Write<ActionStateID>(actor.actionState); // actionState
-			packet.Write<i32>(0); // ownerID
-			packet.Write<i32>(-1); // tagID
-			packet.Write<i32>(3); // faction
-			packet.Write<ClassType>(actor.classType); // classType
-			packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
-			packet.Write<i32>(0); // seed
+			packet.Write<i32>(actor.spawnAnim);
+			packet.Write<ActionStateID>(actor.actionState);
+			packet.Write<i32>(actor.ownerID);
+			packet.Write<i32>(actor.tagID);
 
-			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+			packet.Write<i32>(3 + parent.team);
+			packet.Write<ClassType>(actor.classType);
+			packet.Write<SkinIndex>(actor.skinIndex);
+			packet.Write<i32>(actor.seed);
 
-			// initStat ------------------------
-			packet.Write<u16>(26); // maxStats_count
-			packet.Write(Stat{ 0, 1764 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 192 });
-			packet.Write(Stat{ 7, 85.05f });
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 104.5 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 17, 100 });
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 41, 6 });
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 46, 5 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 15 });
 
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 1764 });
-			packet.Write(Stat{ 37, 0 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 17, 100 });
-			// ------------------------------------
+			WriteInitStat(packet, GetGameXmlContent().GetMaster(actor.classType).baseStats);
+
+
+
+
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
@@ -1571,67 +1411,29 @@ void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor
 		PacketWriter<Sv::SN_GameCreateActor,512> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<EntityType>(EntityType::CREATURE); // nType
-		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(actor.localID); // dwLocalID
+		packet.Write<i32>(actor.entityType);
+		packet.Write<CreatureIndex>(actor.docID);
+		packet.Write<i32>(actor.localID);
+		packet.Write(actor.pos);
+		packet.Write(actor.dir);
+		packet.Write<i32>(actor.spawnAnim);
+		packet.Write<ActionStateID>(actor.actionState);
+		packet.Write<i32>(actor.ownerID);
+		packet.Write<u8>(actor.dirToNearPC);
+		packet.Write<i32>(actor.wanderDist);
+		packet.Write<i32>(actor.tagID);
+		packet.Write<Faction>(actor.faction);
+		packet.Write<ClassType>(ClassType::NONE);
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT);
+		packet.Write<i32>(actor.seed);
 
-		packet.Write(actor.pos); // p3nPos
-		packet.Write(actor.dir); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<ActionStateID>((ActionStateID)99); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<Faction>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
-		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
-		packet.Write<i32>(0); // seed
 
-		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+		packet.Write<u16>(0);
+		packet.Write<u16>(0);
 
-		// initStat ------------------------
-		switch(actor.docID) {
-			case (CreatureIndex)100010101: {
-				const Stat maxStats[] = {
-					{ 0, 15596.f },
-					{ 6, 48.f },
-					{ 7, 113.333f },
-					{ 8, 10.f },
-					{ 9, 5.f },
-					{ 10, 150.f },
-					{ 13, 100.f },
-					{ 14, 80.f },
-					{ 15, 100.f },
-					{ 52, 70.f },
-					{ 64, 150.f },
-				};
-				const Stat curStats[] = {
-					{ 0, 15596.f },
-				};
 
-				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
-				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
-			} break;
 
-			case (CreatureIndex)110040546: {
-				const Stat maxStats[] = {
-					{ 0, -1 },
-				};
-				const Stat curStats[] = {
-					{ 0, -1 },
-				};
 
-				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
-				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
-			} break;
-
-			default: {
-				packet.Write<u16>(0); // maxStats
-				packet.Write<u16>(0); // curStats
-			}
-		}
-		// ------------------------------------
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -1670,45 +1472,29 @@ void Replication::SendActorDynamicSpawn(ClientHandle clientHd, const ActorDynami
 		PacketWriter<Sv::SN_GameCreateActor,512> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<EntityType>(EntityType::DYNAMIC); // nType
-		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(actor.localID); // dwLocalID
+		packet.Write<i32>(actor.entityType);
+		packet.Write<CreatureIndex>(actor.docID);
+		packet.Write<i32>(actor.localID);
+		packet.Write(actor.pos);
+		packet.Write(actor.rot);
+		packet.Write<i32>(actor.spawnAnim);
+		packet.Write<ActionStateID>(actor.action);
+		packet.Write<i32>(actor.ownerID);
+		packet.Write<u8>(actor.dirToNearPC);
+		packet.Write<i32>(actor.wanderDist);
+		packet.Write<i32>(actor.tagID);
+		packet.Write<Faction>(actor.faction);
+		packet.Write<ClassType>(ClassType::NONE);
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT);
+		packet.Write<i32>(actor.seed);
 
-		packet.Write(actor.pos); // p3nPos
-		packet.Write(actor.rot); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<ActionStateID>(ActionStateID::DYNAMIC_NORMAL_STAND); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<Faction>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
-		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
-		packet.Write<i32>(0); // seed
 
-		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+		packet.Write<u16>(0);
+		packet.Write<u16>(0);
 
-		// initStat ------------------------
-		switch(actor.docID) {
-			case (CreatureIndex)110040546: {
-				const Stat maxStats[] = {
-					{ 0, -1 },
-				};
-				const Stat curStats[] = {
-					{ 0, -1 },
-				};
 
-				packet.WriteVec(maxStats, ARRAY_COUNT(maxStats)); // maxStats
-				packet.WriteVec(curStats, ARRAY_COUNT(curStats)); // curStats
-			} break;
 
-			default: {
-				packet.Write<u16>(0); // maxStats
-				packet.Write<u16>(0); // curStats
-			}
-		}
-		// ------------------------------------
+
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -1815,9 +1601,10 @@ void Replication::SendInitialFrame(ClientHandle clientHd)
 		packet.Write<i32>(0); // currentPlayerCoolTimeByTransformationEnd
 		packet.Write<i32>(20); // chPropertyResetCoolTime
 		packet.Write<u8>(0); // transformationPieceCount
-		packet.Write<u16>(0); // titanDocIndexes_count
-		packet.Write<u8>(0); // nextTitanIndex
-		packet.Write<u16>(0); // listExceptionStat_count
+		packet.Write<u16>(0); // titanDocIndexs_count
+		packet.Write<i8>(0); // nextTitanIndex
+		packet.Write<u16>(0); // limitExceptionStat_count
+
 
 		SendPacket(clientHd, packet);
 	}
@@ -1829,7 +1616,8 @@ void Replication::SendInitialFrame(ClientHandle clientHd)
 	{
 		PacketWriter<Sv::SN_LoadClearedStages> packet;
 
-		packet.Write<u16>(0); // count
+		packet.Write<u16>(0); // clearedStageList_count
+
 		SendPacket(clientHd, packet);
 	}
 

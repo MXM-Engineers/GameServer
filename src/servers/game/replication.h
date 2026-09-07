@@ -70,6 +70,18 @@ struct Replication
 		u32 playerIndex;
 		ClassType classType;
 		SkinIndex skinIndex;
+		i32 hp;
+		i32 hpMax;
+		i32 seed;
+		i32 localID = -1;
+		i32 spawnAnim = -1;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+
+
+
 
 		vec3 pos = vec3(0);
 		vec2 moveDir = vec2(0);
@@ -92,6 +104,15 @@ struct Replication
 		CreatureIndex docID;
 		i32 localID;
 		Faction faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+		i32 entityType = 1;
+
 
 		vec3 pos;
 		vec3 dir;
@@ -103,6 +124,14 @@ struct Replication
 		i32 localID;
 		Faction faction;
 		ActionStateID action;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 seed = 0;
+		i32 entityType = 3;
+
 		vec3 pos;
 		vec3 rot;
 	};
@@ -258,7 +287,8 @@ struct Replication
 	void SendAccountDataPvp(ClientHandle clientHd);
 
 	void SendPvpLoadingComplete(ClientHandle clientHd);
-	void SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed);
+	void SendGameReady(ClientHandle clientHd, i32 waitTime, i32 elapsed, UserID userId);
+
 	void SendPreGameLevelEvents(ClientHandle clientHd);
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);

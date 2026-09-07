@@ -3,6 +3,8 @@
 #include <mxm/game_content.h>
 #include "config.h"
 #include <EAStdC/EAString.h>
+#include <common/utils.h>
+
 
 void HubGame::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
@@ -91,16 +93,33 @@ bool HubGame::LoadMap()
 			continue;
 		}
 
-		if(it->docID == CreatureIndex::Jukebox) {
-			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
-		}
-		if (it->docID == CreatureIndex::HalloweenJukebox) {
-			world.SpawnJukeboxActor(CreatureIndex::HalloweenJukebox, it->localID, it->pos, it->rot);
+		if(it->docID == CreatureIndex::Jukebox || it->docID == CreatureIndex::HalloweenJukebox) {
+			WorldHub::ActorJukebox& actor = world.SpawnJukeboxActor(it->docID, it->localID, it->pos, it->rot);
+			actor.spawnAnim = it->spawnAnim;
+			actor.wanderDist = it->wanderDist;
+			actor.tagID = it->tagID;
+			actor.ownerID = it->ownerID;
+			actor.dirToNearPC = it->dirToNearPC;
+			actor.actionState = it->actionState;
+			actor.faction = (i32)it->faction;
+			actor.type = it->entityType;
+			actor.seed = (i32)RandUint();
 		}
 		else {
-			// spawn npc
-			SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+			WorldHub::ActorNpc& actor = world.SpawnNpcActor(it->docID, it->localID);
+			actor.pos = it->pos;
+			actor.dir = it->rot;
+			actor.spawnAnim = it->spawnAnim;
+			actor.wanderDist = it->wanderDist;
+			actor.tagID = it->tagID;
+			actor.ownerID = it->ownerID;
+			actor.dirToNearPC = it->dirToNearPC;
+			actor.actionState = it->actionState;
+			actor.faction = (i32)it->faction;
+			actor.type = it->entityType;
+			actor.seed = (i32)RandUint();
 		}
+
 	}
 
 	return true;
@@ -146,10 +165,10 @@ void HubGame::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// TODO: health
 	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientHd == clientHd);
 	replication.SendCharacterInfo(clientHd, actor->UID, actor->docID, actor->classType, 100, 100);
+
 }
 
 void HubGame::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)

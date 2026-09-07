@@ -370,7 +370,7 @@ class ServerSerializer:
         print('SA_GameReady {')
         print('    waitingTimeMS=%d' % p.read_i32())
         print('    serverTimestamp=%d' % p.read_i64())
-        print('    readyElapsedMs=%d' % p.read_i32())
+        print('    readyElapsedMS=%d' % p.read_i32())
         print('}')
 
     def serialize_62077(netid, p: common.PacketReader):
@@ -3685,7 +3685,7 @@ class ServerSerializer:
         print('}')
     def serialize_62481(netid, p: common.PacketReader):
         print('SN_NotifyTimestamp {')
-        print('    serverTimeStamp=%d' % p.read_i64())
+        print('    serverTimestamp=%d' % p.read_i64())
         print('    curCount=%d' % p.read_i32())
         print('    maxCount=%d' % p.read_i32())
         print('}')
@@ -4627,7 +4627,11 @@ class ServerSerializer:
         print('    isInSight=%d' % p.read_u8())
         print('    isDead=%d' % p.read_u8())
         print('    serverTime=%d' % p.read_i64())
-        print('    meshChangeActionHistory_count=%d' % p.read_u16())
+        count = p.read_u16()
+        print('    meshChangeActionHistory_count=%d' % count)
+        while count > 0:
+            print('        (actionState=%d serverTime=%d),' % (p.read_i32(), p.read_i64()))
+            count -= 1
 
         print('}')
 
@@ -4672,7 +4676,12 @@ class ServerSerializer:
         print('      ]')
 
         print('    }')
-        print('    meshChangeActionHistory_count=%d' % p.read_u16())
+        count = p.read_u16()
+        print('    meshChangeActionHistory_count=%d' % count)
+        while count > 0:
+            print('        (actionState=%d serverTime=%d),' % (p.read_i32(), p.read_i64()))
+            count -= 1
+
         print('}')
 
     def serialize_62029(netid, p: common.PacketReader):
@@ -6117,7 +6126,7 @@ class ServerSerializer:
 
     def serialize_62474(netid, p: common.PacketReader):
         print('SN_NotifyIngameSkillPoint {')
-        print('    userID=0x%08x' % p.read_u32())
+        print('    userId=0x%08x' % p.read_u32())
         print('    skillPoint=%d' % p.read_i32())
         print('}')
 
@@ -6162,9 +6171,9 @@ class ServerSerializer:
 
     def serialize_62575(netid, p: common.PacketReader):
         print('SN_InitScoreBoard {')
-        
+
         count = p.read_u16()
-        print('    userInfos(%d)=[' % count)
+        print('    ScoreBoardUserInfos(%d)=[' % count)
         while count > 0:
             print('    {')
             print('      usn=%d' % p.read_i32())
@@ -6174,7 +6183,9 @@ class ServerSerializer:
             print('      subCreatureIndex=%d' % p.read_i32())
             print('    },')
             count -= 1
+        print('    ]')
         print('}')
+
 
     def serialize_62576(netid, p: common.PacketReader):
         print('SN_InitIngameModeInfo {')
@@ -6193,9 +6204,9 @@ class ServerSerializer:
             s += '%d, ' % (p.read_i32())
             count -= 1
 
-        print('    titanDocIndexes=[%s]' % s)
-        print('    nextTitanIndex=%d' % p.read_u8())
-        print('    listExceptionStat=[')
+        print('    titanDocIndexs=[%s]' % s)
+        print('    nextTitanIndex=%d' % p.read_i8())
+        print('    limitExceptionStat=[')
 
         count = p.read_u16()
         while count > 0:

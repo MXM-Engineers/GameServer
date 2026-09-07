@@ -3,6 +3,8 @@
 #include <tinyxml2.h>
 #include <common/protocol.h>
 #include <common/utils.h>
+#include <common/stat.h>
+
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -184,6 +186,10 @@ struct GameXmlContent
 		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
 		eastl::fixed_vector<WeaponIndex,3,false> defaultWeaponIDs;
 		eastl::fixed_vector<WeaponIndex,3,false> fairPvpWeaponIDs;
+		eastl::fixed_vector<StatValue,32,false> baseStats;
+
+
+
 
 		CharacterModel character;
 	};
@@ -203,6 +209,14 @@ struct GameXmlContent
 			Faction faction;
 			vec3 pos;
 			vec3 rot;
+			i32 entityType = 1;
+			i32 spawnAnim = 0;
+			i32 wanderDist = -1;
+			i32 tagID = -1;
+			i32 ownerID = 0;
+			u8 dirToNearPC = 0;
+			ActionStateID actionState = ActionStateID::INVALID;
+
 
 			inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
 		};
@@ -282,6 +296,24 @@ struct GameXmlContent
 	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
+	eastl::fixed_hash_map<CreatureIndex,Master*,100> masterIdMap;
+
+	const Master* FindMaster(ClassType classType) const
+	{
+		auto found = masterClassTypeMap.find(classType);
+		if(found == masterClassTypeMap.end()) return nullptr;
+		return found->second;
+	}
+
+	const Master* FindMaster(CreatureIndex id) const
+	{
+		auto found = masterIdMap.find(id);
+		if(found == masterIdMap.end()) return nullptr;
+		return found->second;
+	}
+
+
+
 	eastl::fixed_hash_map<ClassType,CreatureIndex,100> deathMatchBotIndex;
 
 	eastl::fixed_vector<MapList, 500, false> maplists;
@@ -367,6 +399,8 @@ struct GameXmlContent
 	bool Load();
 	const MapList* FindMapListByID(MapIndex index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
+	bool LoadCharacterBaseStats();
+
 	const Master& GetMaster(ClassType classType) const;
 	i32 WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;

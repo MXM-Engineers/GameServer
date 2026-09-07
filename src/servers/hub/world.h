@@ -29,6 +29,14 @@ struct WorldHub
 		i32 actionParam1;
 		i32 actionParam2;
 		i32 faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 seed = 0;
+
+
 
 		explicit ActorCore(ActorUID UID_): UID(UID_) {}
 	};
@@ -56,6 +64,8 @@ struct WorldHub
 
 		explicit ActorNpc(ActorUID UID_): ActorCore(UID_) {}
 	};
+
+
 
 	struct ActorMonster: ActorCore
 	{

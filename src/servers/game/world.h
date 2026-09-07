@@ -141,6 +141,18 @@ struct World
 		Player* parent;
 		ClassType classType;
 		SkinIndex skinIndex;
+		i32 hp;
+		i32 hpMax;
+		i32 seed;
+		i32 localID = -1;
+		i32 spawnAnim = -1;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+
+
+
 
 		ActionStateID actionState;
 		i32 actionParam1;
@@ -155,6 +167,15 @@ struct World
 		CreatureIndex docID;
 		i32 localID;
 		Faction faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+		i32 entityType = 1;
+
 		vec3 pos;
 		vec3 rot;
 
@@ -168,6 +189,14 @@ struct World
 		i32 localID;
 		Faction faction;
 		ActionStateID action;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 seed = 0;
+		i32 entityType = 3;
+
 		Time tLastActionChange;
 		vec3 pos;
 		vec3 rot;

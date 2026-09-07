@@ -68,6 +68,14 @@ struct HubReplication
 		eastl::fixed_vector<u8,16> matchingGameModes;
 
 		ActionStateID actionState;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 faction = 0;
+		i32 seed = 0;
+
 		i32 actionParam1;
 		i32 actionParam2;
 	};
@@ -77,6 +85,14 @@ struct HubReplication
 		i32 type;
 		i32 localID;
 		i32 faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+
 	};
 
 	struct ActorJukebox: Actor<ActorType::JUKEBOX>
@@ -88,6 +104,17 @@ struct HubReplication
 		};
 
 		i32 localID;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 faction = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+		i32 type = 1;
+
+
 
 		i32 playPosition;
 		Time playStartTime; // identifier

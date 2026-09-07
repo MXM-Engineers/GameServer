@@ -127,6 +127,29 @@ enum class ClassType: i32
 
 ClassType ClassTypeFromString(const char* str);
 
+enum class TeamType: i32
+{
+	INVALID = -1,
+	PLAYER = 0,
+	MONSTER,
+	DYNAMIC,
+	RED,
+	BLUE,
+	GREEN,
+	ORANGE,
+	PURPLE,
+	YELLOW,
+	PINK,
+	BLACK,
+	WHITE,
+	CYAN,
+	SPECTATOR,
+	SIDEWALL,
+	DROPITEM,
+	COUNT,
+};
+
+
 // values are from decompile and work ingame
 enum class EChatType : i32
 {
@@ -4191,8 +4214,9 @@ struct SN_LoadClearedStages
 {
 	enum { NET_ID = 62064 };
 
-	u16 count;
+	u16 clearedStageList_count;
 	i32 clearedStageList[1];
+
 };
 
 struct SN_GameFieldReady
@@ -4268,9 +4292,9 @@ struct SA_GameReady
 {
 	enum { NET_ID = 62075 };
 
-	i32 waitingTimeMs;
-	i64 serverTimestamp; // TODO: find out what this represents and how
-	i32 readyElapsedMs;
+	i32 waitingTimeMS;
+	i64 serverTimestamp;
+	i32 readyElapsedMS;
 };
 POP_PACKED
 ASSERT_SIZE(SA_GameReady, 16);
@@ -4665,25 +4689,27 @@ struct SN_ProfileMasterGears
 {
 	enum { NET_ID = 62129 };
 
+	PUSH_PACKED
 	struct Slot
 	{
 		i32 gearType;
 		ItemUID gearItemID;
 	};
+	POP_PACKED
 
 	struct Gear
 	{
 		u8 masterGearNo;
 		u16 name_len;
 		wchar name[1];
-
-		u16 slots_count;
+		u16 slots_len;
 		Slot slots[1];
 	};
 
-	u16 masterGears_count;
-	Gear masterGears;
+	u16 masterGears_len;
+	Gear masterGears[1];
 };
+ASSERT_SIZE(SN_ProfileMasterGears::Slot, 8);
 
 struct SA_EnqueueGame
 {
@@ -4911,6 +4937,7 @@ struct SN_SummaryInfoLatest
 	Info infoList[1];
 };
 
+PUSH_PACKED
 struct SN_NotifyPcDetailInfos
 {
 	enum { NET_ID = 62229 };
@@ -4926,9 +4953,9 @@ struct SN_NotifyPcDetailInfos
 
 	struct ST_PcDetailInfo
 	{
-		i32 userID;
-		ST_PcInfo mainPc;
-		ST_PcInfo subPc;
+		UserID userId;
+		ST_PcInfo mainPC;
+		ST_PcInfo subPC;
 		i32 remainTagCooltimeMS;
 		u8 canCastSkillSlotUG;
 	};
@@ -4936,6 +4963,10 @@ struct SN_NotifyPcDetailInfos
 	u16 pcList_count;
 	ST_PcDetailInfo pcList[1];
 };
+POP_PACKED
+ASSERT_SIZE(SN_NotifyPcDetailInfos::ST_PcInfo, 20);
+ASSERT_SIZE(SN_NotifyPcDetailInfos::ST_PcDetailInfo, 49);
+
 
 struct SA_ResultSpAction
 {
@@ -5538,19 +5569,16 @@ PUSH_PACKED
 struct SN_LoadingProgressData
 {
 	enum { NET_ID = 62450 };
-	u32 usn; // 4 bytes
-	u16 nickname_len; // 2 bytes
-	wchar_t nickname[1]; // 2 bytes each (variable: wide string)
-	u8 progressData; // 1 bytes
-	u32 activeCreatureIndex; // 4 bytes
-	u32 inactiveCreatureIndex; // 4 bytes
-	u8 isSpectator; // 1 bytes
-	// logger 0x99996e
+	UserID usn;
+	u16 nickname_len;
+	wchar nickname[1];
+	u8 progressData;
+	CreatureIndex activeCreatureIndex;
+	CreatureIndex inactiveCreatureIndex;
+	u8 isSpectator;
 };
 POP_PACKED
-// ASSERT_SIZE n/a: wire = 16 + 2*nickname_len (variable string)
-// ASSERT_SIZE n/a: wire = 16 + 2*nickname_len (variable string)
-;
+
 
 struct SN_MasterRotationInfo
 {
@@ -5667,7 +5695,7 @@ struct SN_NotifyIngameSkillPoint
 {
 	enum { NET_ID = 62474 };
 
-	i32 userID;
+	UserID userId;
 	i32 skillPoint;
 };
 ASSERT_SIZE(SN_NotifyIngameSkillPoint, 8);
@@ -5726,12 +5754,13 @@ struct SA_EnterWaitingQueue
 POP_PACKED
 ASSERT_SIZE(SA_EnterWaitingQueue, 13);
 
+PUSH_PACKED
 struct SN_AccountEquipmentList
 {
 	enum { NET_ID = 62525 };
-
 	i32 supportKitDocIndex;
 };
+POP_PACKED
 ASSERT_SIZE(SN_AccountEquipmentList, 4);
 
 struct SA_CalendarDetail
@@ -5759,21 +5788,30 @@ struct SN_InitScoreBoard
 
 	struct PST_ScoreBoardUserInfo
 	{
-		i32 usn;
+		UserID usn;
 		u16 nickname_len;
-		wchar nick[1];
-		i32 teamType;
+		wchar nickname[1];
+		TeamType teamType;
 		CreatureIndex mainCreatureIndex;
 		CreatureIndex subCreatureIndex;
 	};
 
-	u16 userInfos_count;
-	PST_ScoreBoardUserInfo userInfos[1];
+	u16 ScoreBoardUserInfos_count;
+	PST_ScoreBoardUserInfo ScoreBoardUserInfos[1];
 };
 
 struct SN_InitIngameModeInfo
 {
 	enum { NET_ID = 62576 };
+
+	struct ST_STAT_MIN_MAX
+	{
+		i32 statType;
+		f32 min;
+		f32 max;
+		f32 incRatioMin;
+		f32 incRatioMax;
+	};
 
 	i32 transformationVotingPlayerCoolTimeByVotingFail;
 	i32 transformationVotingTeamCoolTimeByTransformationEnd;
@@ -5783,11 +5821,11 @@ struct SN_InitIngameModeInfo
 	i32 currentPlayerCoolTimeByTransformationEnd;
 	i32 chPropertyResetCoolTime;
 	u8 transformationPieceCount;
-	u16 titanDocIndexes_count;
-	i32 titanDocIndexes[1];
-	u8 nextTitanIndex;
-	u16 listExceptionStat_count;
-	i32 listExceptionStat[1]; // TODO: not actually int
+	u16 titanDocIndexs_count;
+	i32 titanDocIndexs[1];
+	i8 nextTitanIndex;
+	u16 limitExceptionStat_count;
+	ST_STAT_MIN_MAX limitExceptionStat[1];
 };
 
 struct SN_ActionChangeLevelEvent

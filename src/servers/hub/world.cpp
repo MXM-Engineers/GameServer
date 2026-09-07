@@ -35,6 +35,16 @@ void WorldHub::Update(Time localTime_)
 		rjb.pos = jukebox.pos;
 		rjb.dir = jukebox.dir;
 		rjb.localID = jukebox.localID;
+		rjb.spawnAnim = jukebox.spawnAnim;
+		rjb.ownerID = jukebox.ownerID;
+		rjb.dirToNearPC = jukebox.dirToNearPC;
+		rjb.wanderDist = jukebox.wanderDist;
+		rjb.tagID = jukebox.tagID;
+		rjb.faction = jukebox.faction;
+		rjb.actionState = jukebox.actionState;
+		rjb.seed = jukebox.seed;
+		rjb.type = jukebox.type;
+
 
 		if(jukebox.currentSong.songID != SongID::INVALID) {
 			rjb.playPosition = (i32)round(TimeDiffSec(TimeDiff(jukebox.playStartTime, localTime)));
@@ -73,6 +83,14 @@ void WorldHub::Update(Time localTime_)
 		rfl.actionParam2 = actor.actionParam2;
 		rfl.classType = actor.classType;
 		rfl.skinIndex = actor.skinIndex;
+		rfl.spawnAnim = actor.spawnAnim;
+		rfl.ownerID = actor.ownerID;
+		rfl.dirToNearPC = actor.dirToNearPC;
+		rfl.wanderDist = actor.wanderDist;
+		rfl.tagID = actor.tagID;
+		rfl.faction = actor.faction;
+		rfl.seed = actor.seed;
+
 
 		rfl.name = actor.name;
 		rfl.guildTag = actor.guildTag;
@@ -100,6 +118,14 @@ void WorldHub::Update(Time localTime_)
 		rfl.dir = actor.dir;
 		rfl.localID = actor.localID;
 		rfl.faction = actor.faction;
+		rfl.spawnAnim = actor.spawnAnim;
+		rfl.ownerID = actor.ownerID;
+		rfl.dirToNearPC = actor.dirToNearPC;
+		rfl.wanderDist = actor.wanderDist;
+		rfl.tagID = actor.tagID;
+		rfl.actionState = actor.actionState;
+		rfl.seed = actor.seed;
+
 
 		replication->FramePushNpcActor(rfl);
 	}

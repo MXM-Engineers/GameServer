@@ -25,6 +25,7 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 	if(Config().DevForcedMap != 0) {
 		replication.mapIndex = (MapIndex)Config().DevForcedMap;
 	}
+	ASSERT(replication.mapIndex == MapIndex::PVP_DEATHMATCH);
 	replication.canEscape = gameInfo.canEscape;
 	replication.isTrespass = 0;
 	replication.surrenderAbleTime = gameInfo.surrenderAbleTime;
@@ -294,9 +295,10 @@ void Game::Update(Time localTime_)
 bool Game::LoadMap()
 {
 	// TODO: Should probably part of world?
-	auto& phys = PhysContext();
-	world.physics.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0));
-	world.physics.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0));
+	world.physics.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0), vec3(0), PhysicsCollisionGroup::Static);
+	world.physics.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
+	world.physics.CreateStaticCollider("PVP_Deathmatch01_Aim", vec3(0), vec3(0), PhysicsCollisionGroup::Aim);
+	world.physics.CreateStaticCollider("PVP_Deathmatch01_sidewall_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
 	// --------------------------------
 
 	const GameXmlContent& content = GetGameXmlContent();
@@ -379,7 +381,9 @@ bool Game::LoadMap()
 			auto& actor = world.SpawnDynamic(CI_WALL, it->ID);
 			actor.pos = it->pos;
 			actor.rot = it->rot;
-			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_GuardrailMob", it->pos, it->rot);
+			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_GuardrailMob", actor.pos, actor.rot, PhysicsCollisionGroup::FenceAll);
+			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_AIobj", actor.pos, actor.rot, PhysicsCollisionGroup::FenceAll);
+			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_Collision", actor.pos, actor.rot, PhysicsCollisionGroup::Static);
 		}
 	}
 	return true;

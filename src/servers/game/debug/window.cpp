@@ -115,7 +115,7 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			actor->collider->setPosition(PxExtendedVec3(5469, 3945, 1000));
+			actor->collider->setFootPosition(PxExtendedVec3(5469, 3945, 1000));
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -204,8 +204,8 @@ bool Window::Init()
 	// create map scene, add ground and wall static meshes
 	phys.CreateScene(&testScene);
 
-	testScene.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0));
-	testScene.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0));
+	testScene.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0), vec3(0), PhysicsCollisionGroup::Static);
+	testScene.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
 
 	testSubject.actor = testScene.CreateDynamicBody(100, 300, vec3(0));
 	testSubject.Reset();

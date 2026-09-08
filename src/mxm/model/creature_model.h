@@ -16,9 +16,9 @@ public:
 	void setColliderRadius(i32 colliderRadius);
 	i32 getColliderHeight() const;
 	void setColliderHeight(i32 colliderHeight);
-	i32 getActorRadius();
+	i32 getActorRadius() const;
 	void setActorRadius(i32 actorRadius);
-	i32 getActorHeight();
+	i32 getActorHeight() const;
 	void setActorHeight(i32 actorHeight);
 
 	void Print();

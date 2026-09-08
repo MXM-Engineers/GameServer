@@ -105,6 +105,8 @@ struct World
 			f32 moveSpeed = 0;
 			RotationHumanoid rot;
 			bool hasJumped = false;
+			bool forcedMove = false;
+			Time lockedMoveUntil = Time::ZERO;
 		} movement;
 
 		explicit Player(u32 index_, const PlayerDescription& desc):
@@ -214,6 +216,10 @@ struct World
 		eastl::fixed_vector<ActorUID,10,false> targetList;
 		Time startTime;
 		i32 commandID = 0;
+		vec3 moveStartPos = vec3(0);
+		vec3 moveEndPos = vec3(0);
+		f32 moveDuration = 0;
+		bool moving = false;
 
 		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
 		inline void Finish() { skillID = SkillID::INVALID; }

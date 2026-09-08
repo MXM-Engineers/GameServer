@@ -24,6 +24,7 @@ void Replication::Frame::Clear()
 
 	skillCastList.clear();
 	skillExecList.clear();
+	positionCorrections.clear();
 }
 
 void Replication::PlayerLocalInfo::Reset()
@@ -57,6 +58,11 @@ void Replication::FrameEnd()
 	UpdatePlayersLocalState();
 
 	FrameDifference();
+	foreach_const(correction, frameCur->positionCorrections) {
+		const ActorMaster* actor = frameCur->FindMaster(correction->actorUID);
+		ASSERT(actor);
+		SendPlayerPosition(correction->clientHd, actor->actorUID, actor->pos, actor->rotation, actor->actionState);
+	}
 
 	for(int pi = 0; pi < MAX_PLAYERS; pi++) {
 		PlayerStatePair& state = playerState[pi];
@@ -137,6 +143,15 @@ void Replication::FramePushSkillCast(const SkillCast& skillCast)
 void Replication::FramePushSkillExec(const SkillExec& skillExec)
 {
 	frameCur->skillExecList.push_back(skillExec);
+}
+
+void Replication::FrameRequestPositionCorrection(ClientHandle clientHd, ActorUID actorUID)
+{
+	foreach_const(correction, frameCur->positionCorrections) {
+		if(correction->clientHd == clientHd && correction->actorUID == actorUID) return;
+	}
+	ASSERT(frameCur->positionCorrections.size() < frameCur->positionCorrections.max_size());
+	frameCur->positionCorrections.push_back({clientHd, actorUID});
 }
 
 void Replication::OnPlayerConnect(ClientHandle clientHd, u32 playerIndex)
@@ -794,6 +809,26 @@ void Replication::SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f
 	SendPacket(clientHd, packet);
 }
 
+void Replication::SendPlayerPosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const RotationHumanoid& rot, ActionStateID actionState)
+{
+	const auto player = playerMap.find(clientHd);
+	if(player == playerMap.end() || playerState[player->second].cur < PlayerState::IN_GAME) {
+		return;
+	}
+
+	Sv::SN_PlayerSyncMove sync;
+	sync.entityID = GetLocalActorID(clientHd, actorUID);
+	ASSERT(sync.entityID != LocalActorID::INVALID);
+	sync.DestPos = v2f(pos);
+	sync.MoveDir = {};
+	sync.UpperDir = { WorldYawToMxmYaw(rot.upperYaw), WorldPitchToMxmPitch(rot.upperPitch) };
+	sync.nRotate = WorldYawToMxmYaw(rot.bodyYaw);
+	sync.nSpeed = 0;
+	sync.flags = 0;
+	sync.actionStateID = actionState;
+	SendPacket(clientHd, sync);
+}
+
 void Replication::OnPlayerDisconnect(ClientHandle clientHd)
 {
 	const i32 clientID = playerMap.at(clientHd);
@@ -1200,12 +1235,13 @@ void Replication::FrameDifference()
 					packet.Write<LocalActorID>(GetLocalActorID(clientHd, *t));
 				}
 
-				packet.Write<u8>(0); // bSyncMyPosition
-				packet.Write<float3>({});
-				packet.Write<float3>({});
-				packet.Write<float2>({});
-				packet.Write<RotationHumanoid>({});
-				packet.Write<f32>(0);
+				const bool instantMove = exec.moveDuration == 0 && exec.startPos != exec.endPos;
+				packet.Write<u8>(instantMove ? 1 : 0);
+				packet.Write<float3>(instantMove ? v2f(exec.endPos) : float3{});
+				packet.Write<float3>(instantMove ? v2f(exec.endPos) : float3{});
+				packet.Write<float2>(instantMove ? v2f(exec.moveDir) : float2{});
+				packet.Write<RotationHumanoid>(instantMove ? RotConvertToMxm(exec.rot) : RotationHumanoid{});
+				packet.Write<f32>(instantMove ? exec.speed : 0);
 				packet.Write<f32>(0.f);
 
 				packet.Write<f32>(0); // fSkillChargeDamageMultiplier

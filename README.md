@@ -35,6 +35,21 @@ launches the others:
 3. `login_srv`
 4. Start the MxM client with these command line arguments: `/LogEncryption /AuthMethod:local /Network:dev /PacketEncryption:0 /AutoJoinGame /AutoLoginID:USERNAME`
 
+Game-server physics currently supports the shipped DeathMatch collision data
+(`160000094`). Set `DevForcedMap=160000094` in `game.cfg` when testing queues
+that select another map; unsupported physics maps assert rather than using
+the wrong collision scene.
+
+## Physics
+
+The server uses PhysX 4.1.2 with client-derived controller dimensions, contact
+offset, step height, slope limit, climbing mode, and collision groups.
+Gameplay positions represent controller feet.
+
+Horizontal skill graphs progress over their advertised duration using linear
+interpolation; exact client animation curves and ordinary-jump constants are
+not yet verified. This is not a claim of bit-identical PhysX 2.8.4 behavior.
+
 ## Code
 
 Do not use the STL when handling strings (or even at all if possible).

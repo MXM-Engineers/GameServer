@@ -46,23 +46,21 @@ public:
 	}
 };
 
+static constexpr u32 PC_COLLISION_MASK = 0x1c7f06;
+static const PxFilterData g_pcQueryFilterData(PC_COLLISION_MASK, 0, 0, 0);
+
 struct CCT_CollisionFilterCallback: PxControllerFilterCallback
 {
-	/**
-	\brief Filtering method for CCT-vs-CCT.
-
-	\param[in] a	First CCT
-	\param[in] b	Second CCT
-	\return true to keep the pair, false to filter it out
-	*/
 	virtual bool filter(const PxController& a, const PxController& b) override
 	{
-		// TODO: true for rozark and sutff?
-		return false;
+		const auto* filterA = static_cast<const PxFilterData*>(a.getUserData());
+		const auto* filterB = static_cast<const PxFilterData*>(b.getUserData());
+		ASSERT(filterA && filterB);
+		return (filterA->word1 & filterB->word0) != 0 && (filterB->word1 & filterA->word0) != 0;
 	}
 };
 
-static CCT_CollisionFilterCallback g_cctCollisionFilterCallback; // weird that we have to instantiate this but ok
+static CCT_CollisionFilterCallback g_cctCollisionFilterCallback;
 
 bool PhysicsContext::Init()
 {
@@ -145,7 +143,7 @@ bool PhysicsContext::LoadCollisionMeshes(const FileBuffer& file)
 		const i32 nameLen = buff.Read<i32>();
 		const char* name = (char*)buff.ReadRaw(nameLen);
 
-		const u16 meshDataSize = buff.Read<u32>();
+		const u32 meshDataSize = buff.Read<u32>();
 		void* meshData = buff.ReadRaw(meshDataSize);
 
 		PhysxReadBuffer readBuff(meshData, meshDataSize);
@@ -202,12 +200,6 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 		}
 
-		PxMaterial* material = physics->createMaterial(1.0f, 1.0f, 0.0f);
-
-		// ground plane to aid with visualization (pvd)
-		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
-		scene->addActor(*groundPlane);
-
 		out->controllerMngr = PxCreateControllerManager(*scene);
 		if(!out->controllerMngr) {
 			LOG("[PhysX] ERROR: Creating controller manager failed");
@@ -221,21 +213,8 @@ void PhysicsScene::Step()
 	ProfileFunction();
 
 	foreach(c, colliderList) {
-		if(c->lockedMoveUntil > localTime) {
-			continue;
-		}
-
-		PxControllerFilters filter;
-		filter.mCCTFilterCallback = &g_cctCollisionFilterCallback; // cct filter callback
-
 		c->vel += vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE;
-		const vec3 disp = c->vel * (f32)UPDATE_RATE;
-		PxControllerCollisionFlags collisionFlags = c->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
-
-		// grounded
-		if(collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN) {
-			c->vel.z = 0;
-		}
+		Move(c, c->vel * (f32)UPDATE_RATE, (f32)UPDATE_RATE);
 	}
 
 	// we don't need to actually *simulate* anything?
@@ -249,13 +228,26 @@ void PhysicsScene::Step()
 
 void PhysicsScene::Destroy()
 {
-    if(scene) {
-        scene->release();
-        scene = nullptr;
-    }
+	if(controllerMngr) {
+		controllerMngr->purgeControllers();
+		controllerMngr->release();
+		controllerMngr = nullptr;
+	}
+	colliderList.clear();
+	if(scene) {
+		const PxActorTypeFlags types = PxActorTypeFlag::eRIGID_STATIC | PxActorTypeFlag::eRIGID_DYNAMIC;
+		PxActor* actors[32];
+		while(scene->getNbActors(types) != 0) {
+			const PxU32 count = scene->getActors(types, actors, ARRAY_COUNT(actors));
+			ASSERT(count != 0);
+			for(PxU32 i = 0; i < count; i++) actors[i]->release();
+		}
+		scene->release();
+		scene = nullptr;
+	}
 }
 
-void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot)
+void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot, PhysicsCollisionGroup group)
 {
 	auto& ctx = PhysContext();
 
@@ -263,9 +255,15 @@ void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, c
 
 	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface);
 	ASSERT(shape); // createShape failed
+	ASSERT(group == PhysicsCollisionGroup::Static || group == PhysicsCollisionGroup::Fence ||
+		group == PhysicsCollisionGroup::FenceAll || group == PhysicsCollisionGroup::Aim);
+	shape->setQueryFilterData(PxFilterData(1u << static_cast<u32>(group), 0, 0, 0));
 
 	PxRigidStatic* ground = ctx.physics->createRigidStatic(PxTransform{PxIdentity});
-	ground->attachShape(*shape);
+	ASSERT(ground);
+	const bool attached = ground->attachShape(*shape);
+	ASSERT(attached);
+	shape->release();
 
 	glm::quat quat(vec3(rot.x, rot.y, -rot.z)); // quaternion from euler angles
 	ground->setGlobalPose(PxTransform(PxVec3(pos.x, pos.y, pos.z), PxQuat(quat.x, quat.y, quat.z, quat.w)));
@@ -276,39 +274,79 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 {
 	auto& ctx = PhysContext();
 
+	ASSERT(colliderList.size() < colliderList.max_size());
+	colliderList.emplace_back();
+	PhysicsDynamicBody& collider = colliderList.back();
+	collider.height = height;
+	collider.radius = radius;
+	collider.collisionFilterData = PxFilterData(1u << static_cast<u32>(PhysicsCollisionGroup::ControllerPc), PC_COLLISION_MASK, 0, 0);
+
 	PxCapsuleControllerDesc desc;
 	desc.height = height;
 	desc.radius = radius;
+	desc.contactOffset = 10.0f;
+	desc.stepOffset = 70.0f;
+	desc.slopeLimit = cosf(glm::radians(65.0f));
+	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
+	desc.position = PxExtendedVec3(pos.x, pos.y, PxExtended(pos.z) + height * 0.5f + radius + desc.contactOffset);
 	desc.material = ctx.matMapSurface;
+	desc.userData = &collider.collisionFilterData;
+	ASSERT(desc.isValid());
 
-	PxCapsuleController* ctrl = (PxCapsuleController*)controllerMngr->createController(desc);
-	ASSERT(ctrl);
+	collider.collider = static_cast<PxCapsuleController*>(controllerMngr->createController(desc));
+	ASSERT(collider.collider);
+	PxRigidDynamic* actor = collider.collider->getActor();
+	ASSERT(actor && actor->getNbShapes() == 1);
+	PxShape* shape;
+	const PxU32 shapeCount = actor->getShapes(&shape, 1);
+	ASSERT(shapeCount == 1);
+	shape->setQueryFilterData(PxFilterData(collider.collisionFilterData.word0, 0, 0, 0));
+	return &collider;
+}
 
-	ctrl->setPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
-
-	PhysicsDynamicBody collider;
-	collider.collider = ctrl;
-	collider.height = height;
-	collider.radius = radius;
-
-	colliderList.push_back(collider);
-	return &colliderList.back();
+void PhysicsScene::ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 height)
+{
+	if(body->radius == radius && body->height == height) return;
+	ASSERT(radius > 0.0f && height > 0.0f && body->collider->getStepOffset() <= height + radius * 2.0f);
+	const PxExtendedVec3 feet = body->collider->getFootPosition();
+	if(body->radius != radius) {
+		const bool resized = body->collider->setRadius(radius);
+		ASSERT(resized);
+		body->radius = radius;
+	}
+	if(body->height != height) {
+		const bool resized = body->collider->setHeight(height);
+		ASSERT(resized);
+		body->height = height;
+	}
+	const bool positioned = body->collider->setFootPosition(feet);
+	ASSERT(positioned);
 }
 
 vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
-	PxControllerFilters filter;
-	//filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
-	PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter, nullptr /* obstacles? */);
+	PxControllerFilters filter(&g_pcQueryFilterData, nullptr, &g_cctCollisionFilterCallback);
+	filter.mFilterFlags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC;
+	const PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter);
+	body->grounded = bool(collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN);
+	if((body->grounded && body->vel.z < 0.0f) ||
+		((collisionFlags & PxControllerCollisionFlag::eCOLLISION_UP) && body->vel.z > 0.0f)) {
+		body->vel.z = 0.0f;
+	}
 	return body->GetWorldPos();
 }
 
 vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
-	const PxExtendedVec3& start = body->collider->getFootPosition();
-	vec3 end = Move(body, disp, time);
-	body->collider->setFootPosition(start);
+	const PxExtendedVec3 start = body->collider->getPosition();
+	const bool grounded = body->grounded;
+	const vec3 velocity = body->vel;
+	const vec3 end = Move(body, disp, time);
+	const bool positioned = body->collider->setPosition(start);
+	ASSERT(positioned);
+	body->grounded = grounded;
+	body->vel = velocity;
 	return end;
 }
 

@@ -75,11 +75,20 @@ struct PhysicsCollisionMesh
 	PxShape* shape;
 };
 
+enum class PhysicsCollisionGroup : u32
+{
+	Static = 1,
+	ControllerPc = 3,
+	Fence = 18,
+	FenceAll = 19,
+	Aim = 22,
+};
+
 struct PhysicsDynamicBody
 {
 	PxCapsuleController* collider = nullptr;
 	vec3 vel = vec3(0); // actual velocity
-	Time lockedMoveUntil = Time::ZERO;
+	bool grounded = false;
 
 	inline vec3 GetWorldPos() const { return tov3(collider->getFootPosition()); }
 	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }
@@ -87,6 +96,7 @@ struct PhysicsDynamicBody
 private:
 	f32 radius;
 	f32 height;
+	PxFilterData collisionFilterData;
 
 	friend struct PhysicsScene;
 };
@@ -101,8 +111,9 @@ struct PhysicsScene
 	void Step();
 	void Destroy();
 
-	void CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot = vec3(0));
+	void CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot, PhysicsCollisionGroup group);
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
+	void ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 height);
 	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time /* seconds */);
 	vec3 FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };

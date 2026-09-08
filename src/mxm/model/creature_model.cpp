@@ -48,7 +48,7 @@ void CreatureModel::setColliderHeight(i32 colliderHeight)
 	_ColliderHeight = colliderHeight;
 }
 
-i32 CreatureModel::getActorRadius()
+i32 CreatureModel::getActorRadius() const
 {
 	return _ActorRadius;
 }
@@ -58,7 +58,7 @@ void CreatureModel::setActorRadius(i32 actorRadius)
 	_ActorRadius = actorRadius;
 }
 
-i32 CreatureModel::getActorHeight()
+i32 CreatureModel::getActorHeight() const
 {
 	return _ActorHeight;
 }

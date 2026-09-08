@@ -164,7 +164,6 @@ void World::Replicate()
 			rch.hp = chara.hp;
 			rch.hpMax = chara.hpMax;
 			rch.seed = chara.seed;
-			rch.localID = chara.localID;
 			rch.spawnAnim = chara.spawnAnim;
 			rch.ownerID = chara.ownerID;
 			rch.dirToNearPC = chara.dirToNearPC;
@@ -198,7 +197,6 @@ void World::Replicate()
 			rch.hp = chara.hp;
 			rch.hpMax = chara.hpMax;
 			rch.seed = chara.seed;
-			rch.localID = chara.localID;
 			rch.spawnAnim = chara.spawnAnim;
 			rch.ownerID = chara.ownerID;
 			rch.dirToNearPC = chara.dirToNearPC;

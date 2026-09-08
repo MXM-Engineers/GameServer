@@ -1154,11 +1154,12 @@ PUSH_PACKED
 struct CQ_PreCastSkill
 {
 	enum { NET_ID = 60039 };
-	u32 skillId; // 4 bytes
-	u32 castId; // 4 bytes
-	u32 skillDataRecord; // 4 bytes (unclassified writer 13xdword)
+	u32 skillId;
+	u32 castId;
+	u32 skillDataRecord[13];
 };
 POP_PACKED
+ASSERT_SIZE(CQ_PreCastSkill, 60);
 
 PUSH_PACKED
 struct CQ_ExecuteSkill
@@ -1386,18 +1387,18 @@ PUSH_PACKED
 struct CQ_PartyInvite
 {
 	enum { NET_ID = 60078 };
-	u32 field1; // 4 bytes
-	u32 field2; // 4 bytes
-	u32 field3; // 4 bytes
+	u16 field1_len;
+	wchar field1[1];
+	u32 field2;
 };
 POP_PACKED
-ASSERT_SIZE(CQ_PartyInvite, 12);
 
 PUSH_PACKED
 struct CQ_PartyInviteResponse
 {
 	enum { NET_ID = 60079 };
-	u32 byteBlob; // 4 bytes (unclassified writer u16 count + N x u8)
+	u16 field1_len;
+	wchar field1[1];
 };
 POP_PACKED
 
@@ -1984,9 +1985,10 @@ PUSH_PACKED
 struct CQ_SetGuildInterest
 {
 	enum { NET_ID = 60155 };
-	u32 entity7ByteRecord; // 4 bytes (unclassified writer bytes[7])
+	u8 entity7ByteRecord[7];
 };
 POP_PACKED
+ASSERT_SIZE(CQ_SetGuildInterest, 7);
 
 PUSH_PACKED
 struct CQ_SetGuildEmblem
@@ -2010,9 +2012,10 @@ PUSH_PACKED
 struct CQ_CreateGuildMembership
 {
 	enum { NET_ID = 60158 };
-	u32 targetName; // 4 bytes (unclassified writer wstring)
-	u32 targetEntryId; // 4 bytes
-	u32 actionIndex; // 4 bytes
+	u16 targetName_len;
+	wchar_t targetName[1];
+	u32 targetEntryId;
+	u32 actionIndex;
 };
 POP_PACKED
 
@@ -2020,7 +2023,8 @@ PUSH_PACKED
 struct CQ_DeleteGuildMembership
 {
 	enum { NET_ID = 60159 };
-	u32 name; // 4 bytes (unclassified writer wstring)
+	u16 name_len;
+	wchar_t name[1];
 };
 POP_PACKED
 
@@ -2028,9 +2032,10 @@ PUSH_PACKED
 struct CQ_EditGuildMembership
 {
 	enum { NET_ID = 60160 };
-	u8 gradeIndex; // 1 bytes (bool)
-	u32 gradeName; // 4 bytes (unclassified writer wstring)
-	u32 unknownBytes10; // 4 bytes (unclassified writer 10 x u8 struct)
+	u8 gradeIndex;
+	u16 gradeName_len;
+	wchar_t gradeName[1];
+	u8 unknownBytes10[10];
 };
 POP_PACKED
 
@@ -2047,10 +2052,11 @@ PUSH_PACKED
 struct CQ_ExtendGuildLimitedSkill
 {
 	enum { NET_ID = 60162 };
-	u32 gradeId; // 4 bytes
-	u8 gradeIndex; // 1 bytes (bool)
-	u32 gradeName; // 4 bytes (unclassified writer wstring)
-	u32 unknownBytes10; // 4 bytes (unclassified writer 10 x u8 struct)
+	u32 gradeId;
+	u8 gradeIndex;
+	u16 gradeName_len;
+	wchar_t gradeName[1];
+	u8 unknownBytes10[10];
 };
 POP_PACKED
 
@@ -2141,16 +2147,17 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60172
 {
 	enum { NET_ID = 60172 };
-	u32 queryName; // 4 bytes (unclassified writer wstring)
-	u8 flagLevelRange; // 1 bytes (bool)
-	u8 flagActive; // 1 bytes (bool)
-	u8 flagHasOptions; // 1 bytes (bool)
-	u8 valueA; // 1 bytes (bool)
-	u8 valueB; // 1 bytes (bool)
-	u8 unknownBytes7; // 1 bytes (bool)
-	u32 requestParam; // 4 bytes (unclassified writer 7 x u8 struct)
-	u32 constOpt8; // 4 bytes
-	u8 constOpt8_3; // 1 bytes (bool)
+	u16 queryName_len;
+	wchar queryName[1];
+	u8 flagLevelRange;
+	u8 flagActive;
+	u8 flagHasOptions;
+	u8 valueA;
+	u8 valueB;
+	u8 unknownBytes7;
+	u8 requestParam[7];
+	u32 constOpt8;
+	u8 constOpt8_3;
 };
 POP_PACKED
 
@@ -2187,13 +2194,17 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60176
 {
 	enum { NET_ID = 60176 };
-	u32 channelId; // 4 bytes (unclassified writer wstring)
-	u32 targetName; // 4 bytes (unclassified writer wstring)
-	u32 channelInfoU32; // 4 bytes
-	u32 padZero; // 4 bytes
-	u32 channelTextA; // 4 bytes (unclassified writer wstring)
-	u32 channelTextB; // 4 bytes (unclassified writer wstring)
-	u8 flagSet1; // 1 bytes (bool)
+	u16 channelId_len;
+	wchar channelId[1];
+	u16 targetName_len;
+	wchar targetName[1];
+	u32 channelInfoU32;
+	u32 padZero;
+	u16 channelTextA_len;
+	wchar channelTextA[1];
+	u16 channelTextB_len;
+	wchar channelTextB[1];
+	u8 flagSet1;
 };
 POP_PACKED
 
@@ -2201,9 +2212,11 @@ PUSH_PACKED
 struct CA_UNKNOWN_60177
 {
 	enum { NET_ID = 60177 };
-	u32 channelId; // 4 bytes
-	u32 channelName; // 4 bytes (unclassified writer wstring)
-	u32 secretFlag; // 4 bytes (unclassified writer wstring)
+	u32 channelId;
+	u16 channelName_len;
+	wchar channelName[1];
+	u16 secretFlag_len;
+	wchar secretFlag[1];
 };
 POP_PACKED
 
@@ -2354,6 +2367,16 @@ POP_PACKED
 ASSERT_SIZE(CQ_RemoteSyncCreateFromCreatorId, 8);
 
 PUSH_PACKED
+struct CQ_UNKNOWN_60190
+{
+	enum { NET_ID = 60190 };
+	u32 field1;
+	u16 field2_len;
+	wchar field2[1];
+};
+POP_PACKED
+
+PUSH_PACKED
 struct CQ_RemoteSyncTarget
 {
 	enum { NET_ID = 60191 };
@@ -2472,7 +2495,19 @@ PUSH_PACKED
 struct CN_UNKNOWN_60198
 {
 	enum { NET_ID = 60198 };
-	u32 elements; // 4 bytes (unclassified writer array: u16 count + N x {u32,u32,u32,u32,u32,u32,u8} (28-byte element))
+	PUSH_PACKED
+	struct Element
+	{
+		u32 field0;
+		u32 field1;
+		u32 field2;
+		u32 field3;
+		u32 field4;
+		u32 field5;
+		u8 field6;
+	};
+	POP_PACKED
+	VEC(Element, elements);
 };
 POP_PACKED
 
@@ -2534,11 +2569,13 @@ PUSH_PACKED
 struct CN_UNKNOWN_60205
 {
 	enum { NET_ID = 60205 };
-	u32 field0; // 4 bytes (unclassified writer wstring)
-	u32 field0_3; // 4 bytes
-	u32 field1; // 4 bytes (unclassified writer wstring)
-	u32 field2; // 4 bytes
-	float3 field3; // 12 bytes
+	u16 field0_len;
+	wchar field0[1];
+	u32 field0_3;
+	u16 field1_len;
+	wchar field1[1];
+	u32 field2;
+	float3 field3;
 };
 POP_PACKED
 
@@ -2632,7 +2669,7 @@ ASSERT_SIZE(CQ_RewardSelectSlot, 4);
 PUSH_PACKED
 struct CQ_RewardSelectSlotAllRandom
 {
-
+	enum { NET_ID = 60215 };
 };
 POP_PACKED
 
@@ -2665,9 +2702,12 @@ PUSH_PACKED
 struct CQ_MailWrite
 {
 	enum { NET_ID = 60219 };
-	u32 wstring_1; // 4 bytes (unclassified writer wstring)
-	u32 wstring_2; // 4 bytes (unclassified writer wstring)
-	u32 wstring_3; // 4 bytes (unclassified writer wstring)
+	u16 wstring_1_len;
+	wchar wstring_1[1];
+	u16 wstring_2_len;
+	wchar wstring_2[1];
+	u16 wstring_3_len;
+	wchar wstring_3[1];
 };
 POP_PACKED
 
@@ -3474,7 +3514,8 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60294
 {
 	enum { NET_ID = 60294 };
-	u32 text_wstring; // 4 bytes (unclassified writer wstring)
+	u16 text_wstring_len;
+	wchar text_wstring[1];
 };
 POP_PACKED
 
@@ -3507,13 +3548,31 @@ PUSH_PACKED
 struct CN_UNKNOWN_60296
 {
 	enum { NET_ID = 60296 };
-	u8 mode_u8; // 1 bytes (bool)
-	u32 arg0_u32; // 4 bytes
-	u32 arg1_u32; // 4 bytes
-	u32 arg2_u32; // 4 bytes
-	u32 slot_pair_data; // 4 bytes (unclassified writer struct)
+	u8 mode_u8;
+	u32 arg0_u32;
+	u32 arg1_u32;
+	u32 arg2_u32;
+	PUSH_PACKED
+	struct SlotPairData
+	{
+		u32 field0;
+		u32 field1;
+		u32 field2;
+		u32 field3;
+		u8 field4;
+		u8 field5;
+		u32 field6;
+		u32 field7;
+		u32 field8;
+		u32 field9;
+		u8 field10;
+		u8 field11;
+	};
+	POP_PACKED
+	SlotPairData slot_pair_data;
 };
 POP_PACKED
+ASSERT_SIZE(CN_UNKNOWN_60296, 49);
 
 PUSH_PACKED
 struct CQ_PromotionAttend
@@ -3597,9 +3656,11 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60304
 {
 	enum { NET_ID = 60304 };
-	u32 text0_wstring; // 4 bytes (unclassified writer wstring)
-	u8 flag_u8; // 1 bytes (bool)
-	u32 text1_wstring; // 4 bytes (unclassified writer wstring)
+	u16 text0_wstring_len;
+	wchar text0_wstring[1];
+	u8 flag_u8;
+	u16 text1_wstring_len;
+	wchar text1_wstring[1];
 };
 POP_PACKED
 
@@ -3632,7 +3693,8 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60308
 {
 	enum { NET_ID = 60308 };
-	u32 text_wstring; // 4 bytes (unclassified writer wstring)
+	u16 text_wstring_len;
+	wchar text_wstring[1];
 };
 POP_PACKED
 
@@ -3674,11 +3736,15 @@ PUSH_PACKED
 struct CQ_UNKNOWN_60313
 {
 	enum { NET_ID = 60313 };
-	u32 text0_wstring; // 4 bytes (unclassified writer wstring)
-	u64 value_u64; // 8 bytes
-	u32 text1_wstring; // 4 bytes (unclassified writer wstring)
-	u32 text2_wstring; // 4 bytes (unclassified writer wstring)
-	u32 ansi_string; // 4 bytes (unclassified writer string)
+	u16 text0_wstring_len;
+	wchar text0_wstring[1];
+	u64 value_u64;
+	u16 text1_wstring_len;
+	wchar text1_wstring[1];
+	u16 text2_wstring_len;
+	wchar text2_wstring[1];
+	u16 ansi_string_len;
+	char ansi_string[1];
 };
 POP_PACKED
 

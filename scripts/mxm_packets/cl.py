@@ -345,9 +345,9 @@ class ClientSerializer:
         print('}')
     def serialize_60039(netid, p: common.PacketReader):
         print('CQ_PreCastSkill {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=<unknown>')
+        print('    skillId=%d' % p.read_u32())
+        print('    castId=%d' % p.read_u32())
+        print('    skillDataRecord=[%s]' % ', '.join(str(p.read_u32()) for _ in range(13)))
         print('}')
     def serialize_60041(netid, p: common.PacketReader):
         print('CQ_ExecuteSkill {')
@@ -450,12 +450,12 @@ class ClientSerializer:
         print('}')
     def serialize_60078(netid, p: common.PacketReader):
         print('CQ_PartyInvite {')
-        print('    field1=<unknown>')
+        print('    field1=%s' % p.read_wstr())
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60079(netid, p: common.PacketReader):
         print('CQ_PartyInviteResponse {')
-        print('    field1=<unknown>')
+        print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60080(netid, p: common.PacketReader):
         print('CQ_PartyInviteRecommendResponse {')
@@ -651,7 +651,7 @@ class ClientSerializer:
         print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60128(netid, p: common.PacketReader):
-        print('CQ_GetUserInfo {')
+        print('CN_UNKNOWN_60128 {')
         print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60129(netid, p: common.PacketReader):
@@ -716,7 +716,7 @@ class ClientSerializer:
         print('}')
     def serialize_60155(netid, p: common.PacketReader):
         print('CQ_SetGuildInterest {')
-        print('    field1=<unknown>')
+        print('    field1=[%s]' % ', '.join(str(p.read_u8()) for _ in range(7)))
         print('}')
     def serialize_60156(netid, p: common.PacketReader):
         print('CQ_SetGuildEmblem {')
@@ -728,19 +728,19 @@ class ClientSerializer:
         print('}')
     def serialize_60158(netid, p: common.PacketReader):
         print('CQ_CreateGuildMembership {')
-        print('    field1=<unknown>')
+        print('    field1=%s' % p.read_wstr())
         print('    field2=%d' % p.read_u32())
         print('    field3=%d' % p.read_u32())
         print('}')
     def serialize_60159(netid, p: common.PacketReader):
         print('CQ_DeleteGuildMembership {')
-        print('    field1=<unknown>')
+        print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60160(netid, p: common.PacketReader):
         print('CQ_EditGuildMembership {')
         print('    field1=%d' % p.read_u8())
-        print('    field2=<unknown>')
-        print('    field3=<unknown>')
+        print('    field2=%s' % p.read_wstr())
+        print('    field3=[%s]' % ', '.join(str(p.read_u8()) for _ in range(10)))
         print('}')
     def serialize_60161(netid, p: common.PacketReader):
         print('CQ_DonateToGuild {')
@@ -750,8 +750,8 @@ class ClientSerializer:
         print('CQ_ExtendGuildLimitedSkill {')
         print('    field1=%d' % p.read_u32())
         print('    field2=%d' % p.read_u8())
-        print('    field3=<unknown>')
-        print('    field4=<unknown>')
+        print('    field3=%s' % p.read_wstr())
+        print('    field4=[%s]' % ', '.join(str(p.read_u8()) for _ in range(10)))
         print('}')
     def serialize_60163(netid, p: common.PacketReader):
         print('CQ_BuyGuildSkill {')
@@ -764,7 +764,7 @@ class ClientSerializer:
         print('    field3=%d' % p.read_u8())
         print('}')
     def serialize_60166(netid, p: common.PacketReader):
-        print('CQ_GetRecommendedGuildList {')
+        print('CN_UNKNOWN_60166 {')
         print('    field1=%d' % p.read_u8())
         print('    field2=%d' % p.read_u16())
         print('    field3=%d' % p.read_u8())
@@ -793,15 +793,15 @@ class ClientSerializer:
         print('}')
 
     def serialize_60172(netid, p: common.PacketReader):
-        print('Cl_60172 {')
-        print('    field1=<unknown>')
+        print('CQ_UNKNOWN_60172 {')
+        print('    field1=%s' % p.read_wstr())
         print('    field2=%d' % p.read_u8())
         print('    field3=%d' % p.read_u8())
         print('    field4=%d' % p.read_u8())
         print('    field5=%d' % p.read_u8())
         print('    field6=%d' % p.read_u8())
         print('    field7=%d' % p.read_u8())
-        print('    field8=<unknown>')
+        print('    field8=[%s]' % ', '.join(str(p.read_u8()) for _ in range(7)))
         print('    field9=%d' % p.read_u32())
         print('    field10=%d' % p.read_u8())
         print('}')
@@ -820,20 +820,20 @@ class ClientSerializer:
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60176(netid, p: common.PacketReader):
-        print('Cl_60176 {')
-        print('    field1=<unknown>')
-        print('    field2=<unknown>')
+        print('CQ_UNKNOWN_60176 {')
+        print('    field1=%s' % p.read_wstr())
+        print('    field2=%s' % p.read_wstr())
         print('    field3=%d' % p.read_u32())
         print('    field4=%d' % p.read_u32())
-        print('    field5=<unknown>')
-        print('    field6=<unknown>')
+        print('    field5=%s' % p.read_wstr())
+        print('    field6=%s' % p.read_wstr())
         print('    field7=%d' % p.read_u8())
         print('}')
     def serialize_60177(netid, p: common.PacketReader):
-        print('Cl_60177 {')
+        print('CA_UNKNOWN_60177 {')
         print('    field1=%d' % p.read_u32())
-        print('    field2=<unknown>')
-        print('    field3=<unknown>')
+        print('    field2=%s' % p.read_wstr())
+        print('    field3=%s' % p.read_wstr())
         print('}')
     def serialize_60181(netid, p: common.PacketReader):
         print('CQ_SyncActionMove {')
@@ -1001,8 +1001,11 @@ class ClientSerializer:
             print('    lifeCount=%d' % p.read_u32())
         print('}')
     def serialize_60198(netid, p: common.PacketReader):
-        print('Cl_60198 {')
-        print('    field1=<unknown>')
+        print('CN_UNKNOWN_60198 {')
+        n = p.read_u16()
+        print('    elements_count=%d' % n)
+        for _ in range(n):
+            print('        (%d, %d, %d, %d, %d, %d, %d)' % (p.read_u32(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u8()))
         print('}')
     def serialize_60199(netid, p: common.PacketReader):
         print('CN_PlayerTagMaster {')
@@ -1024,10 +1027,10 @@ class ClientSerializer:
         print('    field2=%d' % p.read_u32())
         print('}')
     def serialize_60205(netid, p: common.PacketReader):
-        print('Cl_60205 {')
-        print('    field1=<unknown>')
+        print('CN_UNKNOWN_60205 {')
+        print('    field1=%s' % p.read_wstr())
         print('    field2=%d' % p.read_u32())
-        print('    field3=<unknown>')
+        print('    field3=%s' % p.read_wstr())
         print('    field4=%d' % p.read_u32())
         print('    field5=%s' % read_Vec3(p))
         print('}')
@@ -1056,17 +1059,17 @@ class ClientSerializer:
         print('    field5=%d' % p.read_u32())
         print('}')
     def serialize_60208(netid, p: common.PacketReader):
-        print('CQ_RewardSelectSlot {')
+        print('CN_UNKNOWN_60208 {')
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60209(netid, p: common.PacketReader):
-        print('CQ_RewardSelectSlotAllRandom {')
+        print('CN_UNKNOWN_60209 {')
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60210(netid, p: common.PacketReader):
         print('CQ_WhisperSend {')
-        print('    field1=<unknown>')
-        print('    field2=<unknown>')
+        print('    destNick=%s' % p.read_wstr())
+        print('    msg=%s' % p.read_wstr())
         print('}')
     def serialize_60211(netid, p: common.PacketReader):
         print('Cl_60211 {')
@@ -1083,9 +1086,9 @@ class ClientSerializer:
 
     def serialize_60219(netid, p: common.PacketReader):
         print('CQ_MailWrite {')
-        print('    field1=<unknown>')
-        print('    field2=<unknown>')
-        print('    field3=<unknown>')
+        print('    field1=%s' % p.read_wstr())
+        print('    field2=%s' % p.read_wstr())
+        print('    field3=%s' % p.read_wstr())
         print('}')
     def serialize_60220(netid, p: common.PacketReader):
         print('CQ_MailRead {')
@@ -1333,7 +1336,7 @@ class ClientSerializer:
         print('}')
 
     def serialize_60284(netid, p: common.PacketReader):
-        print('CQ_PromotionAttend {')
+        print('CN_UNKNOWN_60284 {')
         print('    unkDword1=%d' % p.read_u32())
         print('    unkDword2=%d' % p.read_u32())
         print('    unkQword=0x%016x' % int.from_bytes(p.read_raw(8), 'little'))
@@ -1513,8 +1516,8 @@ class ClientSerializer:
         print('}')
     
     def serialize_60294(netid, p: common.PacketReader):
-        print('Cl_60294 {')
-        print('    field1=<unknown>')
+        print('CQ_UNKNOWN_60294 {')
+        print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60295(netid, p: common.PacketReader):
         print('CQ_TirednessRequest {')
@@ -1537,12 +1540,12 @@ class ClientSerializer:
         print('}')
     
     def serialize_60296(netid, p: common.PacketReader):
-        print('Cl_60296 {')
+        print('CN_UNKNOWN_60296 {')
         print('    field1=%d' % p.read_u8())
         print('    field2=%d' % p.read_u32())
         print('    field3=%d' % p.read_u32())
         print('    field4=%d' % p.read_u32())
-        print('    field5=<unknown>')
+        print('    field5=(%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)' % (p.read_u32(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u8(), p.read_u8(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u32(), p.read_u8(), p.read_u8()))
         print('}')
     def serialize_60297(netid, p: common.PacketReader):
         print('CQ_PromotionAttend {')
@@ -1578,10 +1581,10 @@ class ClientSerializer:
         print('    voiceKind=%d' % p.read_u32())
         print('}')
     def serialize_60304(netid, p: common.PacketReader):
-        print('Cl_60304 {')
-        print('    field1=<unknown>')
+        print('CQ_UNKNOWN_60304 {')
+        print('    field1=%s' % p.read_wstr())
         print('    field2=%d' % p.read_u8())
-        print('    field3=<unknown>')
+        print('    field3=%s' % p.read_wstr())
         print('}')
     def serialize_60306(netid, p: common.PacketReader):
         print('CQ_AchieveCutsceneEnd {')
@@ -1589,8 +1592,8 @@ class ClientSerializer:
         print('}')
 
     def serialize_60308(netid, p: common.PacketReader):
-        print('Cl_60308 {')
-        print('    field1=<unknown>')
+        print('CQ_UNKNOWN_60308 {')
+        print('    field1=%s' % p.read_wstr())
         print('}')
     def serialize_60312(netid, p: common.PacketReader):
         print('Cl_60312 {')
@@ -1602,12 +1605,12 @@ class ClientSerializer:
         print('}')
     
     def serialize_60313(netid, p: common.PacketReader):
-        print('Cl_60313 {')
+        print('CQ_UNKNOWN_60313 {')
         print('    field1=%s' % p.read_wstr())
-        print('    field2=<unknown>')
+        print('    field2=%d' % int.from_bytes(p.read_raw(8), 'little'))
         print('    field3=%s' % p.read_wstr())
         print('    field4=%s' % p.read_wstr())
-        print('    field5=<unknown>')
+        print('    field5=%s' % p.read_str())
         print('}')
     def serialize_60011(netid, p: common.PacketReader):
         print('Cl_60011 {')
@@ -1842,9 +1845,9 @@ class ClientSerializer:
         print('Cl_60136 {')
         print('}')
     def serialize_60190(netid, p: common.PacketReader):
-        print('CQ_RemoteSyncCreateFromRemoteDoc {')
+        print('CQ_UNKNOWN_60190 {')
         print('    field1=%d' % p.read_u32())
-        print('    field2=<unknown>')
+        print('    field2=%s' % p.read_wstr())
         print('}')
     def serialize_60192(netid, p: common.PacketReader):
         print('CQ_RemoteSyncForecastCollision {')

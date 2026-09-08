@@ -3810,8 +3810,11 @@ class ServerSerializer:
         print('    baseMoveSpeed=%d' % p.read_f32())
         print('}')
     def serialize_62501(netid, p: common.PacketReader):
-        print('QueueStatus {')
-        print('    unk=%d' % p.read_u8())
+        print('SA_EnterWaitingQueue {')
+        print('    var1=%d' % p.read_u8())
+        print('    var2=%d' % p.read_u32())
+        print('    var3=%d' % p.read_u32())
+        print('    var4=%d' % p.read_u32())
         print('}')
     def serialize_62502(netid, p: common.PacketReader):
         print('SA_RefreshWaitingQueue {')

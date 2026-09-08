@@ -2,7 +2,7 @@
 
 ## Building
 
-Requires CMake (>= 3.20) and a C++14 compiler.
+Requires CMake (>= 3.26) and a C++14 compiler.
 
 For the command line, first load the MSVC environment (finds Visual Studio
 via vswhere, no hardcoded path):
@@ -14,20 +14,26 @@ setup.bat
 Then use the presets:
 
 ```bat
-cmake --preset debug      REM configure build/debug
+cmake --preset debug
 cmake --build --preset debug
-cmake --preset release    REM configure build/release
+cmake --preset release
 cmake --build --preset release
 ```
 
-Debug builds are configured the same way (`--config Debug`) and produce
-`_dbg`-suffixed binaries. Outputs land in `build/src/` (servers) and
-`build/tools/` (lea, navmesh, col) under per-configuration subfolders.
+Presets use Ninja. Intermediates go in `build/debug` or `build/release`;
+all binaries land in `build/`. Debug binaries get a `_dbg` suffix.
 
 ## Running
 
-1. Start `login_srv` and `game_srv` (from `build/src/Release/`)
-2. Start The MxM client with these command line arguments: `/LogEncryption /AuthMethod:local /Network:dev /PacketEncryption:0 /AutoJoinGame /AutoLoginID:USERNAME`
+Working directory must be `build/` (`gamedata/` and `login.cfg` /
+`hub.cfg` / `game.cfg` / `matchmaker.cfg` are resolved from CWD; missing
+cfg files use compiled defaults). Start each process yourself; nothing
+launches the others:
+
+1. `mm_srv`
+2. `hub_srv` and `game_srv` (both connect to the matchmaker on startup)
+3. `login_srv`
+4. Start the MxM client with these command line arguments: `/LogEncryption /AuthMethod:local /Network:dev /PacketEncryption:0 /AutoJoinGame /AutoLoginID:USERNAME`
 
 ## Code
 

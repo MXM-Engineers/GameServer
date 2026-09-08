@@ -53,14 +53,6 @@ target_link_libraries(eastl PUBLIC eastdc)
 add_library(tinyxml2 INTERFACE)
 target_include_directories(tinyxml2 INTERFACE ${EXTERNAL_DIR}/tinyxml2-8.0.0)
 
-# ---- tracy (compiled into the server targets, as genie did) ----
-add_library(tracy INTERFACE)
-target_include_directories(tracy INTERFACE ${EXTERNAL_DIR}/tracy-0.8)
-
-# ---- glm (header-only) ----
-add_library(glm INTERFACE)
-target_include_directories(glm INTERFACE ${EXTERNAL_DIR}/glm_0.9.9.8)
-
 # ---- sokol (header-only; impls compiled in window.cpp) ----
 add_library(sokol INTERFACE)
 target_include_directories(sokol INTERFACE ${EXTERNAL_DIR}/sokol)
@@ -75,10 +67,11 @@ add_library(physx INTERFACE)
 target_include_directories(physx INTERFACE
 	${PHYSX_DIR}/include/physx
 	${PHYSX_DIR}/include/pxshared)
-mxm_config_expr(MXM_PHYSX_LIBDIRS
-	"${PHYSX_DIR}/lib/debug;${PHYSX_DIR}/lib/checked"
-	"${PHYSX_DIR}/lib/release")
-target_link_directories(physx INTERFACE ${MXM_PHYSX_LIBDIRS})
+target_link_directories(physx INTERFACE
+	"$<$<CONFIG:Debug>:${PHYSX_DIR}/lib/debug>"
+	"$<$<CONFIG:Debug>:${PHYSX_DIR}/lib/checked>"
+	"$<$<NOT:$<CONFIG:Debug>>:${PHYSX_DIR}/lib/release>"
+)
 target_link_libraries(physx INTERFACE
 	PhysXExtensions_static_64
 	PhysX_64

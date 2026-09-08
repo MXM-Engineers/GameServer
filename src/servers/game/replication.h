@@ -73,7 +73,6 @@ struct Replication
 		i32 hp;
 		i32 hpMax;
 		i32 seed;
-		i32 localID = -1;
 		i32 spawnAnim = -1;
 		i32 ownerID = 0;
 		u8 dirToNearPC = 0;

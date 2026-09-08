@@ -1078,19 +1078,10 @@ bool GameXmlContent::LoadGuildData()
 		if(emblem != 0 && validGuildEmblems.size() < validGuildEmblems.capacity()) validGuildEmblems.push_back(emblem);
 	}
 
-	if(XMLElement* pMem = pInfo->FirstChildElement("_GuildMembership")) {
-		pMem->QueryIntAttribute("_Capacity", &guildBaseMemberCap);
-	}
 	if(XMLElement* pAct = pInfo->FirstChildElement("_MaxGuildActivityPointPerDay")) {
 		if(XMLElement* pStage = pAct->FirstChildElement("_Stage")) {
 			pStage->QueryIntAttribute("_Weekday", &guildActivityCapWeekday);
 		}
-	}
-	if(XMLElement* pPt = pInfo->FirstChildElement("_GuildPointReward")) {
-		pPt->QueryIntAttribute("_RollcallPoint", &guildRollcallPoint);
-	}
-	if(XMLElement* pDon = pInfo->FirstChildElement("_GuildDonation")) {
-		pDon->QueryIntAttribute("_Unit", &guildDonationUnit);
 	}
 
 	LOG("Loaded %d guild levels, %d skills, %d emblems", (i32)guildLevels.size(), (i32)guildSkills.size(), (i32)validGuildEmblems.size());
@@ -1115,14 +1106,6 @@ i32 GameXmlContent::GuildSkillValue(const char* key, i32 level) const
 		}
 	}
 	return 0;
-}
-
-bool GameXmlContent::IsValidGuildEmblem(i32 emblem) const
-{
-	for(auto e : validGuildEmblems) {
-		if(e == emblem) return true;
-	}
-	return false;
 }
 
 bool GameXmlContent::LoadJukeboxSongs()

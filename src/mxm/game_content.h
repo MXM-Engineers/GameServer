@@ -298,22 +298,6 @@ struct GameXmlContent
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_hash_map<CreatureIndex,Master*,100> masterIdMap;
 
-	const Master* FindMaster(ClassType classType) const
-	{
-		auto found = masterClassTypeMap.find(classType);
-		if(found == masterClassTypeMap.end()) return nullptr;
-		return found->second;
-	}
-
-	const Master* FindMaster(CreatureIndex id) const
-	{
-		auto found = masterIdMap.find(id);
-		if(found == masterIdMap.end()) return nullptr;
-		return found->second;
-	}
-
-
-
 	eastl::fixed_hash_map<ClassType,CreatureIndex,100> deathMatchBotIndex;
 
 	eastl::fixed_vector<MapList, 500, false> maplists;
@@ -375,15 +359,10 @@ struct GameXmlContent
 	eastl::fixed_vector<GuildLevelInfo,16,false> guildLevels;
 	eastl::fixed_vector<GuildSkillInfo,16,false> guildSkills;
 	eastl::fixed_vector<i32,64,false> validGuildEmblems;
-	i32 guildBaseMemberCap = 10;
 	i32 guildActivityCapWeekday = 100;
-	i32 guildActivityCapWeekend = 250;
-	i32 guildRollcallPoint = 50;
-	i32 guildDonationUnit = 100;
 
 	i32 GuildLevelForPoints(i32 points) const;
 	i32 GuildSkillValue(const char* key, i32 level) const;
-	bool IsValidGuildEmblem(i32 emblem) const;
 
 	bool FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const;
 	bool FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const;

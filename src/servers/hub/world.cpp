@@ -149,6 +149,7 @@ WorldHub::ActorPlayer& WorldHub::SpawnPlayerActor(i32 clientID, ClassType classT
 	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
 	actor.actionParam2 = -1;
+	actor.faction = (i32)TeamType::RED;
 	actor.classType = classType;
 	actor.skinIndex = skinIndex;
 	actor.name = name;
@@ -175,6 +176,7 @@ WorldHub::ActorPlayer& WorldHub::SpawnPlayerSubActor(i32 clientID, ActorUID pare
 	actor.actionState = ActionStateID::INVALID;
 	actor.actionParam1 = -1;
 	actor.actionParam2 = -1;
+	actor.faction = (i32)TeamType::RED;
 	actor.classType = classType;
 	actor.skinIndex = skinIndex;
 	actor.name = parent->name;

@@ -16,21 +16,6 @@ set(EA_INCLUDES
 	${EXTERNAL_DIR}/EAStdC-1.26.03/include
 )
 
-# $<CONFIG:...> generator expressions only work on multi-config generators
-# (Visual Studio). Single-config ones (Ninja, NMake) need CMAKE_BUILD_TYPE.
-function(mxm_config_expr out debug_val release_val)
-	if(CMAKE_CONFIGURATION_TYPES)
-		set(${out} "$<$<CONFIG:Debug>:${debug_val}>$<$<CONFIG:Release>:${release_val}>" PARENT_SCOPE)
-	else()
-		string(TOLOWER "${CMAKE_BUILD_TYPE}" _bt)
-		if(_bt STREQUAL "debug")
-			set(${out} "${debug_val}" PARENT_SCOPE)
-		else()
-			set(${out} "${release_val}" PARENT_SCOPE)
-		endif()
-	endif()
-endfunction()
-
 # ---- Global compile settings (mirrors the genie.lua solution block) ----
 
 set(CMAKE_CXX_STANDARD 14)
@@ -48,8 +33,7 @@ if(MSVC)
 		EASTL_CUSTOM_FLOAT_CONSTANTS_REQUIRED=1
 	)
 	# NoBufferSecurityCheck on Release
-	mxm_config_expr(MXM_GS_FLAG "" "/GS-")
-	add_compile_options(${MXM_GS_FLAG})
+	add_compile_options("$<$<NOT:$<CONFIG:Debug>>:/GS->")
 else()
 	add_compile_options(-fno-exceptions -fno-rtti -fshort-wchar)
 endif()
@@ -66,8 +50,12 @@ else()
 	add_compile_definitions(CONF_LINUX)
 endif()
 
-mxm_config_expr(MXM_CONFIG_DEFINES "_DEBUG;CONF_DEBUG" "NDEBUG;CONF_RELEASE")
-add_compile_definitions(${MXM_CONFIG_DEFINES})
+add_compile_definitions(
+	"$<$<CONFIG:Debug>:_DEBUG>"
+	"$<$<CONFIG:Debug>:CONF_DEBUG>"
+	"$<$<NOT:$<CONFIG:Debug>>:NDEBUG>"
+	"$<$<NOT:$<CONFIG:Debug>>:CONF_RELEASE>"
+)
 
 # genie gave Debug targets a "_dbg" suffix; keep the same output names.
 # Per-target DEBUG_POSTFIX: the global CMAKE_DEBUG_POSTFIX does not apply to
@@ -80,11 +68,10 @@ endfunction()
 set(PHYSX_DIR ${EXTERNAL_DIR}/physx-4.1)
 set(PHYSX_DLLS PhysXCommon_64.dll PhysXCooking_64.dll PhysXFoundation_64.dll PhysX_64.dll)
 function(copy_physx_dlls target)
-	mxm_config_expr(MXM_PHYSX_DLLDIR checked release)
 	foreach(dll IN LISTS PHYSX_DLLS)
 		add_custom_command(TARGET ${target} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different
-				"${PHYSX_DIR}/lib/${MXM_PHYSX_DLLDIR}/${dll}"
+				"${PHYSX_DIR}/lib/$<IF:$<CONFIG:Debug>,checked,release>/${dll}"
 				"$<TARGET_FILE_DIR:${target}>/${dll}")
 	endforeach()
 endfunction()

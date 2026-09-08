@@ -82,7 +82,7 @@ class ClientSerializer:
         print('        moveDir=%s' % read_Vec2(p))
         print('        rot=%s' % read_Vec3(p))
         print('        speed=%g' % p.read_f32())
-        print('        clientTime=%d' % p.read_i32())
+        print('        clientTime=%g' % p.read_f32())
         print('    }')
         print('}')
     def serialize_60051(netid, p: common.PacketReader):

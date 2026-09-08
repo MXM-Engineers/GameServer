@@ -45,7 +45,7 @@ void World::Update(Time localTime_)
 			// TODO: check for skill
 			// TODO: check for cost
 			const auto& cast = p.input.cast;
-			PlayerCastSkill(p, cast.skillID, cast.pos, Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()));
+			PlayerCastSkill(p, cast.skillID, cast.pos, Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()), cast.clientTime);
 			p.input.cast.skillID = SkillID::INVALID;
 		}
 
@@ -405,7 +405,7 @@ World::ActorMasterHandle World::MasterInvalidHandle()
 	return actorMasterList.end();
 }
 
-void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets)
+void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets, f32 clientTime)
 {
 	// TODO: check if can cast
 
@@ -428,6 +428,7 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	rpCast.casterMoveDir = dir;
 	rpCast.casterRot = { angle, 0, angle };
 	rpCast.casterSpeed = player.input.speed; // FIXME: should not come from input
+	rpCast.clientTime = clientTime;
 
 	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
 

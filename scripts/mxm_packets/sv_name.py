@@ -1735,4 +1735,4 @@ class ServerPacketName:
         print('SN_GAME_ENTER_ACTOR {} @0')
 
     def name_62238(netid):
-        print('SA_RESULT_SP_ACTION {} @0')
+        print('SA_RESULT_SP_ACTION {} @98769d')

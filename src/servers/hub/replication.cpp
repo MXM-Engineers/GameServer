@@ -334,11 +334,11 @@ void HubReplication::SendChatMessageToClient(ClientHandle toClientHd, const wcha
 	SendPacket(toClientHd, packet);
 }
 
-void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
+void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval)
 {
 	PacketWriter<Sv::SA_WhisperSend> packet;
 
-	packet.Write<i32>(0); // result
+	packet.Write<ErrorType>(retval);
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
@@ -347,7 +347,7 @@ void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd,
 
 void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
 {
-	PacketWriter<Sv::SN_WhisperReceive> packet;
+	PacketWriter<Sv::SN_WhisperReceived> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
 	packet.Write<u8>(0); // staffType
@@ -468,7 +468,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 			chara.z = 0;
 			chara.characterType = 1;
 			chara.skinIndex = SkinIndex::DEFAULT;
-			chara.weaponIndex = it->weaponIDs[0];
+			chara.weaponIndex = it->defaultWeaponIDs[0];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
 		}
@@ -2100,9 +2100,9 @@ void HubReplication::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 		PacketWriter<Sv::SN_GamePlayerEquipWeapon> packet;
 
 		packet.Write<LocalActorID>(localActorID); // characterID
-		packet.Write<i32>(131135011); // weaponDocIndex
-		packet.Write<i32>(0); // additionnalOverHeatGauge
-		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+		packet.Write<WeaponIndex>(GetGameXmlContent().GetMaster(actor.classType).defaultWeaponIDs[0]);
+		packet.Write<f32>(0.f);
+		packet.Write<f32>(0.f);
 
 		SendPacket(clientHd, packet);
 	}
@@ -2280,7 +2280,7 @@ void HubReplication::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 	const LocalActorID localActorID = found->second;
 
 	Sv::SN_DestroyEntity packet;
-	packet.characterID = localActorID;
+	packet.objectID = localActorID;
 	SendPacket(clientHd, packet);
 }
 
@@ -2323,37 +2323,17 @@ void HubReplication::SendMasterSkillSlots(ClientHandle clientHd, const HubReplic
 
 		packet.Write<LocalActorID>(localActorID); // characterID
 
-		auto masterIt = content.masterClassTypeMap.find(actor.classType);
-		ASSERT(masterIt != content.masterClassTypeMap.end());
-		GameXmlContent::Master& master = *masterIt->second;
+		const GameXmlContent::Master& master = content.GetMaster(actor.classType);
+		ASSERT(master.skillUnlocked.size() == master.skillIDs.size());
 
-		struct SkillStatus {
-			u8 isUnlocked;
-			u8 isActivated;
-		};
-
-		const SkillStatus skillStatusList[7] = {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-		};
-
-		i32 skillStatusID = 0;
-
-		packet.Write<u16>(master.skillIDs.size()); // slotList_count
-		foreach(it, master.skillIDs) {
-			packet.Write<SkillID>(*it); // skillIndex
-			packet.Write<i32>(0); // coolTime
-			packet.Write<u8>(1); // unlocked
-			packet.Write<u16>(0); // propList_count
-			packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-			packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-
-			skillStatusID++;
+		packet.Write<u16>(master.skillIDs.size());
+		for(size_t i = 0; i < master.skillIDs.size(); i++) {
+			packet.Write<SkillID>(master.skillIDs[i]);
+			packet.Write<u32>(0);
+			packet.Write<u8>(1);
+			packet.Write<u16>(0);
+			packet.Write<u8>(master.skillUnlocked[i]);
+			packet.Write<u8>(1);
 		}
 
 		packet.Write<SkillID>(SkillID::INVALID); // stageSkillIndex1

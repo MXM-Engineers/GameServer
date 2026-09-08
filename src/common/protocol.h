@@ -173,6 +173,12 @@ enum class EChatType : i32
 	CHANNEL = 20
 };
 
+enum class ErrorType: u32
+{
+	SUCCESS = 0,
+	WHISPER_SEND_NOT_FOUND = 0x126,
+};
+
 // values from decompile
 enum class GamePingType : i32
 {
@@ -674,7 +680,7 @@ struct CQ_PlayerCastSkill
 		float2 moveDir;
 		float3 rot;
 		f32 speed;
-		i32 clientTime;
+		f32 clientTime;
 	};
 
 	LocalActorID playerID;
@@ -3930,9 +3936,10 @@ struct SN_SpawnPosForMinimap
 {
 	enum { NET_ID = 62026 };
 
-	i32 objectID;
+	LocalActorID objectID;
 	float3 p3nPos;
 };
+ASSERT_SIZE(SN_SpawnPosForMinimap, 16);
 
 struct SN_GameCreateSubActor
 {
@@ -4060,19 +4067,20 @@ struct SQ_CityLobbyJoinCity
 	enum { NET_ID = 62033 };
 };
 
+PUSH_PACKED
 struct SN_CastSkill
 {
 	enum { NET_ID = 62035 };
 
-	LocalActorID entityID;
-	i32 ret;
-	SkillID skillID;
-	u8 costLevel;
+	LocalActorID entity;
+	u32 ret;
+	SkillID skillIndex;
+	i8 costLevel;
 	ActionStateID actionState;
 	float3 targetPos;
 
-	u16 targetList_count;
-	LocalActorID targetList[1];
+	u16 targetIds_count;
+	LocalActorID targetIds[1];
 
 	u8 bSyncMyPosition;
 
@@ -4082,23 +4090,48 @@ struct SN_CastSkill
 		float2 moveDir;
 		float3 rotateStruct;
 		f32 speed;
-		i32 clientTime;
+		f32 clientTime;
 	} posStruct;
 };
+POP_PACKED
+ASSERT_SIZE(SN_CastSkill::PosStruct, 52);
+ASSERT_SIZE(SN_CastSkill, 88);
 
+PUSH_PACKED
 struct SN_ExecuteSkill
 {
 	enum { NET_ID = 62036 };
 
-	// TODO: fill
+	LocalActorID entity;
+	u32 ret;
+	SkillID skillIndex;
+	i8 costLevel;
+	ActionStateID actionState;
+	float3 targetPos;
+	u16 targetIds_count;
+	LocalActorID targetIds[1];
+	u8 bSyncMyPosition;
+	SN_CastSkill::PosStruct posStruct;
+	f32 fSkillChargeDamageMultiplier;
+	struct GraphMove
+	{
+		u8 bApply;
+		float3 startPos;
+		float3 endPos;
+		f32 durationTimeS;
+		f32 originDistance;
+	} graphMove;
 };
+POP_PACKED
+ASSERT_SIZE(SN_ExecuteSkill::GraphMove, 33);
+ASSERT_SIZE(SN_ExecuteSkill, 125);
 
 struct SA_CastSkill
 {
 	enum { NET_ID = 62041 };
 
-	LocalActorID characterID;
-	i32 ret;
+	LocalActorID entity;
+	u32 ret;
 	SkillID skillIndex;
 };
 ASSERT_SIZE(SA_CastSkill, 12);
@@ -4114,24 +4147,25 @@ struct SA_ServerVersionInfo
 POP_PACKED
 ;
 
+PUSH_PACKED
 struct SN_PlayerSkillSlot
 {
 	enum { NET_ID = 62048 };
 
 	struct Property
 	{
-		i32 skillPropertyIndex;
-		i32 level;
+		u32 m_skillPropertyIndex;
+		u32 m_level;
 	};
 
 	struct Slot
 	{
-		SkillID skillIndex;
-		i32 coolTime;
-		u8 unlocked;
+		SkillID nSkillIndex;
+		u32 nCoolTime;
+		u8 bUnlocked;
 
-		u16 propList_count;
-		Property propList[1];
+		u16 properties_count;
+		Property properties[1];
 
 		u8 isUnlocked;
 		u8 isActivated;
@@ -4142,12 +4176,16 @@ struct SN_PlayerSkillSlot
 	u16 slotList_count;
 	Slot slotList[1];
 
-	i32 stageSkillIndex1;
-	i32 stageSkillIndex2;
-	i32 currentSkillSlot1;
-	i32 currentSkillSlot2;
-	i32 shirkSkillSlot;
+	SkillID stageSkillIndex1;
+	SkillID stageSkillIndex2;
+	SkillID currentSkillSlot1;
+	SkillID currentSkillSlot2;
+	SkillID shirkSkillSlot;
 };
+POP_PACKED
+ASSERT_SIZE(SN_PlayerSkillSlot::Property, 8);
+ASSERT_SIZE(SN_PlayerSkillSlot::Slot, 21);
+ASSERT_SIZE(SN_PlayerSkillSlot, 47);
 
 struct SN_LoadCharacterStart
 {
@@ -4189,8 +4227,9 @@ struct SN_DestroyEntity
 {
 	enum { NET_ID = 62059 };
 
-	LocalActorID characterID;
+	LocalActorID objectID;
 };
+ASSERT_SIZE(SN_DestroyEntity, 4);
 
 struct SN_SetGameGvt
 {
@@ -4308,10 +4347,10 @@ struct SN_GamePlayerEquipWeapon
 {
 	enum { NET_ID = 62084 };
 
-	i32 characterID;
-	i32 weaponDocIndex;
-	i32 additionnalOverHeatGauge;
-	i32 additionnalOverHeatGaugeRatio;
+	LocalActorID characterID;
+	WeaponIndex weaponDocIndex;
+	f32 additionalOverheatGauge;
+	f32 additionalOverheatGaugeRatio;
 };
 
 ASSERT_SIZE(SN_GamePlayerEquipWeapon, 16);
@@ -4330,8 +4369,8 @@ struct SN_GamePlayerStock
 	u8 m_badgeTierLevel; // 1 bytes
 	u16 m_guildTag_len; // 2 bytes
 	wchar_t m_guildTag[1]; // 2 bytes (wide)
-	u8 m_vipLevel; // 1 bytes
-	u8 m_staffType; // 1 bytes
+	i8 m_vipLevel;
+	i8 m_staffType;
 	u8 m_isSubstituted; // 1 bytes (bool)
 	// logger 0x995269
 };
@@ -4508,7 +4547,7 @@ struct SN_GamePlayerTag
 {
 	enum { NET_ID = 62112 };
 
-	i32 result;
+	u32 result;
 	LocalActorID mainID;
 	LocalActorID subID;
 	LocalActorID attackerID;
@@ -4968,33 +5007,32 @@ ASSERT_SIZE(SN_NotifyPcDetailInfos::ST_PcInfo, 20);
 ASSERT_SIZE(SN_NotifyPcDetailInfos::ST_PcDetailInfo, 49);
 
 
+PUSH_PACKED
 struct SA_ResultSpAction
 {
 	enum { NET_ID = 62238 };
 
-	u8 excludedFireldBits;
+	u8 excludedFieldBits;
 	i32 actionID;
 	LocalActorID objectID;
 	f32 rotate;
-	f32 moveDirX;
-	f32 moveDirY;
+	float2 moveDir;
 	i32 errorType;
 	float3 startPos;
 };
+POP_PACKED
+ASSERT_SIZE(SA_ResultSpAction, 37);
 
 PUSH_PACKED
 struct SN_ChatChannelMessage
 {
 	enum { NET_ID = 62242 };
-	u32 chatType; // 4 bytes
-	// variable part (wide string):
-	u16 senderNickname_len; // 2 bytes
-	wchar_t senderNickname[1]; // 2 bytes
-	u8 senderStaffType; // 1 bytes
-	// variable part (wide string):
-	u16 chatMsg_len; // 2 bytes
-	wchar_t chatMsg[1]; // 2 bytes
-	// logger 0x98fa3c
+	u32 chatType;
+	u16 senderNickname_len;
+	wchar senderNickname[1];
+	i8 senderStaffType;
+	u16 chatMsg_len;
+	wchar chatMsg[1];
 };
 POP_PACKED
 ASSERT_SIZE(SN_ChatChannelMessage, 13);
@@ -5358,14 +5396,14 @@ struct SN_PlayerSyncMove
 {
 	enum { NET_ID = 62360 };
 
-	LocalActorID characterID;
-	float3 destPos;
-	float2 moveDir;
-	float2 upperDir;
+	LocalActorID entityID;
+	float3 DestPos;
+	float2 MoveDir;
+	float2 UpperDir;
 	f32 nRotate;
 	f32 nSpeed;
 	u8 flags;
-	ActionStateID state;
+	ActionStateID actionStateID;
 };
 POP_PACKED
 ASSERT_SIZE(SN_PlayerSyncMove, 45);
@@ -5375,8 +5413,8 @@ struct SN_PlayerSyncTurn
 {
 	enum { NET_ID = 62361 };
 
-	LocalActorID characterID;
-	float2 upperDir;
+	LocalActorID entityID;
+	float2 UpperDir;
 	f32 nRotate;
 };
 POP_PACKED
@@ -5462,32 +5500,27 @@ PUSH_PACKED
 struct SA_WhisperSend
 {
 	enum { NET_ID = 62406 };
-	u32 retval; // 4 bytes
-	// variable part (wide string reader 0xa19080):
-	u16 nickname_len; // 2 bytes
-	wchar_t nickname[1]; // 2 + count*2
-	u16 message_len; // 2 bytes
-	wchar_t message[1]; // 2 + count*2
-	// logger 0x98a94f
+	ErrorType retval;
+	u16 nickname_len;
+	wchar nickname[1];
+	u16 message_len;
+	wchar message[1];
 };
 POP_PACKED
-// variable-size packet: wire = 4 + (2 + 2*nickname_len) + (2 + 2*message_len); no fixed ASSERT_SIZE
-// variable-size packet: wire = 4 + (2 + 2*nickname_len) + (2 + 2*message_len); no fixed ASSERT_SIZE
-;
+ASSERT_SIZE(SA_WhisperSend, 12);
 
 PUSH_PACKED
-struct SN_WhisperReceive
+struct SN_WhisperReceived
 {
 	enum { NET_ID = 62407 };
-	u16 nickname_len; // 2 bytes
-	wchar_t nickname[1]; // 2 bytes
-	u8 staffType; // 1 bytes
-	u16 message_len; // 2 bytes
-	wchar_t message[1]; // 2 bytes
-	// logger 0x009a8914
+	u16 nickname_len;
+	wchar nickname[1];
+	i8 staffType;
+	u16 message_len;
+	wchar message[1];
 };
 POP_PACKED
-ASSERT_SIZE(SN_WhisperReceive, 9);
+ASSERT_SIZE(SN_WhisperReceived, 9);
 ;
 
 struct SN_MailUnreadNotice
@@ -5547,7 +5580,7 @@ struct SN_RunClientLevelEvent
 	enum { NET_ID = 62448 };
 
 	i32 eventID;
-	i32 caller;
+	u32 caller;
 	i64 serverTime;
 };
 ASSERT_SIZE(SN_RunClientLevelEvent, 16);
@@ -5559,7 +5592,7 @@ struct SN_RunClientLevelEventSeq
 
 	i32 needCompleteTriggerAckID;
 	i32 rootEventID;
-	i32 caller;
+	u32 caller;
 	i64 serverTime;
 };
 POP_PACKED
@@ -5828,6 +5861,7 @@ struct SN_InitIngameModeInfo
 	ST_STAT_MIN_MAX limitExceptionStat[1];
 };
 
+PUSH_PACKED
 struct SN_ActionChangeLevelEvent
 {
 	enum { NET_ID = 62577 };
@@ -5837,6 +5871,8 @@ struct SN_ActionChangeLevelEvent
 	ActionStateID actionID;
 	i64 serverTime;
 };
+POP_PACKED
+ASSERT_SIZE(SN_ActionChangeLevelEvent, 18);
 
 PUSH_PACKED
 struct SN_UpdateMasterGroupingEffect

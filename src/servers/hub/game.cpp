@@ -214,7 +214,6 @@ void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	const i32 userID = plidMap->Get(clientHd);
 
 	ASSERT(playerAccountData[userID]);
-	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
 	i32 destClientID = -1;
 	for(int i = 0; i < playerAccountData.size(); i++) {
@@ -227,10 +226,11 @@ void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	}
 
 	if(destClientID == -1) {
-		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
+		replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::WHISPER_SEND_NOT_FOUND);
 		return;
 	}
 
+	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::SUCCESS);
 	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[userID]->nickname.data(), msg);
 }
 

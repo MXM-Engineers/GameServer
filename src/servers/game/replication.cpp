@@ -290,11 +290,11 @@ void Replication::SendClientLevelEventSeq(ClientHandle clientHd, i32 eventID)
 	SendPacket(clientHd, seq);
 }
 
-void Replication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
+void Replication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval)
 {
 	PacketWriter<Sv::SA_WhisperSend> packet;
 
-	packet.Write<i32>(0); // result
+	packet.Write<ErrorType>(retval);
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
@@ -303,7 +303,7 @@ void Replication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, co
 
 void Replication::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
 {
-	PacketWriter<Sv::SN_WhisperReceive> packet;
+	PacketWriter<Sv::SN_WhisperReceived> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
 	packet.Write<u8>(0); // staffType
@@ -1003,7 +1003,7 @@ void Replication::FrameDifference()
 			const ActorUID actorUID = cur.masters[cur.mainCharaID];
 			const ActorMaster* chara = frameCur->FindMaster(cur.masters[cur.mainCharaID]);  // @Speed
 			ASSERT(chara);
-			const f32 rotate = chara->rotation.bodyYaw;
+			const f32 rotate = WorldYawToMxmYaw(chara->rotation.bodyYaw);
 			const vec2 moveDir = chara->moveDir;
 
 			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
@@ -1056,19 +1056,19 @@ void Replication::FrameDifference()
 			}
 
 			Sv::SN_PlayerSyncMove sync;
-			sync.destPos = v2f(cur.pos);
-			sync.moveDir = v2f(cur.moveDir);
-			sync.upperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
+			sync.DestPos = v2f(cur.pos);
+			sync.MoveDir = v2f(cur.moveDir);
+			sync.UpperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
 			sync.nRotate = WorldYawToMxmYaw(cur.rotation.bodyYaw);
 			sync.nSpeed = cur.speed;
 			sync.flags = 0;
-			sync.state = action;
+			sync.actionStateID = action;
 
 			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
 				if(playerState[pi].cur < PlayerState::IN_GAME) continue;
 				const ClientHandle clientHd = clientHandle[pi];
 				if(clientHd == cur.clientHd) continue; // ignore self
-				sync.characterID = GetLocalActorID(clientHd, cur.actorUID);
+				sync.entityID = GetLocalActorID(clientHd, cur.actorUID);
 				SendPacket(clientHd, sync);
 			}
 
@@ -1083,7 +1083,7 @@ void Replication::FrameDifference()
 		   fabs(cur.rotation.bodyYaw - prev.rotation.bodyYaw) > rotEpsilon))
 		{
 			Sv::SN_PlayerSyncTurn sync;
-			sync.upperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
+			sync.UpperDir = { WorldYawToMxmYaw(cur.rotation.upperYaw), WorldPitchToMxmPitch(cur.rotation.upperPitch) };
 			sync.nRotate = WorldYawToMxmYaw(cur.rotation.bodyYaw);
 
 			for(int pi = 0; pi < MAX_PLAYERS; pi++) {
@@ -1091,7 +1091,7 @@ void Replication::FrameDifference()
 				const ClientHandle clientHd = clientHandle[pi];
 				if(clientHd == cur.clientHd) continue; // ignore self
 
-				sync.characterID = GetLocalActorID(clientHd, cur.actorUID);
+				sync.entityID = GetLocalActorID(clientHd, cur.actorUID);
 				SendPacket(clientHd, sync);
 			}
 		}
@@ -1132,7 +1132,7 @@ void Replication::FrameDifference()
 			// SA_CastSkill
 			{
 				Sv::SA_CastSkill accept;
-				accept.characterID = localActorID;
+				accept.entity = localActorID;
 				accept.ret = 0;
 				accept.skillIndex = cast.skillID;
 
@@ -1168,7 +1168,7 @@ void Replication::FrameDifference()
 				packet.Write<float2>(v2f(cast.casterMoveDir));
 				packet.Write<RotationHumanoid>(RotConvertToMxm(cast.casterRot));
 				packet.Write<f32>(cast.casterSpeed);
-				packet.Write<i32>((i64)TimeDiffMs(TimeRelNow()));
+				packet.Write<f32>(cast.clientTime);
 
 				SendPacket(clientHd, packet);
 			}
@@ -1206,7 +1206,7 @@ void Replication::FrameDifference()
 				packet.Write<float2>({});
 				packet.Write<RotationHumanoid>({});
 				packet.Write<f32>(0);
-				packet.Write<i32>(0);
+				packet.Write<f32>(0.f);
 
 				packet.Write<f32>(0); // fSkillChargeDamageMultiplier
 
@@ -1364,9 +1364,9 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 		PacketWriter<Sv::SN_GamePlayerEquipWeapon> packet;
 
 		packet.Write<LocalActorID>(localActorID); // characterID
-		packet.Write<i32>(131135011); // weaponDocIndex
-		packet.Write<i32>(0); // additionnalOverHeatGauge
-		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+		packet.Write<WeaponIndex>(actor.actorUID == parent.masters[0] ? parent.mainWeapon : parent.subWeapon);
+		packet.Write<f32>(0.f);
+		packet.Write<f32>(0.f);
 
 		SendPacket(clientHd, packet);
 	}
@@ -1391,7 +1391,7 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 	}
 	*/
 
-	SendMasterSkillSlots(clientHd, actor);
+	SendMasterSkillSlots(clientHd, actor, parent);
 }
 
 void Replication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor)
@@ -1524,12 +1524,12 @@ void Replication::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 	const LocalActorID localActorID = found->second;
 
 	Sv::SN_DestroyEntity packet;
-	packet.characterID = localActorID;
+	packet.objectID = localActorID;
 	LOG("[client%03d] Server :: SN_DestroyEntity :: actorUID=%u", clientID, (u32)actorUID);
 	SendPacket(clientHd, packet);
 }
 
-void Replication::SendMasterSkillSlots(ClientHandle clientHd, const Replication::ActorMaster& actor)
+void Replication::SendMasterSkillSlots(ClientHandle clientHd, const Replication::ActorMaster& actor, const Player& player)
 {
 	DBG_ASSERT(actor.actorUID != ActorUID::INVALID);
 	const LocalActorID localActorID = GetLocalActorID(clientHd, actor.actorUID);
@@ -1543,44 +1543,25 @@ void Replication::SendMasterSkillSlots(ClientHandle clientHd, const Replication:
 
 		packet.Write<LocalActorID>(localActorID); // characterID
 
-		auto masterIt = content.masterClassTypeMap.find(actor.classType);
-		ASSERT(masterIt != content.masterClassTypeMap.end());
-		GameXmlContent::Master& master = *masterIt->second;
+		const GameXmlContent::Master& master = content.GetMaster(actor.classType);
+		ASSERT(master.skillUnlocked.size() == master.skillIDs.size());
 
-		struct SkillStatus {
-			u8 isUnlocked;
-			u8 isActivated;
-		};
-
-		const SkillStatus skillStatusList[7] = {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-		};
-
-		i32 skillStatusID = 0;
-
-		packet.Write<u16>(master.skillIDs.size()); // slotList_count
-		foreach(it, master.skillIDs) {
-			packet.Write<SkillID>(*it); // skillIndex
-			packet.Write<i32>(0); // coolTime
-			packet.Write<u8>(1); // unlocked
-			packet.Write<u16>(0); // propList_count
-			packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-			packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-
-			skillStatusID++;
+		packet.Write<u16>(master.skillIDs.size());
+		for(size_t i = 0; i < master.skillIDs.size(); i++) {
+			packet.Write<SkillID>(master.skillIDs[i]);
+			packet.Write<u32>(0);
+			packet.Write<u8>(1);
+			packet.Write<u16>(0);
+			packet.Write<u8>(master.skillUnlocked[i]);
+			packet.Write<u8>(1);
 		}
 
-		packet.Write<SkillID>(SkillID::INVALID); // stageSkillIndex1
-		packet.Write<SkillID>(SkillID::INVALID); // stageSkillIndex2
-		packet.Write<SkillID>(master.skillIDs[0]); // currentSkillSlot1
-		packet.Write<SkillID>(master.skillIDs[1]); // currentSkillSlot2
-		packet.Write<SkillID>(master.skillIDs.back()); // shirkSkillSlot
+		const size_t skillOffset = actor.actorUID == player.masters[0] ? 0 : 2;
+		packet.Write<SkillID>(stageSkills[0]);
+		packet.Write<SkillID>(stageSkills[1]);
+		packet.Write<SkillID>(player.skills[skillOffset]);
+		packet.Write<SkillID>(player.skills[skillOffset + 1]);
+		packet.Write<SkillID>(master.skillIDs.back());
 
 		SendPacket(clientHd, packet);
 	}

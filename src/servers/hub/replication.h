@@ -223,7 +223,7 @@ struct HubReplication
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void SendChatMessageToClient(ClientHandle toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
-	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
+	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval);
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);

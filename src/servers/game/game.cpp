@@ -532,8 +532,6 @@ void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar*
 
 void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
 {
-	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
-
 	const Player* destPlayer = nullptr;
 	foreach_const(pl, playerList) {
 		if(pl->name.compare(destNick) == 0) {
@@ -542,11 +540,12 @@ void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, con
 		}
 	}
 
-	if(!destPlayer) {
-		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
+	if(!destPlayer || destPlayer->IsBot()) {
+		replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::WHISPER_SEND_NOT_FOUND);
 		return;
 	}
 
+	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::SUCCESS);
 	Player& p = *playerMap.at(clientHd);
 	replication.SendChatWhisperToClient(destPlayer->clientHd, p.name.data(), msg);
 }
@@ -622,6 +621,7 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 	ASSERT(player.clientHd == clientHd);
 
 	player.input.cast = cast;
+	player.input.cast.clientTime = posInfo.clientTime;
 
 	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
 	// TODO: convert clientTime to localTime

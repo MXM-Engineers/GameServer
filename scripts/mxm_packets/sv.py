@@ -2674,20 +2674,19 @@ class ServerSerializer:
     def serialize_62360(netid, p: common.PacketReader):
         print('SN_PlayerSyncMove {')
         print('    entityID=0x%08x' % p.read_u32())
-        print('    destPos=%s' % read_Vec3(p))
-        print('    moveDir=(%f, %f)' % (p.read_f32(), p.read_f32()))
-        print('    upperDir=(%f, %f)' % (p.read_f32(), p.read_f32()))
+        print('    DestPos=%s' % read_Vec3(p))
+        print('    MoveDir=%s' % read_Vec2(p))
+        print('    UpperDir=%s' % read_Vec2(p))
         print('    nRotate=%f' % p.read_f32())
         print('    nSpeed=%f' % p.read_f32())
         print('    flags=%x' % p.read_u8())
-        print('    acionStateID=%d' % p.read_i32())
+        print('    actionStateID=%d' % p.read_i32())
         print('}')
 
     def serialize_62361(netid, p: common.PacketReader):
         print('SN_PlayerSyncTurn {')
         print('    entityID=0x%08x' % p.read_u32())
-        print('    upperDir_x=%g' % p.read_f32())
-        print('    upperDir_y=%g' % p.read_f32())
+        print('    UpperDir=%s' % read_Vec2(p))
         print('    nRotate=%g' % p.read_f32())
         print('}')
 
@@ -3427,7 +3426,7 @@ class ServerSerializer:
         print('SN_RunClientLevelEventSeq {')
         print('    needCompleteTriggerAckID=%d' % p.read_i32())
         print('    rootEventID=%d' % p.read_i32())
-        print('    caller=%d' % p.read_i32())
+        print('    caller=%u' % p.read_u32())
         print('    serverTime=%d' % p.read_i64())
         print('}')
 
@@ -4781,17 +4780,17 @@ class ServerSerializer:
 
     def serialize_62035(netid, p: common.PacketReader):
         print('SN_CastSkill {')
-        print('	entityID=0x%08x' % p.read_u32())
-        print('	ret=%d' % p.read_i32())
+        print('	entity=0x%08x' % p.read_u32())
+        print('	ret=%u' % p.read_u32())
         print('	skillIndex=%d' % p.read_i32())
-        print('	costLevel=%d' % p.read_u8())
-        print('	actionstate=%d' % p.read_i32())
+        print('	costLevel=%d' % p.read_i8())
+        print('	actionState=%d' % p.read_i32())
         print('	targetPos=%s' % read_Vec3(p))
         
         count = p.read_u16()
-        print('	targetIDs(%d)=[' % count)
+        print('	targetIds(%d)=[' % count)
         while count > 0:
-            print('		%d,' % p.read_i32())
+            print('		0x%08x,' % p.read_u32())
             count -= 1
         print('	]')
 
@@ -4802,23 +4801,23 @@ class ServerSerializer:
         print('		moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
         print('		rotateStruct=%s' % read_Vec3(p))
         print('		speed=%g' % p.read_f32())
-        print('		clientTime=%d' % p.read_i32())
+        print('		clientTime=%g' % p.read_f32())
         print('	}')
         print('}')
 
     def serialize_62036(netid, p: common.PacketReader):
         print('SN_ExecuteSkill {')
-        print('	entityID=0x%08x' % p.read_u32())
-        print('	ret=%d' % p.read_i32())
+        print('	entity=0x%08x' % p.read_u32())
+        print('	ret=%u' % p.read_u32())
         print('	skillIndex=%d' % p.read_i32())
-        print('	costLevel=%d' % p.read_u8())
-        print('	actionstate=%d' % p.read_i32())
+        print('	costLevel=%d' % p.read_i8())
+        print('	actionState=%d' % p.read_i32())
         print('	targetPos=%s' % read_Vec3(p))
         
         count = p.read_u16()
-        print('	targetIDs(%d)=[' % count)
+        print('	targetIds(%d)=[' % count)
         while count > 0:
-            print('		%d,' % p.read_i32())
+            print('		0x%08x,' % p.read_u32())
             count -= 1
         print('	]')
 
@@ -4829,7 +4828,7 @@ class ServerSerializer:
         print('		moveDir=(%g, %g)' % (p.read_f32(), p.read_f32()))
         print('		rotateStruct=%s' % read_Vec3(p))
         print('		speed=%g' % p.read_f32())
-        print('		clientTime=%d' % p.read_i32())
+        print('		clientTime=%g' % p.read_f32())
         print('	}')
         print('	fSkillChargeDamageMultiplier=%g' % p.read_f32())
         print('	graphMove={')
@@ -4844,8 +4843,8 @@ class ServerSerializer:
 
     def serialize_62041(netid, p: common.PacketReader):
         print('SA_CastSkill {')
-        print('	characterID=0x%08x' % p.read_u32())
-        print('	ret=%d' % p.read_i32())
+        print('	entity=0x%08x' % p.read_u32())
+        print('	ret=%u' % p.read_u32())
         print('	skillIndex=%d' % p.read_i32())
         print('}')
 
@@ -4854,25 +4853,24 @@ class ServerSerializer:
         print('    characterID=0x%08x' % p.read_u32())
 
         count = p.read_u16()
-        print('    slots(%d)=[' % count)
+        print('    slotList(%d)=[' % count)
         while count > 0:
             print('    {')
-            print('      skillIndex=%d' % p.read_i32())
-            print('      coolTime=%d' % p.read_i32())
-            print('      unlocked=%d' % p.read_u8())
+            print('      nSkillIndex=%d' % p.read_i32())
+            print('      nCoolTime=%u' % p.read_u32())
+            print('      bUnlocked=%u' % p.read_u8())
 
             prop_count = p.read_u16()
-            s = ''
-            while prop_count > 0:
-                s += '(skillPropertyIndex=%d level=%d), ' % (p.read_i32(), p.read_i32())
-                prop_count -= 1
-
-            print('      propList(%d)=[%s]' % (prop_count, s))
+            print('      properties(%d)=[' % prop_count)
+            for _ in range(prop_count):
+                print('        (m_skillPropertyIndex=%u m_level=%u),' % (p.read_u32(), p.read_u32()))
+            print('      ]')
             print('      isUnlocked=%d' % p.read_u8())
             print('      isActivated=%d' % p.read_u8())
             print('    },')
             count -= 1
 
+        print('    ]')
         print('    stageSkillIndex1=%d' % p.read_i32())
         print('    stageSkillIndex2=%d' % p.read_i32())
         print('    currentSkillSlot1=%d' % p.read_i32())
@@ -4990,8 +4988,8 @@ class ServerSerializer:
         print('SN_GamePlayerEquipWeapon {')
         print('    characterID=0x%08x' % p.read_u32())
         print('    weaponDocIndex=%d' % p.read_i32())
-        print('    additionnalOverHeatGauge=%d' % p.read_i32())
-        print('    additionnalOverHeatGaugeRatio=%d' % p.read_i32())
+        print('    additionalOverheatGauge=%g' % p.read_f32())
+        print('    additionalOverheatGaugeRatio=%g' % p.read_f32())
         print('}')
 
     def serialize_62089(netid, p: common.PacketReader):
@@ -5008,8 +5006,8 @@ class ServerSerializer:
         n = p.read_u16()
         print('    m_guildTag_len=%d' % n)
         print('    m_guildTag=%r' % p.read_raw(n * 2).decode('utf-16-le', errors='replace'))
-        print('    m_vipLevel=%d' % p.read_u8())
-        print('    m_staffType=%d' % p.read_u8())
+        print('    m_vipLevel=%d' % p.read_i8())
+        print('    m_staffType=%d' % p.read_i8())
         print('    m_isSubstituted=%d' % p.read_u8())
         print('}')
     def serialize_62090(netid, p: common.PacketReader):
@@ -5200,7 +5198,7 @@ class ServerSerializer:
 
     def serialize_62112(netid, p: common.PacketReader):
         print('SN_GamePlayerTag {')
-        print('    result=%d' % p.read_i32())
+        print('    result=%u' % p.read_u32())
         print('    mainID=0x%08x' % p.read_u32())
         print('    subID=0x%08x' % p.read_u32())
         print('    attackerID=0x%08x' % p.read_u32())
@@ -5561,7 +5559,7 @@ class ServerSerializer:
         n = p.read_u16()
         print('    senderNickname_len=%d' % n)
         print('    senderNickname=%s' % p.read_raw(n * 2).decode('utf-16-le', errors='replace'))
-        print('    senderStaffType=%d' % p.read_u8())
+        print('    senderStaffType=%d' % p.read_i8())
         n = p.read_u16()
         print('    chatMsg_len=%d' % n)
         print('    chatMsg=%s' % p.read_raw(n * 2).decode('utf-16-le', errors='replace'))
@@ -5981,7 +5979,7 @@ class ServerSerializer:
     def serialize_62448(netid, p: common.PacketReader):
         print('SN_RunClientLevelEvent {')
         print('    eventID=%d' % p.read_i32())
-        print('    caller=%d' % p.read_i32())
+        print('    caller=%u' % p.read_u32())
         print('    serverTime=%d' % p.read_i64())
         print('}')
 
@@ -6229,7 +6227,7 @@ class ServerSerializer:
         count = p.read_u16()
         print('    targetIDs(%d)=[' % count)
         while count > 0:
-            print('        %d' % p.read_i32())
+            print('        0x%08x' % p.read_u32())
             count -= 1
         print('    ]')
         print('    actionID=%d' % p.read_i32())
@@ -6265,11 +6263,11 @@ class ServerSerializer:
         print('}')
 
     def serialize_62407(netid, p: common.PacketReader):
-        print('SN_WhisperReceive {')
+        print('SN_WhisperReceived {')
         n = p.read_u16()
         print('    nickname_len=%d' % n)
         print('    nickname=%s' % p.read_raw(n * 2).decode('utf-16-le', errors='replace'))
-        print('    staffType=%d' % p.read_u8())
+        print('    staffType=%d' % p.read_i8())
         n = p.read_u16()
         print('    message_len=%d' % n)
         print('    message=%s' % p.read_raw(n * 2).decode('utf-16-le', errors='replace'))

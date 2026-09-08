@@ -147,6 +147,7 @@ struct Replication
 		vec2 casterMoveDir;
 		RotationHumanoid casterRot;
 		f32 casterSpeed;
+		f32 clientTime;
 		eastl::fixed_vector<ActorUID,10,false> targetList;
 	};
 
@@ -281,7 +282,7 @@ struct Replication
 	void SendClientLevelEvent(ClientHandle clientHd, i32 eventID);
 	void SendClientLevelEventSeq(ClientHandle clientHd, i32 eventID);
 
-	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
+	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval);
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataPvp(ClientHandle clientHd);
@@ -310,7 +311,7 @@ private:
 	void SendActorDynamicSpawn(ClientHandle clientHd, const ActorDynamic& actor);
 	void SendActorDestroy(ClientHandle clientHd, ActorUID actorUID);
 
-	void SendMasterSkillSlots(ClientHandle clientHd, const ActorMaster& actor);
+	void SendMasterSkillSlots(ClientHandle clientHd, const ActorMaster& actor, const Player& player);
 
 	void SendInitialFrame(ClientHandle clientHd);
 

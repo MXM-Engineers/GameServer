@@ -22,6 +22,7 @@ struct PlayerInputCastSkill
 	SkillID skillID = SkillID::INVALID;
 	vec3 pos;
 	eastl::fixed_vector<ActorUID,10,false> targetList;
+	f32 clientTime = 0.f;
 };
 
 struct World
@@ -261,6 +262,6 @@ private:
 	ActorUID NewActorUID();
 	ActorMasterHandle MasterInvalidHandle();
 
-	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets);
+	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets, f32 clientTime);
 	void ExecuteSkillProgram(SkillProgram& prog);
 };

@@ -1,0 +1,266 @@
+#pragma once
+#include <common/base.h>
+#include <common/network.h>
+#include <common/vector_math.h>
+#include <mxm/core.h>
+
+#include <EASTL/array.h>
+#include <EASTL/fixed_list.h>
+#include <EASTL/fixed_vector.h>
+
+#include "replication.h"
+#include "physics.h"
+
+struct ColliderSize
+{
+	u16 radius;
+	u16 height;
+};
+
+struct PlayerInputCastSkill
+{
+	SkillID skillID = SkillID::INVALID;
+	vec3 pos;
+	eastl::fixed_vector<ActorUID,10,false> targetList;
+	f32 clientTime = 0.f;
+};
+
+struct World
+{
+	struct Player;
+	struct ActorMaster;
+
+	typedef ListItT<ActorMaster> ActorMasterHandle;
+
+	struct PlayerDescription
+	{
+		UserID userID;
+		ClientHandle clientHd;
+		WideString name;
+		WideString guildTag;
+		u8 team;
+
+		eastl::array<ClassType,2> masters;
+		eastl::array<SkinIndex,2> skins;
+		eastl::array<ColliderSize,2> colliderSize;
+		eastl::array<SkillID,4> skills;
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
+	};
+
+	struct Player
+	{
+		struct Input
+		{
+			vec3 moveTo;
+			f32 speed;
+			RotationHumanoid rot;
+
+			u8 tag: 1;
+			u8 jump: 1;
+
+			ActionStateID action;
+			i32 actionParam1; // TODO: investigate these
+			i32 actionParam2;
+
+			PlayerInputCastSkill cast;
+		};
+
+		const u32 index;
+		const UserID userID;
+		const ClientHandle clientHd;
+		const WideString name;
+		const WideString guildTag;
+		const u8 team;
+
+		const ClassType mainClass;
+		const SkinIndex mainSkin;
+		const ClassType subClass;
+		const SkinIndex subSkin;
+
+		const eastl::array<ColliderSize,2> colliderSize;
+		const eastl::array<SkillID,4> skills;
+		const WeaponIndex mainWeapon;
+		const WeaponIndex subWeapon;
+		const i32 mainWeaponGrade;
+		const i32 subWeaponGrade;
+		const u8 mainMasterGearNo;
+		const u8 subMasterGearNo;
+		const i32 mainCharacterType;
+		const i32 subCharacterType;
+
+		u8 level;
+		u32 experience;
+
+		eastl::array<ActorMasterHandle, PLAYER_CHARACTER_COUNT> characters;
+		u8 mainCharaID = 0;
+
+		Input input;
+		PhysicsDynamicBody* body = nullptr;
+
+		struct {
+			vec2 moveDir = vec2(0);
+			f32 moveSpeed = 0;
+			RotationHumanoid rot;
+			bool hasJumped = false;
+		} movement;
+
+		explicit Player(u32 index_, const PlayerDescription& desc):
+			index(index_),
+			userID(desc.userID),
+			clientHd(desc.clientHd),
+			name(desc.name),
+			guildTag(desc.guildTag),
+			team(desc.team),
+			mainClass(desc.masters[0]),
+			mainSkin(desc.skins[0]),
+			subClass(desc.masters[1]),
+			subSkin(desc.skins[1]),
+			colliderSize(desc.colliderSize),
+			skills(desc.skills),
+			mainWeapon(desc.weapons[0]),
+			subWeapon(desc.weapons[1]),
+			mainWeaponGrade(desc.weaponGrades[0]),
+			subWeaponGrade(desc.weaponGrades[1]),
+			mainMasterGearNo(desc.masterGearNo[0]),
+			subMasterGearNo(desc.masterGearNo[1]),
+			mainCharacterType(desc.characterType[0]),
+			subCharacterType(desc.characterType[1])
+		{
+
+		}
+
+		inline ActorMaster& Main() const { return *characters[mainCharaID]; }
+		inline ActorMaster& Sub() const { return *characters[mainCharaID ^ 1]; }
+	};
+
+	struct ActorMaster
+	{
+		const ActorUID UID;
+		Player* parent;
+		ClassType classType;
+		SkinIndex skinIndex;
+		i32 hp;
+		i32 hpMax;
+		i32 seed;
+		i32 spawnAnim = -1;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+
+
+
+
+		ActionStateID actionState;
+		i32 actionParam1;
+		i32 actionParam2;
+
+		explicit ActorMaster(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct ActorNpc
+	{
+		const ActorUID UID;
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+		i32 entityType = 1;
+
+		vec3 pos;
+		vec3 rot;
+
+		explicit ActorNpc(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct ActorDynamic
+	{
+		const ActorUID UID;
+		CreatureIndex docID;
+		i32 localID;
+		Faction faction;
+		ActionStateID action;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 seed = 0;
+		i32 entityType = 3;
+
+		Time tLastActionChange;
+		vec3 pos;
+		vec3 rot;
+
+		explicit ActorDynamic(ActorUID UID_): UID(UID_) {}
+	};
+
+	struct SkillProgram
+	{
+		SkillID skillID = SkillID::INVALID;
+		ActionStateID actionID;
+		vec3 castPos;
+		f32 castAngle;
+		ActorUID casterUID;
+		eastl::fixed_vector<ActorUID,10,false> targetList;
+		Time startTime;
+		i32 commandID = 0;
+
+		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
+		inline void Finish() { skillID = SkillID::INVALID; }
+	};
+
+
+	Replication* replication;
+
+	eastl::fixed_vector<Player,10,false> players;
+	eastl::fixed_list<ActorMaster,512,true> actorMasterList;
+	eastl::fixed_list<ActorNpc,512,true> actorNpcList;
+	eastl::fixed_list<ActorDynamic,512,true> actorDynamicList;
+
+	typedef ListItT<ActorNpc> ActorNpcHandle;
+	typedef ListItT<ActorDynamic> ActorDynamicHandle;
+
+	// TODO: make those fixed_hash_maps
+	eastl::fixed_map<ActorUID, ActorMasterHandle, 2048, true> actorMasterMap;
+	eastl::fixed_map<ActorUID, ActorNpcHandle, 2048, true> actorNpcMap;
+	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
+
+	eastl::fixed_vector<SkillProgram,40,false> skillProgramList;
+
+	u32 nextActorUID;
+	Time localTime = Time::ZERO;
+
+	PhysicsScene physics;
+
+	void Init(Replication* replication_);
+	void Cleanup();
+
+	void Update(Time localTime_);
+	void Replicate();
+
+	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot);
+	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
+	ActorDynamic& SpawnDynamic(CreatureIndex docID, i32 localID);
+
+	Player& GetPlayer(u32 playerIndex);
+	ActorMaster* FindMasterActor(ActorUID actorUID) const;
+	ActorNpc* FindNpcActor(ActorUID actorUID) const;
+	ActorNpc* FindNpcActorByCreatureID(CreatureIndex docID); // Warning: slow!
+
+private:
+	ActorUID NewActorUID();
+	ActorMasterHandle MasterInvalidHandle();
+
+	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets, f32 clientTime);
+	void ExecuteSkillProgram(SkillProgram& prog);
+};

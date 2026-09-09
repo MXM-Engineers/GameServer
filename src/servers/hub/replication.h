@@ -68,6 +68,14 @@ struct HubReplication
 		eastl::fixed_vector<u8,16> matchingGameModes;
 
 		ActionStateID actionState;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 faction = 0;
+		i32 seed = 0;
+
 		i32 actionParam1;
 		i32 actionParam2;
 	};
@@ -77,6 +85,14 @@ struct HubReplication
 		i32 type;
 		i32 localID;
 		i32 faction;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+
 	};
 
 	struct ActorJukebox: Actor<ActorType::JUKEBOX>
@@ -88,6 +104,17 @@ struct HubReplication
 		};
 
 		i32 localID;
+		i32 spawnAnim = 0;
+		i32 ownerID = 0;
+		u8 dirToNearPC = 0;
+		i32 wanderDist = -1;
+		i32 tagID = -1;
+		i32 faction = -1;
+		ActionStateID actionState = ActionStateID::INVALID;
+		i32 seed = 0;
+		i32 type = 1;
+
+
 
 		i32 playPosition;
 		Time playStartTime; // identifier
@@ -196,7 +223,7 @@ struct HubReplication
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void SendChatMessageToClient(ClientHandle toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);
-	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg);
+	void SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval);
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);
@@ -204,11 +231,11 @@ struct HubReplication
 	void SendGameReady(ClientHandle clientHd);
 
 	void SendCalendar(ClientHandle clientHd);
-	void SendAreaPopularity(ClientHandle clientHd, u32 areaID);
+	void SendAreaPopularity(ClientHandle clientHd, AreaIndex areaID);
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
-	void SendPartyEnqueue(ClientHandle clientHd);
-	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty);
+	void SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex);
+	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

@@ -1730,3 +1730,9 @@ class ServerPacketName:
     def name_62608(netid):
         print('SA_NP_REPORT_MAIL {} @984ffb')
 
+
+    def name_62029(netid):
+        print('SN_GAME_ENTER_ACTOR {} @0')
+
+    def name_62238(netid):
+        print('SA_RESULT_SP_ACTION {} @98769d')

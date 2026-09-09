@@ -42,6 +42,9 @@ struct HubGame
 		const PartyUID UID;
 		EntrySystemID entry;
 		StageType stageType;
+		AreaIndex areaIndex = AreaIndex(0);
+		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 
 		eastl::fixed_vector<Member,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on
@@ -64,6 +67,8 @@ struct HubGame
 	// NOTE: we use MAX_PLAYERS as base capacity because each player can create their own party
 	eastl::fixed_list<Party,MAX_PLAYERS> partyList;
 	hash_map<PartyUID, decltype(partyList)::iterator, MAX_PLAYERS> partyMap;
+	eastl::array<EntrySystemID,MAX_PLAYERS> pendingPartyEntry;
+	eastl::array<StageType,MAX_PLAYERS> pendingPartyStage;
 
 	eastl::fixed_vector<SpawnPoint,128> mapSpawnPoints;
 

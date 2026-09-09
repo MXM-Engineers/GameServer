@@ -39,7 +39,7 @@ struct Matchmaker
 		{
 			Undecided = 0,
 			HubServer = 1,
-			PlayServer = 2
+			GameServer = 2
 		};
 
 		Type type; // TODO: timeout when undecided for a while
@@ -60,6 +60,9 @@ struct Matchmaker
 		};
 
 		eastl::fixed_vector<Member,5,false> memberList;
+		AreaIndex areaIndex = AreaIndex(0);
+		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 
 		Party(PartyUID UID_): UID(UID_) {}
 	};
@@ -84,6 +87,10 @@ struct Matchmaker
 					SkillID::INVALID,
 					SkillID::INVALID
 				};
+				WeaponIndex weapon = WeaponIndex::INVALID;
+				i32 weaponGrade = 0;
+				u8 masterGearNo = 1;
+				i32 characterType = 1;
 			};
 
 			const WideString name;
@@ -103,6 +110,9 @@ struct Matchmaker
 		};
 
 		const SortieUID UID;
+		AreaIndex areaIndex = AreaIndex(0);
+		StageIndex stageIndex = StageIndex(0);
+		MapIndex mapIndex = MapIndex(0);
 		eastl::fixed_vector<Player,16,false> playerList;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
@@ -216,7 +226,7 @@ struct Matchmaker
 		switch(conn.type) {
 			case Connection::Type::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
 			case Connection::Type::HubServer: OnPacketHub(conn, header, packetData, packetSize); break;
-			case Connection::Type::PlayServer: OnPacketPlay(conn, header, packetData, packetSize); break;
+			case Connection::Type::GameServer: OnPacketGame(conn, header, packetData, packetSize); break;
 
 			default: {
 				ASSERT_MSG(0, "case not handled");
@@ -242,20 +252,20 @@ struct Matchmaker
 				LOG("[client%x] New Hub connection", conn.clientHd);
 			} break;
 
-			case In::PQ_Handshake::NET_ID: {
-				NT_LOG("[client%x] PQ_Handshake", conn.clientHd);
+			case In::GQ_Handshake::NET_ID: {
+				NT_LOG("[client%x] GQ_Handshake", conn.clientHd);
 
 				// TODO: check white list
 				// TODO: validate args
-				const In::PQ_Handshake& packet = SafeCast<In::PQ_Handshake>(packetData, packetSize);
-				conn.type = Connection::Type::PlayServer;
+				const In::GQ_Handshake& packet = SafeCast<In::GQ_Handshake>(packetData, packetSize);
+				conn.type = Connection::Type::GameServer;
 				conn.listenPort = packet.listenPort;
 
 				In::MR_Handshake resp;
 				resp.result = 1;
 				SendPacket(conn.clientHd, resp);
 
-				LOG("[client%x] New Play connection", conn.clientHd);
+				LOG("[client%x] New Game connection", conn.clientHd);
 			} break;
 
 			default: {
@@ -300,10 +310,15 @@ struct Matchmaker
 				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyEnqueue>(packetData, packetSize));
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
-				// TODO: validate args?
+				Party& party = *partyMap.at(packet.partyUID);
+				ASSERT(packet.areaIndex != AreaIndex(0));
+				ASSERT(packet.stageIndex != StageIndex(0));
+				ASSERT(packet.mapIndex != MapIndex(0));
+				party.areaIndex = packet.areaIndex;
+				party.stageIndex = packet.stageIndex;
+				party.mapIndex = packet.mapIndex;
 				matchingPartyList.push_back(packet.partyUID);
 
-				const Party& party = *partyMap.at(packet.partyUID);
 				eastl::fixed_set<ClientHandle,5,false> setInstance;
 				foreach_const(mem, party.memberList) {
 					setInstance.insert(mem->instanceChd);
@@ -333,7 +348,7 @@ struct Matchmaker
 				}
 
 				if(!found) {
-					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+					WARN("Player not found in room (accountUID=0x%08x sortieUID=%llu)", packet.accountUID, packet.sortieUID);
 				}
 			} break;
 
@@ -359,7 +374,7 @@ struct Matchmaker
 				}
 
 				if(!found) {
-					WARN("Player not found in room (accountUID=%u sortieUID=%llu)", packet.accountUID, packet.sortieUID);
+					WARN("Player not found in room (accountUID=0x%08x sortieUID=%llu)", packet.accountUID, packet.sortieUID);
 				}
 			} break;
 
@@ -384,6 +399,14 @@ struct Matchmaker
 					p.masters[0].skills[1] = pp.skills[1];
 					p.masters[1].skills[0] = pp.skills[2];
 					p.masters[1].skills[1] = pp.skills[3];
+					p.masters[0].weapon = pp.weapons[0];
+					p.masters[1].weapon = pp.weapons[1];
+					p.masters[0].weaponGrade = pp.weaponGrades[0];
+					p.masters[1].weaponGrade = pp.weaponGrades[1];
+					p.masters[0].masterGearNo = pp.masterGearNo[0];
+					p.masters[1].masterGearNo = pp.masterGearNo[1];
+					p.masters[0].characterType = pp.characterType[0];
+					p.masters[1].characterType = pp.characterType[1];
 				}
 
 				RoomCreateGame(room);
@@ -395,12 +418,12 @@ struct Matchmaker
 		}
 	}
 
-	void OnPacketPlay(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
+	void OnPacketGame(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
 	{
 		switch(header.netID) {
-			case In::PR_GameCreated::NET_ID: {
-				NT_LOG("[play%x] %s", conn.clientHd, PacketSerialize<In::PR_GameCreated>(packetData, packetSize));
-				const In::PR_GameCreated& packet = SafeCast<In::PR_GameCreated>(packetData, packetSize);
+			case In::GR_GameCreated::NET_ID: {
+				NT_LOG("[game%x] %s", conn.clientHd, PacketSerialize<In::GR_GameCreated>(packetData, packetSize));
+				const In::GR_GameCreated& packet = SafeCast<In::GR_GameCreated>(packetData, packetSize);
 
 				// TODO: validate args?
 
@@ -451,6 +474,12 @@ struct Matchmaker
 			Room& room = *(--roomList.end());
 			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
 			roomMap.emplace(room.UID, --roomList.end());
+			ASSERT(party.areaIndex != AreaIndex(0));
+			ASSERT(party.stageIndex != StageIndex(0));
+			ASSERT(party.mapIndex != MapIndex(0));
+			room.areaIndex = party.areaIndex;
+			room.stageIndex = party.stageIndex;
+			room.mapIndex = party.mapIndex;
 
 			foreach_const(pl, party.memberList) {
 				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
@@ -490,6 +519,13 @@ struct Matchmaker
 				In::MN_MatchingPartyFound resp;
 				resp.partyUID = *puid;
 				resp.sortieUID = room.UID;
+				resp.gameType = GameType::PvP_Normal;
+				foreach_const(bpl, room.playerList) {
+					if(bpl->isBot) {
+						resp.gameType = GameType::PVP_Tutorial;
+						break;
+					}
+				}
 
 				resp.playerCount = 0;
 				foreach(pl, room.playerList) {
@@ -555,6 +591,18 @@ struct Matchmaker
 		packet.sortieUID = room.UID;
 		packet.playerCount = 0;
 		packet.spectatorCount = 0;
+		packet.gameType = GameType::PvP_Normal;
+		foreach_const(bp, room.playerList) {
+			if(bp->isBot) {
+				packet.gameType = GameType::PVP_Tutorial;
+				break;
+			}
+		}
+		packet.areaIndex = room.areaIndex;
+		packet.stageIndex = room.stageIndex;
+		packet.mapIndex = room.mapIndex;
+		packet.canEscape = packet.gameType != GameType::PVP_Rank;
+		packet.surrenderAbleTime = 180000;
 
 		foreach_const(p, room.playerList) {
 			if(p->team == Team::SPECTATOR) {
@@ -574,20 +622,28 @@ struct Matchmaker
 				player.skills[1] = p->masters[0].skills[1];
 				player.skills[2] = p->masters[1].skills[0];
 				player.skills[3] = p->masters[1].skills[1];
+				player.weapons[0] = p->masters[0].weapon;
+				player.weapons[1] = p->masters[1].weapon;
+				player.weaponGrades[0] = p->masters[0].weaponGrade;
+				player.weaponGrades[1] = p->masters[1].weaponGrade;
+				player.masterGearNo[0] = p->masters[0].masterGearNo;
+				player.masterGearNo[1] = p->masters[1].masterGearNo;
+				player.characterType[0] = p->masters[0].characterType;
+				player.characterType[1] = p->masters[1].characterType;
 				packet.players[packet.playerCount++] = player;
 			}
 		}
 
 		// TODO: choose game server based on load
-		Connection* conn = GetAvailablePlayServer();
+		Connection* conn = GetAvailableGameServer();
 		ASSERT(conn);
 		SendPacket(conn->clientHd, packet);
 	}
 
-	Connection* GetAvailablePlayServer()
+	Connection* GetAvailableGameServer()
 	{
 		foreach(c, connList) {
-			if(c->type == Connection::Type::PlayServer) {
+			if(c->type == Connection::Type::GameServer) {
 				return &*c;
 			}
 		}

@@ -3,6 +3,8 @@
 #include <tinyxml2.h>
 #include <common/protocol.h>
 #include <common/utils.h>
+#include <common/stat.h>
+
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -179,10 +181,16 @@ struct GameXmlContent
 		ClassType classType;
 		eastl::fixed_string<char,64,false> className;
 		eastl::fixed_vector<SkillID,32,false> skillIDs;
+		eastl::fixed_vector<u8,32,false> skillUnlocked;
 		eastl::fixed_vector<SkinIndex,20,false> skinIDs;
 		eastl::fixed_vector<WeaponIndex,32,false> weaponIDs;
+		eastl::fixed_vector<WeaponIndex,3,false> defaultWeaponIDs;
+		eastl::fixed_vector<WeaponIndex,3,false> fairPvpWeaponIDs;
+		eastl::fixed_vector<StatValue,32,false> baseStats;
 
-		// TODO: make this inline
+
+
+
 		CharacterModel character;
 	};
 
@@ -201,6 +209,14 @@ struct GameXmlContent
 			Faction faction;
 			vec3 pos;
 			vec3 rot;
+			i32 entityType = 1;
+			i32 spawnAnim = 0;
+			i32 wanderDist = -1;
+			i32 tagID = -1;
+			i32 ownerID = 0;
+			u8 dirToNearPC = 0;
+			ActionStateID actionState = ActionStateID::INVALID;
+
 
 			inline bool IsSpawnPoint() const { return type == Type::SPAWN_POINT; }
 		};
@@ -222,7 +238,7 @@ struct GameXmlContent
 
 	struct MapList
 	{
-		i32 index;
+		MapIndex index;
 		MapType mapType;
 		GameSubModeType gameSubModeType;
 		eastl::fixed_string<char, 256> levelFile;
@@ -280,6 +296,10 @@ struct GameXmlContent
 	eastl::fixed_vector<WeaponModel, 100, false> weaponsModel;
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
+	eastl::fixed_hash_map<CreatureIndex,Master*,100> masterIdMap;
+
+	eastl::fixed_hash_map<ClassType,CreatureIndex,100> deathMatchBotIndex;
+
 	eastl::fixed_vector<MapList, 500, false> maplists;
 	eastl::fixed_hash_map<SkillID, SkillNormalModel, 500> skillMap;
 	eastl::fixed_vector<Action, 2000, false> actionList;
@@ -290,16 +310,78 @@ struct GameXmlContent
 
 	eastl::fixed_vector<Song,60,false> jukeboxSongs;
 
+	struct EntrySystem
+	{
+		i32 ID;
+		eastl::fixed_string<char,32,false> entryType;
+		eastl::fixed_vector<AreaIndex,8,false> areas;
+		eastl::fixed_vector<AreaIndex,8,false> scheduleAreas;
+	};
+
+	struct AreaStages
+	{
+		AreaIndex ID;
+		eastl::fixed_vector<StageIndex,16,false> stages;
+	};
+
+	struct StageMaps
+	{
+		StageIndex ID;
+		i32 joinMemberMax = 0;
+		eastl::fixed_vector<MapIndex,8,false> maps;
+	};
+
+	eastl::fixed_vector<EntrySystem,32,false> entrySystems;
+	eastl::fixed_vector<AreaStages,64,false> areaStages;
+	eastl::fixed_vector<StageMaps,512,false> stageMaps;
+
+	struct GuildLevelInfo
+	{
+		i32 level;
+		i32 requirePoint;
+		i32 medalGiftCount;
+	};
+
+	struct GuildSkillLevel
+	{
+		i32 level;
+		i32 unlockGuildLevel;
+		i32 cost;
+		i32 value;
+	};
+
+	struct GuildSkillInfo
+	{
+		eastl::fixed_string<char,64,false> key;
+		eastl::fixed_vector<GuildSkillLevel,12,false> levels;
+	};
+
+	eastl::fixed_vector<GuildLevelInfo,16,false> guildLevels;
+	eastl::fixed_vector<GuildSkillInfo,16,false> guildSkills;
+	eastl::fixed_vector<i32,64,false> validGuildEmblems;
+	i32 guildActivityCapWeekday = 100;
+
+	i32 GuildLevelForPoints(i32 points) const;
+	i32 GuildSkillValue(const char* key, i32 level) const;
+
+	bool FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const;
+	bool FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const;
+	const StageMaps* FindStageMaps(StageIndex stageID) const;
+	bool HasEntrySystem(i32 entryID) const;
+	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
+
 	FileBuffer filePvpDeathmatch01Collision;
 	FileBuffer filePvpDeathmatch01CollisionWalls;
 	FileBuffer filePvpDeathNmWall04;
 	FileBuffer fileCylinderCollision;
 
 	bool Load();
-
-	const MapList* FindMapListByID(i32 index) const;
+	const MapList* FindMapListByID(MapIndex index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
+	bool LoadCharacterBaseStats();
+
 	const Master& GetMaster(ClassType classType) const;
+	i32 WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
 	const Remote& GetRemote(RemoteIdx remoteID) const;
 
@@ -307,6 +389,11 @@ private:
 	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 
 	bool LoadMasterDefinitions();
+	bool LoadEntrySystems();
+	bool LoadStageMaps();
+	bool LoadBotCreatures();
+
+	bool LoadGuildData();
 	bool LoadMasterSkinsDefinitions();
 	bool LoadMasterWeaponDefinitions();
 	bool LoadMasterDefinitionsModel();
@@ -317,8 +404,8 @@ private:
 	void SetValuesSkillNormalLevel(tinyxml2::XMLElement& pNodeCommonSkill, SkillNormalLevelModel& _skillNormalLevelModel);
 	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
 	bool LoadMapList();
-	bool LoadMapByID(Map* map, i32 index);
-	bool LoadLobby(i32 index);
+	bool LoadMapByID(Map* map, MapIndex index);
+	bool LoadLobby(MapIndex index);
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();

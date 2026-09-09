@@ -63,9 +63,16 @@ void PlatformInit()
 #endif
 
 	AllocConsole();
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "w", stderr);
-	freopen("CONOUT$", "w", stdout);
+	if(GetConsoleWindow() != NULL) {
+		freopen("CONIN$", "r", stdin);
+		freopen("CONOUT$", "w", stderr);
+		freopen("CONOUT$", "w", stdout);
+	}
+	else {
+		freopen("server_stdin.txt", "r", stdin);
+		freopen("server_stderr.txt", "w", stderr);
+		freopen("server_stdout.txt", "w", stdout);
+	}
 }
 
 uint64_t CurrentFiletimeTimestampUTC()

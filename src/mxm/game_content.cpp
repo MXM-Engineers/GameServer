@@ -11,7 +11,7 @@ constexpr eastl::hash<const char*> strHash;
 
 static GameXmlContent* g_GameXmlContent = nullptr;
 
-static Path gameDataDir = L"../gamedata";
+static Path gameDataDir = L"gamedata";
 
 bool GameXmlContent::LoadMasterDefinitions()
 {
@@ -38,9 +38,28 @@ bool GameXmlContent::LoadMasterDefinitions()
 			i32 skillID;
 			pSkillElt->QueryAttribute("_Index", &skillID);
 			master.skillIDs.push_back((SkillID)skillID);
-
+			const char* unlock = pSkillElt->Attribute("_UnLock");
+			u8 unlocked = 1;
+			if(unlock && (unlock[0] == 'F' || unlock[0] == 'f')) unlocked = 0;
+			master.skillUnlocked.push_back(unlocked);
 			pSkillElt = pSkillElt->NextSiblingElement();
 		} while(pSkillElt);
+
+		XMLElement* pEquip = pNodeMaster->FirstChildElement("EquipComData");
+		if(pEquip) {
+			for(XMLElement* pDef = pEquip->FirstChildElement("_DefaultWeaponIndex"); pDef; pDef = pDef->NextSiblingElement("_DefaultWeaponIndex")) {
+				i32 wid = 0;
+				if(pDef->QueryIntAttribute("DATA", &wid) == XML_SUCCESS && master.defaultWeaponIDs.size() < master.defaultWeaponIDs.capacity()) {
+					master.defaultWeaponIDs.push_back((WeaponIndex)wid);
+				}
+			}
+			for(XMLElement* pFair = pEquip->FirstChildElement("_FairPvPWeaponIndex"); pFair; pFair = pFair->NextSiblingElement("_FairPvPWeaponIndex")) {
+				i32 wid = 0;
+				if(pFair->QueryIntAttribute("DATA", &wid) == XML_SUCCESS && master.fairPvpWeaponIDs.size() < master.fairPvpWeaponIDs.capacity()) {
+					master.fairPvpWeaponIDs.push_back((WeaponIndex)wid);
+				}
+			}
+		}
 
 		// save master data
 		master.ID = (CreatureIndex)masterID;
@@ -50,10 +69,47 @@ bool GameXmlContent::LoadMasterDefinitions()
 		DBG_ASSERT(masterClassStringMap.find(strHash("CLASS_TYPE_STRIKER")) != masterClassStringMap.end());
 
 		masterClassTypeMap.emplace(master.classType, &master);
+		masterIdMap.emplace(master.ID, &master);
+
 	}
 
 	return true;
 }
+
+bool GameXmlContent::LoadCharacterBaseStats()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/CHARACTER_BASE_STATS.xml", doc)) return false;
+
+	XMLElement* root = doc.FirstChildElement();
+	ASSERT(root);
+	for(XMLElement* info = root->FirstChildElement(); info; info = info->NextSiblingElement()) {
+		i32 id = 0;
+		if(info->QueryAttribute("ID", &id) != XML_SUCCESS) continue;
+		auto found = masterIdMap.find((CreatureIndex)id);
+		if(found == masterIdMap.end()) {
+			WARN("CHARACTER_BASE_STATS unknown master %d", id);
+			continue;
+		}
+		Master& master = *found->second;
+
+		for(XMLElement* st = info->FirstChildElement("STAT"); st; st = st->NextSiblingElement("STAT")) {
+			i32 type = 0;
+			f32 value = 0.f;
+			st->QueryAttribute("type", &type);
+			st->QueryAttribute("value", &value);
+			ASSERT(master.baseStats.size() < master.baseStats.capacity());
+			master.baseStats.push_back({ (u8)type, value });
+
+		}
+	}
+
+	foreach(it, masters) {
+		ASSERT(!it->baseStats.empty());
+	}
+	return true;
+}
+
 
 bool GameXmlContent::LoadMasterSkinsDefinitions()
 {
@@ -162,7 +218,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		pNodeMaster->QueryAttribute("ID", &masterID);
 
 		auto found = masterClassTypeMap.find((ClassType)(masterID - 100000000));
-		if(found == masterClassTypeMap.end());
+		ASSERT(found != masterClassTypeMap.end());
 		auto& master = found->second;
 
 		CharacterModel &character = master->character;
@@ -592,7 +648,9 @@ bool GameXmlContent::LoadMapList()
 	XMLElement* pMapElt = doc.FirstChildElement()->FirstChildElement()->FirstChildElement()->FirstChildElement();
 	do {
 		MapList mapList;
-		pMapElt->QueryAttribute("_Index", &mapList.index);
+		i32 mapDocID = 0;
+		pMapElt->QueryAttribute("_Index", &mapDocID);
+		mapList.index = MapIndex(mapDocID);
 
 		const char* levelFileTemp;
 		pMapElt->QueryStringAttribute("_LevelFile", &levelFileTemp);
@@ -619,11 +677,11 @@ bool GameXmlContent::LoadMapList()
 	return true;
 }
 
-bool GameXmlContent::LoadMapByID(Map* map, i32 index)
+bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 {
 	const MapList* mapList = FindMapListByID(index);
 	if (!mapList){
-		LOG("ERROR(LoadMapByID): Map not found %d", index);
+		LOG("ERROR(LoadMapByID): Map not found %d", (i32)index);
 		return false;
 	}
 
@@ -662,6 +720,16 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 			spawn.faction = StringToFaction(teamString);
 		}
 
+		pSpawnElt->QueryAttribute("dwType", &spawn.entityType);
+		pSpawnElt->QueryAttribute("dwSpawnAnim", &spawn.spawnAnim);
+		pSpawnElt->QueryAttribute("AIWanderDistOverride", &spawn.wanderDist);
+		pSpawnElt->QueryAttribute("_TagID", &spawn.tagID);
+		const char* actionStr = nullptr;
+		if(pSpawnElt->QueryStringAttribute("strActionState", &actionStr) == XML_SUCCESS && actionStr) {
+			spawn.actionState = ActionStateFromString(actionStr);
+		}
+
+
 		map->creatures.push_back(spawn);
 	}
 
@@ -684,6 +752,16 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 		if(pSpawnElt->QueryStringAttribute("team", &teamString) == XML_SUCCESS) {
 			spawn.faction = StringToFaction(teamString);
 		}
+
+		pSpawnElt->QueryAttribute("dwType", &spawn.entityType);
+		pSpawnElt->QueryAttribute("dwSpawnAnim", &spawn.spawnAnim);
+		pSpawnElt->QueryAttribute("AIWanderDistOverride", &spawn.wanderDist);
+		pSpawnElt->QueryAttribute("_TagID", &spawn.tagID);
+		const char* actionStr = nullptr;
+		if(pSpawnElt->QueryStringAttribute("strActionState", &actionStr) == XML_SUCCESS && actionStr) {
+			spawn.actionState = ActionStateFromString(actionStr);
+		}
+
 
 		map->dynamic.push_back(spawn);
 	}
@@ -717,17 +795,17 @@ bool GameXmlContent::LoadMapByID(Map* map, i32 index)
 }
 
 
-bool GameXmlContent::LoadLobby(i32 index)
+bool GameXmlContent::LoadLobby(MapIndex index)
 {
 	const MapList* map = FindMapListByID(index);
 	if (!map) {
-		LOG("ERROR(LoadLobby): Map not found %d", index);
+		LOG("ERROR(LoadLobby): Map not found %d", (i32)index);
 		return false;
 	};
 
 	if (map->mapType != MapType::MAP_CITY)
 	{
-		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", index);
+		LOG("ERROR(LoadLobby): Map index: %d is not from MapType MAP_CITY", (i32)index);
 		return false;
 	}
 
@@ -736,13 +814,296 @@ bool GameXmlContent::LoadLobby(i32 index)
 
 bool GameXmlContent::LoadPvpDeathmach()
 {
-	const MapList* map = FindMapListByID(160000094);
+	const MapList* map = FindMapListByID(MapIndex::PVP_DEATHMATCH);
 	if (!map) {
-		LOG("ERROR(LoadPvpDeathmach): Map not found %d", 160000094);
+		LOG("ERROR(LoadPvpDeathmach): Map not found %d", (i32)MapIndex::PVP_DEATHMATCH);
 		return false;
 	};
 
-	return LoadMapByID(&mapPvpDeathMatch, 160000094);
+	return LoadMapByID(&mapPvpDeathMatch, MapIndex::PVP_DEATHMATCH);
+}
+
+bool GameXmlContent::LoadEntrySystems()
+{
+	XMLDocument docEntry;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/EntrySystemEX.xml", docEntry)) return false;
+
+	for(XMLElement* pInfo = docEntry.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		EntrySystem entry;
+		if(pInfo->QueryIntAttribute("ID", &entry.ID) != XML_SUCCESS) continue;
+		if(XMLElement* pSys = pInfo->FirstChildElement()) {
+			const char* t = pSys->Attribute("_EntryType");
+			if(t) entry.entryType = t;
+		}
+		for(XMLElement* pArea = pInfo->FirstChildElement()->FirstChildElement("_Area");
+			pArea;
+			pArea = pArea->NextSiblingElement("_Area")) {
+			i32 areaID = 0;
+			if(pArea->QueryIntAttribute("DATA", &areaID) != XML_SUCCESS) continue;
+			if(entry.areas.size() < entry.areas.capacity()) entry.areas.push_back(AreaIndex(areaID));
+		}
+		if(entrySystems.size() < entrySystems.capacity()) entrySystems.push_back(entry);
+	}
+
+	XMLDocument docArea;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/AREALIST.xml", docArea)) return false;
+
+	for(XMLElement* pInfo = docArea.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		AreaStages area;
+		i32 areaDocID = 0;
+		if(pInfo->QueryIntAttribute("ID", &areaDocID) != XML_SUCCESS) continue;
+		area.ID = AreaIndex(areaDocID);
+		for(XMLElement* pStage = pInfo->FirstChildElement()->FirstChildElement("_StageList");
+			pStage;
+			pStage = pStage->NextSiblingElement("_StageList")) {
+			i32 stageID = 0;
+			if(pStage->QueryIntAttribute("_NormalStageIndex", &stageID) != XML_SUCCESS) continue;
+			if(stageID != 0 && area.stages.size() < area.stages.capacity()) area.stages.push_back(StageIndex(stageID));
+		}
+		if(areaStages.size() < areaStages.capacity()) areaStages.push_back(area);
+	}
+
+	XMLDocument docSchedule;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/SCHEDULE.xml", docSchedule)) return false;
+
+	for(XMLElement* pInfo = docSchedule.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		XMLElement* pEvent = pInfo->FirstChildElement();
+		if(!pEvent) continue;
+		XMLElement* pEntry = pEvent->FirstChildElement("_ENTRYSYSTEM");
+		if(!pEntry) continue;
+		i32 entryID = 0;
+		if(pEntry->QueryIntAttribute("_Index", &entryID) != XML_SUCCESS) continue;
+		XMLElement* pAreaList = pEvent->FirstChildElement("_AREA_LIST");
+		if(!pAreaList) continue;
+		for(auto& entry : entrySystems) {
+			if(entry.ID != entryID) continue;
+			for(XMLElement* pArea = pAreaList->FirstChildElement("_AREA");
+				pArea;
+				pArea = pArea->NextSiblingElement("_AREA")) {
+				i32 areaID = 0;
+				if(pArea->QueryIntAttribute("_AreaIndex", &areaID) != XML_SUCCESS) continue;
+				if(areaID != 0 && entry.scheduleAreas.size() < entry.scheduleAreas.capacity()) entry.scheduleAreas.push_back(AreaIndex(areaID));
+			}
+		}
+	}
+
+LOG("Loaded %d entry systems, %d areas", (i32)entrySystems.size(), (i32)areaStages.size());
+return true;
+}
+
+
+
+bool GameXmlContent::HasEntrySystem(i32 entryID) const
+{
+	for(auto& entry : entrySystems) {
+		if(entry.ID == entryID) return true;
+	}
+	return false;
+}
+
+bool GameXmlContent::FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const
+{
+	for(auto& entry : entrySystems) {
+		if(entry.ID != entryID) continue;
+		for(auto areaID : entry.areas) {
+			for(auto& area : areaStages) {
+				if(area.ID != areaID) continue;
+				if(area.stages.empty()) continue;
+				*outAreaIndex = area.ID;
+				*outStageIndex = area.stages[0];
+				return true;
+			}
+		}
+		for(auto areaID : entry.scheduleAreas) {
+			for(auto& area : areaStages) {
+				if(area.ID != areaID) continue;
+				if(area.stages.empty()) continue;
+				*outAreaIndex = area.ID;
+				*outStageIndex = area.stages[0];
+				return true;
+			}
+		}
+		return false;
+	}
+	return false;
+}
+
+bool GameXmlContent::LoadStageMaps()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/STAGELIST.xml", doc)) return false;
+
+	for(XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		StageMaps stage;
+		i32 stageDocID = 0;
+		if(pInfo->QueryIntAttribute("ID", &stageDocID) != XML_SUCCESS) continue;
+		stage.ID = StageIndex(stageDocID);
+		XMLElement* pStage = pInfo->FirstChildElement();
+		if(!pStage) continue;
+		pStage->QueryIntAttribute("_JoinMemberMax", &stage.joinMemberMax);
+		XMLElement* pWorldMap = pStage->FirstChildElement("_WORLD_STAGE_MAP");
+		if(!pWorldMap) continue;
+		for(XMLElement* pGroup = pWorldMap->FirstChildElement("_WORLD_STAGE_MAP_GROUP");
+			pGroup;
+			pGroup = pGroup->NextSiblingElement("_WORLD_STAGE_MAP_GROUP")) {
+			for(XMLElement* pMap = pGroup->FirstChildElement("_WORLD_STAGE_MAPINFO");
+				pMap;
+				pMap = pMap->NextSiblingElement("_WORLD_STAGE_MAPINFO")) {
+				i32 mapID = 0;
+				if(pMap->QueryIntAttribute("_Index", &mapID) != XML_SUCCESS) continue;
+				if(mapID != 0 && stage.maps.size() < stage.maps.capacity()) stage.maps.push_back(MapIndex(mapID));
+			}
+		}
+		if(!stage.maps.empty() && stageMaps.size() < stageMaps.capacity()) stageMaps.push_back(stage);
+	}
+
+	LOG("Loaded %d stage maps", (i32)stageMaps.size());
+	return true;
+}
+
+bool GameXmlContent::FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const
+{
+	for(auto& stage : stageMaps) {
+		if(stage.ID != stageID) continue;
+		if(stage.maps.empty()) return false;
+		*outMapIndex = stage.maps[0];
+		return true;
+	}
+	return false;
+}
+
+const GameXmlContent::StageMaps* GameXmlContent::FindStageMaps(StageIndex stageID) const
+{
+	for(auto& stage : stageMaps) {
+		if(stage.ID == stageID) return &stage;
+	}
+	return nullptr;
+}
+bool GameXmlContent::LoadBotCreatures()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/DOCUMENT/CREATURE_MONSTER_BOT.xml", doc)) return false;
+
+	for(XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement();
+		pInfo;
+		pInfo = pInfo->NextSiblingElement()) {
+		XMLElement* pEntity = pInfo->FirstChildElement("EntityComData");
+		if(!pEntity) continue;
+		const char* keyName = pEntity->Attribute("KEYNAME");
+		if(!keyName || !EA::StdC::Strstr(keyName, "DeathMatch")) continue;
+
+		i32 id = 0;
+		if(pInfo->QueryIntAttribute("ID", &id) != XML_SUCCESS) continue;
+
+		XMLElement* pStats = pInfo->FirstChildElement("StatsComData");
+		if(!pStats) continue;
+		const char* className = nullptr;
+		pStats->QueryStringAttribute("_class", &className);
+		if(!className) continue;
+
+		auto found = masterClassStringMap.find(strHash(className));
+		if(found == masterClassStringMap.end()) continue;
+		if(deathMatchBotIndex.find(found->second->classType) != deathMatchBotIndex.end()) continue;
+		deathMatchBotIndex.emplace(found->second->classType, (CreatureIndex)id);
+	}
+
+	LOG("Loaded %d deathmatch bot creatures", (i32)deathMatchBotIndex.size());
+	return true;
+}
+
+CreatureIndex GameXmlContent::FindDeathMatchBotIndex(ClassType classType) const
+{
+	auto found = deathMatchBotIndex.find(classType);
+	if(found == deathMatchBotIndex.end()) return CreatureIndex::Invalid;
+	return found->second;
+}
+
+
+bool GameXmlContent::LoadGuildData()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/Design/GAMEINFO/Guild.xml", doc)) return false;
+
+	XMLElement* pInfo = doc.FirstChildElement()->FirstChildElement("ST_GUILDINFO");
+	if(!pInfo) return false;
+
+	for(XMLElement* pLvl = pInfo->FirstChildElement("_GuildLevel");
+		pLvl;
+		pLvl = pLvl->NextSiblingElement("_GuildLevel")) {
+		GuildLevelInfo lvl;
+		if(pLvl->QueryIntAttribute("DATAKEY", &lvl.level) != XML_SUCCESS) continue;
+		pLvl->QueryIntAttribute("_RequireGuildPoint", &lvl.requirePoint);
+		pLvl->QueryIntAttribute("_GuildMedalGiftCount", &lvl.medalGiftCount);
+		if(guildLevels.size() < guildLevels.capacity()) guildLevels.push_back(lvl);
+	}
+
+	XMLElement* pSkillSet = pInfo->FirstChildElement("_GuildSkillSet");
+	if(pSkillSet) {
+		for(XMLElement* pSkill = pSkillSet->FirstChildElement("_GuildSkill");
+			pSkill;
+			pSkill = pSkill->NextSiblingElement("_GuildSkill")) {
+			GuildSkillInfo skill;
+			const char* key = pSkill->Attribute("DATAKEY");
+			if(!key) continue;
+			skill.key = key;
+			for(XMLElement* pLvl = pSkill->FirstChildElement("_GuildSkillLevel");
+				pLvl;
+				pLvl = pLvl->NextSiblingElement("_GuildSkillLevel")) {
+				GuildSkillLevel sl;
+				if(pLvl->QueryIntAttribute("DATAKEY", &sl.level) != XML_SUCCESS) continue;
+				pLvl->QueryIntAttribute("_UnlockGuildLevel", &sl.unlockGuildLevel);
+				pLvl->QueryIntAttribute("_Cost", &sl.cost);
+				pLvl->QueryIntAttribute("_Value", &sl.value);
+				if(skill.levels.size() < skill.levels.capacity()) skill.levels.push_back(sl);
+			}
+			if(guildSkills.size() < guildSkills.capacity()) guildSkills.push_back(skill);
+		}
+	}
+
+	for(XMLElement* pEmblem = pInfo->FirstChildElement("_ValidGuildEmblem");
+		pEmblem;
+		pEmblem = pEmblem->NextSiblingElement("_ValidGuildEmblem")) {
+		i32 emblem = 0;
+		if(pEmblem->QueryIntAttribute("DATA", &emblem) != XML_SUCCESS) continue;
+		if(emblem != 0 && validGuildEmblems.size() < validGuildEmblems.capacity()) validGuildEmblems.push_back(emblem);
+	}
+
+	if(XMLElement* pAct = pInfo->FirstChildElement("_MaxGuildActivityPointPerDay")) {
+		if(XMLElement* pStage = pAct->FirstChildElement("_Stage")) {
+			pStage->QueryIntAttribute("_Weekday", &guildActivityCapWeekday);
+		}
+	}
+
+	LOG("Loaded %d guild levels, %d skills, %d emblems", (i32)guildLevels.size(), (i32)guildSkills.size(), (i32)validGuildEmblems.size());
+	return true;
+}
+
+i32 GameXmlContent::GuildLevelForPoints(i32 points) const
+{
+	i32 level = 1;
+	for(auto& l : guildLevels) {
+		if(points >= l.requirePoint && l.level > level) level = l.level;
+	}
+	return level;
+}
+
+i32 GameXmlContent::GuildSkillValue(const char* key, i32 level) const
+{
+	for(auto& s : guildSkills) {
+		if(s.key != key) continue;
+		for(auto& l : s.levels) {
+			if(l.level == level) return l.value;
+		}
+	}
+	return 0;
 }
 
 bool GameXmlContent::LoadJukeboxSongs()
@@ -872,7 +1233,7 @@ bool GameXmlContent::LoadAnimationData()
 
 		const ClassType masterClassType = ClassTypeFromString(classStr.data());
 		if(masterClassType != prevMasterClassType) {
-			LOG("%s:", classStr.data());
+			VERBOSE("%s:", classStr.data());
 
 			if(actionSliceCount > 0) {
 				actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
@@ -920,8 +1281,8 @@ bool GameXmlContent::LoadAnimationData()
 					}
 				}
 
-				LOG("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
-				LOG("		seqLength=%f", curAction->seqLength);
+				VERBOSE("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
+				VERBOSE("		seqLength=%f", curAction->seqLength);
 
 				accumulatedDelay = 0.0f;
 			}
@@ -986,23 +1347,23 @@ bool GameXmlContent::LoadAnimationData()
 
 		curAction->commands.push_back(cmd);
 
-		LOG("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
+		VERBOSE("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
 		switch(cmd.type) {
 			case ActionCommand::Type::STATE_BLOCK: {
 
 			} break;
 
 			case ActionCommand::Type::MOVE: {
-				LOG("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
-				LOG("		  param2=%d", cmd.move.param2);
+				VERBOSE("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
+				VERBOSE("		  param2=%d", cmd.move.param2);
 			} break;
 
 			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
-				LOG("		  distance=%f", cmd.graphMoveHorz.distance);
+				VERBOSE("		  distance=%f", cmd.graphMoveHorz.distance);
 			} break;
 
 			case ActionCommand::Type::ROTATESPEED: {
-				LOG("		  speed=%d", cmd.rotateSpeed.speed);
+				VERBOSE("		  speed=%d", cmd.rotateSpeed.speed);
 			} break;
 		}
 	}
@@ -1041,7 +1402,7 @@ bool GameXmlContent::LoadRemoteData()
 
 		remote.ID = RemoteIdx(ID);
 
-		LOG("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
+		VERBOSE("Remote: { ID=%u, KEYNAME='%s' }", ID, KEYNAME);
 
 		for(XMLElement* pComp = pEntityInfo->FirstChildElement();
 			pComp;
@@ -1065,8 +1426,8 @@ bool GameXmlContent::LoadRemoteData()
 					(_VsNPC_Monster << Remote::VS_NPC_MONSTER) |
 					(_VsPC << Remote::VS_PLAYER_CHARACTER);
 
-				LOG("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
-				LOG("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
+				VERBOSE("	_LengthX=%d _LengthY=%d _LengthZ=%d", _LengthX, _LengthY, _LengthZ);
+				VERBOSE("	_DamageGroup=%s _Type=%s _VsX=%#x", Remote::DamageGroupToString(remote.damageGroup), Remote::BoundTypeToString(remote.boundType), remote.vs);
 			}
 
 			else if((EA::StdC::Strcmp("RemoteComData2", compName) == 0)) {
@@ -1079,8 +1440,8 @@ bool GameXmlContent::LoadRemoteData()
 					remote.behaviorType = Remote::BehaviourTypeFromString(_BehaviorType);
 				}
 
-				LOG("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
-				LOG("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
+				VERBOSE("	_ActivateCount=%d _ActivateMultiplier=%d", _ActivateCount, _AttackMultiplier);
+				VERBOSE("	_BehaviorType=%s", Remote::BehaviourTypeToString(remote.behaviorType));
 			}
 		}
 
@@ -1097,6 +1458,10 @@ bool GameXmlContent::Load()
 	bool r = LoadMasterDefinitions();
 	if(!r) return false;
 
+	r = LoadCharacterBaseStats();
+	if(!r) return false;
+
+
 	r = LoadMasterSkinsDefinitions();
 	if(!r) return false;
 
@@ -1109,13 +1474,26 @@ bool GameXmlContent::Load()
 	r = LoadMapList();
 	if (!r) return false;
 
-	r = LoadLobby(160000042);
+	r = LoadLobby(MapIndex::LOBBY_NORMAL);
 	if (!r) return false;
 
 	r = LoadPvpDeathmach();
 	if (!r) return false;
 
 	r = LoadJukeboxSongs();
+	if(!r) return false;
+
+	r = LoadEntrySystems();
+	if(!r) return false;
+
+	r = LoadStageMaps();
+	if(!r) return false;
+
+	r = LoadBotCreatures();
+	if(!r) return false;
+
+
+	r = LoadGuildData();
 	if(!r) return false;
 
 	r = LoadCollisionMeshes();
@@ -1259,7 +1637,7 @@ SkillType GameXmlContent::StringToSkillType(const char* s)
 	return SkillType::INVALID;
 }
 
-const GameXmlContent::MapList* GameXmlContent::FindMapListByID(i32 index) const
+const GameXmlContent::MapList* GameXmlContent::FindMapListByID(MapIndex index) const
 {
 	foreach(it, maplists) {
 		if (it->index == index) {
@@ -1284,6 +1662,23 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 	auto found = masterClassTypeMap.find(classType);
 	ASSERT(found != masterClassTypeMap.end());
 	return *found->second;
+}
+
+i32 GameXmlContent::WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const
+{
+	const Master& master = GetMaster(classType);
+	const i32 fam = (i32)weaponIndex / 10;
+	auto match = [&](const eastl::fixed_vector<WeaponIndex,3,false>& ids) -> i32 {
+		for(int i = 0; i < (int)ids.size(); i++) {
+			if(ids[i] == weaponIndex || (i32)ids[i] / 10 == fam) return i + 1;
+		}
+		return 0;
+	};
+	i32 t = match(master.fairPvpWeaponIDs);
+	if(t != 0) return t;
+	t = match(master.defaultWeaponIDs);
+	if(t != 0) return t;
+	return 1;
 }
 
 const GameXmlContent::Action& GameXmlContent::GetSkillAction(ClassType classType, ActionStateID actionID) const

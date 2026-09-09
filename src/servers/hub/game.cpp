@@ -3,6 +3,8 @@
 #include <mxm/game_content.h>
 #include "config.h"
 #include <EAStdC/EAString.h>
+#include <common/utils.h>
+
 
 void HubGame::Init(Server* server_, const ClientLocalMapping* plidMap_)
 {
@@ -91,16 +93,33 @@ bool HubGame::LoadMap()
 			continue;
 		}
 
-		if(it->docID == CreatureIndex::Jukebox) {
-			world.SpawnJukeboxActor(CreatureIndex::Jukebox, it->localID, it->pos, it->rot);
-		}
-		if (it->docID == CreatureIndex::HalloweenJukebox) {
-			world.SpawnJukeboxActor(CreatureIndex::HalloweenJukebox, it->localID, it->pos, it->rot);
+		if(it->docID == CreatureIndex::Jukebox || it->docID == CreatureIndex::HalloweenJukebox) {
+			WorldHub::ActorJukebox& actor = world.SpawnJukeboxActor(it->docID, it->localID, it->pos, it->rot);
+			actor.spawnAnim = it->spawnAnim;
+			actor.wanderDist = it->wanderDist;
+			actor.tagID = it->tagID;
+			actor.ownerID = it->ownerID;
+			actor.dirToNearPC = it->dirToNearPC;
+			actor.actionState = it->actionState;
+			actor.faction = (i32)it->faction;
+			actor.type = it->entityType;
+			actor.seed = (i32)RandUint();
 		}
 		else {
-			// spawn npc
-			SpawnNPC(it->docID, it->localID, it->pos, it->rot);
+			WorldHub::ActorNpc& actor = world.SpawnNpcActor(it->docID, it->localID);
+			actor.pos = it->pos;
+			actor.dir = it->rot;
+			actor.spawnAnim = it->spawnAnim;
+			actor.wanderDist = it->wanderDist;
+			actor.tagID = it->tagID;
+			actor.ownerID = it->ownerID;
+			actor.dirToNearPC = it->dirToNearPC;
+			actor.actionState = it->actionState;
+			actor.faction = (i32)it->faction;
+			actor.type = it->entityType;
+			actor.seed = (i32)RandUint();
 		}
+
 	}
 
 	return true;
@@ -146,10 +165,10 @@ void HubGame::OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// TODO: health
 	const WorldHub::ActorPlayer* actor = world.FindPlayerActor(actorUID);
 	ASSERT(actor->clientHd == clientHd);
 	replication.SendCharacterInfo(clientHd, actor->UID, actor->docID, actor->classType, 100, 100);
+
 }
 
 void HubGame::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID)
@@ -159,7 +178,7 @@ void HubGame::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterAc
 	// NOTE: the client is not aware that we spawned a new actor for them yet, we ignore this packet
 	// LordSk (30/08/2020)
 	if(playerActorUID[userID] != characterActorUID) {
-		WARN("Client sent an invalid characterID (userID=%d characterID=%d)", userID, (u32)characterActorUID);
+		WARN("Client sent an invalid characterID (userID=0x%08x characterID=0x%08x)", userID, (u32)characterActorUID);
 		return;
 	}
 
@@ -195,7 +214,6 @@ void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	const i32 userID = plidMap->Get(clientHd);
 
 	ASSERT(playerAccountData[userID]);
-	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg); // TODO: send a fail when the client is not found
 
 	i32 destClientID = -1;
 	for(int i = 0; i < playerAccountData.size(); i++) {
@@ -208,10 +226,11 @@ void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	}
 
 	if(destClientID == -1) {
-		SendDbgMsg(clientHd, LFMT(L"Player '%s' not found", destNick));
+		replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::WHISPER_SEND_NOT_FOUND);
 		return;
 	}
 
+	replication.SendChatWhisperConfirmToClient(clientHd, destNick, msg, ErrorType::SUCCESS);
 	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[userID]->nickname.data(), msg);
 }
 
@@ -286,6 +305,12 @@ void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)
 {
 	const i32 userID = plidMap->Get(clientHd);
+	if(!GetGameXmlContent().HasEntrySystem((i32)entry)) {
+		WARN("[client%x] WARNING: unknown entrySysID (%d)", clientHd, (i32)entry);
+		return;
+	}
+	pendingPartyEntry[userID] = entry;
+	pendingPartyStage[userID] = stageType;
 
 	// TODO: validate args
 	const Account& acc = *playerAccountData[userID];
@@ -311,8 +336,15 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 {
 	const i32 userID = plidMap->Get(clientHd);
 
-	// TODO: validate args
-	matchmaker->QueryPartyEnqueue(playerMap[userID]->partyUID);
+	const PartyUID partyUID = playerMap[userID]->partyUID;
+	if(partyUID == PartyUID::INVALID) return;
+	auto f = partyMap.find(partyUID);
+	if(f == partyMap.end()) return;
+	const Party& party = *f->second;
+	ASSERT(party.areaIndex != AreaIndex(0));
+	ASSERT(party.stageIndex != StageIndex(0));
+	ASSERT(party.mapIndex != MapIndex(0));
+	matchmaker->QueryPartyEnqueue(partyUID, party.areaIndex, party.stageIndex, party.mapIndex);
 }
 
 void HubGame::OnSortieRoomFound(ClientHandle clientHd, SortieUID sortieID)
@@ -346,32 +378,71 @@ void HubGame::MmOnPartyCreated(PartyUID partyUID, AccountUID leader)
 	party.memberList.push_back(member);
 
 	partyMap.emplace(partyUID, --partyList.end());
+	party.entry = pendingPartyEntry[userID];
+	party.stageType = pendingPartyStage[userID];
+	AreaIndex areaID = AreaIndex(0);
+	StageIndex stageID = StageIndex(0);
+	MapIndex mapID = MapIndex(0);
+	ASSERT(GetGameXmlContent().FindQueueAreaStage((i32)party.entry, &areaID, &stageID));
+	ASSERT(GetGameXmlContent().FindStageMap(stageID, &mapID));
+	party.areaIndex = areaID;
+	party.stageIndex = stageID;
+	party.mapIndex = mapID;
 
 	replication.SendPartyCreateSucess(clientHd, UserID(userID + 1), StageType::PVP_GAME);
 }
 
 void HubGame::MmOnPartyEnqueued(PartyUID partyUID)
 {
-	// TODO: find and skip if not found
-	Party& party = *partyMap.at(partyUID);
+	auto f = partyMap.find(partyUID);
+	if(f == partyMap.end()) return;
+	Party& party = *f->second;
 	foreach_const(m, party.memberList) {
 		// TODO: check if on this hub
 		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
-		replication.SendPartyEnqueue(clientHd);
+		replication.SendPartyEnqueue(clientHd, party.stageIndex);
 	}
 }
 
 void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 {
-	// TODO: find and error out if not found
-	Party& party = *partyMap.at(matchingParty.partyUID);
+	auto f = partyMap.find(matchingParty.partyUID);
+	if(f == partyMap.end()) return;
+	Party& party = *f->second;
+	eastl::fixed_vector<UserID,16> rowIDs;
+	eastl::fixed_vector<UserID,17> usedIDs;
+	for(i32 i = 0; i < matchingParty.playerCount; i++) {
+		const auto& p = matchingParty.playerList[i];
+		UserID rowID = UserID::INVALID;
+		auto h = accountClientHandleMap.find(p.accountUID);
+		if(h != accountClientHandleMap.end()) {
+			const i32 pid = plidMap->Get(h->second);
+			if(playerAccountData[pid]) {
+				UserID hubID = UserID(pid + 1);
+				bool taken = false;
+				for(auto u : usedIDs) if(u == hubID) { taken = true; break; }
+				if(!taken) rowID = hubID;
+			}
+		}
+		if(rowID == UserID::INVALID) {
+			for(i32 n = 1; n < 100; n++) {
+				bool taken = false;
+				for(auto u : usedIDs) if(u == UserID(n)) { taken = true; break; }
+				if(!taken) { rowID = UserID(n); break; }
+			}
+		}
+		usedIDs.push_back(rowID);
+		rowIDs.push_back(rowID);
+	}
 	foreach_const(m, party.memberList) {
-		const ClientHandle clientHd = accountClientHandleMap.at(m->accountUID);
+		auto h = accountClientHandleMap.find(m->accountUID);
+		if(h == accountClientHandleMap.end()) continue;
+		const ClientHandle clientHd = h->second;
 		const i32 userID = plidMap->Get(clientHd);
+		if(!playerAccountData[userID]) continue;
 		playerMap[userID]->sortieUID = matchingParty.sortieUID;
 
-		// TODO: check if on this hub
-		replication.SendMatchingPartyFound(clientHd, matchingParty);
+		replication.SendMatchingPartyFound(clientHd, matchingParty, party.stageIndex, rowIDs);
 	}
 }
 

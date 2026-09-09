@@ -26,7 +26,10 @@ struct MatchmakerConnector
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
-		// TODO weapon
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	struct Query
@@ -51,6 +54,9 @@ struct MatchmakerConnector
 
 			struct {
 				PartyUID partyUID;
+				AreaIndex areaIndex;
+				StageIndex stageIndex;
+				MapIndex mapIndex;
 			} PartyEnqueue;
 
 			struct {
@@ -90,7 +96,7 @@ struct MatchmakerConnector
 	void Update();
 
 	void QueryPartyCreate(const WideString& name, AccountUID leader);
-	void QueryPartyEnqueue(PartyUID partyUID);
+	void QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);
 	void QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount);

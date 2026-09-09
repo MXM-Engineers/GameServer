@@ -1,4 +1,6 @@
 #include <mxm/game_content.h>
+#include <common/packet_serialize.h>
+#include <common/packet_validator.h>
 #include "instance.h"
 #include "account.h"
 #include "matchmaker_connector.h"
@@ -125,8 +127,8 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 				Sv::SN_ProfileCharacters::Character chara;
 				chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
 				chara.creatureIndex = master.ID;
-				chara.skillShot1 = master.skillIDs[0];
-				chara.skillShot2 = master.skillIDs[1];
+				chara.skillSlot1 = master.skillIDs[0];
+				chara.skillSlot2 = master.skillIDs[1];
 				chara.classType = master.classType;
 				chara.x = 0;
 				chara.y = 0;
@@ -186,12 +188,12 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			packet.Write<u8>(1); // masterGearNo
 			packet.WriteStringObj(L"Default");
 			const Sv::SN_ProfileMasterGears::Slot slots[] = {
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
-				{ -1, 0 },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
+				{ -1, ItemUID::INVALID },
 			};
 			packet.WriteVec(slots, ARRAY_COUNT(slots));
 
@@ -214,19 +216,14 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 
 			foreach_const(it, allowedMastersSet) {
 				const GameXmlContent::Master& master = *content.masterClassTypeMap.at(*it);
-
-				LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
-
-				// TODO: I'm not quite sure why we can't have the skills be locked, right now they appear as unlocked
-				// even if isUnlocked and isActivated is set to 0
-				int si = 0;
-				foreach_const(s, master.skillIDs) {
-					packet.Write(characterID); // characterID
-					packet.Write(*s); // skillIndex
-					packet.Write<u8>(si != 2 && si != 3); // isUnlocked
-					packet.Write<u8>(si != 2 && si != 3); // isActivated
-					packet.Write<u16>(0); // properties_count
-					si++;
+				const LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)master.classType);
+				for(int si = 0; si < (int)master.skillIDs.size(); si++) {
+					packet.Write(characterID);
+					packet.Write(master.skillIDs[si]);
+					const u8 unlocked = (si < (int)master.skillUnlocked.size()) ? master.skillUnlocked[si] : (u8)1;
+					packet.Write<u8>(unlocked);
+					packet.Write<u8>(1);
+					packet.Write<u16>(0);
 				}
 			}
 
@@ -252,9 +249,13 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 
 		{
 			PacketWriter<Sv::SN_SortieMasterPickPhaseStart> packet;
-			packet.Write<u8>(0); // isRandomPick
-			packet.Write<u16>(0); // alliesSlot_count
-
+			packet.Write<u8>(0);
+			packet.Write<u16>((u16)allowedMastersSet.size());
+			foreach_const(m, allowedMastersSet) {
+				packet.Write(CreatureIndex(100000000 + (i32)*m));
+				packet.Write<u16>(1);
+				packet.Write<i32>(0);
+			}
 			SendPacket(user.clientHd, packet);
 		}
 
@@ -345,6 +346,14 @@ void RoomInstance::Update(Time localTime_)
 				rp.skills[1] = u->masters[0].skills[1];
 				rp.skills[2] = u->masters[1].skills[0];
 				rp.skills[3] = u->masters[1].skills[1];
+				rp.weapons[0] = u->masters[0].weapon;
+				rp.weapons[1] = u->masters[1].weapon;
+				rp.weaponGrades[0] = u->masters[0].weaponGrade;
+				rp.weaponGrades[1] = u->masters[1].weaponGrade;
+				rp.masterGearNo[0] = u->masters[0].masterGearNo;
+				rp.masterGearNo[1] = u->masters[1].masterGearNo;
+				rp.characterType[0] = u->masters[0].characterType;
+				rp.characterType[1] = u->masters[1].characterType;
 				rpList.push_back(rp);
 			}
 
@@ -372,21 +381,18 @@ void RoomInstance::Update(Time localTime_)
 
 			{
 				PacketWriter<Sv::SN_SortiePrepareBotInfo> packet;
-
-				u16 botCount = 0;
-				foreach_const(u, userList) {
-					if(u->isBot) {
-						botCount++;
-					}
+				const GameXmlContent& content = GetGameXmlContent();
+				eastl::fixed_vector<CreatureIndex,16,false> botIndexes;
+				foreach_const(bu, userList) {
+					if(!bu->isBot) continue;
+					const CreatureIndex botIndex = content.FindDeathMatchBotIndex(bu->masters[0].classType);
+					if(botIndex == CreatureIndex::Invalid) continue;
+					botIndexes.push_back(botIndex);
 				}
-
-				packet.Write<u16>(botCount);
-				foreach_const(u, userList) {
-					if(u->isBot) {
-						packet.Write<UserID>(u->userID);
-					}
+				packet.Write<u16>((u16)botIndexes.size());
+				foreach_const(id, botIndexes) {
+					packet.Write<CreatureIndex>(*id);
 				}
-
 				SendPacket(user.clientHd, packet);
 			}
 
@@ -449,13 +455,13 @@ void RoomInstance::Replicate()
 
 			for(int mi = 0; mi < _MASTER_COUNT; mi++) {
 				if(user.masters[mi].classType != ClassType::NONE) {
-					pickTeam.characterSelectInfos[mi].localMasterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masters[mi].classType);
+					pickTeam.characterSelectInfos[mi].characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (i32)user.masters[mi].classType);
 					pickTeam.characterSelectInfos[mi].creatureIndex = CreatureIndex(100000000 + (i32)user.masters[mi].classType);
 					pickTeam.characterSelectInfos[mi].skillSlot1 = user.masters[mi].skills[0];
 					pickTeam.characterSelectInfos[mi].skillSlot2 = user.masters[mi].skills[1];
 				}
 				else {
-					pickTeam.characterSelectInfos[mi].localMasterID = LocalActorID::INVALID;
+					pickTeam.characterSelectInfos[mi].characterID = LocalActorID::INVALID;
 					pickTeam.characterSelectInfos[mi].creatureIndex = CreatureIndex::Invalid;
 					pickTeam.characterSelectInfos[mi].skillSlot1 = SkillID::INVALID;
 					pickTeam.characterSelectInfos[mi].skillSlot2 = SkillID::INVALID;
@@ -466,7 +472,7 @@ void RoomInstance::Replicate()
 			Sv::SN_MasterPick pickEnemy = pickTeam;
 			pickEnemy.characterSelectInfos[0].skillSlot1 = SkillID::INVALID;
 			pickEnemy.characterSelectInfos[0].skillSlot2 = SkillID::INVALID;
-			pickEnemy.characterSelectInfos[1].localMasterID = LocalActorID::INVALID;
+			pickEnemy.characterSelectInfos[1].characterID = LocalActorID::INVALID;
 			pickEnemy.characterSelectInfos[1].creatureIndex = CreatureIndex::Invalid;
 			pickEnemy.characterSelectInfos[1].skillSlot1 = SkillID::INVALID;
 			pickEnemy.characterSelectInfos[1].skillSlot2 = SkillID::INVALID;
@@ -530,7 +536,12 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 
 	switch(header.netID) {
 		case Cl::CQ_MasterPick::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterPick>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterPick (size=%d)", clientHd, packetSize);
+				break;
+			}
 			const Cl::CQ_MasterPick& packet = SafeCast<Cl::CQ_MasterPick>(packetData, packetSize);
+			NT_LOG("[client%x] Client :: CQ_MasterPick :: localMasterID=0x%08x", clientHd, (u32)packet.localMasterID);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
@@ -544,7 +555,12 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		} break;
 
 		case Cl::CQ_MasterUnpick::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterUnpick>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterUnpick (size=%d)", clientHd, packetSize);
+				break;
+			}
 			const Cl::CQ_MasterUnpick& packet = SafeCast<Cl::CQ_MasterUnpick>(packetData, packetSize);
+			NT_LOG("[client%x] Client :: CQ_MasterUnpick :: localMasterID=0x%08x", clientHd, (u32)packet.localMasterID);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 
@@ -553,12 +569,22 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		} break;
 
 		case Cl::CQ_MasterReset::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_MasterReset>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_MasterReset (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: CQ_MasterReset ::", clientHd);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 			ResetMasters(user);
 		} break;
 
 		case Cl::CQ_ReadySortieRoom::NET_ID: {
+			if(!ValidatePacket<Cl::CQ_ReadySortieRoom>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CQ_ReadySortieRoom (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: CQ_ReadySortieRoom ::", clientHd);
 			User* user = FindUser(clientHd);
 			ASSERT(user);
 			SetReady(user);
@@ -567,11 +593,16 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 		case Cl::CQ_RoomEquipSkill::NET_ID:
 		case Cl::CQ_RoomSwapSkill::NET_ID:
 		case Cl::CQ_RoomEquipWeapon::NET_ID: {
+			NT_LOG("[client%x] Client :: CQ_RoomEquip* :: size=%d", clientHd, packetSize);
 			SendDbgMsg(clientHd, L"Feature not implemented right now sorry :(");
 		} break;
 
 		case Cl::CN_ChannelChatMessage::NET_ID: {
-			// TODO: replicate chat messages
+			if(!ValidatePacket<Cl::CN_ChannelChatMessage>(packetData, packetSize)) {
+				WARN("[client%x] WARNING: invalid CN_ChannelChatMessage (size=%d)", clientHd, packetSize);
+				break;
+			}
+			NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_ChannelChatMessage>(packetData, packetSize));
 		} break;
 
 		default: {
@@ -620,11 +651,29 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Main().classType = classType;
 			user->Main().skills[0] = master.skillIDs[0];
 			user->Main().skills[1] = master.skillIDs[1];
+			if(!master.fairPvpWeaponIDs.empty()) user->Main().weapon = master.fairPvpWeaponIDs[0];
+			else if(!master.defaultWeaponIDs.empty()) user->Main().weapon = master.defaultWeaponIDs[0];
+			else {
+				ASSERT(!master.weaponIDs.empty());
+				user->Main().weapon = master.weaponIDs.size() > 1 ? master.weaponIDs[1] : master.weaponIDs[0];
+			}
+			user->Main().weaponGrade = 0;
+			user->Main().masterGearNo = 1;
+			user->Main().characterType = 1;
 		}
-		else if(user->Main().classType != classType) { // no duplicate masters
+		else if(user->Main().classType != classType) {
 			user->Sub().classType = classType;
 			user->Sub().skills[0] = master.skillIDs[0];
 			user->Sub().skills[1] = master.skillIDs[1];
+			if(!master.fairPvpWeaponIDs.empty()) user->Sub().weapon = master.fairPvpWeaponIDs[0];
+			else if(!master.defaultWeaponIDs.empty()) user->Sub().weapon = master.defaultWeaponIDs[0];
+			else {
+				ASSERT(!master.weaponIDs.empty());
+				user->Sub().weapon = master.weaponIDs.size() > 1 ? master.weaponIDs[1] : master.weaponIDs[0];
+			}
+			user->Sub().weaponGrade = 0;
+			user->Sub().masterGearNo = 1;
+			user->Sub().characterType = 1;
 		}
 		else {
 			return false;

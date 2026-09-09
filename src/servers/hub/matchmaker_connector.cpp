@@ -60,6 +60,9 @@ void MatchmakerConnector::Update()
 				case Query::Type::PartyEnqueue: {
 					In::HQ_PartyEnqueue packet;
 					packet.partyUID = q->PartyEnqueue.partyUID;
+					packet.areaIndex = q->PartyEnqueue.areaIndex;
+					packet.stageIndex = q->PartyEnqueue.stageIndex;
+					packet.mapIndex = q->PartyEnqueue.mapIndex;
 					conn.SendPacket(packet);
 				} break;
 
@@ -99,6 +102,10 @@ void MatchmakerConnector::Update()
 							player.masters = rp.masters;
 							player.skins = rp.skins;
 							player.skills = rp.skills;
+							player.weapons = rp.weapons;
+							player.weaponGrades = rp.weaponGrades;
+							player.masterGearNo = rp.masterGearNo;
+							player.characterType = rp.characterType;
 							packet.players[packet.playerCount++] = player;
 						}
 					}
@@ -129,8 +136,7 @@ void MatchmakerConnector::QueryPartyCreate(const WideString& name, AccountUID le
 	queries.push_back(query);
 }
 
-// Thread: Any Lane
-void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
+void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex)
 {
 	DBG_ASSERT(partyUID != PartyUID::INVALID);
 
@@ -139,6 +145,9 @@ void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID)
 
 	Query query(queryUID, Query::Type::PartyEnqueue);
 	query.PartyEnqueue.partyUID = partyUID;
+	query.PartyEnqueue.areaIndex = areaIndex;
+	query.PartyEnqueue.stageIndex = stageIndex;
+	query.PartyEnqueue.mapIndex = mapIndex;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);

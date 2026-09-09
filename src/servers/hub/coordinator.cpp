@@ -1,4 +1,5 @@
 #include <common/packet_serialize.h>
+#include <common/packet_validator.h>
 #include <common/inner_protocol.h>
 #include <mxm/game_content.h>
 #include <zlib.h>
@@ -635,6 +636,10 @@ void Coordinator::PushClientToHubInstance(ClientHandle clientHd)
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_FirstHello>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_FirstHello (size=%d)", packetSize);
+		return;
+	}
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 
@@ -645,13 +650,10 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	Sv::SA_FirstHello hello;
 	hello.dwProtocolCRC = 0x28845199;
 	hello.dwErrorCRC    = 0x93899e2c;
-	hello.serverType    = 1;
-	hello.clientIp[0] = info.ip[3];
-	hello.clientIp[1] = info.ip[2];
-	hello.clientIp[2] = info.ip[1];
-	hello.clientIp[3] = info.ip[0];
+	hello.serverType    = Sv::ServerType::Hub;
+	memmove(hello.clientIp, info.ip.data(), sizeof(hello.clientIp));
 	STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(info.ip));
-	hello.clientPort = info.port;
+	hello.clientPort = htons(info.port);
 	hello.tqosWorldId = 1;
 
 	SendPacket(clientHd, hello);
@@ -659,6 +661,10 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 
 void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_Authenticate>(packetData, packetSize)) {
+		WARN("WARNING: invalid CQ_Authenticate (size=%d)", packetSize);
+		return;
+	}
 	ConstBuffer request(packetData, packetSize);
 	const u16 nickLen = request.Read<u16>();
 	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
@@ -671,7 +677,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 	// send authentication result
 	Sv::SA_AuthResult auth;
-	auth.result = 91;
+	auth.nResult = 91;
 	SendPacket(clientHd, auth);
 
 	// TODO: fetch account data

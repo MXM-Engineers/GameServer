@@ -194,16 +194,16 @@ void HubReplication::SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex)
 		packet.Write<u16>(10);
 
 		const Sv::SN_SummaryInfoLatest::Info infoList[10] = {
-			{ 220002200, 200002201, 3, 220002201, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002204, 0, (i64)0xa6605c00 },
-			{ 220002200, 200002201, 3, 220002205, 0, (i64)0xa6605c00 },
-			{ 220005100, 200005101, 3, 220005101, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005102, 0, (i64)0x6a2bfc00 },
-			{ 220005100, 200005101, 3, 220005105, 0, (i64)0x6a2bfc00 },
-			{ 220003300, 200003301, 3, 220003301, 0, (i64)0xe0c7fa00 },
-			{ 220003300, 200003301, 3, 220003305, 0, (i64)0xe0c7fa00 },
-			{ 220004100, 200004101, 3, 220004101, 0, (i64)0x9eea8400 },
-			{ 220004100, 200004101, 3, 220004105, 0, (i64)0x9eea8400 },
+			{ 220002200, StageIndex(200002201), 3, 220002201, 0, (i64)0xa6605c00 },
+			{ 220002200, StageIndex(200002201), 3, 220002204, 0, (i64)0xa6605c00 },
+			{ 220002200, StageIndex(200002201), 3, 220002205, 0, (i64)0xa6605c00 },
+			{ 220005100, StageIndex(200005101), 3, 220005101, 0, (i64)0x6a2bfc00 },
+			{ 220005100, StageIndex(200005101), 3, 220005102, 0, (i64)0x6a2bfc00 },
+			{ 220005100, StageIndex(200005101), 3, 220005105, 0, (i64)0x6a2bfc00 },
+			{ 220003300, StageIndex(200003301), 3, 220003301, 0, (i64)0xe0c7fa00 },
+			{ 220003300, StageIndex(200003301), 3, 220003305, 0, (i64)0xe0c7fa00 },
+			{ 220004100, StageIndex(200004101), 3, 220004101, 0, (i64)0x9eea8400 },
+			{ 220004100, StageIndex(200004101), 3, 220004105, 0, (i64)0x9eea8400 },
 		};
 
 		packet.WriteRaw(infoList, sizeof(infoList));
@@ -233,7 +233,7 @@ void HubReplication::SendLoadLobby(ClientHandle clientHd, MapIndex stageIndex)
 
 	// SN_CityMapInfo
 	Sv::SN_CityMapInfo cityMapInfo;
-	cityMapInfo.cityMapID = (MapIndex)Config().LobbyMap;
+	cityMapInfo.CityMapID = (MapIndex)Config().LobbyMap;
 	SendPacket(clientHd, cityMapInfo);
 
 	// SQ_CityLobbyJoinCity
@@ -334,11 +334,11 @@ void HubReplication::SendChatMessageToClient(ClientHandle toClientHd, const wcha
 	SendPacket(toClientHd, packet);
 }
 
-void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg)
+void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd, const wchar* destNick, const wchar* msg, ErrorType retval)
 {
 	PacketWriter<Sv::SA_WhisperSend> packet;
 
-	packet.Write<i32>(0); // result
+	packet.Write<ErrorType>(retval);
 	packet.WriteStringObj(destNick);
 	packet.WriteStringObj(msg);
 
@@ -347,7 +347,7 @@ void HubReplication::SendChatWhisperConfirmToClient(ClientHandle senderClientHd,
 
 void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wchar* senderName, const wchar* msg)
 {
-	PacketWriter<Sv::SN_WhisperReceive> packet;
+	PacketWriter<Sv::SN_WhisperReceived> packet;
 
 	packet.WriteStringObj(senderName); // senderNick
 	packet.Write<u8>(0); // staffType
@@ -375,24 +375,23 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<u8>(0); // rewardCCoinMethod
 		packet.Write<u8>(1); // pveRewardSlotOpenBuyChanceMethod
 
-		packet.Write<u16>(3); // regionBanMaster_count
-		packet.Write<i32>(100000041); // regionBanMaster[0]
-		packet.Write<i32>(100000042); // regionBanMaster[1]
-		packet.Write<i32>(100000043); // regionBanMaster[2]
+		packet.Write<u16>((u16)Config().regionBanMaster.size());
+		for(auto id : Config().regionBanMaster) packet.Write<i32>(id);
 
-		packet.Write<u16>(1); // regionNewMaster_count
-		packet.Write<i32>(100000038); // intList2[0]
+		packet.Write<u16>((u16)Config().regionNewMaster.size());
+		for(auto id : Config().regionNewMaster) packet.Write<i32>(id);
 
-		packet.Write<u16>(0); // eventBanMaster_count
+		packet.Write<u16>((u16)Config().eventBanMaster.size());
+		for(auto id : Config().eventBanMaster) packet.Write<i32>(id);
 
-		packet.Write<i32>(5);	// checkPeriodSec
-		packet.Write<i32>(10);	// maxTalkCount
-		packet.Write<i32>(120); // blockPeriodSec
+		packet.Write<i32>(0x50000); // checkPeriodSec
+		packet.Write<i32>(0xA0000); // maxTalkCount
+		packet.Write<i32>(0x780000); // blockPeriodSec
 
 		packet.Write<u16>(0); // regionBanSkinList_count
 		packet.Write<u16>(0); // pcCafeSkinList_count
 
-		packet.Write<u8>(1); // useFatigueSystem
+		packet.Write<u8>(0); // useFatigueSystem
 
 		SendPacket(clientHd, packet);
 	}
@@ -461,15 +460,15 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
 			chara.creatureIndex = it->ID;
-			chara.skillShot1 = it->skillIDs[0];
-			chara.skillShot2 = it->skillIDs[1];
+			chara.skillSlot1 = it->skillIDs[0];
+			chara.skillSlot2 = it->skillIDs[1];
 			chara.classType = it->classType;
 			chara.x = 0;
 			chara.y = 0;
 			chara.z = 0;
 			chara.characterType = 1;
 			chara.skinIndex = SkinIndex::DEFAULT;
-			chara.weaponIndex = it->weaponIDs[0];
+			chara.weaponIndex = it->defaultWeaponIDs[0];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
 		}
@@ -562,14 +561,14 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<u16>(skillCount); // skills_count
 
 		foreach_const(it, content.masters) {
-			int si = 0;
-			foreach_const(skill, it->skillIDs) {
-				packet.Write<LocalActorID>((LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType)); // characterID
-				packet.Write<SkillID>(*skill);
-				packet.Write<u8>(si != 2 && si != 3); // isUnlocked
-				packet.Write<u8>(si != 2 && si != 3); // isActivated
-				packet.Write<u16>(0); // properties_count
-				si++;
+			const LocalActorID characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
+			for(int si = 0; si < (int)it->skillIDs.size(); si++) {
+				packet.Write(characterID);
+				packet.Write(it->skillIDs[si]);
+				const u8 unlocked = (si < (int)it->skillUnlocked.size()) ? it->skillUnlocked[si] : (u8)1;
+				packet.Write<u8>(unlocked);
+				packet.Write<u8>(1);
+				packet.Write<u16>(0);
 			}
 		}
 
@@ -620,11 +619,11 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<i32>(4); // inventoryLineCountTab1
 		packet.Write<i32>(4); // inventoryLineCountTab2
 #if 0
-		packet.Write<i32>(320080005); // displayTitlteIndex
-		packet.Write<i32>(320080005); // statTitleIndex
-#else // disable title
-		packet.Write<i32>(0); // displayTitlteIndex
-		packet.Write<i32>(0); // statTitleIndex
+		packet.Write<i32>(320080005);
+		packet.Write<i32>(320080005);
+#else
+		packet.Write<i32>(-1);
+		packet.Write<i32>(-1);
 #endif
 		packet.Write<i32>(1); // warehouseLineCount
 		packet.Write<i32>(-1); // tutorialState
@@ -659,7 +658,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	{
 		PacketWriter<Sv::SN_AccountEquipmentList> packet;
 
-		packet.Write<i32>(-1); // supportKitDocIndex
+		packet.Write<i32>(-1);
 
 		SendPacket(clientHd, packet);
 	}
@@ -795,7 +794,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 2, 190009205 }
+				{ 2, AreaIndex(190009205) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -811,7 +810,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 3, 190009204 }
+				{ 3, AreaIndex(190009204) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -827,7 +826,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 4, 190004000 }
+				{ 4, AreaIndex(190004000) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -843,12 +842,12 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 5, 190000006 },
-				{ 6, 190000007 },
-				{ 7, 190000008 },
-				{ 8, 190000009 },
-				{ 9, 190000010 },
-				{ 10, 190000011 },
+				{ 5, AreaIndex(190000006) },
+				{ 6, AreaIndex(190000007) },
+				{ 7, AreaIndex(190000008) },
+				{ 8, AreaIndex(190000009) },
+				{ 9, AreaIndex(190000010) },
+				{ 10, AreaIndex(190000011) },
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -932,7 +931,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 11, 190001000 }
+				{ 11, AreaIndex(190001000) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -948,7 +947,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 1, 190002101 }
+				{ 1, AreaIndex(190002101) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -979,7 +978,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 
 			// areaList
 			const Sv::SN_UpdateEntrySystem::Area areaList[] = {
-				{ 18, 190002200 }
+				{ 18, AreaIndex(190002200) }
 			};
 			packet.WriteVec(areaList, ARRAY_COUNT(areaList));
 
@@ -999,13 +998,13 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 void HubReplication::SendGameReady(ClientHandle clientHd)
 {
 	Sv::SA_GameReady ready;
-	ready.waitingTimeMs = 3000;
+	ready.waitingTimeMS = 3000;
 	ready.serverTimestamp = (i64)TimeDiffMs(TimeRelNow());
-	ready.readyElapsedMs = 0;
+	ready.readyElapsedMS = 0;
 	SendPacket(clientHd, ready);
 
 	Sv::SN_NotifyIngameSkillPoint notify;
-	notify.userID = 1;
+	notify.userId = UserID(1);
 	notify.skillPoint = 1;
 	SendPacket(clientHd, notify);
 
@@ -1538,21 +1537,57 @@ void HubReplication::SendCalendar(ClientHandle clientHd)
 	}
 }
 
-void HubReplication::SendAreaPopularity(ClientHandle clientHd, u32 areaID)
+void HubReplication::SendAreaPopularity(ClientHandle clientHd, AreaIndex areaID)
 {
-	// SA_AreaPopularity
+	const GameXmlContent& content = GetGameXmlContent();
+	bool known = false;
+	for(auto& area : content.areaStages) {
+		if(area.ID == areaID) { known = true; break; }
+	}
+
 	{
 		Sv::SA_AreaPopularity packet;
-		packet.errCode = 0;
+		packet.errCode = known ? 0 : 1;
 		SendPacket(clientHd, packet);
 	}
 
-	// SN_AreaPopularity
 	{
 		PacketWriter<Sv::SN_AreaPopularity> packet;
 
-		packet.Write<u32>(areaID);
-		packet.WriteVec((Sv::SN_AreaPopularity*)nullptr, 0);
+		packet.Write(areaID);
+		if(!known) {
+			packet.Write<u16>(0);
+			SendPacket(clientHd, packet);
+			return;
+		}
+		i32 gameType = 1;
+		for(auto& entry : content.entrySystems) {
+			for(auto id : entry.areas) {
+				if(id != areaID) continue;
+				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
+			}
+			for(auto id : entry.scheduleAreas) {
+				if(id != areaID) continue;
+				if(entry.entryType == "ENTRY_TYPE_SPORTS") gameType = 7;
+			}
+		}
+		u16 count = 0;
+		for(auto& area : content.areaStages) {
+			if(area.ID != areaID) continue;
+			for(auto stageID : area.stages) {
+				(void)stageID;
+				count++;
+			}
+		}
+		packet.Write<u16>(count);
+		for(auto& area : content.areaStages) {
+			if(area.ID != areaID) continue;
+			for(auto stageID : area.stages) {
+				packet.Write(stageID);
+				packet.Write<i32>(gameType);
+				packet.Write<i32>(1);
+			}
+		}
 
 		SendPacket(clientHd, packet);
 	}
@@ -1570,14 +1605,14 @@ void HubReplication::SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUs
 	SendPacket(clientHd, packet);
 }
 
-void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
+void HubReplication::SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex)
 {
 	Sv::SA_EnqueueGame packet;
 	packet.retval = 0;
 	SendPacket(clientHd, packet);
 
 	Sv::SN_EnqueueMatchingQueue matching;
-	matching.stageIndex = StageIndex::CombatArena;
+	matching.stageIndex = stageIndex;
 	matching.currentMatchingTimeMs = 0;
 	matching.avgMatchingTimeMs = 121634;
 	matching.disableMatchExpansion = 0;
@@ -1585,13 +1620,13 @@ void HubReplication::SendPartyEnqueue(ClientHandle clientHd)
 	SendPacket(clientHd, matching);
 }
 
-void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty)
+void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs)
 {
 	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
 
 	packet.Write(matchingParty.sortieUID); // sortieID
-	packet.Write(StageIndex::CombatArena); // stageIndex
-	packet.Write(GameType::PVP_Rank); // gametype
+	packet.Write(stageIndex);
+	packet.Write(matchingParty.gameType);
 	packet.Write(GameDefinition::System); // gameDefinitionType
 	packet.Write(StageRule::Unfair); // stageRule
 
@@ -1605,7 +1640,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
 		if(p.team == 0) {
-			packet.Write(UserID(i + 1)); // userID
+			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot
 			packet.Write<i32>(0); // tier
@@ -1625,7 +1660,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
 		if(p.team == 1) {
-			packet.Write(UserID(i + 1)); // userID
+			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot
 			packet.Write<i32>(0); // tier
@@ -1640,7 +1675,7 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 
 	// NOTE: if timeToWaitInSec is 0 there is no popup to accept
 	packet.Write<i32>(30); // timeToWaitInSec
-	packet.Write<u8>(0); // elementMain
+	packet.Write<u8>(1); // elementMain
 	packet.Write<u8>(0); // elementSub
 
 	SendPacket(clientHd, packet);
@@ -1956,132 +1991,28 @@ void HubReplication::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 			PacketWriter<Sv::SN_GameCreateActor> packet;
 
 			packet.Write<LocalActorID>(localActorID); // objectID
-			packet.Write<i32>(1); // nType
-			packet.Write<CreatureIndex>(actor.docID); // nIDX
-			packet.Write<i32>(-1); // dwLocalID
-			// TODO: localID?
+			packet.Write<i32>(1);
+			packet.Write<CreatureIndex>(actor.docID);
+			packet.Write<i32>(-1);
 
-			packet.Write(actor.pos); // p3nPos
-			packet.Write(actor.dir); // p3nDir
-			packet.Write<i32>(-1); // spawnType
-			packet.Write<ActionStateID>(actor.actionState); // actionState
-			packet.Write<i32>(0); // ownerID
-			packet.Write<u8>(0); // bDirectionToNearPC
-			packet.Write<i32>(-1); // AiWanderDistOverride
-			packet.Write<i32>(-1); // tagID
-			packet.Write<i32>(3); // faction
-			packet.Write<ClassType>(actor.classType); // classType
-			packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
-			packet.Write<i32>(0); // seed
+			packet.Write(actor.pos);
+			packet.Write(actor.dir);
+			packet.Write<i32>(actor.spawnAnim);
+			packet.Write<ActionStateID>(actor.actionState);
+			packet.Write<i32>(actor.ownerID);
+			packet.Write<u8>(actor.dirToNearPC);
+			packet.Write<i32>(actor.wanderDist);
+			packet.Write<i32>(actor.tagID);
+			packet.Write<i32>(actor.faction);
+			packet.Write<ClassType>(actor.classType);
+			packet.Write<SkinIndex>(actor.skinIndex);
+			packet.Write<i32>(actor.seed);
 
-			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-			// initStat ------------------------
-			/*
-			packet.Write<u16>(53); // maxStats_count
-
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 3, 0 }); //
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 124 });
-			packet.Write(Stat{ 7, 93.75f });
-			packet.Write(Stat{ 8, 0 }); //
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 12, 0 }); //
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 100.5 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 17, 0 }); //
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 20, 0 }); //
-			packet.Write(Stat{ 21, 0 }); //
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 36, 0 }); //
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 40, 0 }); //
-			packet.Write(Stat{ 41, 0 }); //
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 44, 15 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 56, 0 }); //
-			packet.Write(Stat{ 57, 0 });
-			packet.Write(Stat{ 50, 0 });
-			packet.Write(Stat{ 51, 0 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 150 });
+			WriteInitStat(packet, GetGameXmlContent().GetMaster(actor.classType).baseStats);
 
 
 
-			packet.Write(Stat{ 27, 0 });
-			packet.Write(Stat{ 47, 0 });
-			packet.Write(Stat{ 49, 0 });
-			packet.Write(Stat{ 48, 0 });
-
-			packet.Write(Stat{ 46, 0 });
-			packet.Write(Stat{ 45, 0 });
-			packet.Write(Stat{ 26, 0 });
-			packet.Write(Stat{ 25, 0 });
-
-			packet.Write(Stat{ 60, 0 });
-			packet.Write(Stat{ 61, 0 });
-			packet.Write(Stat{ 62, 0 });
-
-			packet.Write(Stat{ 53, 0 });
-			packet.Write(Stat{ 58, 0 });
-			packet.Write(Stat{ 65, 0 });
-
-
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 37, 0 });*/
-
-			packet.Write<u16>(26); // maxStats_count
-			packet.Write(Stat{ 0, 2400 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 124 });
-			packet.Write(Stat{ 7, 93.7846f });
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 101 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 39, 5 });
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 44, 15 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 150 });
-
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 2400 });
-			//packet.Write(Stat{ 37, 0 });
-			packet.Write(Stat{ 37, 1 });
-			packet.Write(Stat{ 35, 1000 });
-			packet.Write(Stat{ 2, 200 });
-			// ------------------------------------
 
 			packet.Write<u8>(1); // isInSight
 			packet.Write<u8>(0); // isDead
@@ -2103,58 +2034,26 @@ void HubReplication::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 
 			packet.Write<LocalActorID>(localActorID); // objectID
 			packet.Write<LocalActorID>(parentLocalActorID); // mainEntityID
-			packet.Write<i32>(1); // nType
-			packet.Write<CreatureIndex>(actor.docID); // nIDX
-			packet.Write<i32>(-1); // dwLocalID
+			packet.Write<i32>(1);
+			packet.Write<CreatureIndex>(actor.docID);
+			packet.Write<i32>(-1);
 
-			packet.Write(actor.pos); // p3nPos
-			packet.Write(actor.dir); // p3nDir
-			packet.Write<i32>(-1); // spawnType
-			packet.Write<ActionStateID>(actor.actionState); // actionState
-			packet.Write<i32>(0); // ownerID
-			packet.Write<i32>(-1); // tagID
-			packet.Write<i32>(3); // faction
-			packet.Write<ClassType>(actor.classType); // classType
-			packet.Write<SkinIndex>(actor.skinIndex); // skinIndex
-			packet.Write<i32>(0); // seed
+			packet.Write(actor.pos);
+			packet.Write(actor.dir);
+			packet.Write<i32>(actor.spawnAnim);
+			packet.Write<ActionStateID>(actor.actionState);
+			packet.Write<i32>(actor.ownerID);
+			packet.Write<i32>(actor.tagID);
+			packet.Write<i32>(actor.faction);
+			packet.Write<ClassType>(actor.classType);
+			packet.Write<SkinIndex>(actor.skinIndex);
+			packet.Write<i32>(actor.seed);
 
-			typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
 
-			// initStat ------------------------
-			packet.Write<u16>(26); // maxStats_count
-			packet.Write(Stat{ 0, 1764 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 5, 5 });
-			packet.Write(Stat{ 6, 192 });
-			packet.Write(Stat{ 7, 85.05f });
-			packet.Write(Stat{ 9, 3 });
-			packet.Write(Stat{ 10, 150 });
-			packet.Write(Stat{ 13, 100 });
-			packet.Write(Stat{ 14, 104.5 });
-			packet.Write(Stat{ 15, 100 });
-			packet.Write(Stat{ 16, 1 });
-			packet.Write(Stat{ 17, 100 });
-			packet.Write(Stat{ 18, 100 });
-			packet.Write(Stat{ 22, 2 });
-			packet.Write(Stat{ 23, 9 });
-			packet.Write(Stat{ 29, 20 });
-			packet.Write(Stat{ 31, 14 });
-			packet.Write(Stat{ 37, 120 });
-			packet.Write(Stat{ 41, 6 });
-			packet.Write(Stat{ 42, 0.6f });
-			packet.Write(Stat{ 46, 5 });
-			packet.Write(Stat{ 52, 100 });
-			packet.Write(Stat{ 54, 15 });
-			packet.Write(Stat{ 55, 15 });
-			packet.Write(Stat{ 63, 3 });
-			packet.Write(Stat{ 64, 15 });
+			WriteInitStat(packet, GetGameXmlContent().GetMaster(actor.classType).baseStats);
 
-			packet.Write<u16>(4); // curStats_count
-			packet.Write(Stat{ 0, 1764 });
-			packet.Write(Stat{ 37, 0 });
-			packet.Write(Stat{ 2, 200 });
-			packet.Write(Stat{ 17, 100 });
-			// ------------------------------------
+
+
 
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
@@ -2201,9 +2100,9 @@ void HubReplication::SendActorPlayerSpawn(ClientHandle clientHd, const ActorPlay
 		PacketWriter<Sv::SN_GamePlayerEquipWeapon> packet;
 
 		packet.Write<LocalActorID>(localActorID); // characterID
-		packet.Write<i32>(131135011); // weaponDocIndex
-		packet.Write<i32>(0); // additionnalOverHeatGauge
-		packet.Write<i32>(0); // additionnalOverHeatGaugeRatio
+		packet.Write<WeaponIndex>(GetGameXmlContent().GetMaster(actor.classType).defaultWeaponIDs[0]);
+		packet.Write<f32>(0.f);
+		packet.Write<f32>(0.f);
 
 		SendPacket(clientHd, packet);
 	}
@@ -2261,44 +2160,28 @@ void HubReplication::SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& ac
 		PacketWriter<Sv::SN_GameCreateActor> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(actor.type); // nType
-		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(actor.localID); // dwLocalID
+		packet.Write<i32>(actor.type);
+		packet.Write<CreatureIndex>(actor.docID);
+		packet.Write<i32>(actor.localID);
+		packet.Write(actor.pos);
+		packet.Write(actor.dir);
+		packet.Write<i32>(actor.spawnAnim);
+		packet.Write<ActionStateID>(actor.actionState);
+		packet.Write<i32>(actor.ownerID);
+		packet.Write<u8>(actor.dirToNearPC);
+		packet.Write<i32>(actor.wanderDist);
+		packet.Write<i32>(actor.tagID);
+		packet.Write<i32>(actor.faction);
+		packet.Write<ClassType>(ClassType::NONE);
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT);
+		packet.Write<i32>(actor.seed);
 
-		packet.Write(actor.pos); // p3nPos
-		packet.Write(actor.dir); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<ActionStateID>((ActionStateID)99); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(actor.faction); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
-		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
-		packet.Write<i32>(0); // seed
 
-		typedef Sv::SN_GameCreateActor::BaseStat::Stat Stat;
+		packet.Write<u16>(0);
+		packet.Write<u16>(0);
 
-		// initStat ------------------------
-		/*packet.Write<u16>(11); // maxStats_count
-		packet.Write(Stat{ 0, 24953 });
-		packet.Write(Stat{ 6, 96 });
-		packet.Write(Stat{ 7, 113.333 });
-		packet.Write(Stat{ 8, 10 });
-		packet.Write(Stat{ 9, 5 });
-		packet.Write(Stat{ 10, 150 });
-		packet.Write(Stat{ 13, 100 });
-		packet.Write(Stat{ 14, 80 });
-		packet.Write(Stat{ 15, 100 });
-		packet.Write(Stat{ 52, 100 });
-		packet.Write(Stat{ 64, 150 });
-		packet.Write<u16>(1); // curStats_count
-		packet.Write(Stat{ 0, 24953 });*/
-		// ------------------------------------
 
-		packet.Write<u16>(0); // maxStats_count
-		packet.Write<u16>(0); // curStats_count
+
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -2335,25 +2218,28 @@ void HubReplication::SendJukeboxSpawn(ClientHandle clientHd, const HubReplicatio
 		PacketWriter<Sv::SN_GameCreateActor> packet;
 
 		packet.Write<LocalActorID>(localActorID); // objectID
-		packet.Write<i32>(1); // nType
-		packet.Write<CreatureIndex>(actor.docID); // nIDX
-		packet.Write<i32>(actor.localID); // dwLocalID
+		packet.Write<i32>(actor.type);
+		packet.Write<CreatureIndex>(actor.docID);
+		packet.Write<i32>(actor.localID);
+		packet.Write(actor.pos);
+		packet.Write(actor.dir);
+		packet.Write<i32>(actor.spawnAnim);
+		packet.Write<ActionStateID>(actor.actionState);
+		packet.Write<i32>(actor.ownerID);
+		packet.Write<u8>(actor.dirToNearPC);
+		packet.Write<i32>(actor.wanderDist);
+		packet.Write<i32>(actor.tagID);
+		packet.Write<i32>(actor.faction);
+		packet.Write<ClassType>(ClassType::NONE);
+		packet.Write<SkinIndex>(SkinIndex::DEFAULT);
+		packet.Write<i32>(actor.seed);
 
-		packet.Write(actor.pos); // p3nPos
-		packet.Write(actor.dir); // p3nDir
-		packet.Write<i32>(0); // spawnType
-		packet.Write<ActionStateID>(ActionStateID::INVALID); // actionState
-		packet.Write<i32>(0); // ownerID
-		packet.Write<u8>(0); // bDirectionToNearPC
-		packet.Write<i32>(-1); // AiWanderDistOverride
-		packet.Write<i32>(-1); // tagID
-		packet.Write<i32>(-1); // faction
-		packet.Write<ClassType>(ClassType::NONE); // classType
-		packet.Write<SkinIndex>(SkinIndex::DEFAULT); // skinIndex
-		packet.Write<i32>(0); // seed
 
-		packet.Write<u16>(0); // maxStats_count
-		packet.Write<u16>(0); // curStats_count
+		packet.Write<u16>(0);
+		packet.Write<u16>(0);
+
+
+
 
 		packet.Write<u8>(1); // isInSight
 		packet.Write<u8>(0); // isDead
@@ -2394,7 +2280,7 @@ void HubReplication::SendActorDestroy(ClientHandle clientHd, ActorUID actorUID)
 	const LocalActorID localActorID = found->second;
 
 	Sv::SN_DestroyEntity packet;
-	packet.characterID = localActorID;
+	packet.objectID = localActorID;
 	SendPacket(clientHd, packet);
 }
 
@@ -2437,37 +2323,17 @@ void HubReplication::SendMasterSkillSlots(ClientHandle clientHd, const HubReplic
 
 		packet.Write<LocalActorID>(localActorID); // characterID
 
-		auto masterIt = content.masterClassTypeMap.find(actor.classType);
-		ASSERT(masterIt != content.masterClassTypeMap.end());
-		GameXmlContent::Master& master = *masterIt->second;
+		const GameXmlContent::Master& master = content.GetMaster(actor.classType);
+		ASSERT(master.skillUnlocked.size() == master.skillIDs.size());
 
-		struct SkillStatus {
-			u8 isUnlocked;
-			u8 isActivated;
-		};
-
-		const SkillStatus skillStatusList[7] = {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-		};
-
-		i32 skillStatusID = 0;
-
-		packet.Write<u16>(master.skillIDs.size()); // slotList_count
-		foreach(it, master.skillIDs) {
-			packet.Write<SkillID>(*it); // skillIndex
-			packet.Write<i32>(0); // coolTime
-			packet.Write<u8>(1); // unlocked
-			packet.Write<u16>(0); // propList_count
-			packet.Write<u8>(skillStatusList[skillStatusID].isUnlocked); // isUnlocked
-			packet.Write<u8>(skillStatusList[skillStatusID].isActivated); // isActivated
-
-			skillStatusID++;
+		packet.Write<u16>(master.skillIDs.size());
+		for(size_t i = 0; i < master.skillIDs.size(); i++) {
+			packet.Write<SkillID>(master.skillIDs[i]);
+			packet.Write<u32>(0);
+			packet.Write<u8>(1);
+			packet.Write<u16>(0);
+			packet.Write<u8>(master.skillUnlocked[i]);
+			packet.Write<u8>(1);
 		}
 
 		packet.Write<SkillID>(SkillID::INVALID); // stageSkillIndex1

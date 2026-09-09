@@ -1,6 +1,8 @@
 #include "channel.h"
+#include "guild.h"
 
 #include "coordinator.h"
+#include <common/packet_validator.h>
 #include <mxm/game_content.h>
 #include "game.h"
 
@@ -43,10 +45,11 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 
 		HANDLE_CASE(CN_ReadyToLoadCharacter);
 		HANDLE_CASE(CN_ReadyToLoadGameMap);
+		HANDLE_CASE(CN_EnterCityScene);
 		HANDLE_CASE(CA_SetGameGvt);
-		HANDLE_CASE(CN_MapIsLoaded);
+		HANDLE_CASE(CA_CityLobbyJoinCity);
 		HANDLE_CASE(CQ_GetCharacterInfo);
-		HANDLE_CASE(CN_UpdatePosition);
+		HANDLE_CASE(CN_GamePlayerSyncByInt);
 		HANDLE_CASE(CN_ChannelChatMessage);
 		HANDLE_CASE(CQ_SetLeaderCharacter);
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
@@ -107,22 +110,27 @@ void HubPacketHandler::OnMatchmakerPacket(const NetHeader& header, const u8* pac
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildProfile>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildProfile (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildProfile>(packetData, packetSize));
 
 	// SA_GetGuildProfile
 	{
 		PacketWriter<Sv::SA_GetGuildProfile,512> packet;
 
+		const Guild& guild = GetAlphaGuild();
 		packet.Write<i32>(0); // result;
-		packet.WriteStringObj(L"Alpha testers"); // guildName
-		packet.WriteStringObj(L"Alpha"); // guildTag
-		packet.Write<i32>(100203); // emblemIndex
-		packet.Write<u8>(10); // guildLvl
-		packet.Write<u8>(120); // memberMax
-		packet.WriteStringObj(L"Malachi"); // ownerNickname
-		packet.Write<i64>(131474874000000000); // createdDate
-		packet.Write<i64>(0); // dissolutionDate
-		packet.Write<u8>(0); // joinType
+		packet.WriteStringObj(guild.name);
+		packet.WriteStringObj(guild.tag);
+		packet.Write<i32>(guild.emblemIndex);
+		packet.Write<u8>(guild.lvl);
+		packet.Write<u8>(guild.memberMax);
+		packet.WriteStringObj(guild.ownerNickname);
+		packet.Write<i64>(guild.createdDate);
+		packet.Write<i64>(guild.dissolutionDate);
+		packet.Write<u8>(guild.joinType);
 
 		Sv::SA_GetGuildProfile::ST_GuildInterest guildInterest;
 		guildInterest.likePveStage = 1;
@@ -134,52 +142,42 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, co
 		guildInterest.likeOlympic = 1;
 		packet.Write(guildInterest);
 
-		packet.WriteStringObj(L"This is a great intro"); // guildIntro
-		packet.WriteStringObj(L"Notice: this game is dead! (for now)"); // guildNotice
-		packet.Write<i32>(460281); // guildPoint
-		packet.Write<i32>(9999); // guildFund
+		packet.WriteStringObj(guild.intro);
+		packet.WriteStringObj(guild.notice);
+		packet.Write<i32>(guild.point);
+		packet.Write<i32>(guild.fund);
 
 		Sv::SA_GetGuildProfile::ST_GuildPvpRecord guildPvpRecord;
-		guildPvpRecord.rp = 5;
-		guildPvpRecord.win = 4;
-		guildPvpRecord.draw = 3;
-		guildPvpRecord.lose = 2;
+		guildPvpRecord.rp = 0;
+		guildPvpRecord.win = 0;
+		guildPvpRecord.draw = 0;
+		guildPvpRecord.lose = 0;
 		packet.Write(guildPvpRecord);
 
-		packet.Write<i32>(-1); // guildRankNo
+		packet.Write<i32>(guild.rankNo);
 
-		packet.Write<u16>(1); // guildMemberClassList_count
-		// guildMemberClassList[0]
-		packet.Write<i32>(12456); // id
-		packet.Write<u8>(3); // type
-		packet.Write<u8>(2); // iconIndex
-		packet.WriteStringObj(L"Malachi");
+		packet.Write<u16>((u16)GetAlphaGuildRanks().size());
+		for(auto& rank : GetAlphaGuildRanks()) {
+			packet.Write<i32>(rank.id);
+			packet.Write<GuildRankType>(rank.type);
+			packet.Write<u8>(rank.iconIndex);
+			packet.WriteStringObj(rank.name);
+			packet.Write(rank.rights);
+		}
 
-		Sv::SA_GetGuildProfile::ST_GuildMemberRights rights;
-		rights.hasInviteRight = 1;
-		rights.hasExpelRight = 1;
-		rights.hasMembershipChgRight = 1;
-		rights.hasClassAssignRight = 1;
-		rights.hasNoticeChgRight = 1;
-		rights.hasIntroChgRight = 1;
-		rights.hasInterestChgRight = 1;
-		rights.hasFundManageRight = 1;
-		rights.hasJoinTypeRight = 1;
-		rights.hasEmblemRight = 1;
-		packet.Write(rights);
+		packet.Write<u16>((u16)guild.skills.size());
+		for(auto& skill : guild.skills) {
+			packet.Write<u8>((u8)skill.type);
+			packet.Write<u8>(skill.level);
+			packet.Write<i64>(0); // expiryDate
+			packet.Write<u16>(0); // extensionCount
+		}
 
-		packet.Write<u16>(1); // guildSkills_count
-		// guildSkills[0]
-		packet.Write<u8>(1); // type
-		packet.Write<u8>(9); // level
-		packet.Write<i64>(0); // expiryDate
-		packet.Write<u16>(0); // extensionCount
-
-		packet.Write<i32>(7); // curDailyStageGuildPoint
-		packet.Write<i32>(500); // maxDailyStageGuildPoint
-		packet.Write<i32>(2); // curDailyArenaGuildPoint
-		packet.Write<i32>(450); // maxDailyArenaGuildPoint
-		packet.Write<u8>(1); // todayRollCallCount
+		packet.Write<i32>(0); // curDailyStageGuildPoint
+		packet.Write<i32>(guild.maxDailyStage);
+		packet.Write<i32>(0); // curDailyArenaGuildPoint
+		packet.Write<i32>(guild.maxDailyArena);
+		packet.Write<u8>(0); // todayRollCallCount
 
 		SendPacket(clientHd, packet);
 	}
@@ -187,6 +185,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildProfile(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildMemberList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildMemberList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildMemberList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
@@ -195,52 +197,38 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd,
 
 		packet.Write<i32>(0); // result
 
-		packet.Write<u16>(3); // guildMemberProfileList_count
+		const Guild& guild = GetAlphaGuild();
+		const i32 userID = game->plidMap->Get(clientHd);
+		const WideString& nick = game->playerAccountData[userID]->nickname;
+		packet.Write<u16>(2); // guildMemberProfileList_count
 
-		// guildMemberProfileList[0]
-		packet.WriteStringObj(L"Malachi");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
+		packet.WriteStringObj(guild.owner.nick);
+		packet.Write<i32>(guild.owner.membershipID);
+		packet.Write<u16>(guild.owner.lvl);
+		packet.Write<u16>(guild.owner.leaderClassType);
+		packet.Write<u16>(guild.owner.masterCount);
+		packet.Write<i32>(guild.owner.achievementScore);
 		packet.Write<u8>(0); // topPvpTierGrade
 		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<i32>(0); // contributedGuildPoint
+		packet.Write<i32>(0); // contributedGuildFund
 		packet.Write<u16>(0); // guildPvpWin
 		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+		packet.Write<i64>(0); // lastLogoutDate
 
-		// guildMemberProfileList[1]
-		packet.WriteStringObj(L"Delta-47");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
+		packet.WriteStringObj(nick.data(), nick.size());
+		packet.Write<i32>(guild.newMemberRankID); // membershipID
+		packet.Write<u16>(1); // lvl
+		packet.Write<u16>(0); // leaderClassType
+		packet.Write<u16>(0); // masterCount
+		packet.Write<i32>(0); // achievementScore
 		packet.Write<u8>(0); // topPvpTierGrade
 		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
+		packet.Write<i32>(0); // contributedGuildPoint
+		packet.Write<i32>(0); // contributedGuildFund
 		packet.Write<u16>(0); // guildPvpWin
 		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
-
-		// guildMemberProfileList[2]
-		packet.WriteStringObj(L"LordSk");
-		packet.Write<i32>(0);  // membershipID
-		packet.Write<u16>(99); // lvl
-		packet.Write<u16>(10); // leaderClassType
-		packet.Write<u16>(27); // masterCount
-		packet.Write<i32>(12455); // achievementScore
-		packet.Write<u8>(0); // topPvpTierGrade
-		packet.Write<u16>(0); // topPvpTierPoint
-		packet.Write<i32>(16965); // contributedGuildPoint
-		packet.Write<i32>(60047); // contributedGuildFund
-		packet.Write<u16>(0); // guildPvpWin
-		packet.Write<u16>(0); // guildPvpPlay
-		packet.Write<i64>((i64)131568669600000000); // lastLogoutDate
+		packet.Write<i64>(0); // lastLogoutDate
 
 		SendPacket(clientHd, packet);
 	}
@@ -248,6 +236,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildMemberList(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildHistoryList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildHistoryList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildHistoryList>(packetData, packetSize));
 
 	// SA_GetGuildMemberList
@@ -264,6 +256,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildHistoryList(ClientHandle clientHd
 
 void HubPacketHandler::HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetGuildRankingSeasonList (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_GetGuildRankingSeasonList& rank = SafeCast<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_GetGuildRankingSeasonList>(packetData, packetSize));
 
@@ -282,6 +278,10 @@ void HubPacketHandler::HandlePacket_CQ_GetGuildRankingSeasonList(ClientHandle cl
 
 void HubPacketHandler::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_TierRecord>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_TierRecord (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_TierRecord>(packetData, packetSize));
 
 	// SA_TierRecord
@@ -301,32 +301,61 @@ void HubPacketHandler::HandlePacket_CQ_TierRecord(ClientHandle clientHd, const N
 
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ReadyToLoadCharacter>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ReadyToLoadCharacter (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CN_ReadyToLoadCharacter ::", clientHd);
 	game->OnPlayerReadyToLoad(clientHd);
 }
 
+void HubPacketHandler::HandlePacket_CN_EnterCityScene(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CN_EnterCityScene>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_EnterCityScene (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: CN_EnterCityScene ::", clientHd);
+}
+
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ReadyToLoadGameMap>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ReadyToLoadGameMap (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CN_ReadyToLoadGame ::", clientHd);
 	game->OnPlayerReadyToLoad(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CA_SetGameGvt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_SetGameGvt>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_SetGameGvt (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CA_SetGameGvt& gvt = SafeCast<Cl::CA_SetGameGvt>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CA_SetGameGvt :: sendTime=%d virtualTime=%d unk=%d", clientHd, gvt.sendTime, gvt.virtualTime, gvt.unk);
 }
 
-void HubPacketHandler::HandlePacket_CN_MapIsLoaded(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CA_CityLobbyJoinCity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	NT_LOG("[client%x] Client :: CN_MapIsLoaded ::", clientHd);
+	if(!ValidatePacket<Cl::CA_CityLobbyJoinCity>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_CityLobbyJoinCity (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: CA_CityLobbyJoinCity ::", clientHd);
 	replication->SetPlayerAsInGame(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_GetCharacterInfo>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_GetCharacterInfo (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_GetCharacterInfo& req = SafeCast<Cl::CQ_GetCharacterInfo>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=%d", clientHd, (u32)req.characterID);
+	NT_LOG("[client%x] Client :: CQ_GetCharacterInfo :: characterID=0x%08x", clientHd, (u32)req.characterID);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, req.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -337,10 +366,14 @@ void HubPacketHandler::HandlePacket_CQ_GetCharacterInfo(ClientHandle clientHd, c
 	game->OnPlayerGetCharacterInfo(clientHd, actorUID);
 }
 
-void HubPacketHandler::HandlePacket_CN_UpdatePosition(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+void HubPacketHandler::HandlePacket_CN_GamePlayerSyncByInt(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
-	const Cl::CN_UpdatePosition& update = SafeCast<Cl::CN_UpdatePosition>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CN_UpdatePosition :: { characterID=%d p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
+	if(!ValidatePacket<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GamePlayerSyncByInt (size=%d)", clientHd, packetSize);
+		return;
+	}
+	const Cl::CN_GamePlayerSyncByInt& update = SafeCast<Cl::CN_GamePlayerSyncByInt>(packetData, packetSize);
+	NT_LOG("[client%x] Client :: CN_GamePlayerSyncByInt :: { characterID=0x%08x p3nPos=(%g, %g, %g) p3nDir=(%g, %g, %g) p3nEye=(%g, %g, %g) nRotate=%g nSpeed=%g nState=%d nActionIDX=%d", clientHd, (u32)update.characterID, update.p3nPos.x, update.p3nPos.y, update.p3nPos.z, update.p3nDir.x, update.p3nDir.y, update.p3nDir.z, update.p3nEye.x, update.p3nEye.y, update.p3nEye.z, update.nRotate, update.nSpeed, (i32)update.nState, update.nActionIDX);
 
 	ActorUID actorUID = replication->GetWorldActorUID(clientHd, update.characterID);
 	if(actorUID == ActorUID::INVALID) {
@@ -353,6 +386,10 @@ void HubPacketHandler::HandlePacket_CN_UpdatePosition(ClientHandle clientHd, con
 
 void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_ChannelChatMessage>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_ChannelChatMessage (size=%d)", clientHd, packetSize);
+		return;
+	}
 	ConstBuffer buff(packetData, packetSize);
 	i32 chatType = buff.Read<i32>();
 	const u16 msgLen = buff.Read<u16>();
@@ -365,20 +402,28 @@ void HubPacketHandler::HandlePacket_CN_ChannelChatMessage(ClientHandle clientHd,
 
 void HubPacketHandler::HandlePacket_CQ_SetLeaderCharacter(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_SetLeaderCharacter>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_SetLeaderCharacter (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_SetLeaderCharacter& leader = SafeCast<Cl::CQ_SetLeaderCharacter>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=%d skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
+	NT_LOG("[client%x] Client :: CQ_SetLeaderCharacter :: characterID=0x%08x skinIndex=%d", clientHd, (u32)leader.characterID, (i32)leader.skinIndex);
 
 	game->OnPlayerSetLeaderCharacter(clientHd, leader.characterID, leader.skinIndex);
 }
 
 void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_GamePlayerSyncActionStateOnly (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CN_GamePlayerSyncActionStateOnly& sync = SafeCast<Cl::CN_GamePlayerSyncActionStateOnly>(packetData, packetSize);
 
 	const char* stateStr = ActionStateToString(sync.state);
 
 	NT_LOG("[client%x] Client :: CN_GamePlayerSyncActionStateOnly :: {", clientHd);
-	NT_LOG("	characterID=%d", (u32)sync.characterID);
+	NT_LOG("	characterID=0x%08x", (u32)sync.characterID);
 	NT_LOG("	nState=%d (%s)", (i32)sync.state, stateStr);
 	NT_LOG("	bApply=%d", sync.bApply);
 	NT_LOG("	param1=%d", sync.param1);
@@ -399,6 +444,10 @@ void HubPacketHandler::HandlePacket_CN_GamePlayerSyncActionStateOnly(ClientHandl
 
 void HubPacketHandler::HandlePacket_CQ_JukeboxQueueSong(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_JukeboxQueueSong>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_JukeboxQueueSong (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_JukeboxQueueSong& queue = SafeCast<Cl::CQ_JukeboxQueueSong>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_JukeboxQueueSong :: { songID=%d }", clientHd, (i32)queue.songID);
 
@@ -407,6 +456,11 @@ void HubPacketHandler::HandlePacket_CQ_JukeboxQueueSong(ClientHandle clientHd, c
 
 void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_WhisperSend>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_WhisperSend (size=%d)", clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_WhisperSend>(packetData, packetSize));
 	ConstBuffer buff(packetData, packetSize);
 	WideString destNick;
 	eastl::fixed_string<wchar,256,true> msg;
@@ -424,6 +478,10 @@ void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RTT_Time>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RTT_Time (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RTT_Time& rtt = SafeCast<Cl::CQ_RTT_Time>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RTT_Time :: { time=%u }", clientHd, rtt.time);
 
@@ -435,12 +493,20 @@ void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const Net
 
 void HubPacketHandler::HandlePacket_CQ_LoadingProgressData(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_LoadingProgressData>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_LoadingProgressData (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_LoadingProgressData& loading = SafeCast<Cl::CQ_LoadingProgressData>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_LoadingProgressData :: { progress=%u }", clientHd, loading.progress);
 }
 
 void HubPacketHandler::HandlePacket_CQ_RequestCalendar(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RequestCalendar>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RequestCalendar (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RequestCalendar& req = SafeCast<Cl::CQ_RequestCalendar>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_RequestCalendar :: { filetimeUTC=%llu }", clientHd, req.filetimeUTC);
 
@@ -449,14 +515,22 @@ void HubPacketHandler::HandlePacket_CQ_RequestCalendar(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CQ_RequestAreaPopularity(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_RequestAreaPopularity>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_RequestAreaPopularity (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_RequestAreaPopularity& req = SafeCast<Cl::CQ_RequestAreaPopularity>(packetData, packetSize);
-	NT_LOG("[client%x] Client :: CQ_RequestAreaPopularity :: { area=%u }", clientHd, req.areaID);
+	NT_LOG("[client%x] Client :: CQ_RequestAreaPopularity :: { area=%d }", clientHd, (i32)req.areaID);
 
 	replication->SendAreaPopularity(clientHd, req.areaID);
 }
 
 void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyCreate>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyCreate (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_PartyCreate& create = SafeCast<Cl::CQ_PartyCreate>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: CQ_PartyCreate :: { entrySysID=%d stageType=%d }", clientHd, create.entrySysID, create.stageType);
 
@@ -465,6 +539,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyCreate(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyModify>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyModify (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyModify>(packetData, packetSize));
 
 	Sv::SA_PartyModify packet;
@@ -474,6 +552,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyModify(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CQ_PartyOptionModify(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_PartyOptionModify>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_PartyOptionModify (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CQ_PartyOptionModify& req = SafeCast<Cl::CQ_PartyOptionModify>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_PartyOptionModify>(packetData, packetSize));
 
@@ -486,6 +568,10 @@ void HubPacketHandler::HandlePacket_CQ_PartyOptionModify(ClientHandle clientHd, 
 
 void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CQ_EnqueueGame>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_EnqueueGame (size=%d)", clientHd, packetSize);
+		return;
+	}
 	NT_LOG("[client%x] Client :: CQ_EnqueueGame :: { }", clientHd);
 
 	game->OnEnqueueGame(clientHd);
@@ -493,6 +579,10 @@ void HubPacketHandler::HandlePacket_CQ_EnqueueGame(ClientHandle clientHd, const 
 
 void HubPacketHandler::HandlePacket_CA_SortieRoomFound(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CA_SortieRoomFound>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CA_SortieRoomFound (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CA_SortieRoomFound& packet = SafeCast<Cl::CA_SortieRoomFound>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CA_SortieRoomFound>(packetData, packetSize));
 
@@ -501,6 +591,10 @@ void HubPacketHandler::HandlePacket_CA_SortieRoomFound(ClientHandle clientHd, co
 
 void HubPacketHandler::HandlePacket_CN_SortieRoomConfirm(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
 {
+	if(!ValidatePacket<Cl::CN_SortieRoomConfirm>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CN_SortieRoomConfirm (size=%d)", clientHd, packetSize);
+		return;
+	}
 	const Cl::CN_SortieRoomConfirm& packet = SafeCast<Cl::CN_SortieRoomConfirm>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CN_SortieRoomConfirm>(packetData, packetSize));
 

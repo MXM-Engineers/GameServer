@@ -2,6 +2,8 @@
 #include <common/protocol.h>
 #include <common/network.h>
 #include <common/utils.h>
+#include <common/packet_serialize.h>
+#include <common/packet_validator.h>
 #include <common/platform.h>
 #include <EAStdC/EASprintf.h>
 
@@ -167,55 +169,58 @@ struct Client
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
 		switch(header.netID) {
-			case Cl::CQ_FirstHello::NET_ID: {
-				LOG("Client :: Hello");
+				case Cl::CQ_FirstHello::NET_ID: {
+				if(!ValidatePacket<Cl::CQ_FirstHello>(packetData, packetSize)) {
+					LOG("WARNING: invalid CQ_FirstHello (size=%d expected=%d)", packetSize, (i32)sizeof(Cl::CQ_FirstHello));
+					break;
+				}
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
+				const Cl::CQ_FirstHello& req = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 
 				Sv::SA_FirstHello hello;
 				hello.dwProtocolCRC = 0x28845199;
 				hello.dwErrorCRC    = 0x93899e2c;
-				hello.serverType    = 0;
+				hello.serverType    = Sv::ServerType::Login;
 				memmove(hello.clientIp, clientIp, sizeof(hello.clientIp));
 				STATIC_ASSERT(sizeof(hello.clientIp) == sizeof(clientIp));
 				hello.clientPort = clientPort;
 				hello.tqosWorldId = 1;
 
-				LOG("Server :: SA_FirstHello :: protocolCrc=%x errorCrc=%x serverType=%d clientIp=(%s) clientPort=%d tqosWorldId=%d", hello.dwProtocolCRC, hello.dwErrorCRC, hello.serverType, IpToString(hello.clientIp), hello.clientPort, hello.tqosWorldId);
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_FirstHello>(&hello, sizeof(hello)));
 				SendPacket(hello);
 			} break;
 
 			case Cl::CQ_UserLogin::NET_ID: {
-				ConstBuffer data(packetData, header.size);
+				if(!ValidatePacket<Cl::CQ_UserLogin>(packetData, packetSize)) {
+					LOG("WARNING: invalid CQ_UserLogin (size=%d)", packetSize);
+					break;
+				}
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_UserLogin>(packetData, packetSize));
 
+				ConstBuffer data(packetData, header.size);
 				u16 loginStrSize = data.Read<u16>();
 				wchar* loginStr = (wchar*)data.ReadRaw(sizeof(wchar) * loginStrSize);
-				u16 unkSize = data.Read<u16>();
-				wchar* unkStr = (wchar*)data.ReadRaw(sizeof(wchar) * unkSize);
-				u16 typeSize = data.Read<u16>();
-				wchar* typeStr = (wchar*)data.ReadRaw(sizeof(wchar) * typeSize);
-
-				LOG("Client :: UserLogin :: login='%.*S' pw='%.*S' type='%.*S'", loginStrSize, loginStr, unkSize, unkStr, typeSize, typeStr);
-
 				nickname.assign(loginStr, loginStrSize);
 
-				LOG("Server :: SA_UserloginResult");
 				Sv::SA_UserloginResult accept;
 				accept.result = 0x33;
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_UserloginResult>(&accept, sizeof(accept)));
 				SendPacket(accept);
 			} break;
 
-			case Cl::ConfirmLogin::NET_ID: {
-				LOG("Client :: ConfirmLogin ::");
+			case Cl::CQ_ServerVersionInfo::NET_ID: {
+				// header-only packet (no payload): nothing to validate, just log
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_ServerVersionInfo>(packetData, packetSize));
 
-				LOG("Server :: SN_TgchatServerInfo");
 				{
 					PacketWriter<Sv::SN_TgchatServerInfo> packet;
 
-					// host
-					const wchar* host = L"127.0.0.1";
-					packet.Write<u16>(0);
-					//packet.WriteRaw(host, 9 * sizeof(wchar));
+					// host (ANSI byte string, length in bytes)
+					const char* host = "0.0.0.0";
+					packet.Write<u16>(7);
+					packet.WriteRaw(host, 7);
 
-					packet.Write<u16>(255); // port
+					packet.Write<u16>(0);
 					packet.Write<i32>(61); // gameID
 					packet.Write<i32>(0); // serverID
 					packet.Write<u32>(424242); // userID
@@ -230,25 +235,28 @@ struct Client
 
 					packet.Write<u8>(0); // serverType
 
+					NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_TgchatServerInfo>(packet.data, packet.size));
 					SendPacketData(Sv::SN_TgchatServerInfo::NET_ID, packet.size, packet.data);
 				}
 
-				LOG("Server :: SA_VersionInfo");
 				{
-					PacketWriter<Sv::SA_VersionInfo> packet;
+					PacketWriter<Sv::SA_ServerVersionInfo> packet;
 					const wchar* infoStr = L"Gateway Server CSP 1.17.1017.7954";
 					const i32 infoStrLen = 33;
 					packet.Write<u16>(infoStrLen);
 					packet.WriteRaw(infoStr, infoStrLen*sizeof(wchar));
-					SendPacketData(Sv::SA_VersionInfo::NET_ID, packet.size, packet.data);
+					NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_ServerVersionInfo>(packet.data, packet.size));
+					SendPacketData(Sv::SA_ServerVersionInfo::NET_ID, packet.size, packet.data);
 				}
 			} break;
 
-			case Cl::ConfirmGatewayInfo::NET_ID: {
-				const Cl::ConfirmGatewayInfo& confirm = SafeCast<Cl::ConfirmGatewayInfo>(packetData, packetSize);
-				LOG("Client :: Cl::ConfirmGatewayInfo :: var=%d", confirm.var);
+			case Cl::CQ_SetIspName::NET_ID: {
+				if(!ValidatePacket<Cl::CQ_SetIspName>(packetData, packetSize)) {
+					LOG("WARNING: invalid CQ_SetIspName (size=%d)", packetSize);
+					break;
+				}
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_SetIspName>(packetData, packetSize));
 
-				LOG("Server :: Sv::SN_StationList");
 				PacketWriter<Sv::SN_StationList> packet;
 
 				packet.Write<u16>(1); // count
@@ -257,34 +265,36 @@ struct Client
 				station.idc = 12345678;
 				station.stations_count = 1;
 				auto& addr = station.stations[0]; // alias
-				// 92.88.247.43
 				addr.gameServerIp[0] = g_Config.gameServerIP[0];
 				addr.gameServerIp[1] = g_Config.gameServerIP[1];
 				addr.gameServerIp[2] = g_Config.gameServerIP[2];
 				addr.gameServerIp[3] = g_Config.gameServerIP[3];
-				addr.pingServerIp[0] = g_Config.gameServerIP[0];
-				addr.pingServerIp[1] = g_Config.gameServerIP[1];
-				addr.pingServerIp[2] = g_Config.gameServerIP[2];
-				addr.pingServerIp[3] = g_Config.gameServerIP[3];
-				addr.port = 12900; // ping server port
+				addr.pingServerIp[0] = 0;
+				addr.pingServerIp[1] = 0;
+				addr.pingServerIp[2] = 0;
+				addr.pingServerIp[3] = 0;
+				addr.port = 0;
 
 				packet.Write(station); // station
 
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_StationList>(packet.data, packet.size));
 				SendPacketData(Sv::SN_StationList::NET_ID, packet.size, packet.data);
 			} break;
 
-			case Cl::EnterQueue::NET_ID: {
-				const Cl::EnterQueue& enter = SafeCast<Cl::EnterQueue>(packetData, packetSize);
-				LOG("Client :: Cl::EnterQueue :: var1=%d gameIp=(%s) unk=%d pingIp=(%s) port=%d unk2=%d stationID=%d", enter.var1, IpToString(enter.gameIp), enter.unk, IpToString(enter.pingIp), enter.port, enter.unk2, enter.stationID);
+			case Cl::CQ_EnterWaitingQueue::NET_ID: {
+				if(!ValidatePacket<Cl::CQ_EnterWaitingQueue>(packetData, packetSize)) {
+					LOG("WARNING: invalid CQ_EnterWaitingQueue (size=%d)", packetSize);
+					break;
+				}
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_EnterWaitingQueue>(packetData, packetSize));
 
-				LOG("Server :: Sv::QueueStatus");
-				Sv::QueueStatus status;
+				Sv::SA_EnterWaitingQueue status;
 				memset(&status, 0, sizeof(status));
 				status.var1 = 2;
 				status.var1 = 5;
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_EnterWaitingQueue>(&status, sizeof(status)));
 				SendPacket(status);
 
-				LOG("Server :: Sv::SN_DoConnectChannelServer");
 				PacketWriter<Sv::SN_DoConnectChannelServer> packet;
 
 				packet.Write<u16>(1); // count
@@ -300,6 +310,7 @@ struct Client
 				packet.Write<i32>(536);
 				packet.Write<i32>(1);
 
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_DoConnectChannelServer>(packet.data, packet.size));
 				SendPacketData(Sv::SN_DoConnectChannelServer::NET_ID, packet.size, packet.data);
 			} break;
 		}
@@ -403,6 +414,7 @@ int main(int argc, char** argv)
 {
 	PlatformInit();
 	LogInit("login_server.log");
+	LogNetTrafficInit("login_server_nt.log");
 	LOG(".: Login server :.");
 
 	g_Config.LoadConfigFile();

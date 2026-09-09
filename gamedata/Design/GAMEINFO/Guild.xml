@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GAMEINFO_FILE>
+	<ST_GUILDINFO 
+	_RequiredLevelForGuildFoundation="10" 
+	_GuildFoundationGold="18000" 
+	_GuildTagChangeCost="30000" 
+	_GuildRankingRefreshTermSec="7"
+	_GuildMedalItemDocIndex="138000392"
+	_GuildPvpMinAccountLevel="30"
+	_GuildPvpMinGuildLevel="3"
+	_GuildPvpRequireMasterCount="12">
+
+		<_GuildPointReward _RollcallPoint="50" />
+		<_GuildMemberBonus>
+			<_Arena DATAKEY="1" DATA="0" />
+			<_Arena DATAKEY="2" DATA="50" />
+			<_Arena DATAKEY="3" DATA="100" />
+			<_Arena DATAKEY="4" DATA="150" />
+			<_Arena DATAKEY="5" DATA="200" />
+			
+			<_Stage DATAKEY="1" DATA="0" />
+			<_Stage DATAKEY="2" DATA="50" />
+			<_Stage DATAKEY="3" DATA="100" />
+			
+			<_Defence DATAKEY="1" DATA="0" />
+			<_Defence DATAKEY="2" DATA="50" />
+			<_Defence DATAKEY="3" DATA="100" />
+			<_Defence DATAKEY="4" DATA="150" />
+			<_Defence DATAKEY="5" DATA="200" />
+		</_GuildMemberBonus>
+
+		<_GuildPvp>
+			<_Reward DATAKEY="WIN" _RpGain="5" />
+			<_Reward DATAKEY="DRAW" _RpGain="1" />
+			<_Reward DATAKEY="LOSE" _RpGain="0" />
+			<_Reward DATAKEY="NOGAME" _RpGain="0" />
+		</_GuildPvp>
+		
+		<_MaxGuildActivityPointPerDay>
+			<_Stage _Weekday="100" _Weekend="250" />
+			<_Arena _Weekday="100" _Weekend="250" /> 
+		</_MaxGuildActivityPointPerDay>
+		
+		<_GuildLevel DATAKEY="1" _RequireGuildPoint="0" _GuildMedalGiftCount="0" />
+		<_GuildLevel DATAKEY="2" _RequireGuildPoint="1800" _GuildMedalGiftCount="3" />
+		<_GuildLevel DATAKEY="3" _RequireGuildPoint="5400" _GuildMedalGiftCount="5" />
+		<_GuildLevel DATAKEY="4" _RequireGuildPoint="12600" _GuildMedalGiftCount="9" />
+		<_GuildLevel DATAKEY="5" _RequireGuildPoint="24600" _GuildMedalGiftCount="12" />
+		<_GuildLevel DATAKEY="6" _RequireGuildPoint="42600" _GuildMedalGiftCount="15" />
+		<_GuildLevel DATAKEY="7" _RequireGuildPoint="72600" _GuildMedalGiftCount="21" />
+		<_GuildLevel DATAKEY="8" _RequireGuildPoint="132600" _GuildMedalGiftCount="35" />
+		<_GuildLevel DATAKEY="9" _RequireGuildPoint="252600" _GuildMedalGiftCount="59" />
+		<_GuildLevel DATAKEY="10" _RequireGuildPoint="852600" _GuildMedalGiftCount="245" />
+
+		<_GuildMembership _Capacity="20" />
+
+		<_GuildDonation _Unit="100" _ExchangeRateForOneFund="100" />
+
+		<_GuildSkillSet>
+			<_GuildSkill DATAKEY="GUILD_MEMBER_MAX_UP" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_MEMBER_MAX_UP" _IconAlias="gs_member_max" _ValueString="UI_TOOLTIP_GUILD_MEMBER_MAX_UP_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="300"    _Value="5" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="2"  _Cost="900"    _Value="10" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="3"  _Cost="1800"   _Value="14" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="18" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="22" />
+				<_GuildSkillLevel DATAKEY="6"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="26" />
+				<_GuildSkillLevel DATAKEY="7"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="30" />
+				<_GuildSkillLevel DATAKEY="8"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="33" />
+				<_GuildSkillLevel DATAKEY="9"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="36" />
+				<_GuildSkillLevel DATAKEY="10" _UnlockGuildLevel="10" _Cost="300000" _Value="40" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="STAGE_POINT_LIMIT_UP" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_STAGE_POINT_LIMIT_UP" _IconAlias="gs_point_stage_up" _ValueString="UI_TOOLTIP_GUILD_STAGE_POINT_LIMIT_UP_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="300"    _Value="50" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="2"  _Cost="900"    _Value="100" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="3"  _Cost="1800"   _Value="150" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="200" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="250" />
+				<_GuildSkillLevel DATAKEY="6"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="300" />
+				<_GuildSkillLevel DATAKEY="7"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="350" />
+				<_GuildSkillLevel DATAKEY="8"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="400" />
+				<_GuildSkillLevel DATAKEY="9"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="450" />
+				<_GuildSkillLevel DATAKEY="10" _UnlockGuildLevel="10" _Cost="300000" _Value="500" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="ARENA_POINT_LIMIT_UP" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_ARENA_POINT_LIMIT_UP" _IconAlias="gs_point_arena_up" _ValueString="UI_TOOLTIP_GUILD_ARENA_POINT_LIMIT_UP_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="300"    _Value="50" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="2"  _Cost="900"    _Value="100" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="3"  _Cost="1800"   _Value="150" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="200" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="250" />
+				<_GuildSkillLevel DATAKEY="6"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="300" />
+				<_GuildSkillLevel DATAKEY="7"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="350" />
+				<_GuildSkillLevel DATAKEY="8"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="400" />
+				<_GuildSkillLevel DATAKEY="9"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="450" />
+				<_GuildSkillLevel DATAKEY="10" _UnlockGuildLevel="10" _Cost="300000" _Value="500" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="GAIN_GOLD_UP" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_GAIN_GOLD_UP" _IconAlias="gs_gold_up" _ValueString="UI_TOOLTIP_GUILD_GAIN_GOLD_UP_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="300"    _Value="1" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="2"  _Cost="900"    _Value="2" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="3"  _Cost="1800"   _Value="3" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="4" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="5" />
+				<_GuildSkillLevel DATAKEY="6"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="6" />
+				<_GuildSkillLevel DATAKEY="7"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="7" />
+				<_GuildSkillLevel DATAKEY="8"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="8" />
+				<_GuildSkillLevel DATAKEY="9"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="9" />
+				<_GuildSkillLevel DATAKEY="10" _UnlockGuildLevel="10" _Cost="300000" _Value="10" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="GAIN_XP_UP" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_GAIN_XP_UP" _IconAlias="gs_xp_up" _ValueString="UI_TOOLTIP_GUILD_GAIN_XP_UP_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="300"    _Value="1" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="2"  _Cost="900"    _Value="2" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="3"  _Cost="1800"   _Value="3" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="4" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="5" />
+				<_GuildSkillLevel DATAKEY="6"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="6" />
+				<_GuildSkillLevel DATAKEY="7"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="7" />
+				<_GuildSkillLevel DATAKEY="8"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="8" />
+				<_GuildSkillLevel DATAKEY="9"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="9" />
+				<_GuildSkillLevel DATAKEY="10" _UnlockGuildLevel="10" _Cost="300000" _Value="10" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="GUILD_MISSION" _LimitedHours="0" _Desc="UI_TOOLTIP_GUILD_MISSION" _IconAlias="gs_mission" _ValueString="UI_TOOLTIP_GUILD_MISSION_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="2"  _Cost="900"    _Value="1" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="4"  _Cost="3600"   _Value="2" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="3" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="4" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="10" _Cost="300000" _Value="5" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="GUILD_EMBLEM" _LimitedHours="0"  _Desc="UI_TOOLTIP_GUILD_EMBLEM" _IconAlias="gs_emblem" _ValueString="UI_TOOLTIP_GUILD_EMBLEM_NEXT">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="5"  _Cost="6000"   _Value="2" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="6"  _Cost="9000"   _Value="5" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="7"  _Cost="15000"  _Value="10" />
+				<_GuildSkillLevel DATAKEY="4"  _UnlockGuildLevel="8"  _Cost="30000"  _Value="14" />
+				<_GuildSkillLevel DATAKEY="5"  _UnlockGuildLevel="9"  _Cost="60000"  _Value="18" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="LIMITED_REWARD_SLOT_ADD" _Desc="UI_TOOLTIP_GUILD_LIMITED_REWARD_SLOT_ADD" _HudDesc="" _LimitedHours="24" _IconAlias="gsl_slot_add">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="5400"   _Value="1" />
+				<!--
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="1"  _Cost="6000"  _Value="2" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="1"  _Cost="10000"  _Value="3" />
+				-->
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="LIMITED_GAIN_GOLD_UP" _LimitedHours="24" _Desc="UI_TOOLTIP_GUILD_LIMITED_GAIN_GOLD_UP" _HudDesc="" _IconAlias="gsl_gold_up">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="3000"   _Value="10" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="1"  _Cost="5400"   _Value="50" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="1"  _Cost="9600"   _Value="100" />
+			</_GuildSkill>
+			<_GuildSkill DATAKEY="LIMITED_GAIN_XP_UP" _LimitedHours="24" _Desc="UI_TOOLTIP_GUILD_LIMITED_GAIN_XP_UP" _HudDesc="" _IconAlias="gsl_xp_up">
+				<_GuildSkillLevel DATAKEY="1"  _UnlockGuildLevel="1"  _Cost="3000"   _Value="10" />
+				<_GuildSkillLevel DATAKEY="2"  _UnlockGuildLevel="1"  _Cost="5400"   _Value="50" />
+				<_GuildSkillLevel DATAKEY="3"  _UnlockGuildLevel="1"  _Cost="9600"   _Value="100" />
+			</_GuildSkill>
+		</_GuildSkillSet>
+								
+		<_ValidGuildEmblem DATA="100000"/>
+		<_ValidGuildEmblem DATA="100101"/>
+		<_ValidGuildEmblem DATA="100102"/>
+		<_ValidGuildEmblem DATA="100201"/>
+		<_ValidGuildEmblem DATA="100202"/>
+		<_ValidGuildEmblem DATA="100203"/>
+		<_ValidGuildEmblem DATA="100301"/>
+		<_ValidGuildEmblem DATA="100302"/>
+		<_ValidGuildEmblem DATA="100303"/>
+		<_ValidGuildEmblem DATA="100304"/>
+		<_ValidGuildEmblem DATA="100305"/>		
+		<_ValidGuildEmblem DATA="100401"/>
+		<_ValidGuildEmblem DATA="100402"/>
+		<_ValidGuildEmblem DATA="100403"/>
+		<_ValidGuildEmblem DATA="100404"/>
+		<_ValidGuildEmblem DATA="100501"/>
+		<_ValidGuildEmblem DATA="100502"/>
+		<_ValidGuildEmblem DATA="100503"/>
+		<_ValidGuildEmblem DATA="100504"/>
+		<_ValidGuildEmblem DATA="200101"/>
+		<_ValidGuildEmblem DATA="300101"/>
+	</ST_GUILDINFO>
+</GAMEINFO_FILE>
+

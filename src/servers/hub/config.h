@@ -8,6 +8,9 @@ struct CConfigHub
 	i32 DevQuickConnect = false;
 	i32 TraceNetwork = false;
 	i32 LobbyMap = 160000042; // TODO: restore
+	eastl::fixed_vector<i32,16> regionBanMaster = {};
+	eastl::fixed_vector<i32,16> regionNewMaster = {};
+	eastl::fixed_vector<i32,16> eventBanMaster = {};
 
 	bool ParseLine(const char* line);
 	// returns false on failing to open the config file

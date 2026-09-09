@@ -40,8 +40,30 @@ def packet_serialize_cl(netid, data):
     else:
         p = common.PacketReader(data)
         p.read_header() # skip header
-        f(netid, p)
+        try:
+            f(netid, p)
+        except struct.error:
+            print('    (!) payload shorter than struct')
+        except UnicodeDecodeError:
+            print('    (!) undecodable payload (encrypted?)')
     print('')
+
+def _load_sv_names():
+    """NET_ID -> struct name from protocol.h, for naming keyless-encrypted packets."""
+    import os, re
+    path = os.path.join(os.path.dirname(__file__), '..', 'src', 'common', 'protocol.h')
+    names = {}
+    try:
+        h = open(path, encoding='utf-8', errors='replace').read()
+    except OSError:
+        return names
+    for m in re.finditer(r'NET_ID\s*=\s*(\d+)', h):
+        head = h[:m.start()]
+        s = head.rfind('struct ')
+        names[int(m.group(1))] = head[s:].split()[1].rstrip('{')
+    return names
+
+SV_NAMES = _load_sv_names()
 
 def packet_serialize_sv(netid, data):
     f = None
@@ -49,17 +71,23 @@ def packet_serialize_sv(netid, data):
     # if encrypted but we have no key, skip serialize
     if not(leaCurrentKey == None and netid in ServerEncryptedIDs):
         f = getattr(ServerSerializer, 'serialize_%d' % netid, None)
-    
+
     if f == None:
-        f = getattr(ServerPacketName, 'name_%d' % netid, None)
-        if f:
-            f(netid)
+        if leaCurrentKey == None and netid in ServerEncryptedIDs and netid in SV_NAMES:
+            print('%s { /* encrypted, no LEA key */ }' % SV_NAMES[netid])
         else:
-            print('Unknown {}')
+            nf = getattr(ServerPacketName, 'name_%d' % netid, None)
+            if nf:
+                nf(netid)
+            else:
+                print('Unknown {}')
     else:
         p = common.PacketReader(data)
         p.read_header() # skip header
-        f(netid, p)
+        try:
+            f(netid, p)
+        except struct.error:
+            print('    (!) payload shorter than struct')
     print('')
 
     # SN_DoConnectGameServer
@@ -152,8 +180,9 @@ client_spitter = PacketSpitter('cl')
 server_spitter = PacketSpitter('sv')
 
 scan_list = [
-    '11900',
-    '12101'
+    '10900', # login server (serverType=0)
+    '11900', # hub server (serverType=1)
+    '12101'  # game server (serverType=2)
 ]
 
 last_time = 0

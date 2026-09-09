@@ -25,6 +25,11 @@ class PacketReader:
         self.adv(2)
         return r
 
+    def read_i16(self):
+        r = struct.unpack("h", self.buff[:2])[0]
+        self.adv(2)
+        return r
+
     def read_i32(self):
         r = struct.unpack("i", self.buff[:4])[0]
         self.adv(4)

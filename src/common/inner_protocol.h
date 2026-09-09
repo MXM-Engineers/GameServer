@@ -5,7 +5,7 @@
 
 // MQ, MR: Matchmaker Query, Response
 // HQ, HR: Hub server Query, Response
-// PQ, PR: Play server Query, Response
+// GQ, GR: Game server Query, Response
 
 enum class AccountUID: u32 {
 	INVALID = 0
@@ -82,8 +82,10 @@ struct HQ_PartyEnqueue
 {
 	enum { NET_ID = 1003 };
 
-	// TODO: some useful stuff here
 	PartyUID partyUID;
+	AreaIndex areaIndex;
+	StageIndex stageIndex;
+	MapIndex mapIndex;
 };
 
 PUSH_PACKED
@@ -123,7 +125,10 @@ struct HQ_RoomCreateGame
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
-		// TODO weapon
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	SortieUID sortieUID;
@@ -134,7 +139,7 @@ struct HQ_RoomCreateGame
 };
 POP_PACKED
 
-struct PQ_Handshake
+struct GQ_Handshake
 {
 	enum { NET_ID = 2001 };
 
@@ -142,7 +147,7 @@ struct PQ_Handshake
 	u16 listenPort;
 };
 
-struct PR_GameCreated
+struct GR_GameCreated
 {
 	enum { NET_ID = 2002 };
 
@@ -182,6 +187,7 @@ struct MN_MatchingPartyFound
 	// TODO: some useful stuff here
 	PartyUID partyUID;
 	SortieUID sortieUID;
+	GameType gameType;
 	u8 playerCount;
 	eastl::array<RoomUser,16> playerList;
 };
@@ -208,7 +214,10 @@ struct MQ_CreateGame
 		eastl::array<ClassType,2> masters;
 		eastl::array<SkinIndex,2> skins;
 		eastl::array<SkillID,4> skills;
-		// TODO weapon
+		eastl::array<WeaponIndex,2> weapons;
+		eastl::array<i32,2> weaponGrades;
+		eastl::array<u8,2> masterGearNo;
+		eastl::array<i32,2> characterType;
 	};
 
 	SortieUID sortieUID;
@@ -216,6 +225,12 @@ struct MQ_CreateGame
 	u8 spectatorCount;
 	eastl::array<Player,10> players;
 	eastl::array<AccountUID,6> spectators;
+	GameType gameType;
+	AreaIndex areaIndex;
+	StageIndex stageIndex;
+	MapIndex mapIndex;
+	u8 canEscape;
+	i32 surrenderAbleTime;
 };
 
 PUSH_PACKED

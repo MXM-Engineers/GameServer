@@ -1443,12 +1443,27 @@ bool GameXmlContent::LoadAnimationData()
 	XMLDocument xmlActionBase;
 	if(!LoadXMLFile(L"/ActionBase.xml", xmlActionBase)) return false;
 
+	struct ActionLoadRow
+	{
+		Action* action;
+		ClassType classType;
+		Action::Command cmd;
+		i32 animIndex;
+		i32 animId;
+		i32 animLoop;
+		const char* stance;
+		u8 hasCommand;
+	};
+
+	eastl::fixed_vector<ActionLoadRow, 2048, false>* loadRows;
+	loadRows = new eastl::remove_reference<decltype(*loadRows)>::type();
+	defer(delete loadRows);
+
 	ClassType prevMasterClassType = ClassType::NONE;
 	ActionStateID prevActionID = ActionStateID::INVALID;
 	i32 actionSliceStart = 0;
 	i32 actionSliceCount = 0;
 	Action* curAction = nullptr;
-	f32 accumulatedDelay = 0;
 
 	for(XMLElement* pActionBase = xmlActionBase.FirstChildElement()->FirstChildElement();
 		pActionBase;
@@ -1498,106 +1513,258 @@ bool GameXmlContent::LoadAnimationData()
 				curAction = &actionList.back();
 				actionSliceCount++;
 				curAction->ID = actionID;
-				auto foundSeq = aniLenListMap.find(masterClassType);
-				if(foundSeq != aniLenListMap.end()) {
-					foreach_const(it, foundSeq->second) {
-						if(it->ID == AnimationId) {
-							curAction->seqLength = it->length;
-
-							break;
-						}
-					}
-				}
 
 				VERBOSE("	ID='%s' (%d)", ActionStateToString(curAction->ID), curAction->ID);
-				VERBOSE("		seqLength=%f", curAction->seqLength);
-
-				accumulatedDelay = 0.0f;
 			}
 		}
 
+
+		i32 animIndex = -1;
+		i32 animLoop = 1;
+		pActionBase->QueryAttribute("AnimationIndex", &animIndex);
+		pActionBase->QueryAttribute("AnimationLoop", &animLoop);
+		if(animLoop < 1) {
+			animLoop = 1;
+		}
+
+		ActionLoadRow row;
+		row.action = curAction;
+		row.classType = masterClassType;
+		row.animIndex = animIndex;
+		row.animId = AnimationId;
+		row.animLoop = animLoop;
+		row.stance = pActionBase->Attribute("Stance");
+		row.hasCommand = 0;
+		row.cmd = Action::Command();
+		row.cmd.type = ActionCommand::Type::INVALID;
+		row.cmd.delay = 0.0f;
+		row.cmd.executeAt = 0.0f;
+		row.cmd.completeAt = 0.0f;
+
 		const char* CommandType = nullptr;
-		if(pActionBase->QueryStringAttribute("CommandType", &CommandType) != XMLError::XML_SUCCESS) {
-			// FIXME: handle this case, it has AnimationLoop?
-			continue;
+		if(pActionBase->QueryStringAttribute("CommandType", &CommandType) == XMLError::XML_SUCCESS) {
+			Action::Command& cmd = row.cmd;
+			cmd.type = ActionCommand::TypeFromString(CommandType);
+			if(pActionBase->QueryAttribute("Delay", &cmd.delay) != XMLError::XML_SUCCESS) {
+				cmd.delay = 0.0f;
+			}
+			if(!std::isfinite(cmd.delay) || cmd.delay < 0.0f) {
+				LOG("ERROR(LoadAnimationData): invalid Delay");
+				return false;
+			}
+			cmd.executeAt = 0.0f;
+			cmd.completeAt = 0.0f;
+			row.hasCommand = 1;
+
+			switch(cmd.type) {
+				case ActionCommand::Type::MOVE: {
+					const char* Param1 = 0;
+					const char* Param2 = 0;
+					pActionBase->QueryStringAttribute("Param1", &Param1);
+					pActionBase->QueryStringAttribute("Param2", &Param2);
+
+					cmd.move.preset = ActionCommand::MovePresetFromString(Param1);
+					ASSERT(cmd.move.preset != ActionCommand::MovePreset::INVALID);
+
+					if(Param2 != nullptr) {
+						i32 tmp;
+						i32 r = EA::StdC::Sscanf(Param2, "%d|%d", &cmd.move.param2, &tmp);
+						ASSERT(r == 2);
+					}
+				} break;
+
+				case ActionCommand::Type::REMOTE: {
+					const char* TargetPreset;
+					i32 RemoteIndex;
+					pActionBase->QueryStringAttribute("TargetPreset", &TargetPreset);
+					pActionBase->QueryAttribute("RemoteIndex", &RemoteIndex);
+
+					cmd.remote.idx = RemoteIdx(RemoteIndex);
+					cmd.remote.targetPreset = ActionCommand::TargetPresetFromString(TargetPreset);
+					ASSERT(cmd.remote.targetPreset != ActionCommand::TargetPreset::INVALID);
+				} break;
+
+				case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+					pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
+				} break;
+
+				case ActionCommand::Type::ROTATESPEED: {
+					pActionBase->QueryAttribute("Param1", &cmd.rotateSpeed.speed);
+				} break;
+			}
+
+			VERBOSE("		Command='%s' delay=%.2f", CommandType, cmd.delay);
+			switch(cmd.type) {
+				case ActionCommand::Type::MOVE: {
+					VERBOSE("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
+					VERBOSE("		  param2=%d", cmd.move.param2);
+				} break;
+
+				case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+					VERBOSE("		  distance=%f", cmd.graphMoveHorz.distance);
+				} break;
+
+				case ActionCommand::Type::ROTATESPEED: {
+					VERBOSE("		  speed=%d", cmd.rotateSpeed.speed);
+				} break;
+			}
 		}
 
-		Action::Command cmd;
-		cmd.type = ActionCommand::TypeFromString(CommandType);
-		if(pActionBase->QueryAttribute("Delay", &cmd.delay) != XMLError::XML_SUCCESS) {
-			cmd.delay = 0.0f;
-		}
-		cmd.relativeEndTimeFromStart = accumulatedDelay + cmd.delay;
-		accumulatedDelay += cmd.delay;
-
-		switch(cmd.type) {
-			case ActionCommand::Type::STATE_BLOCK: {
-
-			} break;
-
-			case ActionCommand::Type::MOVE: {
-				const char* Param1 = 0;
-				const char* Param2 = 0;
-				pActionBase->QueryStringAttribute("Param1", &Param1);
-				pActionBase->QueryStringAttribute("Param2", &Param2);
-
-				cmd.move.preset = ActionCommand::MovePresetFromString(Param1);
-				ASSERT(cmd.move.preset != ActionCommand::MovePreset::INVALID);
-
-				if(Param2 != nullptr) {
-					i32 tmp;
-					i32 r = EA::StdC::Sscanf(Param2, "%d|%d", &cmd.move.param2, &tmp);
-					ASSERT(r == 2);
-				}
-			} break;
-
-			case ActionCommand::Type::REMOTE: {
-				const char* TargetPreset;
-				//const char* Param2;
-				i32 RemoteIndex;
-				pActionBase->QueryStringAttribute("TargetPreset", &TargetPreset);
-				//pActionBase->QueryStringAttribute("Param2", &Param2);
-				pActionBase->QueryAttribute("RemoteIndex", &RemoteIndex);
-
-				cmd.remote.idx = RemoteIdx(RemoteIndex);
-				cmd.remote.targetPreset = ActionCommand::TargetPresetFromString(TargetPreset);
-				ASSERT(cmd.remote.targetPreset != ActionCommand::TargetPreset::INVALID);
-			} break;
-
-			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
-				pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
-			} break;
-
-			case ActionCommand::Type::ROTATESPEED: {
-				pActionBase->QueryAttribute("Param1", &cmd.rotateSpeed.speed);
-			} break;
-		}
-
-		curAction->commands.push_back(cmd);
-
-		VERBOSE("		Command='%s' delay=%.2f relative=%.2f", CommandType, cmd.delay, accumulatedDelay);
-		switch(cmd.type) {
-			case ActionCommand::Type::STATE_BLOCK: {
-
-			} break;
-
-			case ActionCommand::Type::MOVE: {
-				VERBOSE("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
-				VERBOSE("		  param2=%d", cmd.move.param2);
-			} break;
-
-			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
-				VERBOSE("		  distance=%f", cmd.graphMoveHorz.distance);
-			} break;
-
-			case ActionCommand::Type::ROTATESPEED: {
-				VERBOSE("		  speed=%d", cmd.rotateSpeed.speed);
-			} break;
-		}
+		loadRows->push_back(row);
 	}
 
 	if(actionSliceCount > 0) {
 		actionListMap.emplace(prevMasterClassType, Slice<Action>(&actionList[actionSliceStart], actionSliceCount));
+	}
+
+	foreach(action, actionList) {
+		eastl::fixed_vector<ActionLoadRow*, 64, false> rows;
+		foreach(it, (*loadRows)) {
+			if(it->action == action) {
+				rows.push_back(it);
+			}
+		}
+		if(rows.empty()) {
+			continue;
+		}
+
+		eastl::fixed_vector<const char*, 8, false> stances;
+		foreach(it, rows) {
+			const char* stance = (*it)->stance ? (*it)->stance : "";
+			bool seen = false;
+			foreach(s, stances) {
+				if(EA::StdC::Strcmp(*s, stance) == 0) {
+					seen = true;
+					break;
+				}
+			}
+			if(!seen) {
+				stances.push_back(stance);
+			}
+		}
+		if(stances.size() > 1) {
+			const char* keep = nullptr;
+			foreach(it, rows) {
+				if((*it)->hasCommand && (*it)->cmd.type == ActionCommand::Type::GRAPH_MOVE_HORZ && (*it)->stance) {
+					keep = (*it)->stance;
+				}
+			}
+			if(!keep) {
+				foreach(it, rows) {
+					if((*it)->stance) {
+						keep = (*it)->stance;
+					}
+				}
+			}
+			if(keep) {
+				stances.clear();
+				stances.push_back(keep);
+			}
+		}
+
+		foreach(stanceIt, stances) {
+			const char* stance = *stanceIt;
+			eastl::fixed_vector<ActionLoadRow*, 64, false> group;
+			foreach(it, rows) {
+				const char* rowStance = (*it)->stance ? (*it)->stance : "";
+				if(EA::StdC::Strcmp(rowStance, stance) == 0) {
+					group.push_back(*it);
+				}
+			}
+			for(i32 i = 1; i < (i32)group.size(); ++i) {
+				ActionLoadRow* key = group[i];
+				i32 j = i;
+				while(j > 0) {
+					ActionLoadRow* prev = group[j - 1];
+					const i8 prevType = prev->hasCommand ? (i8)prev->cmd.type : (i8)-1;
+					const i8 keyType = key->hasCommand ? (i8)key->cmd.type : (i8)-1;
+					const bool less = key->animIndex < prev->animIndex || (key->animIndex == prev->animIndex && keyType < prevType);
+					if(!less) {
+						break;
+					}
+					group[j] = prev;
+					--j;
+				}
+				group[j] = key;
+			}
+
+			eastl::fixed_vector<i32, 8, false> clipIndex;
+			eastl::fixed_vector<f32, 8, false> clipStart;
+			f32 running = 0.0f;
+			i32 i = 0;
+			while(i < (i32)group.size() && group[i]->animIndex < 0) {
+				++i;
+			}
+			while(i < (i32)group.size()) {
+				const i32 idx = group[i]->animIndex;
+				i32 j = i;
+				i32 maxLoop = 1;
+				while(j < (i32)group.size() && group[j]->animIndex == idx) {
+					if(group[j]->animLoop > maxLoop) {
+						maxLoop = group[j]->animLoop;
+					}
+					++j;
+				}
+				f32 duration = 0.0f;
+				if(group[i]->animId > 0) {
+					auto foundSeq = aniLenListMap.find(group[i]->classType);
+					if(foundSeq != aniLenListMap.end()) {
+						foreach_const(it, foundSeq->second) {
+							if(it->ID == group[i]->animId) {
+								duration = it->length;
+								break;
+							}
+						}
+					}
+				}
+				if(maxLoop > 1) {
+					duration *= (f32)maxLoop;
+				}
+				clipIndex.push_back(idx);
+				clipStart.push_back(running);
+				running += duration;
+				i = j;
+			}
+			if(running > 0.0f) {
+				action->seqLength = running;
+			}
+
+			foreach(it, group) {
+				ActionLoadRow* row = *it;
+				if(!row->hasCommand) {
+					continue;
+				}
+				f32 start = 0.0f;
+				if(row->animIndex >= 0) {
+					for(i32 c = 0; c < (i32)clipIndex.size(); ++c) {
+						if(clipIndex[c] == row->animIndex) {
+							start = clipStart[c];
+							break;
+						}
+					}
+				}
+				Action::Command cmd = row->cmd;
+				if(cmd.type == ActionCommand::Type::STATE_BLOCK) {
+					cmd.executeAt = start;
+					cmd.completeAt = start + cmd.delay;
+				}
+				else {
+					cmd.executeAt = cmd.delay + start;
+					cmd.completeAt = cmd.executeAt;
+				}
+				action->commands.push_back(cmd);
+				VERBOSE("		executeAt=%.2f completeAt=%.2f", cmd.executeAt, cmd.completeAt);
+			}
+		}
+		for(i32 i = 1; i < (i32)action->commands.size(); ++i) {
+			const Action::Command key = action->commands[i];
+			i32 j = i;
+			while(j > 0 && action->commands[j - 1].executeAt > key.executeAt) {
+				action->commands[j] = action->commands[j - 1];
+				--j;
+			}
+			action->commands[j] = key;
+		}
 	}
 
 	return true;

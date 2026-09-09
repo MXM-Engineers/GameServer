@@ -259,7 +259,8 @@ struct GameXmlContent
 		{
 			ActionCommand::Type type;
 			f32 delay;
-			f32 relativeEndTimeFromStart;
+			f32 executeAt;
+			f32 completeAt;
 
 			union {
 				struct {

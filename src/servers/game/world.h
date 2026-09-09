@@ -110,7 +110,6 @@ struct World
 			RotationHumanoid rot;
 			bool hasJumped = false;
 			bool forcedMove = false;
-			Time lockedMoveUntil = Time::ZERO;
 		} movement;
 
 		explicit Player(u32 index_, const PlayerDescription& desc):
@@ -226,7 +225,10 @@ struct World
 		const HorizontalMotionVariant* horizontalVariant = nullptr;
 		f32 moveSampled = 0.0f;
 		vec2 moveHorizDir = vec2(0);
-		bool moving = false;
+		f32 graphExecuteAt = 0.0f;
+		f32 completeAt = 0.0f;
+		bool graphDone = false;
+
 
 		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
 		inline void Finish() { skillID = SkillID::INVALID; }
@@ -274,6 +276,7 @@ private:
 	ActorUID NewActorUID();
 	ActorMasterHandle MasterInvalidHandle();
 
+	void CancelPlayerPrograms(Player& player);
 	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets, f32 clientTime);
 	void ExecuteSkillProgram(SkillProgram& prog);
 };

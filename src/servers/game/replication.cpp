@@ -1189,7 +1189,7 @@ void Replication::FrameDifference()
 				packet.Write<i32>(0); // ret
 				packet.Write<SkillID>(cast.skillID);
 				packet.Write<u8>(0); // costLevel
-				packet.Write<ActionStateID>(ActionStateID::INVALID); // TODO: is it always invalid?
+				packet.Write<ActionStateID>(cast.actionID);
 				packet.Write<float3>(v2f(cast.castPos));
 
 				packet.Write<u16>(cast.targetList.size()); // targetList_count

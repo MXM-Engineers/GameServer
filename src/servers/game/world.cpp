@@ -75,6 +75,60 @@ static vec2 SkillMoveInputDir(const World::Player& player)
 	return vec2(0);
 }
 
+static void ApplyHorizontalGraph(World& world, World::SkillProgram& prog, World::Player& player, f32 elapsed)
+{
+	if(!prog.horizontalVariant || prog.graphDone) {
+		return;
+	}
+	if(elapsed < prog.graphExecuteAt) {
+		return;
+	}
+	const HorizontalMotionVariant& variant = *prog.horizontalVariant;
+	const f32 graphT = elapsed - prog.graphExecuteAt;
+	const f32 t = eastl::min(graphT, prog.moveDuration);
+	const f32 sampled = variant.Sample(t);
+	const f32 delta = sampled - prog.moveSampled;
+	prog.moveSampled = sampled;
+	const vec3 displacement = vec3(prog.moveHorizDir * delta, 0);
+	if(glm::dot(displacement, displacement) > 0) {
+		world.physics.Move(player.body, displacement, UPDATE_RATE);
+	}
+	prog.graphDone = graphT >= prog.moveDuration;
+	player.input.moveTo = player.body->GetWorldPos();
+	player.movement.forcedMove = true;
+}
+
+static void EmitSkillExec(World& world, World::SkillProgram& prog, World::Player& player, bool applyGraph)
+{
+	vec3 start = prog.moveStartPos;
+	vec3 end = player.body->GetWorldPos();
+	f32 duration = 0.0f;
+	if(applyGraph && prog.horizontalVariant) {
+		start = player.body->GetWorldPos();
+		const f32 authoredEnd = prog.horizontalVariant->Sample(prog.moveDuration);
+		end = start + vec3(prog.moveHorizDir * authoredEnd, 0);
+		prog.moveStartPos = start;
+		prog.moveEndPos = end;
+		duration = prog.moveDuration;
+	}
+	Replication::SkillExec rpExec;
+	rpExec.casterUID = prog.casterUID;
+	rpExec.skillID = prog.skillID;
+	rpExec.castPos = prog.castPos;
+	rpExec.actionID = prog.actionID;
+	eastl::copy(prog.targetList.begin(), prog.targetList.end(), eastl::back_inserter(rpExec.targetList));
+	rpExec.moveDuration = duration;
+	rpExec.startPos = start;
+	rpExec.endPos = end;
+	rpExec.moveDir = vec2(cosf(prog.castAngle), sinf(prog.castAngle));
+	rpExec.rot = { prog.castAngle, 0, prog.castAngle };
+	rpExec.speed = player.movement.moveSpeed;
+	world.replication->FramePushSkillExec(rpExec);
+}
+
+
+
+
 void World::Init(Replication* replication_)
 {
 	replication = replication_;
@@ -107,6 +161,7 @@ void World::Update(Time localTime_)
 			p.mainCharaID ^= 1;
 			const auto& character = GetGameXmlContent().GetMaster(p.Main().classType).character;
 			physics.ResizeDynamicBody(p.body, (f32)character.getActorRadius(), (f32)character.getActorHeight());
+			CancelPlayerPrograms(p);
 		}
 
 		if(p.input.cast.skillID != SkillID::INVALID) {
@@ -131,7 +186,7 @@ void World::Update(Time localTime_)
 	foreach(it, players) {
 		Player& p = *it;
 		PhysicsDynamicBody& body = *p.body;
-		const bool inputBlocked = localTime < p.movement.lockedMoveUntil || p.movement.forcedMove;
+		const bool inputBlocked = p.movement.forcedMove;
 		const vec2 delta = vec2(p.input.moveTo - body.GetWorldPos());
 		const f32 deltaLen = glm::length(delta);
 		if(!inputBlocked && deltaLen > 1.0f && p.input.speed > 0.f) {
@@ -346,6 +401,7 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 	player.input.tag = 0;
 	player.input.jump = 0;
 	player.input.action = ActionStateID::INVALID;
+	player.input.cast.skillID = SkillID::INVALID;
 
 	const ActorUID mainUID = NewActorUID();
 	const ActorUID subUID = NewActorUID();
@@ -487,13 +543,7 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 
 	player.Main().actionState = actionState;
 
-	foreach(it, skillProgramList) {
-		ActorMaster* caster = FindMasterActor(it->casterUID);
-		if(caster && caster->parent == &player) {
-			it->Finish();
-		}
-	}
-	player.movement.lockedMoveUntil = Time::ZERO;
+	CancelPlayerPrograms(player);
 
 	SkillProgram prog;
 	prog.skillID = skillID;
@@ -507,10 +557,14 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.moveEndPos = prog.moveStartPos;
 
 	const auto& action = content.GetSkillAction(player.Main().classType, actionState);
+	prog.completeAt = action.seqLength;
+	f32 graphExecuteAt = 0.0f;
 	bool hasGraph = false;
 	foreach_const(cmd, action.commands) {
+		prog.completeAt = eastl::max(prog.completeAt, cmd->completeAt);
 		if(cmd->type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
 			hasGraph = true;
+			graphExecuteAt = cmd->executeAt;
 		}
 	}
 
@@ -527,32 +581,38 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		prog.moveDuration = variant->duration;
 		prog.moveHorizDir = slide;
 		prog.moveSampled = 0.0f;
+		prog.graphExecuteAt = graphExecuteAt;
 		prog.moveEndPos = prog.moveStartPos + vec3(slide * authoredEnd, 0);
-		prog.moving = true;
+	}
+	if(hasGraph && graphExecuteAt > 0.0f) {
+		EmitSkillExec(*this, prog, player, false);
+	}
+
+	else if(hasGraph) {
+		EmitSkillExec(*this, prog, player, true);
 	}
 
 	ExecuteSkillProgram(prog);
 
-	Replication::SkillExec rpExec;
-	rpExec.casterUID = player.Main().UID;
-	rpExec.skillID = skillID;
-	rpExec.castPos = castPos;
-	rpExec.actionID = actionState;
-	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpExec.targetList));
-
-	rpExec.moveDuration = prog.moveDuration;
-	rpExec.startPos = prog.moveStartPos;
-	rpExec.endPos = prog.moveDuration > 0 ? prog.moveEndPos : player.body->GetWorldPos();
-	rpExec.moveDir = dir;
-	rpExec.rot = { angle, 0, angle };
-	rpExec.speed = player.movement.moveSpeed;
+	if(!hasGraph) {
+		EmitSkillExec(*this, prog, player, false);
+	}
 
 	if(!prog.IsDoneExecuting()) {
 		skillProgramList.push_back(prog);
 	}
-
-	replication->FramePushSkillExec(rpExec);
 }
+
+void World::CancelPlayerPrograms(Player& player)
+{
+	foreach(it, skillProgramList) {
+		ActorMaster* caster = FindMasterActor(it->casterUID);
+		if(caster && caster->parent == &player) {
+			it->Finish();
+		}
+	}
+}
+
 
 void World::ExecuteSkillProgram(SkillProgram& prog)
 {
@@ -561,45 +621,19 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 		prog.Finish();
 		return;
 	}
-
 	Player& player = *caster->parent;
-	PhysicsDynamicBody* body = player.body;
-	const auto& action = GetGameXmlContent().GetSkillAction(caster->classType, prog.actionID);
 	const f32 elapsed = (f32)TimeDurationSec(prog.startTime, localTime);
 
-	if(prog.moving) {
-		ASSERT(prog.horizontalVariant);
-		if(elapsed > 0) {
-			const HorizontalMotionVariant& variant = *prog.horizontalVariant;
-			const f32 t = eastl::min(elapsed, prog.moveDuration);
-			const f32 sampled = variant.Sample(t);
-			const f32 delta = sampled - prog.moveSampled;
-			prog.moveSampled = sampled;
-			const vec3 displacement = vec3(prog.moveHorizDir * delta, 0);
-			if(glm::dot(displacement, displacement) > 0) {
-				physics.Move(body, displacement, UPDATE_RATE);
-			}
-		}
-		player.movement.forcedMove = true;
-		player.input.moveTo = body->GetWorldPos();
-		prog.moving = elapsed < prog.moveDuration;
-	}
 
+	PhysicsDynamicBody* body = player.body;
+	const auto& action = GetGameXmlContent().GetSkillAction(caster->classType, prog.actionID);
 	while(prog.commandID < action.commands.size()) {
 		const auto& cmd = action.commands[prog.commandID];
-		const f32 commandTime = cmd.type == ActionCommand::Type::STATE_BLOCK
-			? (prog.commandID == 0 ? 0.0f : action.commands[prog.commandID - 1].relativeEndTimeFromStart)
-			: cmd.relativeEndTimeFromStart;
-		if(elapsed < commandTime) {
+		if(elapsed < cmd.executeAt) {
 			break;
 		}
 
 		switch(cmd.type) {
-			case ActionCommand::Type::STATE_BLOCK: {
-				const Time until = TimeAddSec(prog.startTime, cmd.relativeEndTimeFromStart);
-				player.movement.lockedMoveUntil = eastl::max(player.movement.lockedMoveUntil, until);
-			} break;
-
 			case ActionCommand::Type::MOVE: {
 				if(cmd.move.preset == ActionCommand::MovePreset::WARP) {
 					const vec2 dir = vec2(cosf(prog.castAngle), sinf(prog.castAngle));
@@ -613,12 +647,16 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 					}
 				}
 			} break;
+			default:
+				break;
 		}
 		++prog.commandID;
 	}
+	ApplyHorizontalGraph(*this, prog, player, elapsed);
 
-	const f32 commandEnd = action.commands.empty() ? 0.0f : action.commands.back().relativeEndTimeFromStart;
-	if(prog.commandID == action.commands.size() && !prog.moving && elapsed >= eastl::max(action.seqLength, commandEnd)) {
+
+	const bool graphPending = prog.horizontalVariant && !prog.graphDone && elapsed < prog.graphExecuteAt + prog.moveDuration;
+	if(prog.commandID == action.commands.size() && !graphPending && elapsed >= prog.completeAt) {
 		caster->actionState = ActionStateID::INVALID;
 		prog.Finish();
 	}

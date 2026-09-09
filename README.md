@@ -50,8 +50,11 @@ Ordinary jumps use extracted per-master directional vertical animation curves
 and `CreatureGravity` from client data; there is no tunable jump impulse.
 See [physics alignment](doc/physics_alignment.md) for extraction and evidence.
 Horizontal skill motion also uses extracted authored curves, including
-directional/random branches and per-branch timing. Live validation of packet
-inputs, resulting movement, and outbound updates remains open.
+directional/random branches and per-branch timing. Supported skill movement
+uses authored command/clip timelines, cancels stale effects on replacement/tag,
+and releases movement after the final graph tick. STATE_BLOCK is not treated
+as a WASD lock. Live validation of packet inputs, resulting movement, and
+remote-client presentation remains open.
 See the [remaining roadmap](doc/physics_roadmap.md).
 Bit-identical PhysX 2.8.4 behavior is not claimed.
 

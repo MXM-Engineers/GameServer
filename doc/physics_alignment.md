@@ -118,8 +118,8 @@ Startup verification is historical, not a promise that those processes remain ru
 ## Remaining parity gaps
 
 - Horizontal authored curves are implemented; live validation of packet-provided movement state and outbound motion updates remains open. Client-internal movement-state and RNG replication are not standalone goals. See `physics_roadmap.md`.
-- STATE_BLOCK and command-delay scheduling follows the available XML structure; exact client scheduler semantics remain unverified.
-- The existing action loader flattens stance variants. Last-declaration graph selection is retained rather than introducing an unverified stance model.
+- Supported action scheduling now uses client-evidenced command/clip timing and has passed real-runtime smoke coverage. Live remote-client presentation of delayed graphs remains unverified.
+- The action loader selects one stance timeline to avoid duplicate effects, preserving last-GRAPH stance selection where present. General stance switching is not implemented.
 - Only DeathMatch collision assets are supported. Additional maps require verified geometry, transforms, collision categories, and dynamic-state behavior.
 - The separate role of class-specific hit volumes still needs further alignment work.
 - General owner prediction/reconciliation is not implemented by this commit. Targeted warp correction is not a complete reconciliation system.
@@ -189,6 +189,35 @@ World applies each authored displacement delta through the actual controller. Co
 Verification: all Release targets built; real World/PhysX smoke passed nonlinear Assassin travel (-286.05 rather than command -300), Defender control (900), Sniper initial-sample and endpoint behavior (-314), ESPER directional rotation (750), Sniper SHIRK endpoint (375), both standing random branches, and obstacle clipping/removal without catch-up. Explicit-duration profiles were loaded and exercised. XML regeneration was byte-identical. Temporary verification artifacts were removed. No live client recording was performed.
 
 Full remaining work is tracked in `physics_roadmap.md`.
+
+## Packet-observable action scheduling
+
+ActionBase timing is normalized when loading content. Commands retain authored Delay and carry execution/completion offsets from action start. Clip offsets include prior AnimationIndex groups and AnimationLoop; command delays do not accumulate across rows. Equal-deadline commands retain animation-index/command-type order. The selected clip sequence determines animation duration, and each program caches its completion boundary.
+
+Client evidence:
+
+- `0x01ab799b` loads Delay, AniLength, command type, and animation index. `0x01ab8da1` sorts through `0x01ac6bb5` and computes clip-relative offsets. `0x01ac6021` dispatches commands; timer delays are converted to milliseconds.
+- STATE_BLOCK dispatch at `0x01ab929e` queues a timer. Its consumer `0x01abfbf4` calls `0x01a4bbf5` to release a state-transition gate; `0x01a4b98d` resets the gate on state entry. This is distinct from a WASD velocity lock and from the PC_StateBlock table. The server's former `lockedMoveUntil` interpretation was removed.
+- GRAPH_MOVE_HORZ dispatch at `0x01ac085d` and WARP at `0x01ab9fc3` inform the supported movement effects.
+- SN_ExecuteSkill handler `0x006bb547` and graph installation at `0x01a4df6a` apply network graph movement immediately; ST_GRAPH_MOVE_DATA has no delay field. A later execute packet also resets the receiving animation sample time. The server therefore emits one execute notification at cast, with graph override only for immediate graph onset. Delayed motion follows the server timeline and normal position replication. SN_CastSkill carries the action state consumed by `0x006b9d62`.
+
+Runtime graphs apply their final sample delta once, suppress stale ordinary movement for that tick, and stop touching input thereafter. Replacement and tag cancel pending programs before their old effects execute. WARP queues a single owner correction when applied. Statesman's overlapping DEFAULT/C command rows no longer execute twice; the existing last-graph stance choice remains the supported selection rather than introducing general stance switching.
+
+Verification used a temporary executable with real loaded content, World, PhysX, and Replication frame queues. The full Release build passed. Observed results:
+
+| Scenario | Result |
+| --- | --- |
+| Assassin SKILL_3 | Authored endpoint -286.049988; movement blocked during graph and resumed afterward |
+| Assassin SKILL_2 | Program still live after first 0.1-second clip; completed after the 1.266667-second sequence |
+| Sniper SKILL_1 | No motion before 1.0-second onset; -111.206146 at graph time 0.066667 versus expected -111.206047; one cast-time execute without immediate graph override and no second execute |
+| Pending Sniper graph | Replacement before and across onset left position unchanged |
+| Sniper SKILL_2 | Initial H_Y0=-3 applied |
+| Defender SKILL_4 | Terminal position 900, then 906.666687 with fresh input while the 1.5-second action remained live |
+| Priest SHIRK | No movement/correction before 0.5 seconds; displacement 1000 and one correction afterward; no repeat |
+| Pending Priest WARP | Replacement and tag prevented later displacement and correction |
+| Assassin SHIRK | Zero-delay WARP applied with one correction |
+
+The Defender terminal regression failed the first runtime smoke at position 880. Refreshing the final graph-owned input and blocking ordinary integration for that tick corrected it; the rerun passed. These checks exercise server motion and replication queues, not a live network/client capture. Remote delayed-graph animation/presentation remains unverified; private client state machines are not an implementation requirement.
 
 ## Suggested next verification targets
 

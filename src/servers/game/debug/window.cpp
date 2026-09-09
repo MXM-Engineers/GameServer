@@ -26,7 +26,6 @@
 #include <sokol_imgui.h>
 
 #include "physics.h"
-#include "collision_tests.h"
 
 struct GameState
 {
@@ -79,22 +78,6 @@ struct Window
 	GameState* gameStateBack = &gameStateList[1];
 	ProfileMutex(Mutex, gameStateMutex);
 
-	bool bGameStateRecording = false;
-	struct Recording
-	{
-		ProfileMutex(Mutex, mutex);
-		i32 filterStep = 1;
-		i32 filterCapsuleID = 0;
-		i32 selectedID = 0;
-		eastl::fixed_vector<PhysWorld::CollisionEvent, 8192, true> events;
-	};
-	Recording gsRecording;
-
-	CollisionTest collisionTest;
-
-	ShapeMesh mapCollision;
-	ShapeMesh mapWalls;
-
 	PhysicsScene testScene;
 	bool bFreezeTestPhysics = false;
 
@@ -122,8 +105,6 @@ struct Window
 	}
 	testSubject;
 
-	bool ui_bCollisionTests = false;
-	bool ui_bMapWireframe = false;
 	bool ui_bGameStates = true;
 	bool ui_bPhysicsTest = false;
 	bool ui_bAreas = false;
@@ -132,8 +113,7 @@ struct Window
 	Window(i32 width, i32 height):
 		winWidth(width),
 		winHeight(height),
-		rdr{width, height},
-		collisionTest(rdr)
+		rdr{width, height}
 	{
 
 	}
@@ -194,11 +174,6 @@ bool Window::Init()
 		rdr.LoadMeshFile(it->name.data(), *it);
 	}
 
-	r = MakeMapCollisionMesh(mfCollision.meshList.front(), &mapCollision);
-	if(!r) return false;
-	r = MakeMapCollisionMesh(mfEnv.meshList.front(), &mapWalls);
-	if(!r) return false;
-
 	auto& phys = PhysContext();
 
 	// create map scene, add ground and wall static meshes
@@ -257,10 +232,9 @@ void Window::WindowPhysicsScene(PhysicsScene& scene, const char* name)
 			vec3 vel = b->vel;
 
 			vec3 color = vec3(1, 0, 1);
-			//if(b->flags & PhysWorld::Flags::Disabled) color = vec3(0.5);
 
 			Draw(*b, color);
-			collisionTest.DrawVec(vel, pos, vec3(1, 0.5, 0.8));
+			rdr.PushArrow(Pipeline::Unlit, pos, pos + vel, vec3(1, 0.5, 0.8), 2);
 		}
 	}
 	ImGui::End();
@@ -386,104 +360,6 @@ void Window::WindowGameStates()
 	}
 	ImGui::End();
 
-	if(ImGui::Begin("Recorder")) {
-		if(!bGameStateRecording) {
-			if(ImGui::Button("Start Recording")) {
-				bGameStateRecording = true;
-				const LockGuard lock(gsRecording.mutex);
-				gsRecording.events.clear();
-			}
-		}
-		else {
-			ImGui::TextColored({1, 0, 0, 1}, "Recording..."); ImGui::SameLine();
-			if(ImGui::Button("Stop")) {
-				bGameStateRecording = false;
-			}
-		}
-
-		ImGui::InputInt("Filter capsule ID", &gsRecording.filterCapsuleID);
-
-		i32 minStep = 1;
-		i32 maxStep = 1;
-		if(!gsRecording.events.empty()) {
-			minStep = gsRecording.events.front().step;
-			maxStep = gsRecording.events.back().step;
-			gsRecording.filterStep = clamp(gsRecording.filterStep, minStep, maxStep);
-		}
-		ImGui::SliderInt("Filter step", &gsRecording.filterStep, minStep, maxStep);
-		ImGui::InputInt("##Filter step", &gsRecording.filterStep);
-
-		bool wasSelected = false;
-		i32 lastFilteredID = -1;
-
-		if(ImGui::BeginListBox("Events")) {
-			for(int n = 0; n < gsRecording.events.size(); n++) {
-				const PhysWorld::CollisionEvent& event = gsRecording.events[n];
-				if(event.step != gsRecording.filterStep) continue;
-				if(event.capsuleID != gsRecording.filterCapsuleID) continue;
-
-				const bool isSelected = (gsRecording.selectedID == n);
-
-				ImGui::PushID(FMT("recording_event_%d", n));
-				if(ImGui::Selectable(FMT("ssi=%d cri=%d len=%g", event.ssi, event.cri, glm::length(event.fix2)), isSelected)) {
-					gsRecording.selectedID = n;
-				}
-				ImGui::PopID();
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if(isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-
-				wasSelected |= (gsRecording.selectedID == n);
-				lastFilteredID = n;
-			}
-			ImGui::EndListBox();
-		}
-
-		// select id within filtered events
-		if(!wasSelected && lastFilteredID != -1) {
-			gsRecording.selectedID = lastFilteredID;
-		}
-
-		if(gsRecording.selectedID >= 0 && gsRecording.selectedID < gsRecording.events.size()) {
-			const PhysWorld::CollisionEvent& event = gsRecording.events[gsRecording.selectedID];
-			const ShapeTriangle& tri = event.triangle;
-
-			collisionTest.Draw(event.cylinder, vec3(0, 0, 1));
-			const vec3 vorg = event.cylinder.base + vec3(0, 0, event.cylinder.radius);
-
-			if(/*gsRecording.bShowPen*/ true) {
-				collisionTest.DrawVec(event.pen.slide * 10.0f, vorg, vec3(0.5, 1, 0.5));
-			}
-
-			if(/*gsRecording.bShowFixed*/ true) {
-				ShapeCylinder fixed = event.cylinder;
-				fixed.base += event.fix;
-				collisionTest.Draw(fixed, vec3(1, 1, 0));
-				fixed = event.cylinder;
-				fixed.base += event.fix2;
-				collisionTest.Draw(fixed, ColorV3(0xfc4137));
-
-				collisionTest.DrawVec(event.fix2 * 20.f, vorg, vec3(1, 1, 0));
-				collisionTest.DrawVec(event.fix * 20.f, vorg, vec3(1, 0, 0));
-				collisionTest.DrawVec(event.vel, vorg, vec3(0.5, 0.5, 1));
-				collisionTest.DrawVec(event.fixedVel, vorg, vec3(1.0, 0.5, 0.2));
-				//vec3 rv = ProjectVec(event.vel, tri.Normal());
-				//collisionTest.DrawVec(rv, event.capsule.base + vec3(0, 0, 50), vec3(1.0, 0, 0.5));
-			}
-
-			const vec3 color = vec3(1, 1, 1);
-			rdr.PushLine(tri.p[0], tri.p[1], color);
-			rdr.PushLine(tri.p[0], tri.p[2], color);
-			rdr.PushLine(tri.p[1], tri.p[2], color);
-			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
-
-
-			ImGui::Text("Dot: %f", glm::dot(event.triangle.Normal(), event.cylinder.Normal()));
-		}
-	}
-	ImGui::End();
 }
 
 void Window::WindowPhysicsTest()
@@ -603,18 +479,6 @@ void Window::NewFrame(Dbg::GameUID gameUID)
 	}
 
 	gameStateFront->NewFrame();
-
-	if(bGameStateRecording) {
-		static GameState gameState;
-		{ LOCK_MUTEX(gameStateMutex);
-			gameState = *gameStateBack;
-		}
-
-		/*
-		LOCK_MUTEX(gsRecording.mutex);
-		eastl::copy(gameState.physics.lastStepEvents.begin(), gameState.physics.lastStepEvents.end(), eastl::back_inserter(gsRecording.events));
-		*/
-	}
 }
 
 void Window::Update(f64 delta)
@@ -625,21 +489,12 @@ void Window::Update(f64 delta)
 
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("View")) {
-			ImGui::MenuItem("Collision tests", "", &ui_bCollisionTests);
 			ImGui::MenuItem("Physics tests", "", &ui_bPhysicsTest);
-			ImGui::MenuItem("Map wireframe", "", &ui_bMapWireframe);
 			ImGui::MenuItem("Game states", "", &ui_bGameStates);
 			ImGui::MenuItem("Areas", "", &ui_bAreas);
 			ImGui::EndMenu();
 		}
 
-		if(ImGui::BeginMenu("Tweak")) {
-			auto& g = GetGlobalTweakableVars();
-			ImGui::SliderFloat("JumpForce", &g.jumpForce, 0, 50000);
-			ImGui::SliderFloat("Gravity", &g.gravity, 0, 2000);
-			ImGui::SliderFloat("Step height", &g.stepHeight, 10, 2000);
-			ImGui::EndMenu();
-		}
 
 		ImGui::EndMainMenuBar();
 	}
@@ -649,29 +504,6 @@ void Window::Update(f64 delta)
 	// map
 	rdr.PushMesh(Pipeline::Shaded, "PVP_DeathMatch01_Collision", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.3));
 	rdr.PushMesh(Pipeline::Shaded, "PVP_Deathmatch01_GuardrailMob", vec3(0, 0, 0), vec3(0, 0, 0), vec3(1), vec3(0.2, 0.3, 0.5));
-
-	if(ui_bMapWireframe) {
-		foreach_const(it, mapCollision.triangleList) {
-			const ShapeTriangle& tri = *it;
-			const vec3 color = vec3(0.5, 1, 0.5);
-			rdr.PushLine(tri.p[0], tri.p[1], color);
-			rdr.PushLine(tri.p[0], tri.p[2], color);
-			rdr.PushLine(tri.p[1], tri.p[2], color);
-			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
-		}
-		foreach_const(it, mapWalls.triangleList) {
-			const ShapeTriangle& tri = *it;
-			const vec3 color = vec3(0.5, 0.5, 1.0);
-			rdr.PushLine(tri.p[0], tri.p[1], color);
-			rdr.PushLine(tri.p[0], tri.p[2], color);
-			rdr.PushLine(tri.p[1], tri.p[2], color);
-			rdr.PushArrow(Pipeline::Unlit, tri.Center(), tri.Center() + tri.Normal() * 100.f, color, 5);
-		}
-	}
-
-	if(ui_bCollisionTests) {
-		collisionTest.Render();
-	}
 
 	if(ui_bGameStates) {
 		WindowGameStates();

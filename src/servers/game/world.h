@@ -60,6 +60,8 @@ struct World
 
 			u8 tag: 1;
 			u8 jump: 1;
+			vec2 jumpMoveDir = vec2(0);
+			f32 jumpRotate = 0.0f;
 
 			ActionStateID action;
 			i32 actionParam1; // TODO: investigate these

@@ -54,7 +54,7 @@ MoveController dimensions are distinct from the class-specific PhysXMesh collide
 
 - Obtain locomotion dimensions through const MoveController getters and resize on master changes when needed.
 - Move the input-block deadline into player movement state. Blocking input no longer suppresses gravity.
-- Require grounding and unblocked input before accepting an ordinary jump impulse.
+- Require grounding and unblocked input before accepting an ordinary jump.
 - Progress horizontal skill graphs over their advertised duration instead of applying their full displacement immediately.
 - Execute the first action command and process zero-delay command batches without skipping them.
 - Keep WARP commands instantaneous and collision-constrained.
@@ -118,13 +118,59 @@ Startup verification is historical, not a promise that those processes remain ru
 ## Remaining parity gaps
 
 - Horizontal graph interpolation is currently linear. Exact client animation curves and their data sources have not been reproduced.
-- The server retains its previous ordinary-jump force and gravity values. Their equivalence to the client's ordinary-jump law remains unverified.
 - STATE_BLOCK and command-delay scheduling follows the available XML structure; exact client scheduler semantics remain unverified.
 - The existing action loader flattens stance variants. Last-declaration graph selection is retained rather than introducing an unverified stance model.
 - Only DeathMatch collision assets are supported. Additional maps require verified geometry, transforms, collision categories, and dynamic-state behavior.
 - The separate role of class-specific hit volumes still needs further alignment work.
 - General owner prediction/reconciliation is not implemented by this commit. Targeted warp correction is not a complete reconciliation system.
 - No side-by-side live client trajectory comparison was performed. SDK 2.8.4 versus 4.1.2 edge cases remain to be measured.
+
+## Ordinary jump alignment
+
+The earlier impulse estimate and universal constant-speed-fall conclusion were incorrect. Ordinary player jumps use authored vertical animation graphs, not a fixed launch impulse.
+
+### Verified client path
+
+- `0x009e88bd` dispatches jump input through `0x01a4be16`, entering JUMP_START; `0x01319225` sends `CQ_PlayerJump`.
+- `0x01b62bac` loads animation motion graphs. `0x01b62dee` reads `V_Time` and `V_Y0` through `V_Y10`.
+- `0x01b61e65` installs the active animation's graph through `0x01a4d95a`. A positive graph duration overrides the animation duration; otherwise the animation duration supplies the time domain.
+- `0x01babb58` configures graph duration, `0x01bab98d` installs samples, and `0x01baaf45` applies playback/amplitude scaling.
+- `0x0238bfb4` performs piecewise-linear interpolation over evenly spaced samples. `0x01bab26f` evaluates the vertical graph; `0x01bab1fd` advances time and returns the height difference, using a zero baseline at launch.
+- `0x01baaeee` applies that difference to Z. While the graph is present, even a zero graph delta suppresses ordinary velocity-driven vertical displacement.
+- `0x01a4f3c1` integrates vertical velocity using `DAT_0312aa38 * dt`. The option loader `0x005e2cfc` populates this global from `CreatureGravity`; the extracted `Design/GAMEINFO/Option.xml` value is `-2100`.
+- `0xc4750000` represents **-980.0f**, not -1000. The probe-based `0x01ad339c` path does contain a 980-unit/s descent, but it is not the universal player jump law.
+
+### Server implementation and data
+
+`scripts/extract_jump_motion.py` imports the extracted client StatePlay resources, matches them against repository `CREATURE_CHARACTER.xml` and `AniLength.xml`, and writes `gamedata/JumpMotion.xml`. Regenerate with:
+
+```text
+python scripts/extract_jump_motion.py "D:/Projets/MxM/MxM_12147 extracted/Data"
+```
+
+The generated data contains 200 profiles: Stand, Front, Left, Right, and Back for all 40 loaded masters. Direction routing follows each MoveType node's CaseValue names and child order, not a globally assumed order. The extraction selects base-master resources and `STANCE_DEFAULT`; RNB's unconditional jump graph supplies all directions. Statesman's alternate stance differs by one float ULP in one duration; the base value is preserved. Materially different branch curves fail extraction rather than being silently flattened.
+
+All current profiles use animation duration because `V_Time` is zero. Durations are not uniformly 0.6 seconds. AndroA's 0.6-second standing graph peaks at 350 units; its moving graphs peak at 330.
+
+The content loader requires complete, finite profiles and negative finite gravity. `JumpMotion::Sample` performs allocation-free, clamped piecewise-linear sampling. `PhysicsScene::StartJump` requires grounding and rejects an active jump; no scalar impulse is applied. Each physics step integrates gravity into velocity but replaces vertical displacement with the authored height difference while the jump graph is active. Graph completion returns control to velocity-based falling. PhysX still constrains the displacement against geometry.
+
+World input preserves the jump packet's movement direction and converts its facing to world yaw for profile selection. Master tagging selects the active master's data. Existing movement locks and owner-skip replication behavior are unchanged. The unused jump/gravity tweakables and their debug controls were removed.
+
+### Verification and limits
+
+A throwaway executable linked the real content loader, World, replication, and PhysX implementation. It passed:
+
+- All 200 profiles at every sample knot, interval midpoint, and endpoint.
+- Full standing trajectory through an actual capsule controller: 36 ticks at 60 Hz, peak 350.000 units.
+- Grounded launch, airborne-repeat rejection, landing, and another jump after landing.
+- Destination-query restoration during a jump.
+- Low-ceiling collision and return to the floor.
+- Falling without a graph, matching the discrete `CreatureGravity` integration.
+- World-level selection of all five directions, rotated facing, master tagging, and movement-lock rejection.
+
+`cmake --build build --config Release` passed for all server and tool targets. Regenerating the jump data from the extracted resources produced a byte-identical XML file. Temporary smoke sources, executable, project, object files, and captured output were removed after verification.
+
+Ghidra graph, jump-state, integration, and option functions were named, and misleading prior annotations were corrected. No side-by-side live-client recording was performed. Exact state-transition/collision timing across PhysX versions, alternate stances, and non-default graph playback/amplitude modifiers still require live comparison or broader state-system support; this implementation does not claim full client physics parity.
 
 ## Suggested next verification targets
 

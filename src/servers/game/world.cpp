@@ -1,5 +1,15 @@
 #include "world.h"
 #include <mxm/game_content.h>
+#include <math.h>
+
+static JumpDirection GetJumpDirection(const vec2& direction, f32 facing)
+{
+	if(direction.x == 0.0f && direction.y == 0.0f) return JumpDirection::Stand;
+	const f32 angle = std::remainder(std::atan2(direction.y, direction.x) - facing, 2.0f * (f32)PI);
+	if(std::fabs(angle) <= (f32)PI * 0.25f) return JumpDirection::Front;
+	if(std::fabs(angle) > (f32)PI * 0.75f) return JumpDirection::Back;
+	return angle > 0.0f ? JumpDirection::Left : JumpDirection::Right;
+}
 
 void World::Init(Replication* replication_)
 {
@@ -71,10 +81,14 @@ void World::Update(Time localTime_)
 
 		if(p.input.jump) {
 			p.input.jump = 0;
-			if(body.grounded && !inputBlocked) {
-				p.movement.hasJumped = true;
-				body.grounded = false;
-				body.vel.z = GetGlobalTweakableVars().jumpForce;
+			if(!inputBlocked) {
+				const auto& motion = GetGameXmlContent().GetJumpMotion(p.Main().classType,
+					GetJumpDirection(p.input.jumpMoveDir, p.input.jumpRotate));
+				if(physics.StartJump(&body, motion)) {
+					p.movement.hasJumped = true;
+					p.movement.rot.bodyYaw = p.input.jumpRotate;
+					p.input.rot.bodyYaw = p.input.jumpRotate;
+				}
 			}
 		}
 

@@ -2,6 +2,7 @@
 #include <EAStdC/EAString.h>
 #include <EAStdC/EASprintf.h>
 #include <tinyxml2.h>
+#include <math.h>
 
 #include "core.h"
 #include "game_content.h"
@@ -73,6 +74,71 @@ bool GameXmlContent::LoadMasterDefinitions()
 
 	}
 
+	return true;
+}
+
+bool GameXmlContent::LoadJumpMotion()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/JumpMotion.xml", doc)) return false;
+	XMLElement* root = doc.FirstChildElement("JumpMotion");
+	if(!root || root->QueryFloatAttribute("creatureGravity", &creatureGravity) != XML_SUCCESS ||
+		!std::isfinite(creatureGravity) || creatureGravity >= 0) {
+		LOG("ERROR(LoadJumpMotion): invalid creatureGravity");
+		return false;
+	}
+
+	constexpr const char* directions[] = { "Stand", "Front", "Left", "Right", "Back" };
+	STATIC_ASSERT(ARRAY_COUNT(directions) == (size_t)JumpDirection::Count);
+	for(XMLElement* profile = root->FirstChildElement(); profile; profile = profile->NextSiblingElement()) {
+		const char* className = profile->Attribute("class");
+		const char* directionName = profile->Attribute("direction");
+		const char* source = profile->Attribute("source");
+		i32 animation = 0;
+		if(strcmp(profile->Name(), "Profile") != 0 || !className || !directionName || !source || !*source ||
+			profile->QueryIntAttribute("animation", &animation) != XML_SUCCESS || animation <= 0) {
+			LOG("ERROR(LoadJumpMotion): invalid profile metadata");
+			return false;
+		}
+		auto found = masterClassStringMap.find(strHash(className));
+		if(found == masterClassStringMap.end() || found->second->className != className) {
+			LOG("ERROR(LoadJumpMotion): unknown class %s", className);
+			return false;
+		}
+		size_t direction = 0;
+		while(direction < ARRAY_COUNT(directions) && strcmp(directionName, directions[direction]) != 0) ++direction;
+		if(direction == ARRAY_COUNT(directions)) {
+			LOG("ERROR(LoadJumpMotion): unknown direction %s", directionName);
+			return false;
+		}
+		JumpMotion& motion = found->second->jumpMotions[direction];
+		if(motion.duration != 0) {
+			LOG("ERROR(LoadJumpMotion): duplicate profile %s %s", className, directionName);
+			return false;
+		}
+		if(profile->QueryFloatAttribute("duration", &motion.duration) != XML_SUCCESS ||
+			!std::isfinite(motion.duration) || motion.duration <= 0) {
+			LOG("ERROR(LoadJumpMotion): invalid duration %s %s", className, directionName);
+			return false;
+		}
+		for(size_t i = 0; i < motion.heights.size(); ++i) {
+			char field[8];
+			EA::StdC::Sprintf(field, "V_Y%u", (u32)i);
+			if(profile->QueryFloatAttribute(field, &motion.heights[i]) != XML_SUCCESS || !std::isfinite(motion.heights[i])) {
+				LOG("ERROR(LoadJumpMotion): invalid %s for %s %s", field, className, directionName);
+				return false;
+			}
+		}
+	}
+	for(const Master& master: masters) {
+		for(size_t direction = 0; direction < ARRAY_COUNT(directions); ++direction) {
+			if(master.jumpMotions[direction].duration <= 0) {
+				LOG("ERROR(LoadJumpMotion): missing profile %s %s", master.className.c_str(), directions[direction]);
+				return false;
+			}
+			ASSERT(master.jumpMotions[direction].duration > 0);
+		}
+	}
 	return true;
 }
 
@@ -1458,6 +1524,9 @@ bool GameXmlContent::Load()
 	bool r = LoadMasterDefinitions();
 	if(!r) return false;
 
+	r = LoadJumpMotion();
+	if(!r) return false;
+
 	r = LoadCharacterBaseStats();
 	if(!r) return false;
 
@@ -1662,6 +1731,14 @@ const GameXmlContent::Master& GameXmlContent::GetMaster(ClassType classType) con
 	auto found = masterClassTypeMap.find(classType);
 	ASSERT(found != masterClassTypeMap.end());
 	return *found->second;
+}
+
+const JumpMotion& GameXmlContent::GetJumpMotion(ClassType classType, JumpDirection direction) const
+{
+	ASSERT((size_t)direction < (size_t)JumpDirection::Count);
+	const JumpMotion& motion = GetMaster(classType).jumpMotions[(size_t)direction];
+	ASSERT(motion.duration > 0);
+	return motion;
 }
 
 i32 GameXmlContent::WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const

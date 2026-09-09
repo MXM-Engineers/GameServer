@@ -12,6 +12,7 @@
 #include "model/character_model.h"
 #include "model/weapon_model.h"
 #include "model/weapon_spec.h"
+#include "jump_motion.h"
 
 namespace ActionCommand {
 
@@ -187,6 +188,7 @@ struct GameXmlContent
 		eastl::fixed_vector<WeaponIndex,3,false> defaultWeaponIDs;
 		eastl::fixed_vector<WeaponIndex,3,false> fairPvpWeaponIDs;
 		eastl::fixed_vector<StatValue,32,false> baseStats;
+		eastl::array<JumpMotion,(size_t)JumpDirection::Count> jumpMotions{};
 
 
 
@@ -297,6 +299,7 @@ struct GameXmlContent
 	eastl::fixed_hash_map<size_t,Master*,100> masterClassStringMap;
 	eastl::fixed_hash_map<ClassType,Master*,100> masterClassTypeMap;
 	eastl::fixed_hash_map<CreatureIndex,Master*,100> masterIdMap;
+	f32 creatureGravity = 0;
 
 	eastl::fixed_hash_map<ClassType,CreatureIndex,100> deathMatchBotIndex;
 
@@ -381,6 +384,7 @@ struct GameXmlContent
 	bool LoadCharacterBaseStats();
 
 	const Master& GetMaster(ClassType classType) const;
+	const JumpMotion& GetJumpMotion(ClassType classType, JumpDirection direction) const;
 	i32 WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const;
 	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
 	const Remote& GetRemote(RemoteIdx remoteID) const;
@@ -389,6 +393,7 @@ private:
 	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
 
 	bool LoadMasterDefinitions();
+	bool LoadJumpMotion();
 	bool LoadEntrySystems();
 	bool LoadStageMaps();
 	bool LoadBotCreatures();

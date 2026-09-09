@@ -46,9 +46,11 @@ The server uses PhysX 4.1.2 with client-derived controller dimensions, contact
 offset, step height, slope limit, climbing mode, and collision groups.
 Gameplay positions represent controller feet.
 
-Horizontal skill graphs progress over their advertised duration using linear
-interpolation; exact client animation curves and ordinary-jump constants are
-not yet verified. This is not a claim of bit-identical PhysX 2.8.4 behavior.
+Ordinary jumps use extracted per-master directional vertical animation curves
+and `CreatureGravity` from client data; there is no tunable jump impulse.
+See [physics alignment](doc/physics_alignment.md) for extraction and evidence.
+Horizontal skill graphs still use linear distance interpolation rather than
+the client's authored curves. Bit-identical PhysX 2.8.4 behavior is not claimed.
 
 ## Code
 

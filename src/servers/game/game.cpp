@@ -6,6 +6,7 @@
 
 #include <mxm/game_content.h>
 #include "config.h"
+#include <math.h>
 
 const CreatureIndex CI_DOOR = CreatureIndex(110040546);
 const CreatureIndex CI_WALL = CreatureIndex(110042602);
@@ -229,6 +230,8 @@ void Game::Update(Time localTime_)
 
 						case Action::Jump: {
 							wpl.input.jump = true;
+							wpl.input.jumpMoveDir = wpl.movement.moveDir;
+							wpl.input.jumpRotate = wpl.input.rot.bodyYaw;
 						} break;
 					}
 				}
@@ -615,6 +618,10 @@ void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f3
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
+	if(actorUID != player.Main().UID || !std::isfinite(rotate) ||
+		!std::isfinite(moveDirX) || !std::isfinite(moveDirY)) return;
+	player.input.jumpMoveDir = vec2(moveDirX, moveDirY);
+	player.input.jumpRotate = MxmYawToWorldYaw(rotate);
 	player.input.jump = 1;
 }
 

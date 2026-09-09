@@ -648,11 +648,3 @@ inline RotationHumanoid RotConvertToWorld(const RotationHumanoid& in)
 
 constexpr i32 PLAYER_CHARACTER_COUNT = 2;
 
-struct GlobalTweakableVariables
-{
-	f32 jumpForce = 2000;
-	f32 gravity = 5000;
-	f32 stepHeight = 120;
-};
-
-GlobalTweakableVariables& GetGlobalTweakableVars();

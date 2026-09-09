@@ -49,8 +49,11 @@ Gameplay positions represent controller feet.
 Ordinary jumps use extracted per-master directional vertical animation curves
 and `CreatureGravity` from client data; there is no tunable jump impulse.
 See [physics alignment](doc/physics_alignment.md) for extraction and evidence.
-Horizontal skill graphs still use linear distance interpolation rather than
-the client's authored curves. Bit-identical PhysX 2.8.4 behavior is not claimed.
+Horizontal skill motion also uses extracted authored curves, including
+directional/random branches and per-branch timing. Live validation of packet
+inputs, resulting movement, and outbound updates remains open.
+See the [remaining roadmap](doc/physics_roadmap.md).
+Bit-identical PhysX 2.8.4 behavior is not claimed.
 
 ## Code
 

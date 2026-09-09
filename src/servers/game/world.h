@@ -11,6 +11,8 @@
 #include "replication.h"
 #include "physics.h"
 
+struct HorizontalMotionVariant;
+
 struct ColliderSize
 {
 	u16 radius;
@@ -221,6 +223,9 @@ struct World
 		vec3 moveStartPos = vec3(0);
 		vec3 moveEndPos = vec3(0);
 		f32 moveDuration = 0;
+		const HorizontalMotionVariant* horizontalVariant = nullptr;
+		f32 moveSampled = 0.0f;
+		vec2 moveHorizDir = vec2(0);
 		bool moving = false;
 
 		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }

@@ -117,7 +117,7 @@ Startup verification is historical, not a promise that those processes remain ru
 
 ## Remaining parity gaps
 
-- Horizontal graph interpolation is currently linear. Exact client animation curves and their data sources have not been reproduced.
+- Horizontal authored curves are implemented; live validation of packet-provided movement state and outbound motion updates remains open. Client-internal movement-state and RNG replication are not standalone goals. See `physics_roadmap.md`.
 - STATE_BLOCK and command-delay scheduling follows the available XML structure; exact client scheduler semantics remain unverified.
 - The existing action loader flattens stance variants. Last-declaration graph selection is retained rather than introducing an unverified stance model.
 - Only DeathMatch collision assets are supported. Additional maps require verified geometry, transforms, collision categories, and dynamic-state behavior.
@@ -171,6 +171,24 @@ A throwaway executable linked the real content loader, World, replication, and P
 `cmake --build build --config Release` passed for all server and tool targets. Regenerating the jump data from the extracted resources produced a byte-identical XML file. Temporary smoke sources, executable, project, object files, and captured output were removed after verification.
 
 Ghidra graph, jump-state, integration, and option functions were named, and misleading prior annotations were corrected. No side-by-side live-client recording was performed. Exact state-transition/collision timing across PhysX versions, alternate stances, and non-default graph playback/amplitude modifiers still require live comparison or broader state-system support; this implementation does not claim full client physics parity.
+
+## Horizontal animation graph alignment
+
+The server now consumes `gamedata/HorizontalMotion.xml`, reproducibly extracted from actual StatePlay XML by `scripts/extract_horizontal_motion.py`. It contains 71 skill-reachable class/action profiles and 156 branches, preserving MoveType, Random case labels, HorizonRotate, per-animation duration, and variable H_Y sample counts. Positive H_Time overrides AniLength; nonzero H_Y0 is preserved.
+
+Client evidence:
+
+- `0x01b62dee` reads graph time and H_Y samples; `0x0238bfb4` samples them with uniform piecewise-linear interpolation.
+- `0x01b61e65` installs the horizontal animation graph through `0x01a4dc6b` and `0x01babc79`. The local zero-target installation through `0x01babbe6`/`0x01bab6d5` retains raw authored scale, rather than forcing travel to ActionBase Param1.
+- `0x01bab102` returns successive sample differences with a zero previous value at initial graph time. `0x01baabea` applies them along the graph's facing and HorizonRotate; the caller reads entity CB0 plus PI. Existing world-yaw conversion requires subtracting HorizonRotate.
+- The actual Random selector is `0x01c055e6`, selecting through the authored cumulative CaseValue thresholds using an RNG call with bounds 0 and 100. `0x01c05839` is a timeout selector, not Random.
+- `0x01c083b4` reads entity B50 for MoveType selection. Server selection uses transmitted movement input and facing sectors; recreating the client field's producer chain is not required unless it explains a packet-observable mismatch.
+
+World applies each authored displacement delta through the actual controller. Collisions clip only that step; removing an obstacle does not cause accumulated endpoint catch-up. Cast output endpoints describe authored travel, and packet layouts remain unchanged. The implementation uses existing server RNG rather than a fixed Random branch. Private client RNG sequence matching is not a requirement; only unreconciled, observable motion disagreements require further work.
+
+Verification: all Release targets built; real World/PhysX smoke passed nonlinear Assassin travel (-286.05 rather than command -300), Defender control (900), Sniper initial-sample and endpoint behavior (-314), ESPER directional rotation (750), Sniper SHIRK endpoint (375), both standing random branches, and obstacle clipping/removal without catch-up. Explicit-duration profiles were loaded and exercised. XML regeneration was byte-identical. Temporary verification artifacts were removed. No live client recording was performed.
+
+Full remaining work is tracked in `physics_roadmap.md`.
 
 ## Suggested next verification targets
 

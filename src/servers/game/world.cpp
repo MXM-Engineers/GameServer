@@ -1,6 +1,6 @@
 #include "world.h"
 #include <mxm/game_content.h>
-#include <math.h>
+#include <cmath>
 
 static JumpDirection GetJumpDirection(const vec2& direction, f32 facing)
 {
@@ -9,6 +9,70 @@ static JumpDirection GetJumpDirection(const vec2& direction, f32 facing)
 	if(std::fabs(angle) <= (f32)PI * 0.25f) return JumpDirection::Front;
 	if(std::fabs(angle) > (f32)PI * 0.75f) return JumpDirection::Back;
 	return angle > 0.0f ? JumpDirection::Left : JumpDirection::Right;
+}
+
+static HorizontalMoveType JumpDirToMoveType(JumpDirection dir)
+{
+	switch(dir) {
+	case JumpDirection::Stand: return HorizontalMoveType::Stand;
+	case JumpDirection::Front: return HorizontalMoveType::Front;
+	case JumpDirection::Left: return HorizontalMoveType::Left;
+	case JumpDirection::Right: return HorizontalMoveType::Right;
+	case JumpDirection::Back: return HorizontalMoveType::Back;
+	default: return HorizontalMoveType::Stand;
+	}
+}
+
+static u32 HorizontalRandomRoll()
+{
+	return (u32)RandInt(0, 100);
+}
+
+static const HorizontalMotionVariant* PickRandomVariant(const HorizontalMotion& motion, HorizontalMoveType want, u32 roll)
+{
+	const HorizontalMotionVariant* last = nullptr;
+	for(u8 i = 0; i < motion.variantCount; ++i) {
+		const HorizontalMotionVariant& v = motion.variants[i];
+		if(!v.hasRandom) continue;
+		if(v.moveType != HorizontalMoveType::Any && v.moveType != want) continue;
+		last = &v;
+		if(roll <= (u32)v.randomCaseValue) return &v;
+	}
+	return last;
+}
+
+static const HorizontalMotionVariant* SelectHorizontalVariant(const HorizontalMotion& motion, HorizontalMoveType want)
+{
+	ASSERT(motion.variantCount > 0);
+	const HorizontalMotionVariant* exactNonRandom = nullptr;
+	const HorizontalMotionVariant* anyNonRandom = nullptr;
+	bool hasRandom = false;
+	for(u8 i = 0; i < motion.variantCount; ++i) {
+		const HorizontalMotionVariant& v = motion.variants[i];
+		if(v.hasRandom) {
+			hasRandom = true;
+			continue;
+		}
+		if(v.moveType == HorizontalMoveType::Any) {
+			if(!anyNonRandom) anyNonRandom = &v;
+			continue;
+		}
+		if(v.moveType == want && !exactNonRandom) exactNonRandom = &v;
+	}
+	if(exactNonRandom) return exactNonRandom;
+	if(anyNonRandom) return anyNonRandom;
+	if(hasRandom) return PickRandomVariant(motion, want, HorizontalRandomRoll());
+	return nullptr;
+}
+
+static vec2 SkillMoveInputDir(const World::Player& player)
+{
+	const vec2 delta = vec2(player.input.moveTo - player.body->GetWorldPos());
+	const f32 deltaLen = glm::length(delta);
+	if(deltaLen > 1.0f && player.input.speed > 0.f) {
+		return NormalizeSafe(delta);
+	}
+	return vec2(0);
 }
 
 void World::Init(Replication* replication_)
@@ -443,19 +507,27 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.moveEndPos = prog.moveStartPos;
 
 	const auto& action = content.GetSkillAction(player.Main().classType, actionState);
-	f32 distance = 0;
 	bool hasGraph = false;
 	foreach_const(cmd, action.commands) {
 		if(cmd->type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
-			distance = cmd->graphMoveHorz.distance;
 			hasGraph = true;
 		}
 	}
 
-	if(hasGraph && distance != 0) {
-		ASSERT(action.seqLength >= 0);
-		prog.moveDuration = action.seqLength;
-		prog.moveEndPos = physics.FindMovePos(player.body, vec3(dir * distance, 0), UPDATE_RATE);
+	if(hasGraph) {
+		const auto& motion = action.horizontalMotion;
+		const HorizontalMoveType want = JumpDirToMoveType(GetJumpDirection(SkillMoveInputDir(player), player.input.rot.bodyYaw));
+		const HorizontalMotionVariant* variant = SelectHorizontalVariant(motion, want);
+		ASSERT(variant);
+		ASSERT(variant->duration > 0);
+		const f32 authoredEnd = variant->Sample(variant->duration);
+		const f32 yaw = player.input.rot.bodyYaw - glm::radians(variant->horizonRotate);
+		const vec2 slide = vec2(cosf(yaw), sinf(yaw));
+		prog.horizontalVariant = variant;
+		prog.moveDuration = variant->duration;
+		prog.moveHorizDir = slide;
+		prog.moveSampled = 0.0f;
+		prog.moveEndPos = prog.moveStartPos + vec3(slide * authoredEnd, 0);
 		prog.moving = true;
 	}
 
@@ -496,16 +568,21 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 	const f32 elapsed = (f32)TimeDurationSec(prog.startTime, localTime);
 
 	if(prog.moving) {
-		const f32 progress = prog.moveDuration > 0 ? eastl::min(elapsed / prog.moveDuration, 1.0f) : 1.0f;
-		const vec3 target = prog.moveStartPos + (prog.moveEndPos - prog.moveStartPos) * progress;
-		const vec3 current = body->GetWorldPos();
-		const vec3 displacement = vec3(vec2(target - current), 0);
-		if(glm::dot(displacement, displacement) > 0) {
-			physics.Move(body, displacement, UPDATE_RATE);
+		ASSERT(prog.horizontalVariant);
+		if(elapsed > 0) {
+			const HorizontalMotionVariant& variant = *prog.horizontalVariant;
+			const f32 t = eastl::min(elapsed, prog.moveDuration);
+			const f32 sampled = variant.Sample(t);
+			const f32 delta = sampled - prog.moveSampled;
+			prog.moveSampled = sampled;
+			const vec3 displacement = vec3(prog.moveHorizDir * delta, 0);
+			if(glm::dot(displacement, displacement) > 0) {
+				physics.Move(body, displacement, UPDATE_RATE);
+			}
 		}
 		player.movement.forcedMove = true;
 		player.input.moveTo = body->GetWorldPos();
-		prog.moving = progress < 1.0f;
+		prog.moving = elapsed < prog.moveDuration;
 	}
 
 	while(prog.commandID < action.commands.size()) {

@@ -142,6 +142,168 @@ bool GameXmlContent::LoadJumpMotion()
 	return true;
 }
 
+static HorizontalMoveType HorizontalMoveTypeFromString(const char* name)
+{
+	if(!name || !*name) return HorizontalMoveType::Any;
+	if(strcmp(name, "STAND") == 0) return HorizontalMoveType::Stand;
+	if(strcmp(name, "FRONT") == 0) return HorizontalMoveType::Front;
+	if(strcmp(name, "LEFT") == 0) return HorizontalMoveType::Left;
+	if(strcmp(name, "RIGHT") == 0) return HorizontalMoveType::Right;
+	if(strcmp(name, "BACK") == 0) return HorizontalMoveType::Back;
+	return HorizontalMoveType::Any;
+}
+
+static bool LoadHorizontalMotionVariant(XMLElement* branch, HorizontalMotionVariant& variant, const char* className, const char* actionName)
+{
+	i32 sampleCount = 0;
+	i32 randomCaseValue = 0;
+	if(strcmp(branch->Name(), "Branch") != 0 ||
+		branch->QueryIntAttribute("sampleCount", &sampleCount) != XML_SUCCESS ||
+		sampleCount < 1 || sampleCount > (i32)HorizontalMotionVariant::MaxSamples) {
+		LOG("ERROR(LoadHorizontalMotion): invalid branch metadata %s %s", className, actionName);
+		return false;
+	}
+	const char* moveTypeName = branch->Attribute("moveType");
+	if(moveTypeName && !*moveTypeName) {
+		LOG("ERROR(LoadHorizontalMotion): empty moveType %s %s", className, actionName);
+		return false;
+	}
+	if(moveTypeName && strcmp(moveTypeName, "STAND") != 0 && strcmp(moveTypeName, "FRONT") != 0 &&
+		strcmp(moveTypeName, "LEFT") != 0 && strcmp(moveTypeName, "RIGHT") != 0 &&
+		strcmp(moveTypeName, "BACK") != 0) {
+		LOG("ERROR(LoadHorizontalMotion): unknown moveType %s for %s %s", moveTypeName, className, actionName);
+		return false;
+	}
+	variant.moveType = HorizontalMoveTypeFromString(moveTypeName);
+	if(branch->Attribute("randomCaseValue")) {
+		if(branch->QueryIntAttribute("randomCaseValue", &randomCaseValue) != XML_SUCCESS ||
+			randomCaseValue < 0 || randomCaseValue > 65535) {
+			LOG("ERROR(LoadHorizontalMotion): invalid randomCaseValue %s %s", className, actionName);
+			return false;
+		}
+		variant.hasRandom = true;
+		variant.randomCaseValue = (u16)randomCaseValue;
+	}
+	if(branch->QueryFloatAttribute("HorizonRotate", &variant.horizonRotate) != XML_SUCCESS ||
+		!std::isfinite(variant.horizonRotate)) {
+		LOG("ERROR(LoadHorizontalMotion): invalid HorizonRotate %s %s", className, actionName);
+		return false;
+	}
+	if(branch->QueryFloatAttribute("duration", &variant.duration) != XML_SUCCESS ||
+		!std::isfinite(variant.duration) || variant.duration <= 0) {
+		LOG("ERROR(LoadHorizontalMotion): invalid branch duration %s %s", className, actionName);
+		return false;
+	}
+	variant.sampleCount = (u8)sampleCount;
+	for(i32 i = 0; i < sampleCount; ++i) {
+		char field[8];
+		EA::StdC::Sprintf(field, "H_Y%u", (u32)i);
+		if(branch->QueryFloatAttribute(field, &variant.samples[i]) != XML_SUCCESS || !std::isfinite(variant.samples[i])) {
+			LOG("ERROR(LoadHorizontalMotion): invalid %s for %s %s", field, className, actionName);
+			return false;
+		}
+	}
+	return true;
+}
+
+bool GameXmlContent::LoadHorizontalMotion()
+{
+	XMLDocument doc;
+	if(!LoadXMLFile(L"/HorizontalMotion.xml", doc)) return false;
+	XMLElement* root = doc.FirstChildElement("HorizontalMotion");
+	if(!root) {
+		LOG("ERROR(LoadHorizontalMotion): missing HorizontalMotion root");
+		return false;
+	}
+
+	for(XMLElement* profile = root->FirstChildElement(); profile; profile = profile->NextSiblingElement()) {
+		const char* className = profile->Attribute("class");
+		const char* actionName = profile->Attribute("action");
+		const char* source = profile->Attribute("source");
+		i32 animation = 0;
+		if(strcmp(profile->Name(), "Profile") != 0 || !className || !actionName || !source || !*source ||
+			EA::StdC::Strncmp(className, "CLASS_TYPE_", 11) != 0 ||
+			profile->QueryIntAttribute("animation", &animation) != XML_SUCCESS || animation <= 0) {
+			LOG("ERROR(LoadHorizontalMotion): invalid profile metadata");
+			return false;
+		}
+		const ClassType classType = ClassTypeFromString(className + 11);
+		if(classType == ClassType::NONE) {
+			LOG("ERROR(LoadHorizontalMotion): unknown class %s", className);
+			return false;
+		}
+		const ActionStateID actionID = ActionStateFromString(actionName);
+		if(actionID == ActionStateID::INVALID) {
+			LOG("ERROR(LoadHorizontalMotion): unknown action %s", actionName);
+			return false;
+		}
+		auto found = actionListMap.find(classType);
+		if(found == actionListMap.end()) {
+			LOG("ERROR(LoadHorizontalMotion): no actions for %s", className);
+			return false;
+		}
+		bool foundAction = false;
+		foreach(it, found->second) {
+			if(it->ID != actionID) continue;
+			HorizontalMotion& motion = it->horizontalMotion;
+			if(motion.variantCount != 0) {
+				LOG("ERROR(LoadHorizontalMotion): duplicate profile %s %s", className, actionName);
+				return false;
+			}
+			for(XMLElement* branch = profile->FirstChildElement("Branch"); branch; branch = branch->NextSiblingElement("Branch")) {
+				if(motion.variantCount >= HorizontalMotion::MaxVariants) {
+					LOG("ERROR(LoadHorizontalMotion): too many branches %s %s", className, actionName);
+					return false;
+				}
+				if(!LoadHorizontalMotionVariant(branch, motion.variants[motion.variantCount], className, actionName)) {
+					return false;
+				}
+				++motion.variantCount;
+			}
+			if(motion.variantCount < 1) {
+				LOG("ERROR(LoadHorizontalMotion): missing branches %s %s", className, actionName);
+				return false;
+			}
+			foundAction = true;
+			break;
+		}
+		if(!foundAction) {
+			LOG("ERROR(LoadHorizontalMotion): unknown action %s %s", className, actionName);
+			return false;
+		}
+	}
+
+	foreach(master, masters) {
+		foreach(skillID, master->skillIDs) {
+			auto skillFound = skillMap.find(*skillID);
+			if(skillFound == skillMap.end()) continue;
+			const ActionStateID actionID = skillFound->second.action;
+			if(actionID == ActionStateID::INVALID) continue;
+			auto list = actionListMap.find(master->classType);
+			if(list == actionListMap.end()) continue;
+			foreach(action, list->second) {
+				if(action->ID != actionID) continue;
+				bool required = false;
+				foreach(cmd, action->commands) {
+					if(cmd->type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
+						required = true;
+						break;
+					}
+				}
+				if(required && action->horizontalMotion.variantCount == 0) {
+					LOG("ERROR(LoadHorizontalMotion): missing profile %s %s", master->className.c_str(), ActionStateToString(action->ID));
+					return false;
+				}
+				for(u8 i = 0; i < action->horizontalMotion.variantCount; ++i) {
+					ASSERT(action->horizontalMotion.variants[i].duration > 0);
+					ASSERT(action->horizontalMotion.variants[i].sampleCount >= 1);
+				}
+			}
+		}
+	}
+	return true;
+}
+
 bool GameXmlContent::LoadCharacterBaseStats()
 {
 	XMLDocument doc;
@@ -1569,6 +1731,9 @@ bool GameXmlContent::Load()
 	if(!r) return false;
 
 	r = LoadAnimationData();
+	if(!r) return false;
+
+	r = LoadHorizontalMotion();
 	if(!r) return false;
 
 	r = LoadRemoteData();

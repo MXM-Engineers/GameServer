@@ -13,6 +13,7 @@
 #include "model/weapon_model.h"
 #include "model/weapon_spec.h"
 #include "jump_motion.h"
+#include "horizontal_motion.h"
 
 namespace ActionCommand {
 
@@ -291,6 +292,7 @@ struct GameXmlContent
 
 		ActionStateID ID;
 		f32 seqLength = 0.0f; // seconds
+		HorizontalMotion horizontalMotion;
 		eastl::fixed_vector<Command,16,false> commands;
 	};
 
@@ -415,6 +417,7 @@ private:
 	bool LoadJukeboxSongs();
 	bool LoadCollisionMeshes();
 	bool LoadAnimationData();
+	bool LoadHorizontalMotion();
 	bool LoadRemoteData(); // Any object created by skills (projectiles, explosions, etc): a "remote"
 
 	// helper functions

@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='utf-8'?>
+<HorizontalMotion>
+  <Profile class="CLASS_TYPE_STRIKER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Striker/Striker.xml" animation="16010" param2="0|1">
+    <Branch animation="16010" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="94" H_Y2="151" H_Y3="216" H_Y4="294" H_Y5="389" H_Y6="461" H_Y7="494" H_Y8="527" H_Y9="564" H_Y10="600" />
+    <Branch animation="16010" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="94" H_Y2="151" H_Y3="216" H_Y4="294" H_Y5="389" H_Y6="461" H_Y7="494" H_Y8="527" H_Y9="564" H_Y10="600" />
+    <Branch animation="16020" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="118" H_Y2="208" H_Y3="283" H_Y4="340" H_Y5="405" H_Y6="495" H_Y7="543" H_Y8="584" H_Y9="599" H_Y10="600" />
+    <Branch animation="16030" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="121" H_Y2="226" H_Y3="320" H_Y4="408" H_Y5="485" H_Y6="524" H_Y7="564" H_Y8="595" H_Y9="598" H_Y10="600" />
+    <Branch animation="16040" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="132" H_Y2="237" H_Y3="314" H_Y4="392" H_Y5="463" H_Y6="514" H_Y7="560" H_Y8="587" H_Y9="587" H_Y10="600" />
+  </Profile>
+  <Profile class="CLASS_TYPE_STRIKER" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Striker/Striker.xml" animation="17010">
+    <Branch animation="17010" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="20" H_Y0="0" H_Y1="-84" H_Y2="-139" H_Y3="-167" H_Y4="-186" H_Y5="-195" H_Y6="-209" H_Y7="-224" H_Y8="-241" H_Y9="-257" H_Y10="-276" H_Y11="-288" H_Y12="-289" H_Y13="-286" H_Y14="-284" H_Y15="-282" H_Y16="-281" H_Y17="-279" H_Y18="-276" H_Y19="-270" />
+  </Profile>
+  <Profile class="CLASS_TYPE_STRIKER" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Striker/Striker.xml" animation="17070">
+    <Branch animation="17070" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="-21.16" H_Y1="-149.21" H_Y2="-178.84" H_Y3="-184.13" H_Y4="-183.07" H_Y5="-178.84" H_Y6="-174.6" H_Y7="-170.37" H_Y8="-169.31" H_Y9="-168" H_Y10="-168" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ASSASSIN" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Assassin/Assassin.xml" animation="18300">
+    <Branch animation="18300" duration="1.233333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-111.63" H_Y2="-191.85" H_Y3="-247.68" H_Y4="-272.1" H_Y5="-286.05" H_Y6="-286.05" H_Y7="-286.05" H_Y8="-286.05" H_Y9="-286.05" H_Y10="-286.05" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ELECTRO" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Electro/Electro.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17010" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17020" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17030" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17040" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DEFENDER" action="SKILL_4_BEHAVIORSTATE" source="Graphic/Creature/Pc/Defender/Defender.xml" animation="17041">
+    <Branch animation="17041" duration="0.3333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="90" H_Y2="180" H_Y3="270" H_Y4="360" H_Y5="450" H_Y6="540" H_Y7="630" H_Y8="720" H_Y9="810" H_Y10="900" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SNIPER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Sniper/Sniper.xml" animation="16010" param2="0|1">
+    <Branch animation="16010" duration="0.2666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="81.28" H_Y1="116.25" H_Y2="161.25" H_Y3="196.22" H_Y4="228.75" H_Y5="259.97" H_Y6="287.53" H_Y7="311.25" H_Y8="332.53" H_Y9="353.72" H_Y10="375" />
+    <Branch animation="16020" duration="0.2666667" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="52.5" H_Y1="94.97" H_Y2="141.28" H_Y3="192.47" H_Y4="232.5" H_Y5="270" H_Y6="292.5" H_Y7="315" H_Y8="338.72" H_Y9="360" H_Y10="375" />
+    <Branch animation="16030" duration="0.2666667" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="73.78" H_Y1="93.75" H_Y2="145.03" H_Y3="203.72" H_Y4="250.03" H_Y5="289.97" H_Y6="321.28" H_Y7="338.72" H_Y8="357.47" H_Y9="367.5" H_Y10="375" />
+    <Branch animation="16040" duration="0.2666667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="93.75" H_Y1="146.25" H_Y2="196.22" H_Y3="243.75" H_Y4="281.25" H_Y5="304.97" H_Y6="334.97" H_Y7="361.22" H_Y8="364.97" H_Y9="367.5" H_Y10="375" />
+    <Branch animation="16010" duration="0.2666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" randomCaseValue="50" H_Y0="81.28" H_Y1="116.25" H_Y2="161.25" H_Y3="196.22" H_Y4="228.75" H_Y5="259.97" H_Y6="287.53" H_Y7="311.25" H_Y8="332.53" H_Y9="353.72" H_Y10="375" />
+    <Branch animation="16010" duration="0.267" durationSource="H_Time" H_Time="0.267" HorizonRotate="0" sampleCount="11" moveType="STAND" randomCaseValue="100" H_Y0="41.25" H_Y1="88.78" H_Y2="130.03" H_Y3="171.28" H_Y4="208.78" H_Y5="244.97" H_Y6="276.28" H_Y7="313.78" H_Y8="343.78" H_Y9="370.03" H_Y10="375" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SNIPER" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Sniper/Sniper.xml" animation="17070">
+    <Branch animation="17070" duration="1.866667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="-283.07" H_Y2="-375" H_Y3="-415" H_Y4="-424" H_Y5="-424" H_Y6="-422" H_Y7="-413" H_Y8="-387" H_Y9="-382" H_Y10="-379" H_Y11="-378" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SNIPER" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Sniper/Sniper.xml" animation="17030" param2="0|1">
+    <Branch animation="17030" duration="1.733333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="15" H_Y0="-3" H_Y1="-230" H_Y2="-312" H_Y3="-337" H_Y4="-352" H_Y5="-359" H_Y6="-355" H_Y7="-352" H_Y8="-345" H_Y9="-324" H_Y10="-315" H_Y11="-308" H_Y12="-311" H_Y13="-314" H_Y14="-314" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SNIPER" action="SKILL_4_BEHAVIORSTATE" source="Graphic/Creature/Pc/Sniper/Sniper.xml" animation="17040">
+    <Branch animation="17040" duration="1.666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="15" H_Y0="20" H_Y1="-129" H_Y2="-196" H_Y3="-236" H_Y4="-255" H_Y5="-263" H_Y6="-271" H_Y7="-275" H_Y8="-276" H_Y9="-272" H_Y10="-252" H_Y11="-232" H_Y12="-225" H_Y13="-221" H_Y14="-220" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DEATHKNIGHT" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/DeathKnight/DeathKnight.xml" animation="18100" param2="0|1">
+    <Branch animation="18100" duration="0.4" durationSource="H_Time" H_Time="0.4" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="155.56" H_Y2="281.48" H_Y3="388.89" H_Y4="477.78" H_Y5="544.44" H_Y6="596.3" H_Y7="640.74" H_Y8="666.67" H_Y9="685.19" H_Y10="700" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DESTROYER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Destroyer/Destroyer.xml" animation="17100" param2="0|1">
+    <Branch animation="17100" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17200" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17300" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17400" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17100" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DESTROYER" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Destroyer/Destroyer.xml" animation="18200">
+    <Branch animation="18200" duration="0.8" durationSource="H_Time" H_Time="0.8" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="94.4" H_Y2="188.9" H_Y3="283.3" H_Y4="377.8" H_Y5="472.2" H_Y6="576.7" H_Y7="687.8" H_Y8="793.7" H_Y9="894.2" H_Y10="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_MECHANIC" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Mechanic/Mechanic.xml" animation="16100" param2="0|1">
+    <Branch animation="16100" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="16200" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="16300" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="16400" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="16100" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DOUBLEGUN" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Doublegun/Doublegun.xml" animation="16010" param2="0|1">
+    <Branch animation="16010" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="72.86" H_Y2="186.43" H_Y3="286.07" H_Y4="373.93" H_Y5="435" H_Y6="487.5" H_Y7="541.07" H_Y8="597.86" H_Y9="646.07" H_Y10="675" />
+    <Branch animation="16010" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="72.8" H_Y2="186.4" H_Y3="286.1" H_Y4="373.9" H_Y5="435" H_Y6="487.5" H_Y7="541.1" H_Y8="597.8" H_Y9="646.1" H_Y10="675" />
+    <Branch animation="16020" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="49.3" H_Y2="146.8" H_Y3="261.4" H_Y4="383.6" H_Y5="486.4" H_Y6="556.1" H_Y7="609.6" H_Y8="657.9" H_Y9="682.5" H_Y10="699.6" />
+    <Branch animation="16030" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="62.1" H_Y2="150" H_Y3="264.6" H_Y4="409.3" H_Y5="520.7" H_Y6="593.6" H_Y7="631.1" H_Y8="648.2" H_Y9="662.1" H_Y10="675" />
+    <Branch animation="16040" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="73.9" H_Y2="157.5" H_Y3="264.6" H_Y4="409.3" H_Y5="508.9" H_Y6="586.1" H_Y7="633.2" H_Y8="649.3" H_Y9="662.1" H_Y10="675" />
+  </Profile>
+  <Profile class="CLASS_TYPE_DOUBLEGUN" action="SKILL_4_BEHAVIORSTATE" source="Graphic/Creature/Pc/Doublegun/Doublegun.xml" animation="17400" param2="0|1">
+    <Branch animation="17400" duration="1.033333" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="16" H_Y0="6.68" H_Y1="173.49" H_Y2="259.02" H_Y3="311.76" H_Y4="348.4" H_Y5="365.81" H_Y6="377.35" H_Y7="393.74" H_Y8="395.67" H_Y9="395.67" H_Y10="396.68" H_Y11="400.53" H_Y12="407.31" H_Y13="407.31" H_Y14="404.47" H_Y15="400.53" />
+  </Profile>
+  <Profile class="CLASS_TYPE_JINSEOYEON" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Jinseoyeon/Jinseoyeon.xml" animation="18300">
+    <Branch animation="18300" duration="0.5666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="0" H_Y2="0" H_Y3="0" H_Y4="0" H_Y5="0" H_Y6="0" H_Y7="0" H_Y8="0" H_Y9="100" H_Y10="500" H_Y11="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_KROMEDE" action="COMBO_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Kromede/Kromede.xml" animation="18120">
+    <Branch animation="18120" duration="0.9333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-28.04" H_Y2="-50.27" H_Y3="-67.2" H_Y4="-77.25" H_Y5="-83.07" H_Y6="-88.89" H_Y7="-93.12" H_Y8="-95.5" H_Y9="-95.5" H_Y10="-95.5" />
+  </Profile>
+  <Profile class="CLASS_TYPE_KROMEDE" action="COMBO_9_BEHAVIORSTATE" source="Graphic/Creature/Pc/Kromede/Kromede.xml" animation="18110">
+    <Branch animation="18110" duration="0.8666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-56.08" H_Y2="-89.96" H_Y3="-119.58" H_Y4="-144.98" H_Y5="-160.86" H_Y6="-176.72" H_Y7="-188.36" H_Y8="-194.72" H_Y9="-200" H_Y10="-200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RODMASTER" action="COMBO_5_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rodmaster/Rodmaster.xml" animation="18200" param2="0|1">
+    <Branch animation="18200" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="33.33" H_Y2="115" H_Y3="190" H_Y4="261.67" H_Y5="331.67" H_Y6="395.83" H_Y7="442.5" H_Y8="476.67" H_Y9="500" H_Y10="500" H_Y11="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RODMASTER" action="SHIRK_COMBO_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rodmaster/Rodmaster.xml" animation="17030" param2="0|1">
+    <Branch animation="17030" duration="0.5000001" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="STAND" H_Y0="0" H_Y1="150" H_Y2="253" H_Y3="364" H_Y4="475" H_Y5="576" H_Y6="660" H_Y7="718" H_Y8="741" H_Y9="741" H_Y10="741" H_Y11="741" />
+    <Branch animation="17030" duration="0.5000001" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="FRONT" H_Y0="0" H_Y1="150" H_Y2="253" H_Y3="364" H_Y4="475" H_Y5="576" H_Y6="660" H_Y7="718" H_Y8="741" H_Y9="741" H_Y10="741" H_Y11="741" />
+    <Branch animation="17040" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="BACK" H_Y0="0" H_Y1="-31" H_Y2="-115" H_Y3="-233" H_Y4="-369" H_Y5="-506" H_Y6="-627" H_Y7="-713" H_Y8="-749" H_Y9="-750" H_Y10="-750" H_Y11="-750" />
+    <Branch animation="17050" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="LEFT" H_Y0="0" H_Y1="-37" H_Y2="-136" H_Y3="-272" H_Y4="-423" H_Y5="-567" H_Y6="-680" H_Y7="-741" H_Y8="-746" H_Y9="-746" H_Y10="-746" H_Y11="-746" />
+    <Branch animation="17060" duration="0.5" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="RIGHT" H_Y0="0" H_Y1="32" H_Y2="116" H_Y3="236" H_Y4="374" H_Y5="513" H_Y6="634" H_Y7="722" H_Y8="759" H_Y9="759" H_Y10="759" H_Y11="759" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RODMASTER" action="SKILL_19_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rodmaster/Rodmaster.xml" animation="18620">
+    <Branch animation="18620" duration="0.4333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="36" H_Y2="198" H_Y3="342" H_Y4="486" H_Y5="630" H_Y6="792" H_Y7="972" H_Y8="1134" H_Y9="1296" H_Y10="1440" H_Y11="1602" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RODMASTER" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rodmaster/Rodmaster.xml" animation="18300" param2="0|1">
+    <Branch animation="18300" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="14" H_Y0="0" H_Y1="111" H_Y2="225" H_Y3="350" H_Y4="460" H_Y5="531" H_Y6="559" H_Y7="569" H_Y8="578" H_Y9="582" H_Y10="580" H_Y11="565" H_Y12="554" H_Y13="550" />
+  </Profile>
+  <Profile class="CLASS_TYPE_PHOTOG" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Photog/Photog.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="69" H_Y2="120" H_Y3="173" H_Y4="244" H_Y5="309" H_Y6="369" H_Y7="415" H_Y8="444" H_Y9="464" H_Y10="478" />
+    <Branch animation="17020" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="-32" H_Y2="-61" H_Y3="-95" H_Y4="-139" H_Y5="-206" H_Y6="-286" H_Y7="-360" H_Y8="-409" H_Y9="-442" H_Y10="-463" />
+    <Branch animation="17030" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="-58" H_Y2="-124" H_Y3="-191" H_Y4="-254" H_Y5="-305" H_Y6="-347" H_Y7="-382" H_Y8="-408" H_Y9="-445" H_Y10="-465" />
+    <Branch animation="17040" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="44" H_Y2="90" H_Y3="143" H_Y4="203" H_Y5="266" H_Y6="319" H_Y7="364" H_Y8="412" H_Y9="444" H_Y10="468" />
+    <Branch animation="17010" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="69" H_Y2="120" H_Y3="173" H_Y4="244" H_Y5="309" H_Y6="369" H_Y7="415" H_Y8="444" H_Y9="464" H_Y10="478" />
+  </Profile>
+  <Profile class="CLASS_TYPE_MAGICGIRL" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/MagicGirl/MagicGirl.xml" animation="17000" param2="0|1">
+    <Branch animation="17000" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="60.84" H_Y2="126.98" H_Y3="187.83" H_Y4="251.32" H_Y5="312.17" H_Y6="375.66" H_Y7="428.57" H_Y8="468.26" H_Y9="492.06" H_Y10="500" />
+    <Branch animation="17000" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="60.84" H_Y2="126.98" H_Y3="187.83" H_Y4="251.32" H_Y5="312.17" H_Y6="375.66" H_Y7="428.57" H_Y8="468.26" H_Y9="492.06" H_Y10="500" />
+    <Branch animation="17000" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="60.84" H_Y2="126.98" H_Y3="187.83" H_Y4="251.32" H_Y5="312.17" H_Y6="375.66" H_Y7="428.57" H_Y8="468.26" H_Y9="492.06" H_Y10="500" />
+    <Branch animation="17000" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="60.84" H_Y2="126.98" H_Y3="187.83" H_Y4="251.32" H_Y5="312.17" H_Y6="375.66" H_Y7="428.57" H_Y8="468.26" H_Y9="492.06" H_Y10="500" />
+    <Branch animation="17000" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="60.84" H_Y2="126.98" H_Y3="187.83" H_Y4="251.32" H_Y5="312.17" H_Y6="375.66" H_Y7="428.57" H_Y8="468.26" H_Y9="492.06" H_Y10="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_POHWARAN" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Pohwaran/Pohwaran.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.72" H_Y5="417.9894" H_Y6="444.4445" H_Y7="470.9" H_Y8="486.7725" H_Y9="500" H_Y10="500" />
+    <Branch animation="17010" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.72" H_Y5="417.9894" H_Y6="444.4445" H_Y7="470.9" H_Y8="486.7725" H_Y9="500" H_Y10="500" />
+    <Branch animation="17020" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.72" H_Y5="417.9894" H_Y6="444.4445" H_Y7="470.9" H_Y8="486.7725" H_Y9="500" H_Y10="500" />
+    <Branch animation="17030" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.72" H_Y5="417.9894" H_Y6="444.4445" H_Y7="470.9" H_Y8="486.7725" H_Y9="500" H_Y10="500" />
+    <Branch animation="17040" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.72" H_Y5="417.9894" H_Y6="444.4445" H_Y7="470.9" H_Y8="486.7725" H_Y9="500" H_Y10="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_POHWARAN" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Pohwaran/Pohwaran.xml" animation="18200" param2="0|1">
+    <Branch animation="18200" duration="1.2" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="16" H_Y0="-4" H_Y1="43" H_Y2="117" H_Y3="194" H_Y4="278" H_Y5="367" H_Y6="456" H_Y7="544" H_Y8="633" H_Y9="721" H_Y10="809" H_Y11="879" H_Y12="973" H_Y13="1000" H_Y14="1000" H_Y15="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_POHWARAN" action="SKILL_4_BEHAVIORSTATE" source="Graphic/Creature/Pc/Pohwaran/Pohwaran.xml" animation="18420">
+    <Branch animation="18420" duration="0.2" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="22" H_Y2="63" H_Y3="110" H_Y4="160" H_Y5="210" H_Y6="255" H_Y7="294" H_Y8="333" H_Y9="370" H_Y10="392" H_Y11="410" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOOMERANG" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boomerang/Boomerang.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="STAND" H_Y0="30" H_Y1="123" H_Y2="212" H_Y3="288" H_Y4="380.95" H_Y5="469.84" H_Y6="562.96" H_Y7="664.55" H_Y8="753.44" H_Y9="800" H_Y10="795.77" H_Y11="800" />
+    <Branch animation="17010" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="FRONT" H_Y0="106" H_Y1="186" H_Y2="258" H_Y3="339" H_Y4="431.75" H_Y5="516.4" H_Y6="601.06" H_Y7="685.71" H_Y8="753.44" H_Y9="795.77" H_Y10="800" H_Y11="800" />
+    <Branch animation="17020" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="12" moveType="BACK" H_Y0="85" H_Y1="157" H_Y2="224" H_Y3="292" H_Y4="364" H_Y5="428" H_Y6="499" H_Y7="571" H_Y8="639" H_Y9="724" H_Y10="775" H_Y11="800" />
+    <Branch animation="17030" duration="0.6" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="12" moveType="LEFT" H_Y0="106" H_Y1="186" H_Y2="267" H_Y3="339" H_Y4="398" H_Y5="474" H_Y6="554" H_Y7="631" H_Y8="707" H_Y9="762" H_Y10="800" H_Y11="800" />
+    <Branch animation="17040" duration="0.6666667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="12" moveType="RIGHT" H_Y0="106" H_Y1="186" H_Y2="267" H_Y3="339" H_Y4="415" H_Y5="487" H_Y6="563" H_Y7="648" H_Y8="703" H_Y9="762" H_Y10="800" H_Y11="800" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SLIME" action="SKILL_23_BEHAVIORSTATE" source="Graphic/Creature/Pc/Slime/Slime.xml" animation="18110">
+    <Branch animation="18110" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-31.35" H_Y2="-105.45" H_Y3="-179.55" H_Y4="-222.3" H_Y5="-222.3" H_Y6="-222.3" H_Y7="-222.3" H_Y8="-222.3" H_Y9="-222.3" H_Y10="-222.3" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SLIME" action="SKILL_24_BEHAVIORSTATE" source="Graphic/Creature/Pc/Slime/Slime.xml" animation="18110">
+    <Branch animation="18110" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-31.35" H_Y2="-105.45" H_Y3="-179.55" H_Y4="-222.3" H_Y5="-222.3" H_Y6="-222.3" H_Y7="-222.3" H_Y8="-222.3" H_Y9="-222.3" H_Y10="-222.3" />
+  </Profile>
+  <Profile class="CLASS_TYPE_SLIME" action="SKILL_25_BEHAVIORSTATE" source="Graphic/Creature/Pc/Slime/Slime.xml" animation="18110">
+    <Branch animation="18110" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-31.35" H_Y2="-105.45" H_Y3="-179.55" H_Y4="-222.3" H_Y5="-222.3" H_Y6="-222.3" H_Y7="-222.3" H_Y8="-222.3" H_Y9="-222.3" H_Y10="-222.3" />
+  </Profile>
+  <Profile class="CLASS_TYPE_MONDOZAX" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/MondoZax/MondoZax.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="17020" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="17030" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="17040" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+    <Branch animation="17010" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="100" H_Y2="190.48" H_Y3="285.71" H_Y4="376.19" H_Y5="461.9" H_Y6="557.15" H_Y7="642.86" H_Y8="728.57" H_Y9="809.53" H_Y10="900" />
+  </Profile>
+  <Profile class="CLASS_TYPE_LILU" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/LILU/LILU.xml" animation="18300" param2="0|1">
+    <Branch animation="18300" duration="2" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="250" H_Y2="500" H_Y3="750" H_Y4="1000" H_Y5="1250" H_Y6="1500" H_Y7="1750" H_Y8="2000" H_Y9="2250" H_Y10="2500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_EFREET" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/EFREET/EFREET.xml" animation="18301" param2="0|1">
+    <Branch animation="18301" duration="0.3333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="0" H_Y2="195.25" H_Y3="338.09" H_Y4="447.62" H_Y5="523.82" H_Y6="599.99" H_Y7="671.44" H_Y8="747.61" H_Y9="823.81" H_Y10="900" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RYTLOCK" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rytlock/Rytlock.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="88.89" H_Y2="168.25" H_Y3="241.27" H_Y4="311.11" H_Y5="374.6" H_Y6="431.75" H_Y7="498.41" H_Y8="558.73" H_Y9="590.48" H_Y10="600" />
+    <Branch animation="17010" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="88.89" H_Y2="168.25" H_Y3="241.27" H_Y4="311.11" H_Y5="374.6032" H_Y6="431.75" H_Y7="498.4127" H_Y8="558.73" H_Y9="590.48" H_Y10="600" />
+    <Branch animation="17020" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="88.89" H_Y2="168.25" H_Y3="241.27" H_Y4="311.11" H_Y5="374.6" H_Y6="431.75" H_Y7="498.41" H_Y8="558.73" H_Y9="590.48" H_Y10="600" />
+    <Branch animation="17030" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="88.89" H_Y2="168.25" H_Y3="241.27" H_Y4="311.11" H_Y5="374.6" H_Y6="431.75" H_Y7="498.41" H_Y8="558.73" H_Y9="590.48" H_Y10="600" />
+    <Branch animation="17040" duration="0.7" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="88.89" H_Y2="168.25" H_Y3="241.27" H_Y4="311.11" H_Y5="374.6" H_Y6="431.75" H_Y7="498.41" H_Y8="558.73" H_Y9="590.48" H_Y10="600" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RYTLOCK" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Rytlock/Rytlock.xml" animation="18100">
+    <Branch animation="18100" duration="0.3" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="1.43" H_Y2="2.86" H_Y3="4.02" H_Y4="5.13" H_Y5="6.08" H_Y6="7.09" H_Y7="7.99" H_Y8="8.783069" H_Y9="9.37" H_Y10="10" />
+  </Profile>
+  <Profile class="CLASS_TYPE_RNB" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/RNB/RNB.xml" animation="17100" param2="0|1">
+    <Branch animation="17100" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="160.85" H_Y2="313.23" H_Y3="461.38" H_Y4="588.36" H_Y5="685.71" H_Y6="719.58" H_Y7="744.97" H_Y8="749.21" H_Y9="761.9" H_Y10="766.14" />
+    <Branch animation="17100" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="160.8466" H_Y2="313.23" H_Y3="461.38" H_Y4="588.36" H_Y5="685.71" H_Y6="719.58" H_Y7="744.97" H_Y8="749.21" H_Y9="761.9" H_Y10="766.14" />
+    <Branch animation="17200" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="160.85" H_Y2="313.23" H_Y3="461.38" H_Y4="588.36" H_Y5="685.71" H_Y6="719.58" H_Y7="744.97" H_Y8="749.21" H_Y9="761.9" H_Y10="766.14" />
+    <Branch animation="17300" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="160.85" H_Y2="313.23" H_Y3="461.38" H_Y4="588.36" H_Y5="685.71" H_Y6="719.58" H_Y7="744.97" H_Y8="749.21" H_Y9="761.9" H_Y10="766.14" />
+    <Branch animation="17400" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="160.85" H_Y2="313.23" H_Y3="461.38" H_Y4="588.36" H_Y5="685.71" H_Y6="719.58" H_Y7="744.97" H_Y8="749.21" H_Y9="761.9" H_Y10="766.14" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BATTER" action="COMBO_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Batter/Batter.xml" animation="18310" param2="0|1">
+    <Branch animation="18310" duration="0.6666666" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="15" H_Y0="38.5" H_Y1="152.8" H_Y2="232.2" H_Y3="268.3" H_Y4="289.3" H_Y5="306.8" H_Y6="316.2" H_Y7="327.8" H_Y8="334.8" H_Y9="341.8" H_Y10="347.7" H_Y11="348.8" H_Y12="348.8" H_Y13="350" H_Y14="350" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BATTER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Batter/Batter.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="210" H_Y2="378" H_Y3="498" H_Y4="558" H_Y5="588" H_Y6="600" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+    <Branch animation="17010" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="210" H_Y2="378" H_Y3="498" H_Y4="558" H_Y5="588" H_Y6="600" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+    <Branch animation="17020" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="210" H_Y2="378" H_Y3="498" H_Y4="558" H_Y5="588" H_Y6="600" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+    <Branch animation="17030" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="210" H_Y2="378" H_Y3="498" H_Y4="558" H_Y5="588" H_Y6="600" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+    <Branch animation="17040" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="208" H_Y2="374" H_Y3="490" H_Y4="562" H_Y5="593" H_Y6="600" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BATTER" action="SKILL_16_BEHAVIORSTATE" source="Graphic/Creature/Pc/Batter/Batter.xml" animation="18200" param2="0|1">
+    <Branch animation="18200" duration="1" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="222" H_Y2="384" H_Y3="479.37" H_Y4="542.86" H_Y5="577.78" H_Y6="590.48" H_Y7="600" H_Y8="600" H_Y9="600" H_Y10="600" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BATTER" action="SKILL_19_BEHAVIORSTATE" source="Graphic/Creature/Pc/Batter/Batter.xml" animation="18500" param2="0|1">
+    <Branch animation="18500" duration="0.2333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="298.41" H_Y2="495.24" H_Y3="679.37" H_Y4="806.35" H_Y5="907.94" H_Y6="984.13" H_Y7="1053.97" H_Y8="1117.46" H_Y9="1161.905" H_Y10="1200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BATTER" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Batter/Batter.xml" animation="18300" param2="0|1">
+    <Branch animation="18300" duration="0.5" durationSource="H_Time" H_Time="0.5" HorizonRotate="0" sampleCount="15" H_Y0="38" H_Y1="62" H_Y2="89" H_Y3="116" H_Y4="146" H_Y5="178" H_Y6="210" H_Y7="243" H_Y8="277" H_Y9="310" H_Y10="345" H_Y11="381" H_Y12="420" H_Y13="460" H_Y14="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ANDROA" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/AndroA/AndroA.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="STAND" H_Y0="0" H_Y1="263" H_Y2="475" H_Y3="643" H_Y4="768" H_Y5="850" H_Y6="920" H_Y7="972" H_Y8="998" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17010" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="FRONT" H_Y0="0" H_Y1="263" H_Y2="475" H_Y3="643" H_Y4="768" H_Y5="850" H_Y6="920" H_Y7="972" H_Y8="998" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17020" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="12" moveType="BACK" H_Y0="0" H_Y1="268" H_Y2="466" H_Y3="636" H_Y4="772" H_Y5="867" H_Y6="946" H_Y7="994" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17030" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="12" moveType="LEFT" H_Y0="0" H_Y1="246" H_Y2="452" H_Y3="620" H_Y4="751" H_Y5="856" H_Y6="936" H_Y7="985" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17040" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="12" moveType="RIGHT" H_Y0="0" H_Y1="198" H_Y2="370" H_Y3="531" H_Y4="688" H_Y5="829" H_Y6="915" H_Y7="974" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ANDROA" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/AndroA/AndroA.xml" animation="18200">
+    <Branch animation="18200" duration="1.666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="13" H_Y0="0" H_Y1="-28" H_Y2="-65" H_Y3="-103" H_Y4="-140" H_Y5="-178" H_Y6="-180" H_Y7="-180" H_Y8="-180" H_Y9="-180" H_Y10="-180" H_Y11="-180" H_Y12="-180" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ANDROA" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/AndroA/AndroA.xml" animation="18300" param2="0|1">
+    <Branch animation="18300" duration="1.733333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="15" H_Y0="0" H_Y1="0" H_Y2="0" H_Y3="56" H_Y4="318" H_Y5="600" H_Y6="785" H_Y7="864" H_Y8="898" H_Y9="900" H_Y10="900" H_Y11="900" H_Y12="900" H_Y13="900" H_Y14="900" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ANDROB" action="COMBO_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/AndroB/AndroB.xml" animation="18120">
+    <Branch animation="18120" duration="0.3000001" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="261.43" H_Y2="543.4" H_Y3="825.37" H_Y4="1011.14" H_Y5="1128.01" H_Y6="1196.78" H_Y7="1238.12" H_Y8="1258.79" H_Y9="1272.44" H_Y10="1300" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ANDROB" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/AndroB/AndroB.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="STAND" H_Y0="0" H_Y1="263" H_Y2="475" H_Y3="643" H_Y4="768" H_Y5="850" H_Y6="920" H_Y7="972" H_Y8="998" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17010" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" moveType="FRONT" H_Y0="0" H_Y1="263" H_Y2="475" H_Y3="643" H_Y4="768" H_Y5="850" H_Y6="920" H_Y7="972" H_Y8="998" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17020" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="12" moveType="BACK" H_Y0="0" H_Y1="268" H_Y2="466" H_Y3="636" H_Y4="772" H_Y5="867" H_Y6="946" H_Y7="994" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17030" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="12" moveType="LEFT" H_Y0="0" H_Y1="246" H_Y2="452" H_Y3="620" H_Y4="751" H_Y5="856" H_Y6="936" H_Y7="985" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+    <Branch animation="17040" duration="1.066667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="12" moveType="RIGHT" H_Y0="0" H_Y1="198" H_Y2="370" H_Y3="531" H_Y4="688" H_Y5="829" H_Y6="915" H_Y7="974" H_Y8="1000" H_Y9="1000" H_Y10="1000" H_Y11="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ATTACKER" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Attacker/Attacker.xml" animation="18300">
+    <Branch animation="18300" duration="0.5666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="120" H_Y2="240" H_Y3="360" H_Y4="480" H_Y5="600" H_Y6="720" H_Y7="840" H_Y8="960" H_Y9="1080" H_Y10="1200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="COMBO_10_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17100" param2="0|1">
+    <Branch animation="17100" duration="1.366667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="89" H_Y2="197" H_Y3="200" H_Y4="200" H_Y5="200" H_Y6="200" H_Y7="200" H_Y8="200" H_Y9="200" H_Y10="200" H_Y11="200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="COMBO_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17090" param2="0|1">
+    <Branch animation="17090" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="83" H_Y2="166" H_Y3="200" H_Y4="200" H_Y5="200" H_Y6="200" H_Y7="200" H_Y8="200" H_Y9="200" H_Y10="200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="COMBO_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17120" param2="0|1">
+    <Branch animation="17120" duration="0.8333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="1.1" H_Y2="84" H_Y3="230" H_Y4="300" H_Y5="300" H_Y6="300" H_Y7="300" H_Y8="300" H_Y9="300" H_Y10="300" H_Y11="300" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="COMBO_4_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17120" param2="0|1">
+    <Branch animation="17120" duration="0.8333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="2" H_Y2="140" H_Y3="383" H_Y4="500" H_Y5="500" H_Y6="500" H_Y7="500" H_Y8="500" H_Y9="500" H_Y10="500" H_Y11="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="SKILL_19_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="18070" param2="0|1">
+    <Branch animation="18070" duration="0.5333335" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="12" H_Y0="0" H_Y1="72" H_Y2="522" H_Y3="810" H_Y4="1062" H_Y5="1260" H_Y6="1404" H_Y7="1530" H_Y8="1638" H_Y9="1728" H_Y10="1782" H_Y11="1800" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="SKILL_23_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17080" param2="0|1">
+    <Branch animation="17080" duration="0.7666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="83" H_Y2="166" H_Y3="200" H_Y4="200" H_Y5="200" H_Y6="200" H_Y7="200" H_Y8="200" H_Y9="200" H_Y10="200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_BOXER" action="SKILL_24_BEHAVIORSTATE" source="Graphic/Creature/Pc/Boxer/Boxer.xml" animation="17110" param2="0|1">
+    <Branch animation="17110" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-96" H_Y2="-192" H_Y3="-200" H_Y4="-200" H_Y5="-200" H_Y6="-200" H_Y7="-200" H_Y8="-200" H_Y9="-200" H_Y10="-200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_NAGA" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/NAGA/NAGA.xml" animation="16010" param2="0|1">
+    <Branch animation="16010" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="7" moveType="STAND" H_Y0="0" H_Y1="150" H_Y2="300" H_Y3="420" H_Y4="530" H_Y5="580" H_Y6="600" />
+    <Branch animation="16010" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="7" moveType="FRONT" H_Y0="0" H_Y1="150" H_Y2="300" H_Y3="420" H_Y4="530" H_Y5="580" H_Y6="600" />
+    <Branch animation="16020" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="7" moveType="BACK" H_Y0="0" H_Y1="150" H_Y2="300" H_Y3="420" H_Y4="530" H_Y5="580" H_Y6="600" />
+    <Branch animation="16030" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="7" moveType="LEFT" H_Y0="0" H_Y1="150" H_Y2="300" H_Y3="420" H_Y4="530" H_Y5="580" H_Y6="600" />
+    <Branch animation="16040" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="7" moveType="RIGHT" H_Y0="0" H_Y1="150" H_Y2="300" H_Y3="420" H_Y4="530" H_Y5="580" H_Y6="600" />
+  </Profile>
+  <Profile class="CLASS_TYPE_NAGA" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/NAGA/NAGA.xml" animation="17041" param2="0|1">
+    <Branch animation="17041" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="4" H_Y0="0" H_Y1="147.09" H_Y2="178.84" H_Y3="200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_LAUNCHER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/Launcher/Launcher.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.73" H_Y5="417.99" H_Y6="444.44" H_Y7="470.9" H_Y8="486.78" H_Y9="500" H_Y10="500" />
+    <Branch animation="17010" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.73" H_Y5="417.99" H_Y6="444.44" H_Y7="470.9" H_Y8="486.78" H_Y9="500" H_Y10="500" />
+    <Branch animation="17020" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.73" H_Y5="417.99" H_Y6="444.44" H_Y7="470.9" H_Y8="486.78" H_Y9="500" H_Y10="500" />
+    <Branch animation="17030" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.73" H_Y5="417.99" H_Y6="444.44" H_Y7="470.9" H_Y8="486.78" H_Y9="500" H_Y10="500" />
+    <Branch animation="17040" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="132.28" H_Y2="230.16" H_Y3="306.88" H_Y4="367.73" H_Y5="417.99" H_Y6="444.44" H_Y7="470.9" H_Y8="486.78" H_Y9="500" H_Y10="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_LAUNCHER" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Launcher/Launcher.xml" animation="18100">
+    <Branch animation="18100" duration="1.733333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-102.65" H_Y2="-133.33" H_Y3="-144.97" H_Y4="-150" H_Y5="-150" H_Y6="-150" H_Y7="-150" H_Y8="-150" H_Y9="-150" H_Y10="-150" />
+  </Profile>
+  <Profile class="CLASS_TYPE_LAUNCHER" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Launcher/Launcher.xml" animation="18200" param2="0|1">
+    <Branch animation="18200" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="201.0582" H_Y2="349.2064" H_Y3="470.8995" H_Y4="560.8466" H_Y5="645.5" H_Y6="724.87" H_Y7="804.2328" H_Y8="867.72" H_Y9="925.93" H_Y10="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_LAUNCHER" action="SKILL_5_BEHAVIORSTATE" source="Graphic/Creature/Pc/Launcher/Launcher.xml" animation="18500">
+    <Branch animation="18500" duration="1.733333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="-153.97" H_Y2="-182.54" H_Y3="-195.2381" H_Y4="-200" H_Y5="-200" H_Y6="-200" H_Y7="-200" H_Y8="-200" H_Y9="-200" H_Y10="-200" />
+  </Profile>
+  <Profile class="CLASS_TYPE_STATESMAN" action="SKILL_2_BEHAVIORSTATE" source="Graphic/Creature/Pc/Statesman/STATESMAN.xml" animation="17090" stance="STANCE_TYPE_C" param2="0|1">
+    <Branch animation="17090" duration="1.333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" stance="STANCE_C" H_Y0="0" H_Y1="251.32" H_Y2="396.8254" H_Y3="465.61" H_Y4="489.418" H_Y5="500" H_Y6="500" H_Y7="500" H_Y8="500" H_Y9="500" H_Y10="500" />
+  </Profile>
+  <Profile class="CLASS_TYPE_STATESMAN" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Statesman/STATESMAN.xml" animation="17100" stance="STANCE_TYPE_C">
+    <Branch animation="17100" duration="1.2" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" stance="STANCE_C" H_Y0="0" H_Y1="150" H_Y2="245" H_Y3="285" H_Y4="300" H_Y5="300" H_Y6="300" H_Y7="300" H_Y8="300" H_Y9="300" H_Y10="300" />
+  </Profile>
+  <Profile class="CLASS_TYPE_YURI" action="COMBO_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Yuri/Yuri.xml" animation="17011">
+    <Branch animation="17011" duration="0.8" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="150" H_Y1="150" H_Y2="150" H_Y3="150" H_Y4="150" H_Y5="150" H_Y6="150" H_Y7="150" H_Y8="150" H_Y9="150" H_Y10="150" />
+  </Profile>
+  <Profile class="CLASS_TYPE_YURI" action="SKILL_1_BEHAVIORSTATE" source="Graphic/Creature/Pc/Yuri/Yuri.xml" animation="17010">
+    <Branch animation="17010" duration="0.6666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="150" H_Y1="150" H_Y2="150" H_Y3="150" H_Y4="150" H_Y5="150" H_Y6="150" H_Y7="150" H_Y8="150" H_Y9="150" H_Y10="150" />
+  </Profile>
+  <Profile class="CLASS_TYPE_YURI" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/Yuri/Yuri.xml" animation="17030" param2="0|1">
+    <Branch animation="17030" duration="0.4666667" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="0" H_Y1="58.2" H_Y2="185.19" H_Y3="449.74" H_Y4="634.92" H_Y5="724.87" H_Y6="804.23" H_Y7="857.14" H_Y8="915.34" H_Y9="962.96" H_Y10="1000" />
+  </Profile>
+  <Profile class="CLASS_TYPE_YURI" action="SKILL_5_BEHAVIORSTATE" source="Graphic/Creature/Pc/Yuri/Yuri.xml" animation="17050" param2="0|1">
+    <Branch animation="17050" duration="0.4" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" H_Y0="-262.43" H_Y1="101.59" H_Y2="359.79" H_Y3="482.54" H_Y4="592.59" H_Y5="698.41" H_Y6="761.9048" H_Y7="783.0688" H_Y8="778.836" H_Y9="778.836" H_Y10="766.1376" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ESPER" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/ESPER/ESPER.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="36.4" H_Y2="103.9" H_Y3="210" H_Y4="337.5" H_Y5="469.3" H_Y6="583.9" H_Y7="662.1" H_Y8="722.1" H_Y9="737.1" H_Y10="750" />
+    <Branch animation="17010" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="36.25" H_Y2="103.75" H_Y3="210" H_Y4="337.5" H_Y5="468.75" H_Y6="583.75" H_Y7="662.5" H_Y8="722.5" H_Y9="737.5" H_Y10="750" />
+    <Branch animation="17020" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="36.25" H_Y2="103.75" H_Y3="210" H_Y4="337.5" H_Y5="468.75" H_Y6="583.75" H_Y7="662.5" H_Y8="722.5" H_Y9="737.5" H_Y10="750" />
+    <Branch animation="17030" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="36.25" H_Y2="103.75" H_Y3="210" H_Y4="337.5" H_Y5="468.75" H_Y6="583.75" H_Y7="662.5" H_Y8="722.5" H_Y9="737.5" H_Y10="750" />
+    <Branch animation="17040" duration="0.7333333" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="36.25" H_Y2="103.75" H_Y3="210" H_Y4="337.5" H_Y5="468.75" H_Y6="583.75" H_Y7="662.5" H_Y8="722.5" H_Y9="737.5" H_Y10="750" />
+  </Profile>
+  <Profile class="CLASS_TYPE_ESPER" action="SKILL_3_BEHAVIORSTATE" source="Graphic/Creature/Pc/ESPER/ESPER.xml" animation="18300">
+    <Branch animation="18300" duration="1.266667" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" H_Y0="0" H_Y1="150" H_Y2="256" H_Y3="330" H_Y4="360" H_Y5="380" H_Y6="390" H_Y7="396" H_Y8="400" H_Y9="400" H_Y10="400" />
+  </Profile>
+  <Profile class="CLASS_TYPE_GHOSTWIDOW" action="SHIRK_BEHAVIORSTATE" source="Graphic/Creature/Pc/GhostWidow/GhostWidow.xml" animation="17010" param2="0|1">
+    <Branch animation="17010" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="STAND" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17010" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="0" sampleCount="11" moveType="FRONT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17020" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="180" sampleCount="11" moveType="BACK" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17030" duration="0.5333334" durationSource="AniLength" H_Time="0" HorizonRotate="-90" sampleCount="11" moveType="LEFT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+    <Branch animation="17040" duration="0.5666667" durationSource="AniLength" H_Time="0" HorizonRotate="90" sampleCount="11" moveType="RIGHT" H_Y0="0" H_Y1="67.5" H_Y2="135" H_Y3="202.5" H_Y4="270" H_Y5="337.5" H_Y6="405" H_Y7="472.5" H_Y8="540" H_Y9="607.5" H_Y10="675" />
+  </Profile>
+</HorizontalMotion>

@@ -1268,7 +1268,7 @@ class ServerSerializer:
         print('SN_PartyInviteResponse {')
         n = p.read_u16()
         print('    account_len=%d' % n)
-        account = p.read_raw(n * 2).decode('utf-16-le', errors='replace') if hasattr(p, 'read_wstr') else p.read_raw(n * 2).decode('utf-16-le', errors='replace')
+        account = p.read_raw(n * 2).decode('utf-16-le', errors='replace')
         print('    account=%s' % account)
         print('    accept=%d' % p.read_u8())
         print('}')
@@ -2027,7 +2027,7 @@ class ServerSerializer:
         print('    result=%d' % p.read_u32())
         n = p.read_u16()
         print('    guildName_len=%d' % n)
-        guildName = p.read_raw(n * 2).decode('utf-16-le', errors='replace') if hasattr(p, 'read_wstr') else p.read_raw(n * 2).decode('utf-16-le', errors='replace')
+        guildName = p.read_raw(n * 2).decode('utf-16-le', errors='replace')
         print('    guildName=%s' % guildName)
         print('    guildJoinType=%d' % p.read_u8())
         print('}')
@@ -2171,10 +2171,7 @@ class ServerSerializer:
         print('    result=%d' % p.read_u32())
         n = p.read_u16()
         print('    guildNotice_len=%d' % n)
-        if hasattr(p, 'read_wstr'):
-            s = p.read_raw(n * 2).decode('utf-16-le', errors='replace')
-        else:
-            s = p.read_raw(n * 2).decode('utf-16-le', errors='replace')
+        s = p.read_raw(n * 2).decode('utf-16-le', errors='replace')
         print('    guildNotice=%s' % s)
         print('}')
     def serialize_62306(netid, p: common.PacketReader):

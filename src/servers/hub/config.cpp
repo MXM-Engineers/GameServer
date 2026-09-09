@@ -2,9 +2,10 @@
 #include <EASTL/fixed_string.h>
 #include <EAStdC/EASprintf.h>
 
-static bool ParseIdList(const char* line, const char* key, eastl::fixed_vector<i32,16>& out)
+template<size_t N>
+static bool ParseIdList(const char* line, const char (&key)[N], eastl::fixed_vector<i32,16>& out)
 {
-	const size_t keyLen = strlen(key);
+	const size_t keyLen = N - 1;
 	if(strncmp(line, key, keyLen) != 0) return false;
 	out.clear();
 	const char* p = line + keyLen;

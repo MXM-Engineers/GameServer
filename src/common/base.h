@@ -14,11 +14,12 @@
 #define STATIC_ASSERT(cond) static_assert(cond, #cond)
 #define ASSERT_SIZE(T, SIZE) STATIC_ASSERT(sizeof(T) == SIZE)
 
-inline void __assertion_failed(const char* cond, const char* file, int line)
+[[noreturn]] inline void __assertion_failed(const char* cond, const char* file, int line)
 {
 	LOG("Assertion failed (%s : %d): %s", file, line, cond);
 	LogsFlushAndClose();
 	DbgBreak();
+	abort();
 }
 
 #define ASSERT(cond) do { if(!(cond)) { __assertion_failed(#cond, __FILE__, __LINE__); } } while(0)

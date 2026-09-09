@@ -218,7 +218,7 @@ bool GameXmlContent::LoadMasterDefinitionsModel()
 		pNodeMaster->QueryAttribute("ID", &masterID);
 
 		auto found = masterClassTypeMap.find((ClassType)(masterID - 100000000));
-		if(found == masterClassTypeMap.end());
+		ASSERT(found != masterClassTypeMap.end());
 		auto& master = found->second;
 
 		CharacterModel &character = master->character;
@@ -914,21 +914,19 @@ bool GameXmlContent::FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, St
 		for(auto areaID : entry.areas) {
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
-				for(auto stageID : area.stages) {
-					*outAreaIndex = AreaIndex(area.ID);
-					*outStageIndex = StageIndex(stageID);
-					return true;
-				}
+				if(area.stages.empty()) continue;
+				*outAreaIndex = area.ID;
+				*outStageIndex = area.stages[0];
+				return true;
 			}
 		}
 		for(auto areaID : entry.scheduleAreas) {
 			for(auto& area : areaStages) {
 				if(area.ID != areaID) continue;
-				for(auto stageID : area.stages) {
-					*outAreaIndex = AreaIndex(area.ID);
-					*outStageIndex = StageIndex(stageID);
-					return true;
-				}
+				if(area.stages.empty()) continue;
+				*outAreaIndex = area.ID;
+				*outStageIndex = area.stages[0];
+				return true;
 			}
 		}
 		return false;

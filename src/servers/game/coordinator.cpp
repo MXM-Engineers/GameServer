@@ -652,9 +652,9 @@ void Coordinator::CreateDevGame()
 	ASSERT(content.FindQueueAreaStage((i32)EntrySystemID::ARENA_3v3, &areaID, &stageID));
 	const GameXmlContent::StageMaps* stage = content.FindStageMaps(stageID);
 	ASSERT(stage);
-	ASSERT(stage->joinMemberMax > 0);
-	ASSERT(content.FindStageMap(stageID, &mapID));
 	const i32 teamSize = stage->joinMemberMax;
+	ASSERT(teamSize > 0);
+	ASSERT(content.FindStageMap(stageID, &mapID));
 	ASSERT(teamSize * 2 <= (i32)game.players.size());
 	game.playerCount = (u8)(teamSize * 2);
 	game.areaIndex = areaID;

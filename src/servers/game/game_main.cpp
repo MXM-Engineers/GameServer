@@ -3,6 +3,7 @@
 #include "debug/window.h"
 #include "coordinator.h"
 #include "config.h"
+#include "velqor_trace.h"
 
 // NOTE: SN_GamePlayerEquipWeapon is needed for the player to rotate with the mouse
 
@@ -13,6 +14,7 @@ int main(int argc, char** argv)
 {
 	PlatformInit();
 	LogInit("game_server.log");
+	VelqorTrace::Enabled();
 	LogNetTrafficInit("game_server_nt.log", 0x0);
 	TimeInit();
 
@@ -70,7 +72,10 @@ int main(int argc, char** argv)
 	}
 
 #ifdef CONF_WINDOWS
-	WindowCreate();
+	char velqorRunDir[2];
+	if(GetEnvironmentVariableA("VELQOR_RUN_DIR", velqorRunDir, (DWORD)sizeof(velqorRunDir)) == 0) {
+		WindowCreate();
+	}
 #endif
 
 	static Coordinator coordinator;

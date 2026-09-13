@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "name": "owner_sniper_forward_then_a",
+  "description": "Owner (Sniper, master slot 0) moves forward, releases, then casts normal quickslot A on the internal queued client path, all without the client taking focus. Cursor steps are normalized to the STATUS viewport. The A trial contains its own targeting cursor and click confirmation; the probe of mouse buttons and wheel runs only after the complete-action tail of the accepted 180060040 cast. If A is rejected, the trace is inspected for the real legality/learn state instead of substituting another ability. A final held forward proves STOP release.",
+  "server": {
+    "order": ["mm", "hub", "game", "login"],
+    "ready_timeout_s": 90,
+    "cfg": {
+      "matchmaker.cfg": { "ListenPort": "13900", "TraceNetwork": "0" },
+      "hub.cfg": { "ListenPort": "11900", "DevMode": "1", "DevQuickConnect": "1", "TraceNetwork": "0" },
+      "game.cfg": { "ListenPort": "12900", "DevMode": "1", "DevQuickConnect": "1", "TraceNetwork": "0", "DevSecondPlayer": null, "DevSecondPlayerMasters": null, "DevPlayer0Masters": "6,5" },
+      "login.cfg": { "ListenPort": "10900", "GameServerIP": "127.0.0.1", "GameServerPort": "11900" }
+    }
+  },
+  "client": {
+    "exe": "D:/Projets/MxM/MxM_12147/Client.Win32/MXMClient_DP_p3.exe",
+    "cwd": "D:/Projets/MxM/MxM_12147/Client.Win32",
+    "args": ["/LogEncryption", "/AuthMethod:local", "/Network:dev", "/PacketEncryption:0", "/AutoJoinGame", "/AutoLoginID:LordSk"],
+    "ready_timeout_s": 180,
+    "play_if_not_ready": true,
+    "injector": null,
+    "dll": null
+  },
+  "timing": {
+    "pre_begin_settle_ms": 1200,
+    "trial_gap_ms": 800,
+    "exec_timeout_ms": 8000,
+    "stop_settle_ms": 1500
+  },
+  "focus_policy": {
+    "abort_on_client_focus": true,
+    "abort_on_harness_cursor": true,
+    "cursor_tolerance": 1
+  },
+  "compare": {
+    "tolerance_units": 25.0,
+    "divergence_units": 50.0
+  },
+  "trials": [
+    {
+      "name": "normal_a",
+      "skill_vk": 65,
+      "evidence": {
+        "entry_label": "skill_a_down",
+        "skill_id": 180060040,
+        "tail_ms": 4000,
+        "cast_timeout_ms": 15000
+      },
+      "steps": [
+        { "op": "cursor", "norm_x": 0.5, "norm_y": 0.5, "at_ms": 0, "label": "aim_baseline" },
+        { "op": "mark", "at_ms": 400, "id": "baseline" },
+        { "op": "key", "vk": 90, "down": 1, "at_ms": 900, "label": "forward_down" },
+        { "op": "key", "vk": 90, "down": 0, "at_ms": 1800, "label": "forward_up" },
+        { "op": "mark", "at_ms": 2500, "id": "after_forward" },
+        { "op": "cursor", "norm_x": 0.5, "norm_y": 0.4, "at_ms": 2800, "label": "aim_skill" },
+        { "op": "key", "vk": 65, "down": 1, "at_ms": 3400, "label": "skill_a_down" },
+        { "op": "key", "vk": 1, "down": 1, "at_ms": 3900, "label": "skill_a_confirm_down" },
+        { "op": "key", "vk": 1, "down": 0, "at_ms": 4040, "label": "skill_a_confirm_up" },
+        { "op": "key", "vk": 65, "down": 0, "at_ms": 4160, "label": "skill_a_up" },
+        { "op": "mark", "at_ms": 5200, "id": "after_skill_a" }
+      ]
+    },
+    {
+      "name": "learn_ctrl_a",
+      "steps": [
+        { "op": "key", "vk": 17, "down": 1, "at_ms": 0, "label": "learn_ctrl_down" },
+        { "op": "key", "vk": 65, "down": 1, "at_ms": 120, "label": "skillup_a_down" },
+        { "op": "key", "vk": 65, "down": 0, "at_ms": 260, "label": "skillup_a_up" },
+        { "op": "key", "vk": 17, "down": 0, "at_ms": 400, "label": "learn_ctrl_up" },
+        { "op": "mark", "at_ms": 1000, "id": "after_normal_skillup" }
+      ]
+    }
+  ],
+  "probe": {
+    "enabled": true,
+    "base_at_ms": 1200,
+    "steps": [
+      { "op": "key", "vk": 1, "down": 1, "at_ms": 0, "label": "lbutton_down" },
+      { "op": "key", "vk": 1, "down": 0, "at_ms": 140, "label": "lbutton_up" },
+      { "op": "key", "vk": 2, "down": 1, "at_ms": 400, "label": "rbutton_down" },
+      { "op": "key", "vk": 2, "down": 0, "at_ms": 540, "label": "rbutton_up" },
+      { "op": "key", "vk": 4, "down": 1, "at_ms": 800, "label": "mbutton_down" },
+      { "op": "key", "vk": 4, "down": 0, "at_ms": 940, "label": "mbutton_up" },
+      { "op": "key", "vk": 5, "down": 1, "at_ms": 1200, "label": "xbutton1_down" },
+      { "op": "key", "vk": 5, "down": 0, "at_ms": 1340, "label": "xbutton1_up" },
+      { "op": "key", "vk": 6, "down": 1, "at_ms": 1600, "label": "xbutton2_down" },
+      { "op": "key", "vk": 6, "down": 0, "at_ms": 1740, "label": "xbutton2_up" },
+      { "op": "key", "vk": 216, "down": 1, "at_ms": 2000, "label": "wheel_up_down" },
+      { "op": "key", "vk": 216, "down": 0, "at_ms": 2100, "label": "wheel_up_up" },
+      { "op": "key", "vk": 217, "down": 1, "at_ms": 2400, "label": "wheel_down_down" },
+      { "op": "key", "vk": 217, "down": 0, "at_ms": 2500, "label": "wheel_down_up" },
+      { "op": "mark", "at_ms": 2800, "id": "after_probe" }
+    ]
+  },
+  "disconnect_release_check": {
+    "enabled": true,
+    "steps": [
+      { "op": "key", "vk": 17, "down": 1, "at_ms": 0, "label": "disconnect_ctrl_down" },
+      { "op": "key", "vk": 65, "down": 1, "at_ms": 120, "label": "disconnect_a_down" }
+    ],
+    "pending_step": { "op": "mark", "at_ms": 2000, "id": "must_cancel_on_disconnect" }
+  },
+  "stop_release_check": {
+    "enabled": true,
+    "hold_step": { "op": "key", "vk": 90, "down": 1, "at_ms": 0, "label": "hold_before_stop" },
+    "hold_offset_ms": 3200,
+    "mark": { "op": "mark", "at_ms": 3600, "id": "before_stop" }
+  }
+}

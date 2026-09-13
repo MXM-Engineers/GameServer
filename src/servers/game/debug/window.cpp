@@ -680,6 +680,7 @@ void WindowRequestClose()
 
 void WindowWaitForCleanup()
 {
+	if(!g_pWindow) return;
 	g_pWindow->thread.WaitForEnd();
 }
 
@@ -693,11 +694,13 @@ GameUID PushNewGame(const FixedStr32& mapName)
 
 void PushNewFrame(GameUID gameUID)
 {
+	if(!g_pWindow) return;
 	g_pWindow->NewFrame(gameUID);
 }
 
 void Push(GameUID gameUID, const PlayerMaster& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 
@@ -708,16 +711,19 @@ void PopGame(GameUID gameUID)
 
 void PushPhysics(GameUID gameUID, const PhysicsScene& scene)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->PushPhysicsScene(scene);
 }
 
 void Push(GameUID gameUID, const Npc& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 
 void Push(GameUID gameUID, const Dynamic& entity)
 {
+	if(!g_pWindow) return;
 	g_pWindow->gameStateFront->Push(entity);
 }
 

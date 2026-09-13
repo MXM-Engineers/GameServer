@@ -6,6 +6,7 @@
 
 #include <mxm/game_content.h>
 #include "config.h"
+#include "velqor_trace.h"
 #include <math.h>
 
 const CreatureIndex CI_DOOR = CreatureIndex(110040546);
@@ -87,6 +88,26 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		else {
 			botList.emplace_back(worldPlayer.index);
 		}
+
+		if(VelqorTrace::Enabled()) {
+			char f[768];
+			size_t len = 0;
+			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"user_id\":%u,\"client_hd\":%u,\"master_uid\":%u,\"sub_uid\":%u,\"main_class\":%d,\"sub_class\":%d,\"team\":%u,\"is_bot\":%d",
+				(i32)replication.inGameID, worldPlayer.index, (u32)desc.userID, (u32)desc.clientHd,
+				(u32)worldPlayer.Main().UID, (u32)worldPlayer.Sub().UID, (i32)worldPlayer.mainClass, (i32)worldPlayer.subClass,
+				(u32)desc.team, desc.clientHd == ClientHandle::INVALID ? 1 : 0);
+			VelqorTrace::Emit("player_join", f);
+		}
+	}
+
+	if(VelqorTrace::Enabled()) {
+		char f[640];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"sortie_uid\":%llu,\"game_type\":%d,\"map_index\":%d,\"area_index\":%d,\"stage_index\":%d,\"player_count\":%d,\"sim_t\":%.4f",
+			(i32)replication.inGameID, (unsigned long long)(u64)gameInfo.sortieUID, (i32)replication.gameType,
+			(i32)replication.mapIndex, (i32)replication.areaIndex, (i32)replication.stageIndex, (i32)gameInfo.playerCount,
+			TimeDurationSec(Time::ZERO, localTime));
+		VelqorTrace::Emit("instance_init", f);
 	}
 
 	dbgGameUID = Dbg::PushNewGame("PVP_DeathMatch");
@@ -94,6 +115,13 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 
 void Game::Cleanup()
 {
+	if(VelqorTrace::Enabled()) {
+		char f[128];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d", (i32)replication.inGameID);
+		VelqorTrace::Emit("instance_cleanup", f);
+		VelqorTrace::Flush();
+	}
 	world.Cleanup();
 }
 
@@ -450,6 +478,24 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		return;
 	}
 
+	if(VelqorTrace::Enabled()) {
+		char f[1024];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"user_id\":%u,\"client_hd\":%u,\"actor_uid\":%u",
+			(i32)replication.inGameID, player.index, (u32)player.userID, (u32)clientHd, (u32)actorUID);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&pos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"dir_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&dir.x, 2);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"rot_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rot.upperYaw, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"speed_client\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, speed);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"action\":%d,\"client_t\":", (i32)action);
+		VelqorTrace::CatF32(f, sizeof(f), len, clientTime);
+		VelqorTrace::Emit("input_move", f);
+	}
+
 	const f64 serverTime = TimeDiffSec(TimeRelNow());
 
 	static f64 prevClientTime = 0;
@@ -610,6 +656,14 @@ void Game::OnPlayerTag(ClientHandle clientHd, ActorUID actorUID)
 
 	// TODO: cooldown
 	player.input.tag = 1;
+
+	if(VelqorTrace::Enabled()) {
+		char f[256];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"tag\":1",
+			(i32)replication.inGameID, player.index, (u32)actorUID);
+		VelqorTrace::Emit("tag_request", f);
+	}
 }
 
 void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY)
@@ -618,8 +672,23 @@ void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f3
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	if(actorUID != player.Main().UID || !std::isfinite(rotate) ||
-		!std::isfinite(moveDirX) || !std::isfinite(moveDirY)) return;
+	const bool velqorAccepted = actorUID == player.Main().UID && std::isfinite(rotate) &&
+		std::isfinite(moveDirX) && std::isfinite(moveDirY);
+
+	if(VelqorTrace::Enabled()) {
+		char f[384];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"accepted\":%d",
+			(i32)replication.inGameID, player.index, (u32)actorUID, velqorAccepted ? 1 : 0);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"rotate\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, rotate);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
+		const float velqorJumpDir[2] = { moveDirX, moveDirY };
+		VelqorTrace::CatVec(f, sizeof(f), len, velqorJumpDir, 2);
+		VelqorTrace::Emit("jump_request", f);
+	}
+
+	if(!velqorAccepted) return;
 	player.input.jumpMoveDir = vec2(moveDirX, moveDirY);
 	player.input.jumpRotate = MxmYawToWorldYaw(rotate);
 	player.input.jump = 1;
@@ -633,6 +702,30 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 
 	player.input.cast = cast;
 	player.input.cast.clientTime = posInfo.clientTime;
+
+	if(VelqorTrace::Enabled()) {
+		uint32_t traceTargets[16];
+		const size_t traceTargetCount = cast.targetList.size() < 16 ? cast.targetList.size() : 16;
+		for(size_t i = 0; i < traceTargetCount; ++i) traceTargets[i] = (uint32_t)cast.targetList[i];
+
+		char f[1280];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"user_id\":%u,\"client_hd\":%u,\"actor_uid\":%u,\"skill_id\":%d",
+			(i32)replication.inGameID, player.index, (u32)player.userID, (u32)clientHd, (u32)actorUID, (i32)cast.skillID);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"cast_pos\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&cast.pos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"target_count\":%u,\"targets\":", (u32)traceTargetCount);
+		VelqorTrace::CatUids(f, sizeof(f), len, traceTargets, traceTargetCount);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"client_t\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, posInfo.clientTime);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posInfo.pos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"rot_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posInfo.rot.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"speed_client\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, posInfo.speed);
+		VelqorTrace::Emit("cast_request", f);
+	}
 
 	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
 	// TODO: convert clientTime to localTime

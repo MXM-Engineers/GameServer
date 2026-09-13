@@ -2,12 +2,45 @@
 #include <EASTL/fixed_string.h>
 #include <EAStdC/EASprintf.h>
 
+static bool ParseIdListCsv(const char* line, const char* key, eastl::fixed_vector<i32,4>& out)
+{
+	u32 keyLen = 0;
+	while(key[keyLen] != 0) keyLen++;
+	for(u32 i = 0; i < keyLen; i++) {
+		if(line[i] != key[i]) return false;
+	}
+
+	const char* cursor = line + keyLen;
+	out.clear();
+
+	i32 sign = 1;
+	i32 value = 0;
+	bool pending = false;
+	for(; *cursor != 0; cursor++) {
+		const char ch = *cursor;
+		if(ch == '-') { sign = -1; value = 0; pending = true; }
+		else if(ch >= '0' && ch <= '9') { value = value * 10 + (ch - '0'); pending = true; }
+		else if(ch == ',') {
+			if(pending && out.size() < out.capacity()) out.push_back(sign * value);
+			sign = 1;
+			value = 0;
+			pending = false;
+		}
+		else break;
+	}
+	if(pending && out.size() < out.capacity()) out.push_back(sign * value);
+	return true;
+}
+
 bool CConfigGame::ParseLine(const char* line)
 {
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevForcedMap=%d", &DevForcedMap) == 1) return true;
+	if(ParseIdListCsv(line, "DevPlayer0Masters=", DevPlayer0Masters)) return true;
+	if(EA::StdC::Sscanf(line, "DevSecondPlayer=%d", &DevSecondPlayerAccount) == 1) return true;
+	if(ParseIdListCsv(line, "DevSecondPlayerMasters=", DevSecondPlayerMasters)) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
@@ -84,6 +117,17 @@ bool CConfigGame::SaveConfigFile()
 	out.append_sprintf("DbgCamDirX=%f\n", DbgCamDirX);
 	out.append_sprintf("DbgCamDirY=%f\n", DbgCamDirY);
 	out.append_sprintf("DbgCamDirZ=%f\n", DbgCamDirZ);
+	if(!DevPlayer0Masters.empty()) {
+		out.append_sprintf("DevPlayer0Masters=");
+		foreach_const(m, DevPlayer0Masters) out.append_sprintf("%s%d", (m == DevPlayer0Masters.begin()) ? "" : ",", *m);
+		out.append_sprintf("\n");
+	}
+	if(DevSecondPlayerAccount != 0) {
+		out.append_sprintf("DevSecondPlayer=%d\n", DevSecondPlayerAccount);
+		out.append_sprintf("DevSecondPlayerMasters=");
+		foreach_const(m, DevSecondPlayerMasters) out.append_sprintf("%s%d", (m == DevSecondPlayerMasters.begin()) ? "" : ",", *m);
+		out.append_sprintf("\n");
+	}
 
 	bool r = fileSaveBuff(CONFIG_PATH, out.data(), out.size());
 	if(!r) {
@@ -109,6 +153,9 @@ void CConfigGame::Print() const
 	LOG("	DbgCamDirX=%f", DbgCamDirX);
 	LOG("	DbgCamDirY=%f", DbgCamDirY);
 	LOG("	DbgCamDirZ=%f", DbgCamDirZ);
+	LOG("	DevPlayer0Masters=%d", (i32)DevPlayer0Masters.size());
+	LOG("	DevSecondPlayer=%d", DevSecondPlayerAccount);
+	LOG("	DevSecondPlayerMasters=%d", (i32)DevSecondPlayerMasters.size());
 	LOG("}");
 }
 

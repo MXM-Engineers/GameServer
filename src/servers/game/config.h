@@ -1,5 +1,6 @@
 #pragma once
 #include <common/base.h>
+#include <EASTL/fixed_vector.h>
 
 struct CConfigGame
 {
@@ -7,6 +8,9 @@ struct CConfigGame
 	i32 DevMode = false;
 	i32 DevQuickConnect = false;
 	i32 DevForcedMap = 0;
+	eastl::fixed_vector<i32,4> DevPlayer0Masters = {};
+	i32 DevSecondPlayerAccount = 0;
+	eastl::fixed_vector<i32,4> DevSecondPlayerMasters = {};
 	i32 TraceNetwork = false;
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;

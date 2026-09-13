@@ -1,6 +1,10 @@
 #include "world.h"
 #include <mxm/game_content.h>
+#include <eathread/eathread_atomic.h>
+#include "velqor_trace.h"
 #include <cmath>
+
+static EA::Thread::AtomicUint32 g_velqorUpdateSeq = 0;
 
 static JumpDirection GetJumpDirection(const vec2& direction, f32 facing)
 {
@@ -123,6 +127,26 @@ static void EmitSkillExec(World& world, World::SkillProgram& prog, World::Player
 	rpExec.moveDir = vec2(cosf(prog.castAngle), sinf(prog.castAngle));
 	rpExec.rot = { prog.castAngle, 0, prog.castAngle };
 	rpExec.speed = player.movement.moveSpeed;
+	if(VelqorTrace::Enabled()) {
+		char f[1280];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"apply_graph\":%d",
+			(i32)world.replication->inGameID, player.index, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID, applyGraph ? 1 : 0);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"cast_pos\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&prog.castPos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"exec_start\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&start.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"exec_end\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&end.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rpExec.moveDir.x, 2);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"speed\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, rpExec.speed);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_duration\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, duration);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, world.localTime));
+		VelqorTrace::Emit("skill_exec", f);
+	}
 	world.replication->FramePushSkillExec(rpExec);
 }
 
@@ -150,6 +174,9 @@ void World::Update(Time localTime_)
 	localTime = localTime_;
 	physics.localTime = localTime;
 
+	const bool velqorTrace = VelqorTrace::Enabled();
+	if(velqorTrace) g_velqorUpdateSeq.Increment();
+
 	foreach(it, players) {
 		Player& p = *it;
 		p.movement.rot = p.input.rot;
@@ -162,6 +189,17 @@ void World::Update(Time localTime_)
 			const auto& character = GetGameXmlContent().GetMaster(p.Main().classType).character;
 			physics.ResizeDynamicBody(p.body, (f32)character.getActorRadius(), (f32)character.getActorHeight());
 			CancelPlayerPrograms(p);
+			if(velqorTrace) {
+				char f[640];
+				size_t len = 0;
+				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"main_chara_id\":%u,\"class_type\":%d",
+					(i32)replication->inGameID, p.index, (u32)p.Main().UID, (u32)p.mainCharaID, (i32)p.Main().classType);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"pos\":");
+				const vec3 pos = p.body->GetWorldPos();
+				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&pos.x, 3);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
+				VelqorTrace::Emit("tag_apply", f);
+			}
 		}
 
 		if(p.input.cast.skillID != SkillID::INVALID) {
@@ -200,6 +238,7 @@ void World::Update(Time localTime_)
 
 		if(p.input.jump) {
 			p.input.jump = 0;
+			bool velqorJumpStarted = false;
 			if(!inputBlocked) {
 				const auto& motion = GetGameXmlContent().GetJumpMotion(p.Main().classType,
 					GetJumpDirection(p.input.jumpMoveDir, p.input.jumpRotate));
@@ -207,7 +246,26 @@ void World::Update(Time localTime_)
 					p.movement.hasJumped = true;
 					p.movement.rot.bodyYaw = p.input.jumpRotate;
 					p.input.rot.bodyYaw = p.input.jumpRotate;
+					velqorJumpStarted = true;
 				}
+			}
+			if(velqorTrace) {
+				char f[1024];
+				size_t len = 0;
+				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"started\":%d,\"has_jumped\":%d",
+					(i32)replication->inGameID, p.index, (u32)p.Main().UID, velqorJumpStarted ? 1 : 0, p.movement.hasJumped ? 1 : 0);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"jump_rotate\":");
+				VelqorTrace::CatF32(f, sizeof(f), len, p.input.jumpRotate);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
+				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&p.input.jumpMoveDir.x, 2);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"pos\":");
+				const vec3 pos = body.GetWorldPos();
+				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&pos.x, 3);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"vel\":");
+				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&body.vel.x, 3);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"grounded\":%d", body.grounded ? 1 : 0);
+				VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
+				VelqorTrace::Emit("jump_apply", f);
 			}
 		}
 
@@ -216,6 +274,39 @@ void World::Update(Time localTime_)
 	}
 
 	physics.Step();
+
+	if(velqorTrace) {
+		const f64 velqorSimTime = TimeDurationSec(Time::ZERO, localTime);
+		foreach_const(it, players) {
+			const Player& p = *it;
+			const PhysicsDynamicBody& body = *p.body;
+			const vec3 posServer = body.GetWorldPos();
+			const vec3 rot = vec3(p.movement.rot.upperYaw, p.movement.rot.upperPitch, p.movement.rot.bodyYaw);
+			char f[1536];
+			size_t len = 0;
+			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"user_id\":%u,\"client_hd\":%u,\"actor_uid\":%u,\"master_slot\":%u",
+				(i32)replication->inGameID, p.index, (u32)p.userID, (u32)p.clientHd, (u32)p.Main().UID, (u32)p.mainCharaID);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_server\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posServer.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"vel\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&body.vel.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"grounded\":%d", body.grounded ? 1 : 0);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&p.movement.moveDir.x, 2);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"move_speed\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, p.movement.moveSpeed);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"input_speed\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, p.input.speed);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"move_to\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&p.input.moveTo.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"rot\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rot.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"main_chara_id\":%u,\"has_jumped\":%d,\"forced_move\":%d,\"sim_t\":%.4f,\"update_seq\":%u",
+				(u32)p.mainCharaID, p.movement.hasJumped ? 1 : 0, p.movement.forcedMove ? 1 : 0, velqorSimTime, g_velqorUpdateSeq.GetValue());
+			VelqorTrace::Emit("post_sim", f);
+		}
+	}
+
 	Replicate();
 }
 
@@ -538,6 +629,34 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 
 	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
 
+	if(VelqorTrace::Enabled()) {
+		uint32_t traceTargets[16];
+		const size_t traceTargetCount = targets.size() < 16 ? targets.size() : 16;
+		for(size_t i = 0; i < traceTargetCount; ++i) traceTargets[i] = (uint32_t)targets[i];
+
+		char f[1536];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"user_id\":%u,\"client_hd\":%u,\"actor_uid\":%u,\"master_slot\":%u",
+			(i32)replication->inGameID, player.index, (u32)player.userID, (u32)player.clientHd, (u32)rpCast.casterUID, (u32)player.mainCharaID);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"skill_id\":%d,\"action_state\":%d", (i32)skillID, (i32)actionState);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"cast_pos\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&castPos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"caster_pos\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rpCast.casterPos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"caster_dir\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rpCast.casterMoveDir.x, 2);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"caster_rot\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rpCast.casterRot.upperYaw, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"caster_speed\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, rpCast.casterSpeed);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"client_t\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, clientTime);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"target_count\":%u,\"targets\":", (u32)traceTargetCount);
+		VelqorTrace::CatUids(f, sizeof(f), len, traceTargets, traceTargetCount);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
+		VelqorTrace::Emit("cast_accept", f);
+	}
+
 	replication->FramePushSkillCast(rpCast);
 
 
@@ -584,6 +703,29 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		prog.graphExecuteAt = graphExecuteAt;
 		prog.moveEndPos = prog.moveStartPos + vec3(slide * authoredEnd, 0);
 	}
+
+	if(VelqorTrace::Enabled()) {
+		char f[1280];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d",
+			(i32)replication->inGameID, player.index, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"complete_at\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, prog.completeAt);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"has_graph\":%d", hasGraph ? 1 : 0);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"graph_execute_at\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, graphExecuteAt);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_duration\":");
+		VelqorTrace::CatF32(f, sizeof(f), len, prog.moveDuration);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&prog.moveHorizDir.x, 2);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_start\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&prog.moveStartPos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_end\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&prog.moveEndPos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"command_count\":%u,\"sim_t\":%.4f", (u32)action.commands.size(), TimeDurationSec(Time::ZERO, localTime));
+		VelqorTrace::Emit("skill_program_start", f);
+	}
+
 	if(hasGraph && graphExecuteAt > 0.0f) {
 		EmitSkillExec(*this, prog, player, false);
 	}
@@ -605,9 +747,17 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 
 void World::CancelPlayerPrograms(Player& player)
 {
+	const bool velqorTrace = VelqorTrace::Enabled();
 	foreach(it, skillProgramList) {
 		ActorMaster* caster = FindMasterActor(it->casterUID);
 		if(caster && caster->parent == &player) {
+			if(velqorTrace) {
+				char f[640];
+				size_t len = 0;
+				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"sim_t\":%.4f",
+					(i32)replication->inGameID, player.index, (u32)it->casterUID, (i32)it->skillID, (i32)it->actionID, TimeDurationSec(Time::ZERO, localTime));
+				VelqorTrace::Emit("skill_cancel", f);
+			}
 			it->Finish();
 		}
 	}
@@ -616,8 +766,16 @@ void World::CancelPlayerPrograms(Player& player)
 
 void World::ExecuteSkillProgram(SkillProgram& prog)
 {
+	const bool velqorTrace = VelqorTrace::Enabled();
 	ActorMaster* caster = FindMasterActor(prog.casterUID);
 	if(!caster || caster->parent->Main().UID != prog.casterUID) {
+		if(velqorTrace) {
+			char f[768];
+			size_t len = 0;
+			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%d,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"reason\":\"invalid_caster\",\"elapsed\":null,\"complete_at\":null,\"cmd_index\":%d,\"command_count\":-1,\"sim_t\":%.4f",
+				(i32)replication->inGameID, caster ? (i32)caster->parent->index : -1, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID, (i32)prog.commandID, TimeDurationSec(Time::ZERO, localTime));
+			VelqorTrace::Emit("skill_done", f);
+		}
 		prog.Finish();
 		return;
 	}
@@ -633,6 +791,10 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 			break;
 		}
 
+		const i32 velqorCmdIndex = (i32)prog.commandID;
+		vec3 velqorPosBefore = vec3(0);
+		if(velqorTrace) velqorPosBefore = body->GetWorldPos();
+
 		switch(cmd.type) {
 			case ActionCommand::Type::MOVE: {
 				if(cmd.move.preset == ActionCommand::MovePreset::WARP) {
@@ -644,6 +806,19 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 					player.movement.forcedMove = true;
 					if(player.clientHd != ClientHandle::INVALID) {
 						replication->FrameRequestPositionCorrection(player.clientHd, caster->UID);
+						if(velqorTrace) {
+							char f[896];
+							size_t len = 0;
+							VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"client_hd\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"move_param2\":%d",
+								(i32)replication->inGameID, player.index, (u32)player.clientHd, (u32)caster->UID, (i32)prog.skillID, cmd.move.param2);
+							VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_before\":");
+							VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&startPos.x, 3);
+							const vec3 velqorCorrectionPos = body->GetWorldPos();
+							VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_after\":");
+							VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&velqorCorrectionPos.x, 3);
+							VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
+							VelqorTrace::Emit("position_correction", f);
+						}
 					}
 				}
 			} break;
@@ -651,6 +826,29 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 				break;
 		}
 		++prog.commandID;
+
+		if(velqorTrace) {
+			const i32 velqorMovePreset = (cmd.type == ActionCommand::Type::MOVE) ? (i32)cmd.move.preset : -1;
+			const i32 velqorMoveParam2 = (cmd.type == ActionCommand::Type::MOVE) ? cmd.move.param2 : 0;
+			const vec3 velqorPosAfter = body->GetWorldPos();
+			char f[1152];
+			size_t len = 0;
+			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"cmd_index\":%d,\"cmd_type\":%d",
+				(i32)replication->inGameID, player.index, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID, velqorCmdIndex, (i32)cmd.type);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"cmd_execute_at\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, cmd.executeAt);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"cmd_complete_at\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, cmd.completeAt);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"move_preset\":%d,\"move_param2\":%d", velqorMovePreset, velqorMoveParam2);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_before\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&velqorPosBefore.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_after\":");
+			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&velqorPosAfter.x, 3);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"elapsed\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, elapsed);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
+			VelqorTrace::Emit("skill_command", f);
+		}
 	}
 	ApplyHorizontalGraph(*this, prog, player, elapsed);
 
@@ -658,6 +856,18 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 	const bool graphPending = prog.horizontalVariant && !prog.graphDone && elapsed < prog.graphExecuteAt + prog.moveDuration;
 	if(prog.commandID == action.commands.size() && !graphPending && elapsed >= prog.completeAt) {
 		caster->actionState = ActionStateID::INVALID;
+		if(velqorTrace) {
+			char f[896];
+			size_t len = 0;
+			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"reason\":\"complete\"",
+				(i32)replication->inGameID, player.index, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"elapsed\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, elapsed);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"complete_at\":");
+			VelqorTrace::CatF32(f, sizeof(f), len, prog.completeAt);
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"cmd_index\":%d,\"command_count\":%u,\"sim_t\":%.4f", (i32)prog.commandID, (u32)action.commands.size(), TimeDurationSec(Time::ZERO, localTime));
+			VelqorTrace::Emit("skill_done", f);
+		}
 		prog.Finish();
 	}
 }

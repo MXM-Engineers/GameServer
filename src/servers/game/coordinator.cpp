@@ -9,6 +9,7 @@
 #include "config.h"
 #include "channel.h"
 #include "instance.h"
+#include "velqor_trace.h"
 
 intptr_t ThreadLane(void* pData)
 {
@@ -518,6 +519,15 @@ void Coordinator::HandleMatchmakerPacket(const NetHeader& header, const u8* pack
 			NT_LOG("[MM] %s", PacketSerialize<In::MQ_CreateGame>(packetData, packetSize));
 			const In::MQ_CreateGame& packet = SafeCast<In::MQ_CreateGame>(packetData, packetSize);
 
+			if(VelqorTrace::Enabled()) {
+				char f[192];
+				size_t len = 0;
+				VelqorTrace::Catf(f, sizeof(f), len, "\"sortie_uid\":%llu,\"player_count\":%u",
+					(unsigned long long)(u64)packet.sortieUID, (u32)packet.playerCount);
+				VelqorTrace::Emit("mm_create_game", f);
+				VelqorTrace::Flush();
+			}
+
 			for(auto* p = packet.players.begin(); p != packet.players.begin()+packet.playerCount; ++p) {
 				PendingClientEntry entry;
 				entry.accountUID = p->accountUID;
@@ -533,6 +543,13 @@ void Coordinator::HandleMatchmakerPacket(const NetHeader& header, const u8* pack
 
 		default: {
 			WARN("Unknown packet (netID=%u size=%u)", header.netID, header.size);
+			if(VelqorTrace::Enabled()) {
+				char f[96];
+				size_t len = 0;
+				VelqorTrace::Catf(f, sizeof(f), len, "\"net_id\":%u", (u32)header.netID);
+				VelqorTrace::Emit("mm_packet_unknown", f);
+				VelqorTrace::Flush();
+			}
 			DBG_ASSERT(0); // packet not handled;
 		} break;
 	}
@@ -547,6 +564,14 @@ void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHea
 	const Cl::CQ_FirstHello& clHello = SafeCast<Cl::CQ_FirstHello>(packetData, packetSize);
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_FirstHello>(packetData, packetSize));
 	(void)clHello;
+
+	if(VelqorTrace::Enabled()) {
+		char f[64];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"client_hd\":%u", (u32)clientHd);
+		VelqorTrace::Emit("client_first_hello", f);
+		VelqorTrace::Flush();
+	}
 
 	const i32 clientID = plidMap.Get(clientHd);
 	const Server::ClientInfo& info = server->clientInfo[clientID];
@@ -670,12 +695,51 @@ void Coordinator::CreateDevGame()
 	p.team = 0;
 	p.isBot = 0;
 	p.skins.fill(SkinIndex::DEFAULT);
-	fillLoadout(p, 0, content.GetMaster(ClassType::LAUNCHER));
-	fillLoadout(p, 1, content.GetMaster(ClassType::ASSASSIN));
+	ClassType owner0 = ClassType::LAUNCHER;
+	ClassType owner1 = ClassType::ASSASSIN;
+	if(Config().DevPlayer0Masters.size() >= 2) {
+		owner0 = (ClassType)Config().DevPlayer0Masters[0];
+		owner1 = (ClassType)Config().DevPlayer0Masters[1];
+	}
+	fillLoadout(p, 0, content.GetMaster(owner0));
+	fillLoadout(p, 1, content.GetMaster(owner1));
+	if(p.masters[0] == ClassType::SNIPER) {
+		p.skills[0] = (SkillID)180060040;
+	}
+	if(p.masters[0] == ClassType::DEFENDER) {
+		p.skills[1] = (SkillID)180050040;
+	}
+	if(p.masters[1] == ClassType::SNIPER) {
+		p.skills[2] = (SkillID)180060040;
+	}
+	if(p.masters[1] == ClassType::DEFENDER) {
+		p.skills[3] = (SkillID)180050040;
+	}
 	teamMasterPickCount[0][(i32)p.masters[0]]++;
 	teamMasterPickCount[0][(i32)p.masters[1]]++;
 
-	for(int bi = 1; bi < game.playerCount; bi++) {
+	int botStart = 1;
+	if(Config().DevSecondPlayerAccount != 0) {
+		auto& p1 = game.players[1];
+		p1.name.Copy(WideString(L"PeerSk"));
+		p1.accountUID = AccountUID((u32)Config().DevSecondPlayerAccount);
+		p1.team = 0;
+		p1.isBot = 0;
+		p1.skins.fill(SkinIndex::DEFAULT);
+		ClassType peer0 = ClassType::PRIEST;
+		ClassType peer1 = ClassType::ASSASSIN;
+		if(Config().DevSecondPlayerMasters.size() >= 2) {
+			peer0 = (ClassType)Config().DevSecondPlayerMasters[0];
+			peer1 = (ClassType)Config().DevSecondPlayerMasters[1];
+		}
+		fillLoadout(p1, 0, content.GetMaster(peer0));
+		fillLoadout(p1, 1, content.GetMaster(peer1));
+		teamMasterPickCount[0][(i32)p1.masters[0]]++;
+		teamMasterPickCount[0][(i32)p1.masters[1]]++;
+		botStart = 2;
+	}
+
+	for(int bi = botStart; bi < game.playerCount; bi++) {
 		auto& bot = game.players[bi];
 		bot.name.Copy(WideString(LFMT(L"Bot%d", bi)));
 		bot.accountUID = AccountUID::INVALID;
@@ -720,4 +784,12 @@ void Coordinator::CreateDevGame()
 	header.netID = decltype(game)::NET_ID;
 	matchmaker.packetQueue.Append(&header, sizeof(header));
 	matchmaker.packetQueue.Append(&game, sizeof(game));
+
+	if(VelqorTrace::Enabled()) {
+		char f[96];
+		size_t len = 0;
+		VelqorTrace::Catf(f, sizeof(f), len, "\"player_count\":%u", (u32)game.playerCount);
+		VelqorTrace::Emit("dev_game_queued", f);
+		VelqorTrace::Flush();
+	}
 }

@@ -176,5 +176,110 @@ class CorrectionInfluenceTest(unittest.TestCase):
         self.assertEqual(affected, [])
 
 
+class AMotionBoundaryTest(unittest.TestCase):
+
+    def _posts(self, entries):
+        posts = []
+        for qpc, actor_uid, master_slot, x in entries:
+            post = post_record(qpc, actor_uid, master_slot)
+            post["pos"] = [float(x), 0.0, 0.0]
+            posts.append(post)
+        return posts
+
+    def _samples(self, entries):
+        samples = []
+        for qpc, local_actor_id, class_type, z in entries:
+            sample = sample_record(qpc, local_actor_id, class_type)
+            sample["feet"] = [0.0, 0.0, float(z)]
+            samples.append(sample)
+        return samples
+
+    def _window(self, down_ns, cast_ns, tail_end_ns, tail_ok=True, tail_probes=0):
+        return {"windows": [{
+            "cmd_seq": 3, "at_ms": 1, "a_down_ns": down_ns, "matched_cast_ns": cast_ns,
+            "cast_skill_id": compare.A_SKILL_ID, "a_proven": True,
+            "probe_contaminated": False, "probe_execs_before_cast": 0,
+            "tail_end_ns": tail_end_ns, "tail_ok": tail_ok,
+            "tail_probe_execs": tail_probes}]}
+
+    def test_window_excludes_pairs_outside_a_interval(self):
+        ramp = [(index * 400 * MS, ACTOR_A, 0, 378.0 * (index - 1) / 10.0)
+                for index in range(0, 13)]
+        posts = self._posts(ramp)
+        samples = self._samples([(qpc, LOCAL_A, 3, 0.0) for qpc, _, _, _ in ramp])
+        pairs, segments = trajectories(posts, samples)
+        evidence = compare.correction_report([], [], segments, EPOCHS)
+        motion = compare.a_motion_report(self._window(400 * MS, 400 * MS, 4400 * MS),
+                                         pairs, evidence, [])
+        window = motion["windows"][0]
+        self.assertEqual(window["pair_count"], 11)
+        self.assertEqual(window["block_count"], 1)
+        block = window["blocks"][0]
+        self.assertEqual(block["t_start_ns"], 400 * MS)
+        self.assertEqual(block["t_end_ns"], 4400 * MS)
+        self.assertAlmostEqual(block["client_displacement_dist"], 0.0, places=6)
+        self.assertAlmostEqual(block["server_displacement_dist"], 378.0, places=6)
+        self.assertAlmostEqual(block["endpoint_disagreement"][0], -378.0, places=6)
+        self.assertAlmostEqual(block["endpoint_disagreement_dist"], 378.0, places=6)
+        self.assertAlmostEqual(block["endpoint_length_delta"], 378.0, places=6)
+        self.assertAlmostEqual(block["max_dist"], 378.0, places=6)
+        self.assertAlmostEqual(block["mean_dist"], 189.0, places=6)
+        self.assertEqual(window["correction"]["independent"], 11)
+        self.assertEqual(window["correction"]["affected"], 0)
+
+    def test_window_clips_at_tail_probe_execution(self):
+        ramp = [(qpc * MS, ACTOR_A, 0, float(index))
+                for index, qpc in enumerate((0, 400, 800, 1000, 1200))]
+        posts = self._posts(ramp)
+        samples = self._samples([(qpc * MS, LOCAL_A, 3, 0.0)
+                                 for qpc in (0, 400, 800, 990, 1000, 1200)])
+        pairs, segments = trajectories(posts, samples)
+        evidence = compare.correction_report([], [], segments, EPOCHS)
+        probe_execs = [{"qpc_ns": 1000 * MS, "cmd_seq": 9, "op": "key", "vk": 1, "down": 1}]
+        motion = compare.a_motion_report(
+            self._window(0, 0, 4800 * MS, tail_ok=False, tail_probes=1),
+            pairs, evidence, probe_execs)
+        window = motion["windows"][0]
+        self.assertEqual(window["probe_clip_ns"], 1000 * MS)
+        self.assertEqual(window["interval_end_ns"], 1000 * MS)
+        self.assertEqual(window["pair_count"], 3)
+        self.assertEqual(window["blocks"][0]["t_end_ns"], 800 * MS)
+
+    def test_window_splits_at_identity_change(self):
+        posts = self._posts([(0, ACTOR_A, 0, 0.0), (400 * MS, ACTOR_A, 0, 100.0),
+                             (2000 * MS, ACTOR_B, 1, 500.0), (2400 * MS, ACTOR_B, 1, 900.0)])
+        samples = self._samples([(0, LOCAL_A, 3, 0.0), (400 * MS, LOCAL_A, 3, 0.0),
+                                 (2000 * MS, LOCAL_B, 4, 10.0), (2400 * MS, LOCAL_B, 4, 10.0)])
+        pairs, segments = trajectories(posts, samples)
+        evidence = compare.correction_report([], [], segments, EPOCHS)
+        motion = compare.a_motion_report(self._window(0, 0, 4000 * MS), pairs, evidence, [])
+        window = motion["windows"][0]
+        self.assertEqual(window["block_count"], 2)
+        first, second = window["blocks"]
+        self.assertEqual(first["actor_uid"], ACTOR_A)
+        self.assertEqual(second["actor_uid"], ACTOR_B)
+        self.assertAlmostEqual(first["server_displacement_dist"], 100.0, places=6)
+        self.assertAlmostEqual(second["server_displacement_dist"], 400.0, places=6)
+        self.assertEqual(second["client_start"], [0.0, 0.0, 10.0])
+        self.assertAlmostEqual(second["client_displacement_dist"], 0.0, places=6)
+
+    def test_window_carries_correction_classification(self):
+        posts = self._posts([(0, ACTOR_A, 0, 0.0), (400 * MS, ACTOR_A, 0, 1.0),
+                             (800 * MS, ACTOR_A, 0, 2.0), (1200 * MS, ACTOR_A, 0, 3.0)])
+        samples = self._samples([(0, LOCAL_A, 3, 0.0), (400 * MS, LOCAL_A, 3, 0.0),
+                                 (800 * MS, LOCAL_A, 3, 0.0), (1200 * MS, LOCAL_A, 3, 0.0)])
+        pairs, segments = trajectories(posts, samples)
+        evidence = compare.correction_report([correction_record(700 * MS, LOCAL_A)], [],
+                                             segments, EPOCHS)
+        motion = compare.a_motion_report(self._window(0, 0, 1200 * MS), pairs, evidence, [])
+        window = motion["windows"][0]
+        self.assertEqual(window["correction"]["independent"], 2)
+        self.assertEqual(window["correction"]["affected"], 2)
+        self.assertEqual(window["correction"]["unresolved"], 0)
+        block = window["blocks"][0]
+        self.assertEqual(block["correction"]["independent"], 2)
+        self.assertEqual(block["correction"]["affected"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()

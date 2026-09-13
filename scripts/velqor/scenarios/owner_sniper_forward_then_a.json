@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "owner_sniper_forward_then_a",
-  "description": "Owner (Sniper, master slot 0) moves forward, releases, then casts normal quickslot A on the internal queued client path, all without the client taking focus. Cursor steps are normalized to the STATUS viewport. The A trial contains its own targeting cursor and click confirmation; the probe of mouse buttons and wheel runs only after the complete-action tail of the accepted 180060040 cast. If A is rejected, the trace is inspected for the real legality/learn state instead of substituting another ability. A final held forward proves STOP release.",
+  "description": "Owner (Sniper, master slot 0) moves forward, releases, then casts normal quickslot A on the internal queued client path, all without the client taking focus. Cursor steps are normalized to the STATUS viewport. The A trial contains its own targeting cursor and click confirmation; the probe of mouse buttons and wheel runs only after the complete-action tail of the accepted 180060040 cast. The probe holds forward across Shirk activation to verify graph ownership of an already-walking frame. If A is rejected, the trace is inspected for the real legality/learn state instead of substituting another ability. A final held forward proves STOP release.",
   "server": {
     "order": ["mm", "hub", "game", "login"],
     "ready_timeout_s": 90,
@@ -77,8 +77,10 @@
     "steps": [
       { "op": "key", "vk": 1, "down": 1, "at_ms": 0, "label": "lbutton_down" },
       { "op": "key", "vk": 1, "down": 0, "at_ms": 140, "label": "lbutton_up" },
+      { "op": "key", "vk": 90, "down": 1, "at_ms": 300, "label": "moving_shirk_forward_down" },
       { "op": "key", "vk": 2, "down": 1, "at_ms": 400, "label": "rbutton_down" },
       { "op": "key", "vk": 2, "down": 0, "at_ms": 540, "label": "rbutton_up" },
+      { "op": "key", "vk": 90, "down": 0, "at_ms": 700, "label": "moving_shirk_forward_up" },
       { "op": "key", "vk": 4, "down": 1, "at_ms": 800, "label": "mbutton_down" },
       { "op": "key", "vk": 4, "down": 0, "at_ms": 940, "label": "mbutton_up" },
       { "op": "key", "vk": 5, "down": 1, "at_ms": 1200, "label": "xbutton1_down" },

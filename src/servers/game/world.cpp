@@ -71,6 +71,9 @@ static const HorizontalMotionVariant* SelectHorizontalVariant(const HorizontalMo
 
 static vec2 SkillMoveInputDir(const World::Player& player)
 {
+	if(player.input.moveDir.x != 0.f || player.input.moveDir.y != 0.f) {
+		return player.input.moveDir;
+	}
 	const vec2 delta = vec2(player.input.moveTo - player.body->GetWorldPos());
 	const f32 deltaLen = glm::length(delta);
 	if(deltaLen > 1.0f && player.input.speed > 0.f) {
@@ -88,9 +91,11 @@ static void ApplyHorizontalGraph(World& world, World::SkillProgram& prog, World:
 		return;
 	}
 	const HorizontalMotionVariant& variant = *prog.horizontalVariant;
-	const f32 graphT = elapsed - prog.graphExecuteAt;
+	const f32 graphT = elapsed - prog.graphExecuteAt + (f32)UPDATE_RATE;
 	const f32 t = eastl::min(graphT, prog.moveDuration);
-	const f32 sampled = variant.Sample(t);
+	const f32 endSample = variant.samples[variant.sampleCount - 1];
+	const f32 rawSample = variant.Sample(t);
+	const f32 sampled = endSample < 0.f ? eastl::max(rawSample, endSample) : eastl::min(rawSample, endSample);
 	const f32 delta = sampled - prog.moveSampled;
 	prog.moveSampled = sampled;
 	const vec3 displacement = vec3(prog.moveHorizDir * delta, 0);
@@ -225,15 +230,21 @@ void World::Update(Time localTime_)
 		Player& p = *it;
 		PhysicsDynamicBody& body = *p.body;
 		const bool inputBlocked = p.movement.forcedMove;
-		const vec2 delta = vec2(p.input.moveTo - body.GetWorldPos());
-		const f32 deltaLen = glm::length(delta);
-		if(!inputBlocked && deltaLen > 1.0f && p.input.speed > 0.f) {
-			p.movement.moveDir = NormalizeSafe(delta);
-			p.movement.moveSpeed = eastl::min(p.input.speed, f32(deltaLen / UPDATE_RATE));
+		if(!inputBlocked && (p.input.moveDir.x != 0.f || p.input.moveDir.y != 0.f)) {
+			p.movement.moveDir = p.input.moveDir;
+			p.movement.moveSpeed = p.input.speed;
 		}
 		else {
-			p.movement.moveDir = vec2(0);
-			p.movement.moveSpeed = 0.0f;
+			const vec2 delta = vec2(p.input.moveTo - body.GetWorldPos());
+			const f32 deltaLen = glm::length(delta);
+			if(!inputBlocked && deltaLen > 1.0f && p.input.speed > 0.f) {
+				p.movement.moveDir = NormalizeSafe(delta);
+				p.movement.moveSpeed = eastl::min(p.input.speed, f32(deltaLen / UPDATE_RATE));
+			}
+			else {
+				p.movement.moveDir = vec2(0);
+				p.movement.moveSpeed = 0.0f;
+			}
 		}
 
 		if(p.input.jump) {
@@ -487,6 +498,7 @@ World::Player& World::CreatePlayer(const PlayerDescription& desc, const vec3& po
 
 	// clear input
 	player.input.moveTo = pos;
+	player.input.moveDir = vec2(0);
 	player.input.speed = 0;
 	player.input.rot = rot;
 	player.input.tag = 0;
@@ -726,11 +738,7 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		VelqorTrace::Emit("skill_program_start", f);
 	}
 
-	if(hasGraph && graphExecuteAt > 0.0f) {
-		EmitSkillExec(*this, prog, player, false);
-	}
-
-	else if(hasGraph) {
+	if(hasGraph) {
 		EmitSkillExec(*this, prog, player, true);
 	}
 

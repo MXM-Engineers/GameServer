@@ -295,7 +295,9 @@ void Game::Update(Time localTime_)
 		e.name = player->name;
 		e.pos = player->body->GetWorldPos();
 		e.rot = player->input.rot;
-		e.moveDir = NormalizeSafe(player->input.moveTo - player->body->GetWorldPos());
+		e.moveDir = (player->input.moveDir.x != 0.f || player->input.moveDir.y != 0.f)
+			? player->input.moveDir
+			: NormalizeSafe(player->input.moveTo - player->body->GetWorldPos());
 		e.moveDest = player->input.moveTo;
 		e.color = vec3(1, 0, 1);
 		Dbg::Push(dbgGameUID, e);
@@ -477,6 +479,9 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		WARN("Client sent an invalid actorUID (clientID=%x actorUID=%u)", clientHd, (u32)actorUID);
 		return;
 	}
+	if(!std::isfinite(dir.x) || !std::isfinite(dir.y) || !std::isfinite(speed) || speed < 0.f) {
+		return;
+	}
 
 	if(VelqorTrace::Enabled()) {
 		char f[1024];
@@ -534,10 +539,16 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 
 	// TODO: check for movement hacking
 	if(dir.x == 0 && dir.y == 0) {
+		player.input.moveDir = vec2(0);
 		player.input.moveTo = pos;
 	}
 	else {
-		player.input.moveTo = pos + vec3(glm::normalize(vec2(dir)) * speed, 0);
+		const vec2 moveDir = glm::normalize(vec2(dir));
+		if(!std::isfinite(moveDir.x) || !std::isfinite(moveDir.y)) {
+			return;
+		}
+		player.input.moveDir = moveDir;
+		player.input.moveTo = pos + vec3(moveDir * speed, 0);
 	}
 	player.input.rot = rot;
 	player.input.speed = speed;

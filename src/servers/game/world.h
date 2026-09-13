@@ -57,6 +57,7 @@ struct World
 		struct Input
 		{
 			vec3 moveTo;
+			vec2 moveDir = vec2(0);
 			f32 speed;
 			RotationHumanoid rot;
 

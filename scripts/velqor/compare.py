@@ -46,6 +46,12 @@ def distance(a, b):
     return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5
 
 
+def format_vec(value):
+    if value is None:
+        return "None"
+    return "[%.2f,%.2f,%.2f]" % (value[0], value[1], value[2])
+
+
 def collect_files(run_dir, pattern):
     return sorted(glob.glob(os.path.join(run_dir, pattern)))
 
@@ -871,6 +877,135 @@ def partition_correction_pairs(pairs, evidence):
     return independent, affected, unresolved, reasons
 
 
+def a_motion_interval(window, probe_execs):
+    start = window.get("a_down_ns")
+    end = window.get("tail_end_ns")
+    if start is None or end is None:
+        return None
+    cast_ns = window.get("matched_cast_ns")
+    clip = None
+    if cast_ns is not None:
+        trailing = [p["qpc_ns"] for p in probe_execs
+                    if p.get("qpc_ns") is not None and cast_ns < p["qpc_ns"] <= end]
+        if trailing:
+            clip = min(trailing)
+    return {"start_ns": start, "end_ns": end if clip is None else clip, "clip_ns": clip}
+
+
+def a_motion_block(pairs, correction_evidence):
+    first = pairs[0]
+    last = pairs[-1]
+    client_disp = [b - a for a, b in zip(first["client"], last["client"])]
+    server_disp = [b - a for a, b in zip(first["server"], last["server"])]
+    disagreement = [c - s for c, s in zip(client_disp, server_disp)]
+    dists = [p["dist"] for p in pairs]
+    dts = [p["dt_ms"] for p in pairs]
+    independent, affected, unresolved, reasons = \
+        partition_correction_pairs(pairs, correction_evidence)
+    client_len = distance(first["client"], last["client"])
+    server_len = distance(first["server"], last["server"])
+    return {
+        "segment_index": first.get("segment_index"),
+        "actor_uid": first.get("actor_uid"),
+        "master_slot": first.get("master_slot"),
+        "client_actor_id": first.get("client_actor_id"),
+        "client_class_type": first.get("client_class_type"),
+        "expected_class": first.get("expected_class"),
+        "pair_count": len(pairs),
+        "t_start_ns": first["qpc_ns"],
+        "t_end_ns": last["qpc_ns"],
+        "client_start": first["client"],
+        "client_end": last["client"],
+        "server_start": first["server"],
+        "server_end": last["server"],
+        "client_displacement": client_disp,
+        "client_displacement_dist": client_len,
+        "server_displacement": server_disp,
+        "server_displacement_dist": server_len,
+        "endpoint_disagreement": disagreement,
+        "endpoint_disagreement_dist": distance(client_disp, server_disp),
+        "endpoint_length_delta": abs(client_len - server_len),
+        "max_dist": max(dists),
+        "mean_dist": sum(dists) / len(dists),
+        "dt_ms_min": min(dts),
+        "dt_ms_max": max(dts),
+        "dt_ms_mean": sum(dts) / len(dts),
+        "dt_ms_abs_max": max(abs(d) for d in dts),
+        "correction": {
+            "independent": len(independent),
+            "affected": len(affected),
+            "unresolved": len(unresolved),
+            "max_dist_independent": max((p["dist"] for p in independent), default=None),
+            "reasons": reasons,
+        },
+    }
+
+
+def a_motion_window(window, pairs, correction_evidence, probe_execs):
+    interval = a_motion_interval(window, probe_execs)
+    start = interval["start_ns"]
+    end = interval["end_ns"]
+    last_ns = end - 1 if interval["clip_ns"] is not None else end
+    in_window = [p for p in pairs
+                 if start <= p["qpc_ns"] <= last_ns
+                 and start <= p["server_qpc_ns"] <= last_ns]
+    grouped = {}
+    for pair in in_window:
+        grouped.setdefault(pair.get("segment_index"), []).append(pair)
+    blocks = [a_motion_block(block_pairs, correction_evidence)
+              for _, block_pairs in sorted(grouped.items(),
+                                           key=lambda item: item[1][0]["qpc_ns"])]
+    dists = [p["dist"] for p in in_window]
+    dts = [p["dt_ms"] for p in in_window]
+    correction = {"independent": 0, "affected": 0, "unresolved": 0, "reasons": {}}
+    for block in blocks:
+        for key in ("independent", "affected", "unresolved"):
+            correction[key] += block["correction"][key]
+        for reason, count in block["correction"]["reasons"].items():
+            correction["reasons"][reason] = correction["reasons"].get(reason, 0) + count
+    return {
+        "cmd_seq": window.get("cmd_seq"),
+        "a_down_ns": window.get("a_down_ns"),
+        "matched_cast_ns": window.get("matched_cast_ns"),
+        "tail_end_ns": window.get("tail_end_ns"),
+        "interval_start_ns": start,
+        "interval_end_ns": end,
+        "probe_clip_ns": interval["clip_ns"],
+        "tail_ok": window.get("tail_ok"),
+        "tail_probe_execs": window.get("tail_probe_execs", 0),
+        "pair_count": len(in_window),
+        "block_count": len(blocks),
+        "max_dist": max(dists) if dists else None,
+        "mean_dist": (sum(dists) / len(dists)) if dists else None,
+        "dt_ms_abs_max": max((abs(d) for d in dts), default=None),
+        "dt_ms_mean": (sum(dts) / len(dts)) if dts else None,
+        "correction": correction,
+        "blocks": blocks,
+    }
+
+
+def a_motion_report(a_window, pairs, correction_evidence, probe_execs):
+    windows = []
+    skipped = []
+    for window in a_window.get("windows", []):
+        if not window.get("a_proven") or window.get("matched_cast_ns") is None:
+            skipped.append({
+                "cmd_seq": window.get("cmd_seq"),
+                "a_down_ns": window.get("a_down_ns"),
+                "reason": ("probe_contaminated" if window.get("probe_contaminated")
+                           else "a_cast_not_proven"),
+            })
+            continue
+        windows.append(a_motion_window(window, pairs, correction_evidence, probe_execs))
+    return {
+        "windows": windows,
+        "skipped_windows": skipped,
+        "proven_windows": len(windows),
+        "skipped": len(skipped),
+        "pair_count": sum(window["pair_count"] for window in windows),
+    }
+
+
 def focus_report(controller_records):
     events = [r for r in controller_records if r.get("event") in
               ("foreground_change", "cursor_motion", "monitor_start", "monitor_stop",
@@ -1218,6 +1353,7 @@ def build_report(run_dir, tolerance=25.0):
     a_events = [e for e in exec_events if e.get("cmd_seq") not in learn_cmd_seqs]
     a_window, a_proven, a_downs, probe_execs = attribute_a_casts(
         sorted(server["casts"], key=lambda r: r["qpc_ns"] or 0), a_events, steps)
+    a_motion = a_motion_report(a_window, pairs, correction_evidence, probe_execs)
     report = {
         "run_dir": run_dir,
         "run_id": data.run_id,
@@ -1272,6 +1408,7 @@ def build_report(run_dir, tolerance=25.0):
         "trajectory": trajectory,
         "casts": [],
         "a_window": a_window,
+        "a_motion": a_motion,
         "trace_overflow": server["trace_overflow"],
         "corrections": corrections,
         "client_corrections": client_correction_events,
@@ -1436,6 +1573,37 @@ def summarize(report):
         fd = traj["first_divergence"]
         lines.append("  first_divergence dist=%.2f > %.2f at t=%s" % (
             fd["dist"], fd["tolerance"], fd["qpc_ns"]))
+    motion = report.get("a_motion") or {}
+    lines.append("a_motion proven_windows=%s skipped=%s pairs=%s" % (
+        motion.get("proven_windows"), motion.get("skipped"), motion.get("pair_count")))
+    for window in motion.get("windows", []):
+        correction = window["correction"]
+        lines.append(
+            "  a_motion window cmd_seq=%s down_ns=%s cast_ns=%s interval=%s..%s clip_ns=%s "
+            "tail_ok=%s tail_probes=%s pairs=%s blocks=%s max_dist=%s mean_dist=%s "
+            "dt_abs_max=%s independent=%s affected=%s unresolved=%s reasons=%s" % (
+                window["cmd_seq"], window["a_down_ns"], window["matched_cast_ns"],
+                window["interval_start_ns"], window["interval_end_ns"], window["probe_clip_ns"],
+                window["tail_ok"], window["tail_probe_execs"], window["pair_count"],
+                window["block_count"], window["max_dist"], window["mean_dist"],
+                window["dt_ms_abs_max"], correction["independent"], correction["affected"],
+                correction["unresolved"], json.dumps(correction["reasons"], sort_keys=True)))
+        for block in window["blocks"]:
+            lines.append(
+                "    a_motion block seg=%s uid=%s slot=%s class=%s pairs=%s t=%s..%s "
+                "client_disp=%s len=%.2f server_disp=%s len=%.2f disagreement=%s len=%.2f "
+                "len_delta=%.2f max_dist=%.2f mean_dist=%.2f dt_abs_max=%.2f "
+                "independent=%s affected=%s unresolved=%s" % (
+                    block["segment_index"], block["actor_uid"], block["master_slot"],
+                    block["expected_class"], block["pair_count"], block["t_start_ns"],
+                    block["t_end_ns"], format_vec(block["client_displacement"]),
+                    block["client_displacement_dist"], format_vec(block["server_displacement"]),
+                    block["server_displacement_dist"],
+                    format_vec(block["endpoint_disagreement"]),
+                    block["endpoint_disagreement_dist"], block["endpoint_length_delta"],
+                    block["max_dist"], block["mean_dist"], block["dt_ms_abs_max"],
+                    block["correction"]["independent"], block["correction"]["affected"],
+                    block["correction"]["unresolved"]))
     stop = verdict["stop_release"]
     lines.append("stop released=%s forward_released=%s reverse_order_ok=%s" % (
         stop["released"], stop["forward_released"], stop["reverse_order_ok"]))

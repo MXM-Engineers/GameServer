@@ -1,6 +1,7 @@
 # NVIDIA PhysX SDK 2.8.4
 
 Packaged from the supplied `external/physx-2.8.4_install` distribution. Vendor headers and binaries are copied without modification.
+Git attributes disable text normalization for the vendor include and library trees so checkout line-ending conversion cannot invalidate the recorded byte hashes.
 
 - `include/physx/`: merged public include trees from Foundation, Physics, NxCharacter, Cooking and PhysXLoader (204 files).
 - `lib/release/`: native Windows x64 loader, core, cooking and character-controller DLLs and supplied import libraries.

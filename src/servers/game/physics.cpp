@@ -2,6 +2,7 @@
 #include <mxm/game_content.h>
 #include <PxPhysicsAPI.h> // lazy but oh well
 #include <pvd/PxPvd.h>
+#include <cmath>
 
 #define PVD_HOST "127.0.0.1"
 
@@ -176,6 +177,7 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 			LOG("[PhysX] ERROR: Creating controller manager failed");
 		}
 		ASSERT(out->controllerMngr);
+		out->controllerMngr->setOverlapRecoveryModule(false);
 	}
 }
 
@@ -188,6 +190,9 @@ void PhysicsScene::Step()
 	foreach(c, colliderList) {
 		c->vel.z += gravity * dt;
 		vec3 displacement = c->vel * dt;
+		if(c->horizontalGraphActive) {
+			displacement = vec3(c->horizontalGraphDisplacement, 0);
+		}
 		if(c->jumpMotion) {
 			c->jumpElapsed = eastl::min(c->jumpElapsed + dt, c->jumpMotion->duration);
 			const f32 height = c->jumpMotion->Sample(c->jumpElapsed);
@@ -197,7 +202,13 @@ void PhysicsScene::Step()
 				c->jumpMotion = nullptr;
 			}
 		}
-		Move(c, displacement, dt);
+		const vec3 position = c->GetWorldPos();
+		displacement = (position + displacement) - position;
+		const bool segmented = (displacement.x != 0.f || displacement.y != 0.f) &&
+			std::sqrt(displacement.y * displacement.y + displacement.x * displacement.x) / dt > 2000.f;
+		Move(c, displacement, dt, segmented);
+		c->horizontalGraphDisplacement = vec2(0);
+		c->horizontalGraphActive = false;
 	}
 
 	// we don't need to actually *simulate* anything?
@@ -272,7 +283,8 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 	desc.slopeLimit = cosf(glm::radians(65.0f));
 	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
-	desc.position = PxExtendedVec3(pos.x, pos.y, PxExtended(pos.z) + height * 0.5f + radius + desc.contactOffset);
+	collider.feetOffset = height * 0.5f + radius + desc.contactOffset;
+	desc.position = PxExtendedVec3(pos.x, pos.y, PxExtended(pos.z) + collider.feetOffset);
 	desc.material = ctx.matMapSurface;
 	desc.userData = &collider.collisionFilterData;
 	ASSERT(desc.isValid());
@@ -303,6 +315,7 @@ void PhysicsScene::ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 h
 		ASSERT(resized);
 		body->height = height;
 	}
+	body->feetOffset = height * 0.5f + radius + body->collider->getContactOffset();
 	const bool positioned = body->collider->setFootPosition(feet);
 	ASSERT(positioned);
 }
@@ -319,11 +332,35 @@ bool PhysicsScene::StartJump(PhysicsDynamicBody* body, const JumpMotion& motion)
 	return true;
 }
 
-vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
+vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time, bool segmented)
 {
 	PxControllerFilters filter(&g_pcQueryFilterData, nullptr, &g_cctCollisionFilterCallback);
 	filter.mFilterFlags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC;
-	const PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter);
+	if(std::fabs(disp.x) < 1.1920929e-7f && std::fabs(disp.y) < 1.1920929e-7f && std::fabs(disp.z) < 1.1920929e-7f) {
+		return body->GetWorldPos();
+	}
+	body->collider->invalidateCache();
+	PxControllerCollisionFlags collisionFlags;
+	if(segmented) {
+		f32 remaining = std::sqrt(disp.y * disp.y + disp.x * disp.x + disp.z * disp.z);
+		vec3 direction(0);
+		if(remaining <= 1.e-6f) {
+			remaining = 0.f;
+		}
+		else {
+			direction = disp * (1.f / remaining);
+		}
+		while(remaining > 50.f) {
+			remaining -= 50.f;
+			const vec3 step = direction * 50.f;
+			collisionFlags = body->collider->move(PxVec3(step.x, step.y, step.z), 0, time, filter);
+		}
+		const vec3 step = direction * remaining;
+		collisionFlags = body->collider->move(PxVec3(step.x, step.y, step.z), 0, time, filter);
+	}
+	else {
+		collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter);
+	}
 	body->grounded = bool(collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN);
 	if((body->grounded && body->vel.z < 0.0f) ||
 		((collisionFlags & PxControllerCollisionFlag::eCOLLISION_UP) && body->vel.z > 0.0f)) {
@@ -337,7 +374,9 @@ vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 t
 	const PxExtendedVec3 start = body->collider->getPosition();
 	const bool grounded = body->grounded;
 	const vec3 velocity = body->vel;
-	const vec3 end = Move(body, disp, time);
+	const vec3 position = body->GetWorldPos();
+	const vec3 displacement = (position + disp) - position;
+	const vec3 end = Move(body, displacement, time, false);
 	const bool positioned = body->collider->setPosition(start);
 	ASSERT(positioned);
 	body->grounded = grounded;

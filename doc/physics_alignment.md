@@ -27,7 +27,7 @@ The principal Ghidra evidence is:
 | Skin/contact offset | 10 | 10 |
 | Step offset | 70 | 70 |
 | Slope limit | Approximately 65 degrees | `cos(65 degrees)` |
-| Climbing mode | Descriptor +0x50 contains 1; consumption by the linked CCT remains unproven | Constrained |
+| Climbing mode | Descriptor +0x50 = 1; NxCharacter constructor copies it and move at `0x10013480` enables constrained climbing | Constrained |
 | Up axis | Z | Z |
 | Gameplay position | Feet-relative | Feet-relative |
 
@@ -245,9 +245,54 @@ Release `game_srv` built successfully; all 11 diagnostic regression tests passed
 
 The physics verdict remains **diverged**. No timestamp shifts, tolerance changes, forced corrections, or endpoint teleports were used. The baseline A window had mean/max error 248.043335/424.000111 with a stationary client; whole-run baseline scores are not directly comparable because later probe stimuli and ledge approaches differ.
 
-The remaining controller defect is measured, not corrected: at matching XY the server can remain grounded 70 units above the client's floor, then leave the ledge later. In `20260913_physics_duration`, the exact peak difference was [-50.254886, -0.000485, -333.141296], magnitude 336.910488. The final moving-Shirk run still has a 370.279694 whole-run maximum. Gravity and descriptor values match; equivalent CCT behavior is unproven. Easy climbing, overlap recovery, tessellation, or cache invalidation were not substituted without evidence.
+At this stage the controller defect was measured but not corrected: at matching XY the server could remain grounded 70 units above the client's floor, then leave the ledge later. In `20260913_physics_duration`, the exact peak difference was [-50.254886, -0.000485, -333.141296], magnitude 336.910488. The moving-Shirk run had a 370.279694 whole-run maximum. The subsequent linked-controller investigation and corrections are recorded below.
 
-Remote `0x01a4a2f2` caches metadata before starting the action and does not immediately install a graph. Its float argument order differs from the owner path; actual remote playback remains unverified. Near-zero terminal knots and broader skill/state coverage also remain open.
+Remote `0x01a4a2f2` caches metadata before starting the action and does not immediately install a graph. The execute handler `0x00a05e94` swaps the wire duration/origin fields in its local stack before either setter. Both owner and remote cache origin at Movement+0x194 and duration at +0x19C; the earlier opposite-order claim was incorrect. Actual remote playback, near-zero terminal knots, and broader skill/state coverage remain unverified.
+
+## Linked-controller laws and verified corrections
+
+The wire client and its actual `NxCharacter.dll` and `PhysXCore.dll` were reversed together. Matching descriptor constants was insufficient: the previous Px4 overlap-recovery path created the 70-unit perch, but merely disabling recovery allowed a 120-unit box to be traversed. Both stock choices were rejected.
+
+The server now builds a pinned local CCT from PhysX `a2c0428acab643e60618c681b501e86f7fd558cc`, while retaining the existing 4.1.2 core backend. `external/physx-cct/provenance.json` records the source closure, license, private-DLL ABI and all local changes:
+
+- No penetration/MTD recovery in production, and no Px4 SIDE-sensor pass. DOWN contact sets the DOWN flag; constrained-climb and mesh-slope gates follow `NxCharacter` `0x100129d0`.
+- Primitive zero-distance hits are rejected; geometric mesh zero-distance hits remain eligible. Boxes are cached as analytic OBBs, not twelve triangles, so primitive and mesh rules cannot be accidentally conflated.
+- Mesh sweeps use the Px4 geometric path (`eASSUME_NO_INITIAL_OVERLAP`), not its default initial-overlap result with `normal=-direction` and undefined contact position. The latter caused a phantom ceiling and a 494-unit moving-jump replay error. The linked legacy `PhysXCore` sweep at `0x10194ce0` has no such short-circuit.
+- The wrapper preserves cached state for component-wise strict float-epsilon zero requests, invalidates the cache once, and uses 50-unit chunks only when selected. Final-chunk flags overwrite previous flags. The client selects ordinary segmentation when horizontal speed exceeds 2000, not for every jump or fall.
+- Gameplay feet use `float(center.z)-float(offset)`, not `float(center.z-offset)`. Movement requests use `(float_position+displacement)-float_position`; sub-ULP travel does not accumulate invisibly in the extended controller center.
+- Horizontal graph XY and active vertical graph Z are combined into one controller request. A horizontal graph suppresses ordinary vertical displacement but still integrates gravity velocity. Graph time advances by client-style f32 addition once per world update; the first active sample is dt, including delayed activation. Lane simulation time advances with fixed simulation ticks, not wall-loop jitter.
+
+### Runtime and same-request evidence
+
+`20260913_sol_legacy_laws` completed the full owner scenario, including TAG and ledge travel, with 3,411 independent pose pairs. All five standing/front/back/left/right jumps were accepted and applied; native peaks were 329.998963–329.999270 units. Sniper A first server displacement was 27.801588, not the previous two-dt sample; moving Shirk first displacement was 103.136255. The native Shirk first request selected segmentation; subsequent graph and ordinary jump requests did not.
+
+| Measurement | Observed result |
+| --- | --- |
+| Raw-QPC maximum / mean position error | 166.582262 / 15.925870 |
+| A maximum / mean raw-QPC error | 111.208427 / 5.580421 |
+| A endpoint disagreement | 0.001721 units |
+| Matched XY (<1 unit), both actually grounded | 2,483 pairs; maximum Z difference 0.000061 |
+| Server / client corrections | 0 / 0 |
+| Desktop mutations / client focus / cursor movement | 0 / 0 / 0 |
+| Source-linked request replay, class 6 | 2,501 requests; max 0.079655, mean 0.001240; two flag differences |
+| Source-linked request replay, class 5 | 821 requests; max 0.093694, mean 0.048821; no flag differences |
+
+The replay uses each master's first actual pose only, then every captured displacement, active mask and segmentation choice unchanged. There were no trajectory discontinuities, intermediate resets or retiming. It compares the same gameplay float-coordinate contract as the client; raw extended SDK coordinates are not substituted. Raw traces, requests and results are retained in `build/velqor/runs/20260913_sol_legacy_laws/`, `legacy_laws_cct_motion_replay.json` and `legacy_laws_evidence.json`.
+
+The actual physics verdict is still **diverged**, not exact parity. Network/action phase is measured separately: server jump/graph activation preceded native positive/graph requests by approximately 18–85 ms. Client walk inputs are batched; after CQ cast transmission the owner can continue walking until SA activation, and the owner graph starts from its live feet, not the transmitted cast position. No CQ-position snap, timestamp shift, extra integration ticks, correction stream or tolerance change was introduced to hide that discrepancy.
+
+Cross-SDK narrowphase equivalence remains unproven. The two replay flag differences are a tiny negative landing request and the final horizontal Shirk request. The legacy sphere/triangle sweep also contains a 0.01 directional triangle-normal distance adjustment absent from the selected Px4 path. Legacy NXS cooking, extra AIobj geometry, wall transform conventions, other maps, runtime stance/modifier paths and remote playback still need evidence; none was silently replaced or declared equivalent.
+
+### Regression and input safety
+
+Fifteen real-World/real-CCT and packet-boundary regressions pass with both Release and checked Debug backends: loaded-map walking/falling/walls, float-position requests, 50-unit climb versus 120-unit rejection, segmented multi-step traversal, mesh slopes, ceiling/resize, query restoration, PC filtering, all 200 loaded ordinary jump profiles, human direction, delayed/immediate graph lifecycle, airborne horizontal graphs and hostile movement packets. All Release targets and all eleven Python evidence regressions pass. Debug tests use the existing `_dbg` postfix convention.
+
+Ordinary client speed is rejected when nonfinite, negative or above `50*64*60 = 192000` units/s in both CN movement and CQ cast-position validation. This is a work-safety boundary (up to 64 horizontal 50-unit segments per frame), not an XML movement-speed claim or a displacement clamp. It prevents untrusted huge speeds from making f32 `remaining-=50` non-progressing or overflowing the norm. Trusted authored graph requests and the client segmentation algorithm are unchanged. The new hostile-packet regression failed before the fix and passes afterward.
+
+All owned processes exited after both recorded runs. The four server configuration files were restored byte-for-byte. Final source was exercised again after the input-validation and Debug-output fixes in `20260913_sol_final_laws`: 3,414 independent pairs, raw-QPC maximum/mean 111.209290/13.305603, A endpoint disagreement 0.001725, all five jumps accepted/applied, both skills complete, and zero corrections, focus hits or desktop mutations. Its verdict is complete but physics remains **diverged**.
+
+The final capture also replays continuously from each master's initial pose without resets: class 6 has 2,541 moves, maximum/mean error 0.079655/0.001180; class 5 has 824 moves, maximum/mean 0.094823/0.042263. All 3,365 final collision flags agree. This does not erase the preceding capture's two boundary flag mismatches or establish exact numerical parity. Raw requests and results are retained in `final_laws_cct_motion_replay.json`.
+
 
 ## Suggested next verification targets
 

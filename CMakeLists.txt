@@ -4,6 +4,8 @@ project(PrivateMxM LANGUAGES C CXX)
 
 # Enable Tracy profiling in Release builds (was: genie --profile)
 option(PROFILE "Enable Tracy profiling in Release builds" OFF)
+option(BUILD_TESTING "Build regression tests" OFF)
+include(CTest)
 
 set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)

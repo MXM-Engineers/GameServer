@@ -218,7 +218,6 @@ struct World
 		f32 castAngle;
 		ActorUID casterUID;
 		eastl::fixed_vector<ActorUID,10,false> targetList;
-		Time startTime;
 		i32 commandID = 0;
 		vec3 moveStartPos = vec3(0);
 		vec3 moveEndPos = vec3(0);
@@ -229,6 +228,10 @@ struct World
 		f32 graphExecuteAt = 0.0f;
 		f32 completeAt = 0.0f;
 		bool graphDone = false;
+		u32 simTicks = 0;
+		u32 bornUpdate = 0;
+		f32 graphElapsed = 0.f;
+		u32 graphApplyUpdate = 0;
 
 
 		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
@@ -255,6 +258,7 @@ struct World
 
 	u32 nextActorUID;
 	Time localTime = Time::ZERO;
+	u32 updateIndex = 0;
 
 	PhysicsScene physics;
 

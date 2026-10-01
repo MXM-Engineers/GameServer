@@ -93,6 +93,30 @@ copy_physx_dlls(game_srv)
 add_dependencies(game_srv sync_gamedata)
 mxm_debug_suffix(game_srv)
 
+if(BUILD_TESTING)
+	add_executable(physics_tests
+		${COMMON_SOURCES} ${MXM_SOURCES}
+		${CMAKE_CURRENT_SOURCE_DIR}/servers/game/physics.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/servers/game/world.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/servers/game/replication.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/servers/game/config.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/physics_tests.cpp
+		${EXTERNAL_DIR}/tinyxml2-8.0.0/tinyxml2.cpp
+		${EXTERNAL_DIR}/tracy-0.8/TracyClient.cpp)
+	target_include_directories(physics_tests PRIVATE
+		${SERVER_COMMON_INCLUDES}
+		${CMAKE_CURRENT_SOURCE_DIR}/servers/game)
+	target_link_libraries(physics_tests PRIVATE
+		${SERVER_COMMON_LINKS} ${SERVER_COMMON_LINKS_WIN} physx)
+	target_compile_definitions(physics_tests PRIVATE ${SERVER_COMMON_DEFINES})
+	mxm_debug_suffix(physics_tests)
+	copy_physx_dlls(physics_tests)
+	add_dependencies(physics_tests sync_gamedata)
+	add_test(NAME physics_tests COMMAND physics_tests)
+	set_tests_properties(physics_tests PROPERTIES
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+endif()
+
 # ---- MatchMaker (mm_srv) ----
 add_executable(mm_srv
 	${COMMON_SOURCES} ${MXM_SOURCES} ${MM_SOURCES}

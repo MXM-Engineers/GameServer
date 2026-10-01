@@ -1,6 +1,14 @@
 #pragma once
 #include <common/base.h>
 #include <common/protocol.h>
+#include <cmath>
+
+constexpr f32 MAX_MOVEMENT_INPUT_SPEED = 50.f * 64.f * UPDATE_TICK_RATE;
+
+inline bool ValidateMovementSpeed(f32 speed)
+{
+	return std::isfinite(speed) && speed >= 0.f && speed <= MAX_MOVEMENT_INPUT_SPEED;
+}
 
 // ValidatePacket: checks an incoming client packet before it is parsed.
 // Each packet type decides what makes it valid (exact wire size, member
@@ -11,6 +19,15 @@ inline bool ValidatePacket(const void* packetData, i32 packetSize)
 {
 	(void)packetData;
 	return packetSize == sizeof(T);
+}
+
+template<>
+inline bool ValidatePacket<Cl::CN_GameUpdatePosition>(const void* packetData, i32 packetSize)
+{
+	if(packetSize != sizeof(Cl::CN_GameUpdatePosition)) return false;
+	ConstBuffer buff(packetData, packetSize);
+	buff.ReadRaw(offsetof(Cl::CN_GameUpdatePosition, nSpeed));
+	return ValidateMovementSpeed(buff.Read<f32>());
 }
 
 // CQ_FirstHello: every member is a plain integer (u32 dwProtocolCRC,
@@ -242,6 +259,8 @@ inline bool ValidatePacket<Cl::CQ_PlayerCastSkill>(const void* packetData, i32 p
 	const u16 count = buff.Read<u16>();
 	if(!buff.CanRead(count * sizeof(LocalActorID))) return false;
 	buff.ReadRaw(count * sizeof(LocalActorID));
-	return buff.CanRead(sizeof(Cl::CQ_PlayerCastSkill::PosStruct));
+	if(!buff.CanRead(sizeof(Cl::CQ_PlayerCastSkill::PosStruct))) return false;
+	buff.ReadRaw(offsetof(Cl::CQ_PlayerCastSkill::PosStruct, speed));
+	return ValidateMovementSpeed(buff.Read<f32>());
 }
 

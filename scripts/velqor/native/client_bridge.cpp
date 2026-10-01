@@ -18,6 +18,10 @@ const uint32_t kKeyManagerGlobalVa = 0x03308F18u;
 const uint32_t kTranslateFallbackVa = 0x03312F70u;
 
 const uint32_t kPhysControllerGetGameplayPosVa = 0x01B7B360u;
+const uint32_t kPhysControllerMoveSegmentedVa = 0x01B7B6FAu;
+const uint8_t kPhysControllerMoveSegmentedSig[] = {
+	0x55, 0x8B, 0xEC, 0x83, 0xE4, 0xF8, 0x83, 0xEC, 0x30, 0x56, 0x8B, 0xF1, 0x57, 0x83, 0x7E, 0x04, 0x00
+};
 const uint32_t kCreatureGetTranslatePtrVa = 0x01A8F60Cu;
 const uint32_t kPlayCreatePartyVa = 0x009D4A6Au;
 const uint32_t kCorrectionDispatchVa = 0x006BB547u;
@@ -64,6 +68,7 @@ typedef void(__fastcall* InputLockFn)(void*, void*, int32_t, int32_t);
 typedef uint8_t(__thiscall* IsInputTypeLockedFn)(void*, uint32_t);
 typedef void(__stdcall* GameStartDispatchFn)(uint32_t, void*, uint32_t, uint16_t, const char*,
 	int32_t);
+typedef uint32_t(__thiscall* MoveSegmentedFn)(void*, float*, uint32_t, uint32_t);
 
 uint8_t* g_base = 0;
 volatile long g_initialized = 0;
@@ -92,6 +97,7 @@ RuntimeCastFn g_runtime_cast = 0;
 InputLockFn g_input_lock = 0;
 IsInputTypeLockedFn g_is_input_type_locked = 0;
 GameStartDispatchFn g_game_start_dispatch = 0;
+MoveSegmentedFn g_move_segmented = 0;
 
 void* StaticVa(uint32_t static_va)
 {
@@ -355,6 +361,22 @@ void EmitCorrection(uint32_t actor_id, const float before[3], const float after[
 	velqor::Emit("correction", fields);
 }
 
+void EmitMotion(const float requested[3], const float before[3], const float after[3],
+	uint32_t collision_flags, uint32_t actor_id, int32_t class_type, uint32_t active_groups, uint32_t segment, uint32_t caller)
+{
+	if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0)
+		return;
+	char fields[512];
+	snprintf(fields, sizeof(fields),
+		"\"requested\":[%.9g,%.9g,%.9g],\"before_feet\":[%.9g,%.9g,%.9g],\"feet\":[%.9g,%.9g,%.9g],\"collision_flags\":%u,\"local_actor_id\":%u,\"class_type\":%d,\"active_groups\":%u,\"segment\":%u,\"caller_va\":%u,\"frame\":%llu",
+		(double)requested[0], (double)requested[1], (double)requested[2],
+		(double)before[0], (double)before[1], (double)before[2],
+		(double)after[0], (double)after[1], (double)after[2],
+		(unsigned int)collision_flags, (unsigned int)actor_id, (int)class_type, (unsigned int)active_groups, (unsigned int)segment, (unsigned int)caller,
+		(unsigned long long)velqor::CurrentFrame());
+	velqor::Emit("motion", fields);
+}
+
 void __fastcall BridgeCorrectionDispatch(void* self, void* reserved, uint32_t netid,
 	void* message, uint32_t size)
 {
@@ -415,6 +437,39 @@ void __stdcall BridgeGameStartDispatch(uint32_t context, void* payload, uint32_t
 		InterlockedExchange(&g_match_started, 1);
 		velqor::Emit("match_start", "");
 	}
+}
+
+uint32_t __fastcall BridgeMoveSegmented(void* self, void* reserved, float* disp, uint32_t active_groups, uint32_t segment)
+{
+	(void)reserved;
+	const uint32_t caller = (uint32_t)((uint8_t*)_ReturnAddress() - g_base) + kStaticBase;
+	MoveSegmentedFn original = g_move_segmented;
+	if (original == 0)
+		return 0;
+	void* entity = LocalEntity();
+	if (self == 0 || disp == 0 || self != LocalPhysController(entity))
+		return original(self, disp, active_groups, segment);
+	float requested[3];
+	requested[0] = disp[0];
+	requested[1] = disp[1];
+	requested[2] = disp[2];
+	float before[3];
+	bool before_ok = false;
+	if (g_get_gameplay_pos != 0)
+	{
+		g_get_gameplay_pos(self, before);
+		before_ok = IsFiniteF(before[0]) && IsFiniteF(before[1]) && IsFiniteF(before[2]);
+	}
+	uint32_t flags = original(self, disp, active_groups, segment);
+	if (!before_ok || g_get_gameplay_pos == 0 ||
+		!IsFiniteF(requested[0]) || !IsFiniteF(requested[1]) || !IsFiniteF(requested[2]))
+		return flags;
+	float after[3];
+	g_get_gameplay_pos(self, after);
+	if (!IsFiniteF(after[0]) || !IsFiniteF(after[1]) || !IsFiniteF(after[2]))
+		return flags;
+	EmitMotion(requested, before, after, flags, LocalActorId(entity), LocalClassType(entity), active_groups, segment, caller);
+	return flags;
 }
 
 bool InstallGameStartHook()
@@ -493,6 +548,48 @@ bool InstallCorrectionHook()
 		return false;
 	}
 	InterlockedExchange(&g_hook_ready, 1);
+	return true;
+}
+
+bool InstallMoveSegmentedHook()
+{
+	void* target = StaticVa(kPhysControllerMoveSegmentedVa);
+	if (target == 0)
+	{
+		SetError("move_segmented_hook_unavailable");
+		return false;
+	}
+	if (memcmp(target, kPhysControllerMoveSegmentedSig, sizeof(kPhysControllerMoveSegmentedSig)) != 0)
+	{
+		SetError("move_segmented_signature_mismatch");
+		return false;
+	}
+	if (!velqor::HookTransactionBegin())
+	{
+		SetError("hook_transaction_failed");
+		return false;
+	}
+	g_move_segmented = (MoveSegmentedFn)target;
+	velqor::HookUpdateThread(GetCurrentThread());
+	if (DetourAttach((PVOID*)&g_move_segmented, (PVOID)&BridgeMoveSegmented) != NO_ERROR)
+	{
+		DetourTransactionAbort();
+		g_move_segmented = 0;
+		SetError("move_segmented_hook_failed");
+		return false;
+	}
+	if (!velqor::HookTransactionCommit())
+	{
+		g_move_segmented = 0;
+		SetError("move_segmented_hook_commit_failed");
+		return false;
+	}
+	if (g_move_segmented == 0 || g_move_segmented == (MoveSegmentedFn)target)
+	{
+		g_move_segmented = 0;
+		SetError("move_segmented_hook_unverified");
+		return false;
+	}
 	return true;
 }
 
@@ -611,6 +708,8 @@ extern "C" bool BridgeInitialize()
 	bool hook_ok = InstallCorrectionHook();
 	if (hook_ok)
 		hook_ok = InstallGameStartHook();
+	if (hook_ok)
+		hook_ok = InstallMoveSegmentedHook();
 	InterlockedExchange(&g_initialized, 1);
 	if (!hook_ok)
 		SetFatal(g_last_error[0] != 0 ? g_last_error : "correction_hook_failed");

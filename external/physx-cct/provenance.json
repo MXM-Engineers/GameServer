@@ -1,0 +1,60 @@
+{
+  "repository": "https://github.com/NVIDIAGameWorks/PhysX",
+  "ref": "a2c0428acab643e60618c681b501e86f7fd558cc",
+  "branch_at_import": "4.1",
+  "sdk_version": "4.1.2",
+  "upstream_source_manifest": "https://github.com/NVIDIAGameWorks/PhysX/blob/a2c0428acab643e60618c681b501e86f7fd558cc/physx/source/compiler/cmake/PhysXCharacterKinematic.cmake",
+  "upstream_windows_manifest": "https://github.com/NVIDIAGameWorks/PhysX/blob/a2c0428acab643e60618c681b501e86f7fd558cc/physx/source/compiler/cmake/windows/PhysXCharacterKinematic.cmake",
+  "layout": "Vendored files retain their repository-relative paths. LICENSE.txt is the upstream root LICENSE.md, unchanged. Each source/header retains its original copyright and license notice.",
+  "scope": "The ten upstream CharacterKinematic translation units and sixty recursively required private Windows headers. Installed external/physx-4.1 public headers are reused; no backend SDK implementation is imported.",
+  "public_header_compatibility": "All 84 public headers in the CCT include closure match this revision after CRLF normalization.",
+  "modifications": [
+    {
+      "file": "physx/source/physxcharacterkinematic/src/CctCharacterController.cpp",
+      "function": "SweepTest::doSweepTest / CollideGeoms",
+      "upstream": "CollideGeoms(..., !mUserParams.mOverlapRecovery) discards all t=0 static/kinematic hits when recovery is off",
+      "local": "CollideGeoms has no discardInitialOverlap argument. Keep a hit when (C.mDistance!=0 || mType==eMESH) && C.mDistance<best. Primitive t=0 is discarded. Mesh t=0 is retained then slides. MTD remains gated by mOverlapRecovery && C.mDistance==0.",
+      "effect": "NxCharacter 10010FF0/10011890 return false at primitive distance==0. NxCharacter 10010420 keeps mesh hits including t=0. Do not couple that keep to Px4 MeshQuery initial-overlap -dir normals."
+    },
+    {
+      "file": "physx/source/physxcharacterkinematic/src/CctCharacterController.cpp",
+      "function": "sweepVolumeVsMesh",
+      "upstream": "PxMeshQuery::sweep(..., getSweepHitFlags(params), ...) with eDEFAULT so testInitialOverlap is on",
+      "local": "OR PxHitFlag::eASSUME_NO_INITIAL_OVERLAP into the mesh-only sweep flags. Primitive PxGeometryQuery sweeps still use getSweepHitFlags unchanged.",
+      "effect": "Px4 Gu::sweepCapsuleTriangles_Precise with default flags short-circuits intersectCapsuleTriangle to setInitialOverlapResults: distance=0, normal=-unitDir, ePOSITION invalid. PhysXCore NxUtilLib vtable 1032cff0+0x120 = 1001e850 NxSweepCapsuleTriangles -> Ice 10194ce0 has no that path: aligned-up uses sphere 10193760 with n·dir<=0 backface cull and geometric impact normal (center+dir*t-hit); otherwise extrude 10185000 + 10194240. eASSUME_NO_INITIAL_OVERLAP selects that old geometric path. CollideGeoms still keeps mesh t=0 when the geometric sweep reports it with a triangle normal. Not a discard-all-t0.",
+      "anchors": {
+        "NxCharacter.dll": "10010420",
+        "PhysXCore.dll": {
+          "NpGetUtilLib": "1011eab0",
+          "utilLib_object": "1034a138",
+          "utilLib_vtable": "1032cff0",
+          "slot_0x120": "1001e850",
+          "NxSweepCapsuleTriangles_Ice": "10194ce0",
+          "aligned_up_sphere_triangles": "10193760"
+        },
+        "Px4": "GuSweepCapsuleTriangle.cpp testInitialOverlap / setInitialOverlapResults; PxMeshQuery.h notes ePOSITION undefined and normal=-unitDir on IO"
+      }
+    },
+    {
+      "file": "physx/source/physxcharacterkinematic/src/CctCharacterController.cpp",
+      "function": "SweepTest::moveCharacter",
+      "local": "Remove the Px4 SIDE sensor sub-pass. Set eCOLLISION_DOWN on every DOWN hit. Apply constrained climbing when mHandleSlope and mTestConstrainedClimbingMode and contactHeight>originalBottom+stepOffset, without the SIDE-triangle or SIDE-slope prerequisites. Apply the regular slope check only for a validated DOWN triangle with dir_dot_up<0; remove Px4 touched-triangle-height and other-CCT exclusions.",
+      "anchors": "NxCharacter.dll moveCharacter 100129d0; constrained gate 10012dcd/10012dda; regular DOWN slope gate 10012e0e",
+      "effect": "Match the linked legacy controller's pass sequence, climb rejection, DOWN flag and mesh-slope gates rather than upstream Px4 sensor behavior."
+    },
+    {
+      "file": "physx/source/physxcharacterkinematic/src/CctCharacterControllerCallbacks.cpp",
+      "function": "outputBoxToStream / findTouchedGeometry",
+      "local": "Pack a TouchedBox eBOX with actor, shape, origin, extents, rotation and center relative to the extended cache origin. Remove box-to-twelve-triangle tessellation and migrate the sole call site.",
+      "effect": "Keep box collision on the analytic primitive sweep path, where legacy zero-distance hits are rejected. A box must not inherit mesh-zero or mesh-slope behavior through tessellation."
+    }
+  ],
+  "configuration": {
+    "Debug": "PX_DEBUG=0, PX_CHECKED=1, PX_SUPPORT_PVD=1; matches the checked backend DLL configuration selected by copy_physx_dlls. The project Debug CRT remains unchanged.",
+    "Release_and_other_non_Debug": "PX_DEBUG=0, PX_CHECKED=0, PX_SUPPORT_PVD=0; matches the existing release backend selection.",
+    "all": "PX_NVTX=0. No PX_PHYSX_STATIC_LIB, PX_PHYSX_CORE_EXPORTS, PX_PHYSX_COMMON_EXPORTS, or PX_FOUNDATION_EXPORTS: backend APIs remain DLL imports."
+  },
+  "link_contract": "The physx interface links the local physx_cct static target instead of PhysXCharacterKinematic_static_64. Existing PhysXExtensions, core, PVD, Common, Foundation and Cooking libraries remain unchanged. CCT also imports upstream exported private Foundation, RadixSort and Gu geometry symbols from the existing DLLs; it is therefore pinned to this SDK, not compatible with arbitrary future backend releases.",
+  "known_limits": "The backend remains PhysX 4.1.2. This is an evidence-backed legacy-law CCT fork, not bit-identical NxCharacter/PhysXCore. The legacy aligned-up sphere sweep at 10193760 includes a 0.01 directional triangle-normal distance adjustment absent from the selected Px4 geometric path. Final captured-request replay measures maximum position error 0.094822864 and no flag differences across 3365 moves; the preceding 3332-move capture had two boundary flag differences. Legacy NXS cooking, geometry coverage and cross-SDK numerical equivalence are not established.",
+  "non_build_checks": "Checked and release PE export tables contain the Foundation singleton/mutex/FPU, RadixSortBuffered, distanceSegmentBoxSquared and intersectOBBOBB symbols used by this closure. Compilation and runtime validation are performed by the integration owner."
+}

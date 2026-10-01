@@ -86,13 +86,20 @@ struct PhysicsDynamicBody
 	const JumpMotion* jumpMotion = nullptr;
 	f32 jumpElapsed = 0.0f;
 	f32 jumpHeight = 0.0f;
+	vec2 horizontalGraphDisplacement = vec2(0);
+	bool horizontalGraphActive = false;
 
-	inline vec3 GetWorldPos() const { return tov3(collider->getFootPosition()); }
+	inline vec3 GetWorldPos() const
+	{
+		const PxExtendedVec3& center = collider->getPosition();
+		return { f32(center.x), f32(center.y), f32(center.z) - feetOffset };
+	}
 	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }
 
 private:
 	f32 radius;
 	f32 height;
+	f32 feetOffset;
 	PxFilterData collisionFilterData;
 
 	friend struct PhysicsScene;
@@ -112,7 +119,7 @@ struct PhysicsScene
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
 	void ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 height);
 	bool StartJump(PhysicsDynamicBody* body, const JumpMotion& motion);
-	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time /* seconds */);
+	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time, bool segmented);
 	vec3 FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };
 

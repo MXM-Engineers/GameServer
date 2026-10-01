@@ -90,20 +90,21 @@ static void ApplyHorizontalGraph(World& world, World::SkillProgram& prog, World:
 	if(elapsed < prog.graphExecuteAt) {
 		return;
 	}
+	if(prog.graphApplyUpdate != world.updateIndex) {
+		prog.graphApplyUpdate = world.updateIndex;
+		prog.graphElapsed += (f32)UPDATE_RATE;
+	}
 	const HorizontalMotionVariant& variant = *prog.horizontalVariant;
-	const f32 graphT = elapsed - prog.graphExecuteAt + (f32)UPDATE_RATE;
+	const f32 graphT = prog.graphElapsed;
 	const f32 t = eastl::min(graphT, prog.moveDuration);
 	const f32 endSample = variant.samples[variant.sampleCount - 1];
 	const f32 rawSample = variant.Sample(t);
 	const f32 sampled = endSample < 0.f ? eastl::max(rawSample, endSample) : eastl::min(rawSample, endSample);
 	const f32 delta = sampled - prog.moveSampled;
 	prog.moveSampled = sampled;
-	const vec3 displacement = vec3(prog.moveHorizDir * delta, 0);
-	if(glm::dot(displacement, displacement) > 0) {
-		world.physics.Move(player.body, displacement, UPDATE_RATE);
-	}
+	player.body->horizontalGraphDisplacement += prog.moveHorizDir * delta;
+	player.body->horizontalGraphActive = true;
 	prog.graphDone = graphT >= prog.moveDuration;
-	player.input.moveTo = player.body->GetWorldPos();
 	player.movement.forcedMove = true;
 }
 
@@ -178,6 +179,7 @@ void World::Update(Time localTime_)
 
 	localTime = localTime_;
 	physics.localTime = localTime;
+	updateIndex++;
 
 	const bool velqorTrace = VelqorTrace::Enabled();
 	if(velqorTrace) g_velqorUpdateSeq.Increment();
@@ -216,6 +218,9 @@ void World::Update(Time localTime_)
 
 	for(auto it = skillProgramList.begin(); it != skillProgramList.end(); ) {
 		if(!it->IsDoneExecuting()) {
+			if(it->bornUpdate != updateIndex) {
+				it->simTicks++;
+			}
 			ExecuteSkillProgram(*it);
 		}
 		if(it->IsDoneExecuting()) {
@@ -285,6 +290,11 @@ void World::Update(Time localTime_)
 	}
 
 	physics.Step();
+	foreach(it, players) {
+		if(it->movement.forcedMove) {
+			it->input.moveTo = it->body->GetWorldPos();
+		}
+	}
 
 	if(velqorTrace) {
 		const f64 velqorSimTime = TimeDurationSec(Time::ZERO, localTime);
@@ -683,7 +693,9 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.castAngle = angle;
 	prog.casterUID = player.Main().UID;
 	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(prog.targetList));
-	prog.startTime = localTime;
+	prog.simTicks = 0;
+	prog.bornUpdate = updateIndex;
+	prog.graphApplyUpdate = updateIndex - 1;
 	prog.moveStartPos = player.body->GetWorldPos();
 	prog.moveEndPos = prog.moveStartPos;
 
@@ -788,7 +800,7 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 		return;
 	}
 	Player& player = *caster->parent;
-	const f32 elapsed = (f32)TimeDurationSec(prog.startTime, localTime);
+	const f32 elapsed = (f32)prog.simTicks / (f32)UPDATE_TICK_RATE;
 
 
 	PhysicsDynamicBody* body = player.body;
@@ -809,7 +821,7 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 					const vec2 dir = vec2(cosf(prog.castAngle), sinf(prog.castAngle));
 					const vec3 startPos = body->GetWorldPos();
 					const vec3 endPos = physics.FindMovePos(body, vec3(dir * (f32)cmd.move.param2, 0), UPDATE_RATE);
-					physics.Move(body, endPos - startPos, UPDATE_RATE);
+					physics.Move(body, endPos - startPos, UPDATE_RATE, false);
 					player.input.moveTo = body->GetWorldPos();
 					player.movement.forcedMove = true;
 					if(player.clientHd != ClientHandle::INVALID) {
@@ -861,7 +873,7 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 	ApplyHorizontalGraph(*this, prog, player, elapsed);
 
 
-	const bool graphPending = prog.horizontalVariant && !prog.graphDone && elapsed < prog.graphExecuteAt + prog.moveDuration;
+	const bool graphPending = prog.horizontalVariant && !prog.graphDone;
 	if(prog.commandID == action.commands.size() && !graphPending && elapsed >= prog.completeAt) {
 		caster->actionState = ActionStateID::INVALID;
 		if(velqorTrace) {

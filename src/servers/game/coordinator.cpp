@@ -25,18 +25,16 @@ intptr_t ThreadLane(void* pData)
 	char name[256];
 	snprintf(name, sizeof(name), "Lane_%d", lane.laneIndex);
 
-	f64 accumulator = 0.0f;
-
 	while(lane.server->running)
 	{
 		Time t1 = TimeNow();
-		lane.localTime = TimeDiff(startTime, t1);
 		f64 delta = TimeDiffMs(TimeDiff(t0, t1));
 
 		if(delta > UPDATE_RATE_MS) {
+			t0 = Time((u64)t0 + (u64)TimeMsToTime(UPDATE_RATE_MS));
+			lane.localTime = TimeDiff(startTime, t0);
 			ProfileNewFrame(name);
 			lane.Update();
-			t0 = Time((u64)t0 + (u64)TimeMsToTime(UPDATE_RATE_MS));
 		}
 		/*else {
 			EA::Thread::ThreadSleep((EA::Thread::ThreadTime)(UPDATE_RATE_MS - delta));

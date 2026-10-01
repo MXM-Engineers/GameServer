@@ -1,71 +1,74 @@
 #pragma once
 #include <common/vector_math.h>
 #include <common/utils.h>
-#include <EASTL/array.h>
-#include <EASTL/fixed_list.h>
-
 #include <mxm/jump_motion.h>
-#include <foundation/PxAllocatorCallback.h>
-#include <foundation/PxErrorCallback.h>
-#include <PxFoundation.h>
-#include <PxPhysics.h>
-#include <PxRigidDynamic.h>
-#include <task/PxCpuDispatcher.h>
-#include <characterkinematic/PxBoxController.h>
-#include <characterkinematic/PxCapsuleController.h>
-#include <characterkinematic/PxControllerManager.h>
-using namespace physx;
+#include <NxPhysics.h>
+#include <NxCapsuleController.h>
+#include <NxControllerManager.h>
+#include <malloc.h>
 
-// should be no-op
-inline vec3 tov3(const PxVec3& v)
+struct PhysicsAllocatorCallback: NxUserAllocator
 {
-	return { v.x, v.y, v.z };
-}
-inline vec3 tov3(const PxExtendedVec3& v)
-{
-	return { v.x, v.y, v.z };
-}
-
-// TODO: actual allocator
-struct PhysicsAllocatorCallback: PxAllocatorCallback
-{
-	virtual ~PhysicsAllocatorCallback() override
+	virtual void* mallocDEBUG(size_t size, const char*, int) override
 	{
-
-	}
-
-	virtual void* allocate(size_t size, const char* typeName, const char* filename, int line) override
-	{
-		void* ptr = memAlloc(size);
-		DBG_ASSERT((((intptr_t)ptr) & 15) == 0); // 16 aligned
+		void* ptr = _aligned_malloc(size ? size : 1, 16);
+		ASSERT(ptr);
+		DBG_ASSERT((((intptr_t)ptr) & 15) == 0);
 		return ptr;
 	}
 
-	virtual void deallocate(void* ptr) override
+	virtual void* malloc(size_t size) override
 	{
-		memFree(ptr);
+		void* ptr = _aligned_malloc(size ? size : 1, 16);
+		ASSERT(ptr);
+		DBG_ASSERT((((intptr_t)ptr) & 15) == 0);
+		return ptr;
+	}
+
+	virtual void* realloc(void* memory, size_t size) override
+	{
+		void* ptr = _aligned_realloc(memory, size ? size : 1, 16);
+		ASSERT(ptr);
+		DBG_ASSERT((((intptr_t)ptr) & 15) == 0);
+		return ptr;
+	}
+
+	virtual void free(void* memory) override
+	{
+		_aligned_free(memory);
 	}
 };
 
-struct PhysicsErrorCallback: PxErrorCallback
+struct PhysicsOutputStream: NxUserOutputStream
 {
-	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override
+	virtual void reportError(NxErrorCode code, const char* message, const char* file, int line) override
 	{
 		const char* errorCode = "UNKNOWN";
 		switch(code) {
-			case PxErrorCode::eNO_ERROR: { errorCode = "NO_ERROR"; } break;
-			case PxErrorCode::eDEBUG_INFO: { errorCode = "DEBUG_INFO"; } break;
-			case PxErrorCode::eDEBUG_WARNING: { errorCode = "DEBUG_WARNING"; } break;
-			case PxErrorCode::eINVALID_PARAMETER: { errorCode = "INVALID_PARAMETER"; } break;
-			case PxErrorCode::eINVALID_OPERATION: { errorCode = "INVALID_OPERATION"; } break;
-			case PxErrorCode::eOUT_OF_MEMORY: { errorCode = "OUT_OF_MEMORY"; } break;
-			case PxErrorCode::eINTERNAL_ERROR: { errorCode = "INTERNAL_ERROR"; } break;
-			case PxErrorCode::eABORT: { errorCode = "ABORT"; } break;
-			case PxErrorCode::ePERF_WARNING: { errorCode = "PERF_WARNING"; } break;
-			case PxErrorCode::eMASK_ALL: { errorCode = "MASK_ALL"; } break;
+			case NXE_NO_ERROR: { errorCode = "NO_ERROR"; } break;
+			case NXE_INVALID_PARAMETER: { errorCode = "INVALID_PARAMETER"; } break;
+			case NXE_INVALID_OPERATION: { errorCode = "INVALID_OPERATION"; } break;
+			case NXE_OUT_OF_MEMORY: { errorCode = "OUT_OF_MEMORY"; } break;
+			case NXE_INTERNAL_ERROR: { errorCode = "INTERNAL_ERROR"; } break;
+			case NXE_ASSERTION: { errorCode = "ASSERTION"; } break;
+			case NXE_DB_INFO: { errorCode = "DEBUG_INFO"; } break;
+			case NXE_DB_WARNING: { errorCode = "DEBUG_WARNING"; } break;
+			case NXE_DB_PRINT: { errorCode = "DEBUG_PRINT"; } break;
 		}
 
 		LOG("[PhysX] ERROR(%s) '%s' @(%s : %d)", errorCode, message, file, line);
+	}
+
+	virtual NxAssertResponse reportAssertViolation(const char* message, const char* file, int line) override
+	{
+		LOG("[PhysX] ASSERT '%s' @(%s : %d)", message, file, line);
+		ASSERT(false);
+		return NX_AR_CONTINUE;
+	}
+
+	virtual void print(const char* message) override
+	{
+		LOG("[PhysX] %s", message);
 	}
 };
 
@@ -80,7 +83,7 @@ enum class PhysicsCollisionGroup : u32
 
 struct PhysicsDynamicBody
 {
-	PxCapsuleController* collider = nullptr;
+	NxCapsuleController* collider = nullptr;
 	vec3 vel = vec3(0); // actual velocity
 	bool grounded = false;
 	const JumpMotion* jumpMotion = nullptr;
@@ -91,7 +94,7 @@ struct PhysicsDynamicBody
 
 	inline vec3 GetWorldPos() const
 	{
-		const PxExtendedVec3& center = collider->getPosition();
+		const NxExtendedVec3& center = collider->getDebugPosition();
 		return { f32(center.x), f32(center.y), f32(center.z) - feetOffset };
 	}
 	inline vec2 GetBoundSize() const { return { radius, height + radius * 2 }; }
@@ -100,7 +103,6 @@ private:
 	f32 radius;
 	f32 height;
 	f32 feetOffset;
-	PxFilterData collisionFilterData;
 
 	friend struct PhysicsScene;
 };
@@ -108,8 +110,8 @@ private:
 struct PhysicsScene
 {
 	Time localTime = Time::ZERO;
-    PxScene* scene = nullptr;
-    PxControllerManager* controllerMngr = nullptr;
+    NxScene* scene = nullptr;
+    NxControllerManager* controllerMngr = nullptr;
 	eastl::fixed_vector<PhysicsDynamicBody,256,false> colliderList; // doesn't grow so we don't invalidate pointer
 
 	void Step();
@@ -126,17 +128,12 @@ struct PhysicsScene
 struct PhysicsContext
 {
 	PhysicsAllocatorCallback allocatorCallback;
-	PhysicsErrorCallback errorCallback;
-	PxFoundation* foundation;
-	PxCpuDispatcher* dispatcher;
-	PxPhysics* physics;
-	PxPvd* pvd;
+	PhysicsOutputStream outputStream;
+	NxPhysicsSDK* physics = nullptr;
 
 	ProfileMutex(Mutex, mutexSceneCreate);
 
-	PxMaterial* matMapSurface;
-
-	eastl::fixed_hash_map<size_t, PxTriangleMesh*, 64> triangleMeshMap;
+	eastl::fixed_hash_map<size_t, NxTriangleMesh*, 64> triangleMeshMap;
 
 	bool Init();
 	void Shutdown();

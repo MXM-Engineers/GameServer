@@ -98,7 +98,12 @@ struct Window
 		eastl::array<u8,Input::_Count> input = {0};
 
 		void Reset() {
-			actor->collider->setFootPosition(PxExtendedVec3(5469, 3945, 1000));
+			NxExtendedVec3 position = actor->collider->getDebugPosition();
+			position.x = 5469;
+			position.y = 3945;
+			position.z += 1000.f - actor->GetWorldPos().z;
+			const bool positioned = actor->collider->setPosition(position);
+			ASSERT(positioned);
 			facing = vec3(1, 0, 0);
 			input = {0};
 		}
@@ -609,6 +614,7 @@ void Window::OnEvent(const sapp_event& event)
 
 void Window::Cleanup()
 {
+	testScene.Destroy();
 	if(!bInitialized) return;
 
 	rdr.Cleanup();

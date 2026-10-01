@@ -1,14 +1,11 @@
 #include <common/base.h>
 #include <EAStdC/EAString.h>
 #include <EASTL/fixed_map.h>
-#include <PxFoundation.h>
-#include <PxPhysicsVersion.h>
-#include <cooking/PxCooking.h>
-#include <extensions/PxDefaultAllocator.h>
-#include <extensions/PxDefaultErrorCallback.h>
-#include <extensions/PxDefaultStreams.h>
-
-using namespace physx;
+#include <NxCooking.h>
+#include <NxConvexMeshDesc.h>
+#include <NxStream.h>
+#include <NxTriangleMeshDesc.h>
+#include <PhysXLoader.h>
 
 #ifdef CONF_DEBUG
 	#define DBG LOG
@@ -50,24 +47,30 @@ struct Matrix3x3
 	f32 data[9];
 };
 
-inline PxTolerancesScale TolerancesScale()
+struct CookingOutputStream : NxStream
 {
-	PxTolerancesScale s;
-	s.length = 100.f;
-	s.speed = 100.f;
-	return s;
-}
+	eastl::fixed_vector<u8,4096,true> data;
 
-inline const char* ToString(PxTriangleMeshCookingResult::Enum e)
-{
-	switch(e) {
-		case PxTriangleMeshCookingResult::Enum::eFAILURE: return "FAILURE";
-		case PxTriangleMeshCookingResult::Enum::eLARGE_TRIANGLE: return "LARGE_TRIANGLE";
-		case PxTriangleMeshCookingResult::Enum::eSUCCESS: return "SUCCESS";
+	NxU8 readByte() const override { ASSERT(false); return 0; }
+	NxU16 readWord() const override { ASSERT(false); return 0; }
+	NxU32 readDword() const override { ASSERT(false); return 0; }
+	NxF32 readFloat() const override { ASSERT(false); return 0; }
+	NxF64 readDouble() const override { ASSERT(false); return 0; }
+	void readBuffer(void*, NxU32) const override { ASSERT(false); }
+
+	NxStream& storeByte(NxU8 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeWord(NxU16 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeDword(NxU32 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeFloat(NxF32 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeDouble(NxF64 value) override { return storeBuffer(&value, sizeof(value)); }
+
+	NxStream& storeBuffer(const void* buffer, NxU32 size) override
+	{
+		const u8* bytes = static_cast<const u8*>(buffer);
+		data.insert(data.end(), bytes, bytes + size);
+		return *this;
 	}
-	ASSERT(0); // case not handled
-	return "";
-}
+};
 
 struct CollisionNifReader
 {
@@ -539,19 +542,12 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	static PxDefaultErrorCallback gDefaultErrorCallback;
-	static PxDefaultAllocator gDefaultAllocatorCallback;
-	PxFoundation* foundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
-	if(!foundation) {
-		LOG("ERROR: PxCreateFoundation failed");
+	NxCookingInterface* cooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
+	if(!cooking || !cooking->NxInitCooking()) {
+		LOG("ERROR: NxInitCooking failed");
 		return false;
 	}
-
-	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(TolerancesScale()));
-	if(!foundation) {
-		LOG("ERROR: PxCreateCooking failed");
-		return false;
-	}
+	defer(cooking->NxCloseCooking());
 
 	eastl::fixed_vector<const CollisionNifReader::Mesh*,8> validMeshes;
 	foreach_const(it, nif.meshList) {
@@ -732,30 +728,27 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		outCooked.Append(&nameLen, sizeof(nameLen));
 		outCooked.Append(mesh.name.data(), nameLen);
 
-		PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = verticesBlock.numIndices;
-		meshDesc.points.stride = vertexSize;
-		meshDesc.points.data = verticesBlock.at;
+		NxTriangleMeshDesc meshDesc;
+		meshDesc.numVertices = verticesBlock.numIndices;
+		meshDesc.pointStrideBytes = vertexSize;
+		meshDesc.points = verticesBlock.at;
 
-		meshDesc.triangles.count = indexBlock.numIndices/3;
-		meshDesc.triangles.stride = 3*sizeof(u16);
-		meshDesc.triangles.data = indices;
+		meshDesc.numTriangles = indexBlock.numIndices/3;
+		meshDesc.triangleStrideBytes = 3*sizeof(u16);
+		meshDesc.triangles = indices;
 
-		meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
+		meshDesc.flags = NX_MF_16_BIT_INDICES;
 
-		PxDefaultMemoryOutputStream writeBuffer;
-		PxTriangleMeshCookingResult::Enum result;
-		bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+		CookingOutputStream writeBuffer;
+		bool status = cooking->NxCookTriangleMesh(meshDesc, writeBuffer);
 		if(!status) {
 			LOG("ERROR: cookTriangleMesh failed");
 			return false;
 		}
 
-		LOG("cook result = %d(%s)", result, ToString(result));
-
-		const u32 cookedMeshSize = writeBuffer.getSize();
+		const u32 cookedMeshSize = writeBuffer.data.size();
 		outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-		outCooked.Append(writeBuffer.getData(), cookedMeshSize);
+		outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
 	}
 
 	bool r = fileSaveBuff(FMT("%s.obj", outPath), out.data(), out.size());
@@ -772,7 +765,7 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 
 	r = fileSaveBuff(FMT("%s.physx_static", outPath), outCooked.data, outCooked.size);
 	if(!r) {
-		LOG("ERROR: could not write '%s.cooked'", outPath);
+		LOG("ERROR: could not write '%s.physx_static'", outPath);
 		return false;
 	}
 
@@ -864,30 +857,29 @@ struct ObjReader
 	}
 };
 
-// Cooks a unit (radius: 1, height: 1) cylinder convex mesh
-bool CookConvexCylinder(PxCooking* cooking, const char* outputFilePath)
+
+bool CookConvexCylinder(NxCookingInterface* cooking, const char* outputFilePath)
 {
-	PxVec3 verts[64];
-	const f32 add = 2*PxTwoPi/32;
+	NxVec3 verts[64];
+	const f32 add = 2*NxTwoPiF32/32;
 
 	for(int i = 0; i < 32; i++) {
 		f32 a = add * i;
-		verts[i] = PxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 0);
+		verts[i] = NxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 0);
 	}
 	for(int i = 0; i < 32; i++) {
 		f32 a = add * i;
-		verts[i+32] = PxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 100.0f);
+		verts[i+32] = NxVec3(cosf(a) * 50.f, sinf(a) * 50.f, 100.0f);
 	}
 
-	PxConvexMeshDesc convexDesc;
-	convexDesc.points.count = 64;
-	convexDesc.points.stride = sizeof(PxVec3);
-	convexDesc.points.data = verts;
-	convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+	NxConvexMeshDesc convexDesc;
+	convexDesc.numVertices = 64;
+	convexDesc.pointStrideBytes = sizeof(NxVec3);
+	convexDesc.points = verts;
+	convexDesc.flags = NX_CF_COMPUTE_CONVEX;
 
-	PxDefaultMemoryOutputStream writeBuffer;
-	PxConvexMeshCookingResult::Enum result;
-	bool status = cooking->cookConvexMesh(convexDesc, writeBuffer, &result);
+	CookingOutputStream writeBuffer;
+	bool status = cooking->NxCookConvexMesh(convexDesc, writeBuffer);
 	if(!status) {
 		LOG("ERROR: cookConvexMesh failed");
 		return false;
@@ -900,9 +892,9 @@ bool CookConvexCylinder(PxCooking* cooking, const char* outputFilePath)
 	const u16 meshCount = 1;
 	outCooked.Append(&meshCount, sizeof(meshCount));
 
-	const u32 cookedMeshSize = writeBuffer.getSize();
+	const u32 cookedMeshSize = writeBuffer.data.size();
 	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-	outCooked.Append(writeBuffer.getData(), cookedMeshSize);
+	outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
 
 	bool r = fileSaveBuff(FMT("%s.physx_dynamic", outputFilePath), outCooked.data, outCooked.size);
 	if(!r) {
@@ -915,19 +907,12 @@ bool CookConvexCylinder(PxCooking* cooking, const char* outputFilePath)
 
 bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 {
-	static PxDefaultErrorCallback gDefaultErrorCallback;
-	static PxDefaultAllocator gDefaultAllocatorCallback;
-	PxFoundation* foundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
-	if(!foundation) {
-		LOG("ERROR: PxCreateFoundation failed");
+	NxCookingInterface* cooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
+	if(!cooking || !cooking->NxInitCooking()) {
+		LOG("ERROR: NxInitCooking failed");
 		return false;
 	}
-
-	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(TolerancesScale()));
-	if(!foundation) {
-		LOG("ERROR: PxCreateCooking failed");
-		return false;
-	}
+	defer(cooking->NxCloseCooking());
 
 	// physx file
 	GrowableBuffer outCooked(1024*1024);
@@ -936,6 +921,10 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
 	const u16 meshCount = 1;
 	outCooked.Append(&meshCount, sizeof(meshCount));
+	const char* name = "AnObjMesh";
+	const i32 nameLen = strlen(name);
+	outCooked.Append(&nameLen, sizeof(nameLen));
+	outCooked.Append(name, nameLen);
 
 	ObjReader::Vertex* fixedVertices = (ObjReader::Vertex*)memAlloc(sizeof(ObjReader::Vertex) * obj.vertices.size());
 	defer(memFree(fixedVertices));
@@ -953,40 +942,36 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 		eastl::swap(fixedIndices[i], fixedIndices[i+1]);
 	}
 
-	PxTriangleMeshDesc meshDesc;
-	meshDesc.points.count = obj.vertices.size();
-	meshDesc.points.stride = sizeof(ObjReader::Vertex);
-	meshDesc.points.data = fixedVertices;
+	NxTriangleMeshDesc meshDesc;
+	meshDesc.numVertices = obj.vertices.size();
+	meshDesc.pointStrideBytes = sizeof(ObjReader::Vertex);
+	meshDesc.points = fixedVertices;
 
-	meshDesc.triangles.count = obj.indices.size()/3;
-	meshDesc.triangles.stride = 3*sizeof(u16);
-	meshDesc.triangles.data = fixedIndices;
+	meshDesc.numTriangles = obj.indices.size()/3;
+	meshDesc.triangleStrideBytes = 3*sizeof(u16);
+	meshDesc.triangles = fixedIndices;
 
-	meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
+	meshDesc.flags = NX_MF_16_BIT_INDICES;
 
-	PxDefaultMemoryOutputStream writeBuffer;
-	PxTriangleMeshCookingResult::Enum result;
-	bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+	CookingOutputStream writeBuffer;
+	bool status = cooking->NxCookTriangleMesh(meshDesc, writeBuffer);
 	if(!status) {
 		LOG("ERROR: cookTriangleMesh failed");
 		return false;
 	}
 
-	const u32 cookedMeshSize = writeBuffer.getSize();
+	const u32 cookedMeshSize = writeBuffer.data.size();
 	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-	outCooked.Append(writeBuffer.getData(), cookedMeshSize);
+	outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
 
-	bool r = fileSaveBuff(FMT("%s.cooked", outputFilePath), outCooked.data, outCooked.size);
+	bool r = fileSaveBuff(FMT("%s.physx_static", outputFilePath), outCooked.data, outCooked.size);
 	if(!r) {
-		LOG("ERROR: could not write '%s.cooked'", outputFilePath);
+		LOG("ERROR: could not write '%s.physx_static'", outputFilePath);
 		return false;
 	}
 
-	// TODO: remove
-	// test convex
 	r = CookConvexCylinder(cooking, outputFilePath);
 	if(!r) return false;
-
 
 	// mesh
 	GrowableBuffer outMesh(1024*1024);
@@ -996,8 +981,6 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	outMesh.Append(&meshCount, sizeof(meshCount));
 
 	// name
-	const char* name = "AnObjMesh";
-	const i32 nameLen = strlen(name);
 	outMesh.Append(&nameLen, sizeof(nameLen));
 	outMesh.Append(name, nameLen);
 

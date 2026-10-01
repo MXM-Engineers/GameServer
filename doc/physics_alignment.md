@@ -2,9 +2,9 @@
 
 ## Goal and status
 
-Align server physics with `MXMClient_DP_p3.exe` while retaining the existing PhysX 4.1.2 backend. Client-evidenced controller settings, authored movement, and live owner trajectory comparisons inform the implementation. Exact client/server physics parity is not established.
+Align server physics with `MXMClient_DP_p3.exe` using the supplied native x64 PhysX 2.8.4 SDK and legacy Nx controller API. Client-evidenced controller settings, authored movement, and live owner trajectory comparisons inform the implementation. Exact client/server physics parity is not established.
 
-The client uses PhysX 2.8.4 through Gamebryo/NiPhysX and the legacy Nx controller API. Its SDK creation call at `0x01125e5c` passes version `0x02080400`. Different SDK generations can still produce different collision results even with matching parameters.
+The client uses PhysX 2.8.4 through Gamebryo/NiPhysX. Its SDK creation call at `0x01125e5c` passes version `0x02080400`, matching the packaged SDK headers and successful server creation call. The supplied x86 DLLs differ byte-for-byte from the client's DLLs; the server uses x64 binaries. Matching SDK version does not establish identical builds or numerical results.
 
 ## Client evidence
 
@@ -40,6 +40,7 @@ MoveController dimensions are distinct from the class-specific PhysXMesh collide
 ### Controller creation, movement, and lifetime
 
 - Create controllers at a center computed from the supplied feet position, rather than treating feet as a center.
+- Read live CCT state with `NxController::getDebugPosition()`. The supplied SDK's `getPosition()` returns published, filtered state; sharpness-zero movement must not use it for gameplay.
 - Preserve feet when resizing the active master controller; skip unchanged dimensions.
 - Use the client PC collision mask `0x1c7f06` consistently for ordinary movement, forced movement, and destination queries.
 - Keep PC controllers non-blocking to each other, consistent with the mask excluding controller group 3.
@@ -73,7 +74,7 @@ The scene includes:
 - Aim geometry as Aim.
 - GuardrailMob, AIobj, and Collision meshes for each selected dynamic wall, using the wall actor's position and rotation.
 
-Existing wall selection, identities, and spawn metadata are preserved. The cooker was not rewritten: supplied map meshes are already in map space and wall meshes are actor-local. General NIF transform handling remains an audit concern for additional assets.
+Existing wall selection, identities, and spawn metadata are preserved. The cooker now uses native Nx 2.8.4 cooking while retaining the NIF extraction path: supplied map meshes are already in map space and wall meshes are actor-local. General NIF transform handling remains an audit concern for additional assets.
 
 Debug-scene callers were migrated to explicit collision groups and feet-based reset positions.
 
@@ -249,11 +250,11 @@ At this stage the controller defect was measured but not corrected: at matching 
 
 Remote `0x01a4a2f2` caches metadata before starting the action and does not immediately install a graph. The execute handler `0x00a05e94` swaps the wire duration/origin fields in its local stack before either setter. Both owner and remote cache origin at Movement+0x194 and duration at +0x19C; the earlier opposite-order claim was incorrect. Actual remote playback, near-zero terminal knots, and broader skill/state coverage remain unverified.
 
-## Linked-controller laws and verified corrections
+## PhysX 4 linked-controller baseline
 
 The wire client and its actual `NxCharacter.dll` and `PhysXCore.dll` were reversed together. Matching descriptor constants was insufficient: the previous Px4 overlap-recovery path created the 70-unit perch, but merely disabling recovery allowed a 120-unit box to be traversed. Both stock choices were rejected.
 
-The server now builds a pinned local CCT from PhysX `a2c0428acab643e60618c681b501e86f7fd558cc`, while retaining the existing 4.1.2 core backend. `external/physx-cct/provenance.json` records the source closure, license, private-DLL ABI and all local changes:
+Before the native SDK cutover, commit `7a7b792` built a pinned local CCT from PhysX `a2c0428acab643e60618c681b501e86f7fd558cc` while retaining the 4.1.2 core backend. Its recorded source closure, license, private-DLL ABI and local changes are historical baseline evidence; that compatibility CCT has now been removed:
 
 - No penetration/MTD recovery in production, and no Px4 SIDE-sensor pass. DOWN contact sets the DOWN flag; constrained-climb and mesh-slope gates follow `NxCharacter` `0x100129d0`.
 - Primitive zero-distance hits are rejected; geometric mesh zero-distance hits remain eligible. Boxes are cached as analytic OBBs, not twelve triangles, so primitive and mesh rules cannot be accidentally conflated.
@@ -293,6 +294,41 @@ All owned processes exited after both recorded runs. The four server configurati
 
 The final capture also replays continuously from each master's initial pose without resets: class 6 has 2,541 moves, maximum/mean error 0.079655/0.001180; class 5 has 824 moves, maximum/mean 0.094823/0.042263. All 3,365 final collision flags agree. This does not erase the preceding capture's two boundary flag mismatches or establish exact numerical parity. Raw requests and results are retained in `final_laws_cct_motion_replay.json`.
 
+
+## Native PhysX 2.8.4 cutover
+
+`external/physx-2.8.4/` packages 204 unchanged SDK headers and the supplied x64 Release/CHECKED binaries and import libraries. `provenance.json` records every vendor file's size and SHA-256. The original installation and inactive PhysX 4 package remain untouched. No standalone SDK license/EULA was present in the installation; original vendor notices are retained and no PhysX 4 license is claimed.
+
+The production backend and collision cooker now use actual Nx 2.8.4 APIs. The locally patched PhysX 4 controller fork, Px types, old filter callback, foundation/dispatcher/PVD setup and old build links are removed. Scene-local material index 0 retains friction 1 and restitution 0. SDK shutdown owns global triangle meshes; scenes release controllers and actors first. Debug-window cleanup now releases its test scene, including partial initialization.
+
+Both supplied cores hard-import `cudart64_30_9.dll`; packaging it is required even with `NO_HARDWARE` and software scenes. The supplied CHECKED loader also requests unsuffixed core/cooking filenames. Debug executables therefore live in `build/checked/`, with original CHECKED core/cooking bytes deployed as `PhysXCore64.dll` and `PhysXCooking64.dll`; loader/controller retain CHECKED names. Release stays in `build/`. Both configurations run with `build/` as the working directory. Module paths and file hashes prove actual CHECKED loading rather than a shared-directory Release-core fallback.
+
+The three static assets were regenerated with the native cooker from the original client NIFs; all three extracted `.msh` files are byte-identical to the pre-cutover geometry. Names, coordinates, indices, winding and actor-local wall geometry are unchanged. `cylinder.physx_dynamic` was regenerated from the existing OBJ using native convex cooking; its consumer container layout is retained.
+
+### Positive same-request changes
+
+The preserved `20260913_sol_final_laws` requests were replayed without retiming or pose resets, using the first observed pose per master and the same float-coordinate, displacement, mask and segmentation contract:
+
+| Capture | Requests | PhysX 4 max / mean error | Native 2.8.4 max / mean error | Maximum reduction |
+| --- | --- | --- | --- | --- |
+| Class 6 | 2,541 | 0.079655 / 0.001180 | 0.004181 / 0.000486 | 94.75% |
+| Class 5 | 824 | 0.094823 / 0.042263 | 0.016234 / 0.009815 | 82.88% |
+
+All six retained request streams ran successfully. The earlier legacy capture also improves to class 6 max/mean 0.004183/0.000545 and class 5 0.016573/0.010081. This is a collision-kernel improvement, not proof of complete gameplay parity. Native replay has two class-6 boundary flag differences in each retained final/legacy capture; class 5 has none. The final PhysX 4 capture had no flag differences, so numerical improvement did not improve every metric.
+
+### Actual-client and complete-scene evidence
+
+`20261002_sol_nx284` completed the unchanged jump/A/moving-Shirk/TAG/ledge scenario with every required gate satisfied, 3,409 independent pose pairs, all five jumps accepted/applied, both skills completed, and zero server/client corrections, guard mutations or client-focus events. A endpoint-displacement disagreement was 0.001467 units. The raw-QPC maximum/mean error was **188.087094/15.826756**, worse than the previous capture's 111.209290/13.305603. The live physics verdict remains **diverged**; no network/action synchronization improvement is claimed.
+
+Current-capture replay includes the actual logged `12 A type` wall configuration and all three collision meshes at each authored area transform. Class 6 has 2,536 requests, max/mean 0.004195/0.000486 and one flag difference; class 5 has 824 requests, max/mean 0.016232/0.006305 and no flag differences. One continuous controller across TAG processes all 3,360 requests with max/mean 0.016017/0.002002 and one flag difference. Real CHECKED core/controller replay produces the same result.
+
+An initial static-only replay omitted the selected dynamic walls and produced a spurious class-5 582-unit discrepancy. Restoring the observed wall configuration resolved it without changing requests, resetting poses or shifting time. The incomplete-scene result is retained as invalid measurement evidence, not a backend result.
+
+All Release and Debug server/tool targets build. Fifteen real-World/real-CCT and packet-boundary regressions pass with both Release and actual CHECKED cores; all eleven Python evidence regressions pass. Native CHECKED cooking succeeds and reproduces the source geometry. The 120-unit step regression retains rejection, grounding and unchanged per-tick bounds; its obsolete PhysX 4 stopping-distance pin was removed rather than repinned to a new implementation coordinate.
+
+Actual Nx scene teardown, repeated teardown and null/partial-scene teardown were exercised. The debug GUI teardown itself was not run because desktop window manipulation is forbidden. The four server configs and pre-existing `scripts/lea.dll` bytes were restored exactly; all owned runtime processes exited.
+
+Evidence: `build/velqor/nx284_evidence.json`, `nx284_cct_motion_replay.json`, `nx284_complete_scene_replay.json`, `nx284_cooked/final_regressions.json` and `build/velqor/runs/20261002_sol_nx284/`. Temporary replay sources/binaries are removed after proof. Matching the supplied SDK version does not remove client-build, x86/x64, boundary-flag, stance/modifier, other-map or network/action timing uncertainties.
 
 ## Suggested next verification targets
 

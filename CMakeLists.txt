@@ -67,15 +67,23 @@ function(mxm_debug_suffix target)
 endfunction()
 
 # PhysX ships DLLs next to the import libs; drop them beside the binaries.
-set(PHYSX_DIR ${EXTERNAL_DIR}/physx-4.1)
-set(PHYSX_DLLS PhysXCommon_64.dll PhysXCooking_64.dll PhysXFoundation_64.dll PhysX_64.dll)
+set(PHYSX_DIR ${EXTERNAL_DIR}/physx-2.8.4)
+set(PHYSX_DLLS PhysXCore64 PhysXCooking64 PhysXLoader64 NxCharacter64)
 function(copy_physx_dlls target)
 	foreach(dll IN LISTS PHYSX_DLLS)
+		set(runtime_dll "${dll}$<IF:$<CONFIG:Debug>,CHECKED,>")
+		if(dll STREQUAL "PhysXCore64" OR dll STREQUAL "PhysXCooking64")
+			set(runtime_dll "${dll}")
+		endif()
 		add_custom_command(TARGET ${target} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different
-				"${PHYSX_DIR}/lib/$<IF:$<CONFIG:Debug>,checked,release>/${dll}"
-				"$<TARGET_FILE_DIR:${target}>/${dll}")
+				"${PHYSX_DIR}/lib/$<IF:$<CONFIG:Debug>,checked,release>/${dll}$<IF:$<CONFIG:Debug>,CHECKED,>.dll"
+				"$<TARGET_FILE_DIR:${target}>/${runtime_dll}.dll")
 	endforeach()
+	add_custom_command(TARGET ${target} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			"${PHYSX_DIR}/lib/release/cudart64_30_9.dll"
+			"$<TARGET_FILE_DIR:${target}>/cudart64_30_9.dll")
 endfunction()
 
 # Sync gamedata/ into build/gamedata so servers can resolve "gamedata" from
@@ -94,16 +102,7 @@ add_custom_command(
 	COMMENT "Syncing gamedata -> build/gamedata")
 add_custom_target(sync_gamedata DEPENDS "${GAMEDATA_STAMP}")
 
-# Keep server executables and tools in build/ regardless of config/preset
-# (debug targets carry the _dbg postfix, so Debug and Release never collide).
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
-# Multi-config generators (Visual Studio) append $<CONFIG> unless overridden:
-if(CMAKE_CONFIGURATION_TYPES)
-	foreach(_cfg ${CMAKE_CONFIGURATION_TYPES})
-		string(TOUPPER ${_cfg} _CFG_UPPER)
-		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${_CFG_UPPER} ${CMAKE_SOURCE_DIR}/build)
-	endforeach()
-endif()
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/$<IF:$<CONFIG:Debug>,checked,>")
 
 add_subdirectory(external)
 add_subdirectory(src)

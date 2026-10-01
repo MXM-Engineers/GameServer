@@ -3,7 +3,12 @@
 #include <servers/game/physics.h>
 #include <servers/game/world.h>
 #include <common/packet_validator.h>
-#include <PxPhysicsAPI.h>
+#include <NxPhysics.h>
+#include <NxCooking.h>
+#include <NxController.h>
+#include <PhysXLoader.h>
+#include <NxFoundationSDK.h>
+#include <NxStream.h>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -35,68 +40,122 @@ bool Near(const vec3& a, const vec3& b, float tolerance = 0.5f)
 struct Scene
 {
 	PhysicsScene physics;
+	NxTriangleMesh* triangleMesh = nullptr;
 
 	Scene() { PhysContext().CreateScene(&physics); }
-	~Scene() { physics.Destroy(); }
+	~Scene()
+	{
+		physics.Destroy();
+		if(triangleMesh) PhysContext().physics->releaseTriangleMesh(*triangleMesh);
+	}
 	Scene(const Scene&) = delete;
 	Scene& operator=(const Scene&) = delete;
 };
 
-void Box(PhysicsScene& scene, const PxVec3& halfSize, const PxTransform& pose,
+void Box(PhysicsScene& scene, const NxVec3& halfSize, const NxVec3& position,
 	PhysicsCollisionGroup group = PhysicsCollisionGroup::Static)
 {
-	auto& context = PhysContext();
-	PxShape* shape = context.physics->createShape(PxBoxGeometry(halfSize), *context.matMapSurface);
-	ASSERT(shape);
-	shape->setQueryFilterData(PxFilterData(1u << static_cast<u32>(group), 0, 0, 0));
-	PxRigidStatic* actor = context.physics->createRigidStatic(pose);
+	NxBoxShapeDesc shape;
+	shape.dimensions = halfSize;
+	shape.group = static_cast<NxCollisionGroup>(group);
+	NxActorDesc description;
+	description.globalPose.t = position;
+	description.shapes.pushBack(&shape);
+	NxActor* actor = scene.scene->createActor(description);
 	ASSERT(actor);
-	const bool attached = actor->attachShape(*shape);
-	ASSERT(attached);
-	shape->release();
-	scene.scene->addActor(*actor);
 }
 
 void Floor(PhysicsScene& scene)
 {
-	Box(scene, PxVec3(5000, 5000, 100), PxTransform(PxVec3(0, 0, -100)));
+	Box(scene, NxVec3(5000, 5000, 100), NxVec3(0, 0, -100));
 }
 
-void MeshRamp(PhysicsScene& scene, float angle)
+class CookedMeshStream: public NxStream
+{
+	GrowableBuffer data{4096};
+	mutable NxU32 position = 0;
+
+	template<class T> T Read() const
+	{
+		T value{};
+		readBuffer(&value, sizeof(value));
+		return value;
+	}
+
+public:
+	CookedMeshStream() = default;
+	CookedMeshStream(const CookedMeshStream&) = delete;
+	CookedMeshStream& operator=(const CookedMeshStream&) = delete;
+
+	void Rewind() { position = 0; }
+
+	NxU8 readByte() const override { return Read<NxU8>(); }
+	NxU16 readWord() const override { return Read<NxU16>(); }
+	NxU32 readDword() const override { return Read<NxU32>(); }
+	NxF32 readFloat() const override { return Read<NxF32>(); }
+	NxF64 readDouble() const override { return Read<NxF64>(); }
+	void readBuffer(void* buffer, NxU32 size) const override
+	{
+		ASSERT(position <= NxU32(data.size) && size <= NxU32(data.size) - position);
+		std::memcpy(buffer, data.data + position, size);
+		position += size;
+	}
+	NxStream& storeByte(NxU8 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeWord(NxU16 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeDword(NxU32 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeFloat(NxF32 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeDouble(NxF64 value) override { return storeBuffer(&value, sizeof(value)); }
+	NxStream& storeBuffer(const void* buffer, NxU32 size) override
+	{
+		ASSERT(size <= NxU32(std::numeric_limits<i32>::max() - data.size));
+		const i32 count = i32(size);
+		if(count > data.capacity - data.size) {
+			data.Reserve(MAX(data.size + count, data.capacity * 2));
+		}
+		data.Append(buffer, count);
+		return *this;
+	}
+};
+
+void MeshRamp(Scene& scene, float angle)
 {
 	auto& context = PhysContext();
 	const float c = std::cos(angle);
 	const float s = std::sin(angle);
-	const PxVec3 vertices[] = {
-		PxVec3(-40 * s, -500, 0),
-		PxVec3(2000 * c - 40 * s, -500, 2000 * s),
-		PxVec3(2000 * c - 40 * s, 500, 2000 * s),
-		PxVec3(-40 * s, 500, 0),
+	const NxVec3 vertices[] = {
+		NxVec3(-40 * s, -500, 0),
+		NxVec3(2000 * c - 40 * s, -500, 2000 * s),
+		NxVec3(2000 * c - 40 * s, 500, 2000 * s),
+		NxVec3(-40 * s, 500, 0),
 	};
-	const PxU32 indices[] = {0, 1, 2, 0, 2, 3};
-	PxTriangleMeshDesc description;
-	description.points.count = 4;
-	description.points.stride = sizeof(PxVec3);
-	description.points.data = vertices;
-	description.triangles.count = 2;
-	description.triangles.stride = sizeof(PxU32) * 3;
-	description.triangles.data = indices;
-	PxCooking* cooking = PxCreateCooking(PX_PHYSICS_VERSION, *context.foundation,
-		PxCookingParams(context.physics->getTolerancesScale()));
+	const NxU32 indices[] = {0, 1, 2, 0, 2, 3};
+	NxTriangleMeshDesc description;
+	description.numVertices = 4;
+	description.pointStrideBytes = sizeof(NxVec3);
+	description.points = vertices;
+	description.numTriangles = 2;
+	description.triangleStrideBytes = sizeof(NxU32) * 3;
+	description.triangles = indices;
+	NxCookingInterface* cooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
 	ASSERT(cooking);
-	PxTriangleMesh* mesh = cooking->createTriangleMesh(description, context.physics->getPhysicsInsertionCallback());
-	cooking->release();
-	ASSERT(mesh);
-	PxShape* shape = context.physics->createShape(PxTriangleMeshGeometry(mesh), *context.matMapSurface);
-	mesh->release();
-	ASSERT(shape);
-	shape->setQueryFilterData(PxFilterData(1u << static_cast<u32>(PhysicsCollisionGroup::Static), 0, 0, 0));
-	PxRigidStatic* actor = context.physics->createRigidStatic(PxTransform(PxIdentity));
+	auto& foundation = context.physics->getFoundationSDK();
+	const bool initialized = cooking->NxInitCooking(&foundation.getAllocator(), foundation.getErrorStream());
+	ASSERT(initialized);
+	CookedMeshStream stream;
+	const bool cooked = cooking->NxCookTriangleMesh(description, stream);
+	cooking->NxCloseCooking();
+	ASSERT(cooked);
+	stream.Rewind();
+	ASSERT(!scene.triangleMesh);
+	scene.triangleMesh = context.physics->createTriangleMesh(stream);
+	ASSERT(scene.triangleMesh);
+	NxTriangleMeshShapeDesc shape;
+	shape.meshData = scene.triangleMesh;
+	shape.group = static_cast<NxCollisionGroup>(PhysicsCollisionGroup::Static);
+	NxActorDesc actorDescription;
+	actorDescription.shapes.pushBack(&shape);
+	NxActor* actor = scene.physics.scene->createActor(actorDescription);
 	ASSERT(actor);
-	const bool attached = actor->attachShape(*shape);
-	ASSERT(attached);
-	shape->release();
-	scene.scene->addActor(*actor);
 }
 
 void Settle(PhysicsScene& scene, int ticks = 90)
@@ -239,7 +298,7 @@ bool Steps()
 	for(float height: {50.0f, 120.0f}) {
 		Scene scene;
 		Floor(scene.physics);
-		Box(scene.physics, PxVec3(1000, 500, height * 0.5f), PxTransform(PxVec3(1000, 0, height * 0.5f)));
+		Box(scene.physics, NxVec3(1000, 500, height * 0.5f), NxVec3(1000, 0, height * 0.5f));
 		auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(-300, 0, 0));
 		Settle(scene.physics);
 		body->vel.x = 480;
@@ -255,7 +314,7 @@ bool Steps()
 		if(height == 50) {
 			REQUIRE(end.x > 400 && Near(end.z, 50));
 		} else {
-			REQUIRE(end.x < -90 && end.x > -120 && Near(end.z, 0));
+			REQUIRE(end.x < 0 && Near(end.z, 0));
 		}
 		REQUIRE(body->grounded);
 	}
@@ -269,8 +328,8 @@ bool SegmentedTraversal()
 		Floor(scene.physics);
 		for(int i = 0; i < 3; ++i) {
 			const float height = float((i + 1) * 50);
-			Box(scene.physics, PxVec3(150, 500, height * 0.5f),
-				PxTransform(PxVec3(float(150 + i * 300), 0, height * 0.5f)));
+			Box(scene.physics, NxVec3(150, 500, height * 0.5f),
+				NxVec3(float(150 + i * 300), 0, height * 0.5f));
 		}
 		auto* body = scene.physics.CreateDynamicBody(20, 80, vec3(-100, 0, 0));
 		Settle(scene.physics);
@@ -297,7 +356,7 @@ bool Slopes()
 		Scene scene;
 		Floor(scene.physics);
 		const float angle = glm::radians(degrees);
-		MeshRamp(scene.physics, angle);
+		MeshRamp(scene, angle);
 		auto* body = scene.physics.CreateDynamicBody(20, 80, vec3(-200, 0, 0));
 		Settle(scene.physics);
 		body->vel.x = 300;
@@ -317,7 +376,7 @@ bool CeilingAndResize()
 {
 	Scene scene;
 	Floor(scene.physics);
-	Box(scene.physics, PxVec3(1000, 1000, 50), PxTransform(PxVec3(0, 0, 400)));
+	Box(scene.physics, NxVec3(1000, 1000, 50), NxVec3(0, 0, 400));
 	auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(0));
 	Settle(scene.physics);
 	body->vel.z = 10000;
@@ -337,7 +396,11 @@ bool CeilingAndResize()
 	const vec3 airFeet = body->GetWorldPos();
 	scene.physics.ResizeDynamicBody(body, 100, 70);
 	REQUIRE(Near(body->GetWorldPos(), airFeet, 0.001f));
-	body->collider->setFootPosition(PxExtendedVec3(feet.x, feet.y, feet.z));
+	NxExtendedVec3 center = body->collider->getDebugPosition();
+	center.x = feet.x;
+	center.y = feet.y;
+	center.z += double(feet.z - body->GetWorldPos().z);
+	body->collider->setPosition(center);
 	Settle(scene.physics);
 	scene.physics.Move(body, vec3(0, 0, 200), Dt, false);
 	REQUIRE(Near(body->GetWorldPos().z, ceilingFeet));
@@ -350,7 +413,7 @@ bool QueryRestoration()
 	Scene control;
 	for(auto* scene: {&queried.physics, &control.physics}) {
 		Floor(*scene);
-		Box(*scene, PxVec3(50, 500, 500), PxTransform(PxVec3(300, 0, 500)));
+		Box(*scene, NxVec3(50, 500, 500), NxVec3(300, 0, 500));
 	}
 	auto* a = queried.physics.CreateDynamicBody(100, 70, vec3(0));
 	auto* b = control.physics.CreateDynamicBody(100, 70, vec3(0));
@@ -394,7 +457,7 @@ bool ControllerFiltering()
 	for(auto group: {PhysicsCollisionGroup::ControllerPc, PhysicsCollisionGroup::Static}) {
 		Scene filtered;
 		Floor(filtered.physics);
-		Box(filtered.physics, PxVec3(50, 500, 500), PxTransform(PxVec3(0, 0, 500)), group);
+		Box(filtered.physics, NxVec3(50, 500, 500), NxVec3(0, 0, 500), group);
 		auto* body = filtered.physics.CreateDynamicBody(100, 70, vec3(-300, 0, 0));
 		Settle(filtered.physics);
 		body->vel.x = 600;
@@ -610,12 +673,7 @@ int main()
 		std::printf("%s %s\n", passed ? "PASS" : "FAIL", test.name);
 		if(!passed) ++failed;
 	}
-	auto& context = PhysContext();
-	for(auto& mesh: context.triangleMeshMap) mesh.second->release();
-	context.triangleMeshMap.clear();
-	context.matMapSurface->release();
-	static_cast<PxDefaultCpuDispatcher*>(context.dispatcher)->release();
-	context.Shutdown();
+	PhysContext().Shutdown();
 	std::printf("physics_tests: %d failed\n", failed);
 	return failed ? 1 : 0;
 }

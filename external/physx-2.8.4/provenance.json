@@ -1,0 +1,1165 @@
+{
+  "sdk_version": "2.8.4",
+  "source": "external/physx-2.8.4_install",
+  "target": "Windows x64",
+  "header_components": [
+    "Foundation",
+    "Physics",
+    "NxCharacter",
+    "Cooking",
+    "PhysXLoader"
+  ],
+  "header_count": 204,
+  "configuration": {
+    "Release": "supplied win64 release DLLs and imports",
+    "Debug": "supplied win64 CHECKED DLLs and imports"
+  },
+  "vendor_modified": false,
+  "client_binary_build_identical": false,
+  "inventory": [
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win32\\NxCharacter.dll",
+      "size": 107872,
+      "machine": "0x14c",
+      "sha256": "816fefac0c6b3d7da68daf3098a73e7fa0eff326ef83b3dba7f0fe2dcf0bd095"
+    },
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win32\\PhysXCore.dll",
+      "size": 3567456,
+      "machine": "0x14c",
+      "sha256": "c1758f8deada5dad54eb384b4f94a43f69b54c6f671cdcabef4f64d9c6f1da3a"
+    },
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win64\\NxCharacter64.dll",
+      "size": 128352,
+      "machine": "0x8664",
+      "sha256": "e742ca44b24aad0787d73c5da530eed16fa945bd539b1ab00ed0408ab69d0949"
+    },
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win64\\PhysXCore64.dll",
+      "size": 4434272,
+      "machine": "0x8664",
+      "sha256": "0e88edff1575793a1d13a35f6439cf083be230801fcaf8f0c6e059b67a20830a"
+    },
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win64\\PhysXLoader64.dll",
+      "size": 66912,
+      "machine": "0x8664",
+      "sha256": "9e04e342233164cc5c6228694fb416292325ca31b8c847734f029af67e70ab62"
+    },
+    {
+      "file": "external\\physx-2.8.4_install\\Bin\\win64\\PhysXCooking64.dll",
+      "size": 465248,
+      "machine": "0x8664",
+      "sha256": "4e91e4859be23c127d1aba38cc7e94a9ad32b563ecee96f22e9616c118a54c87"
+    }
+  ],
+  "files": [
+    {
+      "path": "lib/checked/NxCharacter64CHECKED.dll",
+      "bytes": 136032,
+      "sha256": "0acd01e6b402715e7e8740f7bd508e15132255b99b1cffa2caf2f944bce0f068"
+    },
+    {
+      "path": "lib/checked/NxCharacter64CHECKED.lib",
+      "bytes": 3774,
+      "sha256": "8742ae67ad44c08794d4c69263831638ce9dce62af84e365242f055f959150a4"
+    },
+    {
+      "path": "lib/checked/PhysXCooking64CHECKED.dll",
+      "bytes": 686432,
+      "sha256": "95b36677d27b53fd619b26f3a5c2c100fb040e40a5f1cf16f7c64e798972f8e4"
+    },
+    {
+      "path": "lib/checked/PhysXCooking64CHECKED.lib",
+      "bytes": 4890,
+      "sha256": "96f852261c61d9f4094805cc66229771f2d6bea9d41fb5f23fa3843c7917fa4d"
+    },
+    {
+      "path": "lib/checked/PhysXCore64CHECKED.dll",
+      "bytes": 4612448,
+      "sha256": "9879acd3c97f855f855f50e95f27c48d595cc2bc99423e9ab63377dd7d49c039"
+    },
+    {
+      "path": "lib/checked/PhysXLoader64CHECKED.dll",
+      "bytes": 67936,
+      "sha256": "e5025581535230de04fcd0c501d631a86e61a8ffda02904cb3f3a8343f127aa4"
+    },
+    {
+      "path": "lib/checked/PhysXLoader64CHECKED.lib",
+      "bytes": 4050,
+      "sha256": "d2986a56b288d6d4b14ffdf62b19afa71adefa082ac33bacbea4355af1118562"
+    },
+    {
+      "path": "lib/release/NxCharacter64.dll",
+      "bytes": 128352,
+      "sha256": "e742ca44b24aad0787d73c5da530eed16fa945bd539b1ab00ed0408ab69d0949"
+    },
+    {
+      "path": "lib/release/NxCharacter64.lib",
+      "bytes": 3638,
+      "sha256": "c236b33881929f60bf5e9bc0d6999040df9d315ae631cae79a4a1a108e8c40eb"
+    },
+    {
+      "path": "lib/release/PhysXCooking64.dll",
+      "bytes": 465248,
+      "sha256": "4e91e4859be23c127d1aba38cc7e94a9ad32b563ecee96f22e9616c118a54c87"
+    },
+    {
+      "path": "lib/release/PhysXCooking64.lib",
+      "bytes": 4708,
+      "sha256": "f497bb6d9a52a485fe16087c7874b5b157e8959fcc3ddbb22634391ca77706fe"
+    },
+    {
+      "path": "lib/release/PhysXCore64.dll",
+      "bytes": 4434272,
+      "sha256": "0e88edff1575793a1d13a35f6439cf083be230801fcaf8f0c6e059b67a20830a"
+    },
+    {
+      "path": "lib/release/PhysXCore64.lib",
+      "bytes": 4398,
+      "sha256": "730d57290cae058c090f45e009fb400ad5bd92626f384047caf3de717bb453d5"
+    },
+    {
+      "path": "lib/release/PhysXLoader64.dll",
+      "bytes": 66912,
+      "sha256": "9e04e342233164cc5c6228694fb416292325ca31b8c847734f029af67e70ab62"
+    },
+    {
+      "path": "lib/release/PhysXLoader64.lib",
+      "bytes": 3896,
+      "sha256": "6729245a465a86dcd0a7f2e104ef5f462bc3573bf3813efd0f8512319a3ef40f"
+    },
+    {
+      "path": "include/physx/BoxController.h",
+      "bytes": 2578,
+      "sha256": "7e5e1c1176f4ec998fcf789bcd7fe1062dac01ae7b38137e8d23de61d2ed519d"
+    },
+    {
+      "path": "include/physx/CapsuleController.h",
+      "bytes": 2869,
+      "sha256": "d11770edccc454b6352970c6531546c14b53f28d7f2a05619c30311dc335cfc2"
+    },
+    {
+      "path": "include/physx/CCTAllocator.h",
+      "bytes": 988,
+      "sha256": "8068e26e7f4c459ce01a0bf592897efd9009deb6e2636f0a12bb97d8dc83ce52"
+    },
+    {
+      "path": "include/physx/CCTDebugRenderer.h",
+      "bytes": 1672,
+      "sha256": "3cb1cd31985c7dad00a87d140b2f2bfe5812bec6cb45edc60f5ae4368037889d"
+    },
+    {
+      "path": "include/physx/CharacterController.h",
+      "bytes": 7792,
+      "sha256": "660ac97e411eb4555358250cb758ded5b4a48e0fc6bb8cf86084f239893b6599"
+    },
+    {
+      "path": "include/physx/CharacterControllerManager.h",
+      "bytes": 1064,
+      "sha256": "cb7dcea7774a00457ffd8207ce487e7a8174ce36e3e9c14e95ad3d7da34136c3"
+    },
+    {
+      "path": "include/physx/Controller.h",
+      "bytes": 2570,
+      "sha256": "737313333911393998ed20bc5cf9afc59321f00e26b4b21160c5bfba15479823"
+    },
+    {
+      "path": "include/physx/ControllerManager.h",
+      "bytes": 2961,
+      "sha256": "f57cf96e85f76fc39aeac41153fe29dcc0e66fc4f105261929132af6b3a64d56"
+    },
+    {
+      "path": "include/physx/fw-convex-cooker.h",
+      "bytes": 4943,
+      "sha256": "9e61e652fc4f1314837fdc43621443bbefbb2d1d058f096a92c3d93eadac36f3"
+    },
+    {
+      "path": "include/physx/Nx.h",
+      "bytes": 7185,
+      "sha256": "a9373610add24d67c500c16389a80fc2a8442ed39ee07ca56dde0b8452cb4270"
+    },
+    {
+      "path": "include/physx/Nx12F32.h",
+      "bytes": 1075,
+      "sha256": "7047abec78b7e1db19ad228f9c193e43ca66adbd7dbc0adeff215e09f375add7"
+    },
+    {
+      "path": "include/physx/Nx16F32.h",
+      "bytes": 1121,
+      "sha256": "e31da0d02f4c9d8bb379d79cb6426792c3907b2c4147301934b89598d408a896"
+    },
+    {
+      "path": "include/physx/Nx9F32.h",
+      "bytes": 1184,
+      "sha256": "2acdd91983f44ff7f7f1b9ed64123e3466877338f3dc7825f2b85185f8b79dd4"
+    },
+    {
+      "path": "include/physx/NxActor.h",
+      "bytes": 74297,
+      "sha256": "cb96264faebc3ef4307c3057de3244e7a13b278e1fac38d05f41617465926a2e"
+    },
+    {
+      "path": "include/physx/NxActorDesc.h",
+      "bytes": 14237,
+      "sha256": "e3445a0b4322e41788a6f927bc1e4b94b407b8d0dde7d4ddd95f3493487c75a8"
+    },
+    {
+      "path": "include/physx/NxAllocatorDefault.h",
+      "bytes": 3247,
+      "sha256": "8fcbedfc0e672b1d537813b3d9b9eaab37fc5fe82e6fa9e963c9cd903ed53432"
+    },
+    {
+      "path": "include/physx/NxArray.h",
+      "bytes": 15328,
+      "sha256": "3af379b4b6b97461308eb628b171c410ff461b0205af3f6ac1c7799e8bc0757e"
+    },
+    {
+      "path": "include/physx/NxAssert.h",
+      "bytes": 963,
+      "sha256": "334e6609575dd09ddef84669d7dcbf06429e6145dea27f0bba42e2a4ae155fe8"
+    },
+    {
+      "path": "include/physx/NxBitField.h",
+      "bytes": 5351,
+      "sha256": "a80ce77a22d5adf5da2324b6a7e17295d7ed290827e999a1e77be87f63cee926"
+    },
+    {
+      "path": "include/physx/NxBodyDesc.h",
+      "bytes": 9720,
+      "sha256": "0829f7ab6daa7e3175a26833a4ac669c260c1a1f7b497e1a5b2a48d8958b0e49"
+    },
+    {
+      "path": "include/physx/NxBounds3.h",
+      "bytes": 8823,
+      "sha256": "5dc1a5039cc784b6385b011b73b51578ba9ab45a486a7ef7f944ca67400a85c7"
+    },
+    {
+      "path": "include/physx/NxBox.h",
+      "bytes": 6251,
+      "sha256": "d30f5004c5c1d5949e88fdda2f37d971d20a930f311d76b6b9e9767faf0786f1"
+    },
+    {
+      "path": "include/physx/NxBoxController.h",
+      "bytes": 3408,
+      "sha256": "af1d319fc3b2edccdc3c24649b8c84a132c5a71890b762b994f0fe0a12536670"
+    },
+    {
+      "path": "include/physx/NxBoxForceFieldShape.h",
+      "bytes": 2309,
+      "sha256": "2fce1e225c15ab46e795f4c324e83ecf61de656cf421f179873478946a204ca3"
+    },
+    {
+      "path": "include/physx/NxBoxForceFieldShapeDesc.h",
+      "bytes": 2729,
+      "sha256": "d279d7ec901999b145db60d98bc5bb85b63ad6753d65541bb065661b7205aa5b"
+    },
+    {
+      "path": "include/physx/NxBoxShape.h",
+      "bytes": 3274,
+      "sha256": "12cfa113ca91736f1f58b2d2b6b87be653bcd7c4934747998bf0b592496b054a"
+    },
+    {
+      "path": "include/physx/NxBoxShapeDesc.h",
+      "bytes": 2334,
+      "sha256": "11d9fdc0e93bd685fccc8cdd5347ed316f6a93dfe0013889aae57330b709473c"
+    },
+    {
+      "path": "include/physx/NxBuildNumber.h",
+      "bytes": 928,
+      "sha256": "b63d3f7cd8d99a421fd714769cb662831753181aba8317e82c4a151ed3df7009"
+    },
+    {
+      "path": "include/physx/Nxc.h",
+      "bytes": 1661,
+      "sha256": "eb51319c2cf701756ff0e2ec93919c8527c7874253935d115ffbe4c909db574c"
+    },
+    {
+      "path": "include/physx/NxCapsule.h",
+      "bytes": 2610,
+      "sha256": "86b3611213cb8d2d245f1c62008ac7f7f458c5f8572bcaf0cb4bf45e531e779a"
+    },
+    {
+      "path": "include/physx/NxCapsuleController.h",
+      "bytes": 5350,
+      "sha256": "2ff5b5ed62648a5eb733bb1860755e0f6b090184da4bcdf6cb5f7831d5757a3d"
+    },
+    {
+      "path": "include/physx/NxCapsuleForceFieldShape.h",
+      "bytes": 3193,
+      "sha256": "c0e8d51354884b275843cefc2343b04191b19760b761c75bc3176b104fbd206a"
+    },
+    {
+      "path": "include/physx/NxCapsuleForceFieldShapeDesc.h",
+      "bytes": 2851,
+      "sha256": "134cfe41cbc1121d7f30044c2dcb2b8cfacfbf9b681956b66a28efa0d8c772c0"
+    },
+    {
+      "path": "include/physx/NxCapsuleShape.h",
+      "bytes": 4517,
+      "sha256": "502280244ea42e6b86a7853c5a26e058b7268e454b7d13c9759c8f02ef3b6309"
+    },
+    {
+      "path": "include/physx/NxCapsuleShapeDesc.h",
+      "bytes": 2867,
+      "sha256": "d6be3345ab679269a93d9a8c7c51e740d2020afa6bcda19f9c765e89c3aeb497"
+    },
+    {
+      "path": "include/physx/NxCCDSkeleton.h",
+      "bytes": 1706,
+      "sha256": "5b5f109d2cb1b067a7d3ae1a8351fc4e835695d266864b6938612fe1f9a8c3aa"
+    },
+    {
+      "path": "include/physx/NxCharacter.h",
+      "bytes": 1210,
+      "sha256": "5b5b3d82d0884b8582da5963de66c8191396e78ed9668d00c5fb14d067224273"
+    },
+    {
+      "path": "include/physx/NxClothUserNotify.h",
+      "bytes": 1171,
+      "sha256": "aa859b627dd0a8132ba897e22c317445749179ad82412a0cb97b79e4145b8ae2"
+    },
+    {
+      "path": "include/physx/NxCompartment.h",
+      "bytes": 6409,
+      "sha256": "44b7e1aa4863100790d9de32414fe51b5fec08919110166a9663bac44fb1ca99"
+    },
+    {
+      "path": "include/physx/NxCompartmentDesc.h",
+      "bytes": 3921,
+      "sha256": "7cc0c077e6c0068b4b9801e5b87edc2b25799442599ab4aebbcd001d5821e400"
+    },
+    {
+      "path": "include/physx/NxContactStreamIterator.h",
+      "bytes": 14778,
+      "sha256": "6cd997076d2159f762b5308558068c29afa55fd1a9a975e5fbf8ae7745c41e8e"
+    },
+    {
+      "path": "include/physx/NxController.h",
+      "bytes": 14081,
+      "sha256": "6eac26917093cbee71dd166f94f73d143385279a02998c4973f02c8502dffc4e"
+    },
+    {
+      "path": "include/physx/NxControllerManager.h",
+      "bytes": 2950,
+      "sha256": "49c24ed2a54cca3711bb1c47a6159c30a306d3fc8364a914bba0acbb5dc2fede"
+    },
+    {
+      "path": "include/physx/NxConvexForceFieldShape.h",
+      "bytes": 1351,
+      "sha256": "f8b9440e532aa7bac5002db1ee7f5d4cd0f79a2b2d16cc24611282d15d0f9e9c"
+    },
+    {
+      "path": "include/physx/NxConvexForceFieldShapeDesc.h",
+      "bytes": 2228,
+      "sha256": "f197522e7a37d91b29cdf844be1cde3aa109eb8ad45dbdf8c105ae167756805f"
+    },
+    {
+      "path": "include/physx/NxConvexMesh.h",
+      "bytes": 6268,
+      "sha256": "d9145fd44ca3159e63dff3cb160671d72c7b8830d22e8e707e9ba46aeb034bca"
+    },
+    {
+      "path": "include/physx/NxConvexMeshDesc.h",
+      "bytes": 6311,
+      "sha256": "17f2a4c9364376a541475ac4d90a78a468dd7bc74803c061d0ad88dfabfc5fe5"
+    },
+    {
+      "path": "include/physx/NxConvexShape.h",
+      "bytes": 2189,
+      "sha256": "80940d6a9c51a393336ebc64c8f46a5a5885827309c4725d4dc49476931fb616"
+    },
+    {
+      "path": "include/physx/NxConvexShapeDesc.h",
+      "bytes": 2574,
+      "sha256": "9ce11e05e290a6bcbf4ff2a915184d7a3c7f470440311f2c225c45f87acbd68a"
+    },
+    {
+      "path": "include/physx/NxCooking.h",
+      "bytes": 17138,
+      "sha256": "37d00f45fc6f5a92be8c44e44aec3870a1ad1e3238aaf1d0aba35ea955ee3d2b"
+    },
+    {
+      "path": "include/physx/NxCylindricalJoint.h",
+      "bytes": 2406,
+      "sha256": "e9ae4553a8a54fbbf959ab7ca8758dee6c2b5c15c855ca74aaa2148f588b674e"
+    },
+    {
+      "path": "include/physx/NxCylindricalJointDesc.h",
+      "bytes": 1835,
+      "sha256": "d7f673dde0b5a5be1b155cc28b90ce583d9f3a839e6fa53fc21d07bd779d8c28"
+    },
+    {
+      "path": "include/physx/NxD6Joint.h",
+      "bytes": 6253,
+      "sha256": "7be596e09516089e402b688351e42f3c614aacf0302b2fd5e56d3a787f6bba5c"
+    },
+    {
+      "path": "include/physx/NxD6JointDesc.h",
+      "bytes": 11400,
+      "sha256": "5239107b10325e3ae45d8912b97b50c1869c9068f1d8f090f0e45517d394c6ce"
+    },
+    {
+      "path": "include/physx/NxDebugRenderable.h",
+      "bytes": 3221,
+      "sha256": "c977a288b0d419494d4bb142ca5ee909d179254bb8ba6182694b7a215b979bdd"
+    },
+    {
+      "path": "include/physx/NxDistanceJoint.h",
+      "bytes": 2319,
+      "sha256": "25ca54720c426f5bf98f5e6d94a478d48d3d2d067e3beb2749660b9ff82d4935"
+    },
+    {
+      "path": "include/physx/NxDistanceJointDesc.h",
+      "bytes": 3211,
+      "sha256": "5a0614b318ba9c60c38ff8e9c1369a2913119b9c9864aa20eaab8144b30c068f"
+    },
+    {
+      "path": "include/physx/NxEffector.h",
+      "bytes": 4781,
+      "sha256": "bf61e3c53bb6bd2e9db676aefc7b1b7f137936335eb3960a8ee8129c12a474c7"
+    },
+    {
+      "path": "include/physx/NxEffectorDesc.h",
+      "bytes": 2891,
+      "sha256": "5126ab97bc2e37d9556e6150e96542bb22db99eb649a98fd574a9e932296270a"
+    },
+    {
+      "path": "include/physx/NxException.h",
+      "bytes": 950,
+      "sha256": "232c1012fc08e6692b800d1bc6d87781bb8efdd869353755819093481cd05733"
+    },
+    {
+      "path": "include/physx/NxExportedUtils.h",
+      "bytes": 18880,
+      "sha256": "2c8379dd3c4d89bd9e595c12c78f6fb4d6ef748bbf6404c7bc935ea0b8b855c3"
+    },
+    {
+      "path": "include/physx/NxExpression.h",
+      "bytes": 3406,
+      "sha256": "07cd176c3118a1b6e8e1021b86977d5a69b6c57cbb51a0d6a4562b7d4e028490"
+    },
+    {
+      "path": "include/physx/NxExtended.h",
+      "bytes": 21174,
+      "sha256": "f6bf7006c8878ff7de6061b894de78915113c3871cfd61936d78f8223c9d7723"
+    },
+    {
+      "path": "include/physx/Nxf.h",
+      "bytes": 1755,
+      "sha256": "26473af2c74d0b3a7694ca05f77dfb1b2e918f1e19ef65c6dddab44e32449fd3"
+    },
+    {
+      "path": "include/physx/NxFixedJoint.h",
+      "bytes": 2214,
+      "sha256": "6a8c5e2e3ae88362557fe0f8754b3f1d4f1605e91ab854874b32e4a113aaf772"
+    },
+    {
+      "path": "include/physx/NxFixedJointDesc.h",
+      "bytes": 1745,
+      "sha256": "dcc0c1750e8eaf159e69697b7b300982470051d99f24db18ee851eb2662c3cd8"
+    },
+    {
+      "path": "include/physx/NxFluidUserNotify.h",
+      "bytes": 2795,
+      "sha256": "e78f3c1c90e6067721810dfd28af279b738689b6fd553cf0f1d7b341777bb78e"
+    },
+    {
+      "path": "include/physx/NxForceField.h",
+      "bytes": 13525,
+      "sha256": "9375ce440538d68d78f72e1bf86bc3287f401f8ff6609c859c33f312e8e529f3"
+    },
+    {
+      "path": "include/physx/NxForceFieldDesc.h",
+      "bytes": 8467,
+      "sha256": "2fd25aa20d97a8316a3a310a78a76e929d488ec489fbee9982c66179e6751a2e"
+    },
+    {
+      "path": "include/physx/NxForceFieldKernel.h",
+      "bytes": 1780,
+      "sha256": "9f836220e468237bf9418cb9d890abde1abbfa56d4304593f311798f9be31321"
+    },
+    {
+      "path": "include/physx/NxForceFieldKernelDefs.h",
+      "bytes": 6059,
+      "sha256": "5b109b559f09779f28aea5d08682dc79348d1657fcfc37cee1f69725c337f9c7"
+    },
+    {
+      "path": "include/physx/NxForceFieldLinearKernel.h",
+      "bytes": 6408,
+      "sha256": "39dab8d30079e9544d7d7252387ff454c2cc78b0efe9033ea26022132f6c44ff"
+    },
+    {
+      "path": "include/physx/NxForceFieldLinearKernelDesc.h",
+      "bytes": 4622,
+      "sha256": "7403ca9a4d3cb1a53d4c6f8cffead3e9ce60372e49d9467fda6e4ae3f82cf303"
+    },
+    {
+      "path": "include/physx/NxForceFieldShape.h",
+      "bytes": 9238,
+      "sha256": "3691f18c619bcc3d74c3a91cfbcadadf90f33f0c3ee9f36006f3a6dc54de5480"
+    },
+    {
+      "path": "include/physx/NxForceFieldShapeDesc.h",
+      "bytes": 3020,
+      "sha256": "58884aff8864734a4f7c91f00f9580b84431e47a803b65d393825ec368b48a1f"
+    },
+    {
+      "path": "include/physx/NxForceFieldShapeGroup.h",
+      "bytes": 5270,
+      "sha256": "ca7c36297c644b6033b80e83676f9142da44958db71cf4d5b1ee8dc82d4fc6e3"
+    },
+    {
+      "path": "include/physx/NxForceFieldShapeGroupDesc.h",
+      "bytes": 3319,
+      "sha256": "bfab42209e62230d0ec4341fc15d71a59e336557f03e7f88398c085dd0b6aa1c"
+    },
+    {
+      "path": "include/physx/NxFoundation.h",
+      "bytes": 1277,
+      "sha256": "97e29e4ec615669ce926149c5606193040821eaba267518ec80cc4c1ea5c3e43"
+    },
+    {
+      "path": "include/physx/NxFoundationSDK.h",
+      "bytes": 3447,
+      "sha256": "76644abaa787abc9e13d263ffa80b81939dcb2d1cc24c407db14f494858bb681"
+    },
+    {
+      "path": "include/physx/NxHeightField.h",
+      "bytes": 7669,
+      "sha256": "168cd2617acddfe203e1b2e3e2e81072d78bd0d9dd7771522ba3da1af47cdd6e"
+    },
+    {
+      "path": "include/physx/NxHeightFieldDesc.h",
+      "bytes": 7120,
+      "sha256": "8d5d0eaebaaf4386ae05f6d116bea303cae627757d096b85aa46037bb066c245"
+    },
+    {
+      "path": "include/physx/NxHeightFieldSample.h",
+      "bytes": 2686,
+      "sha256": "7bf6ea87d67bf68a3664a72465b96505deadb9ff54a2556cee8bd57e2dc01e77"
+    },
+    {
+      "path": "include/physx/NxHeightFieldShape.h",
+      "bytes": 10517,
+      "sha256": "42e7444ed16944697d0ed12487257e449b5089ec349dbafa0f963145a0eb78ce"
+    },
+    {
+      "path": "include/physx/NxHeightFieldShapeDesc.h",
+      "bytes": 4784,
+      "sha256": "06d053ea172ea71c0245169f7ddd37abb15be87530913b41ae3ddacd71c5e7f8"
+    },
+    {
+      "path": "include/physx/NxHwParser.h",
+      "bytes": 3225,
+      "sha256": "6a14f1805c09c7bcf6ec0baecf903797c785842e1d15e26322ac620c5d327de7"
+    },
+    {
+      "path": "include/physx/NxHwTarget.h",
+      "bytes": 9372,
+      "sha256": "8da349d33e822ec6d8262e4aa0a910fb7ee06a1bbc20ab0eb55ffa7540f6a6e1"
+    },
+    {
+      "path": "include/physx/NxI16Vec3.h",
+      "bytes": 3023,
+      "sha256": "6c87c6c8ab5a049e22fdd0184c0d15a651733cba90fd00236f431c491a7cf003"
+    },
+    {
+      "path": "include/physx/NxInertiaTensor.h",
+      "bytes": 9568,
+      "sha256": "15f5b1da7246bd9c6b31ca576f1688a77ab74daf7ced32da0a02101f45e10fd3"
+    },
+    {
+      "path": "include/physx/NxInterface.h",
+      "bytes": 858,
+      "sha256": "1a966632596b8f0c96e59b523a4dfadbf2e509e427926e187dcd3889260399a3"
+    },
+    {
+      "path": "include/physx/NxInterfaceStats.h",
+      "bytes": 989,
+      "sha256": "c31f5ce1e4176abc7a2d5b78e026f1b044353dcccc98964d6af70e593a3ae179"
+    },
+    {
+      "path": "include/physx/NxIntersectionBoxBox.h",
+      "bytes": 5557,
+      "sha256": "0c328be79619bf3d01d59f52728e9901d7c65c7f595b3c23b7726b01774068cd"
+    },
+    {
+      "path": "include/physx/NxIntersectionPointTriangle.h",
+      "bytes": 3154,
+      "sha256": "a2ac49386d950d93c5bdd32e1377ff44c1ab83b006ce74cd5c903ad4f8658a12"
+    },
+    {
+      "path": "include/physx/NxIntersectionRayPlane.h",
+      "bytes": 2505,
+      "sha256": "bec0f9c1899cebc366e7a50442dfab821855888bfba33cb4ee7df7f6ff079f59"
+    },
+    {
+      "path": "include/physx/NxIntersectionRaySphere.h",
+      "bytes": 1854,
+      "sha256": "2943227dbdb56e29152c22c9b614c74d02ceec4e525686160815774ea96b4f80"
+    },
+    {
+      "path": "include/physx/NxIntersectionRayTriangle.h",
+      "bytes": 2085,
+      "sha256": "9cca154b17dfdabab22aff82324dd3f1ac9cb455c140a7d058068cb7de46d24c"
+    },
+    {
+      "path": "include/physx/NxIntersectionSegmentBox.h",
+      "bytes": 6236,
+      "sha256": "549a698b28408c586036cc93d4bbd10daaef9ec6dc6e2eddb2cda71dd3329e22"
+    },
+    {
+      "path": "include/physx/NxIntersectionSegmentCapsule.h",
+      "bytes": 2705,
+      "sha256": "7bbb5b1f8ef84b1fdb2c85c7e754540b2d0b741d415a3ae0815f54b950527a66"
+    },
+    {
+      "path": "include/physx/NxIntersectionSweptSpheres.h",
+      "bytes": 1806,
+      "sha256": "97701fe05e5a97a354082a24a69f91148964dedaf34e2402ba5f17aac1d11dc6"
+    },
+    {
+      "path": "include/physx/NxJoint.h",
+      "bytes": 20597,
+      "sha256": "ec5949c188edeb8c97aca8d309777bfb509b939ccaa7497810a292538c7211b0"
+    },
+    {
+      "path": "include/physx/NxJointDesc.h",
+      "bytes": 9430,
+      "sha256": "25fbd8ff306a575db6087840bc1e21f0b739bcfa673471b9312d08632327eb54"
+    },
+    {
+      "path": "include/physx/NxJointLimitDesc.h",
+      "bytes": 2449,
+      "sha256": "1837e64e601807a62e247492c54b98a9888ad240298670a31be5c476e1656668"
+    },
+    {
+      "path": "include/physx/NxJointLimitPairDesc.h",
+      "bytes": 2203,
+      "sha256": "66aa51130e6e85f602edb3557b8a3a9314402b11e5f7fdec10f132bcd6901fbf"
+    },
+    {
+      "path": "include/physx/NxJointLimitSoftDesc.h",
+      "bytes": 3335,
+      "sha256": "a940a32f5fbda8224786e216f567ed845d5df7859c3ab98cf51769468df63b0a"
+    },
+    {
+      "path": "include/physx/NxJointLimitSoftPairDesc.h",
+      "bytes": 2178,
+      "sha256": "97bc4fad3cb1f5a2065cb1b1d99e44e6a7b29ee03ce7c3dc76ddf47d5996c98f"
+    },
+    {
+      "path": "include/physx/NxMat33.h",
+      "bytes": 45854,
+      "sha256": "e48f23b2bad869fd5f695470a87e91e21230d5590de56788f57eab7d04078b35"
+    },
+    {
+      "path": "include/physx/NxMat34.h",
+      "bytes": 7466,
+      "sha256": "c9ec72e933830cac391494c8869cc468c4ea05ffba24fd64e55a2aa632d1217c"
+    },
+    {
+      "path": "include/physx/NxMaterial.h",
+      "bytes": 12368,
+      "sha256": "750b5d5bb73b3be24bfead8a5f940a378eb526ab42bc0ad41e750faa0478a644"
+    },
+    {
+      "path": "include/physx/NxMaterialDesc.h",
+      "bytes": 10495,
+      "sha256": "ed47bccc5336388a2595a4c86b50b9bb29f75f1fbe0c2dd710b392559ff49d11"
+    },
+    {
+      "path": "include/physx/NxMath.h",
+      "bytes": 20907,
+      "sha256": "7fe1ea5d63222f5b25608e0b94da6b67001d03ef29eec84b02b6f898b34555b8"
+    },
+    {
+      "path": "include/physx/NxMeshData.h",
+      "bytes": 7266,
+      "sha256": "78ba3c9947a0c87e6d30f691bc278b06cb0edc15e2e62e8c2a990cd7fb23b28b"
+    },
+    {
+      "path": "include/physx/NxMotorDesc.h",
+      "bytes": 4806,
+      "sha256": "f372f7c5fc6acf9503ad02b4e4cb58882972efc5bed07e3f4d13a723fecdb662"
+    },
+    {
+      "path": "include/physx/Nxp.h",
+      "bytes": 57352,
+      "sha256": "064a974d3dc92b5f1bdd3279251db7db3d841b81d2f9d6d36dda01e5084ba30d"
+    },
+    {
+      "path": "include/physx/NxPhysics.h",
+      "bytes": 4857,
+      "sha256": "f5dd53679e464d21daedc71b6ea23b385d1f2e3f5778ab9a03a141cdc114edf4"
+    },
+    {
+      "path": "include/physx/NxPhysicsSDK.h",
+      "bytes": 21244,
+      "sha256": "85b6a3d5c9cf303f90edb86d453c6ba1dcebec0a05d4472fa82a671d2a9ee601"
+    },
+    {
+      "path": "include/physx/NxPlane.h",
+      "bytes": 4369,
+      "sha256": "7eb60dd26ddcb5e662276c251b6c35b0cf8fa48cfea70ab0db704d2619d70d8c"
+    },
+    {
+      "path": "include/physx/NxPlaneShape.h",
+      "bytes": 4497,
+      "sha256": "08088eb8f829905075979cf32708a4416aa0c1093ff2e77df1c4ff96206a4fec"
+    },
+    {
+      "path": "include/physx/NxPlaneShapeDesc.h",
+      "bytes": 2631,
+      "sha256": "8d6e59fecf7be0a2c419ac3899cb37501d344d697a0a023c606da9d3a535c517"
+    },
+    {
+      "path": "include/physx/NxPMap.h",
+      "bytes": 3088,
+      "sha256": "5ba6b7ca5c7abd1f978e526e11fe526b29eb433390012741742fa1f0f5839984"
+    },
+    {
+      "path": "include/physx/NxPointInPlaneJoint.h",
+      "bytes": 2540,
+      "sha256": "db143db566b9e6d5b38c00bd55137f007443d7acde370a86a0c4cf5d49019b21"
+    },
+    {
+      "path": "include/physx/NxPointInPlaneJointDesc.h",
+      "bytes": 1861,
+      "sha256": "20e93fd8c01128db58b847620dce3bc85f0aeb81d67c2a373bc2ad387a31f037"
+    },
+    {
+      "path": "include/physx/NxPointOnLineJoint.h",
+      "bytes": 2517,
+      "sha256": "63bca3d47ef48ce7f62f9fac0e8fb4d553a77f7644a93f7888f0692a24730dbc"
+    },
+    {
+      "path": "include/physx/NxPointOnLineJointDesc.h",
+      "bytes": 1832,
+      "sha256": "d390d712d524d085c5e99f76ca4a5f454b63d79fedccf0f4e25bf5915767cb43"
+    },
+    {
+      "path": "include/physx/NxPool.h",
+      "bytes": 3860,
+      "sha256": "0ccf98543e251efb255d28174f83b0febde1bc9e90950716ac4598c284d5b592"
+    },
+    {
+      "path": "include/physx/NxPrismaticJoint.h",
+      "bytes": 2368,
+      "sha256": "aa29b47531b2c903d1675cc7c4988fbbb1500b218ca091b257590a2b9da47e15"
+    },
+    {
+      "path": "include/physx/NxPrismaticJointDesc.h",
+      "bytes": 1804,
+      "sha256": "f86c6cb7cde063e7d372b3621d7f950fa0c9668f654acb6553f7ae90fb459f8f"
+    },
+    {
+      "path": "include/physx/NxProfiler.h",
+      "bytes": 2635,
+      "sha256": "806f502ecadfaa74013febdc2dd091ca9f2e4b87c5527485d385fc3c63859a86"
+    },
+    {
+      "path": "include/physx/NxPulleyJoint.h",
+      "bytes": 4840,
+      "sha256": "f5817f06fa7cb5ef5cb7121d3db9f8d957f8c821fc25bb1c580f6fbd53c1d82f"
+    },
+    {
+      "path": "include/physx/NxPulleyJointDesc.h",
+      "bytes": 3106,
+      "sha256": "b160f317797de82840593d7688b7aa4ec73e10fce00b2e8d67fb5c06c5dd878e"
+    },
+    {
+      "path": "include/physx/NxQuat.h",
+      "bytes": 17460,
+      "sha256": "634ecdefc8f516496e23bf30575a86afc6771071448dbc975e2c78e7b348b414"
+    },
+    {
+      "path": "include/physx/NxQuickSort.h",
+      "bytes": 2552,
+      "sha256": "c056ecb6ada1706e80901cdae05296b672482a05aa8eaa451a8371a918a8a384"
+    },
+    {
+      "path": "include/physx/NxRay.h",
+      "bytes": 2511,
+      "sha256": "dcb4aacf676e97d8879db8fbfad78e8b25b62632f8bdecf307b29d51d09a1686"
+    },
+    {
+      "path": "include/physx/NxRemoteDebugger.h",
+      "bytes": 18586,
+      "sha256": "0bd5ec4036598793bccd9d3ed5a1b2e0b6b56db046a34857d011635e9592111c"
+    },
+    {
+      "path": "include/physx/NxRevoluteJoint.h",
+      "bytes": 10506,
+      "sha256": "e50842c1e72290299e80a8ff9cf0b6f4d832bff8b2317cda12c4985e8ac0667b"
+    },
+    {
+      "path": "include/physx/NxRevoluteJointDesc.h",
+      "bytes": 4434,
+      "sha256": "6b3da883bafcc9eb96b482673c9cfcd7b6f3004ef421bc802d5b7f49d670b48f"
+    },
+    {
+      "path": "include/physx/NxScene.h",
+      "bytes": 117332,
+      "sha256": "2b9c05da04c705ff45ea85d1a2c95a30b9e77a4fe9eca689d29a1d74cfef5bfb"
+    },
+    {
+      "path": "include/physx/NxSceneDesc.h",
+      "bytes": 30577,
+      "sha256": "03d54099626d57943715b88b4cc096b1de3e0b391a53992f1a6c75f75dfabecd"
+    },
+    {
+      "path": "include/physx/NxSceneEvent.h",
+      "bytes": 97829,
+      "sha256": "b8358b03eb7873fc3bbf24c0de3451a7c80f9eac266b06aec2ac833cfacfb2fa"
+    },
+    {
+      "path": "include/physx/NxSceneEventStream.h",
+      "bytes": 1082,
+      "sha256": "d26653bbf08a4e73188f3eca4f5b8b4a8c1a89eb43413a2b12570f5ebb0e8399"
+    },
+    {
+      "path": "include/physx/NxSceneQuery.h",
+      "bytes": 13791,
+      "sha256": "fe3f0f12a93b0f5900ef91f071582a0ec96d85fad5e333bd7258791d99d7ffea"
+    },
+    {
+      "path": "include/physx/NxSceneStats.h",
+      "bytes": 4159,
+      "sha256": "19f3a5361f260488b9b94ec723ed393ff5bac894436d82c2763f55012c5afa2b"
+    },
+    {
+      "path": "include/physx/NxSceneStats2.h",
+      "bytes": 1666,
+      "sha256": "eaf0d6b3c0a95597e931d054594c286eacc6509ae1a3e60d9902a24e38e6818d"
+    },
+    {
+      "path": "include/physx/NxScheduler.h",
+      "bytes": 3703,
+      "sha256": "fd6cf1a55b6be8e27fad3570a5c0bbc50f92c9113ad0bba6daf3487c6f78f3d5"
+    },
+    {
+      "path": "include/physx/NxSegment.h",
+      "bytes": 2342,
+      "sha256": "bd7c47ff35db4d9e0e15cb17b0e8241ff2938abbf7b004172576f54d293155db"
+    },
+    {
+      "path": "include/physx/NxShape.h",
+      "bytes": 27032,
+      "sha256": "8d2f1f83107ee40396f269e7b5fc033008df301d8119367e7e6fbab23bce0517"
+    },
+    {
+      "path": "include/physx/NxShapeDesc.h",
+      "bytes": 8890,
+      "sha256": "5801336f2ca7281664675aad8ba72024a041abba00172feb6ad840e7993178dd"
+    },
+    {
+      "path": "include/physx/NxSimpleTriangleMesh.h",
+      "bytes": 3899,
+      "sha256": "a2be24467da1ba3977703b9680e61536a46e09266fea9374ff6d92b28b5b84de"
+    },
+    {
+      "path": "include/physx/NxSimpleTypes.h",
+      "bytes": 3294,
+      "sha256": "a7cc694d5a0718edc6d8ea2ffda81c5898649e897847a6c98e8bd63680831c8e"
+    },
+    {
+      "path": "include/physx/NxSmoothNormals.h",
+      "bytes": 1932,
+      "sha256": "96b3c46f0410cd2e887c90421e9f653f134e649834a4ac99f7349ab7f34877e1"
+    },
+    {
+      "path": "include/physx/NxSoftBodyUserNotify.h",
+      "bytes": 1196,
+      "sha256": "57f4e2dae8a6e9b36d3a43f1ce5aa4668d1290d04ab1f912735f99572494e4fc"
+    },
+    {
+      "path": "include/physx/NxSphere.h",
+      "bytes": 4497,
+      "sha256": "252bb886708ec621236c4522d1b32784c0c99291cea229c781527d2b893db6ec"
+    },
+    {
+      "path": "include/physx/NxSphereForceFieldShape.h",
+      "bytes": 1944,
+      "sha256": "3cd10ca377c762589b3399d671f86957590dd8e7c92f09ad7a3d1c3cb7aa6ff1"
+    },
+    {
+      "path": "include/physx/NxSphereForceFieldShapeDesc.h",
+      "bytes": 2050,
+      "sha256": "532b5afa6f237bcb0456506df54bfca5c9933a9fb75c825cdef115f405cd22b8"
+    },
+    {
+      "path": "include/physx/NxSphereShape.h",
+      "bytes": 2912,
+      "sha256": "62b33df08bc8bf86f9c800a8c004df02288d257a09dfb8862cecdfe6ee5fb2c3"
+    },
+    {
+      "path": "include/physx/NxSphereShapeDesc.h",
+      "bytes": 1993,
+      "sha256": "3eac1098db5f1d8be9c89136933b2e09d521177ede3090fe9ca18bdcfa421097"
+    },
+    {
+      "path": "include/physx/NxSphericalJoint.h",
+      "bytes": 3888,
+      "sha256": "ba568b81213e2952b22f4bfd3d851f65404ffe2ad57c0e2febbb8de500286fa9"
+    },
+    {
+      "path": "include/physx/NxSphericalJointDesc.h",
+      "bytes": 5702,
+      "sha256": "f435c0581701d5cb1d38496db331ed379f67fae5e6d9debb41e1399aee986ce5"
+    },
+    {
+      "path": "include/physx/NxSpringAndDamperEffector.h",
+      "bytes": 8381,
+      "sha256": "61bb1340c55bbce1dc84e7bc394b759fcc389b017f11fab1300cbba5872f7dd1"
+    },
+    {
+      "path": "include/physx/NxSpringAndDamperEffectorDesc.h",
+      "bytes": 7145,
+      "sha256": "a82a276fcc452486c2b64552a03f881c12c6de61e8881f3f7a205a0a9c1856ab"
+    },
+    {
+      "path": "include/physx/NxSpringDesc.h",
+      "bytes": 3266,
+      "sha256": "35dce4a32c3daebe22d1435c493eebd68dad6c71d2fb4c692670f1e9ed527d5f"
+    },
+    {
+      "path": "include/physx/NxStream.h",
+      "bytes": 4730,
+      "sha256": "684f4696fc3897e45670105155ed29846bbce61d1df62805a711057c60763c7c"
+    },
+    {
+      "path": "include/physx/NxSwTarget.h",
+      "bytes": 7229,
+      "sha256": "10cf5064fa9e684e7e1eca871119e850a8cc71d2674f7b17891fb3c6a5c0f54d"
+    },
+    {
+      "path": "include/physx/NxTargets.h",
+      "bytes": 437,
+      "sha256": "d725713dcf4b9488d3f5974be3b4cee071ebe44ed6e010b862778fbe2c8c6def"
+    },
+    {
+      "path": "include/physx/NxTriangle.h",
+      "bytes": 2766,
+      "sha256": "d37cd7c75b94d4d9b4ca4f18ea86457d23ad05e40a569a0496195311fe8a20f8"
+    },
+    {
+      "path": "include/physx/NxTriangleMesh.h",
+      "bytes": 10243,
+      "sha256": "f1a1655b2af03aeb4798f9dee67fe708b579b02a6261a5f8d16fbfd9ef0ee24c"
+    },
+    {
+      "path": "include/physx/NxTriangleMeshDesc.h",
+      "bytes": 7295,
+      "sha256": "21796b554b307bac3e83ccbfdd38b86b449097facecaaf8162466e09091c1413"
+    },
+    {
+      "path": "include/physx/NxTriangleMeshShape.h",
+      "bytes": 8823,
+      "sha256": "c499fd063b59353b4c4719d20db572a786b16e12c22ef3620f5bb9d9c46b44c5"
+    },
+    {
+      "path": "include/physx/NxTriangleMeshShapeDesc.h",
+      "bytes": 2756,
+      "sha256": "57d871105de70e7e29e17c54c5749f5ce60f18091f93636a0fa17c63db0dd9a6"
+    },
+    {
+      "path": "include/physx/NxUserAllocator.h",
+      "bytes": 21647,
+      "sha256": "50189d758a45fb7ccae2d2175d54d6fbd13bd4f7f04f8966e4ae3f7212bcc1f3"
+    },
+    {
+      "path": "include/physx/NxUserAllocatorDefault.h",
+      "bytes": 2702,
+      "sha256": "ca2da4f1bb016b094bacf0f7a6faa5e58d49eb123bb8c6ef8bea2888ec97445d"
+    },
+    {
+      "path": "include/physx/NxUserContactReport.h",
+      "bytes": 19820,
+      "sha256": "bf81e4b3229396dbb7fdbf45433e6fc12a89939ec2b544d2feae699406ecb06d"
+    },
+    {
+      "path": "include/physx/NxUserEntityReport.h",
+      "bytes": 5030,
+      "sha256": "a1b3535ae648cf57daf07fb1c5c1306018b7db0de0b5ffc58a338233283dae49"
+    },
+    {
+      "path": "include/physx/NxUserNotify.h",
+      "bytes": 3425,
+      "sha256": "75d17bd8610ebe2058653b07534373897e6386c7e27a40f4d4c6488f6d12e529"
+    },
+    {
+      "path": "include/physx/NxUserOutputStream.h",
+      "bytes": 2054,
+      "sha256": "d52ef5f35b813cc9a55b2b047644721097a83fcfa6556f4e6a295ba48c9420c4"
+    },
+    {
+      "path": "include/physx/NxUserRaycastReport.h",
+      "bytes": 6886,
+      "sha256": "a27c7c3bc277a46bc80ce5d5a3b5a27b628d98b150e52abe27e1f1dd02b4803c"
+    },
+    {
+      "path": "include/physx/NxUtilities.h",
+      "bytes": 3900,
+      "sha256": "ce7174a333ede8c0f0f2ef6eabcf94a501817b935f49fe421eb3cfc4001c5ee8"
+    },
+    {
+      "path": "include/physx/NxUtilLib.h",
+      "bytes": 44447,
+      "sha256": "cedab456b40cd24d9e6456f4da33dbd85a393ebc6e5d8d6d6a08264460b01d7d"
+    },
+    {
+      "path": "include/physx/NxVec3.h",
+      "bytes": 16725,
+      "sha256": "66eecd1881ae69632c823f3c45138fada6db5feb8d29ff4eb7a92f9462854a05"
+    },
+    {
+      "path": "include/physx/NxVersionNumber.h",
+      "bytes": 1698,
+      "sha256": "17ee830079e5f9a3acac04f5ecfebf2e28aae6ea767edcbf81a3b78818cf9c63"
+    },
+    {
+      "path": "include/physx/NxVolumeIntegration.h",
+      "bytes": 1685,
+      "sha256": "444f290c69f4e701ab6989a849dd3a57efde65df2c094efcbeec337fc37534fc"
+    },
+    {
+      "path": "include/physx/NxWheelShape.h",
+      "bytes": 15051,
+      "sha256": "e15f71473bc9a570412ffee3399c26b1ad4a49066b05ad7024fcba1876656183"
+    },
+    {
+      "path": "include/physx/NxWheelShapeDesc.h",
+      "bytes": 14429,
+      "sha256": "421ba8593ca840475f3ba419acf4dd1aa5c0e830f916808f46e645cbef477484"
+    },
+    {
+      "path": "include/physx/PhysXLoader.h",
+      "bytes": 8143,
+      "sha256": "8bdb67fbad67c78563b6ebfd5afe2271523d5c7f145d742aa764c690ea61fc81"
+    },
+    {
+      "path": "include/physx/PhysX_GUIDS.h",
+      "bytes": 3074,
+      "sha256": "51b8fdfb864f6e042b1cb106b07ed4be2d05da832a55011a31d4bd7055d6a7e5"
+    },
+    {
+      "path": "include/physx/SweptBox.h",
+      "bytes": 641,
+      "sha256": "2169a0018e53e81208a25e7c2e6ac17640f087b779283f0c2b50213309ccce54"
+    },
+    {
+      "path": "include/physx/SweptCapsule.h",
+      "bytes": 1340,
+      "sha256": "288c6203d1aea50981dd57193b157eb4d911b370dc4724a526ba31747b6a1e69"
+    },
+    {
+      "path": "include/physx/SweptVolume.h",
+      "bytes": 895,
+      "sha256": "8e34c8464ad0d41ace4652f5cb0b47717c0db72e7515d8048b3f504a4fb83a4f"
+    },
+    {
+      "path": "include/physx/Win32RegistryAccess.h",
+      "bytes": 896,
+      "sha256": "eb1ceac45bc4a5fc8f11abc4f19a8b0f863547549b11edb202f30e6f2789d00f"
+    },
+    {
+      "path": "include/physx/cloth/NxCloth.h",
+      "bytes": 52924,
+      "sha256": "ac7c0eb0e0f54ef196d496c54adb26a8c89a3fcfdb23144e9a6461159aef259d"
+    },
+    {
+      "path": "include/physx/cloth/NxClothDesc.h",
+      "bytes": 34192,
+      "sha256": "f92fcb37678c2d56d427bc2ad2e1a6a7b6a64acd3e490350e903daa301e6bb31"
+    },
+    {
+      "path": "include/physx/cloth/NxClothMesh.h",
+      "bytes": 1853,
+      "sha256": "04518115e8cbc466eadfae5d2caede5ec7590b21639111ef0ebd97dc56bcb3bc"
+    },
+    {
+      "path": "include/physx/cloth/NxClothMeshDesc.h",
+      "bytes": 5341,
+      "sha256": "c16b6f5404d9cab8c7fb6b4b01f716fcfa9d7731258e58ab872c4c22f47afb0e"
+    },
+    {
+      "path": "include/physx/fluids/NxFluid.h",
+      "bytes": 33375,
+      "sha256": "c569d8938c6526798001098eefe80589973b316b6072331abc5f643c117fceb7"
+    },
+    {
+      "path": "include/physx/fluids/NxFluidDesc.h",
+      "bytes": 23413,
+      "sha256": "2ba1dffbaa2ab4d3b7dab48d3ec874301e669ad9869b3ef74fa146b9eeff60f2"
+    },
+    {
+      "path": "include/physx/fluids/NxFluidEmitter.h",
+      "bytes": 17383,
+      "sha256": "23c24742edc647e803f5fa0a936d8014a6a88df8fe2f10a8a32e9750a927e948"
+    },
+    {
+      "path": "include/physx/fluids/NxFluidEmitterDesc.h",
+      "bytes": 7132,
+      "sha256": "19c55fc41bda6e0b55c1c4a7474116453dc8e5bd8123cc76e10046d52fa91d15"
+    },
+    {
+      "path": "include/physx/fluids/NxFluidPacketData.h",
+      "bytes": 2614,
+      "sha256": "5b970e5b9b551e142e573060a546a90e4f6710912b206b88b5d06bbd19c93fa1"
+    },
+    {
+      "path": "include/physx/fluids/NxParticleData.h",
+      "bytes": 8445,
+      "sha256": "599e8b7b84896051347075c3d6ef54e8b22661ebcf480308fc43f2e960fbeee7"
+    },
+    {
+      "path": "include/physx/fluids/NxParticleIdData.h",
+      "bytes": 2955,
+      "sha256": "0d743a244cc1a4e583571f06b31b8c56624bd68a58e40ba33bf652d8baa8721e"
+    },
+    {
+      "path": "include/physx/fluids/NxParticleUpdateData.h",
+      "bytes": 5064,
+      "sha256": "998552498fafee884c6b2cf6297a291f87610bbde542b95060932b2ab40f700d"
+    },
+    {
+      "path": "include/physx/softbody/NxSoftBody.h",
+      "bytes": 44675,
+      "sha256": "d8ca63b59967b154c252b8ddec1cf50e540c2846d27e4291ca0f52350511bbad"
+    },
+    {
+      "path": "include/physx/softbody/NxSoftBodyDesc.h",
+      "bytes": 31700,
+      "sha256": "737f17d18f07429aadc9fc8d23c1f89b98614f8c9005a6bbdad2deb803cc883e"
+    },
+    {
+      "path": "include/physx/softbody/NxSoftBodyMesh.h",
+      "bytes": 1908,
+      "sha256": "b5df349d4756848ea65b71aa25d7be9dea05d63fa8fc64743617697bafbe563a"
+    },
+    {
+      "path": "include/physx/softbody/NxSoftBodyMeshDesc.h",
+      "bytes": 5481,
+      "sha256": "44ddbb3a550b9401766ad1ed7e8380344bf14148cb4c075cdc1e3a4ee649f547"
+    },
+    {
+      "path": "include/physx/win/NxMath_WIN.h",
+      "bytes": 1402,
+      "sha256": "3eb3df6178e899af4404b90626e945057e664c1e47db675e2e8da57541fe9e61"
+    },
+    {
+      "path": "lib/release/cudart64_30_9.dll",
+      "bytes": 405608,
+      "sha256": "b523e160527e43c3dc6f4a4d478b1ed78d83444d3106672339df3c2724b126b3"
+    }
+  ],
+  "required_shared_runtime": "cudart64_30_9.dll is hard-imported by both cores; software simulation and NO_HARDWARE remain selected",
+  "runtime_deployment": {
+    "Release": "build/; original release filenames",
+    "Debug": "build/checked/; checked core/cooking bytes use loader-required unsuffixed runtime filenames; checked loader/controller retain CHECKED names",
+    "working_directory": "build/"
+  }
+}

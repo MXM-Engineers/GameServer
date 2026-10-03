@@ -69,12 +69,12 @@ The shipped physics assets cover DeathMatch map `160000094` only. The game now a
 
 The scene includes:
 
-- DeathMatch terrain as Static.
-- Main and sidewall GuardrailMob meshes as FenceAll.
-- Aim geometry as Aim.
-- GuardrailMob, AIobj, and Collision meshes for each selected dynamic wall, using the wall actor's position and rotation.
+- All 168 enabled ART props in document order, producing 170 authored actors, with terrain in the observed Prop group 2.
+- Main and sidewall GuardrailMob actors as FenceAll and Aim geometry as Aim.
+- Authored wall triangle/convex actors at each selected area transform, using groups 19/11 and the dynamic interaction mask.
+- The two spawn gates, with their authored boxes, masks and collision enable/disable lifecycle.
 
-Existing wall selection, identities, and spawn metadata are preserved. The cooker now uses native Nx 2.8.4 cooking while retaining the NIF extraction path: supplied map meshes are already in map space and wall meshes are actor-local. General NIF transform handling remains an audit concern for additional assets.
+PHYX version 2 carries original NXS streams, materials and actor/body/shape recipes. Original triangle and convex streams are loaded directly; non-unity triangle instances use native SDK scale-and-cook, cached by asset/mesh/scale. Instance rotation follows the measured `Rx(-x) * Ry(-y) * Rz(-z)` convention. Existing wall selection, identities and spawn metadata are preserved. Additional maps remain unsupported.
 
 Debug-scene callers were migrated to explicit collision groups and feet-based reset positions.
 
@@ -224,7 +224,7 @@ The Defender terminal regression failed the first runtime smoke at position 880.
 
 Commits `e7c5ddd` and `06e2e40` add the unfocused Velqor harness and the verified physics corrections. The client authority has SHA256 `df32850dd8e7a2329ddca2dc57a3eb310a620f4a6477bbb135049a938f477583`.
 
-- Preserve transmitted human movement direction rather than repeatedly steering toward a stale position-derived goal. Bots and stopped input retain destination-based movement.
+- Preserve transmitted human movement direction rather than repeatedly steering toward a stale position-derived goal. Bots retain destination-based movement; zero human direction stops without seeking a packet snapshot.
 - `0x01bab102` advances graph time before sampling. The first owned tick applies `Sample(dt)-0`, including a nonzero first knot, and excludes ordinary walking even when its delta is zero.
 - On the owner 62036 path, the setter receives origin distance before duration: Movement+0x194 is origin distance and +0x19C is duration. `0x01babbe6` rejects a near-zero +0x19C, explaining the missing A movement when delayed graphs were sent without metadata.
 - `0x01bab17a` upper-clamps the scaled sample to the endpoint chord. With the emitted endpoints this is equivalent to min(raw, final) for positive final knots and max(raw, final) for negative ones. The clamp releases if a nonmonotonic curve returns through the endpoint; it is not an irreversible stop or a clamp to zero.
@@ -299,11 +299,11 @@ The final capture also replays continuously from each master's initial pose with
 
 `external/physx-2.8.4/` packages 204 unchanged SDK headers and the supplied x64 Release/CHECKED binaries and import libraries. `provenance.json` records every vendor file's size and SHA-256. The original installation and inactive PhysX 4 package remain untouched. No standalone SDK license/EULA was present in the installation; original vendor notices are retained and no PhysX 4 license is claimed.
 
-The production backend and collision cooker now use actual Nx 2.8.4 APIs. The locally patched PhysX 4 controller fork, Px types, old filter callback, foundation/dispatcher/PVD setup and old build links are removed. Scene-local material index 0 retains friction 1 and restitution 0. SDK shutdown owns global triangle meshes; scenes release controllers and actors first. Debug-window cleanup now releases its test scene, including partial initialization.
+The production backend and collision cooker use actual Nx 2.8.4 APIs. The local PhysX 4 controller fork, Px types, old filter callback, foundation/dispatcher/PVD setup and old build links are removed. Scene-local material 0 uses the observed friction/restitution 0.5/0.5; authored prop materials and dynamic wall material 0.5/0 are preserved separately. SDK shutdown releases cached original/scaled triangle and convex meshes after scenes release controllers and actors. Debug-window cleanup releases its test scene, including partial initialization.
 
 Both supplied cores hard-import `cudart64_30_9.dll`; packaging it is required even with `NO_HARDWARE` and software scenes. The supplied CHECKED loader also requests unsuffixed core/cooking filenames. Debug executables therefore live in `build/checked/`, with original CHECKED core/cooking bytes deployed as `PhysXCore64.dll` and `PhysXCooking64.dll`; loader/controller retain CHECKED names. Release stays in `build/`. Both configurations run with `build/` as the working directory. Module paths and file hashes prove actual CHECKED loading rather than a shared-directory Release-core fallback.
 
-The three static assets were regenerated with the native cooker from the original client NIFs; all three extracted `.msh` files are byte-identical to the pre-cutover geometry. Names, coordinates, indices, winding and actor-local wall geometry are unchanged. `cylinder.physx_dynamic` was regenerated from the existing OBJ using native convex cooking; its consumer container layout is retained.
+The initial native cutover regenerated three mesh-only assets and the legacy cylinder. The authored-scene cutover below replaces the consumed assets with PHYX v2 recipes; the unused cylinder load and old per-file fields are removed.
 
 ### Positive same-request changes
 
@@ -329,6 +329,74 @@ All Release and Debug server/tool targets build. Fifteen real-World/real-CCT and
 Actual Nx scene teardown, repeated teardown and null/partial-scene teardown were exercised. The debug GUI teardown itself was not run because desktop window manipulation is forbidden. The four server configs and pre-existing `scripts/lea.dll` bytes were restored exactly; all owned runtime processes exited.
 
 Evidence: `build/velqor/nx284_evidence.json`, `nx284_cct_motion_replay.json`, `nx284_complete_scene_replay.json`, `nx284_cooked/final_regressions.json` and `build/velqor/runs/20261002_sol_nx284/`. Temporary replay sources/binaries are removed after proof. Matching the supplied SDK version does not remove client-build, x86/x64, boundary-flag, stance/modifier, other-map or network/action timing uncertainties.
+
+## Authored scene, floating-point and input causality
+
+### Permanent changes
+
+- `common/collision_asset.h`, the collision tool and physics loader share PHYX v2: original cooked meshes plus complete supported material, actor, body and shape records.
+- The 21 shipped DeathMatch asset files are regenerated from original NIFs. ART `Level.xml` and `ActionBase_Dynamic.xml` are copied byte-identically from client data.
+- `GameXmlContent` loads enabled ART props and supported dynamic PHYSICS timelines. `World` binds gate/wall actors once and applies authored collision changes at action-relative tick boundaries. Gates disable collision on DYNAMIC_OPEN; walls disable at 2.4 seconds and enable on CLOSE at 1.9 seconds. Existing map phase and wall configuration selection are unchanged.
+- Dynamic masks follow `0x01b3f735`: walls use `0xc7e06`, gates `0xa06`. `0x01b40139` supplies the group bit, zero team lane and interaction-mask lane. Group/name classification and authored materials remain separate.
+- Human CN/CQ position snapshots are not destinations. `0x009c37c9` copies the same current position into both positional fields, reads native movement direction at entity `+0xC98`, and reads speed through the walk-stat getter. Zero direction means zero native movement even when speed is positive. Bots retain their explicit goal-seeking path.
+- Jump replacement cancels pending programs and clears same-tick horizontal graph ownership/delta before physics. Tag/cast clear replaced jump graphs. This scene cutover introduced no arbitrary timestamp shift, positional seek or corrective stream; the subsequently approved bounded input replay is described below.
+
+### Native replay evidence
+
+The complete captured scene has 194 named prop/gate/wall actors and 12 player/controller/hit-volume actors. The production replay builds the 194 named actors from shipped recipes and source XML, then creates one queried controller; other PC/hit-volume groups are outside its locomotion mask. All 21 actually loaded mesh vertex multisets and oriented triangle topologies match the client exactly, including nine runtime-scaled meshes and the original convex wall mesh. Group, mask, material and actor collision-disable state agree for all 194 named actors after supplying the observed frozen gate state. Two closed-gate ray-query flags remain unequal; general hit-query/presentation parity is not claimed.
+
+Continuous replay initializes only from the first raw centre and consumes every unchanged request in original order. There are no per-row resets, baseline alignment, time shifts or tolerance changes:
+
+| Backend | Class 6: 2,533 requests, max/mean centre error | Class 5: 826 requests, max/mean centre error | Collision flag differences |
+| --- | --- | --- | --- |
+| Original client x86, observed float24 precision | 0 / 0 | 0 / 0 | 0 |
+| Supplied x86 SDK, observed float24 precision | 0 / 0 | 0 / 0 | 0 |
+| Supplied x64 SDK, exact captured scene | 0.005967 / 0.000566 | 0.014218 / 0.007302 | 1 class-6, 0 class-5 |
+| Production x64 loader/controller | 0.005967 / 0.000566 | 0.014218 / 0.007302 | 1 class-6, 0 class-5 |
+
+Both x86 float24 replays have exact before/after centres and feet for all 3,359 requests. Raising x86 precision to 53 reproduces the small extended-coordinate residual and the same class-6 flag difference. Calling the public precision24 API on x64 does not remove it. The supplied/client DLL byte differences are therefore not evidence of an incompatible kernel for these inputs; arithmetic precision is measured independently.
+
+Sixteen real-World/real-CCT and packet-boundary regressions pass in Release and actual CHECKED Debug, including raw human direction/zero-direction STOP and closed/open gate clipping. The obsolete scalar-impulse ceiling/velocity pin was removed; ceiling coverage now uses an actual authored jump, clipping, landing and feet-preserving resize.
+
+### Live timing remains divergent
+
+`20261002_sol_recipe284` completed all control gates with 3,426 independent raw-QPC pairs, zero corrections/focus hits/guard mutations, but maximum/mean error **506.782384/60.867916**. `20261002_sol_recipe284_final` also completed all control gates and applied all five jumps; 3,429 independent pairs have maximum/mean **184.262086/43.732275**. Neither run meets the unchanged 25-unit live threshold.
+
+The first run measures native forward motion at QPC `60415955951500` and the matching game-handler `input_move` trace at `60416089683800`, about 133.7 ms later. Its transmitted client time matches onset, while its duplicated position is still the pre-move spawn position. Sender `0x009d218b` is dispatched through `0x009d2e43` from `0x01ad1138`. This capture did not timestamp the actual socket send or server socket reception; attributing the entire gap to client delivery was unsupported.
+
+At STOP, both trajectories are stationary but retain a 69.468403-unit offset, approximately seven walking ticks. A's total travel agrees at 378 units while inheriting that origin offset. The 506-unit peak occurs when the inherited XY offset makes the client cross a ledge and land before the server. The previous human position-seeking fallback partly concealed this offset; restoring it would be hidden reconciliation, not a physics fix.
+
+Timestamped catch-up was subsequently approved and implemented below. The prior captures measure handler dispatch, not socket arrival: a threshold violation before that trace does not prove the packet was unavailable in the server kernel or pending receive buffer. Sparse input timestamps still do not expose every client frame delta. Vanilla send/receive/buffering stages must be measured independently before assigning the delay.
+
+Evidence: `build/velqor/matching/recipe284_evidence.json`, `sdk_loaded_geometry_evidence.json`, `production_matched_evidence.json`, `production_geometry_evidence.json`, `production_actor_evidence.json` and the two named live-run directories. Original SDK/client/input-DLL bytes are unchanged; all owned live processes exited and server configs were restored byte-for-byte. Temporary native replay sources/targets/binaries are removed after proof. Debug GUI visualization was not exercised because desktop manipulation is forbidden.
+
+## Bounded timestamped input catch-up
+
+The approved backend remains native x64. `input_clock.h`, `World`, game handlers and replication now consume real timestamped input events rather than latching all human requests at receipt time.
+
+- Owner-main `SN_GameCreateActor` publication enables the player's timeline; it is not a clock epoch or epoch floor. Native `+0x10F8` starts in the creature constructor and advances only for the active local master, but it accumulates client frame deltas rather than measuring elapsed server wall time. The observed lower envelope of real `receivedTime-clientTime` samples maps CN movement and CQ cast timestamps into process-relative server seconds.
+- Two publication-based models were rejected by runtime evidence. In `20261002_sol_catchup`, treating publication as the exact epoch ran movement about 78.13 ms early. In `20261002_sol_catchup_verified`, the first native frame delta is 1.35568047 seconds; the first CN carries 1.35568 after only 0.19946 seconds of publication-relative wall time. Treating publication as a minimum epoch rejected that genuine input and its cast. Mapping now retains an observed client/server reference pair, avoiding a guessed startup origin and cancellation in a large absolute epoch subtraction.
+- Cast admission includes its movement/rotation snapshot atomically. Equal effective timestamps retain arrival sequence. Out-of-order events inside the retained interval are accepted. Invalid, future, expired or over-capacity requests do not commit clock/ledger mutations. Human packet positions remain observations, never seek targets.
+- Rotation, action sync, jump and tag use their actual receipt times. Jump and tag packets have no client timestamp; none is synthesized. Each master has separate clock generations and activation intervals. Returning to a frozen master retains the last observed counter lower bound, then learns the resumed epoch from real packets; elapsed server time is not substituted for its paused client counter.
+- History retains 512 before-step frames, approximately 8.53 seconds at 60 Hz, and 2,048 input records per player. Before-step snapshots retain the actual previous server-time boundary, raw SDK centre/dimensions, velocities, grounding/contact normal, jump graph, graph collision ownership, input, master selection and active skill programs. Storage is allocated at world initialization; replay does not allocate per step.
+- Late input restores only saved server state and reruns the owner's fixed steps with historical gate/wall collision flags. Other owners' programs do not advance. Other CCTs use group 3, outside the enabled locomotion mask; current peer-controller poses therefore do not affect these sweeps. The current scene flags are restored afterward. SDK simulate/flush/fetch and replication still run once per published tick.
+- Clock refinement retimes only events whose old and new times both remain recoverable. Rows crossing the oldest before-step boundary keep their committed times; they do not cause a fresh STOP to be rejected. The earlier rejection caused continuing movement after STOP in `20261002_sol_catchup_clock` and is covered by a history-edge regression.
+- Random graph selection is cached per cast. Cast/execute, authored WARP correction requests, actor-action publication and action trace notifications use per-input emission ledgers, preventing a historical cast from retriggering client animation or appearing as a new execution/completion.
+- Incoming CN/CQ safety checks bound both the speed field and direction-times-speed work. Finite, non-unit directions remain unnormalized; hostile effective speeds above 192,000 units/s or unrepresentable direction norms are dropped rather than clamped.
+
+### Exercised verification
+
+All 25 real-World/real-SDK regressions pass in Release and actual CHECKED Debug. They cover timestamped movement and STOP, lower-envelope refinement and rejected-cast atomicity, late graph travel with once-only replication/actor action, other-owner program isolation, out-of-order events and expired/future bounds, tag-domain rollback and feet-preserving resize, and refinement at the history boundary. A returning-master regression fails before removal of the estimated paused counter and passes using real resumed-clock observations. A startup regression accepts the actual 1.35568047-second accumulated counter while still rejecting a future advance.
+
+`20261002_sol_catchup512` exercises 34 catch-ups and 2,197 historical steps, including one 502-step replay. All five jumps start, both casts/executes publish once, STOP/disconnect release completes, and the final stationary client/server distance is 1.387377 units. Its 3,448 independent raw-QPC pairs have maximum/mean error **318.518599/14.731622**. The unchanged 25-unit verdict remains **diverged**. Intermediate action trace rows repeated during historical replay; their emission-ledger correction is part of the final implementation, not a change to physical replay or the gate.
+
+Final source is exercised in `20261002_sol_catchup_observed`: all control/cast/jump/TAG/STOP/disconnect gates complete; 37 catch-ups replay 649 historical steps, with a maximum 462-step replay. Each skill has exactly one cast, execute and completion; the six command identities publish once. All five jumps start. There are 3,454 independent raw-QPC pairs, maximum/mean **374.216742/12.424538**, and final stationary distance **20.054880**. Both captures have zero corrections, focus hits and guard mutations. The final 25-unit physics verdict is still **diverged**, not parity.
+
+In the final capture, native nonzero movement begins at `102423630661800`; the corresponding game-handler trace is at `102423727149400`, 96.49 ms later. Its first threshold violation precedes that handler trace, not necessarily socket reception. Replay fixes handled input history and current state; no future input, client frame delta or jump/tag timestamp is invented. Client/SDK/input-DLL bytes are preserved; all owned processes exited, and all four configs match their backups byte-for-byte.
+
+In the earlier `20261002_sol_catchup512` capture, native movement begins at QPC `100438868885000`; the matching game-handler trace is at `100439017083900`, 148.20 ms later. The first 29.759594-unit divergence at `100438902629000` precedes that handler trace. This is not a measured client socket-send or server socket-receive delay. Later jump/ledge and frame/action phase differences remain measured failures, not accepted numerical x64 parity.
+
+Packet layouts, original client/SDK binaries and the pre-existing injector DLL remain unchanged. Run artifacts and final verification are retained under `build/velqor/runs/` and `build/velqor/matching/input_catchup_evidence.json`. This is input replay, not a position-correction stream or a relaxed comparison gate.
 
 ## Suggested next verification targets
 

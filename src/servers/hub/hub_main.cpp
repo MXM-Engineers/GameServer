@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	Config().Print();
 
 	bool r = SetCloseSignalHandler([](){
-		g_Server->running = false;
+		g_Server->Stop();
 		g_Listener->Stop();
 	});
 

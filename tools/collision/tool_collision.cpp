@@ -1,4 +1,5 @@
 #include <common/base.h>
+#include <common/collision_asset.h>
 #include <EAStdC/EAString.h>
 #include <EASTL/fixed_map.h>
 #include <NxCooking.h>
@@ -72,6 +73,98 @@ struct CookingOutputStream : NxStream
 	}
 };
 
+static void CopyAssetName(char* dst, u32 dstSize, const char* src, u32 srcLen)
+{
+	ASSERT(srcLen < dstSize);
+	memset(dst, 0, dstSize);
+	memcpy(dst, src, srcLen);
+}
+
+static void CopyTransform(CollisionAsset::Transform* dst, const Matrix3x3& rot, const Vector3& tr)
+{
+	memcpy(dst->rotation, rot.data, sizeof(dst->rotation));
+	dst->translation[0] = tr.x;
+	dst->translation[1] = tr.y;
+	dst->translation[2] = tr.z;
+}
+
+static void FillIdentityTransform(CollisionAsset::Transform* dst)
+{
+	memset(dst, 0, sizeof(*dst));
+	dst->rotation[0] = 1.0f;
+	dst->rotation[4] = 1.0f;
+	dst->rotation[8] = 1.0f;
+}
+
+static void FillSourceMaterial(CollisionAsset::Material* dst)
+{
+	memset(dst, 0, sizeof(*dst));
+	dst->index = 1;
+	dst->dynamicFriction = 0.3f;
+	dst->staticFriction = 0.3f;
+	dst->anisotropy[0] = 1.0f;
+}
+
+struct CookedPhysXMesh
+{
+	eastl::fixed_string<char,64,false> name;
+	eastl::fixed_vector<u8,4096,true> data;
+};
+
+static bool WriteCookedNiMeshAsset(GrowableBuffer& outCooked, const eastl::fixed_vector<CookedPhysXMesh,8,true>& meshes, u32 shapeType)
+{
+	ASSERT(!meshes.empty());
+	CollisionAsset::Header header;
+	memset(&header, 0, sizeof(header));
+	header.magic = 0x58594850;
+	header.version = CollisionAsset::VERSION;
+	header.meshCount = (u16)meshes.size();
+	header.materialCount = 1;
+	header.actorCount = (u16)meshes.size();
+	outCooked.Append(&header, sizeof(header));
+
+	CollisionAsset::Material material;
+	FillSourceMaterial(&material);
+	outCooked.Append(&material, sizeof(material));
+
+	foreach_const(it, meshes) {
+		ASSERT(!it->data.empty());
+		const i32 nameLen = it->name.size();
+		outCooked.Append(&nameLen, sizeof(nameLen));
+		outCooked.Append(it->name.data(), nameLen);
+		const u32 cookedSize = (u32)it->data.size();
+		outCooked.Append(&cookedSize, sizeof(cookedSize));
+		outCooked.Append(it->data.data(), cookedSize);
+	}
+
+	for(u16 i = 0; i < meshes.size(); i++) {
+		CollisionAsset::Actor actor;
+		memset(&actor, 0, sizeof(actor));
+		CopyAssetName(actor.name, sizeof(actor.name), meshes[i].name.data(), meshes[i].name.size());
+		FillIdentityTransform(&actor.globalPose);
+		actor.density = 1.0f;
+		actor.contactReportFlags = 1;
+		actor.shapeCount = 1;
+		outCooked.Append(&actor, sizeof(actor));
+
+		CollisionAsset::Shape shape;
+		memset(&shape, 0, sizeof(shape));
+		CopyAssetName(shape.name, sizeof(shape.name), meshes[i].name.data(), meshes[i].name.size());
+		FillIdentityTransform(&shape.localPose);
+		shape.type = shapeType;
+		shape.flags = 0x120008;
+		shape.materialIndex = 1;
+		shape.density = 1.0f;
+		shape.mass = -1.0f;
+		shape.skinWidth = 0.05f;
+		shape.meshIndex = i;
+		outCooked.Append(&shape, sizeof(shape));
+	}
+	return true;
+}
+
+
+
 struct CollisionNifReader
 {
 	const u8* fileData;
@@ -140,14 +233,53 @@ struct CollisionNifReader
 		eastl::fixed_string<char,64,false> name;
 	};
 
+	struct PhysXMesh
+	{
+		i32 blockID;
+		eastl::fixed_string<char,64,false> name;
+		const void* cooked;
+		u32 cookedSize;
+	};
+
+	struct PhysXMaterial
+	{
+		CollisionAsset::Material rec;
+	};
+
+	struct PhysXBody
+	{
+		i32 blockID;
+		CollisionAsset::Body rec;
+	};
+
+	struct PhysXShape
+	{
+		i32 blockID;
+		i32 meshBlockID;
+		CollisionAsset::Shape rec;
+	};
+
+	struct PhysXActor
+	{
+		i32 blockID;
+		i32 bodyBlockID;
+		eastl::fixed_vector<i32,8,true> shapeBlockIDs;
+		CollisionAsset::Actor rec;
+	};
+
 	eastl::fixed_vector<StringSlice,1024,true> stringList;
-	eastl::fixed_vector<u16,1024,true> blockSizeList;
+	eastl::fixed_vector<u32,1024,true> blockSizeList;
 	eastl::fixed_map<i32,DataStream,16,true> dataStreamMap;
 
 	eastl::fixed_vector<Mesh,8,true> meshList;
 	Node currentNode;
 
 	eastl::fixed_vector<i32,8,true> collisionNodeList;
+	eastl::fixed_vector<PhysXMesh,16,true> physxMeshList;
+	eastl::fixed_vector<PhysXMaterial,8,true> physxMaterialList;
+	eastl::fixed_vector<PhysXBody,8,true> physxBodyList;
+	eastl::fixed_vector<PhysXShape,16,true> physxShapeList;
+	eastl::fixed_vector<PhysXActor,16,true> physxActorList;
 
 	bool ReadBlock_NiNode(ConstBuffer buff, i32 blockID)
 	{
@@ -414,6 +546,271 @@ struct CollisionNifReader
 		return true;
 	}
 
+	bool ReadBlock_NiPhysXMeshDesc(ConstBuffer buff, i32 blockID)
+	{
+		const i32 nameStrID = buff.Read<i32>();
+		const StringSlice& name = (nameStrID != -1) ? stringList[nameStrID] : StringSlice{"_", 1};
+
+		const u32 cookedSize = buff.Read<u32>();
+		const void* cooked = nullptr;
+		if(cookedSize != 0) {
+			cooked = buff.ReadRaw(cookedSize);
+		}
+
+		const u16 vertexMapSize = buff.Read<u16>();
+		if(vertexMapSize != 0) {
+			buff.ReadRaw(vertexMapSize * sizeof(u16));
+		}
+
+		const u32 meshFlags = buff.Read<u32>();
+		const u32 pagingMode = buff.Read<u32>();
+		const u8 flags = buff.Read<u8>();
+
+		ASSERT(buff.RemainingDataSize() == 0);
+		ASSERT(cookedSize != 0);
+		ASSERT(cooked != nullptr);
+
+		PhysXMesh& mesh = physxMeshList.push_back();
+		mesh.blockID = blockID;
+		mesh.name.assign(name.at, name.len);
+		mesh.cooked = cooked;
+		mesh.cookedSize = cookedSize;
+
+		LOG("	name = '%.*s'", name.len, name.at);
+		LOG("	cookedSize = %u", cookedSize);
+		LOG("	vertexMapSize = %u", vertexMapSize);
+		LOG("	meshFlags = %#x", meshFlags);
+		LOG("	pagingMode = %u", pagingMode);
+		LOG("	flags = %#x", flags);
+		return true;
+	}
+
+	bool ReadBlock_NiPhysXShapeDesc(ConstBuffer buff, i32 blockID)
+	{
+		const u32 shapeType = buff.Read<u32>();
+		const Matrix3x3 localRot = buff.Read<Matrix3x3>();
+		const Vector3 localTr = buff.Read<Vector3>();
+		const u32 flags = buff.Read<u32>();
+		const u16 collisionGroup = buff.Read<u16>();
+		const u16 materialIndex = buff.Read<u16>();
+		const f32 density = buff.Read<f32>();
+		const f32 mass = buff.Read<f32>();
+		const f32 skinWidth = buff.Read<f32>();
+		const i32 nameStrID = buff.Read<i32>();
+		const StringSlice& name = (nameStrID != -1) ? stringList[nameStrID] : StringSlice{"_", 1};
+		const u32 nonInteracting = buff.Read<u32>();
+		const u32 bits0 = buff.Read<u32>();
+		const u32 bits1 = buff.Read<u32>();
+		const u32 bits2 = buff.Read<u32>();
+		const u32 bits3 = buff.Read<u32>();
+
+		i32 meshRef = -1;
+		Vector3 dimensions = { 0, 0, 0 };
+		if(shapeType == 5 || shapeType == 6) {
+			meshRef = buff.Read<i32>();
+		}
+		else if(shapeType == 0) {
+			buff.Read<f32>();
+			buff.Read<Vector3>();
+		}
+		else if(shapeType == 1) {
+			dimensions.x = buff.Read<f32>();
+		}
+		else if(shapeType == 2) {
+			dimensions = buff.Read<Vector3>();
+		}
+		else if(shapeType == 3) {
+			dimensions.x = buff.Read<f32>();
+			dimensions.y = buff.Read<f32>();
+			buff.Read<u32>();
+		}
+		else {
+			ASSERT(false);
+		}
+
+		ASSERT(buff.RemainingDataSize() == 0);
+
+		PhysXShape& shape = physxShapeList.push_back();
+		memset(&shape.rec, 0, sizeof(shape.rec));
+		shape.blockID = blockID;
+		shape.meshBlockID = meshRef;
+		CopyAssetName(shape.rec.name, sizeof(shape.rec.name), name.at, name.len);
+		CopyTransform(&shape.rec.localPose, localRot, localTr);
+		shape.rec.type = shapeType;
+		shape.rec.flags = flags;
+		shape.rec.group = collisionGroup;
+		shape.rec.materialIndex = materialIndex;
+		shape.rec.density = density;
+		shape.rec.mass = mass;
+		shape.rec.skinWidth = skinWidth;
+		shape.rec.nonInteracting = nonInteracting;
+		shape.rec.groupsMask[0] = bits0;
+		shape.rec.groupsMask[1] = bits1;
+		shape.rec.groupsMask[2] = bits2;
+		shape.rec.groupsMask[3] = bits3;
+		shape.rec.meshIndex = -1;
+		shape.rec.dimensions[0] = dimensions.x;
+		shape.rec.dimensions[1] = dimensions.y;
+		shape.rec.dimensions[2] = dimensions.z;
+
+		LOG("	name = '%.*s'", name.len, name.at);
+		LOG("	shapeType = %u", shapeType);
+		LOG("	localTranslation = (%g, %g, %g)", localTr.x, localTr.y, localTr.z);
+		LOG("	rotation = (%.2f, %.2f, %.2f", localRot.data[0], localRot.data[1], localRot.data[2]);
+		LOG("	            %.2f, %.2f, %.2f", localRot.data[3], localRot.data[4], localRot.data[5]);
+		LOG("	            %.2f, %.2f, %.2f)", localRot.data[6], localRot.data[7], localRot.data[8]);
+		LOG("	flags = %#x", flags);
+		LOG("	collisionGroup = %u", collisionGroup);
+		LOG("	materialIndex = %u", materialIndex);
+		LOG("	density = %g", density);
+		LOG("	mass = %g", mass);
+		LOG("	skinWidth = %g", skinWidth);
+		LOG("	nonInteracting = %#x", nonInteracting);
+		LOG("	collisionBits = (%#x, %#x, %#x, %#x)", bits0, bits1, bits2, bits3);
+		LOG("	meshRef = %d", meshRef);
+		return true;
+	}
+
+	bool ReadBlock_NiPhysXActorDesc(ConstBuffer buff, i32 blockID)
+	{
+		const i32 nameStrID = buff.Read<i32>();
+		const StringSlice& name = (nameStrID != -1) ? stringList[nameStrID] : StringSlice{"_", 1};
+		const u32 numPoses = buff.Read<u32>();
+		LOG("	name = '%.*s'", name.len, name.at);
+		LOG("	poses(%u) = [", numPoses);
+		ASSERT(numPoses >= 1);
+		Matrix3x3 poseRot = {};
+		Vector3 poseTr = {};
+		for(u32 i = 0; i < numPoses; i++) {
+			const Matrix3x3 rot = buff.Read<Matrix3x3>();
+			const Vector3 tr = buff.Read<Vector3>();
+			if(i == 0) {
+				poseRot = rot;
+				poseTr = tr;
+			}
+			LOG("		translation = (%g, %g, %g)", tr.x, tr.y, tr.z);
+			LOG("		rotation = (%.2f, %.2f, %.2f", rot.data[0], rot.data[1], rot.data[2]);
+			LOG("		            %.2f, %.2f, %.2f", rot.data[3], rot.data[4], rot.data[5]);
+			LOG("		            %.2f, %.2f, %.2f)", rot.data[6], rot.data[7], rot.data[8]);
+		}
+		LOG("	]");
+		const i32 bodyRef = buff.Read<i32>();
+		const f32 density = buff.Read<f32>();
+		const u32 actorFlags = buff.Read<u32>();
+		const u16 actorGroup = buff.Read<u16>();
+		const u16 dominanceGroup = buff.Read<u16>();
+		const u32 contactReportFlags = buff.Read<u32>();
+		const u16 forceFieldMaterial = buff.Read<u16>();
+		const u32 numShapes = buff.Read<u32>();
+		LOG("	bodyRef = %d", bodyRef);
+		LOG("	density = %g", density);
+		LOG("	actorFlags = %#x", actorFlags);
+		LOG("	actorGroup = %u", actorGroup);
+		LOG("	dominanceGroup = %u", dominanceGroup);
+		LOG("	contactReportFlags = %#x", contactReportFlags);
+		LOG("	forceFieldMaterial = %u", forceFieldMaterial);
+		LOG("	shapes(%u) = [", numShapes);
+		PhysXActor& actor = physxActorList.push_back();
+		memset(&actor.rec, 0, sizeof(actor.rec));
+		actor.blockID = blockID;
+		actor.bodyBlockID = bodyRef;
+		CopyAssetName(actor.rec.name, sizeof(actor.rec.name), name.at, name.len);
+		CopyTransform(&actor.rec.globalPose, poseRot, poseTr);
+		actor.rec.flags = actorFlags;
+		actor.rec.group = actorGroup;
+		actor.rec.dominanceGroup = dominanceGroup;
+		actor.rec.contactReportFlags = contactReportFlags;
+		actor.rec.forceFieldMaterial = forceFieldMaterial;
+		actor.rec.density = density;
+		actor.rec.hasBody = (bodyRef != -1) ? 1 : 0;
+		actor.rec.shapeCount = numShapes;
+		for(u32 i = 0; i < numShapes; i++) {
+			const i32 shapeRef = buff.Read<i32>();
+			LOG("		%d,", shapeRef);
+			actor.shapeBlockIDs.push_back(shapeRef);
+		}
+		LOG("	]");
+		const i32 parentRef = buff.Read<i32>();
+		const i32 srcRef = buff.Read<i32>();
+		const i32 destRef = buff.Read<i32>();
+		LOG("	parentRef = %d", parentRef);
+		LOG("	srcRef = %d", srcRef);
+		LOG("	destRef = %d", destRef);
+		ASSERT(buff.RemainingDataSize() == 0);
+		return true;
+	}
+
+	bool ReadBlock_NiPhysXMaterialDesc(ConstBuffer buff, i32 blockID)
+	{
+		const u16 index = buff.Read<u16>();
+		const u32 numStates = buff.Read<u32>();
+		ASSERT(numStates >= 1);
+		PhysXMaterial& material = physxMaterialList.push_back();
+		memset(&material.rec, 0, sizeof(material.rec));
+		material.rec.index = index;
+		material.rec.dynamicFriction = buff.Read<f32>();
+		material.rec.staticFriction = buff.Read<f32>();
+		material.rec.restitution = buff.Read<f32>();
+		material.rec.dynamicFrictionV = buff.Read<f32>();
+		material.rec.staticFrictionV = buff.Read<f32>();
+		material.rec.anisotropy[0] = buff.Read<f32>();
+		material.rec.anisotropy[1] = buff.Read<f32>();
+		material.rec.anisotropy[2] = buff.Read<f32>();
+		material.rec.flags = buff.Read<u32>();
+		material.rec.frictionCombine = buff.Read<u32>();
+		material.rec.restitutionCombine = buff.Read<u32>();
+		for(u32 i = 1; i < numStates; i++) {
+			buff.ReadRaw(44);
+		}
+		ASSERT(buff.RemainingDataSize() == 0);
+		LOG("	index = %u", index);
+		LOG("	numStates = %u", numStates);
+		return true;
+	}
+
+	bool ReadBlock_NiPhysXBodyDesc(ConstBuffer buff, i32 blockID)
+	{
+		const Matrix3x3 localRot = buff.Read<Matrix3x3>();
+		const Vector3 localTr = buff.Read<Vector3>();
+		PhysXBody& body = physxBodyList.push_back();
+		memset(&body.rec, 0, sizeof(body.rec));
+		body.blockID = blockID;
+		CopyTransform(&body.rec.massLocalPose, localRot, localTr);
+		body.rec.inertia[0] = buff.Read<f32>();
+		body.rec.inertia[1] = buff.Read<f32>();
+		body.rec.inertia[2] = buff.Read<f32>();
+		body.rec.mass = buff.Read<f32>();
+		const u32 numVels = buff.Read<u32>();
+		if(numVels != 0) {
+			body.rec.linearVelocity[0] = buff.Read<f32>();
+			body.rec.linearVelocity[1] = buff.Read<f32>();
+			body.rec.linearVelocity[2] = buff.Read<f32>();
+			body.rec.angularVelocity[0] = buff.Read<f32>();
+			body.rec.angularVelocity[1] = buff.Read<f32>();
+			body.rec.angularVelocity[2] = buff.Read<f32>();
+			if(numVels > 1) {
+				buff.ReadRaw((numVels - 1) * 24);
+			}
+		}
+		body.rec.wakeUpCounter = buff.Read<f32>();
+		body.rec.linearDamping = buff.Read<f32>();
+		body.rec.angularDamping = buff.Read<f32>();
+		body.rec.maxAngularVelocity = buff.Read<f32>();
+		body.rec.ccdMotionThreshold = buff.Read<f32>();
+		body.rec.flags = buff.Read<u32>();
+		body.rec.sleepLinearVelocity = buff.Read<f32>();
+		body.rec.sleepAngularVelocity = buff.Read<f32>();
+		body.rec.solverIterationCount = buff.Read<u32>();
+		body.rec.sleepEnergyThreshold = buff.Read<f32>();
+		body.rec.sleepDamping = buff.Read<f32>();
+		body.rec.contactReportThreshold = buff.Read<f32>();
+		ASSERT(buff.RemainingDataSize() == 0);
+		LOG("	mass = %g", body.rec.mass);
+		LOG("	flags = %#x", body.rec.flags);
+		return true;
+	}
+
+
 	bool ReadBlock(ConstBuffer& buff, i32 blockID, const u16 blockType, const StringSlice& blockTypeStr)
 	{
 		bool r = true;
@@ -438,6 +835,21 @@ struct CollisionNifReader
 		}
 		else if(blockTypeStr.Equals("NiPhysXDynamicSrc")) {
 			r = ReadBlock_NiPhysXDynamicSrc(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXMeshDesc")) {
+			r = ReadBlock_NiPhysXMeshDesc(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXShapeDesc")) {
+			r = ReadBlock_NiPhysXShapeDesc(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXActorDesc")) {
+			r = ReadBlock_NiPhysXActorDesc(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXMaterialDesc")) {
+			r = ReadBlock_NiPhysXMaterialDesc(block, blockID);
+		}
+		else if(blockTypeStr.Equals("NiPhysXBodyDesc")) {
+			r = ReadBlock_NiPhysXBodyDesc(block, blockID);
 		}
 		else {
 			LOG("	[Unknown block -- skipping]");
@@ -533,7 +945,86 @@ struct CollisionNifReader
 	}
 };
 
-bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
+static i32 FindPhysXMeshIndex(const CollisionNifReader& nif, i32 blockID)
+{
+	if(blockID == -1) {
+		return -1;
+	}
+	for(u16 i = 0; i < nif.physxMeshList.size(); i++) {
+		if(nif.physxMeshList[i].blockID == blockID) {
+			return i;
+		}
+	}
+	ASSERT(false);
+	return -1;
+}
+
+static const CollisionNifReader::PhysXShape* FindPhysXShape(const CollisionNifReader& nif, i32 blockID)
+{
+	foreach_const(it, nif.physxShapeList) {
+		if(it->blockID == blockID) {
+			return &*it;
+		}
+	}
+	ASSERT(false);
+	return nullptr;
+}
+
+static const CollisionNifReader::PhysXBody* FindPhysXBody(const CollisionNifReader& nif, i32 blockID)
+{
+	foreach_const(it, nif.physxBodyList) {
+		if(it->blockID == blockID) {
+			return &*it;
+		}
+	}
+	ASSERT(false);
+	return nullptr;
+}
+
+static bool WriteAuthoredCollisionAsset(const CollisionNifReader& nif, GrowableBuffer& outCooked)
+{
+	ASSERT(!nif.physxActorList.empty());
+	CollisionAsset::Header header;
+	memset(&header, 0, sizeof(header));
+	header.magic = 0x58594850;
+	header.version = CollisionAsset::VERSION;
+	header.meshCount = (u16)nif.physxMeshList.size();
+	header.materialCount = (u16)nif.physxMaterialList.size();
+	header.actorCount = (u16)nif.physxActorList.size();
+	outCooked.Append(&header, sizeof(header));
+
+	foreach_const(it, nif.physxMaterialList) {
+		outCooked.Append(&it->rec, sizeof(it->rec));
+	}
+
+	foreach_const(it, nif.physxMeshList) {
+		ASSERT(it->cooked != nullptr);
+		ASSERT(it->cookedSize != 0);
+		const i32 nameLen = it->name.size();
+		outCooked.Append(&nameLen, sizeof(nameLen));
+		outCooked.Append(it->name.data(), nameLen);
+		outCooked.Append(&it->cookedSize, sizeof(it->cookedSize));
+		outCooked.Append(it->cooked, it->cookedSize);
+	}
+
+	foreach_const(actorIt, nif.physxActorList) {
+		outCooked.Append(&actorIt->rec, sizeof(actorIt->rec));
+		if(actorIt->rec.hasBody != 0) {
+			const CollisionNifReader::PhysXBody* body = FindPhysXBody(nif, actorIt->bodyBlockID);
+			outCooked.Append(&body->rec, sizeof(body->rec));
+		}
+		ASSERT(actorIt->shapeBlockIDs.size() == actorIt->rec.shapeCount);
+		foreach_const(shapeId, actorIt->shapeBlockIDs) {
+			const CollisionNifReader::PhysXShape* shape = FindPhysXShape(nif, *shapeId);
+			CollisionAsset::Shape rec = shape->rec;
+			rec.meshIndex = FindPhysXMeshIndex(nif, shape->meshBlockID);
+			outCooked.Append(&rec, sizeof(rec));
+		}
+	}
+	return true;
+}
+
+bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath, bool cookGeneric)
 {
 	eastl::fixed_string<char,8192,true> out;
 
@@ -542,12 +1033,15 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	NxCookingInterface* cooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
-	if(!cooking || !cooking->NxInitCooking()) {
-		LOG("ERROR: NxInitCooking failed");
-		return false;
+	NxCookingInterface* cooking = nullptr;
+	if(nif.physxActorList.empty() && cookGeneric) {
+		cooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
+		if(!cooking || !cooking->NxInitCooking()) {
+			LOG("ERROR: NxInitCooking failed");
+			return false;
+		}
 	}
-	defer(cooking->NxCloseCooking());
+	defer(if(cooking) cooking->NxCloseCooking());
 
 	eastl::fixed_vector<const CollisionNifReader::Mesh*,8> validMeshes;
 	foreach_const(it, nif.meshList) {
@@ -577,10 +1071,7 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 	outMesh.Append(&meshCount, sizeof(meshCount));
 
 	GrowableBuffer outCooked(1024*1024);
-	outCooked.Append("PHYX", 4);
-	const u16 phyxVersion = 1;
-	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
-	outCooked.Append(&meshCount, sizeof(meshCount));
+	eastl::fixed_vector<CookedPhysXMesh,8,true> cookedMeshes;
 
 	int vertOffset = 1;
 
@@ -722,33 +1213,40 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 			outMesh.Append(&indices[i+1], sizeof(u16));
 		}
 
-		// physx cooked mesh
+		if(cooking) {
+			NxTriangleMeshDesc meshDesc;
+			meshDesc.numVertices = verticesBlock.numIndices;
+			meshDesc.pointStrideBytes = vertexSize;
+			meshDesc.points = verticesBlock.at;
 
-		// name
-		outCooked.Append(&nameLen, sizeof(nameLen));
-		outCooked.Append(mesh.name.data(), nameLen);
+			meshDesc.numTriangles = indexBlock.numIndices/3;
+			meshDesc.triangleStrideBytes = 3*sizeof(u16);
+			meshDesc.triangles = indices;
 
-		NxTriangleMeshDesc meshDesc;
-		meshDesc.numVertices = verticesBlock.numIndices;
-		meshDesc.pointStrideBytes = vertexSize;
-		meshDesc.points = verticesBlock.at;
+			meshDesc.flags = NX_MF_16_BIT_INDICES;
 
-		meshDesc.numTriangles = indexBlock.numIndices/3;
-		meshDesc.triangleStrideBytes = 3*sizeof(u16);
-		meshDesc.triangles = indices;
+			CookingOutputStream writeBuffer;
+			bool status = cooking->NxCookTriangleMesh(meshDesc, writeBuffer);
+			if(!status) {
+				LOG("ERROR: cookTriangleMesh failed");
+				return false;
+			}
 
-		meshDesc.flags = NX_MF_16_BIT_INDICES;
+			CookedPhysXMesh& cooked = cookedMeshes.push_back();
+			cooked.name = mesh.name;
+			cooked.data.insert(cooked.data.end(), writeBuffer.data.begin(), writeBuffer.data.end());
+		}
+	}
 
-		CookingOutputStream writeBuffer;
-		bool status = cooking->NxCookTriangleMesh(meshDesc, writeBuffer);
-		if(!status) {
-			LOG("ERROR: cookTriangleMesh failed");
+	if(!nif.physxActorList.empty()) {
+		if(!WriteAuthoredCollisionAsset(nif, outCooked)) {
 			return false;
 		}
-
-		const u32 cookedMeshSize = writeBuffer.data.size();
-		outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-		outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
+	}
+	else if(cookGeneric) {
+		if(!WriteCookedNiMeshAsset(outCooked, cookedMeshes, 6)) {
+			return false;
+		}
 	}
 
 	bool r = fileSaveBuff(FMT("%s.obj", outPath), out.data(), out.size());
@@ -763,10 +1261,12 @@ bool ExtractCollisionMesh(const CollisionNifReader& nif, const char* outPath)
 		return false;
 	}
 
-	r = fileSaveBuff(FMT("%s.physx_static", outPath), outCooked.data, outCooked.size);
-	if(!r) {
-		LOG("ERROR: could not write '%s.physx_static'", outPath);
-		return false;
+	if(outCooked.size != 0) {
+		r = fileSaveBuff(FMT("%s.physx_static", outPath), outCooked.data, outCooked.size);
+		if(!r) {
+			LOG("ERROR: could not write '%s.physx_static'", outPath);
+			return false;
+		}
 	}
 
 	return true;
@@ -885,16 +1385,14 @@ bool CookConvexCylinder(NxCookingInterface* cooking, const char* outputFilePath)
 		return false;
 	}
 
+	eastl::fixed_vector<CookedPhysXMesh,8,true> meshes;
+	CookedPhysXMesh& cooked = meshes.push_back();
+	cooked.name.assign("cylinder", 8);
+	cooked.data.insert(cooked.data.end(), writeBuffer.data.begin(), writeBuffer.data.end());
 	GrowableBuffer outCooked(1024*1024);
-	outCooked.Append("PHYX", 4);
-	const u16 phyxVersion = 1;
-	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
-	const u16 meshCount = 1;
-	outCooked.Append(&meshCount, sizeof(meshCount));
-
-	const u32 cookedMeshSize = writeBuffer.data.size();
-	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-	outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
+	if(!WriteCookedNiMeshAsset(outCooked, meshes, 5)) {
+		return false;
+	}
 
 	bool r = fileSaveBuff(FMT("%s.physx_dynamic", outputFilePath), outCooked.data, outCooked.size);
 	if(!r) {
@@ -914,17 +1412,9 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	}
 	defer(cooking->NxCloseCooking());
 
-	// physx file
-	GrowableBuffer outCooked(1024*1024);
-	outCooked.Append("PHYX", 4);
-	const u16 phyxVersion = 1;
-	outCooked.Append(&phyxVersion, sizeof(phyxVersion));
-	const u16 meshCount = 1;
-	outCooked.Append(&meshCount, sizeof(meshCount));
 	const char* name = "AnObjMesh";
 	const i32 nameLen = strlen(name);
-	outCooked.Append(&nameLen, sizeof(nameLen));
-	outCooked.Append(name, nameLen);
+	const u16 meshCount = 1;
 
 	ObjReader::Vertex* fixedVertices = (ObjReader::Vertex*)memAlloc(sizeof(ObjReader::Vertex) * obj.vertices.size());
 	defer(memFree(fixedVertices));
@@ -960,9 +1450,14 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 		return false;
 	}
 
-	const u32 cookedMeshSize = writeBuffer.data.size();
-	outCooked.Append(&cookedMeshSize, sizeof(cookedMeshSize));
-	outCooked.Append(writeBuffer.data.data(), cookedMeshSize);
+	eastl::fixed_vector<CookedPhysXMesh,8,true> meshes;
+	CookedPhysXMesh& cooked = meshes.push_back();
+	cooked.name.assign(name, nameLen);
+	cooked.data.insert(cooked.data.end(), writeBuffer.data.begin(), writeBuffer.data.end());
+	GrowableBuffer outCooked(1024*1024);
+	if(!WriteCookedNiMeshAsset(outCooked, meshes, 6)) {
+		return false;
+	}
 
 	bool r = fileSaveBuff(FMT("%s.physx_static", outputFilePath), outCooked.data, outCooked.size);
 	if(!r) {
@@ -1002,7 +1497,6 @@ bool CookMesh(const ObjReader& obj, const char* outputFilePath)
 	return true;
 }
 
-// WARNING: not safe
 inline bool StrEndsWidth(const char* str, const char* end)
 {
 	const int strLen = strlen(str);
@@ -1020,13 +1514,19 @@ int main(int argc, char** argv)
 	LogInit("col.log");
 
 	if(argc < 3) {
-		LOG("Usage: col 'inputfile' 'output/path'");
+		LOG("Usage: col 'inputfile' 'output/path' [-cook]");
 		LOG("	Supports nif and obj");
 		return 1;
 	}
 
 	const char* inputFilename = argv[1];
 	const char* outputFilePath = argv[2];
+	bool cookGeneric = false;
+	for(int i = 3; i < argc; i++) {
+		if(StringEquals(argv[i], "-cook")) {
+			cookGeneric = true;
+		}
+	}
 
 	i32 fileSize;
 	const u8* fileData = fileOpenAndReadAll(inputFilename, &fileSize);
@@ -1045,7 +1545,7 @@ int main(int argc, char** argv)
 			return 1;
 		}
 
-		bool r = ExtractCollisionMesh(reader, outputFilePath);
+		bool r = ExtractCollisionMesh(reader, outputFilePath, cookGeneric);
 		if(!r) {
 			LOG("ERROR: failed to extract '%s'", inputFilename);
 			return 1;

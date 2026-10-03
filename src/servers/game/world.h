@@ -10,8 +10,10 @@
 
 #include "replication.h"
 #include "physics.h"
+#include "input_clock.h"
 
 struct HorizontalMotionVariant;
+struct DynamicCollisionProfile;
 
 struct ColliderSize
 {
@@ -59,6 +61,7 @@ struct World
 			vec3 moveTo;
 			vec2 moveDir = vec2(0);
 			f32 speed;
+			f32 clientTime = 0.f;
 			RotationHumanoid rot;
 
 			u8 tag: 1;
@@ -112,6 +115,8 @@ struct World
 			bool hasJumped = false;
 			bool forcedMove = false;
 		} movement;
+		bool graphIgnoreCollision = false;
+		bool graphIgnoreClearAfterStep = false;
 
 		explicit Player(u32 index_, const PlayerDescription& desc):
 			index(index_),
@@ -204,8 +209,13 @@ struct World
 		i32 entityType = 3;
 
 		Time tLastActionChange;
-		vec3 pos;
-		vec3 rot;
+		vec3 pos = vec3(0);
+		vec3 rot = vec3(0);
+		const DynamicCollisionProfile* collisionProfile = nullptr;
+		eastl::fixed_vector<NxActor*,4,false> collisionActors;
+		ActionStateID collisionAction = ActionStateID::INVALID;
+		u32 collisionActionStart = 0;
+		bool collisionActionDone = false;
 
 		explicit ActorDynamic(ActorUID UID_): UID(UID_) {}
 	};
@@ -232,10 +242,96 @@ struct World
 		u32 bornUpdate = 0;
 		f32 graphElapsed = 0.f;
 		u32 graphApplyUpdate = 0;
+		u32 inputSequence = 0;
 
 
 		inline bool IsDoneExecuting() const { return skillID == SkillID::INVALID; }
 		inline void Finish() { skillID = SkillID::INVALID; }
+	};
+
+	enum class InputKind: u8
+	{
+		Movement,
+		Rotation,
+		Action,
+		Jump,
+		Tag,
+		Cast,
+	};
+
+	struct InputEvent
+	{
+		u32 sequence = 0;
+		InputKind kind = InputKind::Movement;
+		ActorUID actorUID = ActorUID::INVALID;
+		Player::Input data{};
+		f64 serverTime = 0.0;
+		f64 receivedTime = 0.0;
+		f32 clientTime = 0.0f;
+		u32 clockGeneration = 0;
+		u8 masterSlot = 0;
+		bool timestamped = false;
+		u32 notifications = 0;
+		u32 warpNotifications = 0;
+		u32 commandNotifications = 0;
+		f64 keepUntil = 0.0;
+		const HorizontalMotionVariant* selectedVariant = nullptr;
+	};
+
+	static constexpr u32 InputHistoryFrames = 512;
+	static constexpr u32 InputHistoryEvents = InputHistoryFrames * 4;
+
+	struct PlayerFrame
+	{
+		u32 update = 0;
+		Time localTime = Time::ZERO;
+		f64 serverTime = 0.0;
+		f64 previousServerTime = 0.0;
+		PhysicsBodyState body;
+		Player::Input input{};
+		decltype(Player::movement) movement{};
+		u8 mainCharaID = 0;
+		ActionStateID actions[PLAYER_CHARACTER_COUNT]{};
+		bool graphIgnoreCollision = false;
+		bool graphIgnoreClearAfterStep = false;
+		eastl::fixed_vector<SkillProgram,2,false> programs;
+	};
+
+	struct PlayerTimeline
+	{
+		eastl::array<InputClock,PLAYER_CHARACTER_COUNT> clocks;
+		eastl::array<u32,PLAYER_CHARACTER_COUNT> clockGeneration{};
+		eastl::array<f32,PLAYER_CHARACTER_COUNT> lastClientTime{};
+		eastl::array<f32,PLAYER_CHARACTER_COUNT> minimumClientTime{};
+		eastl::array<f64,PLAYER_CHARACTER_COUNT> clockStartTime{};
+		eastl::array<f64,PLAYER_CHARACTER_COUNT> clockEndTime{ -1.0, -1.0 };
+		eastl::fixed_vector<InputEvent,InputHistoryEvents,false> events;
+		eastl::fixed_vector<PlayerFrame,InputHistoryFrames,false> frames;
+		u32 oldestFrame = 0;
+		u32 nextSequence = 1;
+		u8 admittedMaster = 0;
+		f64 replayFrom = -1.0;
+		f64 lastStepTime = 0.0;
+		bool enabled = false;
+	};
+
+	struct SceneActorState
+	{
+		NxActor* actor = nullptr;
+		u32 flags = 0;
+	};
+
+	struct SceneFrame
+	{
+		u32 update = 0;
+		eastl::fixed_vector<SceneActorState,128,false> actors;
+	};
+
+	struct SimulationHistory
+	{
+		eastl::array<PlayerTimeline,10> players;
+		eastl::fixed_vector<SceneFrame,InputHistoryFrames,false> scenes;
+		u32 oldestScene = 0;
 	};
 
 
@@ -255,6 +351,11 @@ struct World
 	eastl::fixed_map<ActorUID, ActorDynamicHandle, 2048, true> actorDynamicMap;
 
 	eastl::fixed_vector<SkillProgram,40,false> skillProgramList;
+	SimulationHistory* history = nullptr;
+	Player* simulationPlayer = nullptr;
+	u32 simulationUpdate = 0;
+	InputEvent* simulationEvent = nullptr;
+	bool replayingInputs = false;
 
 	u32 nextActorUID;
 	Time localTime = Time::ZERO;
@@ -265,8 +366,16 @@ struct World
 	void Init(Replication* replication_);
 	void Cleanup();
 
-	void Update(Time localTime_);
+	void Update(Time localTime_, f64 serverTime);
 	void Replicate();
+	void BeginPlayerTimeline(ClientHandle clientHd, ActorUID actorUID, f64 serverTime);
+	bool QueuePlayerInput(Player& player, ActorUID actorUID, InputKind kind, const Player::Input& input, f64 receivedTime, bool timestamped);
+	bool EmitInputNotification(Player& player, u32 sequence, u32 notification, i32 commandIndex = -1);
+	u32 SimulationUpdate() const { return simulationPlayer ? simulationUpdate : updateIndex; }
+	u8 AdmittedMaster(const Player& player) const {
+		const auto& timeline = history->players[player.index];
+		return timeline.enabled ? timeline.admittedMaster : player.mainCharaID;
+	}
 
 	Player& CreatePlayer(const PlayerDescription& desc, const vec3& pos, const RotationHumanoid& rot);
 	ActorNpc& SpawnNpcActor(CreatureIndex docID, i32 localID);
@@ -284,4 +393,12 @@ private:
 	void CancelPlayerPrograms(Player& player);
 	void PlayerCastSkill(Player& player, SkillID skill, const vec3& castPos, Slice<const ActorUID> targets, f32 clientTime);
 	void ExecuteSkillProgram(SkillProgram& prog);
+	void SavePlayerFrame(Player& player, PlayerFrame& frame, u32 update, Time frameTime, f64 serverTime);
+	void RestorePlayerFrame(Player& player, const PlayerFrame& frame);
+	void SimulatePlayer(Player& player, u32 update, Time frameTime, f64 serverTime);
+	void UpdatePlayerTimeline(Player& player, f64 serverTime);
+	void ApplyPlayerControls(Player& player, InputEvent* event);
+	void ApplyPlayerInput(Player& player, InputEvent& event);
+	void CaptureSceneFrame(SceneFrame& frame);
+	void RestoreSceneFrame(const SceneFrame& frame);
 };

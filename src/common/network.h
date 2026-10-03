@@ -125,7 +125,19 @@ struct Server
 
 	struct ClientNet
 	{
+#ifdef CONF_WINDOWS
+		OVERLAPPED recvOverlapped{};
+		OVERLAPPED sendOverlapped{};
+		u8 recvBuff[RECV_BUFF_LEN];
+		GrowableBuffer sendingBuff;
+		i32 sendCursor = 0;
+		bool recvPending = false;
+		bool sendPending = false;
+		bool sendWakeQueued = false;
+#else
 		AsyncConnection async;
+#endif
+		ClientHandle handle = ClientHandle::INVALID;
 		sockaddr addr;
 		GrowableBuffer recvPendingProcessingBuff;
 		GrowableBuffer pendingSendBuff;
@@ -146,7 +158,8 @@ struct Server
 		i32 len;
 	};
 
-	bool running;
+	bool initialized = false;
+	EA::Thread::AtomicUint32 running = 0;
 	eastl::array<u8,MAX_CLIENTS> clientIsConnected; // is guarded by ClientNet.mutexConnect
 	eastl::array<u8,MAX_CLIENTS> clientDoDisconnect;
 	eastl::array<SOCKET,MAX_CLIENTS> clientSocket;
@@ -154,21 +167,33 @@ struct Server
 	eastl::array<ClientInfo,MAX_CLIENTS> clientInfo;
 
 	hash_map<ClientHandle,i32,MAX_CLIENTS*4> clientHandle2IDMap;
-	hash_map<i32,ClientHandle,MAX_CLIENTS*4> clientID2HandleMap;
 	ClientHandle nextclientHd = ClientHandle(1);
+	mutable Mutex mutexClientMap;
 
-	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientConnectedList;
+	struct ConnectedClient
+	{
+		ClientHandle handle;
+		ClientInfo info;
+	};
+
+	eastl::fixed_vector<ConnectedClient,MAX_CLIENTS> clientConnectedList;
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientDisconnectedList;
 	ProfileMutex(Mutex, mutexClientConnectedList);
 	ProfileMutex(Mutex, mutexClientDisconnectedList);
 
 	EA::Thread::Thread thread;
+#ifdef CONF_WINDOWS
+	HANDLE completionPort = nullptr;
+	EA::Thread::AtomicUint32 pendingIO = 0;
+	bool completionStopping = false;
+#endif
 
 	i32 packetCounter = 0;
 	bool doTraceNetwork = false;
 
 	bool Init();
 	void Cleanup();
+	void Stop();
 
 	ClientHandle ListenerAddClient(SOCKET s, const sockaddr& addr_);
 	void DisconnectClient(ClientHandle clientHd);
@@ -181,35 +206,28 @@ struct Server
 	template<class Array>
 	void TransferConnectedClientList(Array* out)
 	{
-		if(clientConnectedList.size() > 0) {
-			LOCK_MUTEX(mutexClientConnectedList);
-			eastl::copy(clientConnectedList.begin(), clientConnectedList.end(), eastl::back_inserter(*out));
-			clientConnectedList.clear();
-		}
+		LOCK_MUTEX(mutexClientConnectedList);
+		for(const auto& client: clientConnectedList) out->push_back(client.handle);
+		clientConnectedList.clear();
 	}
 
 	// has client info as well
 	template<class Array>
 	void TransferConnectedClientListEx(Array* out)
 	{
-		if(clientConnectedList.size() > 0) {
-			LOCK_MUTEX(mutexClientConnectedList);
-			foreach_const(cl, clientConnectedList) {
-				eastl::pair<ClientHandle,ClientInfo> pair(*cl, clientInfo[clientHandle2IDMap.at(*cl)]);
-				out->push_back(pair);
-			}
-			clientConnectedList.clear();
+		LOCK_MUTEX(mutexClientConnectedList);
+		for(const auto& client: clientConnectedList) {
+			out->push_back(eastl::pair<ClientHandle,ClientInfo>(client.handle, client.info));
 		}
+		clientConnectedList.clear();
 	}
 
 	template<class Array>
 	void TransferDisconnectedClientList(Array* out)
 	{
-		if(clientDisconnectedList.size() > 0) {
-			LOCK_MUTEX(mutexClientDisconnectedList);
-			eastl::copy(clientDisconnectedList.begin(), clientDisconnectedList.end(), eastl::back_inserter(*out));
-			clientDisconnectedList.clear();
-		}
+		LOCK_MUTEX(mutexClientDisconnectedList);
+		eastl::copy(clientDisconnectedList.begin(), clientDisconnectedList.end(), eastl::back_inserter(*out));
+		clientDisconnectedList.clear();
 	}
 
 	template<typename Packet>
@@ -220,32 +238,30 @@ struct Server
 	void SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, const void* packetData);
 
 private:
-	inline i32 GetClientID(ClientHandle clientHd) const
-	{
-		auto f = clientHandle2IDMap.find(clientHd);
-		ASSERT_MSG(f != clientHandle2IDMap.end(), "ClientID not found in map");
-		return f->second;
-	}
 
 	inline i32 TryGetClientID(ClientHandle clientHd) const
 	{
+		LOCK_MUTEX(mutexClientMap);
 		auto f = clientHandle2IDMap.find(clientHd);
 		if(f == clientHandle2IDMap.end()) return -1;
 		return f->second;
 	}
 
-	inline ClientHandle GetClientHd(i32 clientID) const
-	{
-		auto f = clientID2HandleMap.find(clientID);
-		ASSERT_MSG(f != clientID2HandleMap.end(), "ClientHandle not found in map");
-		return f->second;
-	}
 
 	void DisconnectClient(i32 clientID);
 
-	void ClientSend(i32 clientID, const void* data, i32 dataSize);
+	void ClientSend(i32 clientID, ClientHandle handle, const void* data, i32 dataSize);
+#ifndef CONF_WINDOWS
 	bool ClientStartReceiving(i32 clientID);
+#endif
 	void ClientHandleReceivedData(i32 clientID, i32 dataLen);
+	void TransferClientReceivedData(GrowableBuffer* out, i32 clientID, ClientHandle expected);
+#ifdef CONF_WINDOWS
+	void PostControl(ClientHandle handle, DWORD kind);
+	bool SubmitReceive(i32 clientID);
+	bool SubmitSend(i32 clientID);
+	void RetireClient(i32 clientID);
+#endif
 };
 
 struct Listener

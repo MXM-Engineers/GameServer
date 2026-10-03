@@ -905,6 +905,99 @@ bool GameXmlContent::LoadMapList()
 	return true;
 }
 
+static char CollisionAssetNameLower(char c)
+{
+	return (c >= 'A' && c <= 'Z') ? char(c - 'A' + 'a') : c;
+}
+
+static bool CollisionAssetNameFromResKey(const char* resKey, FixedStr64* outName)
+{
+	if(!resKey) return false;
+	const char* name = resKey;
+	for(const char* it = resKey; *it; ++it) {
+		if(*it == '\\' || *it == '/') name = it + 1;
+	}
+	const size_t length = EA::StdC::Strlen(name);
+	if(length <= 4) return false;
+	const char* extension = name + length - 4;
+	if(extension[0] != '.' || CollisionAssetNameLower(extension[1]) != 'n' ||
+		CollisionAssetNameLower(extension[2]) != 'i' || CollisionAssetNameLower(extension[3]) != 'f') {
+		return false;
+	}
+	outName->assign(name, length - 4);
+	return true;
+}
+
+static void ParseLevelProps(GameXmlContent::Map* map, XMLElement* pProps)
+{
+	if(!pProps) return;
+	for(XMLElement* pProp = pProps->FirstChildElement("_PropData"); pProp; pProp = pProp->NextSiblingElement("_PropData")) {
+		const char* enable = pProp->Attribute("cenable");
+		if(!enable || CollisionAssetNameLower(enable[0]) != 't') continue;
+		GameXmlContent::Map::CollisionProp prop;
+		if(!CollisionAssetNameFromResKey(pProp->Attribute("ResKey"), &prop.assetName)) continue;
+		pProp->QueryAttribute("x", &prop.pos.x);
+		pProp->QueryAttribute("y", &prop.pos.y);
+		pProp->QueryAttribute("z", &prop.pos.z);
+		pProp->QueryAttribute("angx", &prop.rot.x);
+		pProp->QueryAttribute("angy", &prop.rot.y);
+		pProp->QueryAttribute("angz", &prop.rot.z);
+		pProp->QueryAttribute("scale", &prop.scale);
+		map->collisionProps.push_back(prop);
+	}
+}
+
+bool GameXmlContent::LoadMapProps(Map* map, const wchar* levelDir)
+{
+	Path path = gameDataDir;
+	PathAppend(path, LFMT(L"/%s/Level.xml", levelDir));
+	i32 fileSize = 0;
+	u8* fileData = FileOpenAndReadAll(path.data(), &fileSize);
+	if(!fileData) {
+		return true;
+	}
+
+	XMLDocument doc;
+	const XMLError error = doc.Parse((char*)fileData, fileSize);
+	memFree(fileData);
+	if(error != XML_SUCCESS) {
+		LOG("ERROR(LoadMapProps): error parsing '%ls' > '%s'", path.data(), doc.ErrorStr());
+		return false;
+	}
+
+	XMLElement* pMapInfo = doc.FirstChildElement("MAP_INFO");
+	XMLElement* pLevelInfo = pMapInfo ? pMapInfo->FirstChildElement("MAP_LEVEL_INFO") : nullptr;
+	if(!pLevelInfo) {
+		LOG("ERROR(LoadMapProps): missing MAP_LEVEL_INFO in '%ls'", path.data());
+		return false;
+	}
+	ParseLevelProps(map, pLevelInfo->FirstChildElement("_LevelProps"));
+
+	XMLElement* pLevelData = pLevelInfo->FirstChildElement("_LevelData");
+	const char* referenceLevel = pLevelData ? pLevelData->Attribute("ReferenceLevel") : nullptr;
+	if(referenceLevel && *referenceLevel) {
+		wchar_t referencePath[256] = {0};
+		wchar_t* dest = referencePath;
+		for(const char* it = referenceLevel; *it; ++it) {
+			if(dest + 1 >= referencePath + ARRAY_COUNT(referencePath)) break;
+			*dest++ = (*it == '\\') ? L'/' : (wchar)*it;
+		}
+		*dest = 0;
+
+		XMLDocument referenceDoc;
+		if(!LoadXMLFile(LFMT(L"/%s/Level.xml", referencePath), referenceDoc)) return false;
+		XMLElement* pReferenceMapInfo = referenceDoc.FirstChildElement("MAP_INFO");
+		XMLElement* pReferenceInfo = pReferenceMapInfo ? pReferenceMapInfo->FirstChildElement("MAP_LEVEL_INFO") : nullptr;
+		if(!pReferenceInfo) {
+			LOG("ERROR(LoadMapProps): missing MAP_LEVEL_INFO in '%ls'", referencePath);
+			return false;
+		}
+		ParseLevelProps(map, pReferenceInfo->FirstChildElement("_LevelProps"));
+	}
+
+	return true;
+}
+
 bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 {
 	const MapList* mapList = FindMapListByID(index);
@@ -1018,6 +1111,8 @@ bool GameXmlContent::LoadMapByID(Map* map, MapIndex index)
 		pAreaList->QueryAttribute("layer", &area.layer);
 		map->areas.push_back(area);
 	}
+
+	if(!LoadMapProps(map, tempPathData)) return false;
 
 	return true;
 }
@@ -1367,27 +1462,92 @@ static bool FileLoad(FileBuffer* out, const wchar* path)
 	return true;
 }
 
+static void NarrowToWide(const char* src, wchar* dest, size_t destCount)
+{
+	size_t i = 0;
+	for(; src[i] && i + 1 < destCount; ++i) {
+		dest[i] = (wchar)(unsigned char)src[i];
+	}
+	dest[i] = 0;
+}
+
 bool GameXmlContent::LoadCollisionMeshes()
 {
-	Path path = gameDataDir;
-	PathAppend(path, L"/PVP_DeathMatch01_Collision.physx_static");
-	bool r = FileLoad(&filePvpDeathmatch01Collision, path.data());
-	if(!r) return false;
+	static const char* collisionAssetNames[] = {
+		"PVP_DeathMatch01_Collision",
+		"PVP_DeathMatch01_Env",
+		"PvP_Death_NM_Wall04",
+		"PvP_StartDelay_Gate_01",
+		"COH_Deco_Metalwire_FenceA_01",
+		"COH_Deco_Metalwire_FenceA_03",
+		"COH_Deco_Metalwire_FenceA_04",
+		"COH_Deco_Metalwire_FenceA_05",
+		"COH_Deco_Metalwire_FenceA_07",
+		"COH_Deco_metal_consB_01",
+		"COH_Deco_OutsideLampA_02",
+		"COH_Deco_ContainerA_02",
+		"COH_Deco_WoodPalette_barri_01",
+		"COH_Deco_DrumA_01",
+		"COH_Wall_mainA_01",
+		"COH_Wall_PillarA_01",
+		"LCR_Etc_DecoC_01",
+		"COH_Lamp_StrreetLampA_01",
+		"LCR_Sign_AdboardD_02",
+		"LCR_Sign_AdboardD_03",
+		"LCR_Sign_AdboardD_04",
+	};
+	STATIC_ASSERT(ARRAY_COUNT(collisionAssetNames) <= 32);
 
-	path = gameDataDir;
-	PathAppend(path, L"/PVP_DeathMatch01_Env.physx_static");
-	r = FileLoad(&filePvpDeathmatch01CollisionWalls, path.data());
-	if(!r) return false;
+	for(size_t i = 0; i < ARRAY_COUNT(collisionAssetNames); ++i) {
+		CollisionFile collisionFile;
+		collisionFile.name = collisionAssetNames[i];
+		wchar_t wideName[64];
+		NarrowToWide(collisionAssetNames[i], wideName, ARRAY_COUNT(wideName));
+		Path path = gameDataDir;
+		PathAppend(path, LFMT(L"/%s.physx_static", wideName));
+		if(!FileLoad(&collisionFile.file, path.data())) return false;
+		collisionFiles.push_back(collisionFile);
+	}
 
-	path = gameDataDir;
-	PathAppend(path, L"/PvP_Death_NM_Wall04.physx_static");
-	r = FileLoad(&filePvpDeathNmWall04, path.data());
-	if(!r) return false;
-
-	path = gameDataDir;
-	PathAppend(path, L"/cylinder.physx_dynamic");
-	r = FileLoad(&fileCylinderCollision, path.data());
-	if(!r) return false;
+	XMLDocument actions;
+	if(!LoadXMLFile(L"/ActionBase_Dynamic.xml", actions)) return false;
+	struct SupportedDynamic
+	{
+		CreatureIndex docID;
+		const char* assetName;
+		u32 group;
+	};
+	const SupportedDynamic supported[] = {
+		{ CreatureIndex(110040546), "PvP_StartDelay_Gate_01", 12 },
+		{ CreatureIndex(110042602), "PvP_Death_NM_Wall04", 11 },
+	};
+	for(const auto& entry: supported) {
+		auto& profile = dynamicCollisionProfiles.push_back();
+		profile.docID = entry.docID;
+		profile.assetName = entry.assetName;
+		profile.group = entry.group;
+		for(const XMLElement* row = actions.RootElement()->FirstChildElement(); row; row = row->NextSiblingElement()) {
+			const char* className = row->Attribute("Class");
+			const char* command = row->Attribute("CommandType");
+			if(!className || strcmp(className, entry.assetName) || !command || strcmp(command, "PHYSICS")) continue;
+			const char* stateName = row->Attribute("BehaviorState");
+			ASSERT(stateName);
+			const ActionStateID state = ActionStateFromString(stateName);
+			if(state != ActionStateID::DYNAMIC_NORMAL_STAND && state != ActionStateID::DYNAMIC_OPEN && state != ActionStateID::DYNAMIC_CLOSE) continue;
+			const char* param = row->Attribute("Param1");
+			const char* targets = row->Attribute("Param2");
+			ASSERT(param && targets);
+			ASSERT(strcmp(param, "PHYSICS_ENABLE_REMOVE_TF") == 0 || strcmp(param, "PHYSICS_ENABLE_REMOVE_FF") == 0);
+			ASSERT(strcmp(targets, "GuardrailMob|Collision") == 0 || strcmp(targets, "Collision|GuardrailMobCollision") == 0);
+			f32 delay = 0.0f;
+			const auto result = row->QueryFloatAttribute("Delay", &delay);
+			ASSERT((result == XML_SUCCESS || result == XML_NO_ATTRIBUTE) && std::isfinite(delay) && delay >= 0.0f);
+			for(const auto& existing: profile.actions) ASSERT(existing.state != state);
+			ASSERT(profile.actions.size() < profile.actions.max_size());
+			profile.actions.push_back({ state, delay, strcmp(param, "PHYSICS_ENABLE_REMOVE_TF") == 0 });
+		}
+		ASSERT(profile.actions.size() == 3);
+	}
 
 	return true;
 }
@@ -1586,6 +1746,16 @@ bool GameXmlContent::LoadAnimationData()
 
 				case ActionCommand::Type::GRAPH_MOVE_HORZ: {
 					pActionBase->QueryAttribute("Param1", &cmd.graphMoveHorz.distance);
+					cmd.graphMoveHorz.ignoreCollision = 0;
+					const char* graphParam2 = 0;
+					pActionBase->QueryStringAttribute("Param2", &graphParam2);
+					if(graphParam2 != nullptr) {
+						i32 graphParam2A = 0;
+						i32 graphParam2B = 0;
+						if(EA::StdC::Sscanf(graphParam2, "%d|%d", &graphParam2A, &graphParam2B) == 2) {
+							cmd.graphMoveHorz.ignoreCollision = graphParam2B != 0 ? 1 : 0;
+						}
+					}
 				} break;
 
 				case ActionCommand::Type::ROTATESPEED: {
@@ -1896,6 +2066,18 @@ bool GameXmlContent::Load()
 
 	r = LoadCollisionMeshes();
 	if(!r) return false;
+
+	ASSERT(mapPvpDeathMatch.collisionProps.size() <= mapPvpDeathMatch.collisionProps.capacity());
+	foreach_const(prop, mapPvpDeathMatch.collisionProps) {
+		bool found = false;
+		foreach_const(collisionFile, collisionFiles) {
+			if(strcmp(collisionFile->name.data(), prop->assetName.data()) == 0) {
+				found = true;
+				break;
+			}
+		}
+		ASSERT(found);
+	}
 
 	r = LoadAnimationData();
 	if(!r) return false;

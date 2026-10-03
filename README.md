@@ -40,10 +40,34 @@ Game-server physics currently supports the shipped DeathMatch collision data
 that select another map; unsupported physics maps assert rather than using
 the wrong collision scene.
 
+## Networking
+
+Windows `Server` sockets use IOCP with one completion worker per server, not
+one thread per client. Game, hub, and matchmaker workers block until there is
+I/O or control work and are no longer pinned to the same CPU. Linux and
+standalone internal `AsyncConnection` callers retain their existing paths.
+
+Receive buffers publish complete TCP frames only. Slow receivers retain
+their send buffers and partial-send cursor. Disconnects retire outstanding
+operations before publishing the disconnected handle and reusing its slot;
+shutdown wakes the worker and drains those operations.
+
+Run `network_tests.exe` from `build/` for fragmented/coalesced input,
+200 simultaneous peers, 5 MiB backpressure delivery, full-capacity slot reuse,
+stale handles, and bounded shutdown/resource cleanup. Debug uses the `_dbg`
+suffix. `physics_tests.exe` covers the native physics and input-replay paths.
+
+Release measurements with the unchanged client reduced median socket-send
+to completed actor update from 22.93 to 10.34 ms, and the observed maximum
+from 78.23 to 16.54 ms. The three network workers used 0.12% of one CPU core
+combined in the measured single-client run, versus 100.44% in the retained
+polling baseline. Tick-driven game dispatch remains unchanged. These
+measurements do not establish full client/server physics parity.
+
 ## Physics
 
-The server uses PhysX 4.1.2 with client-derived controller dimensions, contact
-offset, step height, slope limit, climbing mode, and collision groups.
+The server uses native x64 PhysX/NxCharacter 2.8.4 with client-derived controller
+dimensions, skin width, step height, slope limit, climbing mode, and collision groups.
 Gameplay positions represent controller feet.
 
 Ordinary jumps use extracted per-master directional vertical animation curves
@@ -53,8 +77,13 @@ Horizontal skill motion also uses extracted authored curves, including
 directional/random branches and per-branch timing. Supported skill movement
 uses authored command/clip timelines, cancels stale effects on replacement/tag,
 and releases movement after the final graph tick. STATE_BLOCK is not treated
-as a WASD lock. Live validation of packet inputs, resulting movement, and
-remote-client presentation remains open.
+as a WASD lock. DeathMatch includes the enabled ART props, authored primitive
+and convex actors, native scaled meshes, and gate/wall collision commands.
+Human position snapshots are not seek targets; transmitted directions are
+preserved. Timestamped CN/CQ inputs use bounded server-history catch-up;
+casts, jumps and tags retain action ownership during replay. The native x64
+backend is retained. Same-QPC input-delivery and remote-presentation parity
+remain open; catch-up does not predict inputs that have not arrived.
 See the [remaining roadmap](doc/physics_roadmap.md).
 Bit-identical PhysX 2.8.4 behavior is not claimed.
 

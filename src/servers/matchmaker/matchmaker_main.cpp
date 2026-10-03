@@ -14,7 +14,7 @@ Listener* g_Listener = nullptr;
 
 inline void ShutdownServer()
 {
-	g_Server->running = false;
+	g_Server->Stop();
 	g_Listener->Stop();
 }
 

@@ -26,6 +26,7 @@ add_library(velqor SHARED
   velqor.cpp
   os_input.cpp
   client_bridge.cpp
+  scene_snapshot.cpp
   sha256.cpp
   ${VELQOR_DETOURS_SOURCES}
 )
@@ -40,6 +41,7 @@ foreach(velqor_target velqor velqor_inject)
   target_include_directories(${velqor_target} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${VELQOR_DETOURS_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../external/physx-2.8.4/include/physx"
   )
   target_compile_definitions(${velqor_target} PRIVATE
     UNICODE

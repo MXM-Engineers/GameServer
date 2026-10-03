@@ -1,4 +1,5 @@
 #include "replication.h"
+#include "world.h"
 
 #include <common/protocol.h>
 #include <EASTL/algorithm.h>
@@ -1318,6 +1319,9 @@ void Replication::SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster&
 			packet.Write<u16>(0); // meshChangeActionHistory_count
 
 			SendPacket(clientHd, packet);
+			if(ownerWorld && actor.clientHd == clientHd) {
+				ownerWorld->BeginPlayerTimeline(clientHd, actor.actorUID, TimeDiffSec(TimeRelNow()));
+			}
 		}
 	}
 	// this is the sub actor

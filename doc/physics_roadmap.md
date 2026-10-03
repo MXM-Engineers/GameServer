@@ -14,10 +14,10 @@ The server must consume transmitted inputs, simulate gameplay-relevant movement/
 | Action scheduling | Authored command/clip timing and cancellation are implemented. Full graph metadata accompanies normal execute-commit; physical activation remains delayed. Remote playback and owner onset offsets remain open. | Implemented; live owner coverage established |
 | State-dependent movement | Preserve stance variants instead of flattening them. Support relevant runtime graph duration/amplitude modifiers and state-specific movement paths. Ordinary jump extraction currently uses base-master/default-stance profiles. | Not started |
 | Jump transition details | All five directional jumps are accepted in actual-client runs and all 200 default authored profiles pass collision regression. Network/action launch offsets and exact collision flags remain unequal. | Exercised; exact transition parity open |
-| Controller behavior | Production uses native x64 PhysX/NxCharacter 2.8.4, preserving client float-coordinate requests and selective segmentation. The local PhysX 4 compatibility CCT is removed. On identical retained inputs maximum error falls 94.75% for class 6 and 82.88% for class 5; residual boundary flags and x86/x64/build differences remain. | Native SDK cutover implemented and exercised; exact parity open |
-| Collision scene coverage | Only DeathMatch is supported. Other maps need verified geometry, transforms, collision groups, and dynamic-object behavior. | Not started |
+| Controller behavior | Both x86 runtimes at client float24 precision exactly replay 3,359 retained moves/flags. Production native x64 replay is within 0.014218 units with one flag difference; public precision24 does not eliminate the x64 residual. | Native cutover and causal numerical evidence established; exact x64 parity open |
+| Collision scene coverage | DeathMatch loads all 168 enabled ART props, authored box/convex actors, nine scaled meshes and gate/wall PHYSICS timelines. All 194 named actor categories/masks/materials/collision-enable states match the frozen client scene. Other maps and two gate ray-query flags remain open. | DeathMatch authored scene implemented and exercised |
 | Hit volumes | Resolve how class-specific hit volumes interact with gameplay queries. They are distinct from locomotion capsules. | Not started |
-| Network reconciliation | Owner-skip replication and targeted warp corrections are not complete reconciliation. Live zero-correction captures measure onset offsets; no artificial clock shifts or corrective teleports were introduced. | Measured; general reconciliation open |
+| Network reconciliation | Approved CN/CQ replay retains 512 before-step frames and 2,048 events, learns clock mappings from actual timestamp/handler-time pairs, and never seeks packet positions. Vanilla measurements isolated Windows polling/CPU-affinity contention. IOCP reduced median socket-send to completed actor update from 22.93 to 10.34 ms; the unchanged raw-QPC 25-unit physics gate still fails. | Input replay and completion-driven networking exercised; strict live parity open |
 
 ## Horizontal skill motion: implemented
 
@@ -53,10 +53,54 @@ Grok 4.6 agents `ScheduleData` and `ScheduleRuntime` implemented authored timeli
 
 Scope: existing supported movement effects, not a new combat-command or general stance system. Live unfocused owner captures verify Sniper A and moving Shirk. Remote animation and delayed-graph presentation still need comparison against authoritative updates. The execute handler swaps the wire duration/origin fields in its local stack before both owner and remote setters; both cache origin at +0x194 and duration at +0x19C.
 
+## Server network latency: measured cutover
+
+Windows game/hub/matchmaker `Server` sockets now use one IOCP completion worker
+per server, without shared CPU pinning or per-client threads. Buffers remain
+owned until their send/receive completions retire. TCP fragments are retained,
+and stale handles cannot route to reused connection slots. Standalone internal
+connectors and Linux retain their existing networking paths.
+
+The unchanged Release scenario produced 44 correlated movement packets in the
+retained polling baseline and 46 after cutover. Original packet hashes,
+endpoints, TCP order, and native/decrypted actor/time fields establish identity.
+Actual QPC timestamps were compared without trajectory retiming.
+
+| Measurement | Polling baseline | IOCP |
+| --- | --- | --- |
+| Socket-send to receive-completion processing, median | 12.111 ms | 0.02135 ms |
+| Socket-send to completed owner update, median | 22.9261 ms | 10.33695 ms |
+| Socket-send to completed owner update, mean | 31.22257 ms | 8.90508 ms |
+| Socket-send to completed owner update, observed maximum | 78.2333 ms | 16.5447 ms |
+| Combined game/hub/mm network CPU, share of one core | 100.4431% | 0.1208% |
+
+The CPU baseline is a separate approximately 75-second passive capture; the
+approximately 78-second IOCP capture includes one active client. This is not
+a throughput guarantee for 200 clients. The remaining receive-to-handler
+median is 9.8443 ms; tick-driven dispatch is unchanged. Full original-client
+and LEA hashes remained unchanged, temporary observers were removed, and the
+original recording harness and final server sources were rebuilt.
+
+Final-source Release and Debug/CHECKED runs passed all five real-socket tests
+and all 25 physics regressions. Networking exercises 200 simultaneous peers,
+5 MiB slow-reader delivery, full-capacity slot reuse, stale handles, and bounded
+pending-operation shutdown/resource cleanup.
+
+A final unmodified-client run through a transparent relay added at least
+60 ms each direction. All five jumps applied; both skills cast, executed, and
+completed; STOP and disconnect release worked with zero corrections. The
+complete comparator still fails four old-master identity samples during the
+delayed TAG acknowledgement, and full physics parity remains open. Neither
+the raw-QPC comparison nor its 25-unit threshold was changed.
+
+Evidence: `build/velqor/matching/network_completion_evidence.json`, with raw
+captures in `20261003_122017_sol_iocp_vanilla` and
+`20261003_124117_sol_iocp_rtt120`.
+
 ## Recommended broader sequence
 
 1. Resolve the remaining same-request collision-flag/narrowphase differences and extend live comparisons to remote delayed-graph presentation, other skills, and collision boundaries.
 2. Align state-dependent behavior only where transmitted state or gameplay requires it.
 3. Resolve measured controller/networking discrepancies; extend maps and hit-volume coverage.
 
-Horizontal curve execution and supported scheduling are implemented. Fixed simulation clocks and first-dt graph activation combine horizontal and vertical requests with client float-coordinate arithmetic. Native PhysX 2.8.4 replaces the previous PhysX 4 backend and local CCT fork. Fifteen Release/actual-CHECKED regressions and eleven Python evidence tests pass; full actual-client jump/A/Shirk/TAG/ledge scenarios complete without corrections or desktop-input mutations. Complete-scene continuous request replay is within 0.016017 units with one flag difference, but the latest raw-QPC maximum/mean is 188.087094/15.826756 and remains diverged. Debug executables are in `build/checked/`; run them from `build/`. Detailed measurements and limitations are in `physics_alignment.md` and `build/velqor/nx284_evidence.json`.
+Horizontal curves and supported scheduling are implemented. DeathMatch uses complete PHYX v2 authored recipes and native scale-and-cook. Production same-request maximum error is 0.014218 units with one flag difference; native x64 and that measured residual are explicitly retained. Timestamped replay restores server history, reruns only the owner, preserves action ownership, and publishes packets/actions once; packet snapshots never become seek targets. All 25 Release/actual-CHECKED regressions pass. The original native-motion-to-handler gap did not distinguish client queuing from server reception; subsequent unchanged-client measurements identified Windows polling/affinity contention, and the approved server-only IOCP cutover reduced it. The latest direct run completes its control gates but still exceeds the unchanged 25-unit physics gate; the delayed-network run also exposes old-master identity samples during TAG acknowledgement. Full physics and remote-presentation parity remain open. The client remains vanilla, with observation-only instrumentation permitted; no correction stream, trajectory retiming, or relaxed tolerance conceals failures. Debug test executables are in `build/checked/`; run from `build/`. Evidence is in `physics_alignment.md`, `recipe284_evidence.json`, `input_catchup_evidence.json`, and `network_completion_evidence.json`.

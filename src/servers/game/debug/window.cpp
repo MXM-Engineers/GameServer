@@ -184,8 +184,8 @@ bool Window::Init()
 	// create map scene, add ground and wall static meshes
 	phys.CreateScene(&testScene);
 
-	testScene.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0), vec3(0), PhysicsCollisionGroup::Static);
-	testScene.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
+	testScene.CreateCollisionAsset("PVP_DeathMatch01_Collision", vec3(0), vec3(0), 1.0f, PhysicsCollisionGroup::Prop);
+	testScene.CreateCollisionAsset("PVP_DeathMatch01_Env", vec3(0), vec3(0), 1.0f, PhysicsCollisionGroup::Prop);
 
 	testSubject.actor = testScene.CreateDynamicBody(100, 300, vec3(0));
 	testSubject.Reset();
@@ -550,7 +550,8 @@ void Window::UpdatePhysics()
 		dir = glm::normalize(dir);
 	}
 
-	testSubject.actor->vel = dir * speed;
+	testSubject.actor->moveDir = vec2(dir);
+	testSubject.actor->moveSpeed = speed;
 	testScene.Step();
 }
 

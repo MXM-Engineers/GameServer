@@ -184,4 +184,146 @@ NetPollResult AsyncConnection::PollSend()
 	return NetPollResult::SUCCESS;
 }
 
+void Server::PostControl(ClientHandle handle, DWORD kind)
+{
+	ASSERT(completionPort);
+	const BOOL posted = PostQueuedCompletionStatus(completionPort, kind, ULONG_PTR((u32)handle), nullptr);
+	ASSERT(posted);
+}
+
+bool Server::SubmitReceive(i32 clientID)
+{
+	ClientNet& client = clientNet[clientID];
+	ASSERT(!client.recvPending && clientIsConnected[clientID] == 1);
+	memset(&client.recvOverlapped, 0, sizeof(client.recvOverlapped));
+	WSABUF buffer;
+	buffer.buf = (char*)client.recvBuff;
+	buffer.len = RECV_BUFF_LEN;
+	DWORD flags = 0;
+	client.recvPending = true;
+	pendingIO.Increment();
+	const int result = WSARecv(clientSocket[clientID], &buffer, 1, nullptr, &flags, &client.recvOverlapped, nullptr);
+	if(result != SOCKET_ERROR || WSAGetLastError() == WSA_IO_PENDING) return true;
+	client.recvPending = false;
+	pendingIO.Decrement();
+	return false;
+}
+
+bool Server::SubmitSend(i32 clientID)
+{
+	ClientNet& client = clientNet[clientID];
+	if(client.sendPending) return true;
+	if(client.sendingBuff.size == 0) {
+		LOCK_MUTEX(client.mutexSend);
+		if(client.pendingSendBuff.size == 0) return true;
+		eastl::swap(client.sendingBuff.data, client.pendingSendBuff.data);
+		eastl::swap(client.sendingBuff.size, client.pendingSendBuff.size);
+		eastl::swap(client.sendingBuff.capacity, client.pendingSendBuff.capacity);
+		client.pendingSendBuff.Clear();
+		client.sendCursor = 0;
+	}
+	ASSERT(client.sendCursor < client.sendingBuff.size);
+	memset(&client.sendOverlapped, 0, sizeof(client.sendOverlapped));
+	WSABUF buffer;
+	buffer.buf = (char*)client.sendingBuff.data + client.sendCursor;
+	buffer.len = ULONG(client.sendingBuff.size - client.sendCursor);
+	client.sendPending = true;
+	pendingIO.Increment();
+	const int result = WSASend(clientSocket[clientID], &buffer, 1, nullptr, 0, &client.sendOverlapped, nullptr);
+	if(result != SOCKET_ERROR || WSAGetLastError() == WSA_IO_PENDING) return true;
+	client.sendPending = false;
+	pendingIO.Decrement();
+	return false;
+}
+
+void Server::RetireClient(i32 clientID)
+{
+	ClientNet& client = clientNet[clientID];
+	if(clientIsConnected[clientID] != 2 || client.recvPending || client.sendPending) return;
+	{
+		LOCK_MUTEX(mutexClientDisconnectedList);
+		clientDisconnectedList.push_back(client.handle);
+	}
+	client.sendingBuff.Clear();
+	client.pendingSendBuff.Clear();
+	client.recvPendingProcessingBuff.Clear();
+	client.sendCursor = 0;
+	client.sendWakeQueued = false;
+	client.handle = ClientHandle::INVALID;
+	clientIsConnected[clientID] = 0;
+}
+
+void Server::Update()
+{
+	DWORD transferred = 0;
+	ULONG_PTR key = 0;
+	OVERLAPPED* operation = nullptr;
+	const BOOL completed = GetQueuedCompletionStatus(completionPort, &transferred, &key, &operation, INFINITE);
+	if(!operation) {
+		ASSERT(completed);
+		if(transferred == 2) {
+			completionStopping = true;
+			for(int i = 0; i < MAX_CLIENTS; ++i) {
+				ClientNet& client = clientNet[i];
+				LOCK_MUTEX(client.mutexConnect);
+				DisconnectClient(i);
+			}
+			return;
+		}
+		const ClientHandle handle = ClientHandle((u32)key);
+		const i32 clientID = TryGetClientID(handle);
+		if(clientID == -1) return;
+		ClientNet& client = clientNet[clientID];
+		LOCK_MUTEX(client.mutexConnect);
+		if(clientIsConnected[clientID] != 1 || client.handle != handle) return;
+		if(!running || transferred == 1 || clientDoDisconnect[clientID]) {
+			DisconnectClient(clientID);
+			return;
+		}
+		ASSERT(transferred == 0);
+		client.sendWakeQueued = false;
+		if(!SubmitSend(clientID)) DisconnectClient(clientID);
+		return;
+	}
+	ASSERT(key > 0 && key <= MAX_CLIENTS);
+	const i32 clientID = i32(key - 1);
+	ClientNet& client = clientNet[clientID];
+	LOCK_MUTEX(client.mutexConnect);
+	const bool receiving = operation == &client.recvOverlapped;
+	ASSERT(receiving || operation == &client.sendOverlapped);
+	if(receiving) {
+		ASSERT(client.recvPending);
+		client.recvPending = false;
+	}
+	else {
+		ASSERT(client.sendPending);
+		client.sendPending = false;
+	}
+	ASSERT(pendingIO != 0);
+	pendingIO.Decrement();
+	if(clientIsConnected[clientID] == 2) {
+		RetireClient(clientID);
+		return;
+	}
+	ASSERT(clientIsConnected[clientID] == 1);
+	if(!completed || transferred == 0 || !running || clientDoDisconnect[clientID]) {
+		DisconnectClient(clientID);
+		return;
+	}
+	if(receiving) {
+		ASSERT(transferred <= RECV_BUFF_LEN);
+		ClientHandleReceivedData(clientID, i32(transferred));
+		if(!SubmitReceive(clientID)) DisconnectClient(clientID);
+	}
+	else {
+		ASSERT(transferred <= DWORD(client.sendingBuff.size - client.sendCursor));
+		client.sendCursor += i32(transferred);
+		if(client.sendCursor == client.sendingBuff.size) {
+			client.sendingBuff.Clear();
+			client.sendCursor = 0;
+		}
+		if(!SubmitSend(clientID)) DisconnectClient(clientID);
+	}
+}
+
 #endif

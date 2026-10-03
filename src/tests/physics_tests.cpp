@@ -58,6 +58,7 @@ void Box(PhysicsScene& scene, const NxVec3& halfSize, const NxVec3& position,
 	NxBoxShapeDesc shape;
 	shape.dimensions = halfSize;
 	shape.group = static_cast<NxCollisionGroup>(group);
+	shape.groupsMask.bits0 = 1u << u32(group);
 	NxActorDesc description;
 	description.globalPose.t = position;
 	description.shapes.pushBack(&shape);
@@ -152,6 +153,7 @@ void MeshRamp(Scene& scene, float angle)
 	NxTriangleMeshShapeDesc shape;
 	shape.meshData = scene.triangleMesh;
 	shape.group = static_cast<NxCollisionGroup>(PhysicsCollisionGroup::Static);
+	shape.groupsMask.bits0 = 1u << u32(PhysicsCollisionGroup::Static);
 	NxActorDesc actorDescription;
 	actorDescription.shapes.pushBack(&shape);
 	NxActor* actor = scene.physics.scene->createActor(actorDescription);
@@ -166,42 +168,45 @@ void Settle(PhysicsScene& scene, int ticks = 90)
 struct WorldScene
 {
 	World world;
+	Replication* replica = nullptr;
 
 	WorldScene()
 	{
-		static Replication replica;
-		replica.Init(nullptr);
-		world.Init(&replica);
+		replica = new Replication();
+		replica->Init(nullptr);
+		world.Init(replica);
 		Floor(world.physics);
 	}
 
-	~WorldScene() { world.Cleanup(); }
+	~WorldScene() { world.Cleanup(); delete replica; }
 	WorldScene(const WorldScene&) = delete;
 	WorldScene& operator=(const WorldScene&) = delete;
 
-	World::Player& Player()
+	World::Player& Player(ClientHandle clientHd = ClientHandle::INVALID)
 	{
 		World::PlayerDescription description{};
-		description.clientHd = ClientHandle::INVALID;
+		description.clientHd = clientHd;
 		description.masters = { ClassType(6), ClassType(5) };
 		auto& player = world.CreatePlayer(description, vec3(0), RotationHumanoid{});
 		Settle(world.physics);
+		if(clientHd != ClientHandle::INVALID) {
+			replica->OnPlayerConnect(clientHd, player.index);
+			world.BeginPlayerTimeline(clientHd, player.Main().UID, 0.0);
+		}
 		return player;
 	}
 
 	void Step(u32 milliseconds)
 	{
 		world.replication->frameCur->Clear();
-		world.Update(TimeMsToTime(milliseconds));
+		world.Update(TimeMsToTime(milliseconds), f64(milliseconds) / 1000.0);
 	}
 };
 
 void DeathMatch(PhysicsScene& scene)
 {
-	scene.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0), vec3(0), PhysicsCollisionGroup::Static);
-	scene.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
-	scene.CreateStaticCollider("PVP_Deathmatch01_Aim", vec3(0), vec3(0), PhysicsCollisionGroup::Aim);
-	scene.CreateStaticCollider("PVP_Deathmatch01_sidewall_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
+	scene.CreateCollisionAsset("PVP_DeathMatch01_Collision", vec3(0), vec3(0), 1.0f, PhysicsCollisionGroup::Prop);
+	scene.CreateCollisionAsset("PVP_DeathMatch01_Env", vec3(0), vec3(0), 1.0f, PhysicsCollisionGroup::Prop);
 }
 
 bool LoadedMapWalk()
@@ -216,7 +221,8 @@ bool LoadedMapWalk()
 		scene.physics.Step();
 		REQUIRE(Near(body->GetWorldPos().z, 1115));
 	}
-	body->vel.x = body->vel.y = 447.15f;
+	body->moveDir = vec2(1, 1);
+	body->moveSpeed = 447.15f;
 	bool falling = false;
 	bool landed = false;
 	int fallTicks = 0;
@@ -284,10 +290,11 @@ bool FloatPositionRequests()
 {
 	Scene scene;
 	auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(1048576, 0, 100000));
-	body->vel.x = 420.85f;
+	body->moveDir = vec2(1, 0);
+	body->moveSpeed = 420.85f;
 	for(int i = 0; i < 30; ++i) scene.physics.Step();
 	REQUIRE(Near(body->GetWorldPos().x, 1048786.f, 0.005f));
-	body->vel.x = 0.6f;
+	body->moveSpeed = 0.6f;
 	for(int i = 0; i < 30; ++i) scene.physics.Step();
 	REQUIRE(Near(body->GetWorldPos().x, 1048786.f, 0.005f));
 	return true;
@@ -301,7 +308,8 @@ bool Steps()
 		Box(scene.physics, NxVec3(1000, 500, height * 0.5f), NxVec3(1000, 0, height * 0.5f));
 		auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(-300, 0, 0));
 		Settle(scene.physics);
-		body->vel.x = 480;
+		body->moveDir = vec2(1, 0);
+		body->moveSpeed = 480;
 		for(int i = 0; i < 100; ++i) {
 			const vec3 before = body->GetWorldPos();
 			scene.physics.Step();
@@ -359,7 +367,8 @@ bool Slopes()
 		MeshRamp(scene, angle);
 		auto* body = scene.physics.CreateDynamicBody(20, 80, vec3(-200, 0, 0));
 		Settle(scene.physics);
-		body->vel.x = 300;
+		body->moveDir = vec2(1, 0);
+		body->moveSpeed = 300;
 		for(int i = 0; i < 120; ++i) scene.physics.Step();
 		const vec3 end = body->GetWorldPos();
 		std::printf("Slope %.0f end %.3f %.3f\n", degrees, end.x, end.z);
@@ -379,14 +388,14 @@ bool CeilingAndResize()
 	Box(scene.physics, NxVec3(1000, 1000, 50), NxVec3(0, 0, 400));
 	auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(0));
 	Settle(scene.physics);
-	body->vel.z = 10000;
-	scene.physics.Step();
-	REQUIRE(body->GetWorldPos().z > 50 && body->GetWorldPos().z < 80);
-	REQUIRE(!body->grounded && Near(body->vel.z, 0, 0.001f));
-	const float ceilingFeet = body->GetWorldPos().z;
-	scene.physics.Step();
-	REQUIRE(body->GetWorldPos().z < ceilingFeet && body->vel.z < 0);
-	Settle(scene.physics);
+	REQUIRE(scene.physics.StartJump(body, GetGameXmlContent().GetJumpMotion(ClassType(6), JumpDirection::Stand)));
+	float ceilingFeet = 0.0f;
+	for(int i = 0; i < 90; ++i) {
+		scene.physics.Step();
+		ceilingFeet = eastl::max(ceilingFeet, body->GetWorldPos().z);
+		REQUIRE(body->GetWorldPos().z < 80.0f);
+	}
+	REQUIRE(ceilingFeet > 50.0f);
 	REQUIRE(body->grounded && Near(body->GetWorldPos().z, 0));
 	const vec3 feet = body->GetWorldPos();
 	scene.physics.ResizeDynamicBody(body, 60, 100);
@@ -419,7 +428,9 @@ bool QueryRestoration()
 	auto* b = control.physics.CreateDynamicBody(100, 70, vec3(0));
 	Settle(queried.physics);
 	Settle(control.physics);
-	a->vel = b->vel = vec3(120, 0, -100);
+	a->moveDir = b->moveDir = vec2(1, 0);
+	a->moveSpeed = b->moveSpeed = 120;
+	a->vel.z = b->vel.z = -100;
 	const vec3 start = a->GetWorldPos();
 	const auto& motion = GetGameXmlContent().masters.front().jumpMotions[0];
 	REQUIRE(queried.physics.StartJump(a, motion));
@@ -450,7 +461,8 @@ bool ControllerFiltering()
 	auto* moving = scene.physics.CreateDynamicBody(100, 70, vec3(-300, 0, 0));
 	auto* other = scene.physics.CreateDynamicBody(100, 70, vec3(0));
 	Settle(scene.physics);
-	moving->vel.x = 600;
+	moving->moveDir = vec2(1, 0);
+	moving->moveSpeed = 600;
 	for(int i = 0; i < 60; ++i) scene.physics.Step();
 	REQUIRE(Near(moving->GetWorldPos(), vec3(300, 0, 0)));
 	REQUIRE(Near(other->GetWorldPos(), vec3(0)));
@@ -460,7 +472,8 @@ bool ControllerFiltering()
 		Box(filtered.physics, NxVec3(50, 500, 500), NxVec3(0, 0, 500), group);
 		auto* body = filtered.physics.CreateDynamicBody(100, 70, vec3(-300, 0, 0));
 		Settle(filtered.physics);
-		body->vel.x = 600;
+		body->moveDir = vec2(1, 0);
+		body->moveSpeed = 600;
 		for(int i = 0; i < 60; ++i) filtered.physics.Step();
 		if(group == PhysicsCollisionGroup::ControllerPc) {
 			REQUIRE(Near(body->GetWorldPos().x, 300));
@@ -511,21 +524,43 @@ bool JumpProfiles()
 bool HumanWalkingDirection()
 {
 	WorldScene scene;
-	auto& player = scene.Player();
-	player.input.moveDir = vec2(0, 1);
+	World::PlayerDescription description{};
+	description.clientHd = ClientHandle(1);
+	description.masters = { ClassType(6), ClassType(5) };
+	auto& player = scene.world.CreatePlayer(description, vec3(0), RotationHumanoid{});
+	scene.world.replication->OnPlayerConnect(description.clientHd, player.index);
+	Settle(scene.world.physics);
+	player.input.moveDir = vec2(0, 0.5f);
 	player.input.moveTo = vec3(-1000, 0, 0);
 	player.input.speed = 600;
 	scene.Step(17);
-	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 10, 0), 0.005f));
+	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 5, 0), 0.005f));
 	player.input.moveDir = vec2(0);
 	player.input.moveTo = vec3(0, 35, 0);
 	scene.Step(34);
-	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 20, 0), 0.005f));
 	scene.Step(51);
-	scene.Step(68);
-	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 35, 0), 0.005f));
-	scene.Step(85);
-	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 35, 0), 0.005f));
+	REQUIRE(Near(player.body->GetWorldPos(), vec3(0, 5, 0), 0.005f));
+	return true;
+}
+
+bool GateCollisionLifecycle()
+{
+	WorldScene scene;
+	auto& gate = scene.world.SpawnDynamic(CreatureIndex(110040546), 15);
+	gate.pos = vec3(0, 500, 0);
+	auto& player = scene.Player();
+	player.input.moveDir = vec2(0, 1);
+	player.input.speed = 600;
+	u32 tick = 0;
+	for(int i = 0; i < 60; ++i) scene.Step(++tick * 17);
+	REQUIRE(player.body->GetWorldPos().y > 380 && player.body->GetWorldPos().y < 400);
+	gate.action = ActionStateID::DYNAMIC_OPEN;
+	for(int i = 0; i < 40; ++i) scene.Step(++tick * 17);
+	REQUIRE(player.body->GetWorldPos().y > 780);
+	gate.action = ActionStateID::DYNAMIC_CLOSE;
+	player.input.moveDir = vec2(0, -1);
+	for(int i = 0; i < 40; ++i) scene.Step(++tick * 17);
+	REQUIRE(player.body->GetWorldPos().y > 600 && player.body->GetWorldPos().y < 620);
 	return true;
 }
 
@@ -614,6 +649,13 @@ bool HostileMovementPackets()
 	REQUIRE(!ValidatePacket<Cl::CN_GameUpdatePosition>(&update, sizeof(update)));
 	update.nSpeed = 0.f;
 	REQUIRE(ValidatePacket<Cl::CN_GameUpdatePosition>(&update, sizeof(update)));
+	update.nSpeed = 600;
+	update.p3nDir = { 300, 0 };
+	REQUIRE(ValidatePacket<Cl::CN_GameUpdatePosition>(&update, sizeof(update)));
+	update.p3nDir = { 321, 0 };
+	REQUIRE(!ValidatePacket<Cl::CN_GameUpdatePosition>(&update, sizeof(update)));
+	update.p3nDir = { std::numeric_limits<float>::infinity(), 0 };
+	REQUIRE(!ValidatePacket<Cl::CN_GameUpdatePosition>(&update, sizeof(update)));
 
 	constexpr size_t prefixSize = sizeof(LocalActorID) + sizeof(SkillID) + sizeof(float3) + sizeof(u16);
 	u8 castData[prefixSize + sizeof(Cl::CQ_PlayerCastSkill::PosStruct)]{};
@@ -633,8 +675,281 @@ bool HostileMovementPackets()
 	pos.speed = std::numeric_limits<float>::quiet_NaN();
 	std::memcpy(castData + prefixSize, &pos, sizeof(pos));
 	REQUIRE(!ValidatePacket<Cl::CQ_PlayerCastSkill>(castData, sizeof(castData)));
+	pos.speed = 600;
+	pos.moveDir = { 0, 300 };
+	std::memcpy(castData + prefixSize, &pos, sizeof(pos));
+	REQUIRE(ValidatePacket<Cl::CQ_PlayerCastSkill>(castData, sizeof(castData)));
+	pos.moveDir = { 0, 321 };
+	std::memcpy(castData + prefixSize, &pos, sizeof(pos));
+	REQUIRE(!ValidatePacket<Cl::CQ_PlayerCastSkill>(castData, sizeof(castData)));
+	pos.moveDir = { 0, std::numeric_limits<float>::quiet_NaN() };
+	std::memcpy(castData + prefixSize, &pos, sizeof(pos));
+	REQUIRE(!ValidatePacket<Cl::CQ_PlayerCastSkill>(castData, sizeof(castData)));
 	return true;
 }
+
+bool TimestampedMoveStop()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	World::Player::Input baseline{};
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, baseline, 0.0, true));
+	for(u32 tick = 1; tick <= 12; ++tick) scene.Step(tick * 17);
+	REQUIRE(Near(player.body->GetWorldPos().x, 0.0f, 0.005f));
+	World::Player::Input movement{};
+	movement.moveDir = vec2(1, 0);
+	movement.speed = 600;
+	movement.clientTime = 0.100f;
+	movement.moveTo = vec3(100000, 100000, 100000);
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.220, true));
+	scene.Step(221);
+	REQUIRE(Near(player.body->GetWorldPos().x, 80.0f, 0.01f));
+	for(u32 tick = 14; tick < 20; ++tick) scene.Step(tick * 17);
+	movement.moveDir = vec2(0);
+	movement.clientTime = 0.200f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.340, true));
+	scene.Step(340);
+	REQUIRE(Near(player.body->GetWorldPos().x, 60.0f, 0.01f));
+	scene.Step(357);
+	REQUIRE(Near(player.body->GetWorldPos().x, 60.0f, 0.01f));
+	return true;
+}
+
+bool ClockEnvelopeReplay()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	for(u32 tick = 1; tick <= 11; ++tick) scene.Step(tick * 17);
+	World::Player::Input movement{};
+	movement.moveDir = vec2(1, 0);
+	movement.speed = 600;
+	movement.clientTime = 0.100f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.200, true));
+	scene.Step(204);
+	REQUIRE(Near(player.body->GetWorldPos().x, 10.0f, 0.01f));
+	World::Player::Input invalidCast = movement;
+	invalidCast.clientTime = 0.200f;
+	invalidCast.cast.skillID = SkillID::INVALID;
+	REQUIRE(!scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Cast, invalidCast, 0.210, true));
+	scene.Step(221);
+	REQUIRE(Near(player.body->GetWorldPos().x, 20.0f, 0.01f));
+	movement.moveDir = vec2(0);
+	movement.clientTime = 0.200f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.230, true));
+	scene.Step(238);
+	REQUIRE(Near(player.body->GetWorldPos().x, 60.0f, 0.01f));
+	scene.Step(255);
+	REQUIRE(Near(player.body->GetWorldPos().x, 60.0f, 0.01f));
+	return true;
+}
+
+bool LateCastOwnerIsolation()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	World::PlayerDescription otherDescription{};
+	otherDescription.clientHd = ClientHandle::INVALID;
+	otherDescription.masters = { ClassType(6), ClassType(5) };
+	auto& other = scene.world.CreatePlayer(otherDescription, vec3(1000, 1000, 0), RotationHumanoid{});
+	Settle(scene.world.physics);
+	other.input.cast.skillID = SkillID(180060040);
+	World::Player::Input baseline{};
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, baseline, 0.0, true));
+	for(u32 tick = 1; tick <= 12; ++tick) scene.Step(tick * 17);
+	World::Player::Input cast{};
+	cast.moveDir = vec2(1, 0);
+	cast.clientTime = 0.100f;
+	cast.cast.skillID = SkillID(180060002);
+	cast.cast.clientTime = cast.clientTime;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Cast, cast, 0.220, true));
+	scene.Step(221);
+	const World::SkillProgram* ownerProgram = nullptr;
+	const World::SkillProgram* otherProgram = nullptr;
+	for(const auto& program: scene.world.skillProgramList) {
+		if(program.casterUID == player.Main().UID) ownerProgram = &program;
+		if(program.casterUID == other.Main().UID) otherProgram = &program;
+	}
+	REQUIRE(ownerProgram && otherProgram && ownerProgram->horizontalVariant);
+	const auto* variant = ownerProgram->horizontalVariant;
+	REQUIRE(Near(player.body->GetWorldPos().x, variant->Sample(8 * Dt), 0.01f));
+	REQUIRE(otherProgram->simTicks == 12 && Near(other.body->GetWorldPos(), vec3(1000, 1000, 0), 0.01f));
+	REQUIRE(scene.replica->frameCur->skillCastList.size() == 1 && scene.replica->frameCur->skillExecList.size() == 1);
+	for(u32 tick = 14; tick < 20; ++tick) scene.Step(tick * 17);
+	baseline.clientTime = 0.050f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, baseline, 0.340, true));
+	scene.Step(340);
+	REQUIRE(Near(player.body->GetWorldPos().x, variant->Sample(15 * Dt), 0.01f));
+	REQUIRE(scene.replica->frameCur->skillCastList.empty() && scene.replica->frameCur->skillExecList.empty());
+	const auto* replicated = scene.replica->frameCur->FindMaster(player.Main().UID);
+	REQUIRE(replicated && replicated->actionState == ActionStateID::INVALID);
+	for(const auto& program: scene.world.skillProgramList) {
+		if(program.casterUID == other.Main().UID) REQUIRE(program.simTicks == 19);
+	}
+	return true;
+}
+
+bool OutOfOrderInputBounds()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	World::Player::Input movement{};
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.0, true));
+	for(u32 tick = 1; tick <= 19; ++tick) scene.Step(tick * 17);
+	movement.moveDir = vec2(1, 0);
+	movement.speed = 600;
+	movement.clientTime = 0.100f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.340, true));
+	movement.clientTime = 0.300f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.340, true));
+	movement.moveDir = vec2(0);
+	movement.clientTime = 0.200f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, 0.340, true));
+	scene.Step(340);
+	REQUIRE(Near(player.body->GetWorldPos().x, 90.0f, 0.01f));
+	const u32 endTick = World::InputHistoryFrames + 26;
+	for(u32 tick = 21; tick <= endTick; ++tick) scene.Step(tick * 17);
+	const f32 before = player.body->GetWorldPos().x;
+	const f64 receivedTime = f64(endTick * 17) / 1000.0;
+	REQUIRE(!scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, receivedTime, true));
+	movement.clientTime = 1000;
+	REQUIRE(!scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, movement, receivedTime, true));
+	scene.Step((endTick + 1) * 17);
+	REQUIRE(Near(player.body->GetWorldPos().x, before + 10.0f, 0.01f));
+	return true;
+}
+
+bool HistoryEdgeStop()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	World::Player::Input input{};
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.200, true));
+	for(u32 tick = 1; tick <= 27; ++tick) scene.Step(tick * 17);
+	input.moveDir = vec2(1, 0);
+	input.speed = 600;
+	input.clientTime = 0.270f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.470, true));
+	const u32 endTick = World::InputHistoryFrames + 26;
+	for(u32 tick = 28; tick <= endTick; ++tick) scene.Step(tick * 17);
+	REQUIRE(Near(player.body->GetWorldPos().x, f32(endTick - 27) * 10.0f, 0.01f));
+	input.moveDir = vec2(0);
+	const f64 receivedTime = f64(endTick * 17) / 1000.0;
+	input.clientTime = f32(receivedTime - 0.100);
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, receivedTime, true));
+	scene.Step((endTick + 1) * 17);
+	REQUIRE(Near(player.body->GetWorldPos().x, f32(endTick - 28) * 10.0f, 0.01f));
+	scene.Step((endTick + 2) * 17);
+	REQUIRE(Near(player.body->GetWorldPos().x, f32(endTick - 28) * 10.0f, 0.01f));
+	return true;
+}
+
+bool TagDomainReplay()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	const ActorUID first = player.Main().UID;
+	World::Player::Input input{};
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 0.0, true));
+	for(u32 tick = 1; tick <= 12; ++tick) scene.Step(tick * 17);
+	input.moveDir = vec2(1, 0);
+	input.speed = 600;
+	input.clientTime = 0.100f;
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 0.220, true));
+	scene.Step(221);
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Tag, {}, 0.230, false));
+	scene.Step(238);
+	const ActorUID second = player.Main().UID;
+	REQUIRE(second != first);
+	input.moveDir = vec2(0);
+	input.clientTime = 0.200f;
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 0.250, true));
+	scene.Step(255);
+	REQUIRE(player.Main().UID == second && Near(player.body->GetWorldPos(), vec3(60, 0, 0), 0.01f));
+	input.moveDir = vec2(1, 0);
+	input.clientTime = 0.016f;
+	REQUIRE(scene.world.QueuePlayerInput(player, second, World::InputKind::Movement, input, 0.260, true));
+	input.clientTime = 0.240f;
+	REQUIRE(!scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 0.260, true));
+	scene.Step(272);
+	REQUIRE(player.Main().UID == second && Near(player.body->GetWorldPos().x, 70.0f, 0.01f));
+	return true;
+}
+
+bool ResumedMasterClock()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	const ActorUID first = player.Main().UID;
+	World::Player::Input input{};
+	input.speed = 600;
+	input.clientTime = 0.100f;
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 0.200, true));
+	scene.Step(204);
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Tag, {}, 0.230, false));
+	scene.Step(238);
+	const ActorUID second = player.Main().UID;
+	input.clientTime = 0.010f;
+	REQUIRE(scene.world.QueuePlayerInput(player, second, World::InputKind::Movement, input, 0.250, true));
+	scene.Step(255);
+	REQUIRE(scene.world.QueuePlayerInput(player, second, World::InputKind::Tag, {}, 1.500, false));
+	scene.Step(1500);
+	REQUIRE(player.Main().UID == first && Near(player.body->GetWorldPos(), vec3(0), 0.01f));
+	input.clientTime = 0.200f;
+	input.moveDir = vec2(1, 0);
+	REQUIRE(scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 1.510, true));
+	scene.Step(1517);
+	REQUIRE(Near(player.body->GetWorldPos().x, 10.0f, 0.01f));
+	input.clientTime = 0.090f;
+	input.moveDir = vec2(0);
+	REQUIRE(!scene.world.QueuePlayerInput(player, first, World::InputKind::Movement, input, 1.520, true));
+	scene.Step(1534);
+	REQUIRE(player.Main().UID == first && Near(player.body->GetWorldPos().x, 20.0f, 0.01f));
+	return true;
+}
+
+bool StartupAccumulatedClock()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1));
+	World::Player::Input input{};
+	input.speed = 600;
+	input.clientTime = 1.35568047f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.200, true));
+	scene.Step(204);
+	REQUIRE(Near(player.body->GetWorldPos(), vec3(0), 0.01f));
+	input.clientTime = 1.550f;
+	input.moveDir = vec2(1, 0);
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.400, true));
+	scene.Step(408);
+	REQUIRE(Near(player.body->GetWorldPos().x, 10.0f, 0.01f));
+	input.clientTime = 1000.0f;
+	input.moveDir = vec2(0);
+	REQUIRE(!scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.420, true));
+	scene.Step(425);
+	REQUIRE(Near(player.body->GetWorldPos().x, 20.0f, 0.01f));
+	return true;
+}
+
+bool PhysicsHistoryRestore()
+{
+	Scene scene;
+	Floor(scene.physics);
+	auto* body = scene.physics.CreateDynamicBody(100, 70, vec3(0));
+	Settle(scene.physics);
+	REQUIRE(scene.physics.StartJump(body, GetGameXmlContent().GetJumpMotion(ClassType(6), JumpDirection::Stand)));
+	body->moveDir = vec2(0.7071067f, 0.7071068f);
+	body->moveSpeed = 595.2f;
+	for(int i = 0; i < 8; ++i) scene.physics.Step();
+	const auto state = scene.physics.CaptureBodyState(*body);
+	for(int i = 0; i < 12; ++i) scene.physics.StepBody(*body);
+	const vec3 expected = body->GetWorldPos();
+	scene.physics.ResizeDynamicBody(body, 60, 100);
+	scene.physics.RestoreBodyState(*body, state);
+	for(int i = 0; i < 12; ++i) scene.physics.StepBody(*body);
+	REQUIRE(Near(body->GetWorldPos(), expected, 0.005f));
+	return true;
+}
+
 }
 
 int main()
@@ -660,11 +975,21 @@ int main()
 		{"query state restoration", QueryRestoration},
 		{"controller-PC filtering", ControllerFiltering},
 		{"loaded ordinary jump profiles", JumpProfiles},
-		{"human walking direction and goal-seeking fallback", HumanWalkingDirection},
+		{"packet direction and zero-direction stop", HumanWalkingDirection},
+		{"gate close/open collision lifecycle", GateCollisionLifecycle},
 		{"delayed reverse graph activation and terminal clamp", DelayedGraphLifecycle},
 		{"immediate graph and same-update execution", ImmediateGraphLifecycle},
 		{"airborne horizontal graph and fall resumption", AirborneHorizontalGraph},
 		{"hostile movement packet rejection", HostileMovementPackets},
+		{"timestamped movement and STOP replay", TimestampedMoveStop},
+		{"server history restore across jump and resize", PhysicsHistoryRestore},
+		{"spawn clock envelope and rejected-cast atomicity", ClockEnvelopeReplay},
+		{"late cast replay and other-owner isolation", LateCastOwnerIsolation},
+		{"out-of-order timestamps and bounded history", OutOfOrderInputBounds},
+		{"tag clock domains and old-master replay", TagDomainReplay},
+		{"clock refinement at history edge preserves STOP", HistoryEdgeStop},
+		{"resumed master clock without guessed paused timestamp", ResumedMasterClock},
+		{"startup accumulated client clock", StartupAccumulatedClock},
 	};
 	int failed = 0;
 	for(const auto& test: tests) {

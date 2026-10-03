@@ -8,6 +8,7 @@
 #include "third_party/Detours-4.0.1/src/detours.h"
 #include "velqor.h"
 #include "client_bridge.h"
+#include "scene_snapshot.h"
 
 namespace {
 
@@ -60,6 +61,7 @@ enum
 };
 
 typedef float* (__thiscall* GetGameplayPosFn)(void*, float*);
+typedef const double* (__thiscall* GetRawPositionFn)(void*);
 typedef float* (__thiscall* GetTranslatePtrFn)(void*);
 typedef uint32_t(__cdecl* PlayCreatePartyFn)(const int32_t*, int32_t);
 typedef void(__fastcall* CorrectionDispatchFn)(void*, void*, uint32_t, void*, uint32_t);
@@ -219,6 +221,24 @@ void* LocalPhysController(void* entity)
 	return phys;
 }
 
+bool SampleControllerCenter(void* phys, double center[3])
+{
+	void* controller = *(void**)((uint8_t*)phys + kPhysControllerNxOffset);
+	if (controller == 0)
+		return false;
+	const uintptr_t* vtable = *(const uintptr_t**)controller;
+	const double* position = ((GetRawPositionFn)vtable[5])(controller);
+	if (position == 0)
+		return false;
+	memcpy(center, position, sizeof(double) * 3);
+	for (int i = 0; i < 3; ++i)
+	{
+		if (center[i] != center[i] || center[i] <= -1.0e30 || center[i] >= 1.0e30)
+			return false;
+	}
+	return true;
+}
+
 void* CurrentScene()
 {
 	void* app = *(void**)StaticVa(kApplicationGlobalVa);
@@ -362,16 +382,34 @@ void EmitCorrection(uint32_t actor_id, const float before[3], const float after[
 }
 
 void EmitMotion(const float requested[3], const float before[3], const float after[3],
+	const double center_before[3], const double center_after[3], void* phys, void* entity,
 	uint32_t collision_flags, uint32_t actor_id, int32_t class_type, uint32_t active_groups, uint32_t segment, uint32_t caller)
 {
 	if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0)
 		return;
-	char fields[512];
+	const uint8_t* app = *(const uint8_t**)StaticVa(kApplicationGlobalVa);
+	if (app == 0)
+		return;
+	const uint32_t* wrapper = (const uint32_t*)phys;
+	const float* dimensions = (const float*)phys;
+	char fields[1536];
 	snprintf(fields, sizeof(fields),
-		"\"requested\":[%.9g,%.9g,%.9g],\"before_feet\":[%.9g,%.9g,%.9g],\"feet\":[%.9g,%.9g,%.9g],\"collision_flags\":%u,\"local_actor_id\":%u,\"class_type\":%d,\"active_groups\":%u,\"segment\":%u,\"caller_va\":%u,\"frame\":%llu",
+		"\"requested\":[%.9g,%.9g,%.9g],\"before_feet\":[%.9g,%.9g,%.9g],\"feet\":[%.9g,%.9g,%.9g],\"center_before\":[%.17g,%.17g,%.17g],\"center_after\":[%.17g,%.17g,%.17g],\"groups_mask\":[%u,%u,%u,0],\"feet_offset\":%.9g,\"radius\":%.9g,\"height\":%.9g,\"client_frame_time\":%.9g,\"client_frame_dt\":%.9g,\"client_input_time\":%.9g,\"vertical_velocity\":%.9g,\"move_dir\":[%.9g,%.9g],\"ground_normal\":[%.9g,%.9g,%.9g],\"collision_flags\":%u,\"local_actor_id\":%u,\"class_type\":%d,\"active_groups\":%u,\"segment\":%u,\"caller_va\":%u,\"frame\":%llu",
 		(double)requested[0], (double)requested[1], (double)requested[2],
 		(double)before[0], (double)before[1], (double)before[2],
 		(double)after[0], (double)after[1], (double)after[2],
+		center_before[0], center_before[1], center_before[2],
+		center_after[0], center_after[1], center_after[2],
+		(unsigned int)(1u << (wrapper[5] & 31u)), (unsigned int)wrapper[8], (unsigned int)wrapper[7],
+		(double)dimensions[2], (double)dimensions[3], (double)dimensions[4],
+		(double)*(const float*)(app + 0x48u), (double)*(const float*)(app + 0x4Cu),
+		(double)*(const float*)((const uint8_t*)entity + 0x10F8u),
+		(double)*(const float*)((const uint8_t*)entity + 0xCA8u),
+		(double)*(const float*)((const uint8_t*)entity + 0xC98u),
+		(double)*(const float*)((const uint8_t*)entity + 0xC9Cu),
+		(double)*(const float*)((const uint8_t*)entity + 0xD18u),
+		(double)*(const float*)((const uint8_t*)entity + 0xD1Cu),
+		(double)*(const float*)((const uint8_t*)entity + 0xD20u),
 		(unsigned int)collision_flags, (unsigned int)actor_id, (int)class_type, (unsigned int)active_groups, (unsigned int)segment, (unsigned int)caller,
 		(unsigned long long)velqor::CurrentFrame());
 	velqor::Emit("motion", fields);
@@ -455,20 +493,25 @@ uint32_t __fastcall BridgeMoveSegmented(void* self, void* reserved, float* disp,
 	requested[2] = disp[2];
 	float before[3];
 	bool before_ok = false;
+	double center_before[3];
+	const bool center_before_ok = SampleControllerCenter(self, center_before);
 	if (g_get_gameplay_pos != 0)
 	{
 		g_get_gameplay_pos(self, before);
 		before_ok = IsFiniteF(before[0]) && IsFiniteF(before[1]) && IsFiniteF(before[2]);
 	}
 	uint32_t flags = original(self, disp, active_groups, segment);
-	if (!before_ok || g_get_gameplay_pos == 0 ||
+	if (!before_ok || !center_before_ok || g_get_gameplay_pos == 0 ||
 		!IsFiniteF(requested[0]) || !IsFiniteF(requested[1]) || !IsFiniteF(requested[2]))
 		return flags;
 	float after[3];
 	g_get_gameplay_pos(self, after);
-	if (!IsFiniteF(after[0]) || !IsFiniteF(after[1]) || !IsFiniteF(after[2]))
+	double center_after[3];
+	if (!IsFiniteF(after[0]) || !IsFiniteF(after[1]) || !IsFiniteF(after[2]) ||
+		!SampleControllerCenter(self, center_after))
 		return flags;
-	EmitMotion(requested, before, after, flags, LocalActorId(entity), LocalClassType(entity), active_groups, segment, caller);
+	EmitMotion(requested, before, after, center_before, center_after, self, entity,
+		flags, LocalActorId(entity), LocalClassType(entity), active_groups, segment, caller);
 	return flags;
 }
 
@@ -727,6 +770,13 @@ extern "C" void BridgeAfterFrame()
 {
 	RefreshPhase();
 	EmitSample("post");
+	if (InterlockedCompareExchange(&g_match_started, 0, 0) != 0 &&
+		InterlockedCompareExchange(&g_phase, 0, 0) == kPhaseBattle)
+	{
+		void* phys = LocalPhysController(LocalEntity());
+		if (phys != 0)
+			CaptureControllerScene(*(void**)((uint8_t*)phys + kPhysControllerNxOffset));
+	}
 }
 
 extern "C" bool BridgeSetCursor(int32_t x, int32_t y)

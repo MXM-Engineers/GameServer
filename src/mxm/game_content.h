@@ -15,6 +15,21 @@
 #include "jump_motion.h"
 #include "horizontal_motion.h"
 
+struct DynamicCollisionProfile
+{
+	struct Action
+	{
+		ActionStateID state;
+		f32 delay;
+		bool enabled;
+	};
+
+	CreatureIndex docID;
+	FixedStr64 assetName;
+	u32 group;
+	eastl::fixed_vector<Action,4,false> actions;
+};
+
 namespace ActionCommand {
 
 enum class Type: i8
@@ -234,9 +249,18 @@ struct GameXmlContent
 			vec3 rot;
 		};
 
+		struct CollisionProp
+		{
+			FixedStr64 assetName;
+			vec3 pos = vec3(0);
+			vec3 rot = vec3(0);
+			f32 scale = 1.0f;
+		};
+
 		eastl::fixed_vector<Spawn,512> creatures;
 		eastl::fixed_vector<Spawn,512> dynamic;
 		eastl::fixed_vector<Area,512> areas;
+		eastl::fixed_vector<CollisionProp,256> collisionProps;
 	};
 
 	struct MapList
@@ -283,6 +307,7 @@ struct GameXmlContent
 
 				struct {
 					f32 distance;
+					u8 ignoreCollision;
 				} graphMoveHorz;
 
 				struct {
@@ -376,10 +401,13 @@ struct GameXmlContent
 	bool HasEntrySystem(i32 entryID) const;
 	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;
 
-	FileBuffer filePvpDeathmatch01Collision;
-	FileBuffer filePvpDeathmatch01CollisionWalls;
-	FileBuffer filePvpDeathNmWall04;
-	FileBuffer fileCylinderCollision;
+	struct CollisionFile
+	{
+		FixedStr64 name;
+		FileBuffer file = { nullptr, 0 };
+	};
+	eastl::fixed_vector<CollisionFile,32,false> collisionFiles;
+	eastl::fixed_vector<DynamicCollisionProfile,2,false> dynamicCollisionProfiles;
 
 	bool Load();
 	const MapList* FindMapListByID(MapIndex index) const;
@@ -413,6 +441,7 @@ private:
 	void SetWeaponSpecRef(tinyxml2::XMLElement& pNodeWeaponSpecRef, WeaponSpec& _weaponSpec);
 	bool LoadMapList();
 	bool LoadMapByID(Map* map, MapIndex index);
+	bool LoadMapProps(Map* map, const wchar* levelDir);
 	bool LoadLobby(MapIndex index);
 	bool LoadPvpDeathmach();
 	bool LoadJukeboxSongs();

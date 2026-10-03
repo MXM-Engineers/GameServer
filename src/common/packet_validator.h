@@ -2,12 +2,17 @@
 #include <common/base.h>
 #include <common/protocol.h>
 #include <cmath>
+#include <limits>
 
 constexpr f32 MAX_MOVEMENT_INPUT_SPEED = 50.f * 64.f * UPDATE_TICK_RATE;
 
-inline bool ValidateMovementSpeed(f32 speed)
+inline bool ValidateMovementInput(const float2& direction, f32 speed)
 {
-	return std::isfinite(speed) && speed >= 0.f && speed <= MAX_MOVEMENT_INPUT_SPEED;
+	if(!std::isfinite(speed) || speed < 0.f || speed > MAX_MOVEMENT_INPUT_SPEED ||
+		!std::isfinite(direction.x) || !std::isfinite(direction.y)) return false;
+	const f64 directionSquared = f64(direction.x) * direction.x + f64(direction.y) * direction.y;
+	return directionSquared <= std::numeric_limits<f32>::max() &&
+		directionSquared * f64(speed) * speed <= f64(MAX_MOVEMENT_INPUT_SPEED) * MAX_MOVEMENT_INPUT_SPEED;
 }
 
 // ValidatePacket: checks an incoming client packet before it is parsed.
@@ -26,8 +31,10 @@ inline bool ValidatePacket<Cl::CN_GameUpdatePosition>(const void* packetData, i3
 {
 	if(packetSize != sizeof(Cl::CN_GameUpdatePosition)) return false;
 	ConstBuffer buff(packetData, packetSize);
-	buff.ReadRaw(offsetof(Cl::CN_GameUpdatePosition, nSpeed));
-	return ValidateMovementSpeed(buff.Read<f32>());
+	buff.ReadRaw(offsetof(Cl::CN_GameUpdatePosition, p3nDir));
+	const float2 direction = buff.Read<float2>();
+	buff.ReadRaw(offsetof(Cl::CN_GameUpdatePosition, nSpeed) - offsetof(Cl::CN_GameUpdatePosition, p3nDir) - sizeof(float2));
+	return ValidateMovementInput(direction, buff.Read<f32>());
 }
 
 // CQ_FirstHello: every member is a plain integer (u32 dwProtocolCRC,
@@ -260,7 +267,10 @@ inline bool ValidatePacket<Cl::CQ_PlayerCastSkill>(const void* packetData, i32 p
 	if(!buff.CanRead(count * sizeof(LocalActorID))) return false;
 	buff.ReadRaw(count * sizeof(LocalActorID));
 	if(!buff.CanRead(sizeof(Cl::CQ_PlayerCastSkill::PosStruct))) return false;
-	buff.ReadRaw(offsetof(Cl::CQ_PlayerCastSkill::PosStruct, speed));
-	return ValidateMovementSpeed(buff.Read<f32>());
+	buff.ReadRaw(offsetof(Cl::CQ_PlayerCastSkill::PosStruct, moveDir));
+	const float2 direction = buff.Read<float2>();
+	buff.ReadRaw(offsetof(Cl::CQ_PlayerCastSkill::PosStruct, speed) -
+		offsetof(Cl::CQ_PlayerCastSkill::PosStruct, moveDir) - sizeof(float2));
+	return ValidateMovementInput(direction, buff.Read<f32>());
 }
 

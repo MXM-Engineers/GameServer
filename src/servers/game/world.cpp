@@ -1,5 +1,6 @@
 #include "world.h"
 #include <mxm/game_content.h>
+#include <EASTL/sort.h>
 #include <eathread/eathread_atomic.h>
 #include "velqor_trace.h"
 #include <cmath>
@@ -74,13 +75,39 @@ static vec2 SkillMoveInputDir(const World::Player& player)
 	if(player.input.moveDir.x != 0.f || player.input.moveDir.y != 0.f) {
 		return player.input.moveDir;
 	}
-	const vec2 delta = vec2(player.input.moveTo - player.body->GetWorldPos());
-	const f32 deltaLen = glm::length(delta);
-	if(deltaLen > 1.0f && player.input.speed > 0.f) {
-		return NormalizeSafe(delta);
+	if(player.clientHd == ClientHandle::INVALID) {
+		const vec2 delta = vec2(player.input.moveTo - player.body->GetWorldPos());
+		const f32 deltaLen = glm::length(delta);
+		if(deltaLen > 1.0f && player.input.speed > 0.f) {
+			return NormalizeSafe(delta);
+		}
 	}
 	return vec2(0);
 }
+
+static void ApplyIgnoreUnitCollision(World::Player& player, bool ignore)
+{
+	if(player.graphIgnoreCollision == ignore) {
+		return;
+	}
+	player.graphIgnoreCollision = ignore;
+	player.body->SetIgnoreUnitCollision(ignore);
+}
+
+static void ClearIgnoreUnitCollisionNow(World::Player& player)
+{
+	player.graphIgnoreClearAfterStep = false;
+	ApplyIgnoreUnitCollision(player, false);
+}
+
+static void ClearJumpMotion(PhysicsDynamicBody& body)
+{
+	body.jumpMotion = nullptr;
+	body.jumpElapsed = 0.0f;
+	body.jumpHeight = 0.0f;
+}
+
+
 
 static void ApplyHorizontalGraph(World& world, World::SkillProgram& prog, World::Player& player, f32 elapsed)
 {
@@ -90,8 +117,8 @@ static void ApplyHorizontalGraph(World& world, World::SkillProgram& prog, World:
 	if(elapsed < prog.graphExecuteAt) {
 		return;
 	}
-	if(prog.graphApplyUpdate != world.updateIndex) {
-		prog.graphApplyUpdate = world.updateIndex;
+	if(prog.graphApplyUpdate != world.SimulationUpdate()) {
+		prog.graphApplyUpdate = world.SimulationUpdate();
 		prog.graphElapsed += (f32)UPDATE_RATE;
 	}
 	const HorizontalMotionVariant& variant = *prog.horizontalVariant;
@@ -121,6 +148,7 @@ static void EmitSkillExec(World& world, World::SkillProgram& prog, World::Player
 		prog.moveEndPos = end;
 		duration = prog.moveDuration;
 	}
+	if(!world.EmitInputNotification(player, prog.inputSequence, 2)) return;
 	Replication::SkillExec rpExec;
 	rpExec.casterUID = prog.casterUID;
 	rpExec.skillID = prog.skillID;
@@ -162,7 +190,10 @@ static void EmitSkillExec(World& world, World::SkillProgram& prog, World::Player
 void World::Init(Replication* replication_)
 {
 	replication = replication_;
+	replication->ownerWorld = this;
 	nextActorUID = 1;
+	ASSERT(!history);
+	history = new SimulationHistory();
 
 	auto& ctx = PhysContext();
 	ctx.CreateScene(&physics);
@@ -171,9 +202,454 @@ void World::Init(Replication* replication_)
 void World::Cleanup()
 {
 	physics.Destroy();
+	if(replication->ownerWorld == this) replication->ownerWorld = nullptr;
+	delete history;
+	history = nullptr;
 }
 
-void World::Update(Time localTime_)
+void World::BeginPlayerTimeline(ClientHandle clientHd, ActorUID actorUID, f64 serverTime)
+{
+	ActorMaster* actor = FindMasterActor(actorUID);
+	if(!actor || actor->parent->clientHd != clientHd) return;
+	Player& player = *actor->parent;
+	if(player.Main().UID != actorUID) return;
+	auto& timeline = history->players[player.index];
+	if(timeline.enabled || !std::isfinite(serverTime)) return;
+	timeline.clockStartTime[player.mainCharaID] = serverTime;
+	timeline.admittedMaster = player.mainCharaID;
+	timeline.enabled = true;
+	if(VelqorTrace::Enabled()) {
+		char fields[384];
+		size_t length = 0;
+		VelqorTrace::Catf(fields, sizeof(fields), length,
+			"\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"master_slot\":%u,\"server_t\":%.9f",
+			(i32)replication->inGameID, player.index, (u32)actorUID, (u32)player.mainCharaID, serverTime);
+		VelqorTrace::Emit("input_timeline_begin", fields);
+	}
+}
+
+bool World::QueuePlayerInput(Player& player, ActorUID actorUID, InputKind kind, const Player::Input& input,
+	f64 receivedTime, bool timestamped)
+{
+	if(!std::isfinite(receivedTime)) return false;
+	u8 masterSlot = PLAYER_CHARACTER_COUNT;
+	for(u8 i = 0; i < PLAYER_CHARACTER_COUNT; ++i) {
+		if(player.characters[i]->UID == actorUID) masterSlot = i;
+	}
+	if(masterSlot == PLAYER_CHARACTER_COUNT) return false;
+	auto& timeline = history->players[player.index];
+	if(!timeline.enabled) return false;
+	constexpr f64 historySeconds = f64(InputHistoryFrames) / UPDATE_TICK_RATE;
+	if(kind == InputKind::Tag && actorUID != player.characters[timeline.admittedMaster]->UID) return false;
+	InputClock candidate = timeline.clocks[masterSlot];
+	bool mappingRevised = false;
+	f64 serverTime = receivedTime;
+	if(timestamped) {
+		if(input.clientTime < timeline.minimumClientTime[masterSlot] ||
+			!candidate.Observe(input.clientTime, receivedTime, historySeconds, &mappingRevised)) return false;
+		serverTime = candidate.ToServerTime(input.clientTime);
+		if(serverTime > receivedTime || serverTime < timeline.clockStartTime[masterSlot] ||
+			(timeline.clockEndTime[masterSlot] >= 0.0 && serverTime > timeline.clockEndTime[masterSlot])) return false;
+	}
+	const f64 oldestTime = timeline.frames.empty() ? receivedTime - historySeconds :
+		timeline.frames[timeline.oldestFrame].previousServerTime;
+	if(!timeline.frames.empty() && serverTime <= oldestTime) return false;
+	u32 retainedEvents = 0;
+	for(const auto& existing: timeline.events) {
+		if(existing.serverTime <= oldestTime && existing.keepUntil < receivedTime) continue;
+		++retainedEvents;
+	}
+	if(retainedEvents == timeline.events.max_size()) return false;
+	const GameXmlContent::Action* castAction = nullptr;
+	if(kind == InputKind::Cast) {
+		const auto& content = GetGameXmlContent();
+		const auto found = content.skillMap.find(input.cast.skillID);
+		if(found == content.skillMap.end()) return false;
+		const auto actions = content.actionListMap.find(player.characters[masterSlot]->classType);
+		if(actions == content.actionListMap.end()) return false;
+		for(const auto& action: actions->second) {
+			if(action.ID == found->second.action) {
+				castAction = &action;
+				break;
+			}
+		}
+		if(!castAction) return false;
+	}
+	for(auto it = timeline.events.begin(); it != timeline.events.end();) {
+		if(it->serverTime <= oldestTime && it->keepUntil < receivedTime) it = timeline.events.erase(it);
+		else ++it;
+	}
+	if(timestamped) {
+		timeline.clocks[masterSlot] = candidate;
+		timeline.lastClientTime[masterSlot] = eastl::max(timeline.lastClientTime[masterSlot], input.clientTime);
+		if(mappingRevised) {
+			for(auto& existing: timeline.events) {
+				if(!existing.timestamped || existing.masterSlot != masterSlot ||
+					existing.clockGeneration != timeline.clockGeneration[masterSlot]) continue;
+				const f64 revisedTime = candidate.ToServerTime(existing.clientTime);
+				if(existing.serverTime <= oldestTime || revisedTime <= oldestTime ||
+					revisedTime < timeline.clockStartTime[masterSlot]) continue;
+				existing.serverTime = revisedTime;
+				if(existing.serverTime <= timeline.lastStepTime) {
+					timeline.replayFrom = timeline.replayFrom < 0.0 ? existing.serverTime :
+						eastl::min(timeline.replayFrom, existing.serverTime);
+				}
+			}
+		}
+	}
+	InputEvent event;
+	event.sequence = timeline.nextSequence++;
+	event.kind = kind;
+	event.actorUID = actorUID;
+	event.data = input;
+	event.receivedTime = receivedTime;
+	event.serverTime = serverTime;
+	event.clientTime = input.clientTime;
+	event.timestamped = timestamped;
+	event.masterSlot = masterSlot;
+	event.clockGeneration = timeline.clockGeneration[masterSlot];
+	event.keepUntil = serverTime + historySeconds;
+	if(castAction) {
+		event.keepUntil += castAction->seqLength;
+		for(const auto& command: castAction->commands) {
+			event.keepUntil = eastl::max(event.keepUntil, serverTime + command.completeAt + historySeconds);
+			if(command.type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
+				for(u8 i = 0; i < castAction->horizontalMotion.variantCount; ++i) {
+					event.keepUntil = eastl::max(event.keepUntil, serverTime + command.executeAt +
+						castAction->horizontalMotion.variants[i].duration + historySeconds);
+				}
+			}
+		}
+	}
+	if(kind == InputKind::Tag) {
+		const u8 previous = timeline.admittedMaster;
+		timeline.clockEndTime[previous] = receivedTime;
+		timeline.admittedMaster ^= 1;
+		const u8 next = timeline.admittedMaster;
+		timeline.minimumClientTime[next] = timeline.lastClientTime[next];
+		timeline.clocks[next].Reset();
+		++timeline.clockGeneration[next];
+		timeline.clockStartTime[next] = receivedTime;
+		timeline.clockEndTime[next] = -1.0;
+	}
+	timeline.events.push_back(event);
+	eastl::sort(timeline.events.begin(), timeline.events.end(), [](const InputEvent& a, const InputEvent& b) {
+		return a.serverTime < b.serverTime || (a.serverTime == b.serverTime && a.sequence < b.sequence);
+	});
+	if(serverTime <= timeline.lastStepTime) {
+		timeline.replayFrom = timeline.replayFrom < 0.0 ? serverTime : eastl::min(timeline.replayFrom, serverTime);
+	}
+	return true;
+}
+
+bool World::EmitInputNotification(Player& player, u32 sequence, u32 notification, i32 commandIndex)
+{
+	if(sequence == 0) return !replayingInputs;
+	auto& timeline = history->players[player.index];
+	for(auto& event: timeline.events) {
+		if(event.sequence != sequence) continue;
+		u32& flags = commandIndex < 0 ? event.notifications :
+			(notification == 0 ? event.warpNotifications : event.commandNotifications);
+		ASSERT(commandIndex < 32);
+		const u32 bit = commandIndex < 0 ? notification : 1u << commandIndex;
+		if(flags & bit) return false;
+		flags |= bit;
+		return true;
+	}
+	return false;
+}
+
+void World::CaptureSceneFrame(SceneFrame& frame)
+{
+	frame.update = updateIndex;
+	frame.actors.clear();
+	for(const auto& actor: actorDynamicList) {
+		for(NxActor* collision: actor.collisionActors) {
+			ASSERT(frame.actors.size() < frame.actors.max_size());
+			NxActorDesc desc;
+			collision->saveToDesc(desc);
+			frame.actors.push_back({ collision, desc.flags });
+		}
+	}
+}
+
+void World::RestoreSceneFrame(const SceneFrame& frame)
+{
+	for(const auto& actor: actorDynamicList) {
+		for(NxActor* collision: actor.collisionActors) {
+			const SceneActorState* state = nullptr;
+			for(const auto& saved: frame.actors) {
+				if(saved.actor == collision) {
+					state = &saved;
+					break;
+				}
+			}
+			if(state && !(state->flags & NX_AF_DISABLE_COLLISION)) collision->clearActorFlag(NX_AF_DISABLE_COLLISION);
+			else collision->raiseActorFlag(NX_AF_DISABLE_COLLISION);
+		}
+	}
+}
+
+void World::SavePlayerFrame(Player& player, PlayerFrame& frame, u32 update, Time frameTime, f64 serverTime)
+{
+	frame.update = update;
+	frame.localTime = frameTime;
+	frame.serverTime = serverTime;
+	frame.previousServerTime = history->players[player.index].lastStepTime;
+	frame.body = physics.CaptureBodyState(*player.body);
+	frame.input = player.input;
+	frame.movement = player.movement;
+	frame.mainCharaID = player.mainCharaID;
+	for(u8 i = 0; i < PLAYER_CHARACTER_COUNT; ++i) frame.actions[i] = player.characters[i]->actionState;
+	frame.graphIgnoreCollision = player.graphIgnoreCollision;
+	frame.graphIgnoreClearAfterStep = player.graphIgnoreClearAfterStep;
+	frame.programs.clear();
+	for(const auto& program: skillProgramList) {
+		const ActorMaster* caster = FindMasterActor(program.casterUID);
+		if(caster && caster->parent == &player && !program.IsDoneExecuting()) {
+			ASSERT(frame.programs.size() < frame.programs.max_size());
+			frame.programs.push_back(program);
+		}
+	}
+}
+
+void World::RestorePlayerFrame(Player& player, const PlayerFrame& frame)
+{
+	physics.RestoreBodyState(*player.body, frame.body);
+	player.input = frame.input;
+	player.movement = frame.movement;
+	player.mainCharaID = frame.mainCharaID;
+	for(u8 i = 0; i < PLAYER_CHARACTER_COUNT; ++i) player.characters[i]->actionState = frame.actions[i];
+	player.graphIgnoreCollision = frame.graphIgnoreCollision;
+	player.graphIgnoreClearAfterStep = frame.graphIgnoreClearAfterStep;
+	for(auto it = skillProgramList.begin(); it != skillProgramList.end();) {
+		const ActorMaster* caster = FindMasterActor(it->casterUID);
+		if(caster && caster->parent == &player) it = skillProgramList.erase_unsorted(it);
+		else ++it;
+	}
+	for(const auto& program: frame.programs) {
+		ASSERT(skillProgramList.size() < skillProgramList.max_size());
+		skillProgramList.push_back(program);
+	}
+}
+
+void World::ApplyPlayerInput(Player& player, InputEvent& event)
+{
+	switch(event.kind) {
+		case InputKind::Movement: {
+			player.input.moveDir = event.data.moveDir;
+			player.input.speed = event.data.speed;
+			player.input.rot = event.data.rot;
+			player.input.action = event.data.action;
+			player.input.clientTime = event.clientTime;
+		} break;
+		case InputKind::Rotation: player.input.rot = event.data.rot; break;
+		case InputKind::Action: {
+			player.input.rot.bodyYaw = event.data.rot.bodyYaw;
+			player.input.rot.upperYaw = event.data.rot.upperYaw;
+			player.input.action = event.data.action;
+			player.input.actionParam1 = event.data.actionParam1;
+			player.input.actionParam2 = event.data.actionParam2;
+		} break;
+		case InputKind::Jump: {
+			player.input.jump = true;
+			player.input.jumpMoveDir = event.data.jumpMoveDir;
+			player.input.jumpRotate = event.data.jumpRotate;
+			ApplyPlayerControls(player, &event);
+		} break;
+		case InputKind::Tag: {
+			player.input.tag = true;
+			ApplyPlayerControls(player, &event);
+		} break;
+		case InputKind::Cast: {
+			player.input.moveDir = event.data.moveDir;
+			player.input.speed = event.data.speed;
+			player.input.rot = event.data.rot;
+			player.input.action = event.data.action;
+			player.input.clientTime = event.clientTime;
+			simulationEvent = &event;
+			const auto& cast = event.data.cast;
+			PlayerCastSkill(player, cast.skillID, cast.pos,
+				Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()), cast.clientTime);
+			simulationEvent = nullptr;
+		} break;
+	}
+}
+
+void World::ApplyPlayerControls(Player& player, InputEvent* event)
+{
+	const u32 sequence = event ? event->sequence : 0;
+	if(player.input.tag) {
+		player.input.tag = false;
+		player.mainCharaID ^= 1;
+		const auto& character = GetGameXmlContent().GetMaster(player.Main().classType).character;
+		physics.ResizeDynamicBody(player.body, f32(character.getActorRadius()), f32(character.getActorHeight()));
+		CancelPlayerPrograms(player);
+		ClearJumpMotion(*player.body);
+		if(EmitInputNotification(player, sequence, 4) && VelqorTrace::Enabled()) {
+			char fields[512];
+			size_t length = 0;
+			VelqorTrace::Catf(fields, sizeof(fields), length,
+				"\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"main_chara_id\":%u,\"class_type\":%d,\"sim_t\":%.4f",
+				(i32)replication->inGameID, player.index, (u32)player.Main().UID, (u32)player.mainCharaID,
+				(i32)player.Main().classType, TimeDurationSec(Time::ZERO, localTime));
+			VelqorTrace::Emit("tag_apply", fields);
+		}
+	}
+	if(player.input.jump) {
+		player.input.jump = false;
+		const auto& motion = GetGameXmlContent().GetJumpMotion(player.Main().classType,
+			GetJumpDirection(player.input.jumpMoveDir, player.input.jumpRotate));
+		const bool started = physics.StartJump(player.body, motion);
+		if(started) {
+			CancelPlayerPrograms(player);
+			player.movement.hasJumped = true;
+			player.movement.rot.bodyYaw = player.input.jumpRotate;
+			player.input.rot.bodyYaw = player.input.jumpRotate;
+		}
+		if(EmitInputNotification(player, sequence, 8) && VelqorTrace::Enabled()) {
+			char fields[768];
+			size_t length = 0;
+			VelqorTrace::Catf(fields, sizeof(fields), length,
+				"\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"started\":%d,\"has_jumped\":%d,\"rotate\":%.9g,\"move_dir\":[%.9g,%.9g],\"pos\":[%.9g,%.9g,%.9g],\"sim_t\":%.4f",
+				(i32)replication->inGameID, player.index, (u32)player.Main().UID, started ? 1 : 0,
+				player.movement.hasJumped ? 1 : 0, player.input.jumpRotate, player.input.jumpMoveDir.x,
+				player.input.jumpMoveDir.y, player.body->GetWorldPos().x, player.body->GetWorldPos().y,
+				player.body->GetWorldPos().z, TimeDurationSec(Time::ZERO, localTime));
+			VelqorTrace::Emit("jump_apply", fields);
+		}
+	}
+}
+
+void World::SimulatePlayer(Player& player, u32 update, Time frameTime, f64 serverTime)
+{
+	simulationPlayer = &player;
+	simulationUpdate = update;
+	localTime = frameTime;
+	physics.localTime = frameTime;
+	player.movement.hasJumped = false;
+	player.movement.forcedMove = false;
+	auto& timeline = history->players[player.index];
+	for(auto& event: timeline.events) {
+		if(event.serverTime <= timeline.lastStepTime || event.serverTime > serverTime) continue;
+		if(player.Main().UID != event.actorUID) continue;
+		ApplyPlayerInput(player, event);
+	}
+	ApplyPlayerControls(player, nullptr);
+	player.movement.rot = player.input.rot;
+	if(player.input.cast.skillID != SkillID::INVALID) {
+		const auto& cast = player.input.cast;
+		PlayerCastSkill(player, cast.skillID, cast.pos,
+			Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()), cast.clientTime);
+		player.input.cast.skillID = SkillID::INVALID;
+	}
+	for(auto it = skillProgramList.begin(); it != skillProgramList.end();) {
+		const ActorMaster* caster = FindMasterActor(it->casterUID);
+		if(caster && caster->parent == &player) {
+			if(!it->IsDoneExecuting()) {
+				if(it->bornUpdate != update) ++it->simTicks;
+				ExecuteSkillProgram(*it);
+			}
+			if(it->IsDoneExecuting()) {
+				it = skillProgramList.erase_unsorted(it);
+				continue;
+			}
+		}
+		++it;
+	}
+	if(player.movement.forcedMove) {
+		player.movement.moveDir = vec2(0);
+		player.movement.moveSpeed = 0.0f;
+	}
+	else if(player.input.moveDir != vec2(0)) {
+		player.movement.moveDir = player.input.moveDir;
+		player.movement.moveSpeed = player.input.speed;
+	}
+	else if(player.clientHd == ClientHandle::INVALID) {
+		const vec2 delta = vec2(player.input.moveTo - player.body->GetWorldPos());
+		const f32 length = glm::length(delta);
+		player.movement.moveDir = length > 1.0f && player.input.speed > 0.0f ? NormalizeSafe(delta) : vec2(0);
+		player.movement.moveSpeed = length > 1.0f && player.input.speed > 0.0f ?
+			eastl::min(player.input.speed, f32(length / UPDATE_RATE)) : 0.0f;
+	}
+	else {
+		player.movement.moveDir = vec2(0);
+		player.movement.moveSpeed = player.input.speed;
+	}
+	player.body->moveDir = player.movement.moveDir;
+	player.body->moveSpeed = player.movement.moveSpeed;
+	physics.StepBody(*player.body);
+	if(player.movement.forcedMove) player.input.moveTo = player.body->GetWorldPos();
+	if(player.graphIgnoreClearAfterStep) {
+		player.graphIgnoreClearAfterStep = false;
+		ApplyIgnoreUnitCollision(player, false);
+	}
+	timeline.lastStepTime = serverTime;
+	simulationPlayer = nullptr;
+}
+
+void World::UpdatePlayerTimeline(Player& player, f64 serverTime)
+{
+	auto& timeline = history->players[player.index];
+	const Time publishedTime = localTime;
+	if(player.clientHd == ClientHandle::INVALID) {
+		SimulatePlayer(player, updateIndex, publishedTime, serverTime);
+		localTime = publishedTime;
+		physics.localTime = publishedTime;
+		return;
+	}
+	if(timeline.enabled && timeline.replayFrom >= 0.0 && !timeline.frames.empty()) {
+		u32 first = 0;
+		const u32 count = u32(timeline.frames.size());
+		while(first < count && timeline.frames[(timeline.oldestFrame + first) % count].serverTime < timeline.replayFrom) ++first;
+		if(first < count) {
+			SceneFrame currentScene;
+			CaptureSceneFrame(currentScene);
+			const auto& before = timeline.frames[(timeline.oldestFrame + first) % count];
+			RestorePlayerFrame(player, before);
+			timeline.lastStepTime = before.previousServerTime;
+			replayingInputs = true;
+			for(u32 i = first; i < count; ++i) {
+				auto& frame = timeline.frames[(timeline.oldestFrame + i) % count];
+				for(const auto& sceneFrame: history->scenes) {
+					if(sceneFrame.update == frame.update) {
+						RestoreSceneFrame(sceneFrame);
+						break;
+					}
+				}
+				const u32 frameUpdate = frame.update;
+				const Time frameTime = frame.localTime;
+				const f64 stepTime = frame.serverTime;
+				SavePlayerFrame(player, frame, frameUpdate, frameTime, stepTime);
+				SimulatePlayer(player, frameUpdate, frameTime, stepTime);
+			}
+			replayingInputs = false;
+			RestoreSceneFrame(currentScene);
+			if(VelqorTrace::Enabled()) {
+				char fields[384];
+				size_t length = 0;
+				VelqorTrace::Catf(fields, sizeof(fields), length,
+					"\"game_id\":%d,\"player_index\":%u,\"ticks\":%u,\"from_server_t\":%.9f,\"to_server_t\":%.9f",
+					(i32)replication->inGameID, player.index, count - first, timeline.replayFrom, timeline.lastStepTime);
+				VelqorTrace::Emit("input_catchup", fields);
+			}
+		}
+	}
+	timeline.replayFrom = -1.0;
+	localTime = publishedTime;
+	PlayerFrame* frame = nullptr;
+	if(timeline.frames.size() < timeline.frames.max_size()) frame = &timeline.frames.push_back();
+	else {
+		frame = &timeline.frames[timeline.oldestFrame];
+		timeline.oldestFrame = (timeline.oldestFrame + 1) % u32(timeline.frames.size());
+	}
+	SavePlayerFrame(player, *frame, updateIndex, publishedTime, serverTime);
+	SimulatePlayer(player, updateIndex, publishedTime, serverTime);
+	localTime = publishedTime;
+	physics.localTime = publishedTime;
+}
+
+void World::Update(Time localTime_, f64 serverTime)
 {
 	ProfileFunction();
 
@@ -184,117 +660,45 @@ void World::Update(Time localTime_)
 	const bool velqorTrace = VelqorTrace::Enabled();
 	if(velqorTrace) g_velqorUpdateSeq.Increment();
 
-	foreach(it, players) {
-		Player& p = *it;
-		p.movement.rot = p.input.rot;
-		p.movement.hasJumped = false;
-		p.movement.forcedMove = false;
-
-		if(p.input.tag) {
-			p.input.tag = 0;
-			p.mainCharaID ^= 1;
-			const auto& character = GetGameXmlContent().GetMaster(p.Main().classType).character;
-			physics.ResizeDynamicBody(p.body, (f32)character.getActorRadius(), (f32)character.getActorHeight());
-			CancelPlayerPrograms(p);
-			if(velqorTrace) {
-				char f[640];
-				size_t len = 0;
-				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"main_chara_id\":%u,\"class_type\":%d",
-					(i32)replication->inGameID, p.index, (u32)p.Main().UID, (u32)p.mainCharaID, (i32)p.Main().classType);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"pos\":");
-				const vec3 pos = p.body->GetWorldPos();
-				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&pos.x, 3);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
-				VelqorTrace::Emit("tag_apply", f);
+	for(auto& actor: actorDynamicList) {
+		if(!actor.collisionProfile) continue;
+		const auto& profile = *actor.collisionProfile;
+		if(actor.collisionActors.empty()) {
+			physics.CreateCollisionAsset(profile.assetName.data(), actor.pos, actor.rot, 1.0f,
+				PhysicsCollisionGroup(profile.group), &actor.collisionActors);
+		}
+		if(actor.collisionAction != actor.action) {
+			actor.collisionAction = actor.action;
+			actor.collisionActionStart = updateIndex;
+			actor.collisionActionDone = false;
+		}
+		if(actor.collisionActionDone) continue;
+		const DynamicCollisionProfile::Action* command = nullptr;
+		for(const auto& action: profile.actions) {
+			if(action.state == actor.action) {
+				command = &action;
+				break;
 			}
 		}
-
-		if(p.input.cast.skillID != SkillID::INVALID) {
-			const auto& cast = p.input.cast;
-			PlayerCastSkill(p, cast.skillID, cast.pos, Slice<const ActorUID>(cast.targetList.data(), cast.targetList.size()), cast.clientTime);
-			p.input.cast.skillID = SkillID::INVALID;
+		ASSERT(command);
+		const f32 elapsed = f32(updateIndex - actor.collisionActionStart) / f32(UPDATE_TICK_RATE);
+		if(elapsed < command->delay) continue;
+		for(NxActor* collision: actor.collisionActors) {
+			if(command->enabled) collision->clearActorFlag(NX_AF_DISABLE_COLLISION);
+			else collision->raiseActorFlag(NX_AF_DISABLE_COLLISION);
 		}
+		actor.collisionActionDone = true;
 	}
 
-	for(auto it = skillProgramList.begin(); it != skillProgramList.end(); ) {
-		if(!it->IsDoneExecuting()) {
-			if(it->bornUpdate != updateIndex) {
-				it->simTicks++;
-			}
-			ExecuteSkillProgram(*it);
-		}
-		if(it->IsDoneExecuting()) {
-			it = skillProgramList.erase_unsorted(it);
-		}
-		else {
-			++it;
-		}
+	SceneFrame* sceneFrame = nullptr;
+	if(history->scenes.size() < history->scenes.max_size()) sceneFrame = &history->scenes.push_back();
+	else {
+		sceneFrame = &history->scenes[history->oldestScene];
+		history->oldestScene = (history->oldestScene + 1) % u32(history->scenes.size());
 	}
-
-	foreach(it, players) {
-		Player& p = *it;
-		PhysicsDynamicBody& body = *p.body;
-		const bool inputBlocked = p.movement.forcedMove;
-		if(!inputBlocked && (p.input.moveDir.x != 0.f || p.input.moveDir.y != 0.f)) {
-			p.movement.moveDir = p.input.moveDir;
-			p.movement.moveSpeed = p.input.speed;
-		}
-		else {
-			const vec2 delta = vec2(p.input.moveTo - body.GetWorldPos());
-			const f32 deltaLen = glm::length(delta);
-			if(!inputBlocked && deltaLen > 1.0f && p.input.speed > 0.f) {
-				p.movement.moveDir = NormalizeSafe(delta);
-				p.movement.moveSpeed = eastl::min(p.input.speed, f32(deltaLen / UPDATE_RATE));
-			}
-			else {
-				p.movement.moveDir = vec2(0);
-				p.movement.moveSpeed = 0.0f;
-			}
-		}
-
-		if(p.input.jump) {
-			p.input.jump = 0;
-			bool velqorJumpStarted = false;
-			if(!inputBlocked) {
-				const auto& motion = GetGameXmlContent().GetJumpMotion(p.Main().classType,
-					GetJumpDirection(p.input.jumpMoveDir, p.input.jumpRotate));
-				if(physics.StartJump(&body, motion)) {
-					p.movement.hasJumped = true;
-					p.movement.rot.bodyYaw = p.input.jumpRotate;
-					p.input.rot.bodyYaw = p.input.jumpRotate;
-					velqorJumpStarted = true;
-				}
-			}
-			if(velqorTrace) {
-				char f[1024];
-				size_t len = 0;
-				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"started\":%d,\"has_jumped\":%d",
-					(i32)replication->inGameID, p.index, (u32)p.Main().UID, velqorJumpStarted ? 1 : 0, p.movement.hasJumped ? 1 : 0);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"jump_rotate\":");
-				VelqorTrace::CatF32(f, sizeof(f), len, p.input.jumpRotate);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"move_dir\":");
-				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&p.input.jumpMoveDir.x, 2);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"pos\":");
-				const vec3 pos = body.GetWorldPos();
-				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&pos.x, 3);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"vel\":");
-				VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&body.vel.x, 3);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"grounded\":%d", body.grounded ? 1 : 0);
-				VelqorTrace::Catf(f, sizeof(f), len, ",\"sim_t\":%.4f", TimeDurationSec(Time::ZERO, localTime));
-				VelqorTrace::Emit("jump_apply", f);
-			}
-		}
-
-		body.vel.x = p.movement.moveDir.x * p.movement.moveSpeed;
-		body.vel.y = p.movement.moveDir.y * p.movement.moveSpeed;
-	}
-
-	physics.Step();
-	foreach(it, players) {
-		if(it->movement.forcedMove) {
-			it->input.moveTo = it->body->GetWorldPos();
-		}
-	}
+	CaptureSceneFrame(*sceneFrame);
+	for(auto& player: players) UpdatePlayerTimeline(player, serverTime);
+	physics.FinishStep();
 
 	if(velqorTrace) {
 		const f64 velqorSimTime = TimeDurationSec(Time::ZERO, localTime);
@@ -322,8 +726,8 @@ void World::Update(Time localTime_)
 			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&p.input.moveTo.x, 3);
 			VelqorTrace::Catf(f, sizeof(f), len, ",\"rot\":");
 			VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&rot.x, 3);
-			VelqorTrace::Catf(f, sizeof(f), len, ",\"main_chara_id\":%u,\"has_jumped\":%d,\"forced_move\":%d,\"sim_t\":%.4f,\"update_seq\":%u",
-				(u32)p.mainCharaID, p.movement.hasJumped ? 1 : 0, p.movement.forcedMove ? 1 : 0, velqorSimTime, g_velqorUpdateSeq.GetValue());
+			VelqorTrace::Catf(f, sizeof(f), len, ",\"main_chara_id\":%u,\"has_jumped\":%d,\"forced_move\":%d,\"sim_t\":%.4f,\"update_seq\":%u,\"controller_id\":%llu",
+				(u32)p.mainCharaID, p.movement.hasJumped ? 1 : 0, p.movement.forcedMove ? 1 : 0, velqorSimTime, g_velqorUpdateSeq.GetValue(), (unsigned long long)(size_t)body.collider);
 			VelqorTrace::Emit("post_sim", f);
 		}
 	}
@@ -580,6 +984,12 @@ World::ActorDynamic& World::SpawnDynamic(CreatureIndex docID, i32 localID)
 	actor.faction = Faction::DYNAMIC;
 	actor.action = ActionStateID::DYNAMIC_NORMAL_STAND;
 	actor.tLastActionChange = localTime;
+	for(const auto& profile: GetGameXmlContent().dynamicCollisionProfiles) {
+		if(profile.docID == docID) {
+			actor.collisionProfile = &profile;
+			break;
+		}
+	}
 
 	actorDynamicMap.emplace(actorUID, --actorDynamicList.end());
 	return actor;
@@ -631,6 +1041,8 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	// access method is kinda convoluted
 	const auto& content = GetGameXmlContent();
 	const auto& skill = content.skillMap.at(skillID);
+	const u32 inputSequence = simulationEvent ? simulationEvent->sequence : 0;
+	const bool emitCast = EmitInputNotification(player, inputSequence, 1);
 	const ActionStateID actionState = skill.action;
 
 	const f32 angle = player.input.rot.upperYaw;
@@ -651,7 +1063,7 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 
 	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(rpCast.targetList));
 
-	if(VelqorTrace::Enabled()) {
+	if(emitCast && VelqorTrace::Enabled()) {
 		uint32_t traceTargets[16];
 		const size_t traceTargetCount = targets.size() < 16 ? targets.size() : 16;
 		for(size_t i = 0; i < traceTargetCount; ++i) traceTargets[i] = (uint32_t)targets[i];
@@ -679,12 +1091,13 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		VelqorTrace::Emit("cast_accept", f);
 	}
 
-	replication->FramePushSkillCast(rpCast);
+	if(emitCast) replication->FramePushSkillCast(rpCast);
 
 
-	player.Main().actionState = actionState;
+	if(emitCast) player.Main().actionState = actionState;
 
 	CancelPlayerPrograms(player);
+	ClearJumpMotion(*player.body);
 
 	SkillProgram prog;
 	prog.skillID = skillID;
@@ -694,8 +1107,9 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.casterUID = player.Main().UID;
 	eastl::copy(targets.begin(), targets.end(), eastl::back_inserter(prog.targetList));
 	prog.simTicks = 0;
-	prog.bornUpdate = updateIndex;
-	prog.graphApplyUpdate = updateIndex - 1;
+	prog.bornUpdate = SimulationUpdate();
+	prog.graphApplyUpdate = SimulationUpdate() - 1;
+	prog.inputSequence = inputSequence;
 	prog.moveStartPos = player.body->GetWorldPos();
 	prog.moveEndPos = prog.moveStartPos;
 
@@ -703,18 +1117,22 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.completeAt = action.seqLength;
 	f32 graphExecuteAt = 0.0f;
 	bool hasGraph = false;
+	u8 graphIgnoreCollision = 0;
 	foreach_const(cmd, action.commands) {
 		prog.completeAt = eastl::max(prog.completeAt, cmd->completeAt);
 		if(cmd->type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
 			hasGraph = true;
 			graphExecuteAt = cmd->executeAt;
+			if(cmd->graphMoveHorz.ignoreCollision) graphIgnoreCollision = 1;
 		}
 	}
 
 	if(hasGraph) {
 		const auto& motion = action.horizontalMotion;
 		const HorizontalMoveType want = JumpDirToMoveType(GetJumpDirection(SkillMoveInputDir(player), player.input.rot.bodyYaw));
-		const HorizontalMotionVariant* variant = SelectHorizontalVariant(motion, want);
+		const HorizontalMotionVariant* variant = simulationEvent && simulationEvent->selectedVariant ?
+			simulationEvent->selectedVariant : SelectHorizontalVariant(motion, want);
+		if(simulationEvent) simulationEvent->selectedVariant = variant;
 		ASSERT(variant);
 		ASSERT(variant->duration > 0);
 		const f32 authoredEnd = variant->Sample(variant->duration);
@@ -728,14 +1146,14 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 		prog.moveEndPos = prog.moveStartPos + vec3(slide * authoredEnd, 0);
 	}
 
-	if(VelqorTrace::Enabled()) {
+	if(emitCast && VelqorTrace::Enabled()) {
 		char f[1280];
 		size_t len = 0;
 		VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d",
 			(i32)replication->inGameID, player.index, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"complete_at\":");
 		VelqorTrace::CatF32(f, sizeof(f), len, prog.completeAt);
-		VelqorTrace::Catf(f, sizeof(f), len, ",\"has_graph\":%d", hasGraph ? 1 : 0);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"has_graph\":%d,\"ignore_collision\":%u", hasGraph ? 1 : 0, (u32)graphIgnoreCollision);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"graph_execute_at\":");
 		VelqorTrace::CatF32(f, sizeof(f), len, graphExecuteAt);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"move_duration\":");
@@ -768,18 +1186,27 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 void World::CancelPlayerPrograms(Player& player)
 {
 	const bool velqorTrace = VelqorTrace::Enabled();
-	foreach(it, skillProgramList) {
+	bool cancelled = false;
+	for(auto it = skillProgramList.begin(); it != skillProgramList.end();) {
 		ActorMaster* caster = FindMasterActor(it->casterUID);
 		if(caster && caster->parent == &player) {
-			if(velqorTrace) {
+			if(velqorTrace && EmitInputNotification(player, it->inputSequence, 32)) {
 				char f[640];
 				size_t len = 0;
 				VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"sim_t\":%.4f",
 					(i32)replication->inGameID, player.index, (u32)it->casterUID, (i32)it->skillID, (i32)it->actionID, TimeDurationSec(Time::ZERO, localTime));
 				VelqorTrace::Emit("skill_cancel", f);
 			}
-			it->Finish();
+			it = skillProgramList.erase_unsorted(it);
+			cancelled = true;
 		}
+		else ++it;
+	}
+	player.movement.forcedMove = false;
+	player.body->horizontalGraphDisplacement = vec2(0);
+	player.body->horizontalGraphActive = false;
+	if(cancelled) {
+		ClearIgnoreUnitCollisionNow(player);
 	}
 }
 
@@ -789,12 +1216,15 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 	const bool velqorTrace = VelqorTrace::Enabled();
 	ActorMaster* caster = FindMasterActor(prog.casterUID);
 	if(!caster || caster->parent->Main().UID != prog.casterUID) {
-		if(velqorTrace) {
+		if(velqorTrace && (caster ? EmitInputNotification(*caster->parent, prog.inputSequence, 16) : !replayingInputs)) {
 			char f[768];
 			size_t len = 0;
 			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%d,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"reason\":\"invalid_caster\",\"elapsed\":null,\"complete_at\":null,\"cmd_index\":%d,\"command_count\":-1,\"sim_t\":%.4f",
 				(i32)replication->inGameID, caster ? (i32)caster->parent->index : -1, (u32)prog.casterUID, (i32)prog.skillID, (i32)prog.actionID, (i32)prog.commandID, TimeDurationSec(Time::ZERO, localTime));
 			VelqorTrace::Emit("skill_done", f);
+		}
+		if(caster) {
+			ClearIgnoreUnitCollisionNow(*caster->parent);
 		}
 		prog.Finish();
 		return;
@@ -824,7 +1254,8 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 					physics.Move(body, endPos - startPos, UPDATE_RATE, false);
 					player.input.moveTo = body->GetWorldPos();
 					player.movement.forcedMove = true;
-					if(player.clientHd != ClientHandle::INVALID) {
+					if(player.clientHd != ClientHandle::INVALID &&
+						EmitInputNotification(player, prog.inputSequence, 0, prog.commandID)) {
 						replication->FrameRequestPositionCorrection(player.clientHd, caster->UID);
 						if(velqorTrace) {
 							char f[896];
@@ -842,12 +1273,18 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 					}
 				}
 			} break;
+			case ActionCommand::Type::GRAPH_MOVE_HORZ: {
+				if(cmd.graphMoveHorz.ignoreCollision) {
+					player.graphIgnoreClearAfterStep = false;
+					ApplyIgnoreUnitCollision(player, true);
+				}
+			} break;
 			default:
 				break;
 		}
 		++prog.commandID;
 
-		if(velqorTrace) {
+		if(velqorTrace && EmitInputNotification(player, prog.inputSequence, 1, velqorCmdIndex)) {
 			const i32 velqorMovePreset = (cmd.type == ActionCommand::Type::MOVE) ? (i32)cmd.move.preset : -1;
 			const i32 velqorMoveParam2 = (cmd.type == ActionCommand::Type::MOVE) ? cmd.move.param2 : 0;
 			const vec3 velqorPosAfter = body->GetWorldPos();
@@ -876,7 +1313,7 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 	const bool graphPending = prog.horizontalVariant && !prog.graphDone;
 	if(prog.commandID == action.commands.size() && !graphPending && elapsed >= prog.completeAt) {
 		caster->actionState = ActionStateID::INVALID;
-		if(velqorTrace) {
+		if(velqorTrace && EmitInputNotification(player, prog.inputSequence, 16)) {
 			char f[896];
 			size_t len = 0;
 			VelqorTrace::Catf(f, sizeof(f), len, "\"game_id\":%d,\"player_index\":%u,\"actor_uid\":%u,\"skill_id\":%d,\"action_state\":%d,\"reason\":\"complete\"",
@@ -887,6 +1324,9 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 			VelqorTrace::CatF32(f, sizeof(f), len, prog.completeAt);
 			VelqorTrace::Catf(f, sizeof(f), len, ",\"cmd_index\":%d,\"command_count\":%u,\"sim_t\":%.4f", (i32)prog.commandID, (u32)action.commands.size(), TimeDurationSec(Time::ZERO, localTime));
 			VelqorTrace::Emit("skill_done", f);
+		}
+		if(player.graphIgnoreCollision) {
+			player.graphIgnoreClearAfterStep = true;
 		}
 		prog.Finish();
 	}

@@ -12,6 +12,7 @@
 #include <mxm/core.h>
 
 struct AccountData;
+struct World;
 
 struct Replication
 {
@@ -235,6 +236,7 @@ struct Replication
 	};
 
 	Server* server;
+	World* ownerWorld = nullptr;
 	Frame frames[2];
 	Frame* frameCur;
 	Frame* framePrev;

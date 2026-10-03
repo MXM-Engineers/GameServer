@@ -141,7 +141,7 @@ void GamePacketHandler::HandlePacket_CN_GameUpdatePosition(ClientHandle clientHd
 
 	RotationHumanoid rot = RotConvertToWorld({ update.upperYaw, update.upperPitch, update.bodyYaw });
 
-	game->OnPlayerUpdatePosition(clientHd, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, ActionStateID::INVALID, update.localTimeS);
+	game->OnPlayerUpdatePosition(clientHd, actorUID, f2v(update.p3nPos), f2v(update.p3nDir), rot, update.nSpeed, update.actionState, update.localTimeS);
 }
 
 void GamePacketHandler::HandlePacket_CN_GameUpdateRotation(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

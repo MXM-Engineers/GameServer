@@ -287,7 +287,7 @@ void Game::Update(Time localTime_)
 		} break;
 	}
 
-	world.Update(localTime);
+	world.Update(localTime, TimeDiffSec(TimeRelNow()));
 
 	foreach_const(player, world.players) {
 		Dbg::PlayerMaster e;
@@ -328,13 +328,11 @@ void Game::Update(Time localTime_)
 bool Game::LoadMap()
 {
 	// TODO: Should probably part of world?
-	world.physics.CreateStaticCollider("PVP_DeathMatch01_Collision", vec3(0), vec3(0), PhysicsCollisionGroup::Static);
-	world.physics.CreateStaticCollider("PVP_Deathmatch01_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
-	world.physics.CreateStaticCollider("PVP_Deathmatch01_Aim", vec3(0), vec3(0), PhysicsCollisionGroup::Aim);
-	world.physics.CreateStaticCollider("PVP_Deathmatch01_sidewall_GuardrailMob", vec3(0), vec3(0), PhysicsCollisionGroup::FenceAll);
-	// --------------------------------
-
 	const GameXmlContent& content = GetGameXmlContent();
+	foreach_const(prop, content.mapPvpDeathMatch.collisionProps) {
+		world.physics.CreateCollisionAsset(prop->assetName.data(), prop->pos, prop->rot, prop->scale, PhysicsCollisionGroup::Prop);
+	}
+	// --------------------------------
 
 	foreach(it, content.mapPvpDeathMatch.creatures) {
 		// don't spawn "spawn points"
@@ -414,9 +412,6 @@ bool Game::LoadMap()
 			auto& actor = world.SpawnDynamic(CI_WALL, it->ID);
 			actor.pos = it->pos;
 			actor.rot = it->rot;
-			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_GuardrailMob", actor.pos, actor.rot, PhysicsCollisionGroup::FenceAll);
-			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_AIobj", actor.pos, actor.rot, PhysicsCollisionGroup::FenceAll);
-			world.physics.CreateStaticCollider("PvP_Death_NM_Wall04_Collision", actor.pos, actor.rot, PhysicsCollisionGroup::Static);
 		}
 	}
 	return true;
@@ -501,57 +496,13 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		VelqorTrace::Emit("input_move", f);
 	}
 
-	const f64 serverTime = TimeDiffSec(TimeRelNow());
-
-	static f64 prevClientTime = 0;
-	static f64 prevServerTime = 0;
-	static vec3 prevPos = vec3(0);
-	static vec3 prevBodyPos = vec3(0);
-	static f64 accumulatedSpeedDiff = 0.0;
-
-	if(dir == vec2(0)) {
-		accumulatedSpeedDiff = 0.0;
-	}
-	else {
-		f64 clientDelta = clientTime - prevClientTime;
-		f64 serverDelta = serverTime - prevServerTime;
-		vec3 posDelta = prevPos - pos;
-		vec3 posBodyDelta = prevBodyPos - player.body->GetWorldPos();
-
-		vec2 delta = vec2(pos - player.body->GetWorldPos());
-		f64 speedClient = glm::length(posDelta) / clientDelta;
-		f64 speedServer = glm::length(posBodyDelta) / serverDelta;
-		if(speedClient - speedServer > 0) {
-			accumulatedSpeedDiff += speedClient - speedServer;
-		}
-
-		LOG("Position diff = %f", glm::length(delta));
-		LOG("Speed client = %g", speedClient);
-		LOG("Speed server = %g", speedServer);
-		LOG("Speed diff accumulated = %g", accumulatedSpeedDiff);
-	}
-
-	prevClientTime = clientTime;
-	prevServerTime = serverTime;
-	prevPos = pos;
-	prevBodyPos = player.body->GetWorldPos();
-
-
-	// TODO: check for movement hacking
-	if(dir.x == 0 && dir.y == 0) {
-		player.input.moveDir = vec2(0);
-		player.input.moveTo = pos;
-	}
-	else {
-		const vec2 moveDir = glm::normalize(vec2(dir));
-		if(!std::isfinite(moveDir.x) || !std::isfinite(moveDir.y)) {
-			return;
-		}
-		player.input.moveDir = moveDir;
-		player.input.moveTo = pos + vec3(moveDir * speed, 0);
-	}
-	player.input.rot = rot;
-	player.input.speed = speed;
+	World::Player::Input input{};
+	input.moveDir = dir;
+	input.rot = rot;
+	input.speed = speed;
+	input.clientTime = clientTime;
+	input.action = action;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Movement, input, TimeDiffSec(TimeRelNow()), true);
 }
 
 void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
@@ -576,7 +527,9 @@ void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, cons
 		return;
 	}
 
-	player.input.rot = rot;
+	World::Player::Input input{};
+	input.rot = rot;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Rotation, input, TimeDiffSec(TimeRelNow()), false);
 }
 
 void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
@@ -642,11 +595,14 @@ void Game::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, Act
 	}
 
 	// TODO: check hacking
-	player.input.rot.bodyYaw = rotate;
-	player.input.rot.upperYaw = upperRotate;
-	player.input.action = state;
-	player.input.actionParam1 = param1;
-	player.input.actionParam2 = param2;
+	World::Player::Input input{};
+	input.rot = player.input.rot;
+	input.rot.bodyYaw = rotate;
+	input.rot.upperYaw = upperRotate;
+	input.action = state;
+	input.actionParam1 = param1;
+	input.actionParam2 = param2;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Action, input, TimeDiffSec(TimeRelNow()), false);
 }
 
 void Game::OnPlayerLoadingComplete(ClientHandle clientHd)
@@ -666,7 +622,9 @@ void Game::OnPlayerTag(ClientHandle clientHd, ActorUID actorUID)
 	ASSERT(player.clientHd == clientHd);
 
 	// TODO: cooldown
-	player.input.tag = 1;
+	World::Player::Input input{};
+	input.tag = true;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Tag, input, TimeDiffSec(TimeRelNow()), false);
 
 	if(VelqorTrace::Enabled()) {
 		char f[256];
@@ -683,7 +641,8 @@ void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f3
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	const bool velqorAccepted = actorUID == player.Main().UID && std::isfinite(rotate) &&
+	const u8 admittedMaster = world.AdmittedMaster(player);
+	const bool velqorAccepted = actorUID == player.characters[admittedMaster]->UID && std::isfinite(rotate) &&
 		std::isfinite(moveDirX) && std::isfinite(moveDirY);
 
 	if(VelqorTrace::Enabled()) {
@@ -700,9 +659,11 @@ void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f3
 	}
 
 	if(!velqorAccepted) return;
-	player.input.jumpMoveDir = vec2(moveDirX, moveDirY);
-	player.input.jumpRotate = MxmYawToWorldYaw(rotate);
-	player.input.jump = 1;
+	World::Player::Input input{};
+	input.jumpMoveDir = vec2(moveDirX, moveDirY);
+	input.jumpRotate = MxmYawToWorldYaw(rotate);
+	input.jump = true;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Jump, input, TimeDiffSec(TimeRelNow()), false);
 }
 
 void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo)
@@ -711,8 +672,6 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	player.input.cast = cast;
-	player.input.cast.clientTime = posInfo.clientTime;
 
 	if(VelqorTrace::Enabled()) {
 		uint32_t traceTargets[16];
@@ -731,6 +690,8 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 		VelqorTrace::CatF32(f, sizeof(f), len, posInfo.clientTime);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"pos_client\":");
 		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posInfo.pos.x, 3);
+		VelqorTrace::Catf(f, sizeof(f), len, ",\"dir_client\":");
+		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posInfo.moveDir.x, 2);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"rot_client\":");
 		VelqorTrace::CatVec(f, sizeof(f), len, (const float*)&posInfo.rot.x, 3);
 		VelqorTrace::Catf(f, sizeof(f), len, ",\"speed_client\":");
@@ -738,9 +699,15 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 		VelqorTrace::Emit("cast_request", f);
 	}
 
-	RotationHumanoid rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
-	// TODO: convert clientTime to localTime
-	OnPlayerUpdatePosition(clientHd, actorUID, f2v(posInfo.pos), f2v(posInfo.moveDir), rot, posInfo.speed, ActionStateID::INVALID, 0);
+	World::Player::Input input{};
+	input.cast = cast;
+	input.cast.clientTime = posInfo.clientTime;
+	input.clientTime = posInfo.clientTime;
+	input.moveDir = f2v(posInfo.moveDir);
+	input.rot = { posInfo.rot.x, posInfo.rot.y, posInfo.rot.z };
+	input.speed = posInfo.speed;
+	input.action = ActionStateID::INVALID;
+	world.QueuePlayerInput(player, actorUID, World::InputKind::Cast, input, TimeDiffSec(TimeRelNow()), true);
 
 	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.pos.x, cast.pos.y, cast.pos.z);
 }

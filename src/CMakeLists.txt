@@ -115,6 +115,17 @@ if(BUILD_TESTING)
 	add_test(NAME physics_tests COMMAND physics_tests)
 	set_tests_properties(physics_tests PROPERTIES
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+	add_executable(network_tests
+		${COMMON_SOURCES}
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/network_tests.cpp
+		${EXTERNAL_DIR}/tracy-0.8/TracyClient.cpp)
+	target_include_directories(network_tests PRIVATE ${SERVER_COMMON_INCLUDES})
+	target_link_libraries(network_tests PRIVATE ${SERVER_COMMON_LINKS} ${SERVER_COMMON_LINKS_WIN})
+	target_compile_definitions(network_tests PRIVATE ${SERVER_COMMON_DEFINES})
+	mxm_debug_suffix(network_tests)
+	add_test(NAME network_tests COMMAND network_tests)
+	set_tests_properties(network_tests PROPERTIES
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 endif()
 
 # ---- MatchMaker (mm_srv) ----

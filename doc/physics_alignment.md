@@ -519,7 +519,7 @@ The native local-mode predicate at `0x01a49527` selects segmented movement when 
 
 Observation-only `warp_ownership` records in `20261009_sol_warp_resume_gait` distinguish walking permission from destination residual. Native effective walking speed changes from 644.799988 to zero one frame before WARP, despite a nonzero input direction and empty horizontal graph vectors. It returns to 644.799988 when the action leaves WARP. The current five authored WARP action keys omit horizontal motion graphs; their server programs now retain this walking ownership without freezing ordinary gravity after the forced displacement reaches zero.
 
-`STATE_BLOCK` releases the state-transition gate; it does not directly restore walking speed. Actual incoming movement/action state changes can cancel WARP after that authored release. Cancellation clears the destination, walking ownership and ignored-unit mask atomically, as `0x01a4ad85`, `0x01ad356f` and `0x01a4ae7e` do. A successor clip's first-playing callback no longer clears the destination. Invalid-caster cleanup also releases both destination and mask. Replay retains the gate and physical state, while a per-input ledger publishes the return action once.
+`STATE_BLOCK` releases the state-transition gate; it does not directly restore walking speed. Known held movement services that gate without waiting for another packet; fresh explicit behaviour changes remain separate from ordinary behaviour snapshots. Cancellation clears the destination, walking ownership and ignored-unit mask atomically, as `0x01a4ad85`, `0x01ad356f` and `0x01a4ae7e` do. A successor clip's first-playing callback no longer clears the destination. Invalid-caster cleanup also releases both destination and mask. Replay retains the gate and physical state, while a per-input ledger publishes the return action once.
 
 All 35 real-World/SDK regressions pass in Release and actual CHECKED Debug. Added coverage exercises held-direction reset, yaw fallback, blocked destination ownership and restoration, successive climbable steps, an early movement request held behind the state gate, and late input replay through WARP cancellation without duplicate actor-action publication. The temporary native observer was removed and the original harness rebuilt before final-source captures.
 
@@ -534,6 +534,39 @@ Both final runs accept and execute three skills: WARP cancels on return to movem
 Full parity remains unproven. The local first WARP endpoint still differs by 10.743151 units; the original raw-QPC 25-unit gate is unchanged and fails in both final captures. The retained pre-send witness separately proves a 29.759594-unit violation 49.2296 ms before the first movement socket submission, with no intervening outgoing game packet. Future unsent input cannot be supplied by server reception or replay. Native notification-consumption phase, contact history and broader WARP/remote/state coverage remain explicit gaps, not tuned delays or accepted parity.
 
 Evidence: `build/velqor/matching/native_warp_evidence.json`, `native_pre_send_causality_evidence.json` and the named runs. The final local run retains its exact `scenario.json` for reproduction.
+
+## Held-input return and native frame-time timers
+
+Checkpoint `b95e957` commits the verified action-clock, SDK-dispatch and WARP work above. The next local peak is ordinary walking and ledge departure before Sniper A, not an ordinary-jump curve: the client is at Z=562.765320 while the server is at Z=659.696228, with a 101.242037-unit raw error.
+
+The client resumes held movement before its next position packet. In `20261009_sol_warp_resume_final`, native walking resumes at frame 1362 and QPC `286795598373500`; the next movement handler is 97.7662 ms later. `MainCharInput_UpdateMove` at `0x01a9874a` checks the live release gate (`0x01a98971`) and held-direction flag (`0x01a9897a`), then requests `NONE_BEHAVIORSTATE` through virtual `+0x88`. That request is independent of effective walking speed. Behaviour state 18 is not a run-animation state; directional movement is selected separately through `+0xF8`.
+
+The server now services the already-received nonzero direction each update. It neither invents a future key release nor waits for another movement packet. Ordinary `NONE_BEHAVIORSTATE` snapshots and move-state IDs are not explicit cancellations; a zero-direction STOP keeps WARP ownership until natural completion or a genuine explicit behaviour change. Fresh behaviour observations are callback arguments, not cached requests that mature after a closed gate. Two real-World/SDK regressions fail before this correction: held movement cannot return without another packet, and a standing/stopped owner loses unit filtering after a stale snapshot.
+
+The remaining early release was a separate timer law. The action timer uses `EntityManager+0x14`; constructor `0x01a2ad35` calls `0x012e32cf(0)`, selecting its frame-time clock rather than `GetTickCount`. `0x012e3509` multiplies the published `f32` frame delta by 1,000, truncates it to an integer and adds it to the timer counter without fractional carry. At 60 Hz, each frame contributes 16 ms. `MainChar_FrameUpdate` at `0x01a287c3` processes input and actor motion before this timer service. Expiry at `0x012e3628` is counter greater than or equal to deadline; `0x01abfbf4` validates the live action frame before opening the gate.
+
+Supported state gates now retain integer milliseconds and the last service update in replay snapshots. The timer advances once per owner update after action processing; input consumes expiry on a following update. The correction does not add a fitted delay or a hardcoded bonus tick. Its physical boundary regression fails before the correction and passes afterward; the preceding incidental flat-second boundary pin was replaced by packet-independent return coverage.
+
+| Moving WARP ownership interval | Native duration, ms | Server duration, ms |
+| --- | ---: | ---: |
+| `20261009_sol_frame_timer_local` | 216.6622 | 216.6501 |
+
+All 38 real-World/SDK regressions pass in Release and actual CHECKED Debug. Coverage includes zero-speed held requests, first return without a new packet, once-only return publication after historical replay, delivered STOP before the gate, fresh/stale ordinary snapshots after release, integer timer boundaries and actual collision queries through the retained unit filter.
+
+| Final-source scenario | Independent raw pairs | Maximum error, units | Mean error, units | Physics verdict |
+| --- | ---: | ---: | ---: | --- |
+| Moving local: `20261009_sol_frame_timer_local` | 3,694 | 460.743593 | 4.466713 | diverged |
+| Moving added RTT: `20261009_sol_frame_timer_rtt120` | 3,700 | 546.715077 | 36.096685 | diverged |
+| Standing local: `20261009_sol_frame_timer_standing` | 3,686 | 76.959013 | 5.979287 | diverged |
+
+Every final scenario accepts and executes three skills, starts all five jumps and passes the required control/identity, modifier, STOP and disconnect gates without corrections. Moving WARP cancels on the held request; standing WARP completes naturally with no premature cancellation. The relay adds at least 60.0253/60.0211 ms in the client/server directions. All 4,413 client bytes forward with equal hashes; 196 server tail bytes remain unforwarded at managed shutdown. Configurations restore byte-for-byte, original client/LEA hashes remain unchanged and no owned processes survive. No native observers were added for this continuation.
+
+The local ordinary walking/A window's peak falls to 38.830448 units, but full parity is not established. Instantaneous WARP onset still produces a raw-QPC phase spike; the final moving return is 9.0706 ms ahead of native consumption. Standing native mask ownership is 433.2699 ms versus 449.9817 ms from server command to completion. These measured gaps remain failures, not retimed trajectories or a changed 25-unit gate.
+
+The cast-origin difference is not an invariant extra walking stage. Builder `0x009c6b61`, caller `0x009d42fd` and sampler `0x009c37c9` transmit the pre-integrator position and counter; the request path does not install the action. Owner installation is reached through `SN_CastSkill` at `0x00a05b81`, then `0x0132a4d5` and `0x01339674`. The vanilla owner continues until that notification is consumed; its exact consumption instant is not transmitted to the server and changes with network delay. No extra walking quantum or invented cast-entry timestamp was added.
+
+Evidence: `build/velqor/matching/native_held_return_evidence.json`, the named final captures and the preserved scenario from `20261009_sol_warp_resume_final/scenario.json`.
+
 
 
 ## Suggested next verification targets

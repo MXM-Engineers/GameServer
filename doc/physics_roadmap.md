@@ -169,11 +169,22 @@ All 31 physics regressions pass in Release and actual CHECKED. Original-harness 
 
 DeepSeek V4.1 Flash reviewers supplied native direction and lifecycle evidence; the parent reproduced and verified the changes. WARP clears native movement direction before destination selection, so the server uses body yaw instead of stale transmitted direction. Forced local movement now uses the native 50-unit segmentation policy; a real-SDK staircase fails before correction and passes afterward.
 
-Current WARP programs preserve walking permission separately from forced displacement and gravity. Actual incoming state transitions cancel them after the authored `STATE_BLOCK` gate opens, releasing destination and collision mask together rather than waiting for the entire animation. Replay restores this state and publishes return actions once. The owner-position echo, its obsolete notification ledger and the invalid destination-iterator proxy are removed.
+Current WARP programs preserve walking permission separately from forced displacement and gravity. Known held movement requests can cancel them after the authored `STATE_BLOCK` gate opens without another packet; actual behaviour changes remain distinct from ordinary movement snapshots. Cancellation releases destination and collision mask together rather than waiting for the entire animation. Replay restores this state and publishes return actions once. The owner-position echo, its obsolete notification ledger and the invalid destination-iterator proxy are removed.
 
 All 35 physics regressions pass in Release and actual CHECKED. Final unchanged-client moving-WARP local and added-120-ms-RTT scenarios complete all required controls, identity, five jumps, STOP and disconnect checks without corrections. WARP cancels on movement return and both Sniper skills complete. Both relay streams forward entirely with equal hashes; configurations restore and no owned runtime survives.
 
 Full raw-QPC physics still diverges at the original 25-unit threshold. The first local WARP endpoint retains a 10.743151-unit phase/origin discrepancy, and pre-send evidence proves a separate information limit before any movement packet exists. Exact counts, errors, binary hashes and observer cleanup are recorded in `physics_alignment.md` and `build/velqor/matching/native_warp_evidence.json`.
+
+## Held-input and frame-time timer continuation
+
+Checkpoint `b95e957` is committed. Native `MainCharInput_UpdateMove` services a held direction when the authored state gate opens; it does not wait for the next position packet. Fresh explicit behaviour changes are now separate from cached ordinary snapshots, so zero-direction STOP and standing owners do not cancel prematurely.
+
+The gameplay timer is a frame-time counter, not a wall-clock deadline: each frame contributes truncated integer milliseconds without fractional carry, and timer callbacks run after input/actor processing. Supported WARP gates now preserve that counter and service phase through replay. No bonus tick, trajectory shift or new reconciliation stream was added.
+
+All 38 Release/CHECKED physics regressions pass, including failing-before/passing-after held-return, unit-filter and timer-boundary scenarios. Final unchanged-client moving local, added-120-ms-RTT and standing runs pass all required controls and five jumps without corrections. WARP ownership duration now matches the measured native local interval; full raw-QPC parity still fails the original 25-unit gate. Native notification consumption, pre-send information, standing clip-end phase and broader state/remote coverage remain explicit gaps.
+
+Exact final metrics, relay tail accounting, restoration checks and native addresses are recorded in `physics_alignment.md` and `build/velqor/matching/native_held_return_evidence.json`. The continued correction is separate from the committed checkpoint.
+
 
 
 ## Recommended broader sequence

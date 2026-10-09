@@ -749,6 +749,112 @@ bool WarpDirectionAndLifecycle()
 	return true;
 }
 
+bool WarpHeldInputReturn()
+{
+	for(f32 speed: {0.f, 600.f}) {
+		WorldScene scene;
+		auto& player = scene.Player(ClientHandle(1), ClassType(3));
+		World::Player::Input input{};
+		input.action = ActionStateID::NONE_BEHAVIORSTATE;
+		REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.0, true));
+		input.moveDir = vec2(0, 0.5f);
+		input.speed = speed;
+		input.action = ActionStateID::INVALID;
+		input.clientTime = 0.100f;
+		input.cast.skillID = SkillID(180030002);
+		input.cast.clientTime = input.clientTime;
+		REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Cast, input, 0.101, true));
+		for(u32 tick = 1; tick <= 7; ++tick) scene.Step(tick * 17);
+		const vec3 destination = player.body->GetWorldPos();
+		REQUIRE(Near(destination, vec3(450, 0, 0), 0.005f));
+		u32 tick = 8;
+		bool returnedToMovement = false;
+		for(; tick <= 22; ++tick) {
+			const vec3 before = player.body->GetWorldPos();
+			scene.Step(tick * 17);
+			const auto* published = scene.replica->frameCur->FindMaster(player.Main().UID);
+			if(published && published->actionState == ActionStateID::NONE_BEHAVIORSTATE) {
+				REQUIRE(Near(player.body->GetWorldPos(), before + vec3(0, speed * 0.0085f, 0), 0.01f));
+				REQUIRE(!player.body->destActive && !player.graphIgnoreCollision);
+				returnedToMovement = true;
+				break;
+			}
+			REQUIRE(Near(player.body->GetWorldPos(), destination, 0.005f));
+		}
+		REQUIRE(returnedToMovement);
+		scene.Step(++tick * 17);
+		const vec3 resumed = player.body->GetWorldPos();
+		World::Player::Input refinement{};
+		refinement.clientTime = 0.050f;
+		REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Rotation,
+			refinement, f64(tick) * 0.017 + 0.010, true));
+		scene.Step(++tick * 17);
+		REQUIRE(Near(player.body->GetWorldPos(), resumed + vec3(0, speed * 0.0085f, 0), 0.01f));
+		const auto* replayed = scene.replica->frameCur->FindMaster(player.Main().UID);
+		REQUIRE(replayed && replayed->actionState == ActionStateID::INVALID);
+	}
+	return true;
+}
+
+bool WarpIntegerTimerBoundary()
+{
+	WorldScene scene;
+	auto& player = scene.Player(ClientHandle(1), ClassType(3));
+	World::Player::Input input{};
+	input.action = ActionStateID::NONE_BEHAVIORSTATE;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.0, true));
+	input.moveDir = vec2(0, 0.5f);
+	input.speed = 600.f;
+	input.action = ActionStateID::INVALID;
+	input.clientTime = 0.100f;
+	input.cast.skillID = SkillID(180030002);
+	input.cast.clientTime = input.clientTime;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Cast, input, 0.101, true));
+	for(u32 tick = 1; tick <= 7; ++tick) scene.Step(tick * 17);
+	const vec3 destination = player.body->GetWorldPos();
+	for(u32 tick = 8; tick <= 19; ++tick) {
+		scene.Step(tick * 17);
+		REQUIRE(Near(player.body->GetWorldPos(), destination, 0.005f));
+	}
+	scene.Step(20 * 17);
+	REQUIRE(Near(player.body->GetWorldPos(), destination + vec3(0, 5.1f, 0), 0.01f));
+	REQUIRE(!player.body->destActive && !player.graphIgnoreCollision);
+	return true;
+}
+
+bool WarpStandingIgnoresStaleBehavior()
+{
+	WorldScene scene;
+	Box(scene.world.physics, NxVec3(250, 50, 500), NxVec3(450, 250, 500), PhysicsCollisionGroup(13));
+	auto& player = scene.Player(ClientHandle(1), ClassType(3));
+	World::Player::Input input{};
+	input.action = ActionStateID::NONE_BEHAVIORSTATE;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.0, true));
+	input.speed = 600.f;
+	input.moveDir = vec2(0, 0.5f);
+	input.action = ActionStateID::INVALID;
+	input.clientTime = 0.100f;
+	input.cast.skillID = SkillID(180030002);
+	input.cast.clientTime = input.clientTime;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Cast, input, 0.101, true));
+	input.cast.skillID = SkillID::INVALID;
+	input.moveDir = vec2(0);
+	input.action = ActionStateID::NONE_BEHAVIORSTATE;
+	input.clientTime = 0.130f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.131, true));
+	for(u32 tick = 1; tick <= 20; ++tick) scene.Step(tick * 17);
+	REQUIRE(Near(player.body->GetWorldPos(), vec3(450, 0, 0), 0.005f));
+	REQUIRE(Near(scene.world.physics.FindMovePos(player.body, vec3(0, 200, 0), Dt), vec3(450, 200, 0), 0.005f));
+	input.clientTime = 0.350f;
+	REQUIRE(scene.world.QueuePlayerInput(player, player.Main().UID, World::InputKind::Movement, input, 0.351, true));
+	for(u32 tick = 21; tick <= 25; ++tick) scene.Step(tick * 17);
+	REQUIRE(Near(scene.world.physics.FindMovePos(player.body, vec3(0, 200, 0), Dt), vec3(450, 200, 0), 0.005f));
+	for(u32 tick = 26; tick <= 40; ++tick) scene.Step(tick * 17);
+	const vec3 blocked = scene.world.physics.FindMovePos(player.body, vec3(0, 200, 0), Dt);
+	REQUIRE(Near(blocked.x, 450.f, 0.005f) && blocked.y > 80.f && blocked.y < 100.f);
+	return true;
+}
+
 bool WarpBlockedDestinationRestore()
 {
 	Scene scene;
@@ -814,7 +920,7 @@ bool WarpDestinationInputReplay()
 	input.speed = 600.f;
 	input.clientTime = 0.130f;
 	input.cast.skillID = SkillID::INVALID;
-	input.action = ActionStateID(18);
+	input.action = ActionStateID::NONE_BEHAVIORSTATE;
 	REQUIRE(reference->world.QueuePlayerInput(expected, expected.Main().UID, World::InputKind::Movement, input, 0.131, true));
 	for(u32 tick = 1; tick <= 13; ++tick) {
 		scene.Step(tick * 17);
@@ -1280,6 +1386,9 @@ int main()
 		{"first-clip graph activation and walking ownership", FirstClipGraphLifecycle},
 		{"omitted animation index first-playing graph ownership", OmittedIndexGraphLifecycle},
 		{"authored WARP clears held direction and resumes walking after completion", WarpDirectionAndLifecycle},
+		{"held WARP returns without a new packet and publishes once through replay", WarpHeldInputReturn},
+		{"integer-millisecond state timer is consumed on the following input update", WarpIntegerTimerBoundary},
+		{"standing WARP retains unit filtering despite a stale behavior snapshot", WarpStandingIgnoresStaleBehavior},
 		{"blocked WARP motor ownership, cancellation and restored destination", WarpBlockedDestinationRestore},
 		{"forced WARP resolves successive climbable steps", WarpSegmentedTraversal},
 		{"late input replay through an active WARP destination", WarpDestinationInputReplay},

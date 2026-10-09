@@ -258,7 +258,8 @@ struct World
 		bool graphDone = false;
 		bool graphActive = false;
 		bool ownsWalking = false;
-		f32 stateTransitionAt = -1.0f;
+		i32 stateTimerRemainingMs = -1;
+		u32 stateTimerUpdate = 0;
 		u32 simTicks = 0;
 		u32 bornUpdate = 0;
 		f32 graphElapsed = 0.f;
@@ -420,7 +421,7 @@ private:
 	void ExecuteSkillProgram(SkillProgram& prog);
 	void SavePlayerFrame(Player& player, PlayerFrame& frame, u32 update, Time frameTime, f64 serverTime);
 	void RestorePlayerFrame(Player& player, const PlayerFrame& frame);
-	void ApplyPlayerAction(Player& player);
+	void ApplyPlayerAction(Player& player, ActionStateID observedAction);
 	void SimulatePlayer(Player& player, u32 update, Time frameTime, f64 serverTime);
 	void UpdatePlayerTimeline(Player& player, f64 serverTime);
 	void ApplyPlayerControls(Player& player, InputEvent* event);

@@ -4,6 +4,7 @@
 #include <eathread/eathread_atomic.h>
 #include "velqor_trace.h"
 #include <cmath>
+#include <limits>
 
 static EA::Thread::AtomicUint32 g_velqorUpdateSeq = 0;
 
@@ -483,20 +484,22 @@ void World::ApplyPlayerInput(Player& player, InputEvent& event)
 			simulationEvent = nullptr;
 		} break;
 	}
-	if(event.kind == InputKind::Movement || event.kind == InputKind::Action) ApplyPlayerAction(player);
+	if(event.kind == InputKind::Movement || event.kind == InputKind::Action) ApplyPlayerAction(player, event.data.action);
 }
 
-void World::ApplyPlayerAction(Player& player)
+void World::ApplyPlayerAction(Player& player, ActionStateID observedAction)
 {
-	if(!player.movement.walkingBlocked || player.input.action == ActionStateID::INVALID) return;
+	if(!player.movement.walkingBlocked) return;
+	const ActionStateID action = observedAction > ActionStateID::NONE_BEHAVIORSTATE ? observedAction :
+		(player.input.moveDir != vec2(0) ? ActionStateID::NONE_BEHAVIORSTATE : ActionStateID::INVALID);
+	if(action == ActionStateID::INVALID) return;
 	for(const auto& program: skillProgramList) {
 		if(program.casterUID != player.Main().UID || !program.ownsWalking ||
-			program.IsDoneExecuting() || player.input.action == program.actionID || program.stateTransitionAt < 0.0f) continue;
-		const f32 elapsed = f32(SimulationUpdate() - program.bornUpdate) / f32(UPDATE_TICK_RATE);
-		if(elapsed < program.stateTransitionAt) return;
+			program.IsDoneExecuting() || action == program.actionID || program.stateTimerRemainingMs != 0 ||
+			program.stateTimerUpdate == SimulationUpdate()) continue;
 		const bool emitAction = EmitInputNotification(player, program.inputSequence, 64);
 		CancelPlayerPrograms(player);
-		if(emitAction) player.Main().actionState = player.input.action;
+		if(emitAction) player.Main().actionState = action;
 		return;
 	}
 }
@@ -575,7 +578,7 @@ void World::SimulatePlayer(Player& player, u32 update, Time frameTime, f64 serve
 		integrateWalking(event.serverTime);
 		ApplyPlayerInput(player, event);
 	}
-	ApplyPlayerAction(player);
+	ApplyPlayerAction(player, ActionStateID::INVALID);
 	integrateWalking(serverTime);
 	ApplyPlayerControls(player, nullptr);
 	player.movement.rot = player.input.rot;
@@ -1178,6 +1181,7 @@ void World::PlayerCastSkill(Player& player, SkillID skillID, const vec3& castPos
 	prog.simTicks = 0;
 	prog.bornUpdate = SimulationUpdate();
 	prog.clipUpdate = prog.bornUpdate;
+	prog.stateTimerUpdate = prog.bornUpdate - 1;
 	prog.clipClock = f32(TimeDurationSec(Time::ZERO, physics.localTime));
 	prog.graphApplyUpdate = SimulationUpdate() - 1;
 	prog.inputSequence = inputSequence;
@@ -1361,9 +1365,11 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 
 		switch(cmd.type) {
 			case ActionCommand::Type::STATE_BLOCK: {
-				const f32 releaseAt = commandStart + cmd.delay;
-				prog.stateTransitionAt = prog.stateTransitionAt < 0.0f ? releaseAt :
-					eastl::min(prog.stateTransitionAt, releaseAt);
+				const f32 delayMs = cmd.delay * 1000.f;
+				ASSERT(std::isfinite(delayMs) && delayMs >= 0.f && f64(delayMs) <= std::numeric_limits<i32>::max());
+				const i32 remainingMs = i32(delayMs);
+				prog.stateTimerRemainingMs = prog.stateTimerRemainingMs < 0 ? remainingMs :
+					eastl::min(prog.stateTimerRemainingMs, remainingMs);
 			} break;
 			case ActionCommand::Type::MOVE: {
 				if(cmd.move.preset == ActionCommand::MovePreset::WARP) {
@@ -1414,6 +1420,11 @@ void World::ExecuteSkillProgram(SkillProgram& prog)
 		}
 	}
 	ApplyHorizontalGraph(*this, prog, player);
+	if(prog.stateTimerRemainingMs >= 0 && prog.stateTimerUpdate != SimulationUpdate()) {
+		prog.stateTimerUpdate = SimulationUpdate();
+		const i32 elapsedMs = i32(SimulationStepDuration() * 1000.f);
+		prog.stateTimerRemainingMs = eastl::max(prog.stateTimerRemainingMs - elapsedMs, 0);
+	}
 
 
 	const bool graphPending = prog.horizontalVariant && !prog.graphDone;

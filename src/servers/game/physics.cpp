@@ -10,6 +10,8 @@
 #include <cstring>
 #include "velqor_trace.h"
 
+static constexpr f32 RigidTimestep = 1.0f / 30.0f;
+
 class NxMemoryReadStream: public NxStream
 {
 	const void* data;
@@ -327,6 +329,9 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 	NxSceneDesc desc;
 	desc.simType = NX_SIMULATION_SW;
 	desc.gravity = NxVec3(0.0f, 0.0f, -1800.0f);
+	desc.maxTimestep = RigidTimestep;
+	desc.maxIter = 1;
+	desc.timeStepMethod = NX_TIMESTEP_FIXED;
 
 	NxScene* scene;
 	{ LOCK_MUTEX(mutexSceneCreate);
@@ -337,6 +342,8 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 		ASSERT(scene);
 
 		out->scene = scene;
+		out->rigidClock = 0.0f;
+		out->rigidSimulatedThrough = 0.0f;
 		NxMaterial* material = scene->getMaterialFromIndex(0);
 		ASSERT(material);
 		material->setStaticFriction(0.5f);
@@ -361,10 +368,20 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 void PhysicsScene::Step()
 {
 	ProfileFunction();
+	const f32 dt = StepDuration();
 	foreach(c, colliderList) {
-		StepBody(*c);
+		StepBody(*c, c->moveDir * (c->moveSpeed * dt), dt);
 	}
-	FinishStep();
+	FinishStep(dt);
+}
+
+f32 PhysicsScene::StepDuration() const
+{
+	const f32 clock = f32(TimeDurationSec(Time::ZERO, localTime));
+	const f32 nextClock = clock + f32(UPDATE_RATE);
+	const f32 dt = nextClock - clock;
+	ASSERT(dt > 0.f);
+	return dt;
 }
 
 PhysicsBodyState PhysicsScene::CaptureBodyState(const PhysicsDynamicBody& body) const
@@ -387,6 +404,9 @@ PhysicsBodyState PhysicsScene::CaptureBodyState(const PhysicsDynamicBody& body) 
 	state.jumpHeight = body.jumpHeight;
 	state.horizontalGraphDisplacement = body.horizontalGraphDisplacement;
 	state.horizontalGraphActive = body.horizontalGraphActive;
+	state.destPos = body.destPos;
+	state.destActive = body.destActive;
+	state.destForced = body.destForced;
 	state.suppressContactReport = body.suppressContactReport;
 	return state;
 }
@@ -421,6 +441,9 @@ void PhysicsScene::RestoreBodyState(PhysicsDynamicBody& body, const PhysicsBodyS
 	body.jumpHeight = state.jumpHeight;
 	body.horizontalGraphDisplacement = state.horizontalGraphDisplacement;
 	body.horizontalGraphActive = state.horizontalGraphActive;
+	body.destPos = state.destPos;
+	body.destActive = state.destActive;
+	body.destForced = state.destForced;
 	body.suppressContactReport = state.suppressContactReport;
 	NxActor* actor = body.collider->getActor();
 	ASSERT(actor && actor->getNbShapes() == 1);
@@ -430,15 +453,26 @@ void PhysicsScene::RestoreBodyState(PhysicsDynamicBody& body, const PhysicsBodyS
 	body.collider->reportSceneChanged();
 }
 
-void PhysicsScene::StepBody(PhysicsDynamicBody& body)
+void PhysicsScene::StepBody(PhysicsDynamicBody& body, const vec2& walkingDisplacement, f32 dt)
 {
-	const f32 dt = (f32)UPDATE_RATE;
+	ASSERT(dt > 0.f);
+	if(body.destActive && body.destForced) {
+		const vec3 position = body.GetWorldPos();
+		const vec3 delta = body.destPos - position;
+		if(delta.x != 0.0f || delta.y != 0.0f || delta.z != 0.0f) {
+			const bool segmented = (delta.x != 0.f || delta.y != 0.f) &&
+				std::sqrt(delta.y * delta.y + delta.x * delta.x) / dt > 2000.f;
+			Move(&body, delta, dt, segmented);
+			body.horizontalGraphDisplacement = vec2(0);
+			body.horizontalGraphActive = false;
+			return;
+		}
+	}
 	const f32 gravity = GetGameXmlContent().creatureGravity;
 	body.vel.x = body.moveDir.x * body.moveSpeed;
 	body.vel.y = body.moveDir.y * body.moveSpeed;
 	body.vel.z += gravity * dt;
-	const f32 walkDistance = body.moveSpeed * dt;
-	vec3 displacement(body.moveDir * walkDistance, body.vel.z * dt);
+	vec3 displacement(walkingDisplacement, body.vel.z * dt);
 	const bool ordinaryVertical = !body.horizontalGraphActive && !body.jumpMotion;
 	if(body.horizontalGraphActive) {
 		displacement = vec3(body.horizontalGraphDisplacement, 0);
@@ -455,10 +489,9 @@ void PhysicsScene::StepBody(PhysicsDynamicBody& body)
 	const vec3 position = body.GetWorldPos();
 	vec3 target = position + displacement;
 	if(ordinaryVertical && body.groundNormal.z > 0.7071f && body.groundNormal.z < 0.93f &&
-		body.moveDir.x * body.moveDir.x + body.moveDir.y * body.moveDir.y > 0.0f) {
-		const f32 dot = body.groundNormal.y * body.moveDir.y + body.groundNormal.x * body.moveDir.x + body.groundNormal.z * 0.0f;
-		const f32 extra = (dot * dot / (0.0f - body.groundNormal.z * dot)) * walkDistance;
-		target.z += extra * 0.7f;
+		walkingDisplacement.x * walkingDisplacement.x + walkingDisplacement.y * walkingDisplacement.y > 0.0f) {
+		const f32 projection = body.groundNormal.x * walkingDisplacement.x + body.groundNormal.y * walkingDisplacement.y;
+		target.z -= (projection / body.groundNormal.z) * 0.7f;
 	}
 	displacement = target - position;
 	const bool segmented = (displacement.x != 0.f || displacement.y != 0.f) &&
@@ -468,9 +501,16 @@ void PhysicsScene::StepBody(PhysicsDynamicBody& body)
 	body.horizontalGraphActive = false;
 }
 
-void PhysicsScene::FinishStep()
+void PhysicsScene::FinishStep(f32 dt)
 {
-	scene->simulate((f32)UPDATE_RATE);
+	ASSERT(dt > 0.f);
+	rigidClock += dt;
+	if(rigidClock <= rigidSimulatedThrough) return;
+	const u32 elapsedSteps = u32(std::ceil((rigidClock - rigidSimulatedThrough - 1e-6f) / RigidTimestep));
+	rigidSimulatedThrough += f32(elapsedSteps) * RigidTimestep;
+	const u32 steps = eastl::min(elapsedSteps, 8u);
+	scene->setTiming(RigidTimestep, steps, NX_TIMESTEP_FIXED);
+	scene->simulate(f32(steps) * RigidTimestep + 1.0f);
 	scene->flushStream();
 	scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 }
@@ -725,16 +765,30 @@ void PhysicsScene::ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 h
 	ASSERT(positioned);
 }
 
-bool PhysicsScene::StartJump(PhysicsDynamicBody* body, const JumpMotion& motion)
+void PhysicsScene::InstallJumpGraph(PhysicsDynamicBody* body, const JumpMotion& motion)
 {
-	ASSERT(motion.duration > 0.0f);
-	if(!body->grounded || body->jumpMotion) return false;
+	ASSERT(motion.duration > 0.0f && !body->jumpMotion);
 	body->jumpMotion = &motion;
 	body->jumpElapsed = 0.0f;
 	body->jumpHeight = 0.0f;
-	body->vel.z = 0.0f;
 	body->grounded = false;
-	return true;
+}
+
+void PhysicsScene::InstallMoveDest(PhysicsDynamicBody* body, const vec3& dest, bool forced)
+{
+	ASSERT(body && body->collider);
+	if(body->destActive) return;
+	body->destPos = dest;
+	body->destActive = true;
+	body->destForced = forced;
+}
+
+void PhysicsScene::CancelMoveDest(PhysicsDynamicBody* body)
+{
+	ASSERT(body);
+	body->destPos = vec3(0);
+	body->destActive = false;
+	body->destForced = false;
 }
 
 vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time, bool segmented)

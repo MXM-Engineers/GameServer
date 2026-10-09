@@ -15,6 +15,7 @@ ACTOR_A = 11
 ACTOR_B = 22
 LOCAL_A = 1001
 LOCAL_B = 2002
+LOCAL_C = 3003
 MS = 1_000_000
 
 
@@ -38,11 +39,22 @@ def correction_record(qpc_ns, local_actor_id, observation="post_handler", frame=
             "visual": [0.0, 0.0, 0.0]}
 
 
-def trajectories(posts, raw_samples):
-    samples = compare.parse_client_samples(list(raw_samples), phase="post")
-    pairs, _, segments = compare.pair_trajectories(
-        samples, posts, OWNER, EPOCHS, None, GAME_ID, PLAYER_INDEX)
+def tag_record(qpc_ns, actor_uid, main_chara_id, class_type):
+    return {"event": "tag_apply", "qpc_ns": qpc_ns, "game_id": GAME_ID,
+            "player_index": PLAYER_INDEX, "actor_uid": actor_uid,
+            "main_chara_id": main_chara_id, "class_type": class_type}
+
+
+def trajectories(posts, raw_samples, tags=None):
+    pairs, _, segments = trajectory_evidence(posts, raw_samples, tags)
     return pairs, segments
+
+
+def trajectory_evidence(posts, raw_samples, tags=None):
+    samples = compare.parse_client_samples(list(raw_samples), phase="post")
+    return compare.pair_trajectories(
+        samples, posts, OWNER, EPOCHS, None, GAME_ID, PLAYER_INDEX,
+        tag_applies=tags)
 
 
 class NdjsonTailTest(unittest.TestCase):
@@ -279,6 +291,145 @@ class AMotionBoundaryTest(unittest.TestCase):
         block = window["blocks"][0]
         self.assertEqual(block["correction"]["independent"], 2)
         self.assertEqual(block["correction"]["affected"], 2)
+
+
+class TagAckValidationTest(unittest.TestCase):
+
+    def _posts(self):
+        return [post_record(0, ACTOR_A, 0), post_record(100 * MS, ACTOR_A, 0),
+                post_record(200 * MS, ACTOR_B, 1), post_record(300 * MS, ACTOR_B, 1),
+                post_record(400 * MS, ACTOR_B, 1)]
+
+    def test_delayed_ack_retains_old_and_new_rows(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3),
+                   sample_record(230 * MS, LOCAL_A, 3),
+                   sample_record(260 * MS, LOCAL_B, 4),
+                   sample_record(300 * MS, LOCAL_B, 4)]
+        for sample in samples:
+            if sample["local_actor_id"] == LOCAL_A and sample["qpc_ns"] >= 200 * MS:
+                sample["feet"] = [50.0, 0.0, 0.0]
+        pairs, stats, segments = trajectory_evidence(self._posts(), samples, tags)
+        self.assertEqual([p["qpc_ns"] for p in pairs],
+                         [60 * MS, 210 * MS, 230 * MS, 260 * MS, 300 * MS])
+        self.assertEqual(stats["reasons"], {})
+        self.assertTrue(stats["identity_ok"])
+        pending = [p for p in pairs if p["pending_ack"]]
+        self.assertEqual([p["qpc_ns"] for p in pending], [210 * MS, 230 * MS])
+        for pair in pending:
+            self.assertEqual(pair["client_actor_id"], LOCAL_A)
+            self.assertEqual(pair["client_class_type"], 3)
+            self.assertEqual(pair["client_old_actor_id"], LOCAL_A)
+            self.assertEqual(pair["client_old_class_type"], 3)
+            self.assertEqual(pair["server_new_actor_uid"], ACTOR_B)
+            self.assertEqual(pair["server_new_class_type"], 4)
+            self.assertEqual(pair["tag_qpc_ns"], 150 * MS)
+            self.assertEqual(pair["tag_ack_qpc_ns"], 260 * MS)
+            self.assertEqual(pair["dist"], 50.0)
+        self.assertFalse(pairs[0]["pending_ack"])
+        self.assertEqual(pairs[0]["identity_role"], "ack")
+        self.assertEqual(segments[1]["client_identity"],
+                         {"local_actor_id": LOCAL_B, "class_type": 4})
+        ack = segments[1]["tag_ack"]
+        self.assertEqual(ack["server_qpc_ns"], 150 * MS)
+        self.assertEqual(ack["ack_qpc_ns"], 260 * MS)
+        self.assertEqual(ack["client_old_identity"],
+                         {"local_actor_id": LOCAL_A, "class_type": 3})
+        self.assertEqual(ack["client_new_identity"],
+                         {"local_actor_id": LOCAL_B, "class_type": 4})
+        self.assertEqual(ack["transition_start_ns"], 150 * MS)
+        self.assertEqual(ack["transition_end_ns"], 260 * MS)
+        self.assertEqual(ack["pending_samples"], 2)
+        report = compare.trajectory_report(pairs, {}, 25.0)
+        self.assertEqual(report["max_dist"], 50.0)
+        self.assertEqual(report["first_divergence"]["qpc_ns"], 210 * MS)
+
+    def test_unknown_identity_still_fails(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3),
+                   sample_record(230 * MS, LOCAL_C, 7),
+                   sample_record(260 * MS, LOCAL_B, 4)]
+        pairs, stats, segments = trajectory_evidence(self._posts(), samples, tags)
+        self.assertEqual(stats["reasons"], {"client_class_mismatch": 1})
+        self.assertFalse(stats["identity_ok"])
+        qpcs = [p["qpc_ns"] for p in pairs]
+        self.assertIn(210 * MS, qpcs)
+        self.assertNotIn(230 * MS, qpcs)
+
+    def test_missing_ack_fails(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3)]
+        pairs, stats, segments = trajectory_evidence(self._posts(), samples, tags)
+        self.assertEqual(stats["reasons"].get("missing_tag_ack"), 1)
+        self.assertFalse(stats["identity_ok"])
+        self.assertIn(210 * MS, [p["qpc_ns"] for p in pairs])
+        self.assertIsNone(segments[1]["client_identity"])
+
+    def test_wrong_local_actor_fails(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3),
+                   sample_record(230 * MS, LOCAL_A, 4),
+                   sample_record(260 * MS, LOCAL_B, 4)]
+        pairs, stats, segments = trajectory_evidence(self._posts(), samples, tags)
+        self.assertEqual(stats["reasons"].get("client_local_actor_mismatch"), 1)
+        self.assertFalse(stats["identity_ok"])
+        self.assertNotIn(230 * MS, [p["qpc_ns"] for p in pairs])
+
+    def _round_trip(self):
+        return [post_record(0, ACTOR_A, 0), post_record(100 * MS, ACTOR_A, 0),
+                post_record(200 * MS, ACTOR_B, 1), post_record(300 * MS, ACTOR_B, 1),
+                post_record(800 * MS, ACTOR_A, 0), post_record(900 * MS, ACTOR_A, 0)]
+
+    def test_round_trip_tag_does_not_reuse_wrong_segment(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4), tag_record(500 * MS, ACTOR_A, 0, 3)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3),
+                   sample_record(260 * MS, LOCAL_B, 4),
+                   sample_record(810 * MS, LOCAL_A, 3)]
+        pairs, stats, segments = trajectory_evidence(self._round_trip(), samples, tags)
+        self.assertEqual([s["actor_uid"] for s in segments], [ACTOR_A, ACTOR_B, ACTOR_A])
+        self.assertEqual(segments[1]["tag_ack"]["server_qpc_ns"], 150 * MS)
+        self.assertEqual(segments[2]["tag_ack"]["server_qpc_ns"], 500 * MS)
+        self.assertEqual(stats["reasons"], {})
+        self.assertTrue(stats["identity_ok"])
+
+    def test_identity_change_without_tag_is_unrelated(self):
+        tags = [tag_record(150 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(210 * MS, LOCAL_A, 3),
+                   sample_record(260 * MS, LOCAL_B, 4),
+                   sample_record(810 * MS, LOCAL_A, 3)]
+        pairs, stats, segments = trajectory_evidence(self._round_trip(), samples, tags)
+        self.assertEqual(stats["reasons"].get("unrelated_uid_change"), 1)
+        self.assertFalse(stats["identity_ok"])
+
+    def test_tag_does_not_bridge_a_post_gap(self):
+        posts = [post_record(0, ACTOR_A, 0), post_record(100 * MS, ACTOR_A, 0),
+                 post_record(800 * MS, ACTOR_B, 1), post_record(900 * MS, ACTOR_B, 1)]
+        tags = [tag_record(750 * MS, ACTOR_B, 1, 4)]
+        samples = [sample_record(60 * MS, LOCAL_A, 3),
+                   sample_record(810 * MS, LOCAL_A, 3),
+                   sample_record(860 * MS, LOCAL_B, 4)]
+        pairs, stats, segments = trajectory_evidence(posts, samples, tags)
+        self.assertFalse(stats["identity_ok"])
+        self.assertFalse(any(pair["pending_ack"] for pair in pairs))
+
+    def test_tag_does_not_bridge_instance_epochs(self):
+        epochs = [{"game_id": GAME_ID, "start_ns": 0, "end_ns": 150 * MS, "index": 0},
+                  {"game_id": GAME_ID, "start_ns": 151 * MS, "end_ns": None, "index": 1}]
+        samples = compare.parse_client_samples([
+            sample_record(60 * MS, LOCAL_A, 3),
+            sample_record(210 * MS, LOCAL_A, 3),
+            sample_record(260 * MS, LOCAL_B, 4)], phase="post")
+        pairs, stats, segments = compare.pair_trajectories(
+            samples, self._posts(), OWNER, epochs, None, GAME_ID, PLAYER_INDEX,
+            tag_applies=[tag_record(180 * MS, ACTOR_B, 1, 4)])
+        self.assertFalse(stats["identity_ok"])
+        self.assertFalse(any(pair["pending_ack"] for pair in pairs))
 
 
 if __name__ == "__main__":

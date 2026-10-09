@@ -100,6 +100,9 @@ struct PhysicsDynamicBody
 	f32 jumpHeight = 0.0f;
 	vec2 horizontalGraphDisplacement = vec2(0);
 	bool horizontalGraphActive = false;
+	vec3 destPos = vec3(0);
+	bool destActive = false;
+	bool destForced = false;
 
 	inline vec3 GetWorldPos() const
 	{
@@ -137,6 +140,9 @@ struct PhysicsBodyState
 	f32 jumpHeight = 0.0f;
 	vec2 horizontalGraphDisplacement = vec2(0);
 	bool horizontalGraphActive = false;
+	vec3 destPos = vec3(0);
+	bool destActive = false;
+	bool destForced = false;
 	bool suppressContactReport = false;
 };
 
@@ -149,6 +155,8 @@ struct PhysicsScene
 	};
 
 	Time localTime = Time::ZERO;
+	f32 rigidClock = 0.0f;
+	f32 rigidSimulatedThrough = 0.0f;
     NxScene* scene = nullptr;
     NxControllerManager* controllerMngr = nullptr;
 	eastl::fixed_vector<PhysicsDynamicBody,256,false> colliderList; // doesn't grow so we don't invalidate pointer
@@ -157,16 +165,19 @@ struct PhysicsScene
 	NxBodyDesc creationBody;
 
 	void Step();
+	f32 StepDuration() const;
 	PhysicsBodyState CaptureBodyState(const PhysicsDynamicBody& body) const;
 	void RestoreBodyState(PhysicsDynamicBody& body, const PhysicsBodyState& state);
-	void StepBody(PhysicsDynamicBody& body);
-	void FinishStep();
+	void StepBody(PhysicsDynamicBody& body, const vec2& walkingDisplacement, f32 dt);
+	void FinishStep(f32 dt);
 	void Destroy();
 
 	void CreateCollisionAsset(const char* assetName, const vec3& pos, const vec3& rot, f32 scale, PhysicsCollisionGroup group, eastl::fixed_vector<NxActor*,4,false>* actors = nullptr);
 	PhysicsDynamicBody* CreateDynamicBody(f32 radius, f32 height, const vec3& pos);
 	void ResizeDynamicBody(PhysicsDynamicBody* body, f32 radius, f32 height);
-	bool StartJump(PhysicsDynamicBody* body, const JumpMotion& motion);
+	void InstallJumpGraph(PhysicsDynamicBody* body, const JumpMotion& motion);
+	void InstallMoveDest(PhysicsDynamicBody* body, const vec3& dest, bool forced);
+	void CancelMoveDest(PhysicsDynamicBody* body);
 	vec3 Move(PhysicsDynamicBody* body, const vec3& disp, f32 time, bool segmented);
 	vec3 FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 time);
 };

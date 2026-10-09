@@ -279,12 +279,22 @@ struct GameXmlContent
 
 	struct Action
 	{
+		struct Clip
+		{
+			i32 animationIndex;
+			i32 animationID;
+			f32 duration;
+			u32 loopCount;
+		};
+
 		struct Command
 		{
+			static constexpr u8 NoClip = 255;
 			ActionCommand::Type type;
 			f32 delay;
 			f32 executeAt;
 			f32 completeAt;
+			u8 clipIndex = NoClip;
 
 			union {
 				struct {
@@ -297,7 +307,8 @@ struct GameXmlContent
 
 				struct {
 					ActionCommand::MovePreset preset;
-					i32 param2;
+					f32 distance;
+					u8 ignoreCollision;
 				} move;
 
 				struct {
@@ -319,6 +330,7 @@ struct GameXmlContent
 		ActionStateID ID;
 		f32 seqLength = 0.0f; // seconds
 		HorizontalMotion horizontalMotion;
+		eastl::fixed_vector<Clip,8,false> clips;
 		eastl::fixed_vector<Command,16,false> commands;
 	};
 

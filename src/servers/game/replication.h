@@ -168,12 +168,6 @@ struct Replication
 		f32 moveDuration;
 	};
 
-	struct PositionCorrection
-	{
-		ClientHandle clientHd;
-		ActorUID actorUID;
-	};
-
 	struct Frame
 	{
 		eastl::fixed_list<Player,10,false> playerList;
@@ -191,7 +185,6 @@ struct Replication
 
 		eastl::fixed_vector<SkillCast,40,true> skillCastList;
 		eastl::fixed_vector<SkillExec,40,true> skillExecList;
-		eastl::fixed_vector<PositionCorrection,MAX_PLAYERS,false> positionCorrections;
 
 		void Clear();
 
@@ -276,7 +269,6 @@ struct Replication
 	void FramePushDynamicActor(const ActorDynamic& actor);
 	void FramePushSkillCast(const SkillCast& skillCast);
 	void FramePushSkillExec(const SkillExec& skillExec);
-	void FrameRequestPositionCorrection(ClientHandle clientHd, ActorUID actorUID);
 
 	void OnPlayerConnect(ClientHandle clientHd, u32 playerIndex);
 	void SendLoadPvpMap(ClientHandle clientHd, MapIndex stageIndex);
@@ -314,7 +306,6 @@ struct Replication
 private:
 	void UpdatePlayersLocalState();
 	void FrameDifference();
-	void SendPlayerPosition(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const RotationHumanoid& rot, ActionStateID actionState);
 
 	void SendActorMasterSpawn(ClientHandle clientHd, const ActorMaster& actor, const Player& parent);
 	void SendActorNpcSpawn(ClientHandle clientHd, const ActorNpc& actor);

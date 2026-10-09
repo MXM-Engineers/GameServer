@@ -56,6 +56,13 @@ struct World
 
 	struct Player
 	{
+		enum class JumpPhase: u8
+		{
+			None,
+			Requested,
+			Entered,
+		};
+
 		struct Input
 		{
 			vec3 moveTo;
@@ -114,6 +121,11 @@ struct World
 			RotationHumanoid rot;
 			bool hasJumped = false;
 			bool forcedMove = false;
+			bool walkingBlocked = false;
+			JumpPhase jumpPhase = JumpPhase::None;
+			const JumpMotion* pendingJump = nullptr;
+			f32 jumpRotate = 0.f;
+			u32 jumpUpdate = 0;
 		} movement;
 		bool graphIgnoreCollision = false;
 		bool graphIgnoreClearAfterStep = false;
@@ -228,16 +240,25 @@ struct World
 		f32 castAngle;
 		ActorUID casterUID;
 		eastl::fixed_vector<ActorUID,10,false> targetList;
-		i32 commandID = 0;
+		u16 commandMask = 0;
+		u8 commandCount = 0;
+		u8 clipIndex = 0;
+		u8 clipStartedMask = 0;
+		f32 clipElapsed = 0.0f;
+		f32 clipClock = 0.0f;
+		eastl::array<f32,8> clipStartedAt{};
+		u32 clipUpdate = 0;
 		vec3 moveStartPos = vec3(0);
 		vec3 moveEndPos = vec3(0);
 		f32 moveDuration = 0;
 		const HorizontalMotionVariant* horizontalVariant = nullptr;
 		f32 moveSampled = 0.0f;
 		vec2 moveHorizDir = vec2(0);
-		f32 graphExecuteAt = 0.0f;
 		f32 completeAt = 0.0f;
 		bool graphDone = false;
+		bool graphActive = false;
+		bool ownsWalking = false;
+		f32 stateTransitionAt = -1.0f;
 		u32 simTicks = 0;
 		u32 bornUpdate = 0;
 		f32 graphElapsed = 0.f;
@@ -272,7 +293,6 @@ struct World
 		u8 masterSlot = 0;
 		bool timestamped = false;
 		u32 notifications = 0;
-		u32 warpNotifications = 0;
 		u32 commandNotifications = 0;
 		f64 keepUntil = 0.0;
 		const HorizontalMotionVariant* selectedVariant = nullptr;
@@ -319,6 +339,7 @@ struct World
 	{
 		NxActor* actor = nullptr;
 		u32 flags = 0;
+		bool raycastDisabled = false;
 	};
 
 	struct SceneFrame
@@ -354,11 +375,14 @@ struct World
 	SimulationHistory* history = nullptr;
 	Player* simulationPlayer = nullptr;
 	u32 simulationUpdate = 0;
+	f32 simulationStepDuration = f32(UPDATE_RATE);
 	InputEvent* simulationEvent = nullptr;
 	bool replayingInputs = false;
 
 	u32 nextActorUID;
 	Time localTime = Time::ZERO;
+	Time physicsEpoch = Time::ZERO;
+	bool physicsEpochSet = false;
 	u32 updateIndex = 0;
 
 	PhysicsScene physics;
@@ -372,6 +396,7 @@ struct World
 	bool QueuePlayerInput(Player& player, ActorUID actorUID, InputKind kind, const Player::Input& input, f64 receivedTime, bool timestamped);
 	bool EmitInputNotification(Player& player, u32 sequence, u32 notification, i32 commandIndex = -1);
 	u32 SimulationUpdate() const { return simulationPlayer ? simulationUpdate : updateIndex; }
+	f32 SimulationStepDuration() const { return simulationPlayer ? simulationStepDuration : physics.StepDuration(); }
 	u8 AdmittedMaster(const Player& player) const {
 		const auto& timeline = history->players[player.index];
 		return timeline.enabled ? timeline.admittedMaster : player.mainCharaID;
@@ -395,6 +420,7 @@ private:
 	void ExecuteSkillProgram(SkillProgram& prog);
 	void SavePlayerFrame(Player& player, PlayerFrame& frame, u32 update, Time frameTime, f64 serverTime);
 	void RestorePlayerFrame(Player& player, const PlayerFrame& frame);
+	void ApplyPlayerAction(Player& player);
 	void SimulatePlayer(Player& player, u32 update, Time frameTime, f64 serverTime);
 	void UpdatePlayerTimeline(Player& player, f64 serverTime);
 	void ApplyPlayerControls(Player& player, InputEvent* event);

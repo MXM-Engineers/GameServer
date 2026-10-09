@@ -54,13 +54,13 @@ MoveController dimensions are distinct from the class-specific PhysXMesh collide
 ### World movement and skill timing
 
 - Obtain locomotion dimensions through const MoveController getters and resize on master changes when needed.
-- Move the input-block deadline into player movement state. Blocking input no longer suppresses gravity.
-- Require grounding and unblocked input before accepting an ordinary jump.
+- Keep gravity independent of walking permission and action-transition gates.
+- Require grounding and no pending or active ordinary jump before accepting another jump.
 - Progress horizontal skill graphs over their advertised duration instead of applying their full displacement immediately.
 - Execute the first action command and process zero-delay command batches without skipping them.
-- Keep WARP commands instantaneous and collision-constrained.
-- Send owner warp corrections through the existing `SN_PlayerSyncMove` packet. Corrections are queued until the completed replication frame, after cast/execute notifications, and use the final actor snapshot.
-- Use the endpoint for both positional fields when an instantaneous ExecuteSkill position synchronization is emitted.
+- Apply WARP through the forced-destination motor, with native local-mode 50-unit segmentation and collision filtering.
+- Do not echo a WARP position to its owner: the unchanged client executes its own action locally. Ordinary observer movement updates remain intact.
+- Retain WARP walking permission, authored state-gate release and destination ownership through historical replay; state cancellation releases the destination and mask together.
 - Leave ordinary movement's owner-skip behavior and all packet wire layouts unchanged.
 
 ### Map collision scene
@@ -123,8 +123,8 @@ Startup verification is historical, not a promise that those processes remain ru
 - The action loader selects one stance timeline to avoid duplicate effects, preserving last-GRAPH stance selection where present. General stance switching is not implemented.
 - Only DeathMatch collision assets are supported. Additional maps require verified geometry, transforms, collision categories, and dynamic-state behavior.
 - The separate role of class-specific hit volumes still needs further alignment work.
-- General owner prediction/reconciliation is not implemented by this commit. Targeted warp correction is not a complete reconciliation system.
-- Live owner comparisons expose a persistent 70-unit server controller perch and delayed ledge departure. Matching settings do not establish equivalent SDK 2.8.4/4.1.2 controller behavior.
+- General owner prediction/reconciliation is not implemented. Input replay does not supply future input or the client's notification-consumption phase.
+- Live trajectories remain unequal near jumps and collision boundaries. Matching SDK versions and scene recipes do not establish identical numerical results.
 
 ## Ordinary jump alignment
 
@@ -153,7 +153,7 @@ The generated data contains 200 profiles: Stand, Front, Left, Right, and Back fo
 
 All current profiles use animation duration because `V_Time` is zero. Durations are not uniformly 0.6 seconds. AndroA's 0.6-second standing graph peaks at 350 units; its moving graphs peak at 330.
 
-The content loader requires complete, finite profiles and negative finite gravity. `JumpMotion::Sample` performs allocation-free, clamped piecewise-linear sampling. `PhysicsScene::StartJump` requires grounding and rejects an active jump; no scalar impulse is applied. Each physics step integrates gravity into velocity but replaces vertical displacement with the authored height difference while the jump graph is active. Graph completion returns control to velocity-based falling. PhysX still constrains the displacement against geometry.
+The content loader requires complete, finite profiles and negative finite gravity. `JumpMotion::Sample` performs allocation-free, clamped piecewise-linear sampling. World admits a grounded request only when no jump graph or pending jump is active, then progresses request, state entry and first-playing installation on successive updates. `PhysicsScene::InstallJumpGraph` installs the already-admitted profile without a second grounding test or scalar impulse. Gravity continues accumulating while authored height differences own Z; completion returns control to falling. PhysX constrains every displacement against geometry.
 
 World input preserves the jump packet's movement direction and converts its facing to world yaw for profile selection. Master tagging selects the active master's data. Existing movement locks and owner-skip replication behavior are unchanged. The unused jump/gravity tweakables and their debug controls were removed.
 
@@ -193,16 +193,17 @@ Full remaining work is tracked in `physics_roadmap.md`.
 
 ## Packet-observable action scheduling
 
-ActionBase timing is normalized when loading content. Commands retain authored Delay and carry execution/completion offsets from action start. Clip offsets include prior AnimationIndex groups and AnimationLoop; command delays do not accumulate across rows. Equal-deadline commands retain animation-index/command-type order. The selected clip sequence determines animation duration, and each program caches its completion boundary.
+ActionBase loading retains the selected clip sequence, each clip's one-loop AniLength and AnimationLoop count, and each command's owning clip. Nominal execution/completion offsets remain diagnostic metadata, not the runtime dispatch clock. Negative-animation-index commands start globally; clip-owned commands wait for the first playing update of that clip. Readiness is independent of another command's later deadline, and command effects/notifications execute once across replay.
 
 Client evidence:
 
 - `0x01ab799b` loads Delay, AniLength, command type, and animation index. `0x01ab8da1` sorts through `0x01ac6bb5` and computes clip-relative offsets. `0x01ac6021` dispatches commands; timer delays are converted to milliseconds.
 - STATE_BLOCK dispatch at `0x01ab929e` queues a timer. Its consumer `0x01abfbf4` calls `0x01a4bbf5` to release a state-transition gate; `0x01a4b98d` resets the gate on state entry. This is distinct from a WASD velocity lock and from the PC_StateBlock table. The server's former `lockedMoveUntil` interpretation was removed.
 - GRAPH_MOVE_HORZ dispatch at `0x01ac085d` and WARP at `0x01ab9fc3` inform the supported movement effects.
+- Owner GRAPH_MOVE_HORZ at `0x01ac085d` starts at the current graph clock and ends at that clock plus duration. Its Delay argument is not an additional owner wait. STATE_BLOCK retains its timer delay; WARP delay is relative to its clip's actual activation.
 - The actual SN_ExecuteSkill handler is `0x00a05e94`. On the owner path it commits execution through `0x0132aa06`, then caches graph endpoints, origin distance, and duration through `0x01a4bd46`/`0x01bab857` when bApply is set. It does not install physical graph movement immediately. Send full metadata at normal execute-commit even for delayed graphs; the animation activates movement later. SN_CastSkill uses `0x00a05b81`. `0x009f6a03` is the actor-enter 62029 graph path, not execute 62036.
 
-Runtime graphs apply their final sample delta once, suppress stale ordinary movement for that tick, and stop touching input thereafter. Replacement and tag cancel pending programs before their old effects execute. WARP queues a single owner correction when applied. Statesman's overlapping DEFAULT/C command rows no longer execute twice; the existing last-graph stance choice remains the supported selection rather than introducing general stance switching.
+Runtime graphs apply their final sample delta once, suppress stale ordinary movement for that tick, and stop touching input thereafter. Replacement and tag cancel pending programs before their old effects execute. WARP uses the native owner action without an owner-position echo. Statesman's overlapping DEFAULT/C command rows no longer execute twice; the existing last-graph stance choice remains the supported selection rather than introducing general stance switching.
 
 Historical server-only verification used a temporary executable with real loaded content, World, PhysX, and Replication frame queues. The full Release build passed. These results predate the live owner corrections below:
 
@@ -343,7 +344,7 @@ Evidence: `build/velqor/nx284_evidence.json`, `nx284_cct_motion_replay.json`, `n
 
 ### Native replay evidence
 
-The complete captured scene has 194 named prop/gate/wall actors and 12 player/controller/hit-volume actors. The production replay builds the 194 named actors from shipped recipes and source XML, then creates one queried controller; other PC/hit-volume groups are outside its locomotion mask. All 21 actually loaded mesh vertex multisets and oriented triangle topologies match the client exactly, including nine runtime-scaled meshes and the original convex wall mesh. Group, mask, material and actor collision-disable state agree for all 194 named actors after supplying the observed frozen gate state. Two closed-gate ray-query flags remain unequal; general hit-query/presentation parity is not claimed.
+The complete captured scene has 194 named prop/gate/wall actors and 12 player/controller/hit-volume actors. The production replay builds the 194 named actors from shipped recipes and source XML, then creates one queried controller; other PC/hit-volume groups are outside its locomotion mask. All 21 actually loaded mesh vertex multisets and oriented triangle topologies match the client exactly, including nine runtime-scaled meshes and the original convex wall mesh. Group, mask, material and actor collision-disable state agree for all 194 named actors after supplying the observed frozen gate state. At this stage two open-gate ray-query flags remained unequal; the later native PHYSICS consumer correction below resolves that bit, not general hit-query/presentation parity.
 
 Continuous replay initializes only from the first raw centre and consumes every unchanged request in original order. There are no per-row resets, baseline alignment, time shifts or tolerance changes:
 
@@ -381,8 +382,9 @@ The approved backend remains native x64. `input_clock.h`, `World`, game handlers
 - History retains 512 before-step frames, approximately 8.53 seconds at 60 Hz, and 2,048 input records per player. Before-step snapshots retain the actual previous server-time boundary, raw SDK centre/dimensions, velocities, grounding/contact normal, jump graph, graph collision ownership, input, master selection and active skill programs. Storage is allocated at world initialization; replay does not allocate per step.
 - Late input restores only saved server state and reruns the owner's fixed steps with historical gate/wall collision flags. Other owners' programs do not advance. Other CCTs use group 3, outside the enabled locomotion mask; current peer-controller poses therefore do not affect these sweeps. The current scene flags are restored afterward. SDK simulate/flush/fetch and replication still run once per published tick.
 - Clock refinement retimes only events whose old and new times both remain recoverable. Rows crossing the oldest before-step boundary keep their committed times; they do not cause a fresh STOP to be rejected. The earlier rejection caused continuing movement after STOP in `20261002_sol_catchup_clock` and is covered by a history-edge regression.
-- Random graph selection is cached per cast. Cast/execute, authored WARP correction requests, actor-action publication and action trace notifications use per-input emission ledgers, preventing a historical cast from retriggering client animation or appearing as a new execution/completion.
+- Random graph selection is cached per cast. Cast/execute, actor-action publication and action trace notifications use per-input emission ledgers, preventing historical replay from retriggering client animation, publishing a completed WARP transition again or appearing as a new execution/completion.
 - Incoming CN/CQ safety checks bound both the speed field and direction-times-speed work. Finite, non-unit directions remain unnormalized; hostile effective speeds above 192,000 units/s or unrepresentable direction norms are dropped rather than clamped.
+- Human locomotion integrates raw direction times speed across mapped event-time partitions inside each retained server interval. START/STOP no longer acquire or lose an entire walking quantum when their phases cross a 60 Hz boundary. The motor displacement is explicit; gravity, authored jump/graph sampling and SDK simulation remain fixed-tick. No client snapshot is used as an integration target.
 
 ### Exercised verification
 
@@ -397,6 +399,142 @@ In the final capture, native nonzero movement begins at `102423630661800`; the c
 In the earlier `20261002_sol_catchup512` capture, native movement begins at QPC `100438868885000`; the matching game-handler trace is at `100439017083900`, 148.20 ms later. The first 29.759594-unit divergence at `100438902629000` precedes that handler trace. This is not a measured client socket-send or server socket-receive delay. Later jump/ledge and frame/action phase differences remain measured failures, not accepted numerical x64 parity.
 
 Packet layouts, original client/SDK binaries and the pre-existing injector DLL remain unchanged. Run artifacts and final verification are retained under `build/velqor/runs/` and `build/velqor/matching/input_catchup_evidence.json`. This is input replay, not a position-correction stream or a relaxed comparison gate.
+
+## Elapsed-time walking after IOCP
+
+Checkpoint `f24ef4a` preserves the authored scene, bounded replay and completion-driven networking before this physics continuation.
+
+Native `Creature_IntegrateVelocityAndGraphs` at `0x01a4f3c1` advances ordinary XY by raw direction times walk speed times frame delta, then increments the active local master's `+0x10F8` counter by that delta. Both Ghidra's original executable and the live client hash to `df32850dd8e7a2329ddca2dc57a3eb310a620f4a6477bbb135049a938f477583`. Client post samples match the corresponding final raw controller centre to within 0.00000755 units; visual/filtered sampling is not the walking offset.
+
+The post-IOCP capture `20261003_122017_sol_iocp_vanilla` leaves the owner 9.924354 units behind the transmitted/native A start after STOP and clock refinement. Its approximately 0.899992943-second hold spans 54 native frames, but whole-tick input gating can retain only 53 walking quanta. This is a delivered-input duration error, separate from the unsent-input and notification/animation-onset offsets.
+
+The actual World/CCT regression fails before correction at a start phase of 0.0166701004: 525.759888 units versus the source interval's 535.675720. After `World::SimulatePlayer` partitions the interval at input events and supplies the integrated motor displacement to `PhysicsScene::StepBody`, all three start phases travel 535.675598. Raw non-unit directions remain unnormalized; STOP ends horizontal input without freezing gravity. Other-owner programs and once-only notifications retain their existing contracts. Obsolete whole-tick transient position pins and internal `simTicks` assertions were removed rather than re-pinned.
+
+All 26 real-World/SDK regressions pass in Release and actual CHECKED Debug. In `20261003_145635_sol_elapsed_motor`, all control gates complete and A's start discrepancy falls to 0.002765 units without seeking the packet pose. Four native jump requests arrive and all four start; the front-jump trial emits no native jump RPC. Both skills execute and complete, six commands publish once, STOP/disconnect work, and there are zero corrections.
+
+`20261003_151338_sol_motor_rtt120` adds at least 60 ms each way through an unchanged-byte relay. A's start discrepancy is 0.004835 units; all five received jumps start, both skills complete, and STOP/disconnect work with zero corrections. The client-to-server byte count and complete stream hash agree. The server-to-client relay has 490 unsent tail bytes at managed shutdown.
+
+Full parity is not claimed. The unchanged raw-QPC 25-unit gate still reports divergence: direct maximum/mean 139.011814/9.923035 over 3,426 independent pairs; delayed maximum/mean 543.666565/41.241426 over 3,440 pairs. Delayed TAG acknowledgement also retains four old-master identity samples. No fixed action delay, trajectory retiming, tolerance adjustment or correction stream conceals these differences. Client/input-DLL hashes are unchanged, all owned processes exit, and configurations are restored byte-for-byte.
+
+Evidence: `build/velqor/matching/elapsed_walking_evidence.json` and the two named live captures.
+
+## Action return-path measurement and TAG acknowledgement
+
+`20261003_174337_sol_return_baseline` observes original server WSASend submission, original completed client WSARecv bytes, and native `SN_CastSkill`/`SN_ExecuteSkill` entry. Complete packet FNV hashes, net IDs, sizes and endpoints match nine cast/execute/jump packets. Submission to client receive-completion observation ranges from 0.0088 to 0.0304 ms, median 0.0166 ms. The normal A cast arrives in 0.0243 ms; native consumption follows 8.2951 ms later. Nagle/delayed-ACK is not supported as the source of the observed long action gap, so socket policy was not changed.
+
+The native cast handler at `0x00a05b81` installs the owner action; execute at `0x00a05e94` caches graph endpoints. There is no incoming 70 ms deadline on that consumption path. The historical A graph request occurs 1,083.3935 ms after cast consumption, versus the old server's 1,014.8808 ms after cast acceptance. The clip observation and correction below resolve the animation-progression part of this difference; notification consumption remains a separate measured phase.
+
+`compare.py` now requires an explicit same-owner, same-epoch, contiguous master-slot swap and corresponding `tag_apply` evidence before allowing an acknowledgement transition. The exact previous native identity is accepted only until the actual new native identity appears. Pending samples remain pose pairs with their original QPC timestamps, old/new identities and full position error. Missing acknowledgements, unrelated identity changes, wrong class/actor, post gaps and epoch crossings remain failures. No arbitrary acknowledgement timeout, class whitelist, pose deletion or trajectory shift was introduced.
+
+Rebuilding `20261003_151338_sol_motor_rtt120` retains the four former identity-failure poses: 3,440 independent pairs become 3,444. The maximum raw position error remains exactly 543.666565 units and physics remains diverged. Nineteen evidence regressions pass, including a retained 50-unit pending-ack error and gap/epoch cases that fail before conservative binding guards.
+
+The final clean-harness run `20261003_192545_sol_tag_ack_rtt120` adds at least 60 ms per direction. Four old-master samples are retained during a 73.1383 ms TAG acknowledgement interval; identity resolves without errors, and all control gates complete. All five jumps start, both skills complete, STOP/disconnect work and corrections remain zero. Its 3,437 independent raw-QPC pairs still have maximum/mean error 286.260153/40.837203; the unchanged 25-unit physics gate is not passed.
+
+Final source passes five real-socket and 26 physics regressions in both Release and Debug/CHECKED. Temporary return-path hooks are removed, original server/harness binaries rebuilt, client/input-DLL hashes preserved, configurations restored and owned runtime processes exited. Evidence: `build/velqor/matching/return_path_tag_evidence.json`, `tag_ack_report_motor_rtt120.json` and the two named new captures.
+
+## Native clip progression and rounded action clock
+
+Observation-only hooks in `20261003_sol_clip_owner_transitions` establish that A enters its three clips at frames 1534, 1566 and 1598, then fires their command callbacks at 1535, 1567 and 1599. The middle clip has three loops but one continuous elapsed clock; it does not reset elapsed at each loop. Its elapsed value is 0.499992371 after 30 playing updates and 0.516658783 after 31. GRAPH activates on the third clip's callback, not on the nominal sum of earlier AniLength values.
+
+`0x01b62732` resets clip elapsed and the once-only callback sentinel. `0x01b625db` tests old elapsed against duration; parent `0x01c06a0d` checks completion before updating the child. A completed clip enters its successor with elapsed zero, without transferring overshoot; that successor's first playing update follows entry. The server now preserves these phases and waits for all clips, pending effects and graph completion before finishing the program.
+
+`0x005eb5ff` adds the QPC-derived capped frame delta to an `f32` application clock, then publishes the difference from the previous rounded clock. Consequently, direct `elapsed += float(1/60)` is not the same arithmetic. The deterministic 60 Hz server lane uses `dt = float(clock + float(1/60)) - clock` for clip progression and retains that clock in replay snapshots. It does not hardcode the observed 0.0166664124 delta, insert a bonus tick, or invent the client's occasional QPC hitches. The subsequent motor correction below extends that rounded quantum to graph sampling, gravity and SDK simulation without changing lane cadence.
+
+Both previously failing physical regressions now pass: first-clip graph entry does not move immediately, and A does not start at its nominal prefix deadline. Airborne ownership checks the actual graph-entry height; late-cast replay compares against an independently simulated on-time owner rather than pinning an incidental graph sample count. All 26 physics and five real-socket regressions pass in Release and actual CHECKED Debug; all 19 evidence regressions pass.
+
+`20261009_sol_clip_clock_local` completes all five jumps, both skills and every control/identity gate with zero corrections. A's server graph starts at logical elapsed 1.083333 seconds; the remaining native-versus-server graph phase is 16.5657 ms. A's endpoint disagreement is 0.001248 units, but its raw onset-window maximum is 27.808493 units. Full raw-QPC physics remains diverged: 3,429 pairs, maximum/mean error 163.705894/7.773095. Client bytes, raw timestamps and the 25-unit gate are unchanged.
+
+`20261009_sol_clip_clock_rtt120` adds at least 60 ms in each direction and likewise completes all five jumps, both skills and all control/identity gates without corrections. Its 3,433 raw pairs retain maximum/mean error 268.478331/29.104031. Return-path/native-consumption phase, pre-arrival inputs, and ordinary-jump launch remain explicit failures, not numerical SDK parity. Both runs restore all four configs and leave no owned processes.
+
+## Native ordinary-jump phases and motor quantum
+
+`20261009_sol_jump_phase_before` records all five native requests, actual `StateJumpStart_Enter`, vertical graph installation and first height difference. Each request occurs one frame before state entry; graph installation and its first sample occur on the following frame. `0x01c099d1` enters without installing the graph; playing MotionControl update calls `0x01b61e65` and `0x01a4d95a`. The server now retains Requested and Entered phases, cached profile/facing and update ownership in before-step movement snapshots. A duplicate pending/active request cannot restart the jump; tag and replacement cast clear pending work.
+
+The measured endpoint difference was also a clock error, not a new curve or an extra end-state delay. At an application clock around 50 seconds, 36 rounded updates reach 0.599990845, still below the Sniper 0.6-second duration. Native applies the small terminal remainder on update 37 before gravity resumes. Direct `float(1/60)` completed one update earlier. The deterministic rounded quantum now feeds graph sampling, gravity, bot motor displacement and SDK simulation; elapsed human walking still uses the actual mapped input intervals. Explicit StepBody/FinishStep duration arguments migrate every caller without a default or compatibility shim. Historical replay derives the same quantum from its saved lane time.
+
+The real-CCT terminal-remainder test and World request/entry/first-playing test both fail before their respective fixes and pass afterward. All 28 physics regressions, including all 200 authored profiles, pass in Release and actual CHECKED Debug. Native graph installation does not reset accumulated vertical velocity; its server setter preserves that ownership rule.
+
+In `20261009_sol_jump_phases_local`, native and server first positive samples differ by only 2.19–2.32 ms across all five jumps, versus the earlier 25.8–32.0 ms launch gap. Native graph delta is 33.1661644 and the float-position CCT request is 33.1661377. All controls and both skills complete, identity resolves, corrections remain zero and configs restore. The raw 3,422-pair maximum/mean remains 148.752103/6.058575, not parity.
+
+`20261009_sol_jump_phases_rtt120` likewise completes all five jumps and both skills with zero corrections and retained TAG-ack poses. Its 3,442 raw pairs still have maximum/mean error 283.132695/36.095226. CQ jump has no timestamp; none is invented. Pre-arrival input intervals, native notification consumption, QPC hitches and ledge/contact-history feedback remain explicit failures. A blanket grounded-only slope suppression is not supported by the original integrator.
+
+## Match-local motor clock and native SDK substeps
+
+The rounded motor clock must not inherit the dedicated simulation lane's uptime. At an absolute clock of 262,144 seconds, `float(clock + float(1/60)) - clock` becomes 0.03125 seconds; at 524,288 seconds it becomes zero. A new World now fixes an immutable physics epoch on its first update. Normal steps and historical replay derive their internal physics clock from that epoch, while lane/frame times, input mapping and captured QPC timestamps remain unchanged. The real-World/CCT regression starting after three days of lane uptime fails before this correction and passes afterward against an independent fresh-lane simulation.
+
+Read-only `NxScene::getTiming` in `20261009_sol_match_epoch_timing` also proves that the native scene does not use the SDK descriptor defaults:
+
+| Setting | Native DeathMatch scene | SDK default | Current server |
+| --- | --- | --- | --- |
+| Maximum SDK timestep, seconds | 0.0333333351 | 0.0166666675 | 0.0333333351 |
+| Maximum SDK iterations | 1 | 8 | 1 |
+| SDK timestep method | `NX_TIMESTEP_FIXED` | `NX_TIMESTEP_FIXED` | `NX_TIMESTEP_FIXED` |
+
+These SDK substeps are distinct from the 60 Hz motor lane and its rounded graph/gravity quantum. All 29 physics regressions pass in Release and actual CHECKED Debug after both corrections. The temporary SDK timing observer is removed and the original observation harness rebuilt before these final-source scenarios:
+
+| Unchanged-client scenario | Independent raw pairs | Maximum error | Mean error | Physics verdict |
+| --- | ---: | ---: | ---: | --- |
+| `20261009_sol_scene_timing_local` | 3,426 | 149.076164 | 5.986643 | diverged |
+| `20261009_sol_scene_timing_rtt120` | 3,432 | 301.132622 | 33.567550 | diverged |
+
+Both runs complete all five jumps, both skills and the required control/identity gates without corrections. The relay measures at least 60.2563 ms client-to-server and 60.0280 ms server-to-client. Its client stream forwards all 4,027 bytes with equal hashes; the ordered server stream has 392 unforwarded tail bytes at managed shutdown, not mutated packets. All four configs restore and no owned processes survive. This verifies the source corrections, not full parity: the original 25-unit gate, raw timestamps, vanilla client and accepted x64 same-request residual remain unchanged.
+
+## Omitted animation index and genuine global commands
+
+The original loader at `0x01ab7c1d`–`0x01ab7c37` promotes `AnimationIndex == -1` to zero when `AnimationId` is neither -1 nor zero. The server had left such rows global, so Mechanic Shirk and several RODMASTER, PHOTOG, MONDOZAX, RNB and ANDROA graphs moved at skill birth instead of the first playing callback. The loader now copies the exact native predicate before building clip metadata. Genuine global rows remain global and still dispatch at action entry; no stance, delay or callback rule is changed.
+
+The real-World/CCT Mechanic regression fails before this correction because the birth pose has already moved. All 30 physics regressions pass in Release and actual CHECKED afterward, including first-sample ownership and the physical 900-unit endpoint. The unchanged observation harness additionally exercises Mechanic Shirk, TAG to Sniper and the existing full owner scenario:
+
+| Unchanged-client scenario | Independent raw pairs | Maximum error | Mean error | Physics verdict |
+| --- | ---: | ---: | ---: | --- |
+| `20261009_sol_omitted_index_after` | 3,687 | 98.324584 | 6.472072 | diverged |
+| `20261009_sol_omitted_index_rtt120` | 3,704 | 314.371385 | 29.878574 | diverged |
+
+Both runs complete three casts/executes/completions, both TAG transitions, all five jumps and every required control/identity gate with zero corrections. The Mechanic command now waits for first-playing ownership instead of executing at elapsed zero. The delayed relay measures at least 60.0501 ms client-to-server and 60.0709 ms server-to-client; all 4,233 client bytes match, and 588 server tail bytes remain unforwarded at managed shutdown. Configs restore and no owned processes survive. The earlier broader-class capture used an unbound TAG input and is retained only as Mechanic before-fix evidence, not a complete scenario or comparable whole-run baseline. Exact evidence is in `native_clip_progression_evidence.json`.
+
+## Native SDK dispatch and PHYSICS query state
+
+A `getTiming` snapshot establishes descriptor values, not when the SDK advances. Read-only wrapper/API hooks in `20261009_sol_sdk_tick_observation` prove the missing dispatch law at `0x0112a7d2`: skip while the current application clock is not ahead of the fetched simulation target; otherwise ceil the float-rounded interval minus `1e-6` into 1/30-second steps. The target advances by the uncapped count, while actual SDK iterations cap at eight. The original call uses `simulate(iterations * timestep + 1.0f)` under that fixed iteration cap. The capture records 3,876 wrapper frames, 1,935 actual SDK calls and 1,941 skipped frames, including the cap and multi-step cases. The server now preserves this policy in its independently owned published SDK clock; owner-history replay does not advance it.
+
+The real rigid-body regression fails before this correction: the first published box position stays at 500 instead of advancing to 498. Afterward it advances on the native ceiling boundary, stays unchanged on the intervening motor frame, and limits a long gap to the native batch cap. CCT sweep order is unchanged; the SDK still follows current motor/controller movement. Temporary client hooks are removed and the original observation harness rebuilt.
+
+The two ray-query discrepancies were a separate omitted PHYSICS side effect. Payload dispatch `0x01aa5a40` routes REMOVE=false to `0x01b3eaeb`, which toggles both actor `NX_AF_DISABLE_COLLISION` and every shape's `NX_SF_DISABLE_RAYCASTING` from the first enable boolean. The second boolean selects physical-property removal, not an independent raycast setting. Supported DeathMatch TF/FF parsing and cooked flags were already correct; no gate-name or recipe-bit special case is added. Scene history now preserves the actual ray bit as well as actor flags.
+
+The real SDK ray regression hits a closed gate, misses the opened gate and hits it after closing again; it fails before the correction and passes afterward. All 31 physics regressions pass in Release and actual CHECKED. Runtime comparison retains the initial native opposite-gate acknowledgement interval: its two actors remain closed at frames 1224–1225 and open at 1226. All four stable gate collision/ray states then match the real server. No state policy, timestamp or pose is changed to force simultaneous acknowledgement.
+
+| Original-harness final-law scenario | Independent raw pairs | Maximum error | Mean error | Physics verdict |
+| --- | ---: | ---: | ---: | --- |
+| `20261009_sol_physics_laws_clean_local` | 3,690 | 61.074791 | 4.317192 | diverged |
+| `20261009_sol_physics_laws_clean_rtt120` | 3,702 | 314.422659 | 32.222802 | diverged |
+
+Both scenarios complete three skills, all five jumps, two TAG transitions and every control/identity gate without corrections. All configs restore; no owned processes survive. Client and server timing/flag observers are removed from final source. The accepted x64 numerical residual and original 25-unit raw-QPC gate remain unchanged. Evidence: `native_sdk_dispatch_evidence.json` and `native_gate_query_evidence.json`.
+
+## WARP direction, segmented movement and action ownership
+
+The resumed WARP checkpoint had removed the owner `SN_PlayerSyncMove` echo that made the client move twice, but still used the transmitted direction before the native command's reset. In `20261009_sol_warp_resume_moving_before`, forward remains held while native frame 1353 clears direction and requests `[-318.197754, -318.198242, 0]`; the server requests the opposite displacement.
+
+`0x01a4bfc1` calls virtual slot `+0x118` with the zero vector before `0x01a4c4d4` selects the destination. The primary vtable at `0x02a41308` and the player tables resolve that slot to `0x01a4c1c3`, which writes `+0xC98/+0xC9C` while the movement-lock counter is zero. The supported WARP path therefore uses body yaw, not raw packet direction. No unit clamp or changed walking-input bound was added. The active-command guard at `+0xC4C` also confirms that a second installed destination is ignored, not overwritten.
+
+The native local-mode predicate at `0x01a49527` selects segmented movement when XY displacement divided by frame delta exceeds 2,000 units/s. The forced server path now uses its existing 50-unit CCT segments. Its real-SDK staircase regression fails before the correction at `(270, 0, 50)` and passes afterward at `(900, 0, 150)`. The unreachable `horizontalGraphActive` destination-iteration proxy and its constants were removed; that proxy was not the native movement-graph predicate.
+
+Observation-only `warp_ownership` records in `20261009_sol_warp_resume_gait` distinguish walking permission from destination residual. Native effective walking speed changes from 644.799988 to zero one frame before WARP, despite a nonzero input direction and empty horizontal graph vectors. It returns to 644.799988 when the action leaves WARP. The current five authored WARP action keys omit horizontal motion graphs; their server programs now retain this walking ownership without freezing ordinary gravity after the forced displacement reaches zero.
+
+`STATE_BLOCK` releases the state-transition gate; it does not directly restore walking speed. Actual incoming movement/action state changes can cancel WARP after that authored release. Cancellation clears the destination, walking ownership and ignored-unit mask atomically, as `0x01a4ad85`, `0x01ad356f` and `0x01a4ae7e` do. A successor clip's first-playing callback no longer clears the destination. Invalid-caster cleanup also releases both destination and mask. Replay retains the gate and physical state, while a per-input ledger publishes the return action once.
+
+All 35 real-World/SDK regressions pass in Release and actual CHECKED Debug. Added coverage exercises held-direction reset, yaw fallback, blocked destination ownership and restoration, successive climbable steps, an early movement request held behind the state gate, and late input replay through WARP cancellation without duplicate actor-action publication. The temporary native observer was removed and the original harness rebuilt before final-source captures.
+
+| Moving-WARP scenario | Independent raw pairs | Maximum error, units | Mean error, units | Physics verdict |
+| --- | ---: | ---: | ---: | --- |
+| Before: `20261009_sol_warp_resume_moving_before` | 3,687 | 896.674184 | 212.001091 | diverged |
+| Final local: `20261009_sol_warp_resume_final` | 3,694 | 101.242037 | 8.625411 | diverged |
+| Final added RTT: `20261009_sol_warp_resume_rtt120` | 3,709 | 557.461516 | 52.032521 | diverged |
+
+Both final runs accept and execute three skills: WARP cancels on return to movement, and the two Sniper skills complete normally. All five received jumps start; all required control/identity, modifier, STOP and disconnect gates pass with zero corrections. The relay adds at least 60.3183 ms client-to-server and 60.0301 ms server-to-client, forwarding all 4,393/264,862 bytes with equal stream hashes in both directions. All four configurations restore byte-for-byte, no owned processes survive, and original client/LEA hashes are preserved.
+
+Full parity remains unproven. The local first WARP endpoint still differs by 10.743151 units; the original raw-QPC 25-unit gate is unchanged and fails in both final captures. The retained pre-send witness separately proves a 29.759594-unit violation 49.2296 ms before the first movement socket submission, with no intervening outgoing game packet. Future unsent input cannot be supplied by server reception or replay. Native notification-consumption phase, contact history and broader WARP/remote/state coverage remain explicit gaps, not tuned delays or accepted parity.
+
+Evidence: `build/velqor/matching/native_warp_evidence.json`, `native_pre_send_causality_evidence.json` and the named runs. The final local run retains its exact `scenario.json` for reproduction.
+
 
 ## Suggested next verification targets
 

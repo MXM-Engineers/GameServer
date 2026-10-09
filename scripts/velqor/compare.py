@@ -373,6 +373,116 @@ def post_identity(post, epoch_index):
             post.get("actor_uid"), post.get("master_slot"))
 
 
+def identity_matches(left, right):
+    if left is None or right is None:
+        return False
+    return (same_id(left.get("local_actor_id"), right.get("local_actor_id"))
+            and same_id(left.get("class_type"), right.get("class_type")))
+
+
+def sample_identity_role(sample, segment):
+    actor_id = sample.get("actor_id")
+    class_type = sample.get("class_type")
+    expected = segment["expected_class"]
+    tag_ack = segment.get("tag_ack")
+    old = tag_ack.get("client_old_identity") if tag_ack else None
+    if old is None:
+        return "ack" if same_id(class_type, expected) else "client_class_mismatch"
+    old_actor = old.get("local_actor_id")
+    old_class = old.get("class_type")
+    if same_id(class_type, old_class) and same_id(actor_id, old_actor):
+        return "pending_old"
+    if same_id(class_type, expected) and not same_id(actor_id, old_actor):
+        return "ack"
+    if same_id(class_type, expected) or same_id(class_type, old_class):
+        return "client_local_actor_mismatch"
+    return "client_class_mismatch"
+
+
+def owner_tag_transitions(tag_applies, epochs, run_id, game_id, player_index):
+    reasons = {}
+    tags = []
+    for tag in tag_applies or []:
+        if not run_id_matches(tag, run_id):
+            continue
+        if player_index is None or tag.get("player_index") != player_index:
+            continue
+        if game_id is not None and tag.get("game_id") != game_id:
+            continue
+        qpc = tag.get("qpc_ns")
+        if qpc is None:
+            reasons["tag_qpc_missing"] = reasons.get("tag_qpc_missing", 0) + 1
+            continue
+        matches = epoch_indices(epochs, qpc)
+        if len(matches) != 1:
+            key = "tag_epoch_ambiguous" if len(matches) > 1 else "tag_outside_instance_epoch"
+            reasons[key] = reasons.get(key, 0) + 1
+            continue
+        tags.append({
+            "qpc_ns": qpc,
+            "game_id": tag.get("game_id"),
+            "player_index": tag.get("player_index"),
+            "actor_uid": tag.get("actor_uid"),
+            "main_chara_id": tag.get("main_chara_id"),
+            "class_type": tag.get("class_type"),
+            "epoch_index": matches[0],
+            "consumed": False,
+        })
+    tags.sort(key=lambda t: t["qpc_ns"])
+    return tags, reasons
+
+
+def match_tag_transitions(segments, tags):
+    reasons = {}
+    for position, segment in enumerate(segments):
+        if position == 0 or segment["transition_in"] != "identity":
+            continue
+        if not segment["class_resolved"]:
+            continue
+        prev = segments[position - 1]
+        if (prev["epoch_index"] != segment["epoch_index"]
+                or prev["game_id"] != segment["game_id"]
+                or prev["player_index"] != segment["player_index"]
+                or segment["start_ns"] - prev["end_ns"] > POST_CONTIGUITY_NS
+                or prev["master_slot"] not in (0, 1)
+                or segment["master_slot"] != (prev["master_slot"] ^ 1)
+                or same_id(prev["actor_uid"], segment["actor_uid"])):
+            reasons["tag_transition_unproven"] = reasons.get("tag_transition_unproven", 0) + 1
+            continue
+        candidates = [tag for tag in tags
+                      if not tag["consumed"]
+                      and tag["epoch_index"] == segment["epoch_index"]
+                      and prev["start_ns"] <= tag["qpc_ns"] <= segment["start_ns"]
+                      and same_id(tag.get("actor_uid"), segment["actor_uid"])
+                      and same_id(tag.get("main_chara_id"), segment["master_slot"])
+                      and valid_class_type(tag.get("class_type"))
+                      and same_id(tag.get("class_type"), segment["expected_class"])]
+        if not candidates:
+            reasons["unrelated_uid_change"] = reasons.get("unrelated_uid_change", 0) + 1
+            continue
+        distinct = {(tag["actor_uid"], tag["class_type"]) for tag in candidates}
+        if len(distinct) > 1:
+            reasons["tag_transition_ambiguous"] = reasons.get("tag_transition_ambiguous", 0) + 1
+            continue
+        for tag in candidates:
+            tag["consumed"] = True
+        chosen = min(candidates, key=lambda t: t["qpc_ns"])
+        segment["tag_ack"] = {
+            "server_qpc_ns": chosen["qpc_ns"],
+            "server_actor_uid": chosen["actor_uid"],
+            "server_class_type": chosen["class_type"],
+            "main_chara_id": chosen.get("main_chara_id"),
+            "repeated_tags": len(candidates) - 1,
+            "ack_qpc_ns": None,
+            "transition_start_ns": chosen["qpc_ns"],
+            "transition_end_ns": None,
+            "client_old_identity": None,
+            "client_new_identity": None,
+            "pending_samples": 0,
+        }
+    return reasons
+
+
 def active_owner_segments(posts, post_epoch):
     segments = []
     current = None
@@ -404,13 +514,15 @@ def active_owner_segments(posts, post_epoch):
             "expected_class": None,
             "class_resolved": False,
             "client_identity": None,
+            "identity_conflict": False,
+            "tag_ack": None,
         }
         segments.append(current)
     return segments
 
 
 def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_index,
-                      max_dt_ms=250.0):
+                      max_dt_ms=250.0, tag_applies=None):
     reasons = {}
     gaps = {}
 
@@ -446,6 +558,11 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
         segment["class_resolved"] = valid_class_type(expected)
         if not segment["class_resolved"]:
             note(reasons, "active_class_unresolved")
+    tags, tag_reasons = owner_tag_transitions(tag_applies, epochs, run_id, game_id, player_index)
+    for key, count in tag_reasons.items():
+        note(reasons, key)
+    for key, count in match_tag_transitions(segments, tags).items():
+        note(reasons, key)
     eligible_samples = []
     sample_epoch = {}
     for sample in samples:
@@ -472,7 +589,7 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
     assignments = {}
     ambiguous = 0
     unpaired = 0
-    for sample in eligible_samples:
+    for sample in sorted(eligible_samples, key=lambda r: r["qpc_ns"]):
         qpc = sample["qpc_ns"]
         hits = [segment for segment in segments
                 if segment["epoch_index"] == sample_epoch[id(sample)]
@@ -488,25 +605,55 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
         segment = hits[0]
         if not segment["class_resolved"]:
             continue
-        if int(sample["class_type"]) != int(segment["expected_class"]):
-            note(reasons, "client_class_mismatch")
+        tag_ack = segment["tag_ack"]
+        if tag_ack is not None and tag_ack["client_old_identity"] is None:
+            previous = segments[segment["index"] - 1] if segment["index"] > 0 else None
+            old_identity = previous["client_identity"] if previous else None
+            tag_ack["client_old_identity"] = dict(old_identity) if old_identity else None
+        role = sample_identity_role(sample, segment)
+        if role == "pending_old":
+            if segment["client_identity"] is None:
+                assignments.setdefault(id(segment), []).append((sample, role))
+            elif not segment["identity_conflict"]:
+                note(reasons, "client_identity_unstable")
+                segment["identity_conflict"] = True
             continue
-        assignments.setdefault(id(segment), []).append(sample)
+        if role == "ack":
+            identity = {"local_actor_id": sample.get("actor_id"),
+                        "class_type": int(sample["class_type"])}
+            if segment["client_identity"] is None:
+                segment["client_identity"] = identity
+                if tag_ack is not None and tag_ack["ack_qpc_ns"] is None:
+                    tag_ack["ack_qpc_ns"] = qpc
+            elif not identity_matches(segment["client_identity"], identity):
+                if not segment["identity_conflict"]:
+                    note(reasons, "segment_client_identity_unstable")
+                    segment["identity_conflict"] = True
+                continue
+            assignments.setdefault(id(segment), []).append((sample, role))
+            continue
+        note(reasons, role)
+    for segment in segments:
+        if not segment["identity_conflict"]:
+            continue
+        segment["client_identity"] = None
+        assignments.pop(id(segment), None)
     pairs = []
     skipped_dt = 0
     for segment in segments:
-        segment_samples = assignments.get(id(segment), [])
-        identities = {(sample.get("actor_id"), int(sample.get("class_type")))
-                      for sample in segment_samples}
-        if len(identities) > 1:
-            note(reasons, "segment_client_identity_unstable")
-            continue
-        if identities:
-            actor_id, class_type = next(iter(identities))
-            segment["client_identity"] = {"local_actor_id": actor_id, "class_type": class_type}
+        segment_entries = assignments.get(id(segment), [])
+        tag_ack = segment["tag_ack"]
+        if tag_ack is not None:
+            if segment["client_identity"] is None:
+                note(reasons, "missing_tag_ack")
+            else:
+                tag_ack["client_new_identity"] = dict(segment["client_identity"])
+            tag_ack["transition_end_ns"] = tag_ack["ack_qpc_ns"]
+            tag_ack["pending_samples"] = len(
+                [entry for entry in segment_entries if entry[1] == "pending_old"])
         group = segment["posts"]
         j = 0
-        for sample in sorted(segment_samples, key=lambda r: r["qpc_ns"]):
+        for sample, role in sorted(segment_entries, key=lambda item: item[0]["qpc_ns"]):
             while (j + 1 < len(group)
                    and abs((group[j + 1]["qpc_ns"] or 0) - sample["qpc_ns"])
                    <= abs((group[j]["qpc_ns"] or 0) - sample["qpc_ns"])):
@@ -516,7 +663,7 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
             if abs(dt_ms) > max_dt_ms:
                 skipped_dt += 1
                 continue
-            pairs.append({
+            pair = {
                 "qpc_ns": sample["qpc_ns"],
                 "server_qpc_ns": post["qpc_ns"],
                 "run_id": sample.get("run_id"),
@@ -537,9 +684,25 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
                 "client_frame": sample.get("frame"),
                 "grounded": post.get("grounded"),
                 "move_speed": post.get("move_speed"),
-            })
+                "pending_ack": role == "pending_old",
+                "identity_role": role,
+            }
+            if role == "pending_old" and tag_ack is not None:
+                old_identity = tag_ack["client_old_identity"] or {}
+                pair["client_old_actor_id"] = old_identity.get("local_actor_id")
+                pair["client_old_class_type"] = old_identity.get("class_type")
+                pair["server_new_actor_uid"] = tag_ack["server_actor_uid"]
+                pair["server_new_class_type"] = tag_ack["server_class_type"]
+                pair["tag_qpc_ns"] = tag_ack["server_qpc_ns"]
+                pair["tag_ack_qpc_ns"] = tag_ack["ack_qpc_ns"]
+            pairs.append(pair)
     pairs.sort(key=lambda r: r["qpc_ns"] or 0)
+    unconsumed = [tag for tag in tags if not tag["consumed"]]
+    if unconsumed:
+        note(reasons, "tag_ack_unmatched")
+        reasons["tag_ack_unmatched"] += len(unconsumed) - 1
     resolved_segments = [segment for segment in segments if segment["client_identity"]]
+    tag_acks = [segment["tag_ack"] for segment in segments if segment["tag_ack"] is not None]
     stats = {
         "pairing": "monotonic_nearest_within_active_identity_segment",
         "candidate_samples": len(eligible_samples),
@@ -554,6 +717,9 @@ def pair_trajectories(samples, posts, owner, epochs, run_id, game_id, player_ind
         "reasons": reasons,
         "gaps": gaps,
         "identity_ok": not reasons and bool(resolved_segments),
+        "tag_transitions": len(tags),
+        "tag_acked_segments": len(tag_acks),
+        "tag_acks": tag_acks,
         "max_dt_ms": max((abs(p["dt_ms"]) for p in pairs), default=None),
         "mean_dt_ms": (sum(p["dt_ms"] for p in pairs) / len(pairs)) if pairs else None,
     }
@@ -574,6 +740,7 @@ def segment_summary(segment):
         "posts": len(segment["posts"]),
         "class_resolved": segment["class_resolved"],
         "client_identity": segment["client_identity"],
+        "tag_ack": segment.get("tag_ack"),
     }
 
 
@@ -1297,7 +1464,8 @@ def build_report(run_dir, tolerance=25.0):
     epochs = instance_epochs(server)
     owner_epochs = [e for e in epochs if game_id is None or e.get("game_id") == game_id]
     pairs, pair_stats, segments = pair_trajectories(
-        samples, server["post_sim"], owner, owner_epochs, data.run_id, game_id, player_index)
+        samples, server["post_sim"], owner, owner_epochs, data.run_id, game_id, player_index,
+        tag_applies=server["tag_applies"])
     identity_reasons = dict(pair_stats["reasons"])
     if join_reason:
         identity_reasons[join_reason] = identity_reasons.get(join_reason, 0) + 1
@@ -1379,12 +1547,16 @@ def build_report(run_dir, tolerance=25.0):
             "class_by_slot": {str(slot): active_class(owner, slot) for slot in (0, 1)},
             "instance_epochs": epochs,
             "pairing_segments": [segment_summary(segment) for segment in segments],
+            "tag_transitions": pair_stats["tag_acks"],
+            "tag_pending_acks": [tag for tag in pair_stats["tag_acks"]
+                                 if tag.get("pending_samples")],
         },
         "counts": {
             "client_records": len(data.client),
             "server_records": len(data.server),
             "client_samples": len(samples),
             "server_post_sim": len(server["post_sim"]),
+            "server_tag_apply": len(server["tag_applies"]),
             "paired": len(pairs),
             "paired_independent": len(independent_pairs),
             "paired_correction_affected": len(affected_pairs),
@@ -1511,6 +1683,9 @@ def build_report(run_dir, tolerance=25.0):
         "pair_dt_ms_abs_max": trajectory.get("dt_ms_abs_max"),
         "identity_resolved": bool(pairing_ok),
         "identity_reasons": sorted(identity_reasons),
+        "identity_tag_acks": len(pair_stats["tag_acks"]),
+        "identity_tag_pending_acks": len([tag for tag in pair_stats["tag_acks"]
+                                          if tag.get("pending_samples")]),
         "corrections_separate_from_physics": correction_evidence["accounted"],
         "correction_evidence": correction_evidence,
         "corrections_count": len(relevant_corrections) + len(client_correction_events),

@@ -1683,6 +1683,9 @@ bool GameXmlContent::LoadAnimationData()
 		i32 animLoop = 1;
 		pActionBase->QueryAttribute("AnimationIndex", &animIndex);
 		pActionBase->QueryAttribute("AnimationLoop", &animLoop);
+		if(animIndex == -1 && AnimationId != -1 && AnimationId != 0) {
+			animIndex = 0;
+		}
 		if(animLoop < 1) {
 			animLoop = 1;
 		}
@@ -1700,6 +1703,7 @@ bool GameXmlContent::LoadAnimationData()
 		row.cmd.delay = 0.0f;
 		row.cmd.executeAt = 0.0f;
 		row.cmd.completeAt = 0.0f;
+		row.cmd.clipIndex = Action::Command::NoClip;
 
 		const char* CommandType = nullptr;
 		if(pActionBase->QueryStringAttribute("CommandType", &CommandType) == XMLError::XML_SUCCESS) {
@@ -1725,11 +1729,14 @@ bool GameXmlContent::LoadAnimationData()
 
 					cmd.move.preset = ActionCommand::MovePresetFromString(Param1);
 					ASSERT(cmd.move.preset != ActionCommand::MovePreset::INVALID);
+					cmd.move.distance = 0.0f;
+					cmd.move.ignoreCollision = 0;
 
 					if(Param2 != nullptr) {
-						i32 tmp;
-						i32 r = EA::StdC::Sscanf(Param2, "%d|%d", &cmd.move.param2, &tmp);
-						ASSERT(r == 2);
+						i32 ignoreUnits = 0;
+						i32 r = EA::StdC::Sscanf(Param2, "%f|%d", &cmd.move.distance, &ignoreUnits);
+						ASSERT(r == 2 && std::isfinite(cmd.move.distance));
+						cmd.move.ignoreCollision = ignoreUnits != 0 ? 1 : 0;
 					}
 				} break;
 
@@ -1767,7 +1774,7 @@ bool GameXmlContent::LoadAnimationData()
 			switch(cmd.type) {
 				case ActionCommand::Type::MOVE: {
 					VERBOSE("		  preset='%s'", ActionCommand::MovePresetToString(cmd.move.preset));
-					VERBOSE("		  param2=%d", cmd.move.param2);
+					VERBOSE("		  distance=%.2f", cmd.move.distance);
 				} break;
 
 				case ActionCommand::Type::GRAPH_MOVE_HORZ: {
@@ -1858,7 +1865,7 @@ bool GameXmlContent::LoadAnimationData()
 				group[j] = key;
 			}
 
-			eastl::fixed_vector<i32, 8, false> clipIndex;
+			const i32 clipBegin = (i32)action->clips.size();
 			eastl::fixed_vector<f32, 8, false> clipStart;
 			f32 running = 0.0f;
 			i32 i = 0;
@@ -1887,12 +1894,20 @@ bool GameXmlContent::LoadAnimationData()
 						}
 					}
 				}
-				if(maxLoop > 1) {
-					duration *= (f32)maxLoop;
+				if(!std::isfinite(duration) || duration < 0.0f) {
+					LOG("ERROR(LoadAnimationData): invalid AniLength");
+					return false;
 				}
-				clipIndex.push_back(idx);
+				ASSERT(maxLoop >= 1);
+				ASSERT(action->clips.size() < action->clips.capacity());
+				Action::Clip clip;
+				clip.animationIndex = idx;
+				clip.animationID = group[i]->animId;
+				clip.duration = duration;
+				clip.loopCount = (u32)maxLoop;
+				action->clips.push_back(clip);
 				clipStart.push_back(running);
-				running += duration;
+				running += duration * (f32)maxLoop;
 				i = j;
 			}
 			if(running > 0.0f) {
@@ -1905,18 +1920,25 @@ bool GameXmlContent::LoadAnimationData()
 					continue;
 				}
 				f32 start = 0.0f;
+				Action::Command cmd = row->cmd;
+				cmd.clipIndex = Action::Command::NoClip;
 				if(row->animIndex >= 0) {
-					for(i32 c = 0; c < (i32)clipIndex.size(); ++c) {
-						if(clipIndex[c] == row->animIndex) {
+					for(i32 c = 0; c < (i32)clipStart.size(); ++c) {
+						if(action->clips[clipBegin + c].animationIndex == row->animIndex) {
 							start = clipStart[c];
+							cmd.clipIndex = (u8)(clipBegin + c);
 							break;
 						}
 					}
+					ASSERT(cmd.clipIndex != Action::Command::NoClip);
 				}
-				Action::Command cmd = row->cmd;
 				if(cmd.type == ActionCommand::Type::STATE_BLOCK) {
 					cmd.executeAt = start;
 					cmd.completeAt = start + cmd.delay;
+				}
+				else if(cmd.type == ActionCommand::Type::GRAPH_MOVE_HORZ) {
+					cmd.executeAt = start;
+					cmd.completeAt = start;
 				}
 				else {
 					cmd.executeAt = cmd.delay + start;

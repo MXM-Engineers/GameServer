@@ -2534,6 +2534,7 @@ bool GameXmlContent::LoadSkillCosts()
 			pCommon->QueryFloatAttribute("_ConsumeBB", &res[2]);
 			pCommon->QueryFloatAttribute("_ConsumeHP", &res[3]);
 			if(res[0] > 0 || res[1] > 0 || res[2] > 0 || res[3] > 0) skillConsumeRes[skillID] = res;
+			if(const i32 comboBase = pCommon->IntAttribute("_BaseComboSkill")) comboBaseSkill[skillID] = comboBase;
 			if(XMLElement* pCombo = pCommon->FirstChildElement("_SKILLCOMBO")) {
 				XMLElement* pComboTarget = pCommon->FirstChildElement("_Target");
 				const char* selectState = pComboTarget ? pComboTarget->Attribute("_SelectStateType") : nullptr;

@@ -741,6 +741,8 @@ struct GameXmlContent
 	i32 GetComboAutoCastMs(i32 skillID) const { auto f = comboAutoCastMs.find(skillID); return f == comboAutoCastMs.end() ? 0 : f->second; }
 	eastl::hash_map<i32, i32> comboDurationMs;
 	i32 GetComboDurationMs(i32 skillID) const { auto f = comboDurationMs.find(skillID); return f == comboDurationMs.end() ? 0 : f->second; }
+	eastl::hash_map<i32, i32> comboBaseSkill;
+	i32 GetComboBaseSkill(i32 skillID) const { auto f = comboBaseSkill.find(skillID); return f == comboBaseSkill.end() ? 0 : f->second; }
 	f32 GetSkillConsumeMP(i32 skillID) const { auto f = skillConsumeMP.find(skillID); return f == skillConsumeMP.end() ? 0 : f->second; }
 	f32 GetSkillConsumeUG(i32 skillID) const { auto f = skillConsumeUG.find(skillID); return f == skillConsumeUG.end() ? 0 : f->second; }
 	f32 GetSkillConsumeStamina(i32 skillID) const { auto f = skillConsumeStamina.find(skillID); return f == skillConsumeStamina.end() ? 0 : f->second; }

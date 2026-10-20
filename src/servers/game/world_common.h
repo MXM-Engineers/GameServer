@@ -52,6 +52,10 @@ static inline f32 SkillDamage(SkillID skillID)
 	SkillNormalLevelModel& level = *skill.getSkillNormalLevelByIndex(0);
 	const f32 ttBase = content.GetSkillBaseDamage((i32)skillID);
 	const f32 base = ttBase > 0 ? ttBase : level.getBaseDamage();
+	if(base <= 0) {
+		const i32 comboBase = content.GetComboBaseSkill((i32)skillID);
+		if(comboBase != 0) return SkillDamage(SkillID(comboBase));
+	}
 	const f32 damage = base + COMBAT_ATTACK_STAT * level.getAttackMultiplier();
 	return MAX(damage, 0.0f);
 }

@@ -2870,6 +2870,9 @@ bool GameXmlContent::LoadWeaponFiring()
 			WeaponFiring wf;
 			if(fireDummy) wf.fireDummy = fireDummy;
 			wf.spawnAtAim = pData && XmlAttrTrue(pData, "_RemoteSpawnAimPosition");
+			if(XMLElement* pCharge = pData ? pData->FirstChildElement("_CHARGE") : nullptr) {
+				for(XMLElement* pLevel = pCharge->FirstChildElement("_LEVEL"); pLevel && !wf.chargeTime.full(); pLevel = pLevel->NextSiblingElement("_LEVEL")) wf.chargeTime.push_back(pLevel->FloatAttribute("_ChargingTime"));
+			}
 			XMLElement* pFactory = pInfo->FirstChildElement("RemoteFactoryComData");
 			XMLElement* pCreate = pFactory ? pFactory->FirstChildElement("_Create") : nullptr;
 			XMLElement* pDef = pCreate ? pCreate->FirstChildElement("_Default") : nullptr;
@@ -2887,6 +2890,7 @@ bool GameXmlContent::LoadWeaponFiring()
 					else if(EA::StdC::Strcmp(pE->Name(), "_CHARGINGREMOTE") == 0) {
 						pE->QueryAttribute("_Index", &idx);
 						if(idx && !wf.charge.full()) wf.charge.push_back((RemoteIdx)idx);
+						if(const char* dummy = pE->Attribute("_FiringDummy")) wf.chargeDummy = dummy;
 					}
 					else if(EA::StdC::Strcmp(pE->Name(), "_FIRINGCOUNT") == 0) {
 						pE->QueryAttribute("_Rate", &wf.countRate);

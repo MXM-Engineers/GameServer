@@ -8,7 +8,6 @@
 #include "game.h"
 
 static const f32 SHOT_AIM_SCALE = 10.0f;
-static const u32 WEAPON_STATE_FIRE = 2;
 
 bool GamePacketHandler::Init(Game* game_)
 {
@@ -337,7 +336,7 @@ void GamePacketHandler::HandlePacket_CQ_WeaponState(ClientHandle clientHd, const
 
 	const Cl::CQ_WeaponState& weapon = SafeCast<Cl::CQ_WeaponState>(packetData, packetSize);
 	game->OnPlayerWeaponStateRelay(clientHd, replication->GetWorldActorUID(clientHd, (LocalActorID)weapon.ownerID), (i32)weapon.state, weapon.chargeLevel, weapon.firingCombo);
-	if(weapon.state == WEAPON_STATE_FIRE) {
+	if((i32)weapon.state == WEAPON_STATE_FIRE) {
 		game->OnPlayerWeaponFire(clientHd, MxmYawToWorldYaw(weapon.aimYaw));
 	}
 }

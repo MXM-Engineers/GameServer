@@ -1,3 +1,6 @@
+#include <mutex>
+#include <EASTL/sort.h>
+#include "config.h"
 #include <mxm/game_content.h>
 #include <common/packet_serialize.h>
 #include <common/packet_validator.h>
@@ -65,6 +68,25 @@ void HubInstance::OnMatchmakerPacket(const NetHeader& header, const u8* packetDa
 const i32 PICKING_TIME = 60;
 const i32 MATCH_WAIT_TIME = 10;
 
+static std::mutex g_sentToGameMutex;
+static eastl::fixed_vector<WideString,64,true> g_sentToGame;
+
+void MarkAccountSentToGame(const WideString& nickname)
+{
+	std::lock_guard<std::mutex> lock(g_sentToGameMutex);
+	if(eastl::find(g_sentToGame.begin(), g_sentToGame.end(), nickname) == g_sentToGame.end()) g_sentToGame.push_back(nickname);
+	LOG("[Room] %ls sent to a game server", nickname.data());
+}
+
+bool TakeAccountReturningFromGame(const WideString& nickname)
+{
+	std::lock_guard<std::mutex> lock(g_sentToGameMutex);
+	auto it = eastl::find(g_sentToGame.begin(), g_sentToGame.end(), nickname);
+	if(it == g_sentToGame.end()) return false;
+	g_sentToGame.erase(it);
+	return true;
+}
+
 void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 userCount)
 {
 	server = server_;
@@ -72,15 +94,12 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 	teamMasterPickCount[Team::RED].fill(0);
 	teamMasterPickCount[Team::BLUE].fill(0);
 
-	allowedMastersSet = {
-		ClassType::STRIKER,
-		ClassType::ARTILLERY,
-		ClassType::ASSASSIN,
-		ClassType::ELECTRO,
-		ClassType::DEFENDER,
-		ClassType::SNIPER,
-		ClassType::LAUNCHER,
-	};
+	foreach_const(m, GetGameXmlContent().masters) {
+		if(m->skillIDs.empty() || m->skinIDs.empty() || m->defaultWeaponIDs.empty()) continue;
+		if(allowedMastersSet.size() >= 100) break;
+		allowedMastersSet.insert(m->classType);
+	}
+	LOG("[Room] %d pickable characters", (i32)allowedMastersSet.size());
 
 	startTime = TimeNow();
 
@@ -248,7 +267,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		}
 
 		{
-			PacketWriter<Sv::SN_SortieMasterPickPhaseStart> packet;
+			PacketWriter<Sv::SN_SortieMasterPickPhaseStart,1024> packet;
 			packet.Write<u8>(0);
 			packet.Write<u16>((u16)allowedMastersSet.size());
 			foreach_const(m, allowedMastersSet) {
@@ -268,10 +287,12 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 			eastl::fixed_vector<UserID,5> enemyTeamUserIds;
 
 			foreach_const(u, teamRed) {
-				allyTeamUserIds.push_back((*u)->userID);
+				if(user.team == Team::BLUE) enemyTeamUserIds.push_back((*u)->userID);
+				else allyTeamUserIds.push_back((*u)->userID);
 			}
 			foreach_const(u, teamBlue) {
-				enemyTeamUserIds.push_back((*u)->userID);
+				if(user.team == Team::BLUE) allyTeamUserIds.push_back((*u)->userID);
+				else enemyTeamUserIds.push_back((*u)->userID);
 			}
 
 			packet.WriteVec(allyTeamUserIds.data(), allyTeamUserIds.size()); // alliesTeamUserIds
@@ -281,20 +302,16 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		}
 	}
 
+
 	// make bots pick random masters
 	foreach(u, userList) {
 		if(u->isBot) {
+			static const ClassType botMasters[] = {
+				ClassType::STRIKER, ClassType::ARTILLERY, ClassType::ASSASSIN, ClassType::ELECTRO,
+				ClassType::DEFENDER, ClassType::SNIPER, ClassType::LAUNCHER,
+			};
 			for(int attempts = 0; attempts < 1000; attempts++) {
-				const u32 r0 = RandUint() % allowedMastersSet.size();
-
-				u32 i = 0;
-				foreach_const(m, allowedMastersSet) {
-					if(i == r0) {
-						TryPickMaster(u, *m);
-						break;
-					}
-					i++;
-				}
+				TryPickMaster(u, botMasters[RandUint() % ARRAY_COUNT(botMasters)]);
 
 				if(u->Sub().classType != ClassType::NONE) {
 					break;
@@ -431,6 +448,7 @@ void RoomInstance::Update(Time localTime_)
 				packet.WriteStringObj(user.name.data(), user.name.size());
 				packet.Write<u32>(In::ProduceInstantKey(user.accountUID, sortieUID));
 				SendPacket(user.clientHd, packet);
+				MarkAccountSentToGame(user.name);
 			}
 		}
 
@@ -501,7 +519,7 @@ void RoomInstance::Replicate()
 	}
 
 	if(doReplicateMasterCount) {
-		PacketWriter<Sv::SN_SortieCharacterSlotInfo> packet[2];
+		PacketWriter<Sv::SN_SortieCharacterSlotInfo,1024> packet[2];
 		u16 slotInfos_count[2] = {0};
 
 		for(int team = 0; team < 2; team++) {
@@ -590,8 +608,58 @@ void RoomInstance::OnClientPacket(ClientHandle clientHd, const NetHeader& header
 			SetReady(user);
 		} break;
 
-		case Cl::CQ_RoomEquipSkill::NET_ID:
-		case Cl::CQ_RoomSwapSkill::NET_ID:
+		case Cl::CQ_RoomEquipSkill::NET_ID: {
+			User* user = FindUser(clientHd);
+			if(!user || packetSize < 12) break;
+			u32 v[3];
+			memmove(v, packetData, sizeof(v));
+			NT_LOG("[client%x] Client :: CQ_RoomEquipSkill :: %u %u %u", clientHd, v[0], v[1], v[2]);
+			const u32 characterID = v[0];
+			const SkillID skill = SkillID(v[1]);
+			const i32 slot = (i32)v[2];
+			const ClassType cls = ClassType((i32)characterID - (i32)LocalActorID::FIRST_SELF_MASTER);
+			i32 masterIndex = -1;
+			for(int mi = 0; mi < 2; mi++) {
+				if(user->masters[mi].classType == cls) masterIndex = mi;
+			}
+			if(masterIndex < 0 || slot < 0 || slot > 1) {
+				WARN("[client%x] CQ_RoomEquipSkill ignored (%u %u %u): master not picked", clientHd, v[0], v[1], v[2]);
+				break;
+			}
+			auto& skills = user->masters[masterIndex].skills;
+			if(skills[slot ^ 1] == skill) skills[slot ^ 1] = skills[slot];
+			skills[slot] = skill;
+			user->replicate.masterPick = true;
+			LOG("[Room] %ls equips skill %d in slot %d of master %d", user->name.data(), (i32)skill, slot, masterIndex);
+
+			Sv::SA_SkillSelect ack;
+			ack.characterID = characterID;
+			ack.result = 0;
+			ack.dwSkillIndex = (u32)skill;
+			ack.dwSkillSlot = (u32)slot;
+			SendPacket(clientHd, ack);
+			Sv::SN_SkillSelect notify;
+			notify.userId = (u32)user->userID;
+			notify.characterID = characterID;
+			notify.dwSkillIndex = (u32)skill;
+			notify.dwSkillSlot = (u32)slot;
+			SendPacket(clientHd, notify);
+		} break;
+
+		case Cl::CQ_RoomSwapSkill::NET_ID: {
+			User* user = FindUser(clientHd);
+			if(!user) break;
+			u32 v = 0;
+			if(packetSize >= 4) memmove(&v, packetData, 4);
+			NT_LOG("[client%x] Client :: CQ_RoomSwapSkill :: %u", clientHd, v);
+			for(int mi = 0; mi < 2; mi++) {
+				if(user->masters[mi].classType == ClassType::NONE) continue;
+				if(v != (u32)LocalActorID::FIRST_SELF_MASTER + (u32)user->masters[mi].classType && v != (u32)user->masters[mi].classType) continue;
+				eastl::swap(user->masters[mi].skills[0], user->masters[mi].skills[1]);
+				user->replicate.masterPick = true;
+			}
+		} break;
+
 		case Cl::CQ_RoomEquipWeapon::NET_ID: {
 			NT_LOG("[client%x] Client :: CQ_RoomEquip* :: size=%d", clientHd, packetSize);
 			SendDbgMsg(clientHd, L"Feature not implemented right now sorry :(");

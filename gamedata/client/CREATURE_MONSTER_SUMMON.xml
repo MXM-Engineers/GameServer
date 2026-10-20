@@ -1,0 +1,1608 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="100033400">
+    <EntityComData KEYNAME="DEFENDER_SHIELDWALL_1_PC_EX" _Name="STR_MONSTER_NAME_100033400" _Description="STR_MONSTER_DESC_100033400" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_BG_STONE" _IsTargetable="false" _IsAimingTarget="false" _BeamBlock="True" _DensityCount="1000" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180050021" />
+    <Kfm_ComData KeyName="DEFENDER_SHIELDWALL_1" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000080" _DestroyTime="0.2" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="디펜더 쉴드 월(기본)" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180050020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="290" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033401">
+    <EntityComData KEYNAME="DEFENDER_SHIELDWALL_2_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033401" _Description="STR_MONSTER_DESC_100033401" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_BG_STONE" _IsTargetable="false" _IsAimingTarget="false" _BeamBlock="True" _DensityCount="1000" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180050021" />
+    <Kfm_ComData KeyName="DEFENDER_SHIELDWALL_2" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000080" _DestroyTime="0.2" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="디펜더 쉴드 월(3단계강화)" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180050020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="290" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033402">
+    <EntityComData KEYNAME="DEFENDER_SHIELDWALL_2_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033402" _Description="STR_MONSTER_DESC_100033402" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_BG_STONE" _IsTargetable="false" _IsAimingTarget="false" _BeamBlock="True" _DensityCount="1000" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180050021" />
+    <Kfm_ComData KeyName="DEFENDER_SHIELDWALL_2" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000080" _VariationType="1" _DestroyTime="0.2" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="디펜더 쉴드 월(6단계강화)" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.2" _DFStatusIndex="400000080" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180050020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="290" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033800">
+    <EntityComData KEYNAME="PC_MissileTurret_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033800" _Description="STR_MONSTER_DESC_100033800" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="720" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_10M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_MissileTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_ATTACK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="True" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="0" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="공격 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033801">
+    <EntityComData KEYNAME="PC_MissileTurret_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033801" _Description="STR_MONSTER_DESC_100033801" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="720" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_10M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_MissileTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_ATTACK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="True" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="1" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="공격 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033802">
+    <EntityComData KEYNAME="PC_MissileTurret_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033802" _Description="STR_MONSTER_DESC_100033802" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="720" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_10M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_MissileTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_ATTACK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="True" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="2" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="공격 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033810">
+    <EntityComData KEYNAME="PC_BuffTurret_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033810" _Description="STR_MONSTER_DESC_100033810" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_BuffTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="0" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="연막 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033811">
+    <EntityComData KEYNAME="PC_BuffTurret_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033811" _Description="STR_MONSTER_DESC_100033811" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_BuffTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="1" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="연막 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033812">
+    <EntityComData KEYNAME="PC_BuffTurret_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033812" _Description="STR_MONSTER_DESC_100033812" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_BuffTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="2" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="연막 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033820">
+    <EntityComData KEYNAME="PC_SlowTurret_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033820" _Description="STR_MONSTER_DESC_100033820" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_SlowTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="0" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="느릿느릿 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033821">
+    <EntityComData KEYNAME="PC_SlowTurret_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033821" _Description="STR_MONSTER_DESC_100033821" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_SlowTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="1" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="느릿느릿 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033822">
+    <EntityComData KEYNAME="PC_SlowTurret_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033822" _Description="STR_MONSTER_DESC_100033822" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_SlowTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="50" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="2" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="느릿느릿 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033830">
+    <EntityComData KEYNAME="PC_HealingTurret_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033830" _Description="STR_MONSTER_DESC_100033830" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_HealingTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="0" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="회복 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033831">
+    <EntityComData KEYNAME="PC_HealingTurret_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033831" _Description="STR_MONSTER_DESC_100033831" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_HealingTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="1" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="회복 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033832">
+    <EntityComData KEYNAME="PC_HealingTurret_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033832" _Description="STR_MONSTER_DESC_100033832" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_HealingTurret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MECHANIC_TURRET_STAY" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000120" _VariationType="2" _DestroyTime="4" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000">
+      <_EASY _Name="회복 로봇" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="4" _DFStatusIndex="400000120" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151020000" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180090040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033840">
+    <EntityComData KEYNAME="SOULMASTER_SHIRKSOUL_PC_EX" _Name="STR_MONSTER_NAME_100033840" _Description="STR_MONSTER_DESC_100033840" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_SHIRKSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _DestroyTime="0.2" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="회피의 정령" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="1100" _ShowIcon="0" _NameTagOffsetZ="240" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033841">
+    <EntityComData KEYNAME="SOULMASTER_SLOWSOUL_PC_EX" _Name="STR_MONSTER_NAME_100033841" _Description="STR_MONSTER_DESC_100033841" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="150" _MoveSpeed="500" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_SLOWSOUL" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5.5" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_SLOWSOUL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="800" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="30" _ColliderHeight="15" />
+    <MoveController_ComData ActorRadius="15" ActorHeight="15" _AILength="45" _AIWidth="45" _AIDistanceWidth="30" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="감속의 정령" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033842">
+    <EntityComData KEYNAME="SOULMASTER_SLOWSOUL_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033842" _Description="STR_MONSTER_DESC_100033842" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="150" _MoveSpeed="500" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_SLOWSOUL" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5.5" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_SLOWSOUL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="800" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="30" _ColliderHeight="15" />
+    <MoveController_ComData ActorRadius="15" ActorHeight="15" _AILength="45" _AIWidth="45" _AIDistanceWidth="30" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="감속의 정령" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033843">
+    <EntityComData KEYNAME="SOULMASTER_CIRCLE_TELEPORT_PC_EX" _Name="STR_MONSTER_NAME_100033843" _Description="STR_MONSTER_DESC_100033843" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _canTeleportTarget="True" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_CIRCLE_TELEPORT" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="105" ActorHeight="10" _AILength="135" _AIWidth="135" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="마법진: 이동" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033844">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_PC_EX" _Name="STR_MONSTER_NAME_100033844" _Description="STR_MONSTER_DESC_100033844" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033845">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033845" _Description="STR_MONSTER_DESC_100033845" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="1" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033846">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033846" _Description="STR_MONSTER_DESC_100033846" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="2" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033847">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033847" _Description="STR_MONSTER_DESC_100033847" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="14" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="3" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033848">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type4_PC_EX" _Name="STR_MONSTER_NAME_100033848" _Description="STR_MONSTER_DESC_100033848" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="14" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="4" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033849">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type5_PC_EX" _Name="STR_MONSTER_NAME_100033849" _Description="STR_MONSTER_DESC_100033849" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="14" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="5" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033850">
+    <EntityComData KEYNAME="SOULMASTER_GIANTSOUL_Type6_PC_EX" _Name="STR_MONSTER_NAME_100033850" _Description="STR_MONSTER_DESC_100033850" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SOULMASTER_GIANTSOUL" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="14" />
+    <Ai_ComData _AiIndex="AI_PC_SOULMASTER_GIANTSOUL" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="6" _DestroyTime="1.5" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="아라미의 친구" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1.5" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180100050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="380" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033860">
+    <EntityComData KEYNAME="Rodmaster_Ultra_PC_EX" _Name="STR_MONSTER_NAME_100033860" _Description="STR_MONSTER_DESC_100033860" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033861">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033861" _Description="STR_MONSTER_DESC_100033861" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033862">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033862" _Description="STR_MONSTER_DESC_100033862" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="2" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033863">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033863" _Description="STR_MONSTER_DESC_100033863" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="3" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033864">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type4_PC_EX" _Name="STR_MONSTER_NAME_100033864" _Description="STR_MONSTER_DESC_100033864" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="4" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033865">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type5_PC_EX" _Name="STR_MONSTER_NAME_100033865" _Description="STR_MONSTER_DESC_100033865" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="5" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033866">
+    <EntityComData KEYNAME="Rodmaster_Ultra_Type6_PC_EX" _Name="STR_MONSTER_NAME_100033866" _Description="STR_MONSTER_DESC_100033866" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="540" _MoveSpeed="540" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Rodmaster_Ultra" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1.2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="40" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="6" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="이강선풍곤" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180140050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="380" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033870">
+    <EntityComData KEYNAME="ICEQUEEN_STATUE_PC_EX" _Name="STR_MONSTER_NAME_100033870" _Description="STR_MONSTER_DESC_100033870" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="0.7" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _canTeleportTarget="True" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180160031" />
+    <Kfm_ComData KeyName="ICEQUEEN_STATUE" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="105" ActorHeight="30" _AILength="135" _AIWidth="135" _AIDistanceWidth="63" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="얼음여왕 얼음조각상" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180160030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033871">
+    <EntityComData KEYNAME="ICEQUEEN_STATUE_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033871" _Description="STR_MONSTER_DESC_100033871" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="0.7" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _canTeleportTarget="True" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180160031" />
+    <Kfm_ComData KeyName="ICEQUEEN_STATUE" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="105" ActorHeight="30" _AILength="135" _AIWidth="135" _AIDistanceWidth="63" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="얼음여왕 얼음조각상 강화1" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180160030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033880">
+    <EntityComData KEYNAME="PHOTOG_SPOTLIGHT_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033880" _Description="STR_MONSTER_DESC_100033880" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UprightOnSummon="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="5" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PHOTOG_SPOTLIGHT" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="15" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="사진사 스팟라이트" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180150020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033881">
+    <EntityComData KEYNAME="PHOTOG_SPOTLIGHT_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033881" _Description="STR_MONSTER_DESC_100033881" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UprightOnSummon="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="5" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PHOTOG_SPOTLIGHT" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="15" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="사진사 스팟라이트" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180150020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033882">
+    <EntityComData KEYNAME="PHOTOG_SPOTLIGHT_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033882" _Description="STR_MONSTER_DESC_100033882" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UprightOnSummon="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="5" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PHOTOG_SPOTLIGHT" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="15" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="2" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="사진사 스팟라이트" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180150020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033890">
+    <EntityComData KEYNAME="PHOTOG_PHOTOZONE_PC_EX" _Name="STR_MONSTER_NAME_100033890" _Description="STR_MONSTER_DESC_100033890" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PHOTOG_PHOTOZONE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="사진사 포토존" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180150050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033891">
+    <EntityComData KEYNAME="PHOTOG_PHOTOZONE_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033891" _Description="STR_MONSTER_DESC_100033891" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PHOTOG_PHOTOZONE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="사진사 포토존 강화1" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180150050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033900">
+    <EntityComData KEYNAME="KROMEDE_TRAP_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033900" _Description="STR_MONSTER_DESC_100033900" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="KROMEDE_TRAP" _UseHitColor="True" _HitColorPower="1" />
+    <LifeTime_ComData LifeTime="4.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="50" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="50" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="크로메데 수상한 물체" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180130040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="60" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033910">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_PC_EX" _Name="STR_MONSTER_NAME_100033910" _Description="STR_MONSTER_DESC_100033910" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="4" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033911">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033911" _Description="STR_MONSTER_DESC_100033911" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화1" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033912">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type2_PC_EX" _Name="STR_MONSTER_NAME_100033912" _Description="STR_MONSTER_DESC_100033912" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="2" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화2" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033913">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type3_PC_EX" _Name="STR_MONSTER_NAME_100033913" _Description="STR_MONSTER_DESC_100033913" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="3" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화3" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033914">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type4_PC_EX" _Name="STR_MONSTER_NAME_100033914" _Description="STR_MONSTER_DESC_100033914" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="4" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화4" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033915">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type5_PC_EX" _Name="STR_MONSTER_NAME_100033915" _Description="STR_MONSTER_DESC_100033915" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="5" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화5" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="5" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033916">
+    <EntityComData KEYNAME="MAGICGIRL_WORLDPEACE_Type6_PC_EX" _Name="STR_MONSTER_NAME_100033916" _Description="STR_MONSTER_DESC_100033916" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_WORLDPEACE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="5" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="6" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="세계평화 강화6" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="6" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180170050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100033920">
+    <EntityComData KEYNAME="MAGICGIRL_KYUKYU_PC_EX" _Name="STR_MONSTER_NAME_100033920" _Description="STR_MONSTER_DESC_100033920" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MAGICGIRL_KYUKYU" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="큐큐" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="140" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033940">
+    <EntityComData KEYNAME="SLIME_MINI_Type1_EX" _Name="STR_MONSTER_NAME_100033940" _Description="STR_MONSTER_DESC_100033940" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="600" _MoveSpeed="600" _RotateSpeed="700" _Scale="0.7" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SLIME_MINI" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="8" />
+    <Ai_ComData _AiIndex="AI_PC_SLIME_DIVISION" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2500" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="120" />
+    <PhysXMeshComData _ColliderRadius="70" _ColliderHeight="50" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="35" _AILength="55" _AIWidth="55" _AIDistanceWidth="49" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="0" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="뿌마로" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180200050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _NameTagOffsetZ="200" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033941">
+    <EntityComData KEYNAME="SLIME_MINI_Type2_EX" _Name="STR_MONSTER_NAME_100033941" _Description="STR_MONSTER_DESC_100033941" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="600" _MoveSpeed="600" _RotateSpeed="700" _Scale="0.7" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SLIME_MINI" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="8" />
+    <Ai_ComData _AiIndex="AI_PC_SLIME_DIVISION" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2500" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="120" />
+    <PhysXMeshComData _ColliderRadius="70" _ColliderHeight="50" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="35" _AILength="55" _AIWidth="55" _AIDistanceWidth="49" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="1" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="뿌마로" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180200050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _NameTagOffsetZ="200" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033942">
+    <EntityComData KEYNAME="SLIME_MINI_Type3_EX" _Name="STR_MONSTER_NAME_100033942" _Description="STR_MONSTER_DESC_100033942" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="600" _MoveSpeed="600" _RotateSpeed="700" _Scale="0.9" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SLIME_MINI" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="11" />
+    <Ai_ComData _AiIndex="AI_PC_SLIME_DIVISION" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2500" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="120" />
+    <PhysXMeshComData _ColliderRadius="70" _ColliderHeight="50" />
+    <MoveController_ComData ActorRadius="32" ActorHeight="45" _AILength="62" _AIWidth="62" _AIDistanceWidth="63" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="2" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="뿌마로" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180200050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _NameTagOffsetZ="200" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033943">
+    <EntityComData KEYNAME="SLIME_MINI_Type4_EX" _Name="STR_MONSTER_NAME_100033943" _Description="STR_MONSTER_DESC_100033943" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="600" _MoveSpeed="600" _RotateSpeed="700" _Scale="0.9" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SLIME_MINI" _UseHitColor="True" _HitColorPower="2" />
+    <LifeTime_ComData LifeTime="11" />
+    <Ai_ComData _AiIndex="AI_PC_SLIME_DIVISION" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2500" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <GunDirectionControl_ComData _LookAtHeight="120" />
+    <PhysXMeshComData _ColliderRadius="70" _ColliderHeight="50" />
+    <MoveController_ComData ActorRadius="32" ActorHeight="45" _AILength="62" _AIWidth="62" _AIDistanceWidth="63" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000130" _VariationType="3" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="뿌마로" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000130" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000130" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180200050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _NameTagOffsetZ="200" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033950">
+    <EntityComData KEYNAME="MondoZax_Robot_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033950" _Description="STR_MONSTER_DESC_100033950" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _IsTargetable="true" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="600" _MoveSpeed="600" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _DefeatExtramotion="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="MondoZax_Robot" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PC_MONDOZAX_ROBOT" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="2500" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000030" _VariationType="0" _DestroyTime="1" _Team="TEAM_PLAYER" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="만능 기계 조수" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000030" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000030" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000030" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000030" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180210030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="180" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100033990">
+    <EntityComData KEYNAME="DUMMYCYLINDER_DWTargetAgent_0_Type1_PC_EX" _Name="STR_MONSTER_NAME_100033990" _Description="STR_MONSTER_DESC_100033990" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYCYLINDER_DWTargetAgent_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _DestroyTime="0.1" _Team="TEAM_DYNAMIC" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="[몬도] 로봇 지점 선택용 마커" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="400" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100034000">
+    <EntityComData KEYNAME="LILU_HAWK_Type1_PC_EX" _Name="STR_MONSTER_NAME_100034000" _Description="STR_MONSTER_DESC_100034000" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="1000" _NormalMoveSpeed="480" _MoveSpeed="480" _RotateSpeed="290" _Scale="1.5" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _bShowInFog="True" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180220011" />
+    <Kfm_ComData KeyName="LILU_HAWK" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="4.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="400" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="8" ActorHeight="8" _AILength="38" _AIWidth="38" _AIDistanceWidth="15" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="2" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="하루" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180220010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="400" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100034001">
+    <EntityComData KEYNAME="DUMMYCYLINDER_DWTargetAgent_0_Type2_PC_EX" _Name="STR_MONSTER_NAME_100034001" _Description="STR_MONSTER_DESC_100034001" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYCYLINDER_DWTargetAgent_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <LifeTime_ComData LifeTime="1.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000040" _DestroyTime="0.1" _Team="TEAM_DYNAMIC" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="[리루] 매 지점 선택용 마커" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="400" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100034002">
+    <EntityComData KEYNAME="LILU_HAWK_Type2_PC_EX" _Name="STR_MONSTER_NAME_100034002" _Description="STR_MONSTER_DESC_100034002" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="1000" _NormalMoveSpeed="480" _MoveSpeed="480" _RotateSpeed="290" _Scale="1.5" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _bShowInFog="True" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180220011" />
+    <Kfm_ComData KeyName="LILU_HAWK" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="4.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="500" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="400" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="8" ActorHeight="8" _AILength="38" _AIWidth="38" _AIDistanceWidth="15" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="2" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="하루" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180220010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="400" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100034003">
+    <EntityComData KEYNAME="DUMMYCYLINDER_DWTargetAgent_0_Type1_Sight_EX" _Name="STR_MONSTER_NAME_100034003" _Description="STR_MONSTER_DESC_100034003" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UprightOnSummon="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="5" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="DUMMYCYLINDER_DWTargetAgent_0" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="리루 매의시야" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180220030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100034004">
+    <EntityComData KEYNAME="DUMMYCYLINDER_DWTargetAgent_0_Type2_Sight_EX" _Name="STR_MONSTER_NAME_100034004" _Description="STR_MONSTER_DESC_100034004" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UprightOnSummon="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="5" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="DUMMYCYLINDER_DWTargetAgent_0" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="10" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="True" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="리루 매의시야" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" _DropType="0" _DropIndex="0" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180220030" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="140" _EnableActionText="False" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_SERVANT" />
+  </INFO>
+  <INFO ID="100034010">
+    <EntityComData KEYNAME="SHADOWHUNTER_TELEPORT_PC_EX" _Name="STR_MONSTER_NAME_100034010" _Description="STR_MONSTER_DESC_100034010" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _canTeleportTarget="True" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="SHADOWHUNTER_TELEPORT" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="800" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="105" ActorHeight="10" _AILength="135" _AIWidth="135" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="[그림자사냥꾼] 텔레포트" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041020">
+    <EntityComData KEYNAME="ARTILLERY_SPIDERMINE_EX" _Name="STR_MONSTER_NAME_100041020" _Description="STR_MONSTER_DESC_100041020" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="800" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ARTILLERY_SPIDERMINE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="30" />
+    <Ai_ComData _AiIndex="AI_PC_ARTILLERY_SPIDERMINE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 지뢰" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180020020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="800" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="100" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041021">
+    <EntityComData KEYNAME="ARTILLERY_SPIDERMINE_Type1_EX" _Name="STR_MONSTER_NAME_100041021" _Description="STR_MONSTER_DESC_100041021" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="800" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ARTILLERY_SPIDERMINE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="30" />
+    <Ai_ComData _AiIndex="AI_PC_ARTILLERY_SPIDERMINE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 지뢰" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180020020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="800" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="100" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041022">
+    <EntityComData KEYNAME="ARTILLERY_SPIDERMINE_Type2_EX" _Name="STR_MONSTER_NAME_100041022" _Description="STR_MONSTER_DESC_100041022" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="800" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ARTILLERY_SPIDERMINE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="30" />
+    <Ai_ComData _AiIndex="AI_PC_ARTILLERY_SPIDERMINE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="2" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 지뢰" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180020020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="800" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="100" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041023">
+    <EntityComData KEYNAME="ARTILLERY_SPIDERMINE_Type4_EX" _Name="STR_MONSTER_NAME_100041023" _Description="STR_MONSTER_DESC_100041023" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="800" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ARTILLERY_SPIDERMINE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="30" />
+    <Ai_ComData _AiIndex="AI_PC_ARTILLERY_SPIDERMINE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="3" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 지뢰" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="3" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180020020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="800" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="100" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041024">
+    <EntityComData KEYNAME="ARTILLERY_SPIDERMINE_Type5_EX" _Name="STR_MONSTER_NAME_100041024" _Description="STR_MONSTER_DESC_100041024" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="800" _RotateSpeed="700" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ARTILLERY_SPIDERMINE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="30" />
+    <Ai_ComData _AiIndex="AI_PC_ARTILLERY_SPIDERMINE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="4" _DestroyTime="1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 지뢰" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="4" _DestroyTime="1" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180020020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="800" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="100" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041030">
+    <EntityComData KEYNAME="PC_AuraAgent_EX" _Name="STR_MONSTER_NAME_100041030" _Description="STR_MONSTER_DESC_100041030" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PC_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="1" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="800" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="50" _ColliderHeight="5" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="5" _AILength="55" _AIWidth="55" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="MBA-07 연막" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041031">
+    <EntityComData KEYNAME="Electro_Energyball_Electro_Skill_EX" _Name="STR_MONSTER_NAME_100041031" _Description="STR_MONSTER_DESC_100041031" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsNonSkillTarget ="true" _IsAimingTarget="false" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180040041" />
+    <Kfm_ComData KeyName="Electro_Energyball" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="6" />
+    <Ai_ComData _AiIndex="AI_PC_ELECTRO_ENERGYBALL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="2" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="전기 구체" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180040040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041032">
+    <EntityComData KEYNAME="Electro_Energyball_Electro_SkillUpgrade3_EX" _Name="STR_MONSTER_NAME_100041032" _Description="STR_MONSTER_DESC_100041032" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsNonSkillTarget ="true" _IsAimingTarget="false" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180040041" />
+    <Kfm_ComData KeyName="Electro_Energyball" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="8" />
+    <Ai_ComData _AiIndex="AI_PC_ELECTRO_ENERGYBALL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="1" _DestroyTime="2" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="전기 구체" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180040040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041033">
+    <EntityComData KEYNAME="Electro_Energyball_Electro_SkillUpgrade6_EX" _Name="STR_MONSTER_NAME_100041033" _Description="STR_MONSTER_DESC_100041033" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="true" _IsNonSkillTarget ="true" _IsAimingTarget="false" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180040041" />
+    <Kfm_ComData KeyName="Electro_Energyball" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="8" />
+    <Ai_ComData _AiIndex="AI_PC_ELECTRO_ENERGYBALL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000125" _VariationType="2" _DestroyTime="2" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="전기 구체" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="2" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="2" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180040040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041040">
+    <EntityComData KEYNAME="ANDROB_PORTAL_Type1_EX" _Name="STR_MONSTER_NAME_100041040" _Description="STR_MONSTER_DESC_100041040" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ANDROB_PORTAL" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5.2" />
+    <Ai_ComData _AiIndex="AI_PC_ANDROB_PORTAL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="마이아 구조 포탈" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180300020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041041">
+    <EntityComData KEYNAME="ANDROB_PORTAL_Type2_EX" _Name="STR_MONSTER_NAME_100041041" _Description="STR_MONSTER_DESC_100041041" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="ANDROB_PORTAL" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5.2" />
+    <Ai_ComData _AiIndex="AI_PC_ANDROB_PORTAL" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000040" _VariationType="1" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="마이아 구조 포탈" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180300020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041050">
+    <EntityComData KEYNAME="ANDROA_CANNONADE_Type1_Skill_EX" _Name="STR_MONSTER_NAME_100041050" _Description="STR_MONSTER_DESC_100041050" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180290011" />
+    <Kfm_ComData KeyName="ANDROA_CANNONADE" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="6" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000125" _VariationType="0" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="안드로이드 공격형 지점폭격" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000125" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000125" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000125" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000125" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180290010" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041060">
+    <EntityComData KEYNAME="DUMMYCYLINDER_DWTargetAgent_0_Type3_PC_EX" _Name="STR_MONSTER_NAME_100041060" _Description="STR_MONSTER_DESC_100041060" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _DensityCount="10" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYCYLINDER_DWTargetAgent_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _DestroyTime="0" _Team="TEAM_DYNAMIC" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="안드로이드 공격형 지점폭격 마커" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="400" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041070">
+    <EntityComData KEYNAME="LAUNCHER_AuraAgent_Type1_EX" _Name="STR_MONSTER_NAME_100041070" _Description="STR_MONSTER_DESC_100041070" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="LAUNCHER_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="2" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="런처 메가 점프" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180350020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041071">
+    <EntityComData KEYNAME="LAUNCHER_AuraAgent_Type2_EX" _Name="STR_MONSTER_NAME_100041071" _Description="STR_MONSTER_DESC_100041071" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="LAUNCHER_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _VariationType="1" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="런처 메가 점프 강화" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180350020" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041080">
+    <EntityComData KEYNAME="Yuri_Passive_Type1_EX" _Name="STR_MONSTER_NAME_100041080" _Description="STR_MONSTER_DESC_100041080" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="500" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Yuri_Passive" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="10" _ColliderHeight="100" />
+    <MoveController_ComData ActorRadius="5" ActorHeight="100" _AILength="35" _AIWidth="35" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="유리 패시브" _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_RED" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180370000" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041090">
+    <EntityComData KEYNAME="Priest_AuraAgent_Type1_EX" _Name="STR_MONSTER_NAME_100041090" _Description="STR_MONSTER_DESC_100041090" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Priest_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="2.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="프리스트 오오라" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180390040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041091">
+    <EntityComData KEYNAME="Priest_AuraAgent_Type2_EX" _Name="STR_MONSTER_NAME_100041091" _Description="STR_MONSTER_DESC_100041091" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Priest_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="2.5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _VariationType="1" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="프리스트 오오라" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="1" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180390040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041092">
+    <EntityComData KEYNAME="Priest_AuraAgent_Type3_EX" _Name="STR_MONSTER_NAME_100041092" _Description="STR_MONSTER_DESC_100041092" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _Outline="False" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Priest_AuraAgent" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="2000" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DFStatusIndex="400000040" _VariationType="2" _DestroyTime="0.5" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="프리스트 오오라" _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_BLUE" _SoulMin="0" _SoulMax="0" _VariationType="2" _DestroyTime="0.5" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180390040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041100">
+    <EntityComData KEYNAME="GhostWidow_Phantom_EX" _Name="STR_MONSTER_NAME_100041100" _Description="STR_MONSTER_DESC_100041100" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="613" _MoveSpeed="613" _RotateSpeed="800" _Scale="1" _SizeType="SIZE_TYPE_BIG_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _bShowInFog="True" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _InheritSkillPower="True" _UseTeamColor="True" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="GhostWidow_Phantom" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="3.1" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="50" _ColliderHeight="210" />
+    <MoveController_ComData ActorRadius="100" ActorHeight="70" _AILength="130" _AIWidth="130" _AIDistanceWidth="50" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="고스트 위도우" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180400040" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="280" _EnableActionText="False" />
+  </INFO>
+  <INFO ID="100041103">
+    <EntityComData KEYNAME="GhostWidow_EP_EX" _Name="STR_MONSTER_NAME_100041103" _Description="STR_MONSTER_DESC_100041103" _Type="ENTITY_TYPE_CREATURE" _MaterialType="MATERIAL_TYPE_DEFAULT" _IsTargetable="false" _IsAimingTarget="false" _NormalMoveSpeed="800" _MoveSpeed="800" _RotateSpeed="800" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_8M" _bShowInFog="True" _ApplysServerBound="True" _Outline="False" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <CreatureComData _Type="CREATURE_TYPE_ALLY" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" _ClearComboOnDeath="180400050" />
+    <Kfm_ComData KeyName="GhostWidow_EP" _UseHitColor="False" _HitColorPower="0" />
+    <LifeTime_ComData LifeTime="5" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="400" _UseTeamEdgeFilter="True" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="30" _ColliderHeight="70" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="25" _AILength="55" _AIWidth="55" _AIDistanceWidth="10" AirMove="True" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DFStatusIndex="400000040" _VariationType="0" _DestroyTime="0.1" _Team="TEAM_PLAYER" _AITargetProof="True" _SoulMin="0" _SoulMax="0">
+      <_EASY _Name="고스트 위도우 대상 잡기" _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HARD _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_EXTREME _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+      <_HELL _ElementType="CELEMENT_TYPE_GREEN" _SoulMin="0" _SoulMax="0" _VariationType="0" _DestroyTime="0.1" _DFStatusIndex="400000040" />
+    </StatsComData>
+    <SkillComData>
+      <_SkillID _Index="180400050" />
+    </SkillComData>
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _ShowStatusIcon="FALSE" _NameTagOffsetZ="550" _EnableActionText="False" />
+  </INFO>
+</ENTITY_FILE>

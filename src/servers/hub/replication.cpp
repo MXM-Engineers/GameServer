@@ -1620,7 +1620,7 @@ void HubReplication::SendPartyEnqueue(ClientHandle clientHd, StageIndex stageInd
 	SendPacket(clientHd, matching);
 }
 
-void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs)
+void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs, u8 myTeam)
 {
 	PacketWriter<Sv::SQ_MatchingPartyFound,512> packet;
 
@@ -1633,13 +1633,13 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	// allies
 	i32 alliesCount = 0;
 	for(int i = 0; i < matchingParty.playerCount; i++) {
-		if(matchingParty.playerList[i].team == 0) alliesCount++;
+		if(matchingParty.playerList[i].team == myTeam) alliesCount++;
 	}
 	packet.Write<u16>(alliesCount);
 
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
-		if(p.team == 0) {
+		if(p.team == myTeam) {
 			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot
@@ -1653,13 +1653,13 @@ void HubReplication::SendMatchingPartyFound(ClientHandle clientHd, const In::MN_
 	// enemies
 	i32 enemiesCount = 0;
 	for(int i = 0; i < matchingParty.playerCount; i++) {
-		if(matchingParty.playerList[i].team == 1) enemiesCount++;
+		if(matchingParty.playerList[i].team != myTeam) enemiesCount++;
 	}
 	packet.Write<u16>(enemiesCount);
 
 	for(int i = 0; i < matchingParty.playerCount; i++) {
 		const auto& p = matchingParty.playerList[i];
-		if(p.team == 1) {
+		if(p.team != myTeam) {
 			packet.Write(rowIDs[i]);
 			packet.WriteStringObj(p.name.data, p.name.len); // nickname
 			packet.Write<u8>(p.isBot); // isBot

@@ -2195,8 +2195,10 @@ StatusType StatusTypeFromString(const char* str)
 		"STATUS_TYPE_SKILLSTATUS",
 		"STATUS_TYPE_SLOW",
 		"STATUS_TYPE_SNIPER",
+		"STATUS_TYPE_STACKATTACK",
 		"STATUS_TYPE_STACKBOMB",
 		"STATUS_TYPE_STAT",
+		"STATUS_TYPE_STATUS_ON_EVADE",
 		"STATUS_TYPE_STUN",
 		"STATUS_TYPE_SUICIDE",
 		"STATUS_TYPE_SUPERARMOR",
@@ -2316,6 +2318,12 @@ bool GameXmlContent::LoadStatusData()
 			if(XMLElement* pHit = pCommon->FirstChildElement("_HITEFFECT")) {
 				pHit->QueryAttribute("_StatusDocIndex", &st.hitEffectStatus);
 				pHit->QueryFloatAttribute("_AddValue", &st.hitEffectValue);
+			}
+			if(XMLElement* pStack = pCommon->FirstChildElement("_STACKATTACK")) {
+				pStack->QueryAttribute("_Index", &st.stackStatus);
+				pStack->QueryAttribute("_NextStatusIndex", &st.stackFullStatus);
+				for(XMLElement* pR = pStack->FirstChildElement("_RemoteIndexList"); pR && !st.stackRemotes.full(); pR = pR->NextSiblingElement("_RemoteIndexList")) st.stackRemotes.push_back(pR->IntAttribute("DATA"));
+				for(XMLElement* pS = pStack->FirstChildElement("_FullStackSkillIndexList"); pS && !st.fullStackSkills.full(); pS = pS->NextSiblingElement("_FullStackSkillIndexList")) st.fullStackSkills.push_back(pS->IntAttribute("DATA"));
 			}
 			if(XMLElement* pIce = pCommon->FirstChildElement("_ICEQUEEN")) {
 				pIce->QueryAttribute("_Index", &st.stackStatus);

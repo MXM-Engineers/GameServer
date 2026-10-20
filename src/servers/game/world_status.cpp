@@ -267,8 +267,38 @@ void World::ApplyPassiveStatusRule(const PassiveStatusRule& rule, Player& owner,
 	if(rule.cooldownStatus != 0) ApplyStatus(owner, owner, rule.cooldownStatus);
 }
 
+void World::PassiveStackOnHit(Player& attacker, Player& target, i32 remoteID, SkillID skillID)
+{
+	if(target.dead || target.team == attacker.team) return;
+	i32 apply = 0;
+	foreach_const(it, activeStatuses) {
+		if(it->targetIndex != attacker.index || !it->info || it->info->type != StatusType::STACKATTACK) continue;
+		if(!PassiveOfActiveMaster(attacker, it->statusID)) continue;
+		const StatusInfo& info = *it->info;
+		if(skillID != SkillID::INVALID && eastl::find(info.fullStackSkills.begin(), info.fullStackSkills.end(), (i32)skillID) != info.fullStackSkills.end()) apply = info.stackFullStatus;
+		else if(eastl::find(info.stackRemotes.begin(), info.stackRemotes.end(), remoteID) != info.stackRemotes.end()) apply = info.stackStatus;
+		break;
+	}
+	if(apply != 0) ApplyStatus(attacker, target, apply);
+}
+
+void World::OnEvade(Player& target)
+{
+	eastl::fixed_vector<i32,4,false> toApply;
+	foreach_const(st, activeStatuses) {
+		if(st->targetIndex != target.index || !st->info || st->info->type != StatusType::STATUS_ON_EVADE || !st->info->hitEffectStatus) continue;
+		if(st->info->permanent && !PassiveOfActiveMaster(target, st->statusID)) continue;
+		if(!toApply.full()) toApply.push_back(st->info->hitEffectStatus);
+	}
+	foreach_const(s, toApply) {
+		LOG("Passive :: %ls evaded -> status %d", target.name.data(), *s);
+		ApplyStatus(target, target, *s);
+	}
+}
+
 void World::PassiveOnWeaponHit(Player& attacker, Player& target, const Projectile& proj)
 {
+	PassiveStackOnHit(attacker, target, (i32)proj.remoteDoc, SkillID::INVALID);
 	if(proj.remoteDoc != RemoteIdx::INVALID && !target.dead) {
 		const Remote* remote = GetGameXmlContent().FindRemote(proj.remoteDoc);
 		if(remote) {

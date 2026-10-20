@@ -136,7 +136,7 @@ static RemoteIdx CostReplacedRemote(const GameXmlContent::CostLevel* level, Remo
 	return idx;
 }
 
-static void SpawnRemoteRules(World& world, const World::RemoteInst& parent, const Remote::SpawnRules& rules, const vec3& pos, i32 excludeIndex, RemoteIdx skipFirst, bool fromDestroy = false)
+static void SpawnRemoteRules(World& world, const World::RemoteInst& parent, const Remote::SpawnRules& rules, const vec3& pos, i32 excludeIndex, RemoteIdx skipFirst, bool clientChains = false)
 {
 	bool skipped = false;
 	foreach_const(rule, rules) {
@@ -178,7 +178,7 @@ static void SpawnRemoteRules(World& world, const World::RemoteInst& parent, cons
 				if(glm::length(rel) > 1.0f) dir = glm::normalize(rel);
 			}
 			World::RemoteInst* inst = WorldRemoteSpawner::Spawn(world, parent.ownerIndex, CostReplacedRemote(parent.costLevel, rule->idx), at + vec3(dir * child->offsetY, 0), dir, childTarget, parent.skillID, parent.castID, parent.damage,
-				parent.clientRemoteID != 0 && !(fromDestroy && rule->kind != Remote::SPAWN_SINGLE && !rule->targetOwner), parent.casterLocal);
+				parent.clientRemoteID != 0 && !(clientChains && rule->kind != Remote::SPAWN_SINGLE && !rule->targetOwner), parent.casterLocal);
 			if(inst) {
 				inst->excludeIndex = excludeIndex;
 				inst->costLevel = parent.costLevel;
@@ -746,7 +746,8 @@ void World::DestroyRemote(i32 index)
 	const Remote& remote = *inst.remote;
 	const i32 i = index;
 	if(inst.hasLandZ) inst.pos.z = inst.landZ;
-	if(!inst.destroyedByHit && inst.clientRemoteID != 0 && (inst.speed > 0 || inst.killNow)) replication->SendDestroyRemoteToAll(inst.clientRemoteID);
+	const bool destroySent = inst.clientRemoteID != 0 && (inst.destroyedByHit || inst.speed > 0 || inst.killNow);
+	if(!inst.destroyedByHit && destroySent) replication->SendDestroyRemoteToAll(inst.clientRemoteID);
 	{
 		const RemoteIdx next = remote.destroyCreateRemote;
 		const RemoteInst copy = inst;
@@ -763,7 +764,7 @@ void World::DestroyRemote(i32 index)
 					child->centeredBox = copy.centeredBox;
 				}
 			}
-			SpawnRemoteRules(*this, copy, remote.onDestroy, copy.pos, childExclude, next, true);
+			SpawnRemoteRules(*this, copy, remote.onDestroy, copy.pos, childExclude, next, !destroySent);
 		}
 	}
 }

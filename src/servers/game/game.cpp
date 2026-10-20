@@ -57,6 +57,7 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		desc.masterGearNo = p.masterGearNo;
 		desc.characterType = p.characterType;
 
+		LOG("Spawn :: preparing %ls masters=(%d, %d)", desc.name.data(), (i32)p.masters[0], (i32)p.masters[1]);
 		const auto& master0 = xml.GetMaster(p.masters[0]);
 		const auto& master1 = xml.GetMaster(p.masters[1]);
 
@@ -72,6 +73,7 @@ void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl:
 		const auto& spawnPoints = mapSpawnPoints[p.team];
 		const SpawnPoint& spawnPoint = spawnPoints[spawnPointIndex[p.team]++ % spawnPoints.size()];
 
+		LOG("Spawn :: %ls team=%d masters=(%d, %d) skins=(%d, %d) weapons=(%d, %d)", desc.name.data(), (i32)desc.team, (i32)desc.masters[0], (i32)desc.masters[1], (i32)desc.skins[0], (i32)desc.skins[1], (i32)desc.weapons[0], (i32)desc.weapons[1]);
 		World::Player& worldPlayer = world.CreatePlayer(desc, spawnPoint.pos, RotationHumanoid{0.f, 0.f, MxmYawToWorldYaw(spawnPoint.rot.z)});
 
 		playerList.emplace_back(desc.clientHd, p.accountUID, desc.name, worldPlayer.index);
@@ -170,13 +172,27 @@ void Game::Update(Time localTime_)
 				foreach_const(p, playerList) {
 					replication.SendGameStart(p->clientHd);
 				}
+				tGameStarted = localTime;
+				world.ApplyAllPassives();
 			}
 		} break;
 
 		case Phase::Game: {
+			if(!gameEnded && tGameStarted != Time::ZERO) {
+				f32 limit = GetGameXmlContent().GetStageTimeLimit((i32)replication.stageIndex);
+				if(limit <= 0) limit = 300.0f;
+				if(TimeDiffSec(TimeDiff(tGameStarted, localTime)) >= limit) EndGame();
+			}
+			if(gameEnded && !sentBackToLobby && TimeDiffSec(TimeDiff(tGameEnded, localTime)) >= 20.0) {
+				sentBackToLobby = true;
+				foreach_const(p, playerList) {
+					if(p->clientHd != ClientHandle::INVALID) OnPlayerReturnToChannel(p->clientHd);
+				}
+				LOG("Game :: players sent back to the lobby");
+			}
 #if 1
 			// bot random actions
-			foreach(bot, botList) {
+			if(!gameEnded) foreach(bot, botList) {
 				if(localTime > bot->tNextAction) {
 					bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
 					World::Player& wpl = world.GetPlayer(bot->playerIndex);
@@ -479,6 +495,18 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	prevBodyPos = player.body->GetWorldPos();
 
 
+	player.lastClientPos = pos;
+	player.clientPosCount++;
+	if(player.carriedBy >= 0) return;
+	if(action != ActionStateID::INVALID && action != player.lastClientAction) {
+		player.lastClientAction = action;
+		player.lastClientActionSince = world.localTime;
+	}
+	if(world.localTime < player.dashUntil || world.localTime < player.ccUntil) {
+		player.body->collider->setFootPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
+		player.body->vel = vec3(0);
+	}
+
 	// TODO: check for movement hacking
 	if(dir.x == 0 && dir.y == 0) {
 		player.input.moveTo = pos;
@@ -605,13 +633,121 @@ void Game::OnPlayerTag(ClientHandle clientHd, ActorUID actorUID)
 	player.input.tag = 1;
 }
 
-void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY)
+void Game::EndGame()
+{
+	gameEnded = true;
+	tGameEnded = localTime;
+	world.frozen = true;
+	eastl::fixed_vector<Replication::EndPlayer,10,false> list;
+	i32 red = 0, blue = 0;
+	for(u32 i = 0; i < world.PlayerCount(); i++) {
+		World::Player& p = world.GetPlayer(i);
+		Replication::EndPlayer e;
+		e.userID = p.userID;
+		e.clientHd = p.clientHd;
+		e.name = p.name.data();
+		e.team = p.team;
+		e.kills = p.kills;
+		e.deaths = p.deaths;
+		e.masters[0] = CreatureIndex(100000000 + (i32)p.mainClass);
+		e.masters[1] = CreatureIndex(100000000 + (i32)p.subClass);
+		list.push_back(e);
+		if(p.team == 0) red += p.kills; else blue += p.kills;
+	}
+	LOG("Game :: time over, red %d - blue %d", red, blue);
+	replication.SendGameEnd(list.data(), (i32)list.size(), red, blue, (u32)(TimeDiffSec(TimeDiff(tGameStarted, localTime)) * 1000.0));
+}
+
+void Game::OnPlayerReturnToChannel(ClientHandle clientHd)
+{
+	auto found = playerMap.find(clientHd);
+	if(found == playerMap.end()) return;
+	World::Player& player = world.GetPlayer(found->second->playerIndex);
+	i32 hubIP[4] = { Config().HostIP[0], Config().HostIP[1], Config().HostIP[2], Config().HostIP[3] };
+	if(hubIP[0] == 0) { hubIP[0] = 127; hubIP[3] = 1; }
+	replication.SendDoConnectChannel(clientHd, player.name.data(), hubIP, 11900);
+}
+
+void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY, i32 actionID)
 {
 	Player& p = *playerMap.at(clientHd);
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
+	(void)actionID;
 	player.input.jump = 1;
+}
+
+void Game::OnPlayerWeaponFire(ClientHandle clientHd, f32 aimYaw)
+{
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
+
+	player.weaponFired = true;
+	player.weaponAimYaw = aimYaw;
+	world.OnWeaponAimPacket(player, aimYaw);
+}
+
+void Game::OnPlayerWeaponStateRelay(ClientHandle clientHd, ActorUID ownerUID, i32 state, u8 chargeLevel, u8 firingCombo)
+{
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
+
+	if(ownerUID == ActorUID::INVALID) ownerUID = player.Main().UID;
+	player.firingCombo = firingCombo;
+	player.chargeLevel = chargeLevel;
+	player.weaponState = state;
+	const WeaponIndex weapon = player.mainCharaID == 0 ? player.mainWeapon : player.subWeapon;
+	replication.RelayWeaponState(clientHd, ownerUID, (i32)weapon, state, chargeLevel, firingCombo);
+}
+
+void Game::OnPlayerInteraction(ClientHandle clientHd, ActorUID targetUID, LocalActorID selfLocal)
+{
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
+	LOG("Interaction :: %ls self=%u target uid=%u", player.name.data(), (u32)selfLocal, (u32)targetUID);
+	if(targetUID != ActorUID::INVALID) world.PlayerInteract(player, targetUID);
+}
+
+void Game::OnPlayerToggleSkill(ClientHandle clientHd, SkillID skillID, bool on)
+{
+	auto found = playerMap.find(clientHd);
+	if(found == playerMap.end()) return;
+	World::Player& player = world.GetPlayer(found->second->playerIndex);
+	LOG("Toggle :: %ls request skill=%d %s", player.name.data(), (i32)skillID, on ? "on" : "off");
+	if(on) world.ToggleOn(player, skillID, player.body->GetWorldPos());
+	else world.ToggleOff(player);
+}
+
+bool Game::IsWeaponFireObject(ClientHandle clientHd, const wchar* name, u16 len)
+{
+	auto found = playerMap.find(clientHd);
+	if(found == playerMap.end()) return false;
+	const World::Player& player = world.GetPlayer(found->second->playerIndex);
+	const WeaponIndex weapon = (player.mainCharaID & 1) == 0 ? player.mainWeapon : player.subWeapon;
+	const WeaponFiring* wf = GetGameXmlContent().FindWeaponFiring((i32)weapon, player.Main().stance);
+	if(wf && wf->fireDummy.empty()) return len == 10 && EA::StdC::Strncmp(name, L"Scene Root", 10) == 0;
+	if(!wf || wf->fireDummy.size() != len) return false;
+	for(u16 i = 0; i < len; i++) if((wchar)wf->fireDummy[i] != name[i]) return false;
+	return true;
+}
+
+void Game::OnPlayerWeaponShot(ClientHandle clientHd, const vec3& origin, const vec2& dir, f32 distance, const u8* rawPacket, i32 rawSize)
+{
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
+
+	const i32 sid = replication.server->clientHandle2IDMap.at(clientHd);
+	const auto& ip = replication.server->clientInfo[sid].ip;
+	const auto& host = Config().HostIP;
+	const bool isHost = ip[0] == 127 || (ip[0] == host[0] && ip[1] == host[1] && ip[2] == host[2] && ip[3] == host[3]);
+	player.shotLeadSec = isHost ? 0.0f : Config().ShotLeadMs / 1000.0f;
+
+	world.OnWeaponShotPacket(player, origin, dir, distance, rawPacket, rawSize);
 }
 
 void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo)
@@ -627,7 +763,23 @@ void Game::OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const Pla
 	// TODO: convert clientTime to localTime
 	OnPlayerUpdatePosition(clientHd, actorUID, f2v(posInfo.pos), f2v(posInfo.moveDir), rot, posInfo.speed, ActionStateID::INVALID, 0);
 
-	LOG("OnPlayerCastSkill :: (%f, %f, %f)", cast.pos.x, cast.pos.y, cast.pos.z);
+	LOG("OnPlayerCastSkill :: (%f, %f, %f) targets=%d rot=(%.3f, %.3f, %.3f) moveDir=(%.2f, %.2f)", cast.pos.x, cast.pos.y, cast.pos.z, (i32)cast.targetList.size(), posInfo.rot.x, posInfo.rot.y, posInfo.rot.z, posInfo.moveDir.x, posInfo.moveDir.y);
+}
+
+void Game::OnPlayerExecuteSkill(ClientHandle clientHd, SkillID skillID, const vec3& targetPos, LocalActorID target)
+{
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	if(player.casting.skillID == skillID) {
+		if(targetPos.x != 0 || targetPos.y != 0) player.casting.castPos = targetPos;
+		if(target != LocalActorID::INVALID) {
+			const ActorUID uid = replication.GetWorldActorUID(clientHd, target);
+			if(uid != ActorUID::INVALID) player.casting.target = uid;
+		}
+	}
+	LOG("Cast :: %ls execute request skill=%d (casting %d) pos=(%.0f, %.0f) target=%d", player.name.data(), (i32)skillID, (i32)player.casting.skillID, targetPos.x, targetPos.y, (i32)player.casting.target);
+	replication.SendExecuteSkillAck(clientHd, player.Main().UID, skillID);
+	if(player.casting.skillID == skillID) world.ReleaseCast(player);
 }
 
 void Game::OnPlayerGameIsReady(ClientHandle clientHd)

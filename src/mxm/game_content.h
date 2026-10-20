@@ -5,6 +5,7 @@
 #include <common/utils.h>
 #include <common/stat.h>
 
+#include <EASTL/hash_set.h>
 #include <EASTL/fixed_list.h>
 #include <EASTL/fixed_hash_map.h>
 #include <EASTL/fixed_map.h>
@@ -108,6 +109,194 @@ const char* TargetPresetToString(TargetPreset p);
 
 }
 
+struct SummonCommand
+{
+	enum Kind: u8 { REMOTE = 0, STATUS, DIE };
+	Kind kind = REMOTE;
+	bool onCurrent = false;
+	u8 dieMode = 0;
+	i32 index = 0;
+	f32 delay = 0;
+};
+
+struct SummonInfo
+{
+	eastl::fixed_string<char,48,false> className;
+	eastl::fixed_vector<SummonCommand,12,false> onSpawn;
+	eastl::fixed_vector<SummonCommand,12,false> onDie;
+	f32 lifeTime = 0;
+	f32 moveSpeed = 0;
+	f32 perception = 0;
+	bool targetable = false;
+	eastl::fixed_vector<i32,4,false> skills;
+	enum Ai: u8 { AI_NONE = 0, AI_RELAY, AI_CHASE };
+	Ai ai = AI_NONE;
+	i32 variation = 0;
+	f32 aiDistance = 0;
+	eastl::array<eastl::fixed_vector<SummonCommand,12,false>,21> skillStates;
+	eastl::array<i32,21> stateAnim = {};
+};
+
+struct StatusMod
+{
+	enum Stat: u8 { OTHER = 0, SHIELD_DEFENCE, HEALTH, SKILLPOWER, CRITICALRATE, SKILL_CRITICALRATE, ATTACK, MOVESPEED, REFLECT_DAMAGE_RATIO, DEFENCE };
+	Stat stat = OTHER;
+	bool regen = false;
+	bool mul = false;
+	f32 value = 0;
+	f32 count = 0;
+};
+
+enum class StatusType: u8
+{
+	OTHER,
+	ACTIONBLOCK,
+	ACTIVATE_UNDEAD,
+	AIRBORNE,
+	ARTILLERY,
+	DEFEAT_CASTER_AURA,
+	DEFENDER,
+	DISPEL,
+	DRAGGED,
+	DRAGGEDBYFORCE,
+	ELECTRO,
+	EVADE,
+	FEAR,
+	FLY,
+	FORCEBACK,
+	GHOSTWIDOW,
+	GODMODE,
+	GX09,
+	HEAL,
+	HIDE,
+	HIT_PLAGUE,
+	HPTRIGGER,
+	KNOCKDOWN,
+	KROMEDE,
+	LINK,
+	MANABURN,
+	NEARLY_IMMORTAL,
+	NOCOST,
+	PUSH,
+	ROOT,
+	SHIELD,
+	SHIELDBOMB,
+	SHOCKED,
+	SKILLSTAMINA,
+	SKILLSTATUS,
+	SLOW,
+	SNIPER,
+	STACKBOMB,
+	STAT,
+	STUN,
+	SUICIDE,
+	SUPERARMOR,
+	TARGET,
+	UNDEAD,
+	UNSHAKABLE,
+	WEAK_ON_CRITICAL,
+};
+
+StatusType StatusTypeFromString(const char* str);
+
+struct StatusInfo
+{
+	enum class Kind: i8 {
+		OTHER = 0,
+		HARD_CC,
+		ROOT,
+		SLOW,
+	};
+
+	i32 ID = 0;
+	f32 durationSec = 0;
+	f32 distanceRatio = 0;
+	f32 timeRatio = 0;
+	f32 heightRatio = 0;
+	f32 lyingTime = 0;
+	f32 dotDamage = 0;
+	f32 drainMultiplier = 0;
+	i32 skillIndex = 0;
+	f32 intervalSec = 0;
+	f32 distance = 0;
+	f32 paramRatio = 0;
+	f32 dragOffset = 0;
+	f32 dragForceMin = 0;
+	f32 dragForceMax = 0;
+	i32 maxOverlap = 1;
+	Kind kind = Kind::OTHER;
+	eastl::fixed_vector<StatusMod,6,false> mods;
+	bool modsFromTT = false;
+	enum class NextCondition: u8 { NONE = 0, ALL, TIMEOVER, REMOVE_ONHIT };
+	i32 nextStatus = 0;
+	bool blockAttack = false;
+	bool blockSkill = false;
+	bool blockShirk = false;
+	bool isDebuff = false;
+	bool canDispel = false;
+	i8 dispelEffect = -1;
+	i32 auraStatus = 0;
+	eastl::fixed_vector<i32,8,false> auraStatuses;
+	bool auraAll = false;
+	i32 linkCasterStatus = 0;
+	i32 linkTargetStatus = 0;
+	f32 targetingRange = 0;
+	f32 explodeDamage = 0;
+	f32 additionalDamageByCaster = 0;
+	NextCondition nextCondition = NextCondition::NONE;
+	StatusType type = StatusType::OTHER;
+	eastl::fixed_string<char,40,false> typeName;
+
+	bool permanent = false;
+	i32 customInit = 0;
+	i32 customMax = 0;
+	i32 hitEffectStatus = 0;
+	f32 hitEffectValue = 0;
+	f32 costRatioMP = 0;
+	i32 groupTeleportSkill = 0;
+	f32 groupTeleportRadius = 0;
+	i32 groupTeleportStatus = 0;
+	bool carrier = false;
+	eastl::fixed_vector<i32,8,false> costSkills;
+	struct NamedValue { eastl::fixed_string<char,32,false> name; f64 value; };
+	eastl::fixed_vector<NamedValue,64,false> params;
+	f32 Param(const char* name, f32 fallback = 0) const
+	{
+		for(const NamedValue& p : params) if(p.name == name) return (f32)p.value;
+		return fallback;
+	}
+	i64 ParamInt(const char* name, i64 fallback = 0) const
+	{
+		for(const NamedValue& p : params) if(p.name == name) return (i64)p.value;
+		return fallback;
+	}
+	bool ListHas(const char* name, i32 value) const
+	{
+		for(const NamedValue& p : params) if(p.name == name && (i64)p.value == value) return true;
+		return false;
+	}
+	i32 stackStatus = 0;
+	i32 stackFullStatus = 0;
+	i32 casterStatus = 0;
+	bool staminaBurn = false;
+	f32 descDefenceDown = 0;
+};
+
+struct WeaponFiring
+{
+	RemoteIdx base = RemoteIdx::INVALID;
+	eastl::fixed_vector<RemoteIdx,4,false> combo;
+	eastl::fixed_vector<RemoteIdx,4,false> charge;
+	i32 countRate = 0;
+	RemoteIdx countRemote = RemoteIdx::INVALID;
+	i32 replaceStatus = 0;
+	RemoteIdx replaceRemote = RemoteIdx::INVALID;
+	f32 maxDistance = 0;
+	f32 minDistance = 0;
+	eastl::fixed_string<char,32,false> fireDummy;
+	bool spawnAtAim = false;
+};
+
 struct Remote
 {
 	enum class BoundType: i8 {
@@ -168,9 +357,92 @@ struct Remote
 	DamageGroup damageGroup = DamageGroup::INVALID;
 	BehaviorType behaviorType = BehaviorType::INVALID;
 
-	eastl::array<u16,3> boundSize;
+	eastl::array<u16,3> boundSize = { 0, 0, 0 };
 	u8 vs = 0;
 
+	f32 maxSpeed = 0;
+	f32 maxDistance = 0;
+	f32 lifeTime = 0;
+	i32 activateCount = 1;
+	RemoteIdx destroyCreateRemote = RemoteIdx::INVALID;
+	f32 attackMultiplier = 0;
+	f32 offsetY = 0;
+	bool forceTargetDir = false;
+	f32 offsetZ = 0;
+	f32 distPenaltyRate = 0;
+	f32 penaltyApplyDistance = 0;
+	f32 boundOffsetY = 0;
+	f32 angle = 0;
+	f32 hitInvalidTime = 1;
+	f32 fixedGraphLength = 0;
+	bool bezier = false;
+	f32 bezierUp[2] = { 0, 0 };
+	f32 bezierRotate[2] = { 0, 0 };
+	f32 bezierFront[2] = { 0, 0 };
+	bool memorizeTarget = false;
+
+	struct AppliedStatus
+	{
+		i32 statusID;
+		i32 rate;
+		i32 value;
+	};
+	eastl::fixed_vector<AppliedStatus,4,false> statuses;
+	eastl::fixed_vector<AppliedStatus,4,false> friendlyStatuses;
+
+	enum SpawnKind: u8 {
+		SPAWN_SINGLE = 0,
+		SPAWN_RADIATE,
+		SPAWN_CIRCLE,
+		SPAWN_DEFAULT,
+	};
+	struct SpawnRule
+	{
+		RemoteIdx idx = RemoteIdx::INVALID;
+		i32 creature = 0;
+		u8 kind = SPAWN_SINGLE;
+		i32 maxNum = 1;
+		f32 maxAngle = 0;
+		f32 radius = 0;
+		f32 angleY = 0;
+		bool targetOwner = false;
+	};
+	typedef eastl::fixed_vector<SpawnRule,4,false> SpawnRules;
+	SpawnRules onDestroy;
+	SpawnRules onTime;
+	SpawnRules onActivate;
+	SpawnRules onHitCharacter;
+	f32 timeEventDelay = -1;
+	bool timeEventRecycle = false;
+
+	bool contactFriend = false;
+	bool vsOwner = false;
+	bool monsterOnly = false;
+	bool attachFireObject = false;
+	bool ignoreGround = false;
+	bool attachTargetObject = false;
+	f32 timeChangeSpeed = 0;
+	ActionStateID changeCasterAction = ActionStateID::INVALID;
+	f32 sight = 0;
+	f32 homingLength = 0;
+	f32 homingAngle = 0;
+	f32 homingTime = 0;
+	bool homingLockOn = false;
+	f32 angularVel = 0;
+	f32 criticalRate = 0;
+	i32 onHitOwnerStatus = 0;
+	f32 activateDelay = 0;
+};
+
+struct WeaponHeatInfo
+{
+	f32 maxGauge = 0;
+	f32 consumption = 0;
+	f32 autoRegen = 0;
+	f32 autoRegenInterval = 0.1f;
+	f32 autoRegenDelay = 0;
+	f32 overheatDuration = 0;
+	f32 overheatResetGauge = 0;
 };
 
 struct GameXmlContent
@@ -257,6 +529,10 @@ struct GameXmlContent
 			ActionCommand::Type type;
 			f32 delay;
 			f32 relativeEndTimeFromStart;
+			i32 animIndex = 0;
+			i32 animationId = 0;
+			u16 nodeName = 0;
+			u8 byDummyDir = 0;
 
 			union {
 				struct {
@@ -275,11 +551,36 @@ struct GameXmlContent
 				struct {
 					RemoteIdx idx;
 					ActionCommand::TargetPreset targetPreset;
+					f32 offsetSide;
+					f32 offsetFront;
+					u8 stopAtTarget;
+					u8 remove;
+					u8 removeAtAnimEnd;
 				} remote;
+
+				struct {
+					i32 statusIndex;
+					ActionCommand::TargetPreset targetPreset;
+					u8 removeAtEnd;
+					u8 remove;
+				} status;
+
+				struct {
+					i32 entityIndex;
+					ActionCommand::TargetPreset targetPreset;
+				} entity;
 
 				struct {
 					f32 distance;
 				} graphMoveHorz;
+
+				struct {
+					u8 toLastChild;
+				} teleport;
+
+				struct {
+					i32 interactionID;
+				} interaction;
 
 				struct {
 					i32 speed;
@@ -288,7 +589,10 @@ struct GameXmlContent
 		};
 
 		ActionStateID ID;
+		i8 stance = 0;
 		f32 seqLength = 0.0f; // seconds
+		struct AnimStep { i32 index = 0; i32 animationId = 0; i32 loop = 1; };
+		eastl::fixed_vector<AnimStep,8,false> anims;
 		eastl::fixed_vector<Command,16,false> commands;
 	};
 
@@ -381,9 +685,106 @@ struct GameXmlContent
 	bool LoadCharacterBaseStats();
 
 	const Master& GetMaster(ClassType classType) const;
+	i32 GetFirstComboSkill(i32 baseSkill) const { auto f = firstComboSkill.find(baseSkill); return f == firstComboSkill.end() ? 0 : f->second; }
 	i32 WeaponTypeOf(ClassType classType, WeaponIndex weaponIndex) const;
-	const Action& GetSkillAction(ClassType classType, ActionStateID actionID) const;
+	const Action& GetSkillAction(ClassType classType, ActionStateID actionID, i8 stance = 0) const;
+	const Action* FindSkillAction(ClassType classType, ActionStateID actionID, i8 stance = 0) const;
+	bool CheckSkillActions();
+	eastl::hash_set<u64> skillActionGaps;
+	struct SkillInput { bool needsClick = false; bool directionOnly = false; bool friendlyOnly = false; bool positionDirection = false; bool selfPosition = false; bool teleportEntity = false; bool allEnemies = false; bool pickedEntity = false; bool lockOn = false; i32 checkStatus = 0; u8 obstructMove = 0; bool obstructSight = false; i32 coolTimeID = 0; f32 coolTime = 0; f32 minDistance = 0; f32 maxDistance = 0; };
+	const SkillInput* FindSkillInput(i32 skillID) const { auto f = skillInput.find(skillID); return f == skillInput.end() ? nullptr : &f->second; }
+	struct SkillCast { enum Type: u8 { DELAY, LIMIT, CHARGING } type = DELAY; f32 time = 0; ActionStateID action = ActionStateID::INVALID; bool interruptByMove = false; };
+	const SkillCast* FindSkillCast(i32 skillID) const { auto f = skillCast.find(skillID); return f == skillCast.end() ? nullptr : &f->second; }
+	bool IsCastAction(ActionStateID action) const { foreach_const(it, skillCast) if(it->second.action == action) return true; return false; }
+	struct SkillToggle { enum Consume: u8 { NONE, MANA, RAGE, STAMINA } consume = NONE; f32 interval = 0; f32 value = 0; eastl::fixed_vector<i32,4,false> remotes; eastl::fixed_vector<i32,6,false> statuses; };
+	const SkillToggle* FindSkillToggle(i32 skillID) const { auto f = skillToggle.find(skillID); return f == skillToggle.end() ? nullptr : &f->second; }
+	struct SkillStance { i8 stance = 0; f32 duration = 0; i32 weaponFireCount = 0; bool cancelByDefeat = false; };
+	const SkillStance* FindSkillStance(i32 skillID) const { auto f = skillStance.find(skillID); return f == skillStance.end() ? nullptr : &f->second; }
+	static i8 StanceFromString(const char* str);
 	const Remote& GetRemote(RemoteIdx remoteID) const;
+	const Remote* FindRemote(RemoteIdx remoteID) const;
+	eastl::fixed_vector<eastl::fixed_string<wchar,48,false>,512,true> nodeNames;
+	u16 InternNodeName(const char* name);
+	const wchar* GetNodeName(u16 idx) const { return idx < nodeNames.size() ? nodeNames[idx].c_str() : L"Scene Root"; }
+	const StatusInfo* FindStatus(i32 statusID) const;
+	i32 FindSkillStatusOfType(i32 skillIndex, StatusType type) const { foreach_const(it, statusMap) { if(it->second.skillIndex == skillIndex && it->second.type == type) return it->first; } return 0; }
+	f32 GetWeaponFireDelay(i32 weaponID) const { auto f = weaponFireDelay.find(weaponID); return f == weaponFireDelay.end() ? 0 : f->second; }
+	f32 GetSkillCoolTime(i32 skill) const { auto f = skillCoolTime.find(skill); return f == skillCoolTime.end() ? 0 : f->second; }
+	f32 GetSkillTargetRange(i32 skill) const { auto f = skillTargetRangeX.find(skill); return f == skillTargetRangeX.end() ? 0 : f->second; }
+	f32 GetSkillRange(i32 skill) const { auto f = skillRangeX.find(skill); return f == skillRangeX.end() ? 0 : f->second; }
+	f32 GetBotSkillMaxDistance(i32 skill) const { auto f = botSkillMaxDistance.find(skill); return f == botSkillMaxDistance.end() ? 0 : f->second; }
+	f32 BotNormalSkillCoolTime() const { return botNormalSkillCoolTime; }
+	f32 BotUgSkillCoolTime() const { return botUgSkillCoolTime; }
+	f32 BotAfterSkillDelay() const { return botAfterSkillDelay; }
+	const eastl::array<i32,5>* FindBotSkills(i32 creature) const { auto f = botSkills.find(creature); return f == botSkills.end() ? nullptr : &f->second; }
+	bool IsChildOnExisting(ClassType c, ActionStateID a) const { return childOnExisting.find(((u32)c << 16) | ((u32)a & 0xFFFF)) != childOnExisting.end(); }
+	i32 GetChildSkill(ClassType c, ActionStateID a) const { auto f = childSkill.find(((u32)c << 16) | ((u32)a & 0xFFFF)); return f == childSkill.end() ? 0 : f->second; }
+	const WeaponFiring* FindWeaponFiring(i32 weaponID) const { auto f = weaponFiring.find(weaponID); return f == weaponFiring.end() ? nullptr : &f->second; }
+	const WeaponFiring* FindWeaponFiring(i32 weaponID, i8 stance) const { if(stance > 0) { auto f = weaponStanceFiring.find(((u32)weaponID << 4) | (u32)stance); if(f != weaponStanceFiring.end()) return &f->second; } return FindWeaponFiring(weaponID); }
+	f32 GetWeaponStanceFireDelay(i32 weaponID, i8 stance) const { auto f = weaponStanceFireDelay.find(((u32)weaponID << 4) | (u32)stance); return f == weaponStanceFireDelay.end() ? 0.0f : f->second; }
+	bool IsRepeatHitReduced(i32 skillID) const { return repeatHitReduced.find(skillID) != repeatHitReduced.end(); }
+	f32 GetWeaponAttack(i32 weaponID) const { auto f = weaponAttack.find(weaponID); return f == weaponAttack.end() ? 0.0f : f->second; }
+	const eastl::fixed_vector<i32,4,false>* FindPassiveStatuses(ClassType c) const { auto f = passiveStatuses.find((i32)c); return f == passiveStatuses.end() ? nullptr : &f->second; }
+	const WeaponHeatInfo* FindWeaponHeat(i32 weaponID) const { auto f = weaponHeat.find(weaponID); return f == weaponHeat.end() ? nullptr : &f->second; }
+	f32 GetSkillBaseDamage(i32 skillID) const { auto f = skillBaseDamage.find(skillID); return f == skillBaseDamage.end() ? 0 : f->second; }
+	struct CostLevel {
+		f32 consume[3] = { 0, 0, 0 };
+		ActionStateID action = ActionStateID::INVALID;
+		eastl::fixed_vector<eastl::pair<i32,i32>,8,false> remoteReplace;
+		eastl::fixed_vector<eastl::pair<i32,i32>,8,false> statusReplace;
+		f32 damageRatio = 1.0f;
+	};
+	eastl::hash_map<i32, eastl::fixed_vector<CostLevel,4,false>> skillCostLevels;
+	const eastl::fixed_vector<CostLevel,4,false>* FindSkillCostLevels(i32 skillID) const { auto f = skillCostLevels.find(skillID); return f == skillCostLevels.end() ? nullptr : &f->second; }
+	f32 GetSkillConsume(i32 skillID, i32 index) const { auto f = skillConsumeRes.find(skillID); return f == skillConsumeRes.end() ? 0 : f->second[index]; }
+	eastl::hash_map<i32, i32> comboAutoCastMs;
+	i32 GetComboAutoCastMs(i32 skillID) const { auto f = comboAutoCastMs.find(skillID); return f == comboAutoCastMs.end() ? 0 : f->second; }
+	eastl::hash_map<i32, i32> comboDurationMs;
+	i32 GetComboDurationMs(i32 skillID) const { auto f = comboDurationMs.find(skillID); return f == comboDurationMs.end() ? 0 : f->second; }
+	f32 GetSkillConsumeMP(i32 skillID) const { auto f = skillConsumeMP.find(skillID); return f == skillConsumeMP.end() ? 0 : f->second; }
+	f32 GetSkillConsumeUG(i32 skillID) const { auto f = skillConsumeUG.find(skillID); return f == skillConsumeUG.end() ? 0 : f->second; }
+	f32 GetSkillConsumeStamina(i32 skillID) const { auto f = skillConsumeStamina.find(skillID); return f == skillConsumeStamina.end() ? 0 : f->second; }
+	static u64 AniKey(const char* className, i32 seqID)
+	{
+		const char* key = EA::StdC::Strncmp(className, "CLASS_TYPE_", 11) == 0 ? className + 11 : className;
+		u32 h = 2166136261u;
+		for(const char* c = key; *c; c++) { h ^= (u8)(*c >= 'a' && *c <= 'z' ? *c - 32 : *c); h *= 16777619u; }
+		return ((u64)h << 32) | (u32)seqID;
+	}
+	struct InteractionInfo { f32 activeDistance = 0; bool carry = false; CreatureIndex receiver = CreatureIndex::Invalid; };
+	eastl::hash_map<i32, InteractionInfo> interactions;
+	const InteractionInfo* FindInteraction(i32 id) const { auto f = interactions.find(id); return f == interactions.end() ? nullptr : &f->second; }
+	f32 GetAniSeqTime(const char* className, i32 seqID) const { auto f = aniSeqTime.find(AniKey(className, seqID)); return f == aniSeqTime.end() ? 0 : f->second; }
+	struct MoveCurve
+	{
+		f32 time = 0;
+		f32 maxAbs = 0;
+		eastl::fixed_vector<f32,24,false> h;
+
+		f32 Eval(f32 u) const
+		{
+			const i32 n = (i32)h.size();
+			if(n == 0 || maxAbs <= 0) return 0;
+			if(n == 1) return h[0] / maxAbs;
+			const f32 x = MAX(MIN(u, 1.0f), 0.0f) * (f32)(n - 1);
+			const i32 i = MIN((i32)x, n - 1);
+			const i32 j = MIN(i + 1, n - 1);
+			return (h[i] + (x - (f32)i) * (h[j] - h[i])) / maxAbs;
+		}
+	};
+	const MoveCurve* GetMoveCurve(const char* className, i32 seqID) const { auto f = moveCurves.find(AniKey(className, seqID)); return f == moveCurves.end() ? nullptr : &f->second; }
+	f32 GetLieEndTime(const char* className) const
+	{
+		const char* key = EA::StdC::Strncmp(className, "CLASS_TYPE_", 11) == 0 ? className + 11 : className;
+		foreach_const(it, lieEndTime) {
+			if(it->first == key) return it->second;
+		}
+		return 0;
+	}
+	f32 GetStageTimeLimit(i32 stageID) const { auto f = stageTimeLimit.find(stageID); return f == stageTimeLimit.end() ? 0 : f->second; }
+	const SummonInfo* FindSummon(i32 creatureID) const { auto f = summonMap.find(creatureID); return f == summonMap.end() ? nullptr : &f->second; }
+	i32 GetCreatureElement(i32 creatureID) const { auto f = creatureElement.find(creatureID); return f == creatureElement.end() ? 0 : f->second; }
+	i32 FindSkillHitEventRemote(i32 skillID) const { auto f = skillHitEventRemote.find(skillID); return f == skillHitEventRemote.end() ? 0 : f->second; }
 
 private:
 	bool LoadXMLFile(const wchar* fileName, tinyxml2::XMLDocument& xmlData);
@@ -428,6 +829,57 @@ private:
 	tinyxml2::XMLDocument xmlWEAPONTT;
 
 	eastl::fixed_hash_map<RemoteIdx, Remote, 1500> remoteMap;
+	eastl::hash_map<i32, StatusInfo> statusMap;
+	eastl::hash_map<i32, i32> skillHitEventRemote;
+	eastl::hash_map<i32, WeaponHeatInfo> weaponHeat;
+	eastl::hash_map<i32, f32> weaponFireDelay;
+	eastl::hash_map<i32, WeaponFiring> weaponFiring;
+	eastl::hash_map<u32, WeaponFiring> weaponStanceFiring;
+	eastl::hash_map<u32, f32> weaponStanceFireDelay;
+	eastl::hash_map<i32, f32> weaponAttack;
+	eastl::hash_set<i32> repeatHitReduced;
+	eastl::hash_map<u32, i32> childSkill;
+	eastl::hash_set<u32> childOnExisting;
+	eastl::hash_map<i32, eastl::array<i32,5>> botSkills;
+	eastl::hash_map<i32, f32> skillCoolTime;
+	eastl::hash_map<i32, i32> firstComboSkill;
+	eastl::hash_map<i32, SkillStance> skillStance;
+	eastl::hash_map<i32, SkillCast> skillCast;
+	eastl::hash_map<i32, SkillToggle> skillToggle;
+	eastl::hash_map<i32, SkillInput> skillInput;
+	eastl::hash_map<i32, f32> botSkillMaxDistance;
+	eastl::hash_map<i32, f32> skillRangeX;
+	eastl::hash_map<i32, f32> skillTargetRangeX;
+	f32 botNormalSkillCoolTime = 0;
+	f32 botUgSkillCoolTime = 0;
+	f32 botAfterSkillDelay = 0;
+	eastl::hash_map<i32, eastl::fixed_vector<i32,4,false>> passiveStatuses;
+	eastl::hash_map<i32, f32> skillConsumeStamina;
+	eastl::hash_map<i32, f32> skillConsumeMP;
+	eastl::hash_map<i32, eastl::array<f32,4>> skillConsumeRes;
+	eastl::hash_map<i32, f32> skillBaseDamage;
+	eastl::hash_map<i32, f32> skillConsumeUG;
+	eastl::hash_map<i32, SummonInfo> summonMap;
+	eastl::hash_map<u64, f32> aniSeqTime;
+	eastl::hash_map<u64, MoveCurve> moveCurves;
+	eastl::hash_map<i32, f32> stageTimeLimit;
+	eastl::fixed_vector<eastl::pair<eastl::fixed_string<char,48,false>, f32>,128,true> lieEndTime;
+	eastl::hash_map<i32, i32> creatureElement;
+	bool LoadStatusData();
+	bool LoadSkillTooltips();
+	bool LoadSkillCosts();
+	bool LoadCharacterElements();
+	bool LoadSummons();
+	bool LoadStageTimeLimits();
+	bool LoadAnimationSequenceTimes();
+	bool LoadMoveGraphs();
+	bool LoadSummonActions();
+	bool LoadChildSkills();
+	bool LoadWeaponFiring();
+	bool LoadSkillTargeting();
+	bool LoadInteractions();
+	bool LoadInteractionReceivers();
+	bool LoadBotBrain();
 };
 
 bool GameXmlContentLoad();

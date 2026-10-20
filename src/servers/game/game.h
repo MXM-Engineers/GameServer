@@ -67,6 +67,11 @@ struct Game
 	eastl::array<eastl::fixed_vector<SpawnPoint,128,false>, (i32)Faction::_COUNT> mapSpawnPoints;
 
 	Time startTime;
+	Time tGameStarted = Time::ZERO;
+	bool gameEnded = false;
+	Time tGameEnded = Time::ZERO;
+	bool sentBackToLobby = false;
+	void EndGame();
 	Time localTime;
 
 	Time phaseTime = Time::ZERO;
@@ -103,8 +108,16 @@ struct Game
 	void OnPlayerGameIsReady(ClientHandle clientHd);
 	void OnPlayerGameMapLoaded(ClientHandle clientHd);
 	void OnPlayerTag(ClientHandle clientHd, ActorUID actorUID);
-	void OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void OnPlayerReturnToChannel(ClientHandle clientHd);
+	void OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY, i32 actionID = 0);
+	void OnPlayerWeaponFire(ClientHandle clientHd, f32 aimYaw);
+	void OnPlayerWeaponStateRelay(ClientHandle clientHd, ActorUID ownerUID, i32 state, u8 chargeLevel, u8 firingCombo);
+	void OnPlayerWeaponShot(ClientHandle clientHd, const vec3& origin, const vec2& dir, f32 distance, const u8* rawPacket, i32 rawSize);
 	void OnPlayerCastSkill(ClientHandle clientHd, ActorUID actorUID, const PlayerInputCastSkill& cast, const Cl::CQ_PlayerCastSkill::PosStruct& posInfo);
+	void OnPlayerToggleSkill(ClientHandle clientHd, SkillID skillID, bool on);
+	void OnPlayerInteraction(ClientHandle clientHd, ActorUID targetUID, LocalActorID selfLocal);
+	bool IsWeaponFireObject(ClientHandle clientHd, const wchar* name, u16 len);
+	void OnPlayerExecuteSkill(ClientHandle clientHd, SkillID skillID, const vec3& targetPos, LocalActorID target);
 
 	bool ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i32 len);
 	void SendDbgMsg(ClientHandle clientHd, const wchar* msg);

@@ -215,7 +215,9 @@ void InstancePool::Lane::Update()
 			}
 
 			if(curPvpInstance) {
+				Logger::gameTag = (i32)((u64)curPvpInstance->sortieUID & 0xffff);
 				curPvpInstance->OnClientPacket(curClientHd, header, packetData);
+				Logger::gameTag = 0;
 			}
 			else {
 				ASSERT_MSG(0, "case not handled");
@@ -249,7 +251,9 @@ void InstancePool::Lane::Update()
 
 	// update instances
 	foreach(room, instancePvpList) {
+		Logger::gameTag = (i32)((u64)room->sortieUID & 0xffff);
 		room->Update(localTime);
+		Logger::gameTag = 0;
 	}
 }
 

@@ -2515,4 +2515,109 @@
       <_FairPvPMasterGearIndex DATA="880000009" />
     </EquipComData>
   </INFO>
+  <INFO ID="100000041">
+    <EntityComData _Name="SHUTTLE" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SHUTTLE" _StoryTitle="STR_STORYTITLE_SHUTTLE" _Story="STR_STORY_SHUTTLE" _BaseFeature="STR_BASEFEATURE_SHUTTLE" _RangeFeature="STR_RANGEFEATURE_SHUTTLE" _PhysicalAttackFeature="4" _MagicalAttackFeature="5" _ViabilityFeature="7" _DifficultyFeature="3" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="41" />
+    <Kfm_ComData KeyName="SHUTTLE" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180410010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180410040" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180410050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SHUTTLE" _ElementType="CELEMENT_TYPE_BLUE" _DestroyTime="5" _RankHitBonus="1" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _DefaultArtifact="360000006" _SkillStatType="STAT_TYPE_RAGE">
+      <_STAT_INIT DATAKEY="STAT_TYPE_RAGE" DATA="100" />
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUTTLE_ABILITY_01" _IconAlias="ability_weaponpower_01" />
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUTTLE_ABILITY_02" _IconAlias="ability_skillpower_01" />
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUTTLE_ABILITY_03" _IconAlias="ability_health_01" />
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUTTLE_ABILITY_04" _IconAlias="ability_mobility_01" />
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="shuttle_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180410010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180410040" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180410020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180410002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180410050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180410000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180410030" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131141011" />
+      <_DefaultWeaponIndex DATA="131141021" />
+      <_DefaultWeaponIndex DATA="131141031" />
+      <_FairPvPWeaponIndex DATA="131141011" />
+      <_FairPvPWeaponIndex DATA="131141021" />
+      <_FairPvPWeaponIndex DATA="131141031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000043">
+    <EntityComData _Name="GATLING" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_GATLING" _StoryTitle="STR_STORYTITLE_GATLING" _Story="STR_STORY_GATLING" _BaseFeature="STR_BASEFEATURE_GATLING" _RangeFeature="STR_RANGEFEATURE_GATLING" _PhysicalAttackFeature="7" _MagicalAttackFeature="6" _ViabilityFeature="3" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="43" />
+    <Kfm_ComData KeyName="GATLING" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180430010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180430020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180430050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_GATLING" _ElementType="CELEMENT_TYPE_RED" _DestroyTime="5" _RankHitBonus="1" _AttackRangeMin="950" _RClickMoveAttackMoveSpeedRatio="0.7" _DefaultArtifact="360000001" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GATLING_ABILITY_01" _IconAlias="ability_weaponpower_01" />
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GATLING_ABILITY_02" _IconAlias="ability_skillpower_01" />
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GATLING_ABILITY_03" _IconAlias="ability_health_01" />
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GATLING_ABILITY_04" _IconAlias="ability_mobility_01" />
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="gatling_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180430010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180430020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180430030" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180430040" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180430050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180430000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180430002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131143011" />
+      <_DefaultWeaponIndex DATA="131143021" />
+      <_DefaultWeaponIndex DATA="131143031" />
+      <_FairPvPWeaponIndex DATA="131143011" />
+      <_FairPvPWeaponIndex DATA="131143021" />
+      <_FairPvPWeaponIndex DATA="131143031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
 </ENTITY_FILE>

@@ -1362,5 +1362,32 @@
         <_Resource _BaseKFMKeyName="AI_SHUTTLE_Titan" _SkinKFMFile="Graphic\Creature\Pc\Shuttle\Shuttle_Caravan\Shuttle_Caravan.kfm" _AnimationKeyName="Shuttle_Caravan" />
       </_SkinResource>
     </_Skin>
+    <_Skin DATAKEY="SKIN_GATLING_01" _Purchase="True" _ClassType="CLASS_TYPE_GATLING" _SkinIndex="0" _ReleaseDate="20171215" _SkinType="SKIN_TYPE_BASE" _Display="SHOW" _Name="STR_SKIN_GATLING_01" _IconAlias="skin_gatling_01" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_DocID DATA="100000043" />
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GATLING" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling\Gatling.kfm" />
+        <_Resource _BaseKFMKeyName="AI_GATLING_Titan" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling\Gatling.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_GATLING_02" _Purchase="True" _ClassType="CLASS_TYPE_GATLING" _SkinIndex="1" _ReleaseDate="20171215" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_GATLING_02" _IconAlias="skin_gatling_02" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_DocID DATA="100000043" />
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GATLING" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling_Crew\Gatling_Crew.kfm" />
+        <_Resource _BaseKFMKeyName="AI_GATLING_Titan" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling_Crew\Gatling_Crew.kfm" />
+      </_SkinResource>
+    </_Skin>
+    <_Skin DATAKEY="SKIN_GATLING_03" _Purchase="True" _ClassType="CLASS_TYPE_GATLING" _SkinIndex="2" _ReleaseDate="20171215" _SkinType="SKIN_TYPE_NORMAL" _NCoinPrice="1280" _Name="STR_SKIN_GATLING_03" _IconAlias="skin_gatling_03" _ColorTone="SKIN_COLOR_TONE_NONE">
+      <_DocID DATA="100000043" />
+      <_SkinEffect _Count="5">
+        <_Effect _Type="SKIN_EFFECT_TYPE_GOLD_AMOUNT" _Data="150" />
+      </_SkinEffect>
+      <_SkinResource>
+        <_Resource _BaseKFMKeyName="GATLING" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling_Guard\Gatling_Guard.kfm" _AnimationKeyName="GATLING_Guard" />
+        <_Resource _BaseKFMKeyName="AI_GATLING_Titan" _SkinKFMFile="Graphic\Creature\Pc\Gatling\Gatling_Guard\Gatling_Guard.kfm" _AnimationKeyName="GATLING_Guard" />
+      </_SkinResource>
+    </_Skin>
   </ST_SKIN_TABLE>
 </ENTITY_FILE>

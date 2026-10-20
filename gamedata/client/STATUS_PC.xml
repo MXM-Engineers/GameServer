@@ -4767,4 +4767,209 @@
   <INFO ID="1239100022" KEYNAME="STATUS_TITAN_SIEGE_SK2_FRIENDLY_BUFF">
     <ST_COMMONSTATUS _CanDispel="true" _Description="공격력, 이속 대폭 증가" _DurationTime="10000" _EffectKeyName="STATUS_SFX_MOB_ATTACK" _EffectSlot="91021" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="powerup_01" _Name="[티탄의 현신_공성] 아군 강화" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="189100020" _Tooltip="STR_STATUS_PC_TOOLTIP_1239100022" _Type="STATUS_TYPE_STAT" />
   </INFO>
+  <INFO ID="1230410005" KEYNAME="STATUS_SHUTTLE_PASSIVE_RAGEREGEN" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 공격으로 자원 회복" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지 공격으로 자원 회복" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410090" KEYNAME="STATUS_SHUTTLE_PASSIVE_CHARGE_RAGEREGEN" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 중 자원 회복" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Interval="1000" _Name="[셔틀] 차지 공격 중 차원 회복" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410100" KEYNAME="STATUS_SHUTTLE_CHARGE_ACTIONBLOCK" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="모든 액션블록" _DurationTime="250" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지공격중 액션블록 (ALL)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT">
+      <_INPUT_STATE_BLOCK _Attack="1" _Jump="1" _Move="1" _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410101" KEYNAME="STATUS_SHUTTLE_CHARGE_ACTIONBLOCK_SKILL" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="스킬제외 액션블록" _DurationTime="800" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지공격중 액션블록 (스킬사용가능)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT">
+      <_INPUT_STATE_BLOCK _Jump="1" _Move="1" _MovingShirk="1" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410010" KEYNAME="STATUS_SHUTTLE_SK1_SLOW" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="영역 SLOW -40%" _DurationTime="800" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL1_SLOW" _EffectSlot="41010" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Name="[셔틀] 영역 SLOW" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410010" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410010" _Type="STATUS_TYPE_SLOW" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410011" KEYNAME="STATUS_SHUTTLE_SK1_FLAG" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="스킬1 강화용 FLAG" _DurationTime="1" _EffectType="STATUS_EFFECT_UNKNOWN" _MaxOverlapCount="1" _Name="[셔틀] 스킬1 강화 FLAG" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410010" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410013" KEYNAME="STATUS_SHUTTLE_SK1_DRAGGED" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="DRAGGED" _DraggedByForceMax="70" _DraggedByForceMin="20" _DurationTime="100" _EffectType="STATUS_EFFECT_DEBUFF" _MaxDragDistance="-1" _Name="[셔틀] DRAGGED" _Passive="false" _ReAction="true" _SaveDB="false" _SkillIndex="180410010" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410020" KEYNAME="STATUS_SHUTTLE_SK2_STAMINABURN" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="스태미너 번" _DurationTime="0" _EffectType="STATUS_EFFECT_DEBUFF" _Name="[셔틀] MP, 스테미너 버닝" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410020" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1230410021" KEYNAME="STATUS_SHUTTLE_SK2_SILENCE" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="공포 (몬스터용)" _DurationTime="3000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL2_SILENCE" _EffectSlot="41020" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="silence_01" _Name="[셔틀] 몬스터용 공포" _Passive="false" _ReAction="true" _SaveDB="false" _SkillIndex="180410020" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410021" _Type="STATUS_TYPE_SILENCE">
+      <_INPUT_STATE_BLOCK _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410022" KEYNAME="STATUS_SHUTTLE_SK2_FLAG" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="스킬2 강화용 FLAG" _DurationTime="1" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 스킬2 강화 FLAG" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410020" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410024" KEYNAME="STATUS_SHUTTLE_SK2_TOOLTIP" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="툴팁용" _DurationTime="1" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 툴팁 상태효과 표시용" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410020" _Type="STATUS_TYPE_STAT" />
+    <ST_TOOLTIP _Attr="DELIGATE" _SkillBind="180410020:0123456" />
+  </INFO>
+  <INFO ID="1230410030" KEYNAME="STATUS_SHUTTLE_SK3_KNOCKDOWN" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="넘어뜨리기" _DistanceRatio="0.8" _DurationTime="600" _EffectType="STATUS_EFFECT_DEBUFF" _HeightRatio="0.2" _LyingTime="0.1" _Name="[셔틀] 광역 넘어뜨리기" _Passive="false" _ReAction="true" _SaveDB="false" _SkillIndex="180410030" _SuppressTag="true" _TimeRatio="0.3" _Type="STATUS_TYPE_KNOCKDOWN">
+      <_INPUT_STATE_BLOCK _Attack="1" _HideSkill="1" _Jump="1" _Move="1" _MoveSkill="1" _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410040" KEYNAME="STATUS_SHUTTLE_SK4_SUPERARMOR" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="슈퍼아머" _DurationTime="3300" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL4_SUPERARMOR" _EffectSlot="41040" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="[셔틀] 탑승상태용 슈퍼아머" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410040" _Type="STATUS_TYPE_SUPERARMOR" />
+  </INFO>
+  <INFO ID="1230410041" KEYNAME="STATUS_SHUTTLE_SK4_MOVESPEED" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이속증가 40%" _DurationTime="10000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL4_MVSPD" _EffectSlot="41041" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _MaxOverlapCount="1" _Name="[셔틀] 탑승상태용 이속증가" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410041" _Type="STATUS_TYPE_STAT" />
+    <ST_TOOLTIP _Attr="STAT" _SkillBind="180410040:012" />
+  </INFO>
+  <INFO ID="1230410042" KEYNAME="STATUS_SHUTTLE_SK4_MOVESPEED_UP1" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이속증가 55%" _DurationTime="10000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL4_MVSPD" _EffectSlot="41042" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _MaxOverlapCount="1" _Name="[셔틀] 탑승상태용 이속증가 강화1" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410042" _Type="STATUS_TYPE_STAT" />
+    <ST_TOOLTIP _Attr="STAT" _SkillBind="180410040:3456" />
+  </INFO>
+  <INFO ID="1230410046" KEYNAME="STATUS_SHUTTLE_SK4_TARGET_ATTACH" _DocID="100000041">
+    <ST_COMMONSTATUS _AnimationName="LIFTED_BEHAVIORSTATE" _AttachNodeName="Charge_Fire_Dummy" _CanDispel="false" _CasterStatusIndex="1230410045" _Description="잡힌 상태 (대상) LIFTED" _DurationTime="15000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL4_BOARD_IN" _EffectSlot="41043" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="evade_01" _Name="[셔틀] 잡힌 대상 : 인터렉션 성공 대상" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410047" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _SuppressTag="true" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410046" _Type="STATUS_TYPE_TARGET">
+      <_INPUT_STATE_BLOCK _Attack="1" _HideSkill="1" _Jump="1" _Move="1" _MoveSkill="1" _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+    <ST_TOOLTIP _Attr="DELIGATE" _SkillBind="180410040:0123456" />
+  </INFO>
+  <INFO ID="1230410047" KEYNAME="STATUS_SHUTTLE_SK4_TARGET_END" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="체크 전용: 잡힘 해제" _DurationTime="0" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL4_BOARD_OUT" _EffectSlot="41044" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 셔틀모드 종료 시 잡기 삭제 " _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _TargetingRange="500" _TargetingType="ALL" _Type="STATUS_TYPE_TOGGLE" />
+  </INFO>
+  <INFO ID="1230410048" KEYNAME="STATUS_SHUTTLE_PASSIVE_TELEPORT" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="GX-09 전용 패시브" _DurationTime="-1" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] GX-09 전용 패시브 (인터렉션 성공-&gt;탑승)" _Passive="true" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_GX09">
+      <_GX09 _MassiveTeleportIndex="180410050" _MassiveTeleportRadius="500" _MassiveTeleportStatus="1230410050" _ShuttleSelfStatusIndex="1230410045" _ShuttleSkillIndex="180410040">
+        <_ShuttleTargetStatusList DATA="1230410046" />
+        <_ShuttleTargetStatusList DATA="1230410044" />
+      </_GX09>
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410049" KEYNAME="STATUS_SHUTTLE_SK4_DEFENCE_UP1" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="방어력 상승" _DurationTime="13500" _EffectKeyName="STATUS_SFX_PC_ICEQUEEN_SKILL3_DEFUP" _EffectSlot="41045" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defenseup_01" _Name="[셔틀] 방어력 상승" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410049" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230410050" KEYNAME="STATUS_SHUTTLE_EP_SPAWN_IN" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="텔레포트 시전 시 " _DurationTime="100" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_ULTIMATE_SPAWN_IN" _EffectSlot="41050" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 이펙트용 상태이상" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410051" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410050" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230410051" KEYNAME="STATUS_SHUTTLE_EP_SPAWN_OUT" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="텔레포트 완료 시 " _DurationTime="100" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_ULTIMATE_SPAWN_OUT" _EffectSlot="41051" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 이펙트용 상태이상" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410050" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230410052" KEYNAME="STATUS_SHUTTLE_EP_AURA" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="텔레포트 잡기 저항 오오라" _DurationTime="1000" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 잡기면역 오오라" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410050" _TargetingRange="400" _TargetingType="SELF" _Type="STATUS_TYPE_AURA">
+      <_AuraStatusIndex DATA="1230410053" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410053" KEYNAME="STATUS_SHUTTLE_EP_TARGET_RESIST" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="텔레포트 잡기 저항" _DurationTime="-1" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 잡기 면역" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410050" _Type="STATUS_TYPE_STAT">
+      <_ADD_DF_STATUS DATAKEY="STATUS_TYPE_TARGET" _Rate="100" _Value="1000" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410060" KEYNAME="STATUS_SHUTTLE_SHIRK_SUPERARMOR" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="회피용 슈퍼아머" _DurationTime="3200" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_EVADE_SUPERARMOR" _EffectSlot="41060" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="barrier_01" _Name="[셔틀] 회피 슈퍼아머" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410002" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410060" _Type="STATUS_TYPE_SUPERARMOR" />
+    <ST_TOOLTIP _Attr="DELIGATE" _SkillBind="180410050:0123456" />
+  </INFO>
+  <INFO ID="1230410061" KEYNAME="STATUS_SHUTTLE_SHIRK_SHIELD" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="회피용 보호막" _DurationTime="3000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_EVADE_SHIELD" _EffectSlot="41061" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="[셔틀] 회피 보호막" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410061" _Type="STATUS_TYPE_SHIELD" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410000" KEYNAME="STATUS_SHUTTLE_PASSIVE_FLAG" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="차지 공격으로 자원 회복" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[셔틀] 자원 회복 FLAG" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410005" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410001" KEYNAME="STATUS_SHUTTLE_PASSIVE_FLAG_UP1" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="차지 공격으로 자원 회복 (강화1)" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[셔틀] 자원 회복 FLAG 1" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410006" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410002" KEYNAME="STATUS_SHUTTLE_PASSIVE_FLAG_UP2" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="차지 공격으로 자원 회복 (강화2)" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[셔틀] 자원 회복 FLAG 2" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410007" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410003" KEYNAME="STATUS_SHUTTLE_PASSIVE_FLAG_UP3" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="차지 공격으로 자원 회복 (강화3)" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[셔틀] 자원 회복 FLAG 3" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410008" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410004" KEYNAME="STATUS_SHUTTLE_PASSIVE_FLAG_UP4" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="차지 공격으로 자원 회복 (강화4)" _DurationTime="-1" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[셔틀] 자원 회복 FLAG 4" _NextStatusCondition="E_NEXT_STATUS_CONDITION_ALL" _NextStatusIndex="1230410009" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1230410006" KEYNAME="STATUS_SHUTTLE_PASSIVE_RAGEREGEN_UP1" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 공격으로 자원 회복 (강화1)" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지 공격으로 자원 회복 1" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410007" KEYNAME="STATUS_SHUTTLE_PASSIVE_RAGEREGEN_UP2" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 공격으로 자원 회복 (강화2)" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지 공격으로 자원 회복 2" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410008" KEYNAME="STATUS_SHUTTLE_PASSIVE_RAGEREGEN_UP3" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 공격으로 자원 회복 (강화3)" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지 공격으로 자원 회복 3" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410009" KEYNAME="STATUS_SHUTTLE_PASSIVE_RAGEREGEN_UP4" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="차지 공격으로 자원 회복 (강화4)" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 차지 공격으로 자원 회복 4" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Type="STATUS_TYPE_HEAL" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230410044" KEYNAME="STATUS_SHUTTLE_SK4_TARGET_BURROW" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이베이드" _DurationTime="15000" _EffectType="STATUS_EFFECT_BUFF" _HideMinimapIcon="True" _Name="[셔틀] 인터렉션 성공 대상 버로우" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Type="STATUS_TYPE_BURROW" />
+  </INFO>
+  <INFO ID="1230410045" KEYNAME="STATUS_SHUTTLE_SK4_CASTER_ATTACH" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _CasterStatusIndex="1230410046" _Description="잡은 상태" _DurationTime="15000" _EffectType="STATUS_EFFECT_BUFF" _Name="[셔틀] 잡은 대상 : GX-09" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410040" _Type="STATUS_TYPE_CASTER" />
+  </INFO>
+  <INFO ID="1230410012" KEYNAME="STATUS_SHUTTLE_SK1_DEFENCE_UP1" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="받는 데미지 30% 감소" _DurationTime="1000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL1_DEFUP" _EffectSlot="41011" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defenseup_01" _MaxOverlapCount="1" _Name="[셔틀] 받는피해 30% 감소" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410010" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410012" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230410023" KEYNAME="STATUS_SHUTTLE_SK2_SHOCK_RESIST" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="쇼크 3초간 저항" _DurationTime="3000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_SKILL2_RESIST_SHOCK" _EffectSlot="41021" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="shocked_resist_01" _Name="[셔틀] SHOCKED 저항" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410020" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410023" _Type="STATUS_TYPE_STAT">
+      <_ADD_DF_STATUS DATAKEY="STATUS_TYPE_SHOCKED" _Rate="100" _Value="1000" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230410054" KEYNAME="STATUS_SHUTTLE_EP_SHIELD" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="장치 주변 아군에게 보호막 + 방어력" _DurationTime="2000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_EVADE_SHIELD" _EffectSlot="41061" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="barrier_01" _Name="[셔틀] 필살기 보호막 강화3" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410054" _Type="STATUS_TYPE_SHIELD" />
+  </INFO>
+  <INFO ID="1230410055" KEYNAME="STATUS_SHUTTLE_EP_SHIELD_UP" _DocID="100000041">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="장치 주변 아군에게 보호막 + 방어력 강화" _DurationTime="2000" _EffectKeyName="STATUS_SFX_PC_SHUTTLE_EVADE_SHIELD" _EffectSlot="41061" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="barrier_01" _Name="[셔틀] 필살기 보호막 강화6" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180410000" _Tooltip="STR_STATUS_PC_TOOLTIP_1230410055" _Type="STATUS_TYPE_SHIELD" />
+  </INFO>
+  <INFO ID="1230430000" KEYNAME="STATUS_GATLING_PASSIVE_WEAKSTACK" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="1스택당 방어력 감소량 -1.5%" _DurationTime="2500" _EffectKeyName="STATUS_SFX_PC_Attack_Damping" _EffectSlot="43000" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="weakness_02" _MaxOverlapCount="10" _Name="[연] 방어력 관통 탄" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430000" _Tooltip="STR_STATUS_PC_TOOLTIP_1230430000" _Type="STATUS_TYPE_STAT" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430011" KEYNAME="STATUS_GATLING_SK1_EVADE" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="지점 도약 중 회피" _DurationTime="400" _EffectType="STATUS_EFFECT_BUFF" _Name="[연] 지점 도약 중 회피 " _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430010" _Type="STATUS_TYPE_EVADE" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430020" KEYNAME="STATUS_GATLING_SK2_KNOCKDOWN" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="뒤잡기 넉다운" _DistanceRatio="1" _DurationTime="600" _EffectType="STATUS_EFFECT_DEBUFF" _HeightRatio="0.4" _LyingTime="0.2" _Name="[연] 뒤잡기 후 넘어뜨리기" _Passive="false" _ReAction="true" _SaveDB="false" _SkillIndex="180430020" _SuppressTag="true" _TimeRatio="0.4" _Type="STATUS_TYPE_KNOCKDOWN">
+      <_INPUT_STATE_BLOCK _Attack="1" _HideSkill="1" _Jump="1" _Move="1" _MoveSkill="1" _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430030" KEYNAME="STATUS_GATLING_SK3_STATUS_CHECK" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="4중첩 → SLOW 효과" _EffectType="STATUS_EFFECT_UNKNOWN" _Name="[연] 둔화효과 중첩 부여" _Passive="true" _ReAction="false" _SaveDB="false" _SkillIndex="180430030" _Type="STATUS_TYPE_ICEQUEEN">
+      <_ICEQUEEN _CheckConditon="PROC_CHECK_STATUS_INDEX" _FreezeStatusIndex="1230430032" _Index="1230430031" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1230430031" KEYNAME="STATUS_GATLING_SK3_STACK" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="중첩 체크용" _DurationTime="1000" _EffectType="STATUS_EFFECT_UNKNOWN" _MaxOverlapCount="4" _Name="[연] 둔화효과 중첩 스택" _OverlapType="OVERLAP_BY_STATUS_TYPE" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430030" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230430032" KEYNAME="STATUS_GATLING_SK3_SLOW" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _CasterStatusIndex="1230430033" _Description="중첩으로 인한 SLOW -50%" _DurationTime="2500" _EffectKeyName="STATUS_SFX_PC_SLOW" _EffectSlot="43030" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _MaxOverlapCount="1" _Name="[연] 범위난사 범위 SLOW" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430030" _Tooltip="STR_STATUS_PC_TOOLTIP_1230430032" _Type="STATUS_TYPE_SLOW" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430033" KEYNAME="STATUS_GATLING_SK3_FLAG" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="강화용 상태이상 FLAG" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[연] 자신용 빈 상태이상" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430030" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230430035" KEYNAME="STATUS_GATLING_SK3_EVADE" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="상태블록 해제시간과 동일 (0.7초)" _DurationTime="700" _EffectType="STATUS_EFFECT_BUFF" _Name="[연] 제자리 도약 중 회피 " _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430030" _Type="STATUS_TYPE_EVADE" />
+  </INFO>
+  <INFO ID="1230430041" KEYNAME="STATUS_GATLING_SK4_SLOW_UP1" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="[1틱]범위안의 적 SLOW -60%" _DurationTime="1000" _EffectKeyName="STATUS_SFX_PC_SLOW" _EffectSlot="43040" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Name="[연] 대형저격 SLOW 교체용" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430040" _Tooltip="STR_STATUS_PC_TOOLTIP_1230430041" _Type="STATUS_TYPE_SLOW" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430050" KEYNAME="STATUS_GATLING_EP_DRAGGED_OUT" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="밖으로 밀어내기" _DraggedByForceMax="-400" _DraggedByForceMin="-700" _DurationTime="300" _EffectType="STATUS_EFFECT_DEBUFF" _Name="[연] 필살기 밖으로 밀어내기" _Passive="false" _ReAction="true" _SaveDB="false" _SkillIndex="180430050" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+  </INFO>
+  <INFO ID="1230430051" KEYNAME="STATUS_GATLING_EP_SUPERARMOR" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="필살기 시전 중 슈퍼아머" _DurationTime="4000" _EffectKeyName="STATUS_SFX_PC_SUPERARMOR_LONG" _EffectSlot="43051" _EffectType="STATUS_EFFECT_BUFF" _Name="[연] 필살기 시전 중 슈퍼아머" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430050" _Type="STATUS_TYPE_SUPERARMOR" />
+  </INFO>
+  <INFO ID="1230430052" KEYNAME="STATUS_GATLING_EP_STATUP_FAKE" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="강화 교체용 FLAG" _DurationTime="100" _EffectType="STATUS_EFFECT_BUFF" _Name="[연] 필살기 강화 교체용" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430050" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1230430053" KEYNAME="STATUS_GATLING_EP_STATUP_UP1" _DocID="100000043">
+    <ST_COMMONSTATUS _CanDispel="true" _Description="방어력 상승 +100%" _DurationTime="4000" _EffectKeyName="STATUS_SFX_PC_DEFENCE" _EffectSlot="43052" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defenseup_01" _Name="[연] 필살기 중 방어력 +100%" _Passive="false" _ReAction="false" _SaveDB="false" _SkillIndex="180430050" _Tooltip="STR_STATUS_PC_TOOLTIP_1230430053" _Type="STATUS_TYPE_STAT" />
+  </INFO>
 </ENTITY_FILE>

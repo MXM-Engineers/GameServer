@@ -251,4 +251,7 @@
   <INFO ID="900000070">
     <ST_INTERACTION _Index="900000070" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TOTEM2" _Name="IT_NAME_TOTEM2" _SightDistance="2500" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _RepeatInterval="20" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
   </INFO>
+  <INFO ID="900000071">
+    <ST_INTERACTION _Index="900000071" _Type="IT_TYPE_INDIVIDUAL" _Action="IT_ACTION_TELEPORT" _Name="IT_NAME_GX09_BOARD" _SightDistance="40000" _ActiveDistance="600" _Active="True" _Repeat="False" _RepeatInterval="20" />
+  </INFO>
 </ENTITY_FILE>

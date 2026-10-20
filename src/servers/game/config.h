@@ -7,6 +7,8 @@ struct CConfigGame
 	i32 DevMode = false;
 	i32 DevQuickConnect = false;
 	i32 DevForcedMap = 0;
+	i32 ShotLeadMs = 50;
+	i32 HostIP[4] = { 0, 0, 0, 0 };
 	i32 TraceNetwork = false;
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;

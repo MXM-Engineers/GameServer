@@ -235,7 +235,7 @@ struct HubReplication
 	void SendPartyCreateSucess(ClientHandle clientHd, UserID ownerUserID, StageType stageType);
 
 	void SendPartyEnqueue(ClientHandle clientHd, StageIndex stageIndex);
-	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs);
+	void SendMatchingPartyFound(ClientHandle clientHd, const In::MN_MatchingPartyFound& matchingParty, StageIndex stageIndex, const eastl::fixed_vector<UserID,16>& rowIDs, u8 myTeam);
 
 	void OnClientDisconnect(ClientHandle clientHd);
 

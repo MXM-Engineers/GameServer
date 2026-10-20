@@ -1,0 +1,771 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ENTITY_FILE>
+  <StringTableData>
+    <StringData DATAKEY="STR_SKILL_NAME_180010000" data="Combat Instinct" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010000" data="{color:#35a6e6}[Veteran]{color:end}&#10;Recovers a small amount of stamina each time you land a weapon attack." />
+    <StringData DATAKEY="STR_SKILL_NAME_180010002" data="Roll" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010002" data="Dive into a roll, granting immunity to crowd control while rolling." />
+    <StringData DATAKEY="STR_SKILL_NAME_180010010" data="Explosive Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010010" data="Fires a line of explosive shells, each one dealing damage on a successful hit. Taejin is knocked back slightly when using this skill." />
+    <StringData DATAKEY="STR_SKILL_NAME_180010020" data="Concussive Blast" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010020" data="Fires a close-range blast from Taejin's gun, knocking back enemies in a small cone. Taejin is knocked back slightly when using this skill." />
+    <StringData DATAKEY="STR_SKILL_NAME_180010030" data="Inspiring Presence" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010030" data="Grants Taejin a {skill:180010030:status:targetingrange} aura that increases weapon damage and movespeed for himself and nearby allies by {skill:180010030:status:stat:mul:attack:1}% for {skill:180010030:status:durationtime}. &#10;{color:#35a6e6}Aura persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180010040" data="Proximity Grenade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010040" data="Throws a grenade, dealing damage to targets in a small area.&#10;If there is no target in the area, the grenade will detonate after {skill:180010040:remote:lifetime} seconds. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180010050" data="Dredgion Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180010050" data="Calls the Dredgion to bombard an area with pinpoint missile strikes,&#10;dealing heavy damage over {skill:180010050:status:durationtime} seconds and slowing enemies by 40%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180020000" data="Reactive Explosives" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020000" data="{color:#35a6e6}[Reactive Explosives]{color:end}&#10;If a weapon attack hits two or more enemies at the same time, it instantly restores MP to MBA-07.&#10;{color:#35a6e6}Against monsters: {color:end}Recovers 125 MP&#10;{color:#35a6e6}Against Masters: {color:end} Recovers 225 MP" />
+    <StringData DATAKEY="STR_SKILL_NAME_180020002" data="Smoke Screen" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020002" data="MBA-07 vents its exhaust ports, clouding the surrounding area with smoke. All targets within the smoke are immune to weapon and skill attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180020010" data="Artillery Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020010" data="Unleashes a battery of missiles at the targeted area.&#10;{color:#e45f5f}Damage dealt is increased the closer enemies are to the center of the attack area.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180020020" data="Skitter Mine" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020020" data="Drops a proximity mine at your footcups.&#10;Mines automatically track enemies within 10m and explode on them, dealing damage and causing slow.&#10;Mines are destructible." />
+    <StringData DATAKEY="STR_SKILL_NAME_180020030" data="Disruptor" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020030" data="Unleashes explosive impacts on either side of MBA-07 that Stun enemies for {skill:180020030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180020040" data="Cluster Missiles" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020040" data="Unloads a swarm of {skill:180020040:leveltext:012:5:3456:7} homing missiles that seek out the nearest enemy target.&#10;Missiles explode on contact with enemies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180020050" data="Deploy Particle Cannon" />
+    <StringData DATAKEY="STR_SKILL_DESC_180020050" data="MBA-07 reconfigures into an immobile siege mode.&#10;Increases MBA-07's range, damage, and survivability.&#10;Lasts a maximum of {skill:180020050:stancedurationtime}. MBA-07 may fire a maximum of {skill:180020050:weaponfirecount} times before depleting cannon ammunition.&#10;{color:#e45f5f}Damage dealt is increased the closer enemies are to the center of the attack area.&#10;Press ESC to cancel.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180030000" data="Vicious" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030000" data="{color:#35a6e6}[Adrenaline]{color:end}&#10;Killing Masters reset Sizuka's cooldowns.&#10;&#10;{color:#35a6e6}[Bleed them Dry]{color:end}&#10;Bleeding inflicted by Sizuka can stack up to 5 times. Each stack increases damage dealt by the Bleed effect. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180030002" data="Swift Step" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030002" data="Instantly dash a short distance in the direction of your cursor. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180030010" data="Cloak" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030010" data="Enter stealth for {skill:180030010:status:durationtime}.&#10;Attacking, using a skill, or dodging will remove stealth.&#10;{color:#e45f5f}Slowed by 10%.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180030020" data="Snap Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030020" data="Instantly dashes to a target with a disorienting strike.&#10;Causes a stack of bleeding with a small chance to stun. If Snap Strike is used while flanking, the chance to stun is greatly increased. Stuns last {skill:180030020:status:durationtime}.&#10;{color:#e45f5f}Momentarily immune to incoming damage upon casting this skill.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180030030" data="Caltrops" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030030" data="Throws {skill:180030030:leveltext:012:3:345:6:6:9} caltrops at a target area that slows for {skill:180030030:status:durationtime} by {skill:180030030:status:stat:mul:movespeed}% and bleeds enemies who step on them.&#10;Sizuka jumps back slightly when using this skill.&#10;{color:#e45f5f}Momentarily immune to incoming damage upon casting this skill.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180030040" data="Rending Blades" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030040" data="Sizuka focuses her attacks on exposed areas for {skill:180030040:status:durationtime}, increasing her weapon damage by {skill:180030040:status:stat:mul:attack}%, and causes bleeding.&#10;{color:#35a6e6}Effect stays active, even if tagged.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180030050" data="A Thousand Cuts" />
+    <StringData DATAKEY="STR_SKILL_DESC_180030050" data="Sizuka dashes in and out of sight, slashing all enemies within range. Sizuka ends her ultimate where it began.&#10;Targets can be struck multiple times.&#10;{color:#e45f5f}When an enemy is repeatedly damaged, successive hits do 10% less damage up to a maximum of 40%.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180040000" data="Recharge" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040000" data="{color:#35a6e6}[Exhilaration]{color:end}&#10;Recovers MP when healing allies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180040002" data="Lightning Rush" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040002" data="Demenos rushes forward 6.7m and shocks any enemy he collides with for {skill:180040002:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180040010" data="Paralyzing Bolt" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040010" data="After a short charge, Demenos unleashes a bolt of lightning on the targeted area, shocking enemies for {skill:180040010:status:durationtime}. Enemies closer to the center of the blast are shocked for longer." />
+    <StringData DATAKEY="STR_SKILL_NAME_180040020" data="Rolling Thunder" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040020" data="Unleashes a scattered cone of lightning strikes. Enemies caught in the cone are damaged and silenced for {skill:180040020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180040030" data="Shock Therapy" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040030" data="Links Demenos to a friendly target with a lightning tether for {skill:180040030:status:durationtime}. Both Demenos and his target gain {skill:180040030:status:stat:mul:movespeed}% movespeed, {skill:180040030:status:stat:mul:defence}% defense, {skill:180040030:status:regen:add:health} HP recovery p/sec, and {skill:180040030:status:stat:add:manaregen} MP recovery p/sec. Demenos's movespeed is increased by an additional 50% for 4 sec. {color:#e45f5f}The linking tether will snap if allies move too far away.{color:end} {color:#35a6e6}Effect persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180040040" data="Ball Lightning" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040040" data="Creates an orb that destroys projectiles and moves towards the closest enemy. Demenos may chain his attack through the orb, and every 2 seconds the orb will release a wave of charged bolts around itself. The orb explodes for additional damage after {skill:180040040:creature:lifetime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180040050" data="Stasis Storm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180040050" data="Distorts a space with a {skill:180040050:remote:range} radius that destroys projectiles. Targets in the field have their muscles tightened, slowing them by {skill:180040050:status:stat:mul:movespeed}%. After {skill:180040050:remote:lifetime}, the field reaches its maximum charge and explodes, causing massive damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180050000" data="Unstoppable Will" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050000" data="{color:#35a6e6}[Unstoppable Will]{color:end}&#10;Koom gains Will when he deals or receives damage.&#10;Koom heals 3% of his total HP and gains CC immunity for 1 second on skill activation." />
+    <StringData DATAKEY="STR_SKILL_NAME_180050002" data="Granite Sheath" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050002" data="The exterior of Koom's flesh becomes coated in a thin layer of granite, absorbing the next {skill:180050002:status:stat:add:SHIELD_DEFENCE} damage and recovers 20 Will.&#10;For {skill:180050002:status:durationtime}, Koom gains 15% movespeed. The movespeed bonus is lost if the shield breaks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180050010" data="Magnetic Barrier" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050010" data="Creates a charged field of stones in front of Koom that blocks projectiles for {skill:180050010:remote:lifetime} and grants 20% Movespeed for 3 seconds.&#10;{color:#e45f5f}Cannot block area-based attacks.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180050020" data="Runeslab Barricade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050020" data="Koom causes a slab of stone to burst from the target area, blocking enemy attacks and acting as a movement obstruction. Nearby monsters will be forced to attack the wall.&#10;Lasts {skill:180050020:creature:lifetime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180050030" data="Unstable Shell" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050030" data="Creates a shield around Koom for a short duration, absorbing {skill:180050030:status:stat:add:SHIELD_DEFENCE} damage.&#10;&#10;After the shield's duration expires, or if the shield is broken, it explodes and deals {skill:180050030:status:explodebasedamage} damage to all enemies within {skill:180050030:status:targetingrange}. &#10;{color:#35a6e6}{color:end}The explosion deals up to {skill:180050030:status:explodeextradamage} bonus damage, based on how much it absorbed. &#10;&#10;{color:#35a6e6}The shield persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180050040" data="Crashing Defense" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050040" data="Koom charges to the targeted area, shielding all nearby allies for {skill:180050040:status:stat:add:SHIELD_DEFENCE} damage at the end of his charge. Lasts {skill:180050040:status:durationtime}. &#10;{color:#35a6e6}The shield persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180050050" data="Impervious Stone" />
+    <StringData DATAKEY="STR_SKILL_DESC_180050050" data="Koom becomes undying for {skill:180050050:status:durationtime}, after which, he recovers {skill:180050050:status:paramratio}% of his maximum HP. Koom can recover an additional {skill:180050050:status:maxrecoverhp} HP, based on damage taken while Impervious Stone is active." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060000" data="Perfect Alignment" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060000" data="{color:#35a6e6}[Perfect Alignment]{color:end}&#10;Each time Weapon Damage pierces an opponent, the chance for a critical hit to occur is increased by 33%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060002" data="Reposition" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060002" data="Quickly dashes 3.6m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060010" data="Shot Caller" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060010" data="Calls out a specific target, increasing their chance to be critically struck by allies.&#10;While called out, the target won't be able to stealth for {skill:180060010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060020" data="Explosive Escape" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060020" data="Fires an explosive shot that knocks enemies back and launches Innowin into the air, allowing her to briefly dodge hostile attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060030" data="Paralyzer" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060030" data="Fires an energized shot that binds the first target in a line for {skill:180060030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180060040" data="Energy Lance" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060040" data="Unleashes a massive discharge of energy from Innowin's rifle, damaging all enemies in a line. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180060050" data="Zeroing In" />
+    <StringData DATAKEY="STR_SKILL_DESC_180060050" data="Innowin enters stealth and is unable to move while taking aim,&#10;but gains crowd control immunity.&#10;A reticle appears, allowing Innowin to track enemies and fire at the perfect moment." />
+    <StringData DATAKEY="STR_SKILL_NAME_180070000" data="Dark Pact" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070000" data="{color:#35a6e6}[Syphoning Blade]{color:end}&#10;Death Knight's next attack recovers a small amount of HP once each second.&#10;&#10;{color:#35a6e6}[Forever Damned]{color:end}&#10;Death Knight will revive once upon reaching 0 HP.&#10;After 3 sec, Death Knight respawns with 30% total HP.&#10;{color:#e45f5f}Activation triggers a 5 min cool down, and the Death Knight is unable to move or attack while waiting to revive.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180070002" data="Ignore Wounds" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070002" data="Death Knight shrugs off all damage from Master skills, but not weapon attacks or crowd control, for {skill:180070002:status:durationtime}.&#10;After Ignore Wounds fades, Death Knight gains 15% movespeed for 2 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180070003" data="Blood Curse [Not Shown]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070003" data="Death Knight Passive (Absorb)" />
+    <StringData DATAKEY="STR_SKILL_NAME_180070010" data="Skelecrash" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070010" data="Charges in a line, damaging enemies and unleashing a slash that knocks foes away at the end of the charge.&#10;Enemies struck by the movement portion of the charge take 50% reduced damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180070020" data="Hellfire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070020" data="Coaxes a cross-shaped burst of flames from the target area, dealing moderate damage with each line of flame.&#10;Each line of fire inflicts a stacks of burning on hit enemies for {skill:180070020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180070030" data="Skull Crack" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070030" data="Death Knight readies a debilitating strike for his next attack within 5 seconds, causing it to stun for {skill:180070030:status:durationtime}. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180070040" data="Quickening" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070040" data="Charges your bones with devilish power, increasing Attack Speed and Movespeed for {skill:180070040:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180070050" data="Unholy Fury" />
+    <StringData DATAKEY="STR_SKILL_DESC_180070050" data="Emits a burst of power that stuns enemies within {skill:180070050:remote:range} for {skill:180070050:status:durationtime:1}. Greatly increases Attack Speed, Movespeed, Defense, and HP Recovery for {skill:180070050:status:durationtime}, but reduces your base attack damage by 10%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080000" data="Fever Pitch" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080000" data="{color:#35a6e6}[Rage Beast]{color:end}&#10;Gains Rage, or RP, when dealing or receiving damage. &#10;All Cagnazzo's skills activate empowered effects by consuming a full RP bar on use." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080002" data="Charge" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080002" data="Charge forward 6.7m while ignoring crowd control effects." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080010" data="Ripline" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080010" data="Cagnazzo hurls his hook in a line, damaging struck enemies and dragging them back to Cagnazzo.&#10;&#10;{color:#35a6e6}[Enraged]{color:end}&#10;Increases damage by 30% and width by 0.8m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080020" data="Savage Leap" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080020" data="Cagnazzo leaps to the target area, damaging and stunning all enemies he lands on for {skill:180080020:status:durationtime}. The damage and stun duration is increased closer to the center of the area.&#10;&#10;&#10;{color:#35a6e6}[Enraged]{color:end}&#10;Deals 30% additional damage and removes the distance-based stun and damage reductions." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080030" data="Terrorize" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080030" data="Unleashes a battle roar that terrifies enemies within {skill:180080030:remote:range} for {skill:180080030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Enraged]{color:end}&#10;Deals 30% additional damage and causes terrified targets to take increased damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080040" data="Crushing Swing" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080040" data="Brings down Karith's Fist in a heaving overhead swing, smashing enemies into the ground.&#10;&#10;{color:#35a6e6}[Enraged]{color:end}&#10;Deals 30% additional damage and depletes target's stamina." />
+    <StringData DATAKEY="STR_SKILL_NAME_180080050" data="Barbaric Frenzy" />
+    <StringData DATAKEY="STR_SKILL_DESC_180080050" data="Unleashes Cagnazzo's boiling rage, granting crowd control immunity, {skill:180080050:status:stat:mul:attack}% increased attack range and weapon damage, {skill:180080050:status:stat:add:skillpower} skill power, and {skill:180080050:status:stat:mul:defence}% defense for {skill:180080050:status:durationtime}.&#10;{color:#e45f5f}For a brief moment upon activating Barbaric Frenzy, you gain attack damage immunity.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180090000" data="Machine Head" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090000" data="{color:#35a6e6}[Robomoro]{color:end}&#10;May have a maximum of 3 summoned robos at any given time.&#10;Firing Moro's weapon attacks at friendly Robos heals them and restores Stamina to allied Masters.&#10;{color:#e45f5f}Does not heal enemy robots.{color:end}&#10;&#10;{color:#35a6e6}[Robo Go Go]{color:end}&#10;Moro gains passive buffs when deploying Robos.&#10;Robos drop a mana battery on death that restores 120 MP.&#10;{color:#e45f5f}Both enemies and allies can pick up the battery.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180090002" data="Panic!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090002" data="Moro flees in a panic for about 9m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180090010" data="Deploy: Rocket Robo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090010" data="Deploys a robo that fires rockets at enemies.&#10;{color:#e45f5f}Robo HP slowly drains once deployed.{color:end}&#10;&#10; {color:#35a6e6}[Robo Go Go]{color:end}&#10;Moro's projectile speed is increased by {skill:180090010:status:stat:add:remotespeed:1}% for {skill:180090010:status:durationtime:1}.&#10;{color:#e45f5f}Robo Gogo effects do not stack.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180090020" data="Deploy: Carbo-gel Robo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090020" data="Deploy a robot that fires and aerosolized carbon gel in a {skill:180090020:status:targetingrange} radius.&#10;Enemy Masters within the area have their armaments coated with gel and cannot use weapon attacks while monsters lose 50% weapon damage.&#10;{color:#e45f5f}Robo HP slowly drains once deployed.{color:end}&#10;&#10; {color:#35a6e6}[Robo Go Go]{color:end}&#10;Increases Moro's Weapon Damage by {skill:180090020:status:stat:mul:attack:1}% for {skill:180090020:status:durationtime:1}.&#10;{color:#e45f5f}Robo Go Go effects do not stack.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180090030" data="Deploy: Graviton Robo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090030" data="Deploys a robo powered by a graviton singularity, heavily damaging and slowing enemies who pass through it for {skill:180090030:status:durationtime}.&#10;{color:#e45f5f}Robo HP slowly drains once deployed.{color:end}&#10;&#10;{color:#35a6e6}[Robo Go Go]{color:end}&#10;Moro's Plasma Sieve is charged for {skill:180090030:status:durationtime:1}, slowing struck enemies by {skill:180090030:status:stat:mul:movespeed:2}% for {skill:180090030:status:durationtime:2}.&#10;{color:#e45f5f}Robo Gogo effects do not stack.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180090040" data="Deploy: Medi-Robo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090040" data="Deploys a medical robo that heals all allies within {skill:180090040:status:targetingrange}.&#10;{color:#e45f5f}Robo HP slowly drains once deployed.{color:end}&#10;&#10;{color:#35a6e6}[Robo Go Go]{color:end}&#10;Restores {skill:180090040:status:regen:mul:health:1}% max HP when deployed." />
+    <StringData DATAKEY="STR_SKILL_NAME_180090050" data="Mecha-Moro" />
+    <StringData DATAKEY="STR_SKILL_DESC_180090050" data="Moro creates an exo-suit out of his robos.&#10; - Moro's weapon attack is now a piercing beam.{color:#35a6e6}Increases effect of [Machine Head] {color:end}.&#10; - Slowed and unable to use Panic!&#10; - Moro fires missiles every second in the direction he is facing.&#10; Moro receives super armor while this effect is active.&#10; - Moro emits a healing aura." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100000" data="Mana Drain" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100000" data="{color:#35a6e6}[Drain]{color:end}&#10;Successfully hitting enemies with Arami's skills marks targets briefly, allowing her next weapon attack to steal 75 MP from them." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100002" data="Doppelganger" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100002" data="Creates an illusion that pulls enemies towards it. When the illusion is created, Arami becomes untargetable for 0.3 seconds and stealthed for 2 seconds. +100% movespeed while stealthed. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180100003" data="Passive Teleport" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100003" data="Teleports." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100010" data="Glyph: Binding" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100010" data="After a brief delay, enemies crossing the glyph will trigger it and become bound. The glyph lasts for {skill:180100010:remote:lifetime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Instantly activates the glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100011" data="Glyph: Binding [Activate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100011" data="Glyph: Activates Binding" />
+    <StringData DATAKEY="STR_SKILL_NAME_180100020" data="Glyph: Gravel Fist" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100020" data="A rock fist bursts out of the glyph, launching enemies who trigger the glyph into the air while inflicting damage.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Instantly activates the glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100021" data="Glyph: Gravel Fist [Activate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100021" data="Glyph: Activates Gravel Fist" />
+    <StringData DATAKEY="STR_SKILL_NAME_180100030" data="Glyph: Hinder-Plasm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100030" data="Periodically produces Hinder-Plasm that chases enemies, damaging and sticking to them, slowing them by {skill:180100030:status:stat:mul:movespeed}%. Multiple plasms will not focus the same target" />
+    <StringData DATAKEY="STR_SKILL_NAME_180100040" data="Glyph: Relocation" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100040" data="Arami creates a teleportation Glyph.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Arami and the Glyph switch places, causing a damaging blast where Arami appears.&#10;The seal can be used twice before fading." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100041" data="Glyph [Relocate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100041" data="Move to the location of the Glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100042" data="Glyph [Relocate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100042" data="Move to the location of the Glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100043" data="Superior Glyph [Relocate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100043" data="Move to the location of the Glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100044" data="Superior Glyph [Relocate]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100044" data="Move to the location of the Glyph." />
+    <StringData DATAKEY="STR_SKILL_NAME_180100050" data="Glyph: Animate Golem" />
+    <StringData DATAKEY="STR_SKILL_DESC_180100050" data="Animates a golem of molten stone with powerful Glyphs.&#10;This otherworldly ally will follow Arami and attack any nearby enemies for {skill:180100050:creature:lifetime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110000" data="Gunslinger" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110000" data="{color:#35a6e6}[Firing Stance]{color:end}&#10;Using skills changes Vonak's stance and ammunition, transforming his weapon attack method.&#10;Changing firing stances resets Vonak's overheat gauge.&#10;&#10;{color:#35a6e6}[Stance Dance]{color:end}&#10;Repeatedly changing stances within a short period of time gives stacking bonuses, up to 3 times. Each stance change increases MP cost.&#10; - Stage 1: +20% movespeed&#10; - Stage 2: +50% weapon projectile speed&#10; - Stage 3: +20% weapon damage&#10;{color:#35a6e6}Stays active, even if tagged.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180110002" data="Slide Tackle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110002" data="Slides 6.7m and knocks down enemies you collide with." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110010" data="Unload" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110010" data="{color:#35a6e6}[Effect]{color:end}&#10;Unleashes a barrage of bullets in front of Vonak.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Rapidly fires both guns in a line directly ahead of Vonak.&#10;Swapping to this stance resets overheat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110020" data="Spray Pattern" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110020" data="{color:#35a6e6}[Effect]{color:end}&#10;Fires a wide arc of shots that strikes multiple targets.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Fires bullets in a cone that gradually widens and narrows over time.&#10;Swapping to this stance resets overheat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110030" data="Whipshot" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110030" data="{color:#35a6e6}[Effect]{color:end}&#10;Vonak fires a slew of bullets that follow a curved trajectory.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Fires curved shots that twist through the air.&#10;Swapping to this stance resets overheat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110040" data="Slamshot" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110040" data="{color:#35a6e6}[Effect]{color:end}&#10;Fires a burst of shots that knocks targets back.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Slowly fires powerful bursts that knock enemies back.&#10;Swapping to this stance resets overheat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180110050" data="Hail of Bullets" />
+    <StringData DATAKEY="STR_SKILL_DESC_180110050" data="Vonak jumps into the air and sprays bullets in an area under him. &#10;{color:#e45f5f}Vonak is able to move and is immune to enemy attacks while Hail of Bullets is active.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180120000" data="Soul Blade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120000" data="{color:#35a6e6}[Soul Battery]{color:end}&#10;Jinsoyun's sword acts as a Soul Battery, allowing her to store Soul Blades.&#10;Able to harness 5 soul blades at a time. Each time a skill is used, Soul Blades are consumed to grant an additional effect.&#10;&#10;{color:#35a6e6}[Spirit Recovery]{color:end}&#10;A new Soul Blade is created every 2 weapon attacks, regardless of whether they strike a target or not.&#10;A new Soul Blade is created each time Jinsoyun successfully avoids damage with her survival skill. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180120002" data="Guardian Force" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120002" data="Surrounds Jinsoyun in protective spiritual pressure for {skill:180120002:status:durationtime}, allowing her to avoid all attacks and reflect projectiles for the duration." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120010" data="Air Dash" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120010" data="Dashes to a target enemy.&#10;May dash twice in quck succession before activating a cool down.&#10;&#10;{color:#35a6e6}[Combo: 2 Blades]{color:end}&#10;Combo activates automatically. The target enemy is crushed by spiritual pressure, and is slowed for {skill:180120010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120011" data="Air Dash: Crush" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120011" data="Dashes to an enemy and stuns them. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180120020" data="Rising Blade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120020" data="Launches enemies directly in front of you with an upward swipe, disabling stealth granted by brush for 3 seconds.&#10;&#10;{color:#35a6e6}[Combo: 2 Blades]{color:end}&#10;Must recast to spend Soul Blades. Strike a target with an additional attack while they are launched." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120021" data="Falling Blade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120021" data="Soul Blade tracks and attacks the enemy." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120030" data="Blade Rush" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120030" data="Charges to the target area and inflicts damage to enemies.&#10;&#10;{color:#35a6e6}[Combo: 2 Blades]{color:end}&#10;Automatically spends Soul Blades. Release an explosion of spiritual energy for additional damage. Targets struck by the explosion are bound for {skill:180120030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120040" data="Chi Pull" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120040" data="Drags the targets in the selected area to you.&#10;&#10;{color:#35a6e6}[Combo: 2 Blades]{color:end}&#10;Automatically spends Soul Blades.&#10;If your pull hits a target, and is empowered, you will be healed for 15% max HP." />
+    <StringData DATAKEY="STR_SKILL_NAME_180120050" data="Shock Blade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180120050" data="Drops three spiritual blades in a triangle formation. These blades link with beams of lightning that shock and damage enemies they hit.&#10;Shock lasts for {skill:180120050:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130000" data="Blood Trial" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130000" data="{color:#35a6e6}[Blood Trial]{color:end}&#10;Dealing weapon damage to stunned, bound, or shocked enemies causes bleeding. Bleeding deals damage over time for 5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130002" data="Windborne Shield" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130002" data="Creates a protective shield to block the next {skill:180130002:status:shiledcount} source of damage to hit you.&#10;The shield lasts for {skill:180130002:status:durationtime} and grants +50% movespeed." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130010" data="Quick Draw" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130010" data="Quickly fires a cone of five arrows.&#10;Bleeding targets take 10% more damage, and consecutive hits with this combo deal 30% additional damage.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Uses Quick Draw, Rapid Fire, and Fan of Arrows consecutively.&#10; - Quick Draw: Kromede fires a single arrow.&#10; - Rapid Fire: Kromede fires 3 arrows in a cone.&#10; - Fan of Arrows: Kromede fires 5 arrows in a cone." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130011" data="Rapid Fire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130011" data="Quickly fires a cone of three arrows.&#10;Bleeding targets take 10% more damage, and consecutive hits with this combo deal 30% additional damage.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Uses Quick Draw, Rapid Fire, and Fan of Arrows consecutively.&#10; - Quick Draw: Kromede fires a single arrow.&#10; - Rapid Fire: Kromede fires 3 arrows in a cone.&#10; - Fan of Arrows: Kromede fires 5 arrows in a cone." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130012" data="Fan of Arrows" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130012" data="Quickly fires a cone of five arrows.&#10;Bleeding targets take 10% more damage, and consecutive hits with this combo deal 30% additional damage.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Uses Quick Draw, Rapid Fire, and Fan of Arrows consecutively.&#10; - Quick Draw: Kromede fires a single arrow.&#10; - Rapid Fire: Kromede fires 3 arrows in a cone.&#10; - Fan of Arrows: Kromede fires 5 arrows in a cone." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130020" data="Galeforce Arrow" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130020" data="Kromede fires an arrow that knocks enemies away.&#10;If an enemy collides with another enemy while being knocked back, both will be stunned for {skill:180130020:status:durationtime:1}.&#10;Deals 10% additional damage to bleeding targets." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130030" data="Blot Out the Sun" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130030" data="Fires a multitude of arrows in an upwards arc, leaving them to pepper an area over a short duration.&#10;Bleeding targets take 10% more damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130040" data="Aetherpike Shards" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130040" data="Ruptures the ground with aetheric spikes, binding enemies who touch them. &#10;The shards last {skill:180130040:creature:lifetime} and are destructible." />
+    <StringData DATAKEY="STR_SKILL_NAME_180130050" data="Righteous Justice" />
+    <StringData DATAKEY="STR_SKILL_DESC_180130050" data="Kromede unleashes her true power for {skill:180130050:status:durationtime}.&#10;All weapon attacks fire a cone of five arrows." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140000" data="Staff Fighter" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140000" data="{color:#35a6e6}[Endurance]{color:end}&#10;Restores stamina after using 4 skills.&#10;&#10;{color:#35a6e6}[Cascade of Blows]{color:end}&#10;Each weapon strike increases your weapon damage by 1%.&#10;Cascade of blows stacks up to 10%.&#10;The weapon attack that ends your string of attacks launches enemies into the air." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140002" data="Pogo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140002" data="Jingtai balances on his staff, becoming invincible for {skill:180140002:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Jingtai may reuse this skill to leap away.&#10;Moves in the direction you are facing if no directional movement command is given." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140003" data="Pogo Leap" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140003" data="Leaps in the target direction.&#10;Moves in the direction you are facing if no directional movement command is given." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140010" data="Million Staff Burst" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140010" data="Delivers multiple blows in a short line and decreases enemy defenses by {skill:180140010:status:stat:mul:defence}% for {skill:180140010:status:durationtime}.&#10;Moving or attacking cancels this skill." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140020" data="Sweep Aside" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140020" data="Charge forward, pushing enemies away.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Dash forward again towards a struck enemy." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140021" data="Leap" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140021" data="Dash forward again." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140030" data="Bounding Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140030" data="Gathers Chi and leaps to the target area, dealing damage to enemies upon landing.&#10;{color:#e45f5f}Increases the distance leapt the longer you gather Chi.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180140040" data="Fling" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140040" data="Dashes to an enemy and flings them over your shoulder." />
+    <StringData DATAKEY="STR_SKILL_NAME_180140050" data="Spirit of Protection" />
+    <StringData DATAKEY="STR_SKILL_DESC_180140050" data="Jingtai projects a spiritual image of himself.&#10;The projection charges forward, spinning its staff and blocking enemy projectiles." />
+    <StringData DATAKEY="STR_SKILL_NAME_180150000" data="Flash Step" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150000" data="{color:#35a6e6}[Flash Step]{color:end}&#10;Skills grant 100% movespeed for 1 second when they strike an enemy." />
+    <StringData DATAKEY="STR_SKILL_NAME_180150002" data="B-Roll" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150002" data="Quickly rolls 5m in the direction you are moving." />
+    <StringData DATAKEY="STR_SKILL_NAME_180150010" data="Speed Shooting" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150010" data="Lorraine's camera is changed to high-speed mode as a toggled ability. Resets your overheat gauge, decreases heat buildup by 50%, grants {skill:180150010:status:stat:mul:attack}% damage and attack speed, and +{skill:180150010:status:stat:mul:movespeed}% movespeed.&#10;{color:#e45f5f}Overheat gauge cannot be reset when it is already in an overheated status.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180150020" data="Lens Focus" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150020" data="Bends light into the focused area for {skill:180150020:remote:lifetime}.&#10;Enemies in the focused area will be revealed, even if stealthed, and slowed by {skill:180150020:status:stat:mul:movespeed}%.&#10;{color:#e45f5f}Lens Focus detects Stealth in a radius of 5m.{color:end}&#10;{color:#35a6e6}Only one Spotlight can be active at a time. The passive effect will only strike each target once every 3 seconds.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180150030" data="Flashbang" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150030" data="Blinds an enemy for {skill:180150030:status:durationtime} by concentrating the surrounding light through a camera flash.&#10;Additionally, Flashbang slows by {skill:180150030:status:stat:mul:movespeed:1}% for {skill:180150030:status:durationtime:1}.&#10;{color:#e45f5f}Non-Master targets will be terrorized instead.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180150040" data="F-Stop" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150040" data="Manipulates captured moments in time through the lens of Lorraine's camera to freeze enemies in place. &#10;Stuns enemies within the target area for {skill:180150040:status:durationtime}.&#10;Slowed while using F-Stop.&#10;{color:#e45f5f}The stun duration is reduced the further away enemies are from the center of the targeted area.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180150050" data="Maximum Exposure" />
+    <StringData DATAKEY="STR_SKILL_DESC_180150050" data="Lorraine establishes a photo zone to gain maximum exposure with her camera.&#10;All caught enemies are dragged into the exposure area and take massive damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160000" data="Frostbite" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160000" data="{color:#35a6e6}[Frostbite]{color:end}&#10;Skill attacks apply frostbite, as well as every 6th weapon attack.&#10;At 3 stacks, Eirna recovers 150MP and freezes her frostbitten target." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160002" data="Cold Feet" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160002" data="Gain a burst of movespeed for 3 seconds by riding a stream of supercool air. The air chills the ground, leaving frost patches that chill and slow enemies for 1 second." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160003" data="Passive Teleport" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160003" data="" />
+    <StringData DATAKEY="STR_SKILL_NAME_180160010" data="Permafrost Petals" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160010" data="Casts a mass of razorsharp ice petals in a line, slowing struck enemies by {skill:180160010:status:stat:mul:movespeed}% for {skill:180160010:status:durationtime}.&#10;&#10;{color:#35a6e6}[Iceburst]{color:end}&#10;Detonate the frozen petals for additional damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160011" data="Iceburst" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160011" data="Detonates the frozen petals." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160020" data="Arctic Storm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160020" data="Whips up a destructive swirl of ice shards around yourself or any allied target for {skill:180160020:remote:lifetime}. &#10;Enemies in the storm take periodic damage and are slowed by {skill:180160020:status:stat:mul:movespeed:1}% for 5 seconds. &#10;{color:#35a6e6}Persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180160030" data="Frost Spire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160030" data="Creates a frost spire at the target area for {skill:180160030:creature:lifetime}.&#10;The spire radiates cold, slowing enemies by {skill:180160030:status:stat:mul:movespeed}% for {skill:180160030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Teleport to the location of the spire." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160031" data="Teleport: Frost Spire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160031" data="Teleports to the location of the spire." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160040" data="Shivershard" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160040" data="Shoots a targeted ice shard that damages, chills, and has a low cooldown." />
+    <StringData DATAKEY="STR_SKILL_NAME_180160050" data="Rime Pulse" />
+    <StringData DATAKEY="STR_SKILL_DESC_180160050" data="After a short delay, blasts enemies by flash freezing their already cold bodies in an area around Eirna. Damage increased by 60 per stack of chilling on your targets." />
+    <StringData DATAKEY="STR_SKILL_NAME_180170000" data="Harmony" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170000" data="{color:#35a6e6}[Harmony]{color:end}&#10;On every third skill use, Vita creates a shield for 6 sec that absorbs damage.&#10;Vita's Harmony shield restores 50 MP per sec and blocks 400 damage.&#10;When the Harmony shield expires, Vita’s skills have their cooldown reduced by 20%.&#10;{color:#35a6e6}Shield persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180170002" data="Dizzying Twirl" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170002" data="Quickly moves 5m with a spin." />
+    <StringData DATAKEY="STR_SKILL_NAME_180170010" data="Wooly Ballad" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170010" data="Vita's voice carries a magical tune, polymorphing her target for {skill:180170010:status:durationtime}, and applying a {skill:180170010:status:stat:mul:movespeed:1}% slow." />
+    <StringData DATAKEY="STR_SKILL_NAME_180170020" data="Note of Nullification" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170020" data="Vita hits a note that resonates with the target.&#10;The effect differs, depending on the target.&#10;{color:#e45f5f}Cannot be used on creatures summoned by allies.{color:end}&#10;&#10;{color:#35a6e6}Ally Effect: {color:end}&#10;Shields {skill:180170020:status:stat:add:shield_defence} damage for {skill:180170020:status:durationtime}. &#10;{color:#35a6e6}Persists through tagging.{color:end}&#10;{color:#e45f5f}Enemy Effect: {color:end}&#10;Strips buffs and deals damage based on the number of buffs removed." />
+    <StringData DATAKEY="STR_SKILL_NAME_180170030" data="Valiabolt" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170030" data="Fires a bolt that absorbs or grants life energy depending on its target. Grants {skill:180170030:status:regen:add:health:1} HP recovery to allies, while enemies are dealt damage and slowed by 50% for {skill:180170030:status:durationtime}.&#10;{color:#e45f5f}Can pierce up to 4 targets.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180170040" data="Vital Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170040" data="Wraps Vita in an aura of living energy that grants +{skill:180170040:status:stat:mul:movespeed:2}% movespeed for {skill:180170040:status:durationtime:2}.&#10;&#10;{color:#35a6e6}Effect on ally: {color:end}&#10;Allies are healed for {skill:180170040:status:regen:add:health} HP. &#10;{color:#e45f5f}Effect on enemy:{color:end}&#10;Enemies are damaged and silenced for {skill:180170040:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180170050" data="Aria of Life" />
+    <StringData DATAKEY="STR_SKILL_DESC_180170050" data="Vita amplifies her control over life energy, allowing her to deny any degradation of life. All allies and enemies within {skill:180170050:remote:range} cannot attack for {skill:180170050:status:durationtime} and become invincible, while allies in the area are healed for {skill:180170050:status:regen:add:health} and regain stamina.&#10;Seeing the futility in fighting, Masters instead decide to dance." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180000" data="Ammo Pack" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180000" data="{color:#35a6e6}[Lucky Bullet]{color:end}&#10;Fires a special bullet with every 10th weapon attack, dealing additional damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180002" data="Bunny Hop" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180002" data="Quickly hops 5m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180010" data="Blitz Grenade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180010" data="Fires a Blitz Grenade, causing an explosion in the target location and leaving a patch of fire for {skill:180180010:remote:lifetime}.&#10;The grenade and flame patch burns enemies for {skill:180180010:status:durationtime}, and burning can stack up to 5 times.&#10;&#10;{color:#35a6e6}[Resupply]{color:end}&#10;Supplies Blitz Grenades.&#10;Restocks a grenade every 10 sec. Maximum of 4 grenades." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180020" data="Gatling Jump" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180020" data="Leaps over and damages a target area in a hail of gunfire.&#10;{color:#e45f5f}Cannot leap through walls.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180180030" data="Suppressing Fire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180030" data="Sprays bullets in a large cone, damaging and slowing enemies by {skill:180180030:status:stat:mul:movespeed}% for {skill:180180030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180040" data="Shoot Em Up" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180040" data="Charges and launches the first enemy that she collides with into the air.&#10;Automatically fires a slew of bullets into the launched enemy." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180041" data="Shoot Em Up: Fire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180041" data="Fires a slew of bullets into launched enemies, as well as surrounding enemies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180180050" data="BRATATATATAT" />
+    <StringData DATAKEY="STR_SKILL_DESC_180180050" data="Fires bullets that deal heavy damage and pierce their initial target for {skill:180180050:stancedurationtime} sec.&#10;{color:#e45f5f}Crowd control can interrupt BRATATATATAT.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180190000" data="Sametan Warrior" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190000" data="{color:#35a6e6}[Ringblade Launcher]{color:end}&#10;Consumes 1 Ringblade per skill use. Up to 2 can be stored and 1 Ringblade is restored on every tenth hit with a skill. Multiple hits from the same skill count.&#10;&#10;{color:#35a6e6}[Hindering Blade]{color:end}&#10;{color:#e45f5f}Every 8 seconds, V-Merang fires a charged shot that deals bonus damage and binds for 1 second.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180190002" data="Acrobatics" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190002" data="Tumbles 8m towards your cursor.&#10;While moving, you are immune to enemy crowd control attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180190010" data="Arcblade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190010" data="Fires a Ringblade in a circular trajectory that returns to V-Merang. Can strike enemies multiple times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180190020" data="Backspin Blade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190020" data="Fires a wildly spinning Ringblade at a target area, damaging and launching struck enemies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180190030" data="Scatterblade" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190030" data="Throws a Ringblade that bounces to nearby targets before returning. All targets in the path of the bouncing blade are struck." />
+    <StringData DATAKEY="STR_SKILL_NAME_180190040" data="Ringblade Barrier" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190040" data="Throws a spinning Ringblade to a fixed position.&#10;The blade spins in place for {skill:180190040:remote:lifetime}, inflicting damage to enemies and reflecting enemy projectiles. Strikes over Ringblade Barrier's duration do not restore Ringblades.&#10;{color:#e45f5f} When Spinning Ringblade is used, the previous ring will disappear." />
+    <StringData DATAKEY="STR_SKILL_NAME_180190050" data="Blade Storm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180190050" data="Flings a large tornado in a line, knocking enemies into the air and dealing light damage over 200m.&#10;{color:#e45f5f}Damage is reduced by 40% until the tornado is 8m away.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180200000" data="Conservation of Mass" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200000" data="{color:#e45f5f}Charging up weapon attacks increases Mass. Weapon attacks drain 10 Mass.{color:end}&#10;&#10;{color:#35a6e6}[Conservation]{color:end}&#10;When Bumaro is thin, movespeed is increased while weapon damage, skill power, and defense are decreased.&#10;&#10;{color:#35a6e6}[Mass]{color:end}&#10;When Bumaro is massive, it is slowed, while weapon damage, skill power, and defense are increased." />
+    <StringData DATAKEY="STR_SKILL_NAME_180200002" data="Oozify" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200002" data="Liquefies for {skill:180200002:status:durationtime}, becoming untargetable. Enemies standing on Bumaro are slowed." />
+    <StringData DATAKEY="STR_SKILL_NAME_180200010" data="Cling" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200010" data="Clings to either an ally or enemy for {skill:180200010:status:durationtime}.&#10;Causes different effects based on whether Bumaro has more or less HP than its target.&#10;{color:#35a6e6}On Allies:{color:end}&#10; Lower HP: Grants {skill:180200012:status:stat:mul:movespeed:1}% movespeed.&#10; Higher HP: Restores {skill:180200012:status:regen:add:health:2} HP over time.&#10;{color:#e45f5f}On Enemies:{color:end}&#10; Lower HP: Steals HP from enemy target.&#10; Higher HP: Slows by {skill:180200012:status:stat:mul:movespeed:3}%.&#10;&#10;{color:#35a6e6}[Release]{color:end}&#10;Recasting Cling will release your target.&#10;{color:#e45f5f}Cannot use on other Bumaros.{color:end}&#10;{color:#e45f5f}Cannot target players already being clung to.{color:end}&#10;&#10;{color:#e45f5f}Consumes a maximum of 50 Mass when used.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180200012" data="Cling" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200012" data="Clung." />
+    <StringData DATAKEY="STR_SKILL_NAME_180200011" data="Release" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200011" data="Detach from target." />
+    <StringData DATAKEY="STR_SKILL_NAME_180200013" data="Cling" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200013" data="Clung." />
+    <StringData DATAKEY="STR_SKILL_NAME_180200020" data="Acidic Burst" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200020" data="Bumaro alters its genetic makeup to spew acidic jelly in a {skill:180200020:remote:range} area around itself.&#10;{color:#e45f5f}Consumes 0/25/50 Mass when used depending on Mass available.{color:end}&#10;{color:#e45f5f}Damage and range are increased based on Mass spent.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180200030" data="Cell Division" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200030" data="Bumaro stimulates the ooze colonies within it, recovering {skill:180200030:status:regen:add:health} HP and {skill:180200030:status:stat:add:rageregen} Mass every second for {skill:180200030:status:durationtime}. Cannot move while channeling.&#10;{color:#e45f5f}Increases basic defense by 380%.&#10;Able to cancel by committing any action.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180200040" data="Rubberize" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200040" data="Bumaro changes its genetic makeup, increasing elasticity and reflecting damage for {skill:180200040:status:durationtime}. After the duration, Bumaro rebounds with repulsive force, knocking down enemies within 5m.&#10;{color:#e45f5f}Mass consumed determines damage reflected&#10; (0 is 15%, &#10;25 is 20%, &#10;50 is 25%).&#10;&#10;Movespeed decreases by {skill:180200040:status:stat:mul:movespeed:2}% while rubberized.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180200050" data="Mitosis" />
+    <StringData DATAKEY="STR_SKILL_DESC_180200050" data="Bumaro splits into 3 copies.&#10;Bumaro's copies are active for {skill:180200050:creature:lifetime} and will imitate the original Bumaro's skills or enhance the original's skill effects.&#10;{color:#e45f5f}Mitosis does not work with Cling.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180210000" data="Hyper-Charged" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210000" data="{color:#35a6e6}[Hyper-Charged]{color:end}&#10;After each skill use, Mondo's next attack within 5 seconds deals additional damage.&#10;{color:#e45f5f}Lasts 1 attack.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180210002" data="Chua Barrel Roll" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210002" data="Initiate an evasive maneuver to quickly rocket 9m away.&#10;Cannot be targeted for {skill:180210002:status:durationtime}. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180210010" data="Prism Bot: Cloaking Field" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210010" data="{color:#35a6e6}[Active Effect]{color:end}&#10;Mondo's bot leaps to the target area and creates a cloaking field for {skill:180210010:status:durationtime:2}.&#10;{color:#35a6e6}Effect persists through tagging.{color:end}&#10;&#10;{color:#35a6e6}[Passive Effect]{color:end}&#10;Periodically buffs Mondo's weapon damage by {skill:180210010:status:stat:mul:attack:1}% for {skill:180210010:status:durationtime:1}. &#10;{color:#e45f5f}Passive effect is deactivated while Modular Tech is in stealth.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180210020" data="Bruiser Bot: Blitz" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210020" data="{color:#35a6e6}[Active Effect]{color:end}&#10;Mondo's bot leaps to the target area and taunts nearby monsters for 3 seconds.&#10;Slows enemies within 15m by {skill:180210020:status:stat:mul:movespeed:3}%.&#10;&#10;{color:#35a6e6}[Passive Effect]{color:end}&#10;Enemies struck by Bruiser Bot are slowed for 1 second." />
+    <StringData DATAKEY="STR_SKILL_NAME_180210030" data="Artillery Bot: Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210030" data="{color:#35a6e6}[Active Effect]{color:end}&#10;Mondo's bot fires {skill:180210030:leveltext:012345:4:6:5} mortar shells at the target area, dealing heavy damage.&#10;&#10;{color:#35a6e6}[Passive Effect]{color:end}&#10;Periodically fires mortar shells at enemies while following Mondo.&#10;{color:#e45f5f}Passives don't trigger while the bot is stealthed.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180210040" data="Repair Bot: Shield Boost" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210040" data="{color:#35a6e6}[Active Effect]{color:end}&#10;Commands the bot to lunge forward and shield all allies at the target location. The shield stays active for {skill:180210040:status:durationtime:5} and blocks {skill:180210040:status:stat:add:shield_defence:5} damage.&#10;&#10;{color:#35a6e6}[Passive Effect]{color:end}&#10;Periodically shields Mondo from {skill:180210040:status:stat:add:shield_defence:4} damage.&#10;{color:#e45f5f}Will not passively shield cloaked targets.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180210050" data="Orbital Laser" />
+    <StringData DATAKEY="STR_SKILL_DESC_180210050" data="Hacks into the Dredgion's laser system and causes it to track Mondo's Bolt Caster reticle.&#10;The beam slowly follows your cursor and deals heavy damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220000" data="Razor Beak" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220000" data="{color:#35a6e6}[Razor Beak]{color:end}&#10;Every 4th weapon attack delivers an additional weapon strike." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220002" data="Wingrider" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220002" data="Lilu takes to the skies and evades incoming attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220010" data="Bird of Prey" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220010" data="Sends Haru to a target. Haru lifts the target into the air for {skill:180220010:status:durationtime:1}.&#10;Recasting will initiate an Eagle Slam.&#10;&#10;{color:#35a6e6}[Eagle Slam]{color:end}&#10;Slams the target down in a new target area, causing a damaging shockwave." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220011" data="Eagle Slam" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220011" data="Throw to target area." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220012" data="Eagle Slam" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220012" data="Throw to target area." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220020" data="Talon Swarm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220020" data="Calls down an eagle strike every {skill:180220020:leveltext:012345:2:6:1.2} sec in the marked zone for {skill:180220020:remote:lifetime}, damaging all present enemies.&#10;Grants visibility within the marked area in Titan Ruins.&#10;{color:#e45f5f}Detects stealth in a radius of 5m.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180220030" data="Birds of a Feather" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220030" data="Lilu soars into the air with some help from a feathered friend, traveling up to 25m and gaining CC immunity.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220031" data="Birds of a Feather: Cancel" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220031" data="Lilu soars into the air with some help from a feathered friend, traveling up to 25m and gaining CC immunity.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220040" data="Feather Crest" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220040" data="Marks an enemy with a charm, revealing them for 3 seconds.&#10;Your Eagle can combo to attack the marked target.&#10;&#10;{color:#35a6e6}[Pecking Order]{color:end}&#10;Haru barrels through all opposition to strike the marked target, stunning all struck enemies for {skill:180220040:status:durationtime}. Pecking Order costs 50MP to combo." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220041" data="Pecking Order" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220041" data="Haru barrels through all opposition to strike the marked target, stunning all struck enemies for {skill:180220040:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180220050" data="Screeching Crest" />
+    <StringData DATAKEY="STR_SKILL_DESC_180220050" data="Marks the target with a screeching crest for {skill:180220050:remote:lifetime}. The crest emits powerful sonic pulses, dealing damage to nearby enemies every 1.5 seconds.&#10;{color:#e45f5f}Lilu can mark any target except herself.&#10;The mark is removed if the target dies or tags out.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180230000" data="Incinerate" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230000" data="{color:#35a6e6}[Incineration]{color:end}&#10;Damaging skills cause Burning on their targets for 5 seconds.&#10;Burning stacks up to 5 times.&#10;&#10;{color:#35a6e6}[Heart of Fire]{color:end}&#10;Kindling is not lost over time when out of combat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230002" data="Molten Shield" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230002" data="Raises a shield and enters a defensive stance for 4 seconds. While the shield is raised, it blocks projectile attacks from the front and nullifies crowd control effects. Increases movespeed by 15% for 2 seconds. &#10;{color:#e45f5f}Shield is raised in the direction of your cursor and cannot turn. Skill use and attacks are disabled while blocking.&#10;Cannot block area of effect attacks.{color:end}&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Right click to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230003" data="Molten Shield: Cancel" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230003" data="Cancels Molten Shield." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230010" data="Pyrobarrier" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230010" data="Block the next {skill:180230010:status:shiledcount} attack to hit you.&#10;Upon extinguishing your block, teleport forward and release a damaging explosion behind you that inflicts burning." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230020" data="Set Ablaze" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230020" data="Ignites a {skill:180230020:remote:range} area around you for 6 seconds, causing periodic fire damage and burning to nearby enemies. Can be toggled on and off." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230030" data="Fiery Advance" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230030" data="Charges forward and releases an explosion upon impact, damaging and knocking back any surrounding enemies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230040" data="Elemental Wrath" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230040" data="Hurls a flaming orb at the target, terrorizing them for {skill:180230040:status:durationtime} and inflicting burning on nearby enemies." />
+    <StringData DATAKEY="STR_SKILL_NAME_180230050" data="Stoke the Coals" />
+    <StringData DATAKEY="STR_SKILL_DESC_180230050" data="Absorbs Kindling to instantly recover {skill:180230050:status:regen:mul:health}% max HP.&#10;Each burning target within your vicinity adds 100 HP to this healing effect, up to a maximum of 700." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240000" data="Synd Ingenuity" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240000" data="{color:#35a6e6}[Shadow Hunter]{color:end}&#10;Landing hits with skills grants 2.5 sec of stealth.&#10;Slowed enemies take additional damage from weapon attacks.&#10;&#10;{color:#35a6e6}[Charged Claws]{color:end}&#10;The first weapon attack after using a skill leaves a lightning rift for 2 sec, dealing periodic damage to enemies touching it." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240002" data="Shadow Step" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240002" data="Instantly dashes 4.5m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240003" data="Shadow Movement [Not Shown]" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240003" data="Passive for teleportation to shadow location" />
+    <StringData DATAKEY="STR_SKILL_NAME_180240010" data="Ripper Beam" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240010" data="Fires a beam that follows your mouse cursor for {skill:180240010:remote:lifetime}, dealing heavy damage. Unable to move while firing.&#10;{color:#e45f5f}Attempting other actions will cancel Ripper Beam.&#10;Ripper Beam will only activate stealth on the last tick of damage.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180240020" data="Tesla Mines" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240020" data="Deploy an array of damaging mines in a random pattern. Mine explosions cause a {skill:180240020:status:stat:mul:movespeed}% slow on enemies for {skill:180240020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240030" data="Optic Disruptor" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240030" data="Unleashes an eletrical blast around Raoul that paralyzes enemy optic nerves and halts visual signals to the brain for {skill:180240030:status:durationtime}.&#10;{color:#e45f5f}Non-Master enemies are terrorized instead of blinded.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180240040" data="Tele-Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240040" data="Teleports behind your target, evading damage. Your power cells retain some of the energy from the teleportation, increasing your attack speed by {skill:180240040:status:firedelay}% for {skill:180240040:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240050" data="Shadow Drone Assault" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240050" data="Dr. Raoul goes into Stealth Mode for 3 sec, and creates a Shadow Drone to take his place, while marking an area to be assaulted by Shadow Drones.&#10;All targets in the area are slowed by {skill:180240050:status:stat:mul:movespeed}% for {skill:180240050:status:durationtime}.&#10;After a short delay, several drones converge on the area, dealing massive damage.&#10;&#10;{color:#35a6e6}[Through the Shadows]{color:end}&#10;Recast to teleport to the targeted area." />
+    <StringData DATAKEY="STR_SKILL_NAME_180240051" data="Through the Shadows" />
+    <StringData DATAKEY="STR_SKILL_DESC_180240051" data="Teleport to the targeted area." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250000" data="Warband Champion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250000" data="{color:#35a6e6}[Tenacious]{color:end}&#10;Each time you are stuck by crowd control you will gain a buff that renders you immune to the next crowd control effect.&#10;&#10;{color:#35a6e6}[Sohothin]{color:end}&#10;The first and second hits of your weapon attack chain cause burning, while the third attack deals 20% additional damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250002" data="Combat Roll" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250002" data="Quickly rolls 6m.&#10;During a roll, you are immune to enemy attacks for {skill:180250002:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250010" data="Brutish Leap" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250010" data="Leaps to a target area, delivering a crippling slash that slows enemies by {skill:180250010:status:stat:mul:movespeed}% for {skill:180250010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250020" data="Hamstring" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250020" data="Slashes at enemies in front of you, dealing heavy damage and slowing them by {skill:180250020:status:stat:mul:movespeed}% for {skill:180250020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250030" data="Head Shot" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250030" data="Fires a shot that rattles your target's skull, damaging and silencing them for {skill:180250030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250031" data="Underslung Barrel" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250031" data="Fires a shot that rattles your target's skull, damaging and silencing them for {skill:180250030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250040" data="Pistol Whip" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250040" data="Swipes targets in a cone, stunning them for {skill:180250040:status:durationtime}. During the stun, you unleash a flurry of slashes, dealing heavy damage in a cone. Movement and attacks can cancel this ability early." />
+    <StringData DATAKEY="STR_SKILL_NAME_180250050" data="Sohothin's Wrath" />
+    <StringData DATAKEY="STR_SKILL_DESC_180250050" data="The legendary sword, Sohothin, unleashes flames in a line for your next {skill:180250050:weaponfirecount} attacks. Struck enemies are afflicted with burning for {skill:180250050:status:durationtime}.&#10;Lasts for 10 seconds or 6 attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260000" data="Feline Grace" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260000" data="{color:#35a6e6}[Feline Grace]{color:end}&#10;Increases attack speed by 8% for 5 seconds each time Kat activates a skill." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260002" data="If I Fits, I Sits" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260002" data="Grants invincibility for {skill:180260002:status:durationtime}. You cannot move while in your box.&#10;Gain +50% movespeed for a short time once invincibility ends." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260010" data="Mew the Cat" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260010" data="{color:#35a6e6}[Effect]{color:end}&#10;Invokes Mew's power to stun surrounding enemies right meow for {skill:180260010:status:durationtime}.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Lends Mew's power to convert weapon attacks into a long-range attack for 15 seconds.&#10;{color:#e45f5f}Lasts {skill:180260010:weaponfirecount} attacks.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180260020" data="Kai the Cat" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260020" data="{color:#35a6e6}[Effect]{color:end}&#10;Invokes Kai's power to reflect {skill:180260020:status:stat:add:reflect_damage_ratio}% of incoming damage right meow back at the attacker for {skill:180260020:status:durationtime}.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Lends Kai's power to Kat and converts his weapon attack into short-ranged raking swipes for 15 sec while reflecting {skill:180260020:status:stat:add:reflect_damage_ratio}% of incoming damage at the attacker. Swipes refresh the reflect duration. &#10;Increases movespeed by {skill:180260020:status:stat:mul:movespeed:1}% and critical hit rate by{skill:180260020:status:stat:add:criticalrate:8}%.&#10;{color:#e45f5f}Lasts for 7 attacks.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180260030" data="King the Cat" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260030" data="{color:#35a6e6}[Effect]{color:end}&#10;Invokes King's power to bind nearby enemies right meow for {skill:180260030:status:durationtime} and grant a {skill:180260030:status:stat:add:shield_defence:9} point shield to Kat. The shield can stack up to 5 times. Additionally, Kat's defense is increased by {skill:180260030:status:stat:mul:defence:3}% and Kat gains {skill:180260030:status:regen:add:health:3} HP recovery every second. &#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Uses King's power to convert Kat's weapon attacks into a splash attack around him for 15 sec. Attacks slow by {skill:180260030:status:stat:mul:movespeed:2}% for {skill:180260030:status:durationtime:2}. Slow effect stacks twice.{color:#e45f5f}&#10;Lasts for 7 attacks.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180260040" data="Queen the Cat" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260040" data="{color:#35a6e6}[Effect]{color:end}&#10;Invokes Queen's power to grant {skill:180260040:status:stat:mul:attack}% damage and {skill:180260040:status:stat:mul:defence}% defense to Kat and allies hit by fans right meow for {skill:180260040:status:durationtime}.&#10;&#10;{color:#35a6e6}[Stance Change]{color:end}&#10;Lends Queen's power to convert Kat's weapon attack into throwing bladed fans for 15 seconds.&#10;{color:#e45f5f}Lasts for 7 attacks. Fans hang in the air for a brief moment before shooting off.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180260050" data="Pounce!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260050" data="Pounces onto an ally or enemy, knocking back enemies in your path and slowing hostile targets by 50% for 0.75 seconds. May be used twice before cooling down, and on the second cast Pounce! will knock down hostile targets.&#10;&#10;On Allies:{color:end}{color:#35a6e6}&#10;Removes 1 debuff and increases their movespeed by {skill:180260050:status:stat:mul:movespeed:4}% for {skill:180260050:status:durationtime:4}. Recovers {skill:180260050:status:regen:add:health:5} HP over {skill:180260050:status:durationtime:5}.&#10;&#10;{color:#e45f5f}On Enemies:{color:end}&#10;Dispels a buff. Reduces your target's weapon damage by {skill:180260050:status:stat:mul:attack:6}% for {skill:180260050:status:durationtime:6}. You gain {skill:180260050:status:stat:mul:attack:7}% weapon damage for {skill:180260050:status:durationtime:7}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260051" data="Pounce! Combo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260051" data="Pounces onto an ally or enemy, knocking back enemies in your path and slowing hostile targets by 50% for 0.75 seconds. May be used twice before cooling down, and on the second cast Pounce! will knock down hostile targets.&#10;&#10;On Allies:{color:end}{color:#35a6e6}&#10;Removes 1 debuff and increases their movespeed by {skill:180260050:status:stat:mul:movespeed:4}% for {skill:180260050:status:durationtime:4}. Recovers {skill:180260050:status:regen:add:health:5} HP over {skill:180260050:status:durationtime:5}.&#10;&#10;{color:#e45f5f}On Enemies:{color:end}&#10;Dispels a buff. Reduces your target's weapon damage by {skill:180260050:status:stat:mul:attack:6}% for {skill:180260050:status:durationtime:6}. You gain {skill:180260050:status:stat:mul:attack:7}% weapon damage for {skill:180260050:status:durationtime:7}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260052" data="Pounce!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260052" data="Pounces onto an ally or enemy, knocking back enemies in your path and slowing hostile targets by 50% for 0.75 seconds. May be used twice before cooling down, and on the second cast Pounce! will knock down hostile targets.&#10;&#10;On Allies:{color:end}{color:#35a6e6}&#10;Removes 1 debuff and increases their movespeed by {skill:180260050:status:stat:mul:movespeed:4}% for {skill:180260050:status:durationtime:4}. Recovers {skill:180260050:status:regen:add:health:5} HP over {skill:180260050:status:durationtime:5}.&#10;&#10;{color:#e45f5f}On Enemies:{color:end}&#10;Dispels a buff. Reduces your target's weapon damage by {skill:180260050:status:stat:mul:attack:6}% for {skill:180260050:status:durationtime:6}. You gain {skill:180260050:status:stat:mul:attack:7}% weapon damage for {skill:180260050:status:durationtime:7}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180260053" data="Pounce!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180260053" data="Pounces onto an ally or enemy, knocking back enemies in your path and slowing hostile targets by 50% for 0.75 seconds. May be used twice before cooling down, and on the second cast Pounce! will knock down hostile targets.&#10;&#10;On Allies:{color:end}{color:#35a6e6}&#10;Removes 1 debuff and increases their movespeed by {skill:180260050:status:stat:mul:movespeed:4}% for {skill:180260050:status:durationtime:4}. Recovers {skill:180260050:status:regen:add:health:5} HP over {skill:180260050:status:durationtime:5}.&#10;&#10;{color:#e45f5f}On Enemies:{color:end}&#10;Dispels a buff. Reduces your target's weapon damage by {skill:180260050:status:stat:mul:attack:6}% for {skill:180260050:status:durationtime:6}. You gain {skill:180260050:status:stat:mul:attack:7}% weapon damage for {skill:180260050:status:durationtime:7}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270000" data="Vacuum Pulse" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270000" data="{color:#35a6e6}[Vacuum Pulse]{color:end}&#10;Every 8 seconds, your next weapon attack slows by 30% for 2 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270002" data="Shift" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270002" data="Shift your position 7m. Grants weapon attack immunity for {skill:180270002:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270010" data="Ram's Well" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270010" data="After a short delay, Ram's Well will implode and deal damage to all enemies caught within it. Damaged enemies are dragged to the center of the well." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270020" data="Bacchus's Fist" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270020" data="Bacchus slams his arms into the ground, reshaping them into spears and skewering enemies at a distance for heavy damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270030" data="Bacchus's Retaliation" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270030" data="On activation, grants a {skill:180270030:status:durationtime:1} window where Bacchus will nullify the next 1 attack from a Master. Melee attackers are struck by a retaliatory strike, and stunned for {skill:180270030:status:durationtime:2}.&#10;{color:#e45f5f}Lasts for 1 defense and does not apply to ranged attacks or minion and monster attacks.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180270040" data="Ram's Impaler" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270040" data="Launches Ram's tail, hooking into the first target in a line. Ram pulls himself to the hooked target, dealing moderate damage and binding them." />
+    <StringData DATAKEY="STR_SKILL_NAME_180270050" data="Duality Slam" />
+    <StringData DATAKEY="STR_SKILL_DESC_180270050" data="[Ram's Wrath] After a casting time of {skill:180270050:status:durationtime:1} Ram releases a blast of power and binds all enemy Masters on the battlefield for {skill:180270050:status:durationtime}. Masters can swap out of the debuff before it binds them to dispel it.&#10;&#10;{color:#35a6e6}[Bacchus's Recovery]{color:end}&#10;Heals {skill:180270050:status:regen:mul:health:3}% max HP and restores {skill:180270050:status:regen:add:mana:3} MP." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280000" data="Underdog" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280000" data="{color:#35a6e6}[Underdog]{color:end}&#10;For every 10% max health missing, Sonid gains additional critical strike damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280002" data="Dustkicker" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280002" data="Slides 6m and creates a dust cloud. Within the dust cloud, all friendly and hostile weapon attacks are nullified." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280010" data="Scatterball" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280010" data="Knocks {skill:180280010:leveltext:012345:4:6:6} balls out in a cone.&#10;{color:#e45f5f}Multiple balls can hit the same target, but deal reduced damage.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180280020" data="Catcher's Mitt" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280020" data="Dashes in the target direction with a huge glove, blocking enemy projectiles.&#10;&#10;{color:#35a6e6}[Fastball]{color:end}&#10;Pitch a damaging ball in the target direction." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280021" data="Fastball" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280021" data="Pitch a damaging ball in the target direction." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280022" data="Fastball" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280022" data="Pitch a damaging ball in the target direction." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280030" data="Power Slide" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280030" data="Bounds to the target area, finishing in a slide that knocks enemies 2m away and deals moderate damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280031" data="Power Slide" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280031" data="Bounds to the target area, finishing in a slide that knocks enemies 2m away and deals moderate damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280040" data="Firecracker" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280040" data="Strikes a ball so hard that it bursts into flames, damaging all enemies in a line after a short delay.&#10;A line of fire trails the ball for {skill:180280040:status:durationtime} damaging all enemies who pass through it." />
+    <StringData DATAKEY="STR_SKILL_NAME_180280050" data="Knock Em Out of the Park" />
+    <StringData DATAKEY="STR_SKILL_DESC_180280050" data="Marks a target to be knocked out, quickly moving to their position. Sonid strikes the target with a launching blow, sending them flying for 12m.&#10;{color:#e45f5f}Also launches allies.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180290000" data="Pleiades Michani Enas" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290000" data="{color:#35a6e6}[Overdrive]{color:end}&#10;Increases attack speed by 20% for 5 sec when skills are used." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290002" data="Boost to Get Through!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290002" data="Uses a booster to quickly move over a distance of 7m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290010" data="Missile Salvo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290010" data="Designates the starting point of your salvo line of {skill:180290010:leveltext:012345:4:6:6} missiles.&#10;{color:#e45f5f}A second reticle will appear to designate the direction of your salvo line.{color:end}&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to fire the salvo for heavy damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290011" data="Missile Salvo: Fire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290011" data="{color:#35a6e6}[Combo]{color:end}&#10;Unleashes a salvo of missiles, dealing heavy damage to all enemies caught in the line of fire." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290012" data="Missile Salvo: Fire" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290012" data="{color:#35a6e6}[Combo]{color:end}&#10;Unleashes a salvo of missiles, dealing heavy damage to all enemies caught in the line of fire." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290020" data="Devastator Rocket" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290020" data="Fires a low-speed missile that explodes upon reaching the targeted area.&#10;Flies {skill:180290020:remote:range}, dealing damage to enemies and terrain it passes through, as well as when it explodes in an area of {skill:180290020:remote:range:1} at the end of its flight path." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290030" data="Vector Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290030" data="Quickly accelerates 9m in a line.&#10;Slams into the first enemy in your path, dealing damage and knocking them away. Merope will rocket off the enemy, retreating backwards before landing." />
+    <StringData DATAKEY="STR_SKILL_NAME_180290040" data="Conversion Battery" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290040" data="Creates an energy field that can absorb damage.&#10;The energy field nullifies {skill:180290040:status:shiledcount} strikes of damage for {skill:180290040:status:durationtime}. When the shield breaks after {skill:180290040:status:shiledcount} attacks, {skill:180290040:status:regen:add:mana:1} MP and {skill:180290040:status:regen:mul:health:1}% max HP are restored.&#10;{color:#e45f5f}Does not nullify debuffs or crowd control. {color:end}&#10;{color:#35a6e6}Persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180290050" data="Target Locked" />
+    <StringData DATAKEY="STR_SKILL_DESC_180290050" data="Scans the area, locking on up to 4 targets before firing missiles at them. Fires {skill:180290050:leveltext:012:4:345:6:6:8} homing missiles at locked on targets.&#10;If there less than 4 targets in range, multiple missiles will strike the same target.&#10;{color:#e45f5f}Multiple missing striking the same target have their damage reduced.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180300000" data="Pleiades Michani Dyo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300000" data="{color:#35a6e6}[Rejuvenate]{color:end}&#10;Restores 250 HP to the lowest health Master within 8m on skill use." />
+    <StringData DATAKEY="STR_SKILL_NAME_180300002" data="Boost to Get Through!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300002" data="Uses Maia's thrusters to quickly boost 7m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180300010" data="Savior Protocol" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300010" data="Flies to and picks up an allied target.&#10;Maia shields the protected target for {skill:180300010:status:durationtime}, absorbing {skill:180300010:status:stat:add:shield_defence} damage.&#10;&#10;{color:#35a6e6}[Savior's Retreat]{color:end}&#10;Dashes a moderate distance, dropping off the protected Master at the end of the dash. &#10;{color:#35a6e6}Shield persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180300011" data="Savior's Retreat" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300011" data="Dashes a moderate distance, dropping off the protected ally at the end of the dash." />
+    <StringData DATAKEY="STR_SKILL_NAME_180300020" data="Recall Tether" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300020" data="Places a recall pad that is tethered to Maia at the targeted area for {skill:180300020:remote:lifetime}. Allies who step on the pad are pulled towards Maia.&#10;Maia's gains {skill:180300020:status:stat:mul:movespeed:1}% movespeed for {skill:180300020:status:durationtime:1} when she places the Recall Pad.&#10;{color:#e45f5f}Tethered allies cannot pass through obstacles.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180300030" data="Combat Protocol" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300030" data="Temporarily switches to a combat protocol, shielding Maia for {skill:180300030:status:durationtime} and increasing range and weapon damage. &#10;{color:#35a6e6}Shield persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180300040" data="Anti-Kinesis Barrier" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300040" data="Places a barrier that knocks enemies back when they touch it. Lasts for{skill:180300040:remote:lifetime}.&#10;{color:#e45f5f}Each target can only be knocked back once every 2 seconds.{color:end}&#10;{color:#35a6e6}Barrier persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180300050" data="Synergy Protocol" />
+    <StringData DATAKEY="STR_SKILL_DESC_180300050" data="Maia's systems lock on to the lowest health allied Master. She teleports to them after a brief delay and makes them invincible for {skill:180300050:status:durationtime:1}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310000" data="Chiseled Resolve" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310000" data="When Tulam's health falls below 50%, his weapon damage is increased by 10%, and his defense is increased by 25%" />
+    <StringData DATAKEY="STR_SKILL_NAME_180310002" data="Stone Faced" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310002" data="Tulam increases the density of his outer shell, increasing defense by {skill:180310002:status:stat:mul:defence}% for {skill:180310002:status:durationtime} and granting CC immunity.&#10;Movespeed increased by 15% for 2 seconds when using Stone Faced." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310010" data="Knuckle Duster" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310010" data="Spin into a whirlwind attack that deals damage in a {skill:180310010:remote:range} radius and reflects projectiles.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310011" data="Knuckle Duster: Cancel" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310011" data="Spin into a whirlwind attack that deals damage in a {skill:180310010:remote:range} radius and reflects projectiles.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310012" data="Knuckle Duster: Cancel" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310012" data="Spin into a whirlwind attack that deals damage in a {skill:180310010:remote:range} radius and reflects projectiles.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;Recast to cancel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310020" data="Landslide" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310020" data="Rushes to an enemy target and launches them into the air while flinging them behind you." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310030" data="Tunnel Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310030" data="Tunnel through the ground to explode from a target area, avoiding incoming attacks and launching enemies into the air at your exit point." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310040" data="Weight of Stone" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310040" data="Lets out a bone-shaking shout to weaken all enemies within {skill:180310040:remote:range}.&#10; Reduces Weapon Damage and Skill Power by {skill:180310040:status:stat:mul:attack}% for {skill:180310040:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180310050" data="Solquake" />
+    <StringData DATAKEY="STR_SKILL_DESC_180310050" data="Tulam smashes his fists into the ground, letting loose a shockwave in a {skill:180310050:remote:range} radius that deals damage to all enemies and pulls them towards the center.&#10;{color:#e45f5f}The farther they are from the center, the more damage and air time is increased. Increases up to a max of 200% damage.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180320000" data="The Ol' One-Two" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320000" data="{color:#35a6e6}[Float like a Butterfly]{color:end}&#10;Each time you hit an enemy with a skill, they are debuffed for 1.5 seconds and take 15% increased damage from your Weapon Attacks.&#10;&#10;{color:#35a6e6}[Sting like a Bee]{color:end}&#10;Upon successfully dodging an attack, any retaliatory attack will stun for 0.5 sec.&#10;{color:#e45f5f}Lasts for 3 sec or 1 attack.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180320002" data="Bob and Weave" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320002" data="Dodges incoming attacks for {skill:180320002:status:durationtime}. Dodging grants 15% movespeed for 2 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320010" data="Punch Out" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320010" data="Unleashes a swift set of punches in front of you.&#10;&#10;{color:#35a6e6}[Combination]{color:end}&#10;Punch Out can be used multiple times in quick succession.&#10; - First Use: Fires out a twin punch combo.&#10; - Second Use: Fires out another twin punch combo.&#10; - Third Use: Fires out a punch combo, striking {skill:180320010:leveltext:012345:3:6:4} times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320011" data="Punch Out" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320011" data="Unleashes a swift set of punches in front of you.&#10;&#10;{color:#35a6e6}[Combination]{color:end}&#10;Punch Out can be used multiple times in quick succession.&#10; - First Use: Fires out a twin punch combo.&#10; - Second Use: Fires out another twin punch combo.&#10; - Third Use: Fires out a punch combo, striking {skill:180320010:leveltext:012345:3:6:4} times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320012" data="Punch Out" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320012" data="Unleashes a swift set of punches in front of you.&#10;&#10;{color:#35a6e6}[Combination]{color:end}&#10;Punch Out can be used multiple times in quick succession.&#10; - First Use: Fires out a twin punch combo.&#10; - Second Use: Fires out another twin punch combo.&#10; - Third Use: Fires out a punch combo, striking {skill:180320010:leveltext:012345:3:6:4} times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320013" data="Punch Out" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320013" data="Unleashes a swift set of punches in front of you.&#10;&#10;{color:#35a6e6}[Combination]{color:end}&#10;Punch Out can be used multiple times in quick succession.&#10; - First Use: Fires out a twin punch combo.&#10; - Second Use: Fires out another twin punch combo.&#10; - Third Use: Fires out a punch combo, striking {skill:180320010:leveltext:012345:3:6:4} times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320014" data="Punch Out" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320014" data="Unleashes a swift set of punches in front of you.&#10;&#10;{color:#35a6e6}[Combination]{color:end}&#10;Punch Out can be used multiple times in quick succession.&#10; - First Use: Fires out a twin punch combo.&#10; - Second Use: Fires out another twin punch combo.&#10; - Third Use: Fires out a punch combo, striking  {skill:180320010:leveltext:012345:3:6:4} times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320020" data="Southpaw Special" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320020" data="Unleashes a heavy-hitting hook combo.&#10;&#10;{color:#35a6e6}[Glass Jaw]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Throws a heavy left hook, dealing damage.&#10; - Second Use: Throw an uppercut, stunning and damaging struck enemies for {skill:180320020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320021" data="Southpaw Special" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320021" data="Unleashes a heavy-hitting hook combo.&#10;&#10;{color:#35a6e6}[Glass Jaw]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Throws a heavy left hook, dealing damage.&#10; - Second Use: Throw an uppercut, stunning and damaging struck enemies for {skill:180320020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320022" data="Southpaw Special" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320022" data="Unleashes a heavy-hitting hook combo.&#10;&#10;{color:#35a6e6}[Glass Jaw]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Throws a heavy left hook, dealing damage.&#10; - Second Use: Throw an uppercut, stunning and damaging struck enemies for {skill:180320020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320030" data="Work the Body" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320030" data="Dashes forward and throws a series of punches.&#10;&#10;{color:#35a6e6}[Stick and Move]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes forward and throws out a punch.&#10; - Second Use: Dashes forward while throwing out a punch that knocks targets back.&#10; - Third Use: Dashes forward and throws out a punch." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320031" data="Work the Body" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320031" data="Dashes forward and throws a series of punches.&#10;&#10;{color:#35a6e6}[Stick and Move]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes forward and throws out a punch.&#10; - Second Use: Dashes forward while throwing out a punch that knocks targets back.&#10; - Third Use: Dashes forward and throws out a punch." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320032" data="Work the Body" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320032" data="Dashes forward and throws a series of punches.&#10;&#10;{color:#35a6e6}[Stick and Move]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes forward and throws out a punch.&#10; - Second Use: Dashes forward while throwing out a punch that knocks targets back.&#10; - Third Use: Dashes forward and throws out a punch." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320040" data="Light Stepper" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320040" data="Uses short dashes to evade incoming damage and reposition over {skill:180320040:status:durationtime}.&#10;&#10;{color:#35a6e6}[Twinkle Toes]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes backwards, evading incoming attacks.&#10; - Second Use: Dashes forwards, evading incoming attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320041" data="Light Stepper" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320041" data="Uses short dashes to evade incoming damage and reposition over {skill:180320040:status:durationtime}.&#10;&#10;{color:#35a6e6}[Twinkle Toes]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes backwards, evading incoming attacks.&#10; - Second Use: Dashes forwards, evading incoming attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320042" data="Light Stepper" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320042" data="Uses short dashes to evade incoming damage and reposition over {skill:180320040:status:durationtime}.&#10;&#10;{color:#35a6e6}[Twinkle Toes]{color:end}&#10;Can be used multiple times in quick succession.&#10; - First Use: Dashes backwards, evading incoming attacks.&#10; - Second Use: Dashes forwards, evading incoming attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180320050" data="Rocket Punch" />
+    <StringData DATAKEY="STR_SKILL_DESC_180320050" data="Charges up Pancuga's Synd arm before launching a devastating punch in a line.&#10;Launches all enemies you collide with into the air.&#10;{color:#e45f5f}Distance covered ranges from 8m to 18m, and damage is increased up to 1.5x over 3 seconds of charging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180330000" data="Savvy Shugo" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330000" data="{color:#35a6e6}[High Roller]{color:end}&#10;Increases your RNG Meter by 10 when picking up Bundles.&#10;&#10;Once the RNG Meter is full, your next skill has an empowered effect.&#10;&#10;{color:#35a6e6}[Nyerk Off]{color:end}&#10;Every sixth Weapon Attack deals 80% additional damage, grants 10 RNG, and slows for 1 sec." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330002" data="Deal Chaser" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330002" data="Increases movespeed by {skill:180330002:status:stat:mul:movespeed}% for {skill:180330002:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330010" data="Enchantment Stone Bundle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330010" data="Throws an Enchantment Stone Bundle. When picked up, this Bundle increases Weapon Damage by {skill:180330010:status:stat:mul:attack}% and Skill Power by 200 for {skill:180330010:status:durationtime}. &#10;&#10;{color:#35a6e6}[High Roller]{color:end}&#10;Bundles deal damage when thrown at enemies and instead increases weapon damage by 35% and skill power by 350." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330020" data="Supply Bundle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330020" data="Throws a Supply Bundle that lasts for {skill:180330020:status:durationtime} and grants bonuses when picked up. The Bundle can be one of two options.&#10;{color:#35a6e6}Anti-Shock Scroll:{color:end}&#10;Grants a shield that absorbs {skill:180330020:status:stat:add:shield_defence} damage.&#10;{color:#35a6e6}Courage Scroll: {color:end}Increases Attack Speed by {skill:180330020:status:firedelay}%.&#10;&#10;Drops one of each scroll.&#10;&#10;{color:#35a6e6}[High Roller]{color:end}&#10;Bundle deals damage when thrown at enemies and drops a meal that grants 15 Ultimate Gauge." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330030" data="Manastone Bundle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330030" data="Throws a Manastone Bundle. When picked up, this Bundle permanently increases weapon damage by {skill:180330030:status:stat:mul:attack}%, critical strike chance by {skill:180330030:status:stat:mul:attack}%, or skill power by 20, each stacking up to 10 times. Manastone Bundle effects persist through tagging.&#10;{color:#e45f5f}Stacks reduced by 50% upon death.{color:end}&#10;&#10;{color:#35a6e6}[High Roller]{color:end}&#10;Throws two Manastone Bundles." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330040" data="Trickster Bundle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330040" data="Throws a Trickster Bundle that grants {skill:180330040:status:stat:mul:movespeed}% Movespeed for {skill:180330040:status:durationtime} when picked up by allies, or binds for {skill:180330040:status:durationtime:1} when picked up by enemies.&#10;&#10;{color:#35a6e6}[High Roller]{color:end}&#10;The Bundle deals damage when thrown at enemies and grants its effects in a 2.5m radius instead of only to whomever picked it up." />
+    <StringData DATAKEY="STR_SKILL_NAME_180330050" data="FIRESALE!" />
+    <StringData DATAKEY="STR_SKILL_DESC_180330050" data="Throws a large bundle that knocks enemies back, away from the center, and shoots out a collection of bundles." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340000" data="Creeping Venom" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340000" data="Douses struck enemies with venom when using a skill, and on every third weapon attack.&#10;&#10;At 3 stacks, the venom inflicts a burst of damage and restores 4% of Nedien's maximum HP." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340002" data="Skitter" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340002" data="Quickly skitter 6m. While skittering, you gain CC immunity." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340010" data="Bottled Miasma" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340010" data="Toggle Skill. Drops bottles of poison every second at Nedien's position that emit a poisonous vapor. The vapor puts stacks of Creeping Venom on enemies and shreds defense by {skill:180340010:status:stat:mul:defence}% for {skill:180340010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340020" data="Toxin Toss" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340020" data="Throws a bottle of toxic fumes at target area. &#10;The bottle lets loose fumes in an area that deal minor damage over time, stack Creeping Venom, and slows by {skill:180340020:status:stat:mul:MOVESPEED}% for {skill:180340020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340030" data="Crippling Slingblades" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340030" data="Summons 3 poison-coated blades that revolve around Nedien. You may recast this skill to fling the blades like projectiles. Enemies hit by the blades are slowed by {skill:180340030:status:stat:mul:MOVESPEED}% for {skill:180340030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;If the skill is used consecutively, the effect changes.&#10; - 1st stack: Enemy's movespeed is reduced by {skill:180340030:status:stat:mul:MOVESPEED}%. &#10; - 2nd stack: Enemy's movespeed is reduced by 20%. &#10; - 3rd stack: Enemy's movespeed is reduced by 30%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340031" data="Crippling Slingblades" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340031" data="Summons 3 poison-coated blades that revolve around Nedien. You may recast this skill to fling the blades like projectiles. Enemies hit by the blades are slowed by {skill:180340030:status:stat:mul:MOVESPEED}% for {skill:180340030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;If the skill is used consecutively, the effect changes.&#10; - 1st stack: Enemy's movespeed is reduced by {skill:180340030:status:stat:mul:MOVESPEED}%. &#10; - 2nd stack: Enemy's movespeed is reduced by 20%. &#10; - 3rd stack: Enemy's movespeed is reduced by 30%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340032" data="Crippling Slingblades" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340032" data="Summons 3 poison-coated blades that revolve around Nedien. You may recast this skill to fling the blades like projectiles. Enemies hit by the blades are slowed by {skill:180340030:status:stat:mul:MOVESPEED}% for {skill:180340030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;If the skill is used consecutively, the effect changes.&#10; - 1st stack: Enemy's movespeed is reduced by {skill:180340030:status:stat:mul:MOVESPEED}%. &#10; - 2nd stack: Enemy's movespeed is reduced by 20%. &#10; - 3rd stack: Enemy's movespeed is reduced by 30%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340033" data="Crippling Slingblades" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340033" data="Summons 3 poison-coated blades that revolve around Nedien. You may recast this skill to fling the blades like projectiles. Enemies hit by the blades are slowed by {skill:180340030:status:stat:mul:MOVESPEED}% for {skill:180340030:status:durationtime}.&#10;&#10;{color:#35a6e6}[Combo]{color:end}&#10;If the skill is used consecutively, the effect changes.&#10; - 1st stack: Enemy's movespeed is reduced by {skill:180340030:status:stat:mul:MOVESPEED}%. &#10; - 2nd stack: Enemy's movespeed is reduced by 20%. &#10; - 3rd stack: Enemy's movespeed is reduced by 30%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340040" data="Vitriolic Rush" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340040" data="Charges to a target area, striking all enemies in your path and gaining CC immunity. At the end of the charge, Nedien lets loose a toxic explosion that restricts weapon attacks and terrifies monsters for 2 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180340050" data="Blade Frenzy" />
+    <StringData DATAKEY="STR_SKILL_DESC_180340050" data="Nedien allows her consumed poisons to send her into a frenzy. Greatly increases attack speed and movespeed for {skill:180340050:status:durationtime}, while adding Neutralizing Poison to Creeping Venom's triggering effect.&#10;Neutralizing Poison reduces weapon damage and skill power by {skill:180340050:status:stat:mul:attack}%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350000" data="Firearms Proficiency" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350000" data="Upon using 5 skills, your next skill consumes no resources." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350002" data="Swift Roll" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350002" data="Quickly rolls 5m." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350010" data="Shrapnel Rocket" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350010" data="Launches a destructive rocket in a straight line. &#10;The rocket explodes on the first target it strikes, or at the end of it's range, and showers an 180 degree {skill:180350010:remote:range} radius behind the explosion point with damaging shrapnel." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350020" data="Distortion Shell" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350020" data="Launches Lua herself 10m in the targeted direction with an explosive shell.&#10;The shell creates a {skill:180350020:status:targetingrange} area on the launch point that restricts weapon attacks for enemies within it." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350030" data="Claymore Charge" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350030" data="Dashes to a target and pushes them away. Lua then launches a missile at the target that knocks them further back and deals damage after a short delay." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350040" data="Molten Rain" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350040" data="Launches a rocket into the air that splits into several micro-rockets and rains onto the targeted area, dealing heavy damage. &#10;Creates {skill:180350040:leveltext:012:4:345:7:6:8} explosions within {skill:180350040:remote:range}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180350050" data="Napalm Wave" />
+    <StringData DATAKEY="STR_SKILL_DESC_180350050" data="Fire an expanding wave of fiery death in a cone in front of Lua. Launches enemies into the air." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360000" data="Unyielding" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360000" data="Crowd Control effect durations are reduced by 25%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360002" data="Unstoppable" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360002" data="Become immune to all damage and crowd control effects for {skill:180360002:status:durationtime}.&#10;Movespeed increased by 15% for 2 seconds after using Unstoppable." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360010" data="Olympian Bolts" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360010" data="Calls down 4 lightning bolts that deal damage and slow struck enemies by {skill:180360010:status:stat:mul:movespeed}% for {skill:180360010:status:durationtime}.&#10;&#10;{color:#35a6e6}[Heroism]{color:end}&#10;Calls down 4 additional lightning bolts." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360020" data="Flying Haymaker" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360020" data="Quickly flies to the target location and strikes an enemy within a {skill:180360020:remote:range} radius.&#10;&#10;{color:#35a6e6}[Heroism]{color:end}&#10;Damaged targets are launched into the air." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360030" data="Foot Stomp" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360030" data="Causes a shock wave within a {skill:180360030:remote:range} radius that knocks enemies back.&#10;&#10;{color:#35a6e6}[Heroism]{color:end}&#10;Increases the knockback distance." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360040" data="Dull Pain" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360040" data="Heals {skill:180360040:status:regen:mul:health}% max HP and removes all debuffs.&#10;Restores an additional 2% max HP for each debuff removed.&#10;&#10;{color:#35a6e6}[Heroism]{color:end}&#10;Spreads the same effect to allied Masters within a {skill:180360040:remote:range:4} radius." />
+    <StringData DATAKEY="STR_SKILL_NAME_180360050" data="Heroism" />
+    <StringData DATAKEY="STR_SKILL_DESC_180360050" data="Take flight, Hero. Increases movespeed by {skill:180360050:status:stat:mul:movespeed}% and Defense by {skill:180360050:status:stat:mul:defence}%.&#10;Weapon attacks become ranged and skill effects are empowered.&#10; Heroism lasts {skill:180360050:stancedurationtime} seconds.&#10;{color:#e45f5f}Upon activation, all non-ultimate cool downs are reset and you regain 20% of your MP.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180370000" data="Martial Master" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370000" data="{color:#35a6e6}[Triage]{color:end}&#10;Summons a medical aid when your health drops below 30%. The aid stuns nearby enemies for {skill:180370000:status:durationtime} and restores 5% max HP per second every 5 seconds to nearby allied Masters.&#10;{color:#e45f5f}Has a 2 minute cool down.{color:end}&#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;When your Sol power is full, skills gain additional effects.&#10;{color:#e45f5f} Sol power is gained over time when Sol boost is used, or in increments of 10 when a target is struck by a skill.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180370002" data="Sol Infusion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370002" data="Grants Sol Boost while active. Can be toggled on or off. Drains stamina while active.&#10;&#10;{color:#35a6e6}[Sol Boost]{color:end}&#10;Defense increases by {skill:180370002:status:stat:mul:defence}%&#10;and CC duration reduced by 30%.&#10;- Every 1 second, you gain 12 Sol Power &#10;- Every 1 second, skill cooldowns are reduced by 3%" />
+    <StringData DATAKEY="STR_SKILL_NAME_180370003" data="Sol Boosting" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370003" data="Sol Boost Ends" />
+    <StringData DATAKEY="STR_SKILL_NAME_180370010" data="Sol Fist" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370010" data="Lunge forward 1.5m and unleash a powerful punch.&#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;Slows by {skill:180370010:status:stat:mul:movespeed}% for {skill:180370010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370011" data="Sol Fist" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370011" data="Lunge forward 1.5m and unleash a powerful punch.&#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;Slows by {skill:180370010:status:stat:mul:movespeed}% for {skill:180370010:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370020" data="Flanking Strike" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370020" data="Dash behind your target and strike their back.&#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;Stun your target for {skill:180370020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370030" data="Sol Kick" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370030" data="Dash 10m in a flying kick, damaging all enemies in your path.&#10;Targets launched into the air take 25% increased damage.&#10;&#10;{color:#35a6e6}[Catalyst of Sol] {color:end}&#10;Sol Kick shreds defenses by {skill:180370030:status:stat:mul:defence}% for {skill:180370030:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370031" data="Sol Kick" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370031" data="Dash 10m in a flying kick, damaging all enemies in your path.&#10;Targets launched into the air take 25% increased damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370032" data="Sol Kick" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370032" data="Dash 10m in a flying kick, damaging all enemies in your path.&#10;Targets launched into the air take 25% increased damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370040" data="Cosmic Flurry" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370040" data="Your next attack within {skill:180370040:status:durationtime} deals 3 successive blows. &#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;Reflect projectiles in front of you while attacking." />
+    <StringData DATAKEY="STR_SKILL_NAME_180370050" data="Sol Crush" />
+    <StringData DATAKEY="STR_SKILL_DESC_180370050" data="Dash forward 8m and strike enemies with a barrage of crushing punches, stunning them briefly.&#10;&#10;{color:#35a6e6}[Catalyst of Sol]{color:end}&#10;The final blow launches enemies in the air." />
+    <StringData DATAKEY="STR_SKILL_NAME_180380000" data="Holo-Cube Engraving" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380000" data="{color:#35a6e6}[Pattern Transfer]{color:end}&#10;Weapon attacks mark targets. After two strikes hit the same target, they will be marked with Xero's Engraving. Engraved enemies become the target of your skills.&#10;{color:#e45f5f}Skills cannot be used if no targets are engraved. Additional attacks do not refresh the engraving duration. A maximum of 8 targets can be marked at the same time. Engravings persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180380002" data="Holo-Hop" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380002" data="Hop {skill:180380002:actionbase:movehorizon} while evading enemy attacks." />
+    <StringData DATAKEY="STR_SKILL_NAME_180380010" data="Engraved Burst" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380010" data="The area around each engraved target explodes and deals damage to the target and its surroundings in a {skill:180380010:remote:range} range.&#10;{color:#e45f5f}Cannot be used if no engraved targets are in range.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180380020" data="Engraved Erosion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380020" data="Your engraved patterns distort the minds of your targets.&#10;For {skill:180380020:status:durationtime} Weapon Damage is reduced by {skill:180380020:status:stat:mul:attack}%, Skill Power by {skill:180380020:status:stat:add:skilldamage_ratio}%, and Defense by {skill:180380020:status:stat:mul:defence}%. &#10;{color:#e45f5f}Up to 8 cube patterns can be activated, but the skill cannot be used if no engraved targets are in range.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180380030" data="Engraved Telekinesis" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380030" data="Jump back {skill:180380030:actionbase:movehorizon} and pull in all engraved targets to your location.&#10;Slows pulled targets by {skill:180380030:status:stat:mul:movespeed:5}% for {skill:180380030:status:durationtime:5}.&#10;{color:#e45f5f}Cannot be used if no engraved targets are in range.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180380040" data="Engraved Shockwave" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380040" data="Stuns engraved targets for {skill:180380040:status:durationtime}.&#10;{color:#e45f5f}Cannot be used if no engraved targets are in range.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180380050" data="Holo-Cube Pulse" />
+    <StringData DATAKEY="STR_SKILL_DESC_180380050" data="Deals damage to all enemies within {skill:180380050:remote:range} and engraves them immediately." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390000" data="The Light Within" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390000" data="Titus emanates holy energy as he charges his weapon attack. Heals 30hp per second within 10m.&#10;&#10;Range increased to 12m at stage 2 &#10;&#10;Range increased to 15m at stage 3." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390002" data="Divine Directive" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390002" data="After a 0.5s delay, Titus will blink forward 10m in the direction you're facing or moving." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390010" data="Mending Palm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390010" data="Instantly restores {skill:180390010:status:regen:mul:health}% max health to target ally Masters or yourself." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390020" data="Purifying Edict" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390020" data="Fires an array of sacred bolts that chain through allies and enemies alike, restoring {skill:180390020:status:regen:add:health} HP to allies and dealing damage to enemies.&#10;The bolts prioritize Masters, including the caster.&#10;Can chain up to 5 times." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390030" data="Nura's Grace" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390030" data="Creates a sacred road in a line in front of you. Allies on the road regain {skill:180390030:status:regen:add:health} HP each second.&#10;&#10;Enemies that touch the road are slowed by {skill:180390030:status:stat:mul:movespeed:1}%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180390040" data="Hallowed Ground" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390040" data="Creates an area of Hallowed Ground with a {skill:180390040:status:targetingrange} radius at the selected spot.&#10;Allies within the area have their debuffs cleansed and receive CC Immunity while within the area.&#10;&#10;Enemies standing on Hallowed Ground are silenced.&#10;{color:#e45f5f}Non-Master targets will be terrorized instead.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180390050" data="Divine Intervention" />
+    <StringData DATAKEY="STR_SKILL_DESC_180390050" data="Casts a prayer of resurrection on allies within a {skill:180390050:status:targetingrange} radius.&#10;&#10;If marked allies are dealt lethal damage, Nura intervenes and immediately restores {skill:180390050:status:paramratio}% of their max HP.&#10;{color:#e45f5f}When Divine Intervention is triggered, the target becomes invincible momentarilly. Persists through tagging.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180400000" data="Consuming Darkness" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400000" data="{color:#35a6e6}[Consumption]{color:end}&#10;Increases Ghost Widow's Weapon Damage by 12% per debuff on her target." />
+    <StringData DATAKEY="STR_SKILL_NAME_180400002" data="Dark Passage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400002" data="Dashes {skill:180400020:remote:range} and strips non-persistent buffs from all targets she collides with." />
+    <StringData DATAKEY="STR_SKILL_NAME_180400010" data="Life Drain" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400010" data="Tap into the powers of the netherworld to steal life from a target foe for {skill:180400010:status:durationtime}, damaging them every 1.5 seconds and healing Ghost Widow.&#10;{color:#e45f5f}If your target moves too far away, the draining tether will snap.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180400020" data="Fearsome Stare" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400020" data="Fires a projectile of negative energy that strikes the first target in a line. &#10;The projectile bursts on its target, striking all hostiles within {skill:180400020:remote:range} around the targeted enemy and terrorizing them for {skill:180400020:status:durationtime}." />
+    <StringData DATAKEY="STR_SKILL_NAME_180400030" data="Tenebrous Tentacles" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400030" data="Curses an enemy with darkness, damaging them for {skill:180400030:status:durationtime}. Other enemies in a radius of {skill:180400030:status:targetingrange} around the target are dealt 50% of the damage over time." />
+    <StringData DATAKEY="STR_SKILL_NAME_180400040" data="Ethereal Images" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400040" data="Ghost Widow changes into her Ghost form and summons 3 copies of herself. The ghosts last for {skill:180400040:stancedurationtime} seconds and explode in a radius of {skill:180400040:remote:range} when they disappear.&#10;&#10;Ghost Widow becomes ethereal during this time, gaining immunity for {skill:180400040:stancedurationtime} seconds.&#10;{color:#e45f5f}While ethereal, Ghost Widow cannot use weapon attacks, jumping, or skills.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180400050" data="Soul Storm" />
+    <StringData DATAKEY="STR_SKILL_DESC_180400050" data="Enraptures a target for {skill:180400050:status:durationtime} and drains the life from them. &#10;Unleashes 3 blasts of  necrotic energy and generates two missiles of dark energy each time Ghost Widow deals damage.&#10;{color:#e45f5f}Moving or attacking will cancel Soul Storm.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_189000000" data="Titan Incarnate" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000000" data="Your Master transforms into a powerful Titan.&#10; &#10;{color:#35a6e6}[Brawling Stance]{color:end}&#10;This is a specialized mode for combat against Masters.&#10;When a basic attack hits, the hit target's defense is decreased by 15.&#10;Can be stacked up to 5 times and has a duration of 3 sec.&#10;&#10;{color:#35a6e6}[Siege Stance]{color:end}&#10;This is a specialized mode to destroy enemy buildings.&#10;Your movespeed decreases, but you can demolish buildings quickly with the Titanic Hammer. Furthermore, the Titanic Hammer can easily incapacitate Titans." />
+    <StringData DATAKEY="STR_SKILL_NAME_189000003" data="Safe Landing" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000003" data="Crowd Control Immunity" />
+    <StringData DATAKEY="STR_SKILL_NAME_189000002" data="Dodge: Titanic Charge" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000002" data="Lunge forward, knocking back all enemies in your path." />
+    <StringData DATAKEY="STR_SKILL_NAME_189000010" data="Titanic Smash" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000010" data="Smashes the ground with your fists, causing a shockwave in a long line.&#10;Struck enemies are launched into the air." />
+    <StringData DATAKEY="STR_SKILL_NAME_189000020" data="Titanic Leap" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000020" data="Leaps to a target location before crashing down to stun enemies and deal heavy damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_189000050" data="Change Mode: Siege Mode" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000050" data="Rips a massive hammer of stone from the ground. Effective against Structures." />
+    <StringData DATAKEY="STR_SKILL_NAME_189000051" data="Change Mode: Combat Mode_For Bot Incarnate Transformation" />
+    <StringData DATAKEY="STR_SKILL_DESC_189000051" data="Bring the fight to your enemies with fists of stone." />
+    <StringData DATAKEY="STR_SKILL_NAME_189100000" data="Titan Incarnate" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100000" data="Your Master transforms into a powerful Titan.&#10; &#10;{color:#35a6e6}[Combat Mode]{color:end}&#10;This is a specialized mode for the combat with Masters.&#10;When a basic attack hits, the hit target's defense is decreased by 15.&#10;Can be stacked up to 5 times and has a duration of 3 seconds.&#10;&#10;{color:#35a6e6}[Siege Mode]{color:end}&#10;This is a specialized mode to destroy enemy buildings.&#10;Your Movespeed is decreased, but you can demolish buildings quickly with the Titanic Hammer. Furthermore, the Hammer of Destruction can easily incapacitate Titans." />
+    <StringData DATAKEY="STR_SKILL_NAME_189100003" data="Safe Landing" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100003" data="Crowd Control Immunity" />
+    <StringData DATAKEY="STR_SKILL_NAME_189100002" data="Titan's Might" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100002" data="Emboldens you with extreme resilience, reducing damage taken for 5 seconds.&#10;Increases Defense by 100% and reduces skill damage by 75%." />
+    <StringData DATAKEY="STR_SKILL_NAME_189100010" data="Titanic Slam" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100010" data="Powerfully smashes the Titanic Hammer into the ground.&#10;An earthquake occurs in the spot and lasts 10 seconds.&#10;Each time enemies in the earthquake area receive damage, they receive an additional 10% damage.&#10;The additional damage is increased up to 100%." />
+    <StringData DATAKEY="STR_SKILL_NAME_189100020" data="Titan's Inspiration" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100020" data="The Titan releases its power by pounding the Titanic Hammer on the ground. &#10;A shield is created that absorbs 2000 damage for all allies nearby. Movespeed and Weapon Damage are greatly increased. The effect stays active for 10 seconds.&#10;{color:#e45f5f}You cannot receive Incarnate effects.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_189100050" data="Change Mode: Brawler Mode" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100050" data="Changes to Brawling Stance." />
+    <StringData DATAKEY="STR_SKILL_NAME_189100051" data="Change Mode: Combat Mode For Bot Incarnate Transformation" />
+    <StringData DATAKEY="STR_SKILL_DESC_189100051" data="Changes to Brawling Stance." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000010" data="Return Beacon" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000010" data="Teleport back your base.&#10;{color:#e45f5f}If you move or are hit during the cast time, the teleport will be cancelled.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180000020" data="Titan's Protection" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000020" data="Places a shield on a friendly Tower. The shield lasts for 10 seconds and disappears after absorbing 4,200 damage." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000030" data="Summon: Force Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000030" data="Creates an aura that knocks back enemies frequently. This aura disappears after 10 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000040" data="Explosion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000040" data="Surrounds the selected target with a strong winds for 10 seconds. Hit targets will be pushed back. " />
+    <StringData DATAKEY="STR_SKILL_NAME_180000050" data="Vacuum Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000050" data="Causes a vortex vacuum, dragging in enemies within a 15m radius for 5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000060" data="Attack Damage Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000060" data="Increases weapon damage all allies within 5m by 50% and reduces overheating. Lasts 10 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000070" data="Skill Power Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000070" data="Resets cooldowns, increases skill power by 50%, and reduces cooldowns by 50% for nearby allies for 10 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000080" data="Resource Generation Aura" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000080" data="Restores resources of all within 5m at a faster rate." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000090" data="Summon: Crystal Turret" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000090" data="Summons a small turret that fires at enemies and draws threat." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000100" data="Recovery Pulse" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000100" data="Heals all allied units and structures within a 5m radius for {skill:180000100:status:regen:add:health} HP per second over 5 seconds.&#10;&#10;{color:#e45f5f}Healing scales with your level.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180000110" data="Titan's Protection" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000110" data="Places a shield on a friendly Tower or Core.&#10;Absorbs {skill:180000110:status:stat:add:shield_defence} damage or lasts 15 seconds before dissipating.&#10;&#10;{color:#e45f5f}The strength of the shield scales with your level.{color:end}&#10;&#10;{color:#35a6e6}[Minimap Use]{color:end}&#10; You can select a shield target on the minimap." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000120" data="Teleport" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000120" data="Teleport to a Tower, Titan's Eye, or captured Titan's Sight.&#10;&#10;The cooldown is activated right after use, even if the skill is canceled.\n&#10;{color:#e45f5f}Can be canceled by pressing ESC when casting.{color:end}&#10;&#10;{color:#35a6e6}[Minimap Use]{color:end}&#10; You can select a target in the minimap." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000130" data="Sprint" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000130" data="Increases movespeed for 8 seconds by 30%." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000140" data="Titan's Gaze" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000140" data="Places the eye of a fallen Titan that grants vision in a 10m radius.\n&#10;{color:#e45f5f}Lasts 5 min.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180000150" data="Sprint" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000150" data="Increases movespeed by 30% for 10 seconds.&#10;{color:#e45f5f}Attacking, using skills, or getting struck disables Sprint.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180000160" data="Masterful Power" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000160" data="Unleashes your mastery of Sol, granting +20% movespeed, +20% attack speed, +5% critical strike chance, -20% heat buildup, 0.5% max HP per second, and 1% max resources per second for 30 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000200" data="Rytlock's Whistle" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000200" data="Rytlock follows you for a moment." />
+    <StringData DATAKEY="STR_SKILL_NAME_180000210" data="Rytlock's Defense" />
+    <StringData DATAKEY="STR_SKILL_DESC_180000210" data="Rytlock enters a defensive state for 3 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410000" DocId="100000041" data="Energy Conversion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410000" DocId="100000041" data="{color:#35a6e6}[Fuel Recovery]{color:end}&#10;Charged attacks recover 20 Fuel.&#10;Recovers 5 Fuel per second while charging.&#10;&#10;{color:#35a6e6}[Plasma Shield]{color:end}&#10;Using a skill creates a shield that absorbs 250 damage for 3 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410002" DocId="100000041" data="Sudden Acceleration" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410002" DocId="100000041" data="Moves 8m in the movement direction and gains Super Armor for 1 second.&#10;Recovers 22 Fuel for each enemy in the path." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410010" DocId="100000041" data="Disruption Route" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410010" DocId="100000041" data="Moves {skill:180410010:actionbase:movehorizon} forward, leaving a distorted trail. Enemies on the distorted trail are slowed by {skill:180410010:status:stat:mul:movespeed}% and all targets in the area are pulled toward its center." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410020" DocId="100000041" data="B-EMP" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410020" DocId="100000041" data="Drains 30% of the MP and EP of enemy masters in the area.&#10;{color:#e45f5f}Targets that are not masters are Feared.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410030" DocId="100000041" data="Shockwave" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410030" DocId="100000041" data="Releases a shockwave around GX-09, knocking enemies in the area back to the edge of the shockwave and down.&#10;{color:#e45f5f}The closer to the center, the farther enemies are knocked back.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410040" DocId="100000041" data="Master Transport" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410040" DocId="100000041" data="Transforms into transport mode. For 3 seconds, allies can board GX-09 with the interaction key.&#10;Transport mode lasts {skill:180410040:stancedurationtime} seconds and increases movespeed by {skill:180410040:status:stat:mul:movespeed}%.&#10;{color:#e45f5f}Passengers are dropped off when the transformation ends, or when GX-09 dies or tags out.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410050" DocId="100000041" data="Teleporter" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410050" DocId="100000041" data="Places a teleporter at an ally's position on the minimap or in the field. After 3 seconds, allies near the teleporter are moved to GX-09's position." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430000" DocId="100000043" data="Armor-Piercing Rounds" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430000" DocId="100000043" data="{color:#35a6e6}[Armor-Piercing Rounds]{color:end}&#10;Basic attacks, Leap Barrage and Heavy Barrage lower the target's defense by 1.5% per stack (up to 10 stacks, 2.5 seconds).&#10;&#10;{color:#35a6e6}[Suppression]{color:end}&#10;An enemy hit 4 times by Leap Barrage is slowed by 50% for 2.5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430002" DocId="100000043" data="Spider Mine" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430002" DocId="100000043" data="Dashes 6m forward and marks the ground with a spider mine for 2.5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430010" DocId="100000043" data="Anchor Throw" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430010" DocId="100000043" data="Steps back 2.5m and hurls an anchor forward. It travels 15.75m and deals damage to every enemy within 2.35m of its path." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430020" DocId="100000043" data="Back Grab" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430020" DocId="100000043" data="Dashes through the targeted enemy (up to 8m) while evading attacks, then fires a burst in front, dealing damage to enemies within 3.5m and knocking them down." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430030" DocId="100000043" data="Leap Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430030" DocId="100000043" data="Leaps in place while evading attacks and sprays bullets in a half circle in front, dealing damage to enemies within 7m up to 4 times. Applies Armor-Piercing Rounds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430040" DocId="100000043" data="Heavy Snipe" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430040" DocId="100000043" data="Locks onto an enemy within 15m. After 3 seconds an explosion deals damage to enemies within 3m of them." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430050" DocId="100000043" data="Heavy Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430050" DocId="100000043" data="Plants in place with Super Armor and fires in every direction, dealing damage to enemies within 7m every 0.4 seconds and pushing them out. Applies Armor-Piercing Rounds." />
+  </StringTableData>
+</ENTITY_FILE>

@@ -1,9 +1,12 @@
 #include "game.h"
 #include "coordinator.h" // account data
+#include "instance.h"
 #include <mxm/game_content.h>
 #include "config.h"
 #include <EAStdC/EAString.h>
 #include <common/utils.h>
+
+static const ClassType DEFAULT_LEADER_CLASS = ClassType::LAUNCHER;
 
 
 void HubGame::Init(Server* server_, const ClientLocalMapping* plidMap_)
@@ -137,6 +140,12 @@ void HubGame::OnPlayerConnect(ClientHandle clientHd, const Account* accountData)
 	replication.SendAccountDataLobby(clientHd, *accountData);
 
 	replication.OnPlayerConnect(clientHd);
+
+	LOG("[client%x] HubGame :: account %llu connected (%ls)", clientHd, (u64)accountData->UID, accountData->nickname.data());
+	if(TakeAccountReturningFromGame(accountData->nickname)) {
+		LOG("[client%x] HubGame :: back from a game, loading the lobby", clientHd);
+		replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
+	}
 }
 
 void HubGame::OnPlayerDisconnect(ClientHandle clientHd)
@@ -234,9 +243,29 @@ void HubGame::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, 
 	replication.SendChatWhisperToClient(playerMap[destClientID]->clientHd, playerAccountData[userID]->nickname.data(), msg);
 }
 
+void HubGame::OnPlayerEnterCity(ClientHandle clientHd)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	if(playerActorUID[userID] != ActorUID::INVALID || !playerAccountData[userID]) return;
+	LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (u32)DEFAULT_LEADER_CLASS);
+	SkinIndex skin = SkinIndex::DEFAULT;
+	foreach_const(it, lastLeaders) {
+		if(it->nickname == playerAccountData[userID]->nickname) { characterID = it->characterID; skin = it->skin; }
+	}
+	LOG("[client%x] HubGame :: entered the city without a leader character, spawning the last one", clientHd);
+	OnPlayerSetLeaderCharacter(clientHd, characterID, skin);
+}
+
 void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 userID = plidMap->Get(clientHd);
+	if(playerAccountData[userID]) {
+		bool found = false;
+		foreach(it, lastLeaders) {
+			if(it->nickname == playerAccountData[userID]->nickname) { it->characterID = characterID; it->skin = skinIndex; found = true; }
+		}
+		if(!found && !lastLeaders.full()) lastLeaders.push_back({ playerAccountData[userID]->nickname, characterID, skinIndex });
+	}
 
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
 
@@ -410,29 +439,8 @@ void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 	if(f == partyMap.end()) return;
 	Party& party = *f->second;
 	eastl::fixed_vector<UserID,16> rowIDs;
-	eastl::fixed_vector<UserID,17> usedIDs;
 	for(i32 i = 0; i < matchingParty.playerCount; i++) {
-		const auto& p = matchingParty.playerList[i];
-		UserID rowID = UserID::INVALID;
-		auto h = accountClientHandleMap.find(p.accountUID);
-		if(h != accountClientHandleMap.end()) {
-			const i32 pid = plidMap->Get(h->second);
-			if(playerAccountData[pid]) {
-				UserID hubID = UserID(pid + 1);
-				bool taken = false;
-				for(auto u : usedIDs) if(u == hubID) { taken = true; break; }
-				if(!taken) rowID = hubID;
-			}
-		}
-		if(rowID == UserID::INVALID) {
-			for(i32 n = 1; n < 100; n++) {
-				bool taken = false;
-				for(auto u : usedIDs) if(u == UserID(n)) { taken = true; break; }
-				if(!taken) { rowID = UserID(n); break; }
-			}
-		}
-		usedIDs.push_back(rowID);
-		rowIDs.push_back(rowID);
+		rowIDs.push_back(UserID(i + 1));
 	}
 	foreach_const(m, party.memberList) {
 		auto h = accountClientHandleMap.find(m->accountUID);
@@ -442,7 +450,11 @@ void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 		if(!playerAccountData[userID]) continue;
 		playerMap[userID]->sortieUID = matchingParty.sortieUID;
 
-		replication.SendMatchingPartyFound(clientHd, matchingParty, party.stageIndex, rowIDs);
+		u8 myTeam = 0;
+		for(i32 i = 0; i < matchingParty.playerCount; i++) {
+			if(matchingParty.playerList[i].accountUID == m->accountUID) myTeam = matchingParty.playerList[i].team;
+		}
+		replication.SendMatchingPartyFound(clientHd, matchingParty, party.stageIndex, rowIDs, myTeam);
 	}
 }
 

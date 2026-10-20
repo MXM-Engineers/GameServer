@@ -53,6 +53,8 @@ struct HubGame
 	};
 
 	const ClientLocalMapping* plidMap;
+	struct LastLeader { WideString nickname; LocalActorID characterID; SkinIndex skin; };
+	eastl::fixed_vector<LastLeader,64,true> lastLeaders;
 	eastl::array<const Account*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
@@ -88,6 +90,7 @@ struct HubGame
 	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
 	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
+	void OnPlayerEnterCity(ClientHandle clientHd);
 	void OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);

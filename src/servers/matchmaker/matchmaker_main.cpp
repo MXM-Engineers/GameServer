@@ -127,6 +127,7 @@ struct Matchmaker
 	eastl::fixed_list<Party,2048> partyList;
 	hash_map<PartyUID, decltype(partyList)::iterator, 2048> partyMap;
 	eastl::fixed_vector<PartyUID,2048> matchingPartyList;
+	Time matchingStartTime = Time::ZERO;
 
 	eastl::fixed_list<Room,2048> roomList;
 	hash_map<SortieUID, decltype(roomList)::iterator, 2048> roomMap;
@@ -446,6 +447,9 @@ struct Matchmaker
 					In::MN_MatchCreated resp;
 					resp.sortieUID = room.UID;
 					resp.serverIp = conn.ip;
+					if(conn.ip[0] == 127 && Config().GameServerPublicIP[0] != 0) {
+						for(int i = 0; i < 4; i++) resp.serverIp[i] = (u8)Config().GameServerPublicIP[i];
+					}
 					resp.serverPort = conn.listenPort;
 					SendPacket(*chd, resp);
 				}
@@ -466,53 +470,78 @@ struct Matchmaker
 
 	void MatchParties()
 	{
+		const f64 MATCHING_WAIT_SEC = 10.0;
+
+		if(matchingPartyList.empty()) {
+			matchingStartTime = Time::ZERO;
+			return;
+		}
+
+		const Time now = TimeRelNow();
+		if(matchingStartTime == Time::ZERO) matchingStartTime = now;
+
+		i32 humanCount = 0;
+		foreach_const(puid, matchingPartyList) {
+			humanCount += partyMap.at(*puid)->memberList.size();
+		}
+		if(humanCount < 6 && TimeDiffSec(TimeDiff(matchingStartTime, now)) < MATCHING_WAIT_SEC) return;
+		matchingStartTime = Time::ZERO;
+		decltype(matchingPartyList) laterParties;
+
+		const Party& firstParty = *partyMap.at(matchingPartyList.front());
+
+		roomList.emplace_back(nextSortieUID);
+		Room& room = *(--roomList.end());
+		nextSortieUID = SortieUID((u64)nextSortieUID + 1);
+		roomMap.emplace(room.UID, --roomList.end());
+		ASSERT(firstParty.areaIndex != AreaIndex(0));
+		ASSERT(firstParty.stageIndex != StageIndex(0));
+		ASSERT(firstParty.mapIndex != MapIndex(0));
+		room.areaIndex = firstParty.areaIndex;
+		room.stageIndex = firstParty.stageIndex;
+		room.mapIndex = firstParty.mapIndex;
+
+		LOG("MatchParties :: creating room %llu with %d player(s) from %d party(ies)", (u64)room.UID, humanCount, (i32)matchingPartyList.size());
+
+		i32 humanIndex = 0;
+		foreach_const(puid, matchingPartyList) {
+			const Party& party = *partyMap.at(*puid);
+			foreach_const(pl, party.memberList) {
+				if(room.teamRed.size() >= 3 && room.teamBlue.size() >= 3) break;
+				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
+				const bool red = (room.teamBlue.size() >= 3) || (room.teamRed.size() < 3 && (humanIndex % 2) == 0);
+				player.team = red ? Team::RED : Team::BLUE;
+				room.playerList.push_back(player);
+				if(red) room.teamRed.push_back(&room.playerList.back());
+				else room.teamBlue.push_back(&room.playerList.back());
+				humanIndex++;
+			}
+		}
+
+		i32 botID = 1;
+		while(room.teamRed.size() < 3) {
+			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
+			player.team = Team::RED;
+			player.isBot = true;
+
+			room.playerList.push_back(player);
+			room.teamRed.push_back(&room.playerList.back());
+		}
+		while(room.teamBlue.size() < 3) {
+			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
+			player.team = Team::BLUE;
+			player.isBot = true;
+
+			room.playerList.push_back(player);
+			room.teamBlue.push_back(&room.playerList.back());
+		}
+
 		foreach_const(puid, matchingPartyList) {
 			const Party& party = *partyMap.at(*puid);
 
-			// create room
-			roomList.emplace_back(nextSortieUID);
-			Room& room = *(--roomList.end());
-			nextSortieUID = SortieUID((u64)nextSortieUID + 1);
-			roomMap.emplace(room.UID, --roomList.end());
-			ASSERT(party.areaIndex != AreaIndex(0));
-			ASSERT(party.stageIndex != StageIndex(0));
-			ASSERT(party.mapIndex != MapIndex(0));
-			room.areaIndex = party.areaIndex;
-			room.stageIndex = party.stageIndex;
-			room.mapIndex = party.mapIndex;
-
-			foreach_const(pl, party.memberList) {
-				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
-				player.team = Team::RED;
-				room.playerList.push_back(player);
-				room.teamRed.push_back(&room.playerList.back());
-			}
-
-			// fill empty slots with bots
-			i32 botID = 1;
-			while(room.teamRed.size() < 3) {
-				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
-				player.team = Team::RED;
-				player.isBot = true;
-
-				room.playerList.push_back(player);
-				room.teamRed.push_back(&room.playerList.back());
-			}
-			while(room.teamBlue.size() < 3) {
-				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
-				player.team = Team::BLUE;
-				player.isBot = true;
-
-				room.playerList.push_back(player);
-				room.teamBlue.push_back(&room.playerList.back());
-			}
-
-			// send 'match found' packet to all instances
 			eastl::fixed_set<ClientHandle,16,false> setInstance;
-			foreach_const(pl, room.playerList) {
-				if(pl->instanceChd != ClientHandle::INVALID) {
-					setInstance.insert(pl->instanceChd);
-				}
+			foreach_const(mem, party.memberList) {
+				setInstance.insert(mem->instanceChd);
 			}
 
 			foreach_const(chd, setInstance) {
@@ -541,6 +570,10 @@ struct Matchmaker
 			}
 		}
 		matchingPartyList.clear();
+		while(!laterParties.empty()) {
+			matchingPartyList.push_back(laterParties.back());
+			laterParties.pop_back();
+		}
 	}
 
 	void UpdateRooms()
@@ -576,10 +609,14 @@ struct Matchmaker
 					packet.playerList[packet.playerCount++] = player;
 				}
 
+				eastl::fixed_set<ClientHandle,16,false> setInstance;
 				foreach(pl, r->playerList) {
 					if(!pl->isBot) {
-						SendPacket(pl->instanceChd, packet);
+						setInstance.insert(pl->instanceChd);
 					}
+				}
+				foreach_const(chd, setInstance) {
+					SendPacket(*chd, packet);
 				}
 			}
 		}

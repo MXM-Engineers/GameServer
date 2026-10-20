@@ -1179,18 +1179,21 @@ PUSH_PACKED
 struct CQ_SwitchOnToggleSkill
 {
 	enum { NET_ID = 60042 };
-	u16 nick_len; // 2 bytes
-	wchar_t nick[1]; // 2 bytes each (wide string: u16 len + len*2)
-	u32 instantKey; // 4 bytes
+	u32 charID; // 4 bytes
+	u32 skillID; // 4 bytes
 };
 POP_PACKED
+ASSERT_SIZE(CQ_SwitchOnToggleSkill, 8);
 
 PUSH_PACKED
 struct CQ_SwitchOffToggleSkill
 {
 	enum { NET_ID = 60043 };
+	u32 charID; // 4 bytes
+	u32 skillID; // 4 bytes
 };
 POP_PACKED
+ASSERT_SIZE(CQ_SwitchOffToggleSkill, 8);
 
 PUSH_PACKED
 struct CQ_PlayerCancelStance
@@ -2224,12 +2227,12 @@ PUSH_PACKED
 struct CQ_WeaponState
 {
 	enum { NET_ID = 60180 };
-	u32 unk0;
-	u32 unk1;
-	u8 unk2;
-	u8 unk3;
+	u32 ownerID;
+	u32 state;
+	u8 chargeLevel;
+	u8 firingCombo;
 	u32 unk4;
-	u32 unk5;
+	f32 aimYaw;
 };
 POP_PACKED
 ASSERT_SIZE(CQ_WeaponState, 18);
@@ -2377,14 +2380,14 @@ struct CQ_UNKNOWN_60190
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_RemoteSyncTarget
+struct CQ_UNKNOWN_60191
 {
 	enum { NET_ID = 60191 };
 	u32 field0; // 4 bytes
 	u32 field0_3; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_RemoteSyncTarget, 8);
+ASSERT_SIZE(CQ_UNKNOWN_60191, 8);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60193
@@ -2404,19 +2407,19 @@ PUSH_PACKED
 struct CQ_GamePlayerSyncPhy
 {
 	enum { NET_ID = 60195 };
-	u32 unkId1;
-	u32 unkId2;
-	u32 unkId3;
-	float3 currPos;
+	u32 ParentEntity; // 4 bytes
+	u32 OwnerEntity; // 4 bytes
+	u32 RemoteSeedID; // 4 bytes
+	float3 FirePosition; // 12 bytes (ST_POS3: fX, fY, fZ)
 	u16 unkShort1;
 	u16 unkShort2;
 	u16 unkShort3;
 	u16 unkShort4;
 	u16 unkShort5;
 	u16 unkShort6;
-	u16 unkShort7;
-	u16 unkShort8;
-	u16 unkShort9;
+	i16 aimOffsetX; // 2 bytes (x10)
+	i16 aimOffsetY; // 2 bytes (x10)
+	i16 aimOffsetZ; // 2 bytes (x10)
 	u16 charNameLen;
 	wchar charName[1]; // length is charNameLen
 	u16 unkU16;
@@ -2442,53 +2445,38 @@ struct CQ_GamePlayerSyncPhy
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_GamePlayerSyncStatus
+struct CQ_RemoteSyncCreateFromRemoteDoc
 {
 	enum { NET_ID = 60196 };
-	u32 syncId1;
-	u32 syncId2;
-	u32 syncId3;
-	float3 currPos;
-	u16 deltaPosX;
-	u16 deltaPosY;
-	u16 deltaPosZ;
-	u16 yawOrSpeedA;
-	u16 pitchOrSpeedB;
-	u16 speedC;
-	u16 secondDeltaX;
-	u16 secondDeltaY;
-	u16 secondDeltaZ;
-	u16 charNameLen;
-	wchar charName[1]; // length is charNameLen
-	u16 unkU16;
-	u32 statA;
-	u32 statB;
-	u32 statC;
-	u32 statD;
-	u32 statE;
-	u32 statF;
-	u32 statG;
-	u32 statH;
-	u8 flagByte1;
-	u8 flagByte2;
-
+	u32 ParentEntity; // 4 bytes
+	u32 OwnerEntity; // 4 bytes
+	u32 RemoteSeedID; // 4 bytes
+	float3 FirePosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireRotationX; // 2 bytes
+	u16 FireRotationY; // 2 bytes
+	u16 FireRotationZ; // 2 bytes
+	float3 TargetPosition; // 12 bytes (ST_POS3: fX, fY, fZ)
+	u16 FireObject_len; // 2 bytes
+	wchar_t FireObject[1]; // 2 bytes (wide string)
+	u16 Scale; // 2 bytes
+	f32 LifeTime; // 4 bytes
+	u32 HitInvalidTarget; // 4 bytes
+	u32 RemoteDocIndex; // 4 bytes
+	u32 TargetEntity; // 4 bytes
+	u8 RemoteCreateFlags; // 1 bytes (bool)
 };
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_RevivePartyMemberUseMyLifeCount
+struct CQ_RemoteSyncTarget
 {
 	enum { NET_ID = 60197 };
-	u8 bPresenceFlags;
-	u32 unkID1;
-	u32 targetMemberID;
-	float3 revivePos;
-	float3 optionalPos;
-	u32 lifeCount;
-
-
+	u8 excludedFieldBits; // 1 bytes (bit3=!MoveDir)
+	u32 remoteID; // 4 bytes
+	u32 targetEntity; // 4 bytes
+	float3 DestPos; // 12 bytes (ST_POS3)
+	float3 MoveDir; // 12 bytes (ST_POS3, present if !(bits & 8))
 };
-
 POP_PACKED
 
 PUSH_PACKED
@@ -12328,10 +12316,10 @@ PUSH_PACKED
 struct SN_InteractionStatus
 {
 	enum { NET_ID = 62493 };
-	u32 state; // 4 bytes
+	u32 allowedTeamMask; // 4 bytes
 	u32 objectID; // 4 bytes
 	u32 interactionID; // 4 bytes
-	u32 occupiedTeam; // 4 bytes
+	i32 occupiedTeam; // 4 bytes
 	f32 coolTime; // 4 bytes
 	// logger 0x998a0d
 };

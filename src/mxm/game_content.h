@@ -186,8 +186,10 @@ enum class StatusType: u8
 	SKILLSTATUS,
 	SLOW,
 	SNIPER,
+	STACKATTACK,
 	STACKBOMB,
 	STAT,
+	STATUS_ON_EVADE,
 	STUN,
 	SUICIDE,
 	SUPERARMOR,
@@ -277,6 +279,8 @@ struct StatusInfo
 	}
 	i32 stackStatus = 0;
 	i32 stackFullStatus = 0;
+	eastl::fixed_vector<i32,8,false> stackRemotes;
+	eastl::fixed_vector<i32,4,false> fullStackSkills;
 	i32 casterStatus = 0;
 	bool staminaBurn = false;
 	f32 descDefenceDown = 0;

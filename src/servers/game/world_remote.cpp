@@ -226,6 +226,7 @@ void World::RemoteHit(RemoteInst& inst, Player& target)
 
 	if(amount > 0) {
 		if(enemy && inst.skillID != SkillID::INVALID) PassiveOnSkillHit(owner, target);
+		if(enemy) PassiveStackOnHit(owner, target, (i32)remote.ID, inst.skillID);
 		i32 stackBonus = 0;
 		if(enemy && (i32)inst.skillID % 100 == ULTIMATE_SKILL_SUFFIX) {
 			foreach_const(st, activeStatuses) {

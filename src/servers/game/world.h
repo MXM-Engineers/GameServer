@@ -711,6 +711,8 @@ public:
 	void PulseAura(u32 casterIndex, const StatusInfo& aura, const vec2& center, f32 range, i32 skipDebuffIndex);
 private:
 	void PassiveOnSkillCast(Player& player, i32 skillID);
+	void OnEvade(Player& target);
+	void PassiveStackOnHit(Player& attacker, Player& target, i32 remoteID, SkillID skillID);
 	void PassiveOnWeaponHit(Player& attacker, Player& target, const Projectile& proj);
 	void PassiveOnSkillHit(Player& attacker, Player& target);
 	void ApplyPassiveStatusRule(const PassiveStatusRule& rule, Player& owner, Player* hitTarget);

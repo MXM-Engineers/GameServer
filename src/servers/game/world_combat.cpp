@@ -74,6 +74,7 @@ void World::DamagePlayer(Player& attacker, Player& target, SkillID skillID, i32 
 	f32 elementMul = 1.0f;
 	if(HasStatusType(target, StatusType::EVADE) && attacker.team != target.team) {
 		LOG("Evade :: %ls evaded %ls", target.name.data(), attacker.name.data());
+		OnEvade(target);
 		return;
 	}
 

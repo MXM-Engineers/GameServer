@@ -31,6 +31,9 @@ struct PlayerInputCastSkill
 
 struct Remote;
 
+static const i32 WEAPON_STATE_FIRE = 2;
+static const i32 WEAPON_STATE_CHARGE = 7;
+
 struct World
 {
 	friend struct WorldRemoteSpawner;
@@ -112,6 +115,7 @@ struct World
 		u8 firingCombo = 0;
 		u8 chargeLevel = 0;
 		i32 weaponState = 0;
+		Time chargeStart = Time::ZERO;
 		u32 resourceGainCast = 0;
 		eastl::fixed_vector<u32,10,false> resourceGainTargets;
 		eastl::array<i32,2> shotCount = { 0, 0 };
@@ -408,6 +412,9 @@ struct World
 		f32 range;
 		f32 aoeRadius;
 		i32 damage;
+		i32 aoeDamage = 0;
+		RemoteIdx zoneRemote = RemoteIdx::INVALID;
+		i32 zoneDamage = 0;
 		f32 speed;
 		f32 halfWidth;
 		u32 remoteID = 0;
@@ -659,6 +666,7 @@ struct World
 	bool HasStatusFromSkill(const Player& target, u32 casterIndex, i32 skillID) const;
 	void OnWeaponShotPacket(Player& player, const vec3& origin, const vec2& dir, f32 distance, const u8* rawPacket, i32 rawSize);
 	void OnWeaponAimPacket(Player& player, f32 aimYaw);
+	void OnWeaponState(Player& player, i32 state, u8 chargeLevel, u8 firingCombo);
 
 private:
 	ActorUID NewActorUID();

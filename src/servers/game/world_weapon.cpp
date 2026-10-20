@@ -151,7 +151,12 @@ void World::PlayerWeaponShot(Player& player, const vec3& origin, const vec2& dir
 		const vec3 target = firePos + vec3(proj.dir * proj.range, 0);
 		replication->SendRemoteCreateToAll(player.Main().UID, seed, remote->ID, firePos, atan2f(proj.dir.y, proj.dir.x), target, ActorUID::INVALID, L"Attack_Fire_Dummy");
 	}
-	proj.damage = (i32)WeaponHitDamage(player, remote);
+	proj.damage = bomb && remote->attackMultiplier <= 0 ? 0 : (i32)WeaponHitDamage(player, remote);
+	proj.aoeDamage = (i32)WeaponHitDamage(player, bomb && bomb->attackMultiplier > 0 ? bomb : remote);
+	if(bomb && bomb->timeEventDelay >= 0) {
+		proj.zoneRemote = bomb->ID;
+		proj.zoneDamage = (i32)WeaponHitDamage(player, nullptr);
+	}
 	LOG("Shot :: %ls class=%d remote=%d graph=%d reliable=%d dist=%.0f range=%.0f speed=%.0f width=%.0f hits=%d aoe=%.0f", player.name.data(), (i32)classType, remote ? (i32)remote->ID : -1, graph, reliable, distance, proj.range, proj.speed, proj.halfWidth, proj.hitsLeft, proj.aoeRadius);
 	projectileList.push_back(proj);
 }
@@ -244,7 +249,7 @@ void World::UpdateProjectiles(f32 delta)
 				if(!LagSegmentHits(*it, from, to, proj->halfWidth + HitRadius(*it) + PROJECTILE_HIT_TOLERANCE, lastStep ? proj->forwardReach + HitRadius(*it) : HitRadius(*it))) continue;
 
 				if(!proj->hitList.full()) proj->hitList.push_back(it->index);
-				DamagePlayer(owner, *it, SkillID::INVALID, (i32)(proj->damage * PassiveWeaponDamageMul(owner, *it)), &*proj);
+				if(proj->damage > 0) DamagePlayer(owner, *it, SkillID::INVALID, (i32)(proj->damage * PassiveWeaponDamageMul(owner, *it)), &*proj);
 				PassiveOnWeaponHit(owner, *it, *proj);
 				proj->hitsLeft--;
 				if(proj->hitsLeft <= 0) {
@@ -278,11 +283,14 @@ void World::UpdateProjectiles(f32 delta)
 				const vec2 rel = vec2(nearPlayer->body->GetWorldPos()) - vec2(proj->start);
 				LOG("ProjectileEnd :: start=(%.0f, %.0f, %.0f) dir=(%.2f, %.2f) travelled=%.0f hit=%d nearest=%ls at (%.0f, %.0f, %.0f) along=%.0f side=%.0f lagClosest=%.0f", proj->start.x, proj->start.y, proj->start.z, proj->dir.x, proj->dir.y, proj->travelled, proj->hitsLeft <= 0, nearPlayer->name.data(), nearPlayer->body->GetWorldPos().x, nearPlayer->body->GetWorldPos().y, nearPlayer->body->GetWorldPos().z, glm::dot(rel, proj->dir), glm::dot(rel, vec2(-proj->dir.y, proj->dir.x)), proj->closest);
 			}
-			if(proj->aoeRadius > 0) {
-				Explode(owner, proj->pos, proj->aoeRadius, proj->damage);
+			if(proj->zoneRemote != RemoteIdx::INVALID) {
+				SpawnRemote(proj->ownerIndex, proj->zoneRemote, proj->pos, proj->dir, ActorUID::INVALID, SkillID::INVALID, nextCastID++, proj->zoneDamage, false);
+			}
+			else if(proj->aoeRadius > 0) {
+				Explode(owner, proj->pos, proj->aoeRadius, proj->aoeDamage);
 			}
 			else if(proj->graph && proj->hitsLeft > 0) {
-				Explode(owner, proj->pos, proj->halfWidth, proj->damage);
+				Explode(owner, proj->pos, proj->halfWidth, proj->aoeDamage);
 			}
 			proj = projectileList.erase_unsorted(proj);
 		}
@@ -427,6 +435,20 @@ RemoteIdx World::SelectWeaponRemote(Player& player, const WeaponFiring& wf)
 		LOG("Passive :: %ls weapon status %d used -> remote %d", player.name.data(), wf.replaceStatus, (i32)idx);
 	}
 	return idx;
+}
+
+void World::OnWeaponState(Player& player, i32 state, u8 chargeLevel, u8 firingCombo)
+{
+	if(state == WEAPON_STATE_CHARGE && player.weaponState != WEAPON_STATE_CHARGE) player.chargeStart = localTime;
+	if(state == WEAPON_STATE_FIRE && player.weaponState == WEAPON_STATE_CHARGE && chargeLevel == 0) {
+		const WeaponFiring& wf = ActiveWeaponFiring(player, player.Main().stance);
+		const f64 held = TimeDiffSec(TimeDiff(player.chargeStart, localTime));
+		while(chargeLevel < wf.chargeTime.size() && chargeLevel < wf.charge.size() && held >= wf.chargeTime[chargeLevel]) chargeLevel++;
+		if(chargeLevel > 0) LOG("Shot :: %ls charged %.2fs -> level %d", player.name.data(), held, (i32)chargeLevel);
+	}
+	player.firingCombo = firingCombo;
+	player.chargeLevel = chargeLevel;
+	player.weaponState = state;
 }
 
 f32 World::WeaponRange(const Player& p) const

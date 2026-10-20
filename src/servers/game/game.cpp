@@ -696,11 +696,9 @@ void Game::OnPlayerWeaponStateRelay(ClientHandle clientHd, ActorUID ownerUID, i3
 	ASSERT(player.clientHd == clientHd);
 
 	if(ownerUID == ActorUID::INVALID) ownerUID = player.Main().UID;
-	player.firingCombo = firingCombo;
-	player.chargeLevel = chargeLevel;
-	player.weaponState = state;
+	world.OnWeaponState(player, state, chargeLevel, firingCombo);
 	const WeaponIndex weapon = player.mainCharaID == 0 ? player.mainWeapon : player.subWeapon;
-	replication.RelayWeaponState(clientHd, ownerUID, (i32)weapon, state, chargeLevel, firingCombo);
+	replication.RelayWeaponState(clientHd, ownerUID, (i32)weapon, state, player.chargeLevel, firingCombo);
 }
 
 void Game::OnPlayerInteraction(ClientHandle clientHd, ActorUID targetUID, LocalActorID selfLocal)
@@ -730,9 +728,13 @@ bool Game::IsWeaponFireObject(ClientHandle clientHd, const wchar* name, u16 len)
 	const WeaponIndex weapon = (player.mainCharaID & 1) == 0 ? player.mainWeapon : player.subWeapon;
 	const WeaponFiring* wf = GetGameXmlContent().FindWeaponFiring((i32)weapon, player.Main().stance);
 	if(wf && wf->fireDummy.empty()) return len == 10 && EA::StdC::Strncmp(name, L"Scene Root", 10) == 0;
-	if(!wf || wf->fireDummy.size() != len) return false;
-	for(u16 i = 0; i < len; i++) if((wchar)wf->fireDummy[i] != name[i]) return false;
-	return true;
+	if(!wf) return false;
+	auto matches = [name, len](const eastl::fixed_string<char,32,false>& dummy) {
+		if(dummy.size() != len) return false;
+		for(u16 i = 0; i < len; i++) if((wchar)dummy[i] != name[i]) return false;
+		return true;
+	};
+	return matches(wf->fireDummy) || (!wf->chargeDummy.empty() && matches(wf->chargeDummy));
 }
 
 void Game::OnPlayerWeaponShot(ClientHandle clientHd, const vec3& origin, const vec2& dir, f32 distance, const u8* rawPacket, i32 rawSize)

@@ -287,6 +287,8 @@ struct WeaponFiring
 	RemoteIdx base = RemoteIdx::INVALID;
 	eastl::fixed_vector<RemoteIdx,4,false> combo;
 	eastl::fixed_vector<RemoteIdx,4,false> charge;
+	eastl::fixed_vector<f32,4,false> chargeTime;
+	eastl::fixed_string<char,32,false> chargeDummy;
 	i32 countRate = 0;
 	RemoteIdx countRemote = RemoteIdx::INVALID;
 	i32 replaceStatus = 0;

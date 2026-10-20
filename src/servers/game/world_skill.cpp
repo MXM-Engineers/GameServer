@@ -6,7 +6,6 @@
 static const i32 STAT_STAMINAREGEN = 5;
 static const i32 STAT_MANAREGEN = 39;
 static const i32 STAT_ULTIMATEREGEN = 42;
-static const i32 WEAPON_STATE_CHARGE = 7;
 
 void World::UpdateUltimateGauges(f32 delta)
 {

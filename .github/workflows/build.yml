@@ -75,7 +75,7 @@ jobs:
   #  and cached. First run is slow; later runs restore in seconds.
   # ---------------------------------------------------------------------------
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 

@@ -10,6 +10,8 @@ bool CConfigGame::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevForcedMap=%d", &DevForcedMap) == 1) return true;
 	if(EA::StdC::Sscanf(line, "ShotLeadMs=%d", &ShotLeadMs) == 1) return true;
 	if(EA::StdC::Sscanf(line, "HostIP=%d.%d.%d.%d", &HostIP[0], &HostIP[1], &HostIP[2], &HostIP[3]) == 4) return true;
+	if(EA::StdC::Sscanf(line, "HubServerPublicIP=%d.%d.%d.%d", &HubServerPublicIP[0], &HubServerPublicIP[1], &HubServerPublicIP[2], &HubServerPublicIP[3]) == 4) return true;
+	if(EA::StdC::Sscanf(line, "HubServerPort=%d", &HubServerPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
@@ -79,6 +81,8 @@ bool CConfigGame::SaveConfigFile()
 	out.append_sprintf("DevForcedMap=%d\n", DevForcedMap);
 	out.append_sprintf("ShotLeadMs=%d\n", ShotLeadMs);
 	out.append_sprintf("HostIP=%d.%d.%d.%d\n", HostIP[0], HostIP[1], HostIP[2], HostIP[3]);
+	out.append_sprintf("HubServerPublicIP=%d.%d.%d.%d\n", HubServerPublicIP[0], HubServerPublicIP[1], HubServerPublicIP[2], HubServerPublicIP[3]);
+	out.append_sprintf("HubServerPort=%d\n", HubServerPort);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("WindowWidth=%d\n", WindowWidth);
 	out.append_sprintf("WindowHeight=%d\n", WindowHeight);
@@ -106,6 +110,8 @@ void CConfigGame::Print() const
 	LOG("	DevForcedMap=%d", DevForcedMap);
 	LOG("	ShotLeadMs=%d", ShotLeadMs);
 	LOG("	HostIP=%d.%d.%d.%d", HostIP[0], HostIP[1], HostIP[2], HostIP[3]);
+	LOG("	HubServerPublicIP=%d.%d.%d.%d", HubServerPublicIP[0], HubServerPublicIP[1], HubServerPublicIP[2], HubServerPublicIP[3]);
+	LOG("	HubServerPort=%d", HubServerPort);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	WindowWidth=%d", WindowWidth);
 	LOG("	WindowHeight=%d", WindowHeight);
@@ -134,7 +140,11 @@ bool LoadConfig()
 {
 	static CConfigGame cfg;
 	g_Config = &cfg;
-	return g_Config->LoadConfigFile();
+	const bool loaded = g_Config->LoadConfigFile();
+	if(cfg.HubServerPublicIP[0] == 0) {
+		LOG("ERROR(LoadConfig): HubServerPublicIP is not set in '%s', players returning to the city are sent to HostIP (%d.%d.%d.%d), or to 127.0.0.1 if they connect from loopback", CONFIG_PATH, cfg.HostIP[0], cfg.HostIP[1], cfg.HostIP[2], cfg.HostIP[3]);
+	}
+	return loaded;
 }
 
 bool SaveConfig()

@@ -37,6 +37,11 @@ static void BotWeaponAnimation(const World::Player& player, Replication* replica
 
 void World::PlayerWeaponFire(Player& player)
 {
+	if(player.dead || frozen) return;
+	if(IsBlocked(player, true, false, false)) {
+		LOG("Blocked :: %ls melee swing ignored (attack blocked by a status)", player.name.data());
+		return;
+	}
 	BotWeaponAnimation(player, replication);
 	const vec2 dir = vec2(cosf(player.weaponAimYaw), sinf(player.weaponAimYaw));
 	const vec3 origin = player.body->GetWorldPos();

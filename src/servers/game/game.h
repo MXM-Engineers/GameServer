@@ -8,6 +8,12 @@
 #include "world.h"
 #include "game.h"
 #include "debug/window.h"
+#include <math.h>
+
+inline bool IsFinite(f32 v)
+{
+	return isfinite(v);
+}
 
 struct AccountData;
 
@@ -29,6 +35,7 @@ struct Game
 		const AccountUID accountUID;
 		const WideString& name;
 		const u32 playerIndex;
+		bool returnSent = false;
 
 		Player(ClientHandle clientHd_, AccountUID accountUID_, const WideString& name_, u32 playerIndex_):
 			clientHd(clientHd_),

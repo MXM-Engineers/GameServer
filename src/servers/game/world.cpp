@@ -118,6 +118,18 @@ void World::Update(Time localTime_)
 		// tag
 		if(p.input.tag) {
 			p.input.tag = 0;
+			if(p.casting.skillID != SkillID::INVALID) CancelCast(p, "tag");
+			if(p.comboSlot >= 0) {
+				replication->SendChangeSkillSlot(p.clientHd, p.Main().UID, p.comboSlot, p.comboBase, 0);
+				ComboBaseCooldown(p);
+				LOG("Combo :: %ls slot %d cleared (tag)", p.name.data(), p.comboSlot);
+				p.comboSlot = -1;
+			}
+			p.comboPending = SkillID::INVALID;
+			p.comboSkill = SkillID::INVALID;
+			p.comboAutoAt = Time::ZERO;
+			p.lastComboSkill = SkillID::INVALID;
+			p.pendingChildSkill = 0;
 			p.mainCharaID ^= 1;
 			eastl::swap(p.mana, p.benchMana);
 			eastl::swap(p.res, p.benchRes);
@@ -832,6 +844,7 @@ void World::StartCasting(Player& player, SkillID skillID, const GameXmlContent::
 	player.casting.executeAt = TimeAdd(localTime, TimeMsToTime(wait * 1000.0));
 	player.casting.type = (u8)cast.type;
 	player.casting.interruptByMove = cast.interruptByMove;
+	player.casting.casterClass = player.Main().classType;
 	LOG("Cast :: %ls skill=%d start action=%d type=%d wait=%.2f", player.name.data(), (i32)skillID, (i32)cast.action, (i32)cast.type, wait);
 }
 

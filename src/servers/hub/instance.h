@@ -48,6 +48,10 @@ struct RoomInstance
 		_MASTER_COUNT,
 	};
 
+	enum {
+		MAX_ALLOWED_MASTERS = 100
+	};
+
 	struct NewUser
 	{
 		ClientHandle clientHd;
@@ -120,7 +124,7 @@ struct RoomInstance
 	eastl::fixed_vector<User*,6 ,false> teamSpectator;
 	eastl::fixed_vector<User*,16,false> connectedUsers;
 
-	eastl::fixed_set<ClassType,100,false> allowedMastersSet;
+	eastl::fixed_set<ClassType,MAX_ALLOWED_MASTERS,false> allowedMastersSet;
 	eastl::array<eastl::array<u8,100>,2> teamMasterPickCount;
 
 	Time startTime = Time::ZERO;

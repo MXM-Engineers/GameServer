@@ -373,14 +373,15 @@ void GamePacketHandler::HandlePacket_CQ_GamePlayerSyncPhy(ClientHandle clientHd,
 
 	const Cl::CQ_GamePlayerSyncPhy& phy = *(const Cl::CQ_GamePlayerSyncPhy*)packetData;
 	const vec3 origin = f2v(phy.FirePosition);
+	if(!IsFinite(origin.x) || !IsFinite(origin.y) || !IsFinite(origin.z)) {
+		WARN("[client%x] WARNING: CQ_GamePlayerSyncPhy with a non finite FirePosition", clientHd);
+		return;
+	}
 	const vec3 aimOffset = vec3((f32)phy.aimOffsetX, (f32)phy.aimOffsetY, (f32)phy.aimOffsetZ) / SHOT_AIM_SCALE;
 	const u16 nameLen = phy.charNameLen;
 	const wchar* name = phy.charName;
 	const bool isWeapon = (nameLen >= 6 && EA::StdC::Strncmp(name, L"Attack", 6) == 0) || game->IsWeaponFireObject(clientHd, name, nameLen);
-	if(!isWeapon) {
-		NT_LOG("[client%x] SyncPhy :: non-weapon fire object '%.*ls'", clientHd, nameLen, name);
-		return;
-	}
+	if(!isWeapon) return;
 
 	const vec2 dir = vec2(aimOffset);
 	const bool aimless = glm::length(dir) < 0.1f;

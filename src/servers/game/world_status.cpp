@@ -69,6 +69,15 @@ const World::ActiveStatus* World::FindPassiveOfType(const Player& p, StatusType 
 	return nullptr;
 }
 
+World::ActiveStatus* World::FindPassiveOfType(const Player& p, StatusType type)
+{
+	foreach(it, activeStatuses) {
+		if(it->targetIndex != p.index || !it->info || it->info->type != type) continue;
+		if(PassiveOfActiveMaster(p, it->statusID)) return &*it;
+	}
+	return nullptr;
+}
+
 const World::ActiveStatus* World::FindCarrierPassive(const Player& carrier) const
 {
 	foreach_const(it, activeStatuses) {
@@ -220,8 +229,8 @@ void World::PassiveOnSkillCast(Player& player, i32 skillID)
 		ApplyStatus(player, player, *id);
 	}
 
-	if(const ActiveStatus* st = FindPassiveOfType(player, StatusType::SKILLSTAMINA)) {
-		ActiveStatus& counter = const_cast<ActiveStatus&>(*st);
+	if(ActiveStatus* st = FindPassiveOfType(player, StatusType::SKILLSTAMINA)) {
+		ActiveStatus& counter = *st;
 		counter.custom++;
 		if(st->info->customMax > 0 && counter.custom >= st->info->customMax) {
 			counter.custom = 0;
@@ -416,100 +425,10 @@ f32 World::PassiveWeaponDamageMul(Player& attacker, Player& target)
 	return mul;
 }
 
-void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power, f32 durationOverride)
+f32 World::ApplyStatusControl(Player& caster, Player& target, const StatusInfo* info, i32 statusID, f32 duration, Time until, bool displacement, vec3* moveFrom, vec3* moveTo)
 {
-	if(target.dead || target.untargetable) return;
-	if(caster.team != target.team) target.statusesTaken++;
-	const StatusInfo* info = GetGameXmlContent().FindStatus(statusID);
-	f32 duration = durationOverride > 0 ? durationOverride : (info && info->durationSec > 0 ? info->durationSec : 1.0f);
-	if(info && caster.team != target.team && PassiveBlocksCC(target, *info, &duration)) return;
-	const bool permanent = info && info->permanent && durationOverride <= 0;
-	if(permanent) duration = 1000000.0f;
-	const f32 sentDuration = permanent ? -1.0f : duration;
-	if(info && info->casterStatus != 0 && info->casterStatus != statusID && !caster.dead && !applyingCasterStatus) {
-		applyingCasterStatus = true;
-		ApplyStatus(caster, caster, info->casterStatus);
-		applyingCasterStatus = false;
-	}
-	const StatusDrainRule* drain = FindStatusDrainRule(statusID);
-	if(drain && caster.team != target.team) {
-		const f32 manaBefore = target.mana, energyBefore = target.res[0];
-		target.mana = MAX(target.mana, 0.0f) * (1.0f - drain->fraction);
-		if(target.res[0] > 0) target.res[0] *= 1.0f - drain->fraction;
-		target.tNextManaSend = Time::ZERO;
-		target.tNextResSend = Time::ZERO;
-		LOG("Status :: %ls drained by %d (mana %.0f -> %.0f, energy %.0f -> %.0f)", target.name.data(), statusID, manaBefore, target.mana, energyBefore, target.res[0]);
-	}
-	else if(info && info->staminaBurn && info->type == StatusType::HEAL && target.stamina > 0) {
-		LOG("Status :: %ls stamina burned by %d (%.0f -> 0)", target.name.data(), statusID, target.stamina);
-		target.stamina = 0;
-		target.tNextStaminaSend = Time::ZERO;
-	}
-
-	const bool dragForce = info && info->type == StatusType::DRAGGEDBYFORCE;
-	const bool displacement = info && (info->type == StatusType::PUSH || info->type == StatusType::FORCEBACK ||
-		info->type == StatusType::KNOCKDOWN || info->type == StatusType::AIRBORNE || info->type == StatusType::FLY || info->type == StatusType::DRAGGED || dragForce);
-	if(displacement && HasStatusType(target, StatusType::SUPERARMOR)) {
-		LOG("Status :: %ls resisted %d (superarmor)", target.name.data(), statusID);
-		return;
-	}
-
-	foreach(it, activeStatuses) {
-		if(it->statusID == statusID && it->targetIndex == target.index) {
-			const Time until = TimeAdd(localTime, TimeMsToTime(duration * 1000.0));
-			if(until > it->until) it->until = until;
-			const bool stacked = info && it->overlap < info->maxOverlap;
-			if(stacked) it->overlap++;
-			LOG("Status :: %ls -> %ls status=%d refreshed overlap=%d", caster.name.data(), target.name.data(), statusID, it->overlap);
-			const vec3 pos = target.body->GetWorldPos();
-			if(!stacked) replication->SendRemoveStatusToAll(statusID, it->targetUID, it->casterUID);
-			replication->SendAddStatusToAll(statusID, it->targetUID, it->casterUID, sentDuration, pos, pos, 0, it->overlap);
-			if(info && it->overlap >= info->maxOverlap && info->maxOverlap > 1) {
-				foreach_const(ps, activeStatuses) {
-					if(ps->targetIndex != caster.index || !ps->info || ps->info->stackStatus != statusID || ps->info->stackFullStatus == 0) continue;
-					const i32 full = ps->info->stackFullStatus;
-					it->until = localTime;
-					LOG("Passive :: %ls full stack of %d on %ls -> %d", caster.name.data(), statusID, target.name.data(), full);
-					ApplyStatus(caster, target, full);
-					break;
-				}
-			}
-			return;
-		}
-	}
-	if(activeStatuses.full()) return;
-
-	ActiveStatus st;
-	st.statusID = statusID;
-	st.info = info;
-	st.targetIndex = target.index;
-	st.casterIndex = caster.index;
-	st.targetUID = target.Main().UID;
-	st.casterUID = statusCasterOverride != ActorUID::INVALID ? statusCasterOverride : caster.Main().UID;
-	st.damageAtStart = target.damageTaken;
-	st.until = TimeAdd(localTime, TimeMsToTime(MAX(duration, 0.1f) * 1000.0));
-	st.appliedAt = localTime;
-	st.nextTick = TimeAdd(localTime, TimeMsToTime((info && info->intervalSec > 0 ? info->intervalSec : 1.0f) * 1000.0));
-	st.overlap = 1;
-	st.nextHealTick = localTime;
-	st.healTicksDone = 0;
-	st.shieldHP = 0;
-	if(info && (info->type == StatusType::SHIELD || info->type == StatusType::SHIELDBOMB)) {
-		f32 dataShield = 0;
-		foreach_const(m, info->mods) {
-			if(m->stat == StatusMod::SHIELD_DEFENCE && !m->mul) dataShield += m->value;
-		}
-		st.shieldHP = dataShield > 0 ? dataShield : MAX(power, 100.0f) * (info->paramRatio > 0 ? info->paramRatio : 1.0f);
-	}
-	activeStatuses.push_back(st);
-
-	if(info && info->type == StatusType::LINK && &caster != &target) {
-		if(info->linkCasterStatus != 0) ApplyStatus(caster, caster, info->linkCasterStatus, power);
-		if(info->linkTargetStatus != 0) ApplyStatus(caster, target, info->linkTargetStatus, power);
-	}
-
 	if(info && (info->kind == StatusInfo::Kind::HARD_CC || info->kind == StatusInfo::Kind::ROOT)) {
-		Time ccEnd = st.until;
+		Time ccEnd = until;
 		if(info->type == StatusType::AIRBORNE || info->type == StatusType::FLY || info->type == StatusType::KNOCKDOWN) {
 			const auto& content = GetGameXmlContent();
 			const f32 recover = info->lyingTime + content.GetLieEndTime(content.GetMaster(target.Main().classType).className.c_str());
@@ -519,6 +438,7 @@ void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power,
 	}
 
 	const bool chainedPush = target.clientHd == ClientHandle::INVALID ? localTime < target.pushUntil : localTime < target.clientPushUntil;
+	const bool dragForce = info && info->type == StatusType::DRAGGEDBYFORCE;
 	const vec3 from = chainedPush ? vec3(vec2(target.pushTarget), target.body->GetWorldPos().z) : target.body->GetWorldPos();
 	vec3 to = from;
 	vec3 forceCenter = from;
@@ -600,6 +520,104 @@ void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power,
 			if(followUntil > target.ccUntil) target.ccUntil = followUntil;
 		}
 	}
+	*moveFrom = from;
+	*moveTo = dragForce ? forceCenter : to;
+	return graphDuration;
+}
+
+void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power, f32 durationOverride)
+{
+	if(target.dead || target.untargetable) return;
+	const StatusInfo* info = GetGameXmlContent().FindStatus(statusID);
+	const bool displacement = info && (info->type == StatusType::PUSH || info->type == StatusType::FORCEBACK ||
+		info->type == StatusType::KNOCKDOWN || info->type == StatusType::AIRBORNE || info->type == StatusType::FLY || info->type == StatusType::DRAGGED || info->type == StatusType::DRAGGEDBYFORCE);
+	if(displacement && HasStatusType(target, StatusType::SUPERARMOR)) {
+		LOG("Status :: %ls resisted %d (superarmor)", target.name.data(), statusID);
+		return;
+	}
+	if(caster.team != target.team) target.statusesTaken++;
+	f32 duration = durationOverride > 0 ? durationOverride : (info && info->durationSec > 0 ? info->durationSec : 1.0f);
+	if(info && caster.team != target.team && PassiveBlocksCC(target, *info, &duration)) return;
+	const bool permanent = info && info->permanent && durationOverride <= 0;
+	if(permanent) duration = 1000000.0f;
+	const f32 sentDuration = permanent ? -1.0f : duration;
+	if(info && info->casterStatus != 0 && info->casterStatus != statusID && !caster.dead && !applyingCasterStatus) {
+		applyingCasterStatus = true;
+		ApplyStatus(caster, caster, info->casterStatus);
+		applyingCasterStatus = false;
+	}
+	const StatusDrainRule* drain = FindStatusDrainRule(statusID);
+	if(drain && caster.team != target.team) {
+		const f32 manaBefore = target.mana, energyBefore = target.res[0];
+		target.mana = MAX(target.mana, 0.0f) * (1.0f - drain->fraction);
+		if(target.res[0] > 0) target.res[0] *= 1.0f - drain->fraction;
+		target.tNextManaSend = Time::ZERO;
+		target.tNextResSend = Time::ZERO;
+		LOG("Status :: %ls drained by %d (mana %.0f -> %.0f, energy %.0f -> %.0f)", target.name.data(), statusID, manaBefore, target.mana, energyBefore, target.res[0]);
+	}
+	else if(info && info->staminaBurn && info->type == StatusType::HEAL && target.stamina > 0) {
+		LOG("Status :: %ls stamina burned by %d (%.0f -> 0)", target.name.data(), statusID, target.stamina);
+		target.stamina = 0;
+		target.tNextStaminaSend = Time::ZERO;
+	}
+
+	foreach(it, activeStatuses) {
+		if(it->statusID == statusID && it->targetIndex == target.index && it->until > localTime) {
+			const Time until = TimeAdd(localTime, TimeMsToTime(duration * 1000.0));
+			if(until > it->until) it->until = until;
+			const bool stacked = info && it->overlap < info->maxOverlap;
+			if(stacked) it->overlap++;
+			LOG("Status :: %ls -> %ls status=%d refreshed overlap=%d", caster.name.data(), target.name.data(), statusID, it->overlap);
+			vec3 from, to;
+			const f32 graphDuration = ApplyStatusControl(caster, target, info, statusID, duration, it->until, displacement, &from, &to);
+			if(!stacked) replication->SendRemoveStatusToAll(statusID, it->targetUID, it->casterUID);
+			replication->SendAddStatusToAll(statusID, it->targetUID, it->casterUID, sentDuration, from, to, graphDuration, it->overlap);
+			if(info && it->overlap >= info->maxOverlap && info->maxOverlap > 1) {
+				foreach_const(ps, activeStatuses) {
+					if(ps->targetIndex != caster.index || !ps->info || ps->info->stackStatus != statusID || ps->info->stackFullStatus == 0) continue;
+					const i32 full = ps->info->stackFullStatus;
+					it->until = localTime;
+					LOG("Passive :: %ls full stack of %d on %ls -> %d", caster.name.data(), statusID, target.name.data(), full);
+					ApplyStatus(caster, target, full);
+					break;
+				}
+			}
+			return;
+		}
+	}
+	ASSERT(!activeStatuses.full());
+
+	ActiveStatus st;
+	st.statusID = statusID;
+	st.info = info;
+	st.targetIndex = target.index;
+	st.casterIndex = caster.index;
+	st.targetUID = target.Main().UID;
+	st.casterUID = statusCasterOverride != ActorUID::INVALID ? statusCasterOverride : caster.Main().UID;
+	st.damageAtStart = target.damageTaken;
+	st.until = TimeAdd(localTime, TimeMsToTime(MAX(duration, 0.1f) * 1000.0));
+	st.appliedAt = localTime;
+	st.nextTick = TimeAdd(localTime, TimeMsToTime((info && info->intervalSec > 0 ? info->intervalSec : 1.0f) * 1000.0));
+	st.overlap = 1;
+	st.nextHealTick = localTime;
+	st.healTicksDone = 0;
+	st.shieldHP = 0;
+	if(info && (info->type == StatusType::SHIELD || info->type == StatusType::SHIELDBOMB)) {
+		f32 dataShield = 0;
+		foreach_const(m, info->mods) {
+			if(m->stat == StatusMod::SHIELD_DEFENCE && !m->mul) dataShield += m->value;
+		}
+		st.shieldHP = dataShield > 0 ? dataShield : MAX(power, 100.0f) * (info->paramRatio > 0 ? info->paramRatio : 1.0f);
+	}
+	activeStatuses.push_back(st);
+
+	if(info && info->type == StatusType::LINK && &caster != &target) {
+		if(info->linkCasterStatus != 0) ApplyStatus(caster, caster, info->linkCasterStatus, power);
+		if(info->linkTargetStatus != 0) ApplyStatus(caster, target, info->linkTargetStatus, power);
+	}
+
+	vec3 from, to;
+	const f32 graphDuration = ApplyStatusControl(caster, target, info, statusID, duration, st.until, displacement, &from, &to);
 
 	if(info && info->type == StatusType::DISPEL && info->dispelEffect >= 0) {
 		foreach(it, activeStatuses) {
@@ -611,7 +629,7 @@ void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power,
 	}
 
 	LOG("Status :: %ls -> %ls status=%d type=%s duration=%.2f shield=%.0f", caster.name.data(), target.name.data(), statusID, info ? info->typeName.c_str() : "?", duration, st.shieldHP);
-	replication->SendAddStatusToAll(statusID, st.targetUID, st.casterUID, sentDuration, from, dragForce ? forceCenter : to, graphDuration);
+	replication->SendAddStatusToAll(statusID, st.targetUID, st.casterUID, sentDuration, from, to, graphDuration);
 }
 
 bool World::IsBlocked(const Player& p, bool attack, bool skill, bool shirk) const

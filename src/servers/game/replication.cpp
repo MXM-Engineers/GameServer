@@ -1026,7 +1026,7 @@ void Replication::RelayWeaponShot(ClientHandle senderHd, const u8* packetData, i
 	buff.ReadRaw(offsetof(Cl::CQ_GamePlayerSyncPhy, charNameLen) - offsetof(Cl::CQ_GamePlayerSyncPhy, unkShort1));
 	remote.fireObjectLen = buff.Read<u16>();
 	if(remote.fireObjectLen > MAX_FIRE_OBJECT_LEN) return;
-	if(packetSize < (i32)(sizeof(Sv::SN_RemoteSyncCreateFromCreatorId) - sizeof(wchar_t) + remote.fireObjectLen * sizeof(wchar_t))) return;
+	if(packetSize < (i32)(offsetof(Cl::CQ_GamePlayerSyncPhy, charNameLen) + sizeof(u16) + remote.fireObjectLen * sizeof(wchar) + sizeof(u16))) return;
 	remote.fireObject = (const wchar*)buff.ReadRaw(remote.fireObjectLen * sizeof(wchar));
 	remote.scale = buff.Read<u16>();
 	if(remote.parentUID == ActorUID::INVALID || remote.ownerUID == ActorUID::INVALID) return;
@@ -1061,7 +1061,6 @@ void Replication::RelayWeaponState(ClientHandle senderHd, ActorUID ownerUID, i32
 
 void Replication::SendRemoteDamageToAll(u32 remoteID, RemoteIdx remoteDoc, ActorUID attackerUID, ActorUID targetUID, const vec3& hitPos, const vec2& hitDir, i32 damage, i32 hp, i32 hpMax, u32 damageType)
 {
-	static u32 damageSeq = 1;
 	const u32 seq = damageSeq++;
 	const float3 dir3 = { hitDir.x, hitDir.y, 0 };
 	const float3 pos3 = v2f(hitPos);

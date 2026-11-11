@@ -10,6 +10,7 @@ public:
 	i32 getID();
 	void setID(i32 id);
 	SkillNormalLevelModel *getSkillNormalLevelByIndex(i32 index);
+	const SkillNormalLevelModel *getSkillNormalLevelByIndex(i32 index) const;
 	void setSkillNormalLevelByIndex(SkillNormalLevelModel skill, i32 index);
 
 	void Print();

@@ -98,7 +98,7 @@ void World::UpdateUltimateGauges(f32 delta)
 	}
 }
 
-bool World::PlayerPaySkillCost(Player& player, i32 skillID)
+bool World::PlayerPaySkillCost(Player& player, i32 skillID, bool pay)
 {
 	const auto& content = GetGameXmlContent();
 	f32 mp = content.GetSkillConsumeMP(skillID);
@@ -106,8 +106,10 @@ bool World::PlayerPaySkillCost(Player& player, i32 skillID)
 		if(it->targetIndex != player.index || !it->info || it->info->type != StatusType::NOCOST || it->until <= localTime) continue;
 		if(eastl::find(it->info->costSkills.begin(), it->info->costSkills.end(), skillID) == it->info->costSkills.end()) continue;
 		mp = MAX(mp * (1.0f + it->info->costRatioMP / 100.0f), 0.0f);
-		it->until = localTime;
-		LOG("Passive :: %ls skill %d mana cost %.0f (status %d used)", player.name.data(), skillID, mp, it->statusID);
+		if(pay) {
+			it->until = localTime;
+			LOG("Passive :: %ls skill %d mana cost %.0f (status %d used)", player.name.data(), skillID, mp, it->statusID);
+		}
 		break;
 	}
 	const f32 ug = content.GetSkillConsumeUG(skillID);
@@ -129,8 +131,9 @@ bool World::PlayerPaySkillCost(Player& player, i32 skillID)
 			resCost[0], player.res[0], resCost[1], player.res[1], resCost[2], player.res[2], hpCost);
 	}
 	LOG("Cost :: %ls skill=%d mp=%.0f/%.0f ug=%.0f/%.0f stamina=%.0f/%.0f %s", player.name.data(), skillID,
-		mp, player.mana, ug, player.ultGauge, st, player.stamina, ok ? "paid" : "REFUSED");
+		mp, player.mana, ug, player.ultGauge, st, player.stamina, ok ? (pay ? "paid" : "payable") : "REFUSED");
 	if(!ok) return false;
+	if(!pay) return true;
 
 	if(mp > 0 && player.mana >= 0) { player.mana -= mp; player.tNextManaSend = Time::ZERO; }
 	if(ug > 0 && player.ultGauge >= 0) { player.ultGauge -= ug; player.tNextUltSend = Time::ZERO; }
@@ -167,6 +170,13 @@ void World::ToggleOn(Player& player, SkillID skillID, const vec3& castPos)
 {
 	const GameXmlContent::SkillToggle* tg = GetGameXmlContent().FindSkillToggle((i32)skillID);
 	if(!tg) return;
+	if(player.dead || frozen) return;
+	const bool shirk = GetGameXmlContent().GetSkillConsumeStamina((i32)skillID) > 0;
+	if(IsBlocked(player, false, !shirk, shirk)) {
+		LOG("Blocked :: %ls toggle skill=%d (input blocked by a status)", player.name.data(), (i32)skillID);
+		return;
+	}
+	if(!PlayerPaySkillCost(player, (i32)skillID, false)) return;
 	if(player.toggleSkill != SkillID::INVALID) ToggleOff(player);
 	player.toggleSkill = skillID;
 	player.toggleCastID = nextCastID++;
@@ -242,6 +252,7 @@ void World::ReleaseCast(Player& player)
 	player.casting.skillID = SkillID::INVALID;
 	auto f = GetGameXmlContent().skillMap.find(c.skillID);
 	if(f == GetGameXmlContent().skillMap.end() || player.dead) return;
+	if(c.casterClass != player.Main().classType) return;
 	LOG("Cast :: %ls skill=%d release", player.name.data(), (i32)c.skillID);
 	GroupTeleport(player, c.skillID, c.castPos);
 	if(f->second.action == ActionStateID::INVALID) return;
@@ -295,13 +306,19 @@ void World::UpdateStances()
 	}
 }
 
-bool World::ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets, f32 angle, i32 forceAnim, ActionStateID forcedAction)
+bool World::ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets, f32 angle, i32 forceAnim, ActionStateID forcedAction, ClassType casterClass)
 {
 	const auto& content = GetGameXmlContent();
 	auto skillFound = content.skillMap.find(skillID);
 	if(skillFound == content.skillMap.end()) return false;
 	const auto& skill = skillFound->second;
-	const auto& action = content.GetSkillAction(player.Main().classType, forcedAction != ActionStateID::INVALID ? forcedAction : skill.action, player.Main().stance);
+	const bool deferred = casterClass != ClassType::NONE;
+	if(!deferred) casterClass = player.Main().classType;
+	const i8 casterStance = player.Main().classType == casterClass ? player.Main().stance : player.Sub().stance;
+	const ActionStateID actionID = forcedAction != ActionStateID::INVALID ? forcedAction : skill.action;
+	const GameXmlContent::Action* actionFound = content.FindSkillAction(casterClass, actionID, casterStance);
+	if(deferred && !actionFound) return false;
+	const auto& action = actionFound ? *actionFound : content.GetSkillAction(casterClass, actionID, casterStance);
 
 	i32 anim = 0;
 	if(player.lastComboSkill == skillID && TimeDiffSec(TimeDiff(player.lastComboTime, localTime)) < 3.0) {
@@ -317,19 +334,12 @@ bool World::ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& ca
 		player.lastComboTime = localTime;
 	}
 
-	{
-		SkillNormalModel& skillModel = const_cast<SkillNormalModel&>(skill);
-		const f32 consumeUG = skillModel.getSkillNormalLevelByIndex(0)->getConsumeUG();
-		(void)consumeUG;
-	}
-
 	const u32 castID = nextCastID++;
 	i32 damage = (i32)SkillDamage(skillID);
 	{
 		const f32 skillPower = StatusModSum(player, StatusMod::SKILLPOWER);
 		if(skillPower > 0) {
-			SkillNormalModel& sm = const_cast<SkillNormalModel&>(skill);
-			damage += (i32)(skillPower * sm.getSkillNormalLevelByIndex(0)->getAttackMultiplier());
+			damage += (i32)(skillPower * skill.getSkillNormalLevelByIndex(0)->getAttackMultiplier());
 		}
 	}
 	const ActorUID currentTarget = targets.size() > 0 ? targets[0] : ActorUID::INVALID;
@@ -354,7 +364,7 @@ bool World::ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& ca
 			}
 			if(cmd->animIndex >= 0 && cmd->animIndex < 8) acts[cmd->animIndex] |= a;
 		}
-		const char* className = content.GetMaster(player.Main().classType).className.c_str();
+		const char* className = content.GetMaster(casterClass).className.c_str();
 		i32 lastActing = -1;
 		for(i32 i = 0; i < 8; i++) if(acts[i]) lastActing = i;
 		if((!regCombo || !acts[0]) && (!hitEventCombo || !acts[0])) {
@@ -399,6 +409,7 @@ bool World::ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& ca
 			pr.stopAtTarget = cmd->remote.stopAtTarget;
 			pr.remove = cmd->remote.remove != 0;
 			pr.nodeName = cmd->nodeName;
+			pr.casterClass = casterClass;
 			pendingRemotes.push_back(pr);
 			scheduled = true;
 		}
@@ -515,6 +526,8 @@ void World::RunSkillProgramCommand(SkillProgram& prog, ActorMaster* caster, i32 
 				} break;
 			}
 		} break;
+
+		default: break;
 	}
 
 	if(distance != 0) {

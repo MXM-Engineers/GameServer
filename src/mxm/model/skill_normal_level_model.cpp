@@ -40,7 +40,7 @@ void SkillNormalLevelModel::setLevel(i8 level)
 	_Level = level;
 }
 
-float SkillNormalLevelModel::getBaseDamage()
+float SkillNormalLevelModel::getBaseDamage() const
 {
 	return _BaseDamage;
 }
@@ -50,7 +50,7 @@ void SkillNormalLevelModel::setBaseDamage(float baseDamage)
 	_BaseDamage = baseDamage;
 }
 
-float SkillNormalLevelModel::getAttackMultiplier()
+float SkillNormalLevelModel::getAttackMultiplier() const
 {
 	return _AttackMultiplier;
 }
@@ -85,7 +85,7 @@ void SkillNormalLevelModel::setSkillRangeLengthY(float lenght)
 	_SkillRangeLengthY = lenght;
 }
 
-float SkillNormalLevelModel::getSkillRangeLengthY()
+float SkillNormalLevelModel::getSkillRangeLengthY() const
 {
 	return _SkillRangeLengthY;
 }
@@ -130,7 +130,7 @@ void SkillNormalLevelModel::setConsumeEP(float ep)
 	_ConsumeEP = ep;
 }
 
-float SkillNormalLevelModel::getConsumeUG()
+float SkillNormalLevelModel::getConsumeUG() const
 {
 	return _ConsumeUG;
 }

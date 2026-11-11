@@ -10,16 +10,16 @@ public:
 	void setSkillIndex(i32 skillIndex);
 	i8 getLevel();
 	void setLevel(i8 level);
-	float getBaseDamage();
+	float getBaseDamage() const;
 	void setBaseDamage(float baseDamage);
-	float getAttackMultiplier();
+	float getAttackMultiplier() const;
 	void setAttackMultiplier(float attackMultiplier);
 	float getCoolTime();
 	void setCoolTime(float coolTime);
 	void setSkillRangeLengthX(float lenght);
 	float getSkillRangeLengthX();
 	void setSkillRangeLengthY(float lenght);
-	float getSkillRangeLengthY();
+	float getSkillRangeLengthY() const;
 	float getTargetRangeLengthX();
 	void setTargetRangeLengthX(float lenght);
 	float getTargetRangeLengthY();
@@ -28,7 +28,7 @@ public:
 	void setConsumeMP(float mp);
 	float getConsumeEP();
 	void setConsumeEP(float ep);
-	float getConsumeUG();
+	float getConsumeUG() const;
 	void setConsumeUG(float ug);
 	float getTargetMaxDistance();
 	void setTargetMaxDistance(float distance);

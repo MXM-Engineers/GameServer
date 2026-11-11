@@ -43,18 +43,18 @@ static inline f32 SkillMoveDuration(const GameXmlContent& content, ClassType cls
 	return action.seqLength;
 }
 
-static inline f32 SkillDamage(SkillID skillID)
+static inline f32 SkillDamage(SkillID skillID, i32 depth = 0)
 {
 	const auto& content = GetGameXmlContent();
 	auto found = content.skillMap.find(skillID);
 	if(found == content.skillMap.end()) return 0;
-	SkillNormalModel& skill = const_cast<SkillNormalModel&>(found->second);
-	SkillNormalLevelModel& level = *skill.getSkillNormalLevelByIndex(0);
+	const SkillNormalModel& skill = found->second;
+	const SkillNormalLevelModel& level = *skill.getSkillNormalLevelByIndex(0);
 	const f32 ttBase = content.GetSkillBaseDamage((i32)skillID);
 	const f32 base = ttBase > 0 ? ttBase : level.getBaseDamage();
 	if(base <= 0) {
 		const i32 comboBase = content.GetComboBaseSkill((i32)skillID);
-		if(comboBase != 0) return SkillDamage(SkillID(comboBase));
+		if(comboBase != 0 && depth == 0) return SkillDamage(SkillID(comboBase), depth + 1);
 	}
 	const f32 damage = base + COMBAT_ATTACK_STAT * level.getAttackMultiplier();
 	return MAX(damage, 0.0f);

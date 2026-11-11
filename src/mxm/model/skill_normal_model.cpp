@@ -20,6 +20,13 @@ void SkillNormalModel::setID(i32 id)
 
 SkillNormalLevelModel* SkillNormalModel::getSkillNormalLevelByIndex(i32 index)
 {
+	ASSERT(index >= 0 && index < (i32)ARRAY_COUNT(_skillNormalLevelModel));
+	return &_skillNormalLevelModel[index];
+}
+
+const SkillNormalLevelModel* SkillNormalModel::getSkillNormalLevelByIndex(i32 index) const
+{
+	ASSERT(index >= 0 && index < (i32)ARRAY_COUNT(_skillNormalLevelModel));
 	return &_skillNormalLevelModel[index];
 }
 

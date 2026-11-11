@@ -62,8 +62,27 @@ f32 World::BodyMidHeight(const Player& p) const
 	return (f32)GetGameXmlContent().GetMaster(p.Main().classType).character.getColliderHeight() * 0.5f;
 }
 
+void World::OnPlayerKilled(Player& attacker, Player& target)
+{
+	const ActorMaster& chara = target.Main();
+	target.dead = true;
+	target.tRespawn = TimeAdd(localTime, TimeMsToTime(RESPAWN_DELAY_MS));
+	LOG("Death :: %ls killed by %ls", target.name.data(), attacker.name.data());
+	target.deaths++;
+	if(attacker.team != target.team) {
+		attacker.kills++;
+		i32 teamKills = 0;
+		foreach_const(it, players) {
+			if(it->team == attacker.team) teamKills += it->kills;
+		}
+		replication->SendScoreToAll(attacker.userID, attacker.team, attacker.kills, teamKills, target.userID, target.deaths);
+	}
+	replication->SendDeathToAll(attacker.Main().UID, chara.UID, CreatureIndex(100000000 + (i32)chara.classType), target.userID, RESPAWN_DELAY_MS);
+}
+
 void World::DamagePlayer(Player& attacker, Player& target, SkillID skillID, i32 damage, const Projectile* proj, u32 remoteID, RemoteIdx remoteDoc, vec2 remoteDir)
 {
+	if(frozen) return;
 	if(target.dead || target.untargetable) return;
 	if(attacker.index != target.index) {
 		attacker.lastHitTargetIndex = (i32)target.index;
@@ -168,17 +187,5 @@ void World::DamagePlayer(Player& attacker, Player& target, SkillID skillID, i32 
 	}
 
 	if(chara.hp > 0) PassiveOnDamaged(target);
-	if(chara.hp == 0) {
-		target.dead = true;
-		target.tRespawn = TimeAdd(localTime, TimeMsToTime(RESPAWN_DELAY_MS));
-		LOG("Death :: %ls killed by %ls", target.name.data(), attacker.name.data());
-		attacker.kills++;
-		target.deaths++;
-		i32 teamKills = 0;
-		foreach_const(it, players) {
-			if(it->team == attacker.team) teamKills += it->kills;
-		}
-		replication->SendScoreToAll(attacker.userID, attacker.team, attacker.kills, teamKills, target.userID, target.deaths);
-		replication->SendDeathToAll(attacker.Main().UID, chara.UID, CreatureIndex(100000000 + (i32)chara.classType), target.userID, RESPAWN_DELAY_MS);
-	}
+	if(chara.hp == 0) OnPlayerKilled(attacker, target);
 }

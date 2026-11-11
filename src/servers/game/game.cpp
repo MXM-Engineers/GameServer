@@ -9,10 +9,19 @@
 
 const CreatureIndex CI_DOOR = CreatureIndex(110040546);
 const CreatureIndex CI_WALL = CreatureIndex(110042602);
+static const f32 MAX_CLIENT_SNAP_DIST = 1500.0f;
+
+static bool IsClientOnLoopback(const Server* server, ClientHandle clientHd)
+{
+	auto found = server->clientHandle2IDMap.find(clientHd);
+	if(found == server->clientHandle2IDMap.end()) return false;
+	return server->clientInfo[found->second].ip[0] == 127;
+}
 
 void Game::Init(Server* server_, const In::MQ_CreateGame& gameInfo, const eastl::array<ClientHandle, MAX_PLAYERS>& playerClientHdList)
 {
 	replication.Init(server_);
+	ASSERT((i32)gameInfo.playerCount <= (i32)world.players.max_size());
 	ASSERT(gameInfo.gameType != GameType::INVALID);
 	ASSERT(gameInfo.areaIndex != AreaIndex(0));
 	ASSERT(gameInfo.stageIndex != StageIndex(0));
@@ -443,6 +452,11 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
+	if(!IsFinite(pos.x) || !IsFinite(pos.y) || !IsFinite(pos.z) || !IsFinite(dir.x) || !IsFinite(dir.y) || !IsFinite(speed)) {
+		WARN("Client sent a non finite position (clientHd=%x actorUID=%u)", clientHd, (u32)actorUID);
+		return;
+	}
+
 	bool found = false;
 	foreach_const(chit, player.characters) {
 		const World::ActorMaster& chara = **chit;
@@ -502,7 +516,7 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 		player.lastClientAction = action;
 		player.lastClientActionSince = world.localTime;
 	}
-	if(world.localTime < player.dashUntil || world.localTime < player.ccUntil) {
+	if((world.localTime < player.dashUntil || world.localTime < player.ccUntil) && glm::length(pos - player.body->GetWorldPos()) <= MAX_CLIENT_SNAP_DIST) {
 		player.body->collider->setFootPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
 		player.body->vel = vec3(0);
 	}
@@ -661,11 +675,24 @@ void Game::EndGame()
 void Game::OnPlayerReturnToChannel(ClientHandle clientHd)
 {
 	auto found = playerMap.find(clientHd);
-	if(found == playerMap.end()) return;
-	World::Player& player = world.GetPlayer(found->second->playerIndex);
-	i32 hubIP[4] = { Config().HostIP[0], Config().HostIP[1], Config().HostIP[2], Config().HostIP[3] };
-	if(hubIP[0] == 0) { hubIP[0] = 127; hubIP[3] = 1; }
-	replication.SendDoConnectChannel(clientHd, player.name.data(), hubIP, 11900);
+	if(found == playerMap.end()) {
+		WARN("Client is not a player of this game (clientHd=%x)", clientHd);
+		return;
+	}
+	Player& p = *found->second;
+	if(p.returnSent) return;
+	p.returnSent = true;
+
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	const i32* configIP = Config().HubServerPublicIP[0] != 0 ? Config().HubServerPublicIP : Config().HostIP;
+	i32 hubIP[4] = { configIP[0], configIP[1], configIP[2], configIP[3] };
+	if(hubIP[0] == 0 && IsClientOnLoopback(replication.server, clientHd)) {
+		hubIP[0] = 127;
+		hubIP[1] = 0;
+		hubIP[2] = 0;
+		hubIP[3] = 1;
+	}
+	replication.SendDoConnectChannel(clientHd, player.name.data(), hubIP, (u16)Config().HubServerPort);
 }
 
 void Game::OnPlayerJump(ClientHandle clientHd, ActorUID actorUID, f32 rotate, f32 moveDirX, f32 moveDirY, i32 actionID)
@@ -712,9 +739,9 @@ void Game::OnPlayerInteraction(ClientHandle clientHd, ActorUID targetUID, LocalA
 
 void Game::OnPlayerToggleSkill(ClientHandle clientHd, SkillID skillID, bool on)
 {
-	auto found = playerMap.find(clientHd);
-	if(found == playerMap.end()) return;
-	World::Player& player = world.GetPlayer(found->second->playerIndex);
+	Player& p = *playerMap.at(clientHd);
+	World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
 	LOG("Toggle :: %ls request skill=%d %s", player.name.data(), (i32)skillID, on ? "on" : "off");
 	if(on) world.ToggleOn(player, skillID, player.body->GetWorldPos());
 	else world.ToggleOff(player);
@@ -722,9 +749,9 @@ void Game::OnPlayerToggleSkill(ClientHandle clientHd, SkillID skillID, bool on)
 
 bool Game::IsWeaponFireObject(ClientHandle clientHd, const wchar* name, u16 len)
 {
-	auto found = playerMap.find(clientHd);
-	if(found == playerMap.end()) return false;
-	const World::Player& player = world.GetPlayer(found->second->playerIndex);
+	Player& p = *playerMap.at(clientHd);
+	const World::Player& player = world.GetPlayer(p.playerIndex);
+	ASSERT(player.clientHd == clientHd);
 	const WeaponIndex weapon = (player.mainCharaID & 1) == 0 ? player.mainWeapon : player.subWeapon;
 	const WeaponFiring* wf = GetGameXmlContent().FindWeaponFiring((i32)weapon, player.Main().stance);
 	if(wf && wf->fireDummy.empty()) return len == 10 && EA::StdC::Strncmp(name, L"Scene Root", 10) == 0;
@@ -743,8 +770,12 @@ void Game::OnPlayerWeaponShot(ClientHandle clientHd, const vec3& origin, const v
 	World::Player& player = world.GetPlayer(p.playerIndex);
 	ASSERT(player.clientHd == clientHd);
 
-	const i32 sid = replication.server->clientHandle2IDMap.at(clientHd);
-	const auto& ip = replication.server->clientInfo[sid].ip;
+	auto sid = replication.server->clientHandle2IDMap.find(clientHd);
+	if(sid == replication.server->clientHandle2IDMap.end()) {
+		WARN("Client is no longer connected (clientHd=%x)", clientHd);
+		return;
+	}
+	const auto& ip = replication.server->clientInfo[sid->second].ip;
 	const auto& host = Config().HostIP;
 	const bool isHost = ip[0] == 127 || (ip[0] == host[0] && ip[1] == host[1] && ip[2] == host[2] && ip[3] == host[3]);
 	player.shotLeadSec = isHost ? 0.0f : Config().ShotLeadMs / 1000.0f;

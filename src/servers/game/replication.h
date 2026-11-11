@@ -252,6 +252,7 @@ struct Replication
 
 	hash_map<ClientHandle, i32, MAX_PLAYERS> playerMap;
 
+	u32 damageSeq = 1;
 	i32 inGameID = 0;
 	GameType gameType = GameType::INVALID;
 	AreaIndex areaIndex = AreaIndex(0);

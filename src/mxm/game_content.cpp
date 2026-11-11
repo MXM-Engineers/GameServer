@@ -424,12 +424,12 @@ void GameXmlContent::LoadAllSkills()
 			for(XMLElement* p = pLists->FirstChildElement("_RemoteList"); p; p = p->NextSiblingElement("_RemoteList")) {
 				i32 id = 0;
 				p->QueryAttribute("DATA", &id);
-				if(id > 0 && !tg.remotes.full()) tg.remotes.push_back(id);
+				if(id > 0) { ASSERT(!tg.remotes.full()); tg.remotes.push_back(id); }
 			}
 			for(XMLElement* p = pLists->FirstChildElement("_StatusList"); p; p = p->NextSiblingElement("_StatusList")) {
 				i32 id = 0;
 				p->QueryAttribute("DATA", &id);
-				if(id > 0 && !tg.statuses.full()) tg.statuses.push_back(id);
+				if(id > 0) { ASSERT(!tg.statuses.full()); tg.statuses.push_back(id); }
 			}
 			skillToggle[skillID] = tg;
 		}
@@ -1062,11 +1062,19 @@ bool GameXmlContent::FindStageMap(StageIndex stageID, MapIndex* outMapIndex) con
 {
 	for(auto& stage : stageMaps) {
 		if(stage.ID != stageID) continue;
-		if(stage.maps.empty()) return false;
-		*outMapIndex = stage.maps[0];
-		return true;
+		for(auto mapID : stage.maps) {
+			if(!IsMapLoadable(mapID)) continue;
+			*outMapIndex = mapID;
+			return true;
+		}
+		return false;
 	}
 	return false;
+}
+
+bool GameXmlContent::IsMapLoadable(MapIndex mapID) const
+{
+	return mapID == MapIndex::PVP_DEATHMATCH;
 }
 
 const GameXmlContent::StageMaps* GameXmlContent::FindStageMaps(StageIndex stageID) const
@@ -1404,7 +1412,8 @@ bool GameXmlContent::LoadAnimationData()
 			if(animIndex >= 0 && animId > 0) {
 				Action::AnimStep* known = nullptr;
 				for(auto& a : curAction->anims) if(a.index == animIndex) known = &a;
-				if(!known && !curAction->anims.full()) {
+				if(!known) {
+					ASSERT(!curAction->anims.full());
 					curAction->anims.push_back();
 					known = &curAction->anims.back();
 					known->index = animIndex;
@@ -1575,7 +1584,8 @@ static void ParseRemoteSpawnRules(XMLElement* pEvent, Remote::SpawnRules& out)
 			i32 idx = -1;
 			pAct->QueryAttribute("_RemoteIndex", &idx);
 			pAct->QueryAttribute("_CreatureIndex", &rule.creature);
-			if((idx <= 0 && rule.creature <= 0) || out.full()) continue;
+			if(idx <= 0 && rule.creature <= 0) continue;
+			ASSERT(!out.full());
 			if(idx > 0) rule.idx = RemoteIdx(idx);
 			out.push_back(rule);
 		}
@@ -1605,7 +1615,8 @@ static void ParseRemoteSpawnRules(XMLElement* pEvent, Remote::SpawnRules& out)
 					XMLElement* pRemote = pKind->FirstChildElement("_Remote");
 					if(pRemote) pRemote->QueryAttribute("_RemoteIndex", &idx);
 				}
-				if(idx <= 0 || out.full()) continue;
+				if(idx <= 0) continue;
+				ASSERT(!out.full());
 				rule.idx = RemoteIdx(idx);
 				if(rule.maxNum < 1) rule.maxNum = 1;
 				out.push_back(rule);
@@ -1698,7 +1709,7 @@ bool GameXmlContent::LoadRemoteData()
 					pStatus->QueryAttribute("DATAKEY", &st.statusID);
 					pStatus->QueryAttribute("_Rate", &st.rate);
 					pStatus->QueryAttribute("_Value", &st.value);
-					if(st.statusID != 0 && !remote.statuses.full()) remote.statuses.push_back(st);
+					if(st.statusID != 0) { ASSERT(!remote.statuses.full()); remote.statuses.push_back(st); }
 				}
 				for(XMLElement* pStatus = pComp->FirstChildElement("_StatusFriendly"); pStatus; pStatus = pStatus->NextSiblingElement("_StatusFriendly")) {
 					Remote::AppliedStatus st;
@@ -1708,7 +1719,7 @@ bool GameXmlContent::LoadRemoteData()
 					pStatus->QueryAttribute("DATAKEY", &st.statusID);
 					pStatus->QueryAttribute("_Rate", &st.rate);
 					pStatus->QueryAttribute("_Value", &st.value);
-					if(st.statusID != 0 && !remote.friendlyStatuses.full()) remote.friendlyStatuses.push_back(st);
+					if(st.statusID != 0) { ASSERT(!remote.friendlyStatuses.full()); remote.friendlyStatuses.push_back(st); }
 				}
 				remote.attachFireObject = XmlAttrTrue(pComp, "_AttachFireObject");
 				remote.attachTargetObject = XmlAttrTrue(pComp, "_AttachTargetObject");
@@ -2218,7 +2229,7 @@ bool GameXmlContent::LoadStatusData()
 {
 	XMLDocument xml;
 	if(!LoadXMLFile(L"/client/STATUS_PC.xml", xml)) {
-		LOG("WARNING(LoadStatusData): client/STATUS_PC.xml missing, statuses disabled");
+		LOG("ERROR(LoadStatusData): client/STATUS_PC.xml missing");
 		return false;
 	}
 
@@ -2281,7 +2292,8 @@ bool GameXmlContent::LoadStatusData()
 				pAura->QueryAttribute("DATA", &id);
 				if(id == 0) continue;
 				if(st.auraStatus == 0) st.auraStatus = id;
-				if(!st.auraStatuses.full()) st.auraStatuses.push_back(id);
+				ASSERT(!st.auraStatuses.full());
+				st.auraStatuses.push_back(id);
 			}
 			st.auraAll = eff && EA::StdC::Strcmp(eff, "STATUS_EFFECT_UNKNOWN") == 0;
 			XMLElement* pLink = pCommon->FirstChildElement("_LINK");
@@ -2322,8 +2334,8 @@ bool GameXmlContent::LoadStatusData()
 			if(XMLElement* pStack = pCommon->FirstChildElement("_STACKATTACK")) {
 				pStack->QueryAttribute("_Index", &st.stackStatus);
 				pStack->QueryAttribute("_NextStatusIndex", &st.stackFullStatus);
-				for(XMLElement* pR = pStack->FirstChildElement("_RemoteIndexList"); pR && !st.stackRemotes.full(); pR = pR->NextSiblingElement("_RemoteIndexList")) st.stackRemotes.push_back(pR->IntAttribute("DATA"));
-				for(XMLElement* pS = pStack->FirstChildElement("_FullStackSkillIndexList"); pS && !st.fullStackSkills.full(); pS = pS->NextSiblingElement("_FullStackSkillIndexList")) st.fullStackSkills.push_back(pS->IntAttribute("DATA"));
+				for(XMLElement* pR = pStack->FirstChildElement("_RemoteIndexList"); pR; pR = pR->NextSiblingElement("_RemoteIndexList")) { ASSERT(!st.stackRemotes.full()); st.stackRemotes.push_back(pR->IntAttribute("DATA")); }
+				for(XMLElement* pS = pStack->FirstChildElement("_FullStackSkillIndexList"); pS; pS = pS->NextSiblingElement("_FullStackSkillIndexList")) { ASSERT(!st.fullStackSkills.full()); st.fullStackSkills.push_back(pS->IntAttribute("DATA")); }
 			}
 			if(XMLElement* pIce = pCommon->FirstChildElement("_ICEQUEEN")) {
 				pIce->QueryAttribute("_Index", &st.stackStatus);
@@ -2335,7 +2347,7 @@ bool GameXmlContent::LoadStatusData()
 					for(XMLElement* pS = pCost->FirstChildElement("_SkillList"); pS; pS = pS->NextSiblingElement("_SkillList")) {
 						i32 v = 0;
 						pS->QueryAttribute("DATA", &v);
-						if(v && !st.costSkills.full()) st.costSkills.push_back(v);
+						if(v) { ASSERT(!st.costSkills.full()); st.costSkills.push_back(v); }
 					}
 				}
 			}
@@ -2355,7 +2367,8 @@ bool GameXmlContent::LoadStatusData()
 			for(XMLElement* pNode = pChild; pNode; pNode = pNode == pChild ? pChild->FirstChildElement() : pNode->NextSiblingElement()) {
 				for(const XMLAttribute* a = pNode->FirstAttribute(); a; a = a->Next()) {
 					f64 v = 0;
-					if(a->QueryDoubleValue(&v) != XML_SUCCESS || st.params.full() || EA::StdC::Strlen(a->Name()) >= 31) continue;
+					if(a->QueryDoubleValue(&v) != XML_SUCCESS || EA::StdC::Strlen(a->Name()) >= 31) continue;
+					ASSERT(!st.params.full());
 					StatusInfo::NamedValue nv;
 					nv.name = a->Name();
 					nv.value = v;
@@ -2368,7 +2381,8 @@ bool GameXmlContent::LoadStatusData()
 				for(XMLElement* pLeaf = pNode->FirstChildElement(); pLeaf; pLeaf = pLeaf->NextSiblingElement()) {
 					for(const XMLAttribute* a = pLeaf->FirstAttribute(); a; a = a->Next()) {
 						f64 v = 0;
-						if(a->QueryDoubleValue(&v) != XML_SUCCESS || st.params.full() || EA::StdC::Strlen(a->Name()) >= 31) continue;
+						if(a->QueryDoubleValue(&v) != XML_SUCCESS || EA::StdC::Strlen(a->Name()) >= 31) continue;
+						ASSERT(!st.params.full());
 						StatusInfo::NamedValue nv;
 						nv.name = a->Name();
 						nv.value = v;
@@ -2427,7 +2441,8 @@ bool GameXmlContent::LoadSkillTooltips()
 				pAttr->QueryAttribute("DATA", &data);
 				if(!key) continue;
 				if(EA::StdC::Strcmp(key, "TTATTR_STATUS_DELIGATE") == 0) delegateID = data;
-				if(!keyStatus.full()) keyStatus.push_back(eastl::make_pair(eastl::fixed_string<char,40,false>(key), data));
+				ASSERT(!keyStatus.full());
+				keyStatus.push_back(eastl::make_pair(eastl::fixed_string<char,40,false>(key), data));
 			}
 			for(XMLElement* pT = pBase->FirstChildElement("tableDatas"); pT; pT = pT->NextSiblingElement("tableDatas")) {
 				const char* attrType = nullptr; const char* attrKey = nullptr; const char* proc = nullptr; const char* apply = nullptr; const char* stat = nullptr;
@@ -2460,8 +2475,10 @@ bool GameXmlContent::LoadSkillTooltips()
 				else if(EA::StdC::Strcmp(stat, "STAT_TYPE_ATTACK") == 0) mod.stat = StatusMod::ATTACK;
 				else if(EA::StdC::Strcmp(stat, "STAT_TYPE_MOVESPEED") == 0) mod.stat = StatusMod::MOVESPEED;
 				else if(EA::StdC::Strcmp(stat, "STAT_TYPE_DEFENCE") == 0) mod.stat = StatusMod::DEFENCE;
-				if(mod.mul && mod.stat != StatusMod::OTHER && !skillMulStats.full()) skillMulStats.push_back({ skillID, statusID, (u8)mod.stat, mod.value });
-				if(!found->second.mods.full()) { found->second.mods.push_back(mod); modCount++; }
+				if(mod.mul && mod.stat != StatusMod::OTHER) { ASSERT(!skillMulStats.full()); skillMulStats.push_back({ skillID, statusID, (u8)mod.stat, mod.value }); }
+				ASSERT(!found->second.mods.full());
+				found->second.mods.push_back(mod);
+				modCount++;
 				touched.insert(statusID);
 			}
 		}
@@ -2484,7 +2501,8 @@ bool GameXmlContent::LoadSkillTooltips()
 	LOG("Loaded %d status stat modifiers from skilltt", modCount);
 
 	XMLDocument xmlDesc;
-	if(LoadXMLFile(L"/client/string/skilldesc.xml", xmlDesc)) {
+	if(!LoadXMLFile(L"/client/string/skilldesc.xml", xmlDesc)) return false;
+	{
 		i32 added = 0;
 		XMLElement* pTable = xmlDesc.FirstChildElement()->FirstChildElement("StringTableData");
 		for(XMLElement* pS = pTable ? pTable->FirstChildElement("StringData") : nullptr; pS; pS = pS->NextSiblingElement("StringData")) {
@@ -2561,13 +2579,13 @@ bool GameXmlContent::LoadSkillCosts()
 						i32 from = 0, to = 0;
 						pR->QueryAttribute("_RemoteIndex", &from);
 						pR->QueryAttribute("_ReplaceIndex", &to);
-						if(from != 0 && to != 0 && !lvl.remoteReplace.full()) lvl.remoteReplace.push_back({ from, to });
+						if(from != 0 && to != 0) { ASSERT(!lvl.remoteReplace.full()); lvl.remoteReplace.push_back({ from, to }); }
 					}
 					for(XMLElement* pS = pLvl->FirstChildElement("_STATUSLIST"); pS; pS = pS->NextSiblingElement("_STATUSLIST")) {
 						i32 from = 0, to = 0;
 						pS->QueryAttribute("_StatusIndex", &from);
 						pS->QueryAttribute("_ReplaceIndex", &to);
-						if(from != 0 && to != 0 && !lvl.statusReplace.full()) lvl.statusReplace.push_back({ from, to });
+						if(from != 0 && to != 0) { ASSERT(!lvl.statusReplace.full()); lvl.statusReplace.push_back({ from, to }); }
 					}
 					for(XMLElement* pP = xmlSKILLPROPERTY.FirstChildElement()->FirstChildElement(); pP; pP = pP->NextSiblingElement()) {
 						XMLElement* pSP = pP->FirstChildElement("ST_SKILL_PROPERTY");
@@ -2584,7 +2602,8 @@ bool GameXmlContent::LoadSkillCosts()
 						break;
 					}
 					auto& levels = skillCostLevels[skillID];
-					if(!levels.full()) levels.push_back(lvl);
+					ASSERT(!levels.full());
+					levels.push_back(lvl);
 				}
 			}
 		}
@@ -2605,7 +2624,7 @@ bool GameXmlContent::LoadSkillCosts()
 bool GameXmlContent::LoadCharacterElements()
 {
 	XMLDocument xmlChara;
-	if(!LoadXMLFile(L"/client/CREATURE_CHARACTER.xml", xmlChara)) return false;
+	if(!LoadXMLFile(L"/CREATURE_CHARACTER.xml", xmlChara)) return false;
 	for(XMLElement* pInfo = xmlChara.FirstChildElement()->FirstChildElement(); pInfo; pInfo = pInfo->NextSiblingElement()) {
 		i32 id = 0;
 		pInfo->QueryAttribute("ID", &id);
@@ -2658,7 +2677,7 @@ bool GameXmlContent::LoadSummons()
 			for(XMLElement* s = p->FirstChildElement("_SkillID"); s; s = s->NextSiblingElement("_SkillID")) {
 				i32 sk = 0;
 				s->QueryAttribute("_Index", &sk);
-				if(sk != 0 && !si.skills.full()) si.skills.push_back(sk);
+				if(sk != 0) { ASSERT(!si.skills.full()); si.skills.push_back(sk); }
 			}
 		}
 		summonMap[id] = si;
@@ -2693,7 +2712,7 @@ bool GameXmlContent::LoadStageTimeLimits()
 bool GameXmlContent::LoadAnimationSequenceTimes()
 {
 	XMLDocument xmlAni;
-	if(!LoadXMLFile(L"/client/AniLength.xml", xmlAni)) return false;
+	if(!LoadXMLFile(L"/AniLength.xml", xmlAni)) return false;
 	for(XMLElement* pType = xmlAni.FirstChildElement()->FirstChildElement("EntityType"); pType; pType = pType->NextSiblingElement("EntityType")) {
 		const char* t = nullptr;
 		pType->QueryStringAttribute("_Type", &t);
@@ -2738,10 +2757,11 @@ bool GameXmlContent::LoadMoveGraphs()
 			pAnim->QueryAttribute("Id", &id);
 			pAnim->QueryFloatAttribute("Time", &curve.time);
 			pAnim->QueryStringAttribute("H", &h);
-			for(const char* c = h; c && *c && !curve.h.full(); ) {
+			for(const char* c = h; c && *c; ) {
 				char* end = nullptr;
 				const f32 v = EA::StdC::StrtoF32(c, &end);
 				if(end == c) break;
+				ASSERT(!curve.h.full());
 				curve.h.push_back(v);
 				curve.maxAbs = MAX(curve.maxAbs, fabsf(v));
 				c = end;
@@ -2808,7 +2828,9 @@ bool GameXmlContent::LoadSummonActions()
 				else if(EA::StdC::Strcmp(var, "STANCE_TYPE_DEFAULT") != 0) continue;
 			}
 			auto& list = spawn ? it->second.onSpawn : (die ? it->second.onDie : it->second.skillStates[skillState]);
-			if(!list.full()) { list.push_back(cmd); count++; }
+			ASSERT(!list.full());
+			list.push_back(cmd);
+			count++;
 		}
 	}
 	LOG("Loaded %d summon spawn/die/skill commands", count);
@@ -2855,7 +2877,7 @@ bool GameXmlContent::LoadWeaponFiring()
 {
 	XMLDocument xmlFiring, xmlWeapon;
 	if(!LoadXMLFile(L"/client/FIRING_METHOD.xml", xmlFiring)) return false;
-	if(!LoadXMLFile(L"/client/WEAPON.xml", xmlWeapon)) return false;
+	if(!LoadXMLFile(L"/WEAPON.xml", xmlWeapon)) return false;
 	eastl::hash_map<i32, WeaponHeatInfo> byFiring;
 	eastl::hash_map<i32, f32> delayByFiring;
 	eastl::hash_map<i32, WeaponFiring> firingRemotes;
@@ -2879,7 +2901,7 @@ bool GameXmlContent::LoadWeaponFiring()
 			if(fireDummy) wf.fireDummy = fireDummy;
 			wf.spawnAtAim = pData && XmlAttrTrue(pData, "_RemoteSpawnAimPosition");
 			if(XMLElement* pCharge = pData ? pData->FirstChildElement("_CHARGE") : nullptr) {
-				for(XMLElement* pLevel = pCharge->FirstChildElement("_LEVEL"); pLevel && !wf.chargeTime.full(); pLevel = pLevel->NextSiblingElement("_LEVEL")) wf.chargeTime.push_back(pLevel->FloatAttribute("_ChargingTime"));
+				for(XMLElement* pLevel = pCharge->FirstChildElement("_LEVEL"); pLevel; pLevel = pLevel->NextSiblingElement("_LEVEL")) { ASSERT(!wf.chargeTime.full()); wf.chargeTime.push_back(pLevel->FloatAttribute("_ChargingTime")); }
 			}
 			XMLElement* pFactory = pInfo->FirstChildElement("RemoteFactoryComData");
 			XMLElement* pCreate = pFactory ? pFactory->FirstChildElement("_Create") : nullptr;
@@ -2893,11 +2915,11 @@ bool GameXmlContent::LoadWeaponFiring()
 					i32 idx = 0;
 					if(EA::StdC::Strcmp(pE->Name(), "_COMBO") == 0) {
 						pE->QueryAttribute("_Index", &idx);
-						if(idx && !wf.combo.full()) wf.combo.push_back((RemoteIdx)idx);
+						if(idx) { ASSERT(!wf.combo.full()); wf.combo.push_back((RemoteIdx)idx); }
 					}
 					else if(EA::StdC::Strcmp(pE->Name(), "_CHARGINGREMOTE") == 0) {
 						pE->QueryAttribute("_Index", &idx);
-						if(idx && !wf.charge.full()) wf.charge.push_back((RemoteIdx)idx);
+						if(idx) { ASSERT(!wf.charge.full()); wf.charge.push_back((RemoteIdx)idx); }
 						if(const char* dummy = pE->Attribute("_FiringDummy")) wf.chargeDummy = dummy;
 					}
 					else if(EA::StdC::Strcmp(pE->Name(), "_FIRINGCOUNT") == 0) {
@@ -2957,6 +2979,7 @@ bool GameXmlContent::LoadWeaponFiring()
 					pSt->QueryAttribute("DATA", &stanceFiring);
 					auto sr = firingRemotes.find(stanceFiring);
 					if(stance <= 0 || sr == firingRemotes.end()) continue;
+					ASSERT(stance >= 0 && stance < 16);
 					weaponStanceFiring[((u32)id << 4) | (u32)stance] = sr->second;
 					auto sd = delayByFiring.find(stanceFiring);
 					if(sd != delayByFiring.end()) weaponStanceFireDelay[((u32)id << 4) | (u32)stance] = sd->second;
@@ -2972,7 +2995,7 @@ bool GameXmlContent::LoadWeaponFiring()
 bool GameXmlContent::LoadSkillTargeting()
 {
 	XMLDocument xmlSkillP;
-	if(!LoadXMLFile(L"/client/SKILL.xml", xmlSkillP)) return false;
+	if(!LoadXMLFile(L"/SKILL.xml", xmlSkillP)) return false;
 	i32 count = 0;
 	for(XMLElement* pInfo = xmlSkillP.FirstChildElement()->FirstChildElement(); pInfo; pInfo = pInfo->NextSiblingElement()) {
 		XMLElement* pSk = pInfo->FirstChildElement("ST_COMMONSKILL");
@@ -3007,7 +3030,9 @@ bool GameXmlContent::LoadSkillTargeting()
 		auto found = masterClassStringMap.find(strHash(cls));
 		if(found == masterClassStringMap.end()) continue;
 		auto& list = passiveStatuses[(i32)found->second->classType];
-		if(!list.full()) { list.push_back(status); count++; }
+		ASSERT(!list.full());
+		list.push_back(status);
+		count++;
 	}
 	LOG("Loaded %d passive statuses", count);
 	return true;

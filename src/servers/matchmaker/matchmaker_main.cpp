@@ -311,7 +311,16 @@ struct Matchmaker
 				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyEnqueue>(packetData, packetSize));
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
 
+				if(eastl::find(matchingPartyList.begin(), matchingPartyList.end(), packet.partyUID) != matchingPartyList.end()) {
+					WARN("Party is already in the matching queue (partyUID=%u)", (u32)packet.partyUID);
+					break;
+				}
+
 				Party& party = *partyMap.at(packet.partyUID);
+				if(party.memberList.size() > 3) {
+					WARN("Party is too large for a team (partyUID=%u, members=%d)", (u32)packet.partyUID, (i32)party.memberList.size());
+					break;
+				}
 				ASSERT(packet.areaIndex != AreaIndex(0));
 				ASSERT(packet.stageIndex != StageIndex(0));
 				ASSERT(packet.mapIndex != MapIndex(0));
@@ -480,15 +489,19 @@ struct Matchmaker
 		const Time now = TimeRelNow();
 		if(matchingStartTime == Time::ZERO) matchingStartTime = now;
 
+		const i32 TEAM_SIZE = 3;
+		const Party& firstParty = *partyMap.at(matchingPartyList.front());
+
 		i32 humanCount = 0;
 		foreach_const(puid, matchingPartyList) {
-			humanCount += partyMap.at(*puid)->memberList.size();
+			const Party& party = *partyMap.at(*puid);
+			if(party.areaIndex != firstParty.areaIndex || party.stageIndex != firstParty.stageIndex || party.mapIndex != firstParty.mapIndex) continue;
+			humanCount += party.memberList.size();
 		}
-		if(humanCount < 6 && TimeDiffSec(TimeDiff(matchingStartTime, now)) < MATCHING_WAIT_SEC) return;
+		if(humanCount < TEAM_SIZE * 2 && TimeDiffSec(TimeDiff(matchingStartTime, now)) < MATCHING_WAIT_SEC) return;
 		matchingStartTime = Time::ZERO;
 		decltype(matchingPartyList) laterParties;
-
-		const Party& firstParty = *partyMap.at(matchingPartyList.front());
+		decltype(matchingPartyList) placedParties;
 
 		roomList.emplace_back(nextSortieUID);
 		Room& room = *(--roomList.end());
@@ -501,25 +514,35 @@ struct Matchmaker
 		room.stageIndex = firstParty.stageIndex;
 		room.mapIndex = firstParty.mapIndex;
 
-		LOG("MatchParties :: creating room %llu with %d player(s) from %d party(ies)", (u64)room.UID, humanCount, (i32)matchingPartyList.size());
-
-		i32 humanIndex = 0;
 		foreach_const(puid, matchingPartyList) {
 			const Party& party = *partyMap.at(*puid);
+			const i32 memberCount = party.memberList.size();
+			const i32 redCount = room.teamRed.size();
+			const i32 blueCount = room.teamBlue.size();
+			const bool compatible = party.areaIndex == firstParty.areaIndex && party.stageIndex == firstParty.stageIndex && party.mapIndex == firstParty.mapIndex;
+			const bool fitsRed = redCount + memberCount <= TEAM_SIZE;
+			const bool fitsBlue = blueCount + memberCount <= TEAM_SIZE;
+			if(!compatible || (!fitsRed && !fitsBlue)) {
+				laterParties.push_back(*puid);
+				continue;
+			}
+
+			const bool red = fitsRed && (!fitsBlue || redCount <= blueCount);
 			foreach_const(pl, party.memberList) {
-				if(room.teamRed.size() >= 3 && room.teamBlue.size() >= 3) break;
 				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
-				const bool red = (room.teamBlue.size() >= 3) || (room.teamRed.size() < 3 && (humanIndex % 2) == 0);
 				player.team = red ? Team::RED : Team::BLUE;
 				room.playerList.push_back(player);
 				if(red) room.teamRed.push_back(&room.playerList.back());
 				else room.teamBlue.push_back(&room.playerList.back());
-				humanIndex++;
 			}
+			placedParties.push_back(*puid);
 		}
+		ASSERT(!placedParties.empty());
+
+		LOG("MatchParties :: creating room %llu with %d player(s) from %d party(ies)", (u64)room.UID, (i32)room.playerList.size(), (i32)placedParties.size());
 
 		i32 botID = 1;
-		while(room.teamRed.size() < 3) {
+		while(room.teamRed.size() < TEAM_SIZE) {
 			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 			player.team = Team::RED;
 			player.isBot = true;
@@ -527,7 +550,7 @@ struct Matchmaker
 			room.playerList.push_back(player);
 			room.teamRed.push_back(&room.playerList.back());
 		}
-		while(room.teamBlue.size() < 3) {
+		while(room.teamBlue.size() < TEAM_SIZE) {
 			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 			player.team = Team::BLUE;
 			player.isBot = true;
@@ -536,7 +559,7 @@ struct Matchmaker
 			room.teamBlue.push_back(&room.playerList.back());
 		}
 
-		foreach_const(puid, matchingPartyList) {
+		foreach_const(puid, placedParties) {
 			const Party& party = *partyMap.at(*puid);
 
 			eastl::fixed_set<ClientHandle,16,false> setInstance;
@@ -569,11 +592,7 @@ struct Matchmaker
 				SendPacket(*chd, resp);
 			}
 		}
-		matchingPartyList.clear();
-		while(!laterParties.empty()) {
-			matchingPartyList.push_back(laterParties.back());
-			laterParties.pop_back();
-		}
+		matchingPartyList = laterParties;
 	}
 
 	void UpdateRooms()

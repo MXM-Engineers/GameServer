@@ -289,7 +289,7 @@ struct StatusInfo
 struct WeaponFiring
 {
 	RemoteIdx base = RemoteIdx::INVALID;
-	eastl::fixed_vector<RemoteIdx,4,false> combo;
+	eastl::fixed_vector<RemoteIdx,12,false> combo;
 	eastl::fixed_vector<RemoteIdx,4,false> charge;
 	eastl::fixed_vector<f32,4,false> chargeTime;
 	eastl::fixed_string<char,32,false> chargeDummy;
@@ -676,6 +676,7 @@ struct GameXmlContent
 
 	bool FindQueueAreaStage(i32 entryID, AreaIndex* outAreaIndex, StageIndex* outStageIndex) const;
 	bool FindStageMap(StageIndex stageID, MapIndex* outMapIndex) const;
+	bool IsMapLoadable(MapIndex mapID) const;
 	const StageMaps* FindStageMaps(StageIndex stageID) const;
 	bool HasEntrySystem(i32 entryID) const;
 	CreatureIndex FindDeathMatchBotIndex(ClassType classType) const;

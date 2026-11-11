@@ -135,6 +135,7 @@ struct World
 			Time executeAt = Time::ZERO;
 			u8 type = 0;
 			bool interruptByMove = false;
+			ClassType casterClass = ClassType::NONE;
 		} casting;
 		SkillID toggleSkill = SkillID::INVALID;
 		u32 toggleCastID = 0;
@@ -459,10 +460,12 @@ struct World
 		bool atTarget = false;
 		bool stopAtTarget = false;
 		u16 nodeName = 0;
+		ClassType casterClass = ClassType::NONE;
 	};
 
 	struct RemoteInst
 	{
+		ClassType casterClass = ClassType::NONE;
 		ActorUID sourceUID = ActorUID::INVALID;
 		const GameXmlContent::CostLevel* costLevel = nullptr;
 		f32 followDist = -1.0f;
@@ -610,7 +613,7 @@ struct World
 
 	Player& GetPlayer(u32 playerIndex);
 	u32 PlayerCount() const { return (u32)players.size(); }
-	bool PlayerPaySkillCost(Player& player, i32 skillID);
+	bool PlayerPaySkillCost(Player& player, i32 skillID, bool pay = true);
 	void UpdateWeaponHeat(Player& player);
 	void UpdateSummons();
 	void UpdateBotCombat();
@@ -640,7 +643,7 @@ struct World
 	void RunRemoteTimeEvent(RemoteInst& inst, f32 elapsed);
 	bool UpdateChainRemote(RemoteInst& inst);
 	void ApplyAttachedRemote(RemoteInst& inst, Player& instOwner);
-	bool UpdateTargetRemote(RemoteInst& inst, f32 delta);
+	bool UpdateTargetRemote(RemoteInst& inst, f32 delta, f32 elapsed);
 	bool UpdateGraphRemote(RemoteInst& inst, f32 delta);
 	bool UpdateLinearRemote(RemoteInst& inst, f32 delta, f32 elapsed);
 	void DestroyRemote(i32 index);
@@ -691,11 +694,16 @@ private:
 	void SteerProjectile(Projectile& proj, f32 delta);
 	void Explode(Player& owner, const vec3& center, f32 radius, i32 damage);
 	void RespawnPlayer(Player& player);
-	bool ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets, f32 angle, i32 forceAnim = -1, ActionStateID forcedAction = ActionStateID::INVALID);
+	bool ScheduleSkillRemotes(Player& player, SkillID skillID, const vec3& castPos, Slice<const ActorUID> targets, f32 angle, i32 forceAnim = -1, ActionStateID forcedAction = ActionStateID::INVALID, ClassType casterClass = ClassType::NONE);
 	RemoteInst* SpawnRemote(u32 ownerIndex, RemoteIdx idx, const vec3& pos, const vec2& dir, ActorUID target, SkillID skillID, u32 castID, i32 damage, bool broadcast = false, const vec3* aimPos = nullptr, u16 nodeName = 0, bool casterCreatesLocally = false, bool stopAtTarget = false);
 	void UpdateRemotes(f32 delta);
 	void UpdateUltimateGauges(f32 delta);
 	void ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power = 0, f32 durationOverride = -1);
+	f32 ApplyStatusControl(Player& caster, Player& target, const StatusInfo* info, i32 statusID, f32 duration, Time until, bool displacement, vec3* moveFrom, vec3* moveTo);
+	void SpawnPendingSummons();
+	void RunPendingSummonCommands();
+	void PulseGroundAuras();
+	void DespawnSummons();
 	ActiveStatus* FindActiveStatus(u32 targetIndex, i32 statusID);
 	void ConsumeStatus(u32 targetIndex, i32 statusID);
 public:
@@ -718,6 +726,7 @@ private:
 	void ApplyPassiveStatusRule(const PassiveStatusRule& rule, Player& owner, Player* hitTarget);
 	f32 PassiveWeaponDamageMul(Player& attacker, Player& target);
 	const ActiveStatus* FindPassiveOfType(const Player& p, StatusType type) const;
+	ActiveStatus* FindPassiveOfType(const Player& p, StatusType type);
 	bool PassiveBlocksCC(Player& target, const StatusInfo& info, f32* duration);
 	void PassiveOnDamaged(Player& target);
 	bool PassiveOnLethal(Player& target);
@@ -747,6 +756,11 @@ private:
 	bool LagSegmentHits(const Player& p, const vec2& a, const vec2& b, f32 lateral, f32 forwardReach) const;
 	f32 LagDistToPoint(const Player& p, const vec2& point) const;
 	vec2 LagClosestPos(const Player& p, const vec2& point) const;
-	void RemoteHit(RemoteInst& inst, Player& target);
+	bool RemoteHit(RemoteInst& inst, Player& target);
+	bool RemoteHitRecord(RemoteInst& inst, Player& target, bool enemy);
+	void RemoteHitDamage(RemoteInst& inst, Player& owner, Player& target, i32 amount, bool enemy);
+	void RemoteHitStatuses(RemoteInst& inst, Player& owner, Player& target, bool enemy);
+	void RemoteHitComboTrigger(RemoteInst& inst, Player& owner, Player& target);
+	void OnPlayerKilled(Player& attacker, Player& target);
 	void DamagePlayer(Player& attacker, Player& target, SkillID skillID, i32 damage, const Projectile* proj = nullptr, u32 remoteID = 0, RemoteIdx remoteDoc = RemoteIdx::INVALID, vec2 remoteDir = vec2(1, 0));
 };

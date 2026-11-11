@@ -24,7 +24,7 @@ namespace PS
 }
 
 #define SER_BEGIN() auto& str = PS::NewString()
-#define SER(fmt, ...) str.append_sprintf(fmt "\n", ##__VA_ARGS__);
+#define SER(fmt, ...) str.append_sprintf(fmt "\n", ##__VA_ARGS__)
 
 template<typename Packet>
 const char* PacketSerialize(const void* packetData, const i32 packetSize)
@@ -439,21 +439,21 @@ inline const char* PacketSerialize<Sv::SN_GameEnterActor>(const void* packetData
 		SER("	}");
 	}
 
-	SER("	objectID=0x%08x",  buff.Read<i32>())
-	SER("	p3nPos=%s",  PS::ToStr(buff.Read<float3>()))
-	SER("	p3nDir=%s",  PS::ToStr(buff.Read<float3>()))
-	SER("	p2nMoveDir=%s",  PS::ToStr(buff.Read<float2>()))
-	SER("	p2nUpperDir=%s",  PS::ToStr(buff.Read<float2>()))
-	SER("	p3nMoveTargetPos=%s",  PS::ToStr(buff.Read<float3>()))
-	SER("	isBattleState=%d",  buff.Read<u8>())
-	SER("	baseMoveSpeed=%f",  buff.Read<f32>())
-	SER("	actionState=%d",  buff.Read<i32>())
-	SER("	aiTargetID=%d",  buff.Read<i32>())
+	SER("	objectID=0x%08x",  buff.Read<i32>());
+	SER("	p3nPos=%s",  PS::ToStr(buff.Read<float3>()));
+	SER("	p3nDir=%s",  PS::ToStr(buff.Read<float3>()));
+	SER("	p2nMoveDir=%s",  PS::ToStr(buff.Read<float2>()));
+	SER("	p2nUpperDir=%s",  PS::ToStr(buff.Read<float2>()));
+	SER("	p3nMoveTargetPos=%s",  PS::ToStr(buff.Read<float3>()));
+	SER("	isBattleState=%d",  buff.Read<u8>());
+	SER("	baseMoveSpeed=%f",  buff.Read<f32>());
+	SER("	actionState=%d",  buff.Read<i32>());
+	SER("	aiTargetID=%d",  buff.Read<i32>());
 
-	SER("	statSnapshot={")
+	SER("	statSnapshot={");
 
 		u16 count = buff.Read<u16>();
-		SER("		curStats(%d)=[",  count)
+		SER("		curStats(%d)=[",  count);
 		while(count > 0) {
 			u8 type = buff.Read<u8>();
 			f32 value = buff.Read<f32>();
@@ -2368,6 +2368,30 @@ inline const char* PacketSerialize<Cl::CQ_SetLeaderCharacter>(const void* packet
 	SER("CQ_SetLeaderCharacter(%d, %d) :: {", Cl::CQ_SetLeaderCharacter::NET_ID, packetSize);
 	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
 	SER("	skinIndex=%d", buff.Read<SkinIndex>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_RoomEquipSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_RoomEquipSkill(%d, %d) :: {", Cl::CQ_RoomEquipSkill::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<LocalActorID>());
+	SER("	skillID=%d", buff.Read<SkillID>());
+	SER("	skillSlot=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_RoomSwapSkill>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_RoomSwapSkill(%d, %d) :: {", Cl::CQ_RoomSwapSkill::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<u32>());
 	SER("}");
 	return str.data();
 }

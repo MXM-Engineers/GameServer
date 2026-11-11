@@ -293,7 +293,7 @@ void World::UpdateSummonAi(f32 delta)
 	}
 }
 
-void World::UpdateSummons()
+void World::SpawnPendingSummons()
 {
 	for(auto ps = pendingSummons.begin(); ps != pendingSummons.end(); ) {
 		if(localTime < ps->time) { ++ps; continue; }
@@ -379,7 +379,10 @@ void World::UpdateSummons()
 		}
 		ps = pendingSummons.erase_unsorted(ps);
 	}
+}
 
+void World::RunPendingSummonCommands()
+{
 	for(auto pc = pendingSummonCommands.begin(); pc != pendingSummonCommands.end(); ) {
 		if(localTime < pc->time) { ++pc; continue; }
 		Player& owner = players[pc->ownerIndex];
@@ -414,7 +417,7 @@ void World::UpdateSummons()
 				ga.range = st->targetingRange;
 				ga.pos = pc->pos;
 				const Time statusEnd = st->durationSec > 0 ? TimeAdd(localTime, TimeMsToTime(st->durationSec * 1000.0)) : pc->until;
-				ga.until = pc->until < statusEnd ? pc->until : statusEnd;
+				ga.until = pc->until != Time::ZERO && pc->until < statusEnd ? pc->until : statusEnd;
 				ga.nextPulse = localTime;
 				groundAuras.push_back(ga);
 				LOG("Summon :: %ls aura %d (gives %d statuses within %.0f%s)", owner.name.data(), pc->index, (i32)st->auraStatuses.size(), st->targetingRange, st->auraAll ? ", everyone" : "");
@@ -422,7 +425,10 @@ void World::UpdateSummons()
 		}
 		pc = pendingSummonCommands.erase_unsorted(pc);
 	}
+}
 
+void World::PulseGroundAuras()
+{
 	for(auto ga = groundAuras.begin(); ga != groundAuras.end(); ) {
 		if(localTime >= ga->until) { ga = groundAuras.erase_unsorted(ga); continue; }
 		if(localTime >= ga->nextPulse) {
@@ -432,7 +438,10 @@ void World::UpdateSummons()
 		}
 		++ga;
 	}
+}
 
+void World::DespawnSummons()
+{
 	for(auto it = actorNpcList.begin(); it != actorNpcList.end(); ) {
 		if(it->despawnAt != Time::ZERO && localTime >= it->despawnAt) {
 			LOG("Summon :: creature=%d despawned", (i32)it->docID);
@@ -454,7 +463,7 @@ void World::UpdateSummons()
 						pc.pos = it->pos;
 						pc.yaw = it->rot.z;
 						pc.skill = info->skills.empty() ? 0 : info->skills[0];
-						pc.until = localTime;
+						pc.until = Time::ZERO;
 						pendingSummonCommands.push_back(pc);
 					}
 					t += c->delay;
@@ -467,4 +476,12 @@ void World::UpdateSummons()
 			++it;
 		}
 	}
+}
+
+void World::UpdateSummons()
+{
+	SpawnPendingSummons();
+	RunPendingSummonCommands();
+	PulseGroundAuras();
+	DespawnSummons();
 }

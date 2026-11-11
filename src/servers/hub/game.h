@@ -45,6 +45,7 @@ struct HubGame
 		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
 		MapIndex mapIndex = MapIndex(0);
+		bool isQueued = false;
 
 		eastl::fixed_vector<Member,5> memberList; // NOTE: first is leader
 		// TODO: do fancy party stuff later on

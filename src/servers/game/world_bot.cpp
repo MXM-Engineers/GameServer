@@ -21,7 +21,7 @@ void World::UpdateBotSkills()
 		Player* target = nullptr;
 		f32 best = 1e9f;
 		foreach(e, players) {
-			if(e->dead || e->team == bot.team) continue;
+			if(e->dead || e->untargetable || e->team == bot.team) continue;
 			const f32 d = glm::length(vec2(e->body->GetWorldPos()) - vec2(pos));
 			if(d < best) { best = d; target = &*e; }
 		}
@@ -63,7 +63,6 @@ void World::UpdateBotCombat()
 		if(bot.clientHd != ClientHandle::INVALID || bot.dead) continue;
 		if(localTime < bot.tNextBotShot || localTime < bot.ccUntil) continue;
 		if(IsBlocked(bot, true, false, false)) continue;
-		const ClassType cls = bot.Main().classType;
 		if(WeaponIsMelee(bot)) continue;
 
 		const f32 range = WeaponRange(bot);
@@ -72,7 +71,7 @@ void World::UpdateBotCombat()
 		Player* target = nullptr;
 		f32 best = range;
 		foreach(e, players) {
-			if(e->dead || e->team == bot.team) continue;
+			if(e->dead || e->untargetable || e->team == bot.team) continue;
 			const f32 d = glm::length(vec2(e->body->GetWorldPos()) - vec2(pos));
 			if(d < best) { best = d; target = &*e; }
 		}

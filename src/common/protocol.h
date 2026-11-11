@@ -743,15 +743,19 @@ struct CQ_RoomEquipSkill
 {
 	enum { NET_ID = 60071 };
 
-	// TODO: fill this
+	LocalActorID characterID;
+	SkillID skillID;
+	u32 skillSlot;
 };
+ASSERT_SIZE(CQ_RoomEquipSkill, 12);
 
 struct CQ_RoomSwapSkill
 {
 	enum { NET_ID = 60072 };
 
-	// TODO: fill this
+	u32 characterID;
 };
+ASSERT_SIZE(CQ_RoomSwapSkill, 4);
 
 struct CQ_RequestAreaPopularity
 {

@@ -264,7 +264,7 @@ void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 		foreach(it, lastLeaders) {
 			if(it->nickname == playerAccountData[userID]->nickname) { it->characterID = characterID; it->skin = skinIndex; found = true; }
 		}
-		if(!found && !lastLeaders.full()) lastLeaders.push_back({ playerAccountData[userID]->nickname, characterID, skinIndex });
+		if(!found) lastLeaders.push_back({ playerAccountData[userID]->nickname, characterID, skinIndex });
 	}
 
 	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
@@ -338,8 +338,6 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 		WARN("[client%x] WARNING: unknown entrySysID (%d)", clientHd, (i32)entry);
 		return;
 	}
-	pendingPartyEntry[userID] = entry;
-	pendingPartyStage[userID] = stageType;
 
 	// TODO: validate args
 	const Account& acc = *playerAccountData[userID];
@@ -357,6 +355,15 @@ void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageTyp
 		replication.server->SendPacket(clientHd, packet);
 	}
 	else {
+		AreaIndex areaID = AreaIndex(0);
+		StageIndex stageID = StageIndex(0);
+		MapIndex mapID = MapIndex(0);
+		if(!GetGameXmlContent().FindQueueAreaStage((i32)entry, &areaID, &stageID) || !GetGameXmlContent().FindStageMap(stageID, &mapID)) {
+			WARN("[client%x] WARNING: no playable map for entrySysID (%d)", clientHd, (i32)entry);
+			return;
+		}
+		pendingPartyEntry[userID] = entry;
+		pendingPartyStage[userID] = stageType;
 		matchmaker->QueryPartyCreate(acc.nickname, acc.UID);
 	}
 }
@@ -369,10 +376,15 @@ void HubGame::OnEnqueueGame(ClientHandle clientHd)
 	if(partyUID == PartyUID::INVALID) return;
 	auto f = partyMap.find(partyUID);
 	if(f == partyMap.end()) return;
-	const Party& party = *f->second;
+	Party& party = *f->second;
+	if(party.isQueued) {
+		WARN("[client%x] WARNING: party is already queued (partyUID=%u)", clientHd, (u32)partyUID);
+		return;
+	}
 	ASSERT(party.areaIndex != AreaIndex(0));
 	ASSERT(party.stageIndex != StageIndex(0));
 	ASSERT(party.mapIndex != MapIndex(0));
+	party.isQueued = true;
 	matchmaker->QueryPartyEnqueue(partyUID, party.areaIndex, party.stageIndex, party.mapIndex);
 }
 
@@ -438,6 +450,7 @@ void HubGame::MmOnMatchFound(const In::MN_MatchingPartyFound& matchingParty)
 	auto f = partyMap.find(matchingParty.partyUID);
 	if(f == partyMap.end()) return;
 	Party& party = *f->second;
+	party.isQueued = false;
 	eastl::fixed_vector<UserID,16> rowIDs;
 	for(i32 i = 0; i < matchingParty.playerCount; i++) {
 		rowIDs.push_back(UserID(i + 1));

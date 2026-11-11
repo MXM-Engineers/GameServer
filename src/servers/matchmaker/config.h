@@ -5,6 +5,7 @@ struct CConfigGame
 {
 	i32 ListenPort = 13900;
 	i32 TraceNetwork = false;
+	i32 GameServerPublicIP[4] = { 0, 0, 0, 0 };
 
 	bool ParseLine(const char* line);
 	// returns false on failing to open the config file

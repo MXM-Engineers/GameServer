@@ -316,6 +316,7 @@ void HubPacketHandler::HandlePacket_CN_EnterCityScene(ClientHandle clientHd, con
 		return;
 	}
 	NT_LOG("[client%x] Client :: CN_EnterCityScene ::", clientHd);
+	game->OnPlayerEnterCity(clientHd);
 }
 
 void HubPacketHandler::HandlePacket_CN_ReadyToLoadGameMap(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

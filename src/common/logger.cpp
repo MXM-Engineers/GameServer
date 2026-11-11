@@ -35,6 +35,8 @@ void Logger::Init(const char* filepath_, int flags_)
 	thread.Begin(ThreadLogger, this);
 }
 
+thread_local int Logger::gameTag = 0;
+
 void Logger::Vlogf(const char* fmt, va_list list)
 {
 	eastl::fixed_string<char,8192> fmtBuff;
@@ -47,6 +49,7 @@ void Logger::Vlogf(const char* fmt, va_list list)
 	EA::Thread::ThreadId threadID = EA::Thread::GetThreadId();
 
 	fmtBuff.sprintf("[%x] ", (int)(intptr_t)threadID);
+	if(gameTag > 0) fmtBuff.append_sprintf("[g%d] ", gameTag);
 	fmtBuff.append_sprintf_va_list(fmt, list);
 	const int len = fmtBuff.length();
 

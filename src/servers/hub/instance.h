@@ -30,6 +30,9 @@ struct HubInstance
 	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
 };
 
+void MarkAccountSentToGame(const WideString& nickname);
+bool TakeAccountReturningFromGame(const WideString& nickname);
+
 struct RoomInstance
 {
 	enum Team: u8 {

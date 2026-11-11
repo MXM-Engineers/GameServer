@@ -296,9 +296,16 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 	return &colliderList.back();
 }
 
+struct IgnoreOtherCharacters: PxControllerFilterCallback
+{
+	bool filter(const PxController&, const PxController&) override { return false; }
+};
+
 vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
+	static IgnoreOtherCharacters ignoreCharacters;
 	PxControllerFilters filter;
+	filter.mCCTFilterCallback = &ignoreCharacters;
 	//filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
 	PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter, nullptr /* obstacles? */);
 	return body->GetWorldPos();
@@ -310,6 +317,53 @@ vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 t
 	vec3 end = Move(body, disp, time);
 	body->collider->setFootPosition(start);
 	return end;
+}
+
+struct IgnoreTeamWalls: PxQueryFilterCallback
+{
+	u32 teamWord = 0;
+	PxQueryHitType::Enum preFilter(const PxFilterData&, const PxShape* shape, const PxRigidActor*, PxHitFlags&) override
+	{
+		return teamWord != 0 && shape->getQueryFilterData().word0 == teamWord ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK;
+	}
+	PxQueryHitType::Enum postFilter(const PxFilterData&, const PxQueryHit&) override { return PxQueryHitType::eBLOCK; }
+};
+
+bool PhysicsScene::RaycastStatic(const vec3& from, const vec3& to, f32* hitDist, i32 ignoreTeam)
+{
+	const vec3 d = to - from;
+	const f32 len = glm::length(d);
+	if(len < 0.001f) return false;
+	PxRaycastBuffer hit;
+	IgnoreTeamWalls teamFilter;
+	teamFilter.teamWord = ignoreTeam >= 0 ? (u32)ignoreTeam + 1 : 0;
+	const PxQueryFilterData filter(PxQueryFlag::eSTATIC | PxQueryFlag::ePREFILTER);
+	if(!scene->raycast(PxVec3(from.x, from.y, from.z), PxVec3(d.x / len, d.y / len, d.z / len), len, hit, PxHitFlag::eDEFAULT, filter, &teamFilter)) return false;
+	if(!hit.hasBlock) return false;
+	if(hitDist) *hitDist = hit.block.distance;
+	return true;
+}
+
+void* PhysicsScene::CreateWall(const vec3& pos, f32 width, f32 depth, f32 height, f32 yaw, i32 team)
+{
+	auto& ctx = PhysContext();
+	PxShape* shape = ctx.physics->createShape(PxBoxGeometry(depth * 0.5f, width * 0.5f, height * 0.5f), *ctx.matMapSurface, true);
+	if(!shape) return nullptr;
+	shape->setQueryFilterData(PxFilterData((u32)(team + 1), 0, 0, 0));
+	const glm::quat quat = glm::angleAxis(yaw, vec3(0, 0, 1));
+	PxRigidStatic* wall = ctx.physics->createRigidStatic(PxTransform(PxVec3(pos.x, pos.y, pos.z + height * 0.5f), PxQuat(quat.x, quat.y, quat.z, quat.w)));
+	wall->attachShape(*shape);
+	shape->release();
+	scene->addActor(*wall);
+	return wall;
+}
+
+void PhysicsScene::RemoveWall(void* wall)
+{
+	if(!wall) return;
+	PxRigidStatic* actor = (PxRigidStatic*)wall;
+	scene->removeActor(*actor);
+	actor->release();
 }
 
 static PhysicsContext* g_Context;

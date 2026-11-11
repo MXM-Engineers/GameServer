@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="900000000">
+    <ST_INTERACTION _Index="900000000" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_STICK" _Name="IT_NAME_STICK" _SightDistance="1500" _ActiveDistance="350" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000001">
+    <ST_INTERACTION _Index="900000001" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_RESURRECTION" _Name="IT_NAME_RESURRECTION" _SightDistance="1500" _ActiveDistance="350" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000002">
+    <ST_INTERACTION _Index="900000002" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="4" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000003">
+    <ST_INTERACTION _Index="900000003" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="4" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000004">
+    <ST_INTERACTION _Index="900000004" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="4" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000005">
+    <ST_INTERACTION _Index="900000005" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="2500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000006">
+    <ST_INTERACTION _Index="900000006" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000007">
+    <ST_INTERACTION _Index="900000007" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000008">
+    <ST_INTERACTION _Index="900000008" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TOTEM2" _Name="IT_NAME_TOTEM2" _SightDistance="2500" _ActiveDistance="650" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="10" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000009">
+    <ST_INTERACTION _Index="900000009" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="2000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _RepeatInterval="10" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000010">
+    <ST_INTERACTION _Index="900000010" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="1500" _ActiveDistance="600" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000011">
+    <ST_INTERACTION _Index="900000011" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="600" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _RepeatInterval="30" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000012">
+    <ST_INTERACTION _Index="900000012" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="450" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="6" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000013">
+    <ST_INTERACTION _Index="900000013" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="450" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _RepeatInterval="6" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000014">
+    <ST_INTERACTION _Index="900000014" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000015">
+    <ST_INTERACTION _Index="900000015" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="4" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000016">
+    <ST_INTERACTION _Index="900000016" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="4" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000017">
+    <ST_INTERACTION _Index="900000017" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000018">
+    <ST_INTERACTION _Index="900000018" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="10" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000019">
+    <ST_INTERACTION _Index="900000019" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _RepeatInterval="300" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000020">
+    <ST_INTERACTION _Index="900000020" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_RESURRECTION" _Name="IT_NAME_RESURRECTION" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000021">
+    <ST_INTERACTION _Index="900000021" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_ITEMDROP" _Name="IT_NAME_ITEMDROP" _SightDistance="1500" _ActiveDistance="650" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000022">
+    <ST_INTERACTION _Index="900000022" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="2000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000023">
+    <ST_INTERACTION _Index="900000023" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="2000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000025">
+    <ST_INTERACTION _Index="900000025" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="5" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000026">
+    <ST_INTERACTION _Index="900000026" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="10000" _ActiveDistance="350" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000027">
+    <ST_INTERACTION _Index="900000027" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000028">
+    <ST_INTERACTION _Index="900000028" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="1" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000030">
+    <ST_INTERACTION _Index="900000030" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000031">
+    <ST_INTERACTION _Index="900000031" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000029">
+    <ST_INTERACTION _Index="900000029" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TOTEM" _Name="IT_NAME_TOTEM" _SightDistance="10000" _ActiveDistance="480" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000032">
+    <ST_INTERACTION _Index="900000032" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OCCUPY" _Name="IT_NAME_OCCUPY" _SightDistance="3000" _ActiveDistance="450" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="300" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000033">
+    <ST_INTERACTION _Index="900000033" _Type="IT_TYPE_INDIVIDUAL" _Action="IT_ACTION_TELEPORT" _Name="IT_NAME_TELEPORT" _SightDistance="1500" _ActiveDistance="800" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000034">
+    <ST_INTERACTION _Index="900000034" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRET" _Name="IT_NAME_TURRET" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="2" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000035">
+    <ST_INTERACTION _Index="900000035" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRETUPGRADE" _Name="IT_NAME_TURRETUPGRADE" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="45" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000036">
+    <ST_INTERACTION _Index="900000036" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRETUPGRADE" _Name="IT_NAME_TURRETUPGRADE" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="60" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000037">
+    <ST_INTERACTION _Index="900000037" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRETUPGRADE" _Name="IT_NAME_TURRETUPGRADE" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="75" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000038">
+    <ST_INTERACTION _Index="900000038" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRETUPGRADE" _Name="IT_NAME_TURRETUPGRADE" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="90" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000039">
+    <ST_INTERACTION _Index="900000039" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TURRETHEAL" _Name="IT_NAME_TURRETHEAL" _SightDistance="1000" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="60" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="120" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000040">
+    <ST_INTERACTION _Index="900000040" _Type="IT_TYPE_PVP_OCCUPY" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="14" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000041">
+    <ST_INTERACTION _Index="900000041" _Type="IT_TYPE_PVP_OCCUPY" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="10000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="14" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000042">
+    <ST_INTERACTION _Index="900000042" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="1" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000043">
+    <ST_INTERACTION _Index="900000043" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000044">
+    <ST_INTERACTION _Index="900000044" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _RepeatInterval="120" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000045">
+    <ST_INTERACTION _Index="900000045" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000046">
+    <ST_INTERACTION _Index="900000046" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="5" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000047">
+    <ST_INTERACTION _Index="900000047" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_OPEN" _Name="IT_NAME_OPEN" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="10" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000048">
+    <ST_INTERACTION _Index="900000048" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="15" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000049">
+    <ST_INTERACTION _Index="900000049" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="3000" _ActiveDistance="3000" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="True" _RepeatInterval="120" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000050">
+    <ST_INTERACTION _Index="900000050" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="700" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="40" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="1" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000051">
+    <ST_INTERACTION _Index="900000051" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="700" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="40" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="3" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000052">
+    <ST_INTERACTION _Index="900000052" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_MASTERHEAL" _Name="IT_NAME_MASTERHEAL" _SightDistance="700" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="60" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="10" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000053">
+    <ST_INTERACTION _Index="900000053" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_SPEEDBUFF" _Name="IT_NAME_SPEEDBUFF" _SightDistance="700" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _RepeatInterval="60" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="10" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000054">
+    <ST_INTERACTION _Index="900000054" _Type="IT_TYPE_INDIVIDUAL" _Action="IT_ACTION_TELEPORT2" _Name="IT_NAME_TELEPORT2" _SightDistance="700" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="2" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000055">
+    <ST_INTERACTION _Index="900000055" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_INSTALL" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="50" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000072">
+    <ST_INTERACTION _Index="900000072" _Type="IT_TYPE_NORMAL" _Action="IT_ACTIOM_WALL_RESPAWN" _Name="IT_ACTIOM_WALL_RESPAWN" _SightDistance="1500" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="True" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000056">
+    <ST_INTERACTION _Index="900000056" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_INVESTIGATE" _Name="IT_NAME_INVESTIGATE" _SightDistance="1000" _ActiveDistance="450" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000057">
+    <ST_INTERACTION _Index="900000057" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000058">
+    <ST_INTERACTION _Index="900000058" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TOTEM" _Name="IT_NAME_TOTEM" _SightDistance="10000" _ActiveDistance="450" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000059">
+    <ST_INTERACTION _Index="900000059" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_ADJUST_AI" _Name="IT_NAME_ADJUST_AI" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000060">
+    <ST_INTERACTION _Index="900000060" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_RESURRECTION" _Name="IT_NAME_RESURRECTION" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000061">
+    <ST_INTERACTION _Index="900000061" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_ADJUST_AI" _Name="IT_NAME_ADJUST_AI" _SightDistance="1500" _ActiveDistance="400" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Count="1" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000062">
+    <ST_INTERACTION _Index="900000062" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="25" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000063">
+    <ST_INTERACTION _Index="900000063" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="70" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000064">
+    <ST_INTERACTION _Index="900000064" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="150" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000065">
+    <ST_INTERACTION _Index="900000065" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="25" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000066">
+    <ST_INTERACTION _Index="900000066" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="70" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000067">
+    <ST_INTERACTION _Index="900000067" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TALK" _Name="IT_NAME_TALK" _SightDistance="1000" _ActiveDistance="300" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail">
+      <_RequireResource _Type="SCORE_TYPE_MINERAL" _Count="150" />
+    </ST_INTERACTION>
+  </INFO>
+  <INFO ID="900000068">
+    <ST_INTERACTION _Index="900000068" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_ITEMDROP" _Name="IT_NAME_DESTROY" _SightDistance="200" _ActiveDistance="290" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="True" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000069">
+    <ST_INTERACTION _Index="900000069" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_PICKUP" _Name="IT_NAME_PICKUP" _SightDistance="1500" _ActiveDistance="600" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+  <INFO ID="900000070">
+    <ST_INTERACTION _Index="900000070" _Type="IT_TYPE_NORMAL" _Action="IT_ACTION_TOTEM2" _Name="IT_NAME_TOTEM2" _SightDistance="2500" _ActiveDistance="500" _CastingAction="INTERACTION_CAST_BEHAVIORSTATE" _Active="False" _Repeat="False" _RepeatInterval="20" _CastingSound="UI_GamePlay_InterAction_Progress" _ExecutionSound="UI_GamePlay_InterAction_Success" _CancelSound="UI_GamePlay_InterAction_Fail" />
+  </INFO>
+</ENTITY_FILE>

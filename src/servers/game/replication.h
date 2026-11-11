@@ -96,6 +96,7 @@ struct Replication
 		i32 actionParam2;
 
 		u8 taggedOut = false;
+		bool skillMoving = false;
 	};
 
 	struct ActorNpc: Actor<ActorType::Npc>
@@ -111,6 +112,7 @@ struct Replication
 		ActionStateID actionState = ActionStateID::INVALID;
 		i32 seed = 0;
 		i32 entityType = 1;
+		ActorUID ownerUID = ActorUID::INVALID;
 
 
 		vec3 pos;
@@ -141,6 +143,7 @@ struct Replication
 		ActorUID casterUID;
 		SkillID skillID;
 		ActionStateID actionID;
+		bool sendAction = false;
 		vec3 castPos;
 		vec3 casterPos;
 		vec2 casterMoveDir;
@@ -165,6 +168,8 @@ struct Replication
 		RotationHumanoid rot;
 		f32 speed;
 		f32 moveDuration;
+		ClientHandle casterClientHd = ClientHandle::INVALID;
+		bool castStart = false;
 	};
 
 	struct Frame
@@ -293,6 +298,66 @@ struct Replication
 	void SendGameStart(ClientHandle clientHd);
 	void SendPlayerTag(ClientHandle clientHd, ActorUID mainActorUID, ActorUID subActorUID);
 	void SendPlayerJump(ClientHandle clientHd, ActorUID mainActorUID, f32 rotate, f32 moveDirX, f32 moveDirY);
+	void SendDamageToAll(ActorUID attackerUID, ActorUID targetUID, SkillID skillID, i32 damage, i32 hp, i32 hpMax, u32 damageType = 0);
+	void SendHpToAll(ActorUID actorUID, i32 hp, i32 hpMax);
+	void SendDoConnectChannel(ClientHandle clientHd, const wchar* nickname, const i32 hubIP[4], u16 hubPort);
+	struct EndPlayer
+	{
+		UserID userID;
+		ClientHandle clientHd;
+		const wchar* name;
+		u8 team;
+		i32 kills;
+		i32 deaths;
+		CreatureIndex masters[2];
+	};
+	void SendGameEnd(const EndPlayer* players, i32 count, i32 redScore, i32 blueScore, u32 playTimeMs);
+	void SendGaugeToAll(UserID userID, u8 updateType, bool overheated, f32 overheatTime, u16 gauge, u16 maxGauge);
+	void SendStatToAll(ActorUID actorUID, i32 statType, f32 cur, f32 max);
+	void SendStanceToAll(ActorUID actorUID, i32 stance, f32 durationSec);
+	void SendNpcBehaviorToAll(ActorUID actorUID, ActionStateID action, const vec3& pos, f32 worldYaw, const vec3& targetPos, ActorUID targetUID);
+	void SendExecuteSkillAck(ClientHandle clientHd, ActorUID casterUID, SkillID skillID);
+	void SendCancelSkillToAll(ActorUID casterUID, SkillID skillID);
+	void SendInteractionStatusToAll(ActorUID objectUID, u32 allowedTeamMask, i32 interactionID, i32 occupiedTeam, ClientHandle exclude = ClientHandle::INVALID);
+	void SendInteractionExecuteToAll(ActorUID objectUID, ActorUID targetUID, u32 actionState, u32 castingTimeMS);
+	void SendToggleSkill(ActorUID casterUID, ClientHandle casterHd, SkillID skillID, bool on, ActionStateID action);
+	void SendHideDetect(ClientHandle clientHd, ActorUID detectorUID, ActorUID targetUID, u8 flag);
+	void SendChangeSkillSlot(ClientHandle clientHd, ActorUID actorUID, i32 slot, SkillID skill, i32 resetCooltimeID);
+	void SendSelfTeleport(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, f32 worldYaw, const vec3* clientPos = nullptr);
+	void SendSelfMove(ClientHandle clientHd, ActorUID actorUID, const vec3& pos, const vec2& moveDir, f32 speed, f32 worldYaw);
+	void SendCooltimeReset(ClientHandle clientHd, ActorUID characterUID, Slice<const i32> coolTimeIDs, u32 leftMs = 1, u32 totalMs = 1);
+	void SendAddStatusToAll(i32 statusID, ActorUID targetUID, ActorUID casterUID, f32 durationSec, const vec3& from, const vec3& to, f32 graphDuration, i32 overlap = 1);
+	void SendRemoveStatusToAll(i32 statusID, ActorUID targetUID, ActorUID casterUID);
+	void SendRemoteDamageToAll(u32 remoteID, RemoteIdx remoteDoc, ActorUID attackerUID, ActorUID targetUID, const vec3& hitPos, const vec2& hitDir, i32 damage, i32 hp, i32 hpMax, u32 damageType = 0);
+	void SendAttackActionToOthers(ClientHandle senderHd, ActorUID actorUID, f32 mxmYaw);
+	void SendDestroyRemoteToAll(u32 remoteID);
+	void SendNpcMoveToAll(ActorUID actorUID, const vec3& pos, const vec3& goal, f32 worldYaw, f32 speed);
+	void SendRemoteCreateToAll(ActorUID ownerUID, u32 seed, RemoteIdx doc, const vec3& firePos, f32 worldYaw, const vec3& targetPos, ActorUID targetUID, const wchar* fireObject = L"Scene Root", ClientHandle exclude = ClientHandle::INVALID);
+	struct RemoteCreate
+	{
+		ActorUID parentUID = ActorUID::INVALID;
+		ActorUID ownerUID = ActorUID::INVALID;
+		u32 seed = 0;
+		vec3 firePos = vec3(0);
+		eastl::array<u16,3> fireRotation = { 0, 0, 0 };
+		vec3 targetPos = vec3(0);
+		const wchar* fireObject = nullptr;
+		u16 fireObjectLen = 0;
+		u16 scale = 100;
+		f32 lifeTime = 0;
+		u32 hitInvalidTarget = 0;
+		RemoteIdx doc = RemoteIdx::INVALID;
+		ActorUID targetUID = ActorUID::INVALID;
+		u8 flags = 0;
+	};
+	void SendRemoteCreate(const RemoteCreate& remote, ClientHandle exclude);
+	void RelayRemoteSyncCreateFromRemoteDoc(ClientHandle senderHd, const u8* packetData, i32 packetSize);
+	void RelayRemoteSyncTarget(ClientHandle senderHd, const u8* packetData, i32 packetSize);
+	void RelayWeaponShot(ClientHandle senderHd, const u8* packetData, i32 packetSize, const vec3& target, RemoteIdx remoteDoc);
+	void RelayWeaponState(ClientHandle senderHd, ActorUID ownerUID, i32 weaponID, i32 state, u8 chargeLevel, u8 firingCombo);
+	void SendScoreToAll(UserID killerID, u8 team, i32 kills, i32 teamKills, UserID victimID, i32 victimDeaths);
+	void SendDeathToAll(ActorUID killerUID, ActorUID targetUID, CreatureIndex targetDocID, UserID targetUserID, i32 respawnDelayMs);
+	void SendReviveToAll(UserID userID, ActorUID activeUID, ActorUID inactiveUID, const vec3& pos);
 
 	void OnPlayerDisconnect(ClientHandle clientHd);
 

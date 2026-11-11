@@ -23,6 +23,50 @@ inline bool ValidatePacket<Cl::CQ_FirstHello>(const void* packetData, i32 packet
 	return packetSize == sizeof(Cl::CQ_FirstHello);
 }
 
+inline bool ValidateFireObjectPrefix(ConstBuffer& buff, i32 fireObjectOffset)
+{
+	if(!buff.CanRead(fireObjectOffset + sizeof(u16))) return false;
+	buff.ReadRaw(fireObjectOffset);
+	const u16 len = buff.Read<u16>();
+	if(!buff.CanRead(len * sizeof(wchar))) return false;
+	buff.ReadRaw(len * sizeof(wchar));
+	return true;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_GamePlayerSyncPhy>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	return ValidateFireObjectPrefix(buff, offsetof(Cl::CQ_GamePlayerSyncPhy, charNameLen));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_RemoteSyncCreateFromRemoteDoc>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!ValidateFireObjectPrefix(buff, offsetof(Cl::CQ_RemoteSyncCreateFromRemoteDoc, FireObject_len))) return false;
+	return buff.CanRead(sizeof(u16) + sizeof(f32) + sizeof(u32) * 3 + sizeof(u8));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_RemoteSyncTarget>(const void* packetData, i32 packetSize)
+{
+	if(packetSize < (i32)offsetof(Cl::CQ_RemoteSyncTarget, MoveDir)) return false;
+	const u8 bits = *(const u8*)packetData;
+	return (bits & 8) || packetSize >= (i32)sizeof(Cl::CQ_RemoteSyncTarget);
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_ExecuteSkill>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	const i32 head = sizeof(u32) * 2 + sizeof(float3);
+	if(!buff.CanRead(head + sizeof(u16))) return false;
+	buff.ReadRaw(head);
+	const u16 count = buff.Read<u16>();
+	return buff.CanRead(count * sizeof(u32) + sizeof(Cl::CQ_ExecuteSkill::unkParams));
+}
+
 // CQ_UserLogin: four wide strings (nick, password, type, extra) followed by
 // a u32. Each string is a u16 char count + count*2 bytes, so validation must
 // walk each string and verify its length against the remaining packet size.

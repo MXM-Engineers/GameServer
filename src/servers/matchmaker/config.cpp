@@ -6,6 +6,7 @@ bool CConfigGame::ParseLine(const char* line)
 {
 	if(EA::StdC::Sscanf(line, "ListenPort=%d", &ListenPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
+	if(EA::StdC::Sscanf(line, "GameServerPublicIP=%d.%d.%d.%d", &GameServerPublicIP[0], &GameServerPublicIP[1], &GameServerPublicIP[2], &GameServerPublicIP[3]) == 4) return true;
 	return false;
 }
 
@@ -61,6 +62,7 @@ bool CConfigGame::SaveConfigFile()
 	eastl::fixed_string<char,4096,false> out;
 	out.append_sprintf("ListenPort=%d\n", ListenPort);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
+	out.append_sprintf("GameServerPublicIP=%d.%d.%d.%d\n", GameServerPublicIP[0], GameServerPublicIP[1], GameServerPublicIP[2], GameServerPublicIP[3]);
 
 	bool r = fileSaveBuff(CONFIG_PATH, out.data(), out.size());
 	if(!r) {
@@ -75,6 +77,7 @@ void CConfigGame::Print() const
 	LOG("Config = {");
 	LOG("	ListenPort=%d", ListenPort);
 	LOG("	TraceNetwork=%d", TraceNetwork);
+	LOG("	GameServerPublicIP=%d.%d.%d.%d", GameServerPublicIP[0], GameServerPublicIP[1], GameServerPublicIP[2], GameServerPublicIP[3]);
 	LOG("}");
 }
 

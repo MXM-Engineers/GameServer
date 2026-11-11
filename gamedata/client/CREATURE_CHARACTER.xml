@@ -1,0 +1,2518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="100000001">
+    <EntityComData _Name="STRIKER" _Title="CLASS_TYPE_SUBNAME_STRIKER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_STRIKER" _StoryTitle="STR_STORYTITLE_STRIKER" _Story="STR_STORY_STRIKER" _BaseFeature="STR_BASEFEATURE_STRIKER" _RangeFeature="STR_RANGEFEATURE_STRIKER" _PhysicalAttackFeature="5" _MagicalAttackFeature="5" _ViabilityFeature="6" _DifficultyFeature="2" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="3" />
+    <Kfm_ComData KeyName="STRIKER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180010020" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180010040" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180010050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_STRIKER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="820" _RClickMoveAttackMoveSpeedRatio="0.6">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STRIKER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="3.19" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STRIKER_ABILITY_02" _IconAlias="ability_criticalrate_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_CRITICALRATE" DATA="3.86" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STRIKER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STRIKER_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="striker_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="204" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180010020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180010040" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180010010" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180010030" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180010050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180010000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180010002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131101011" />
+      <_DefaultWeaponIndex DATA="131101021" />
+      <_DefaultWeaponIndex DATA="131101031" />
+      <_FairPvPWeaponIndex DATA="131101011" />
+      <_FairPvPWeaponIndex DATA="131101021" />
+      <_FairPvPWeaponIndex DATA="131101031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000002">
+    <EntityComData _Name="ARTILLERY" _Title="CLASS_TYPE_SUBNAME_ARTILLERY" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="50" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="0.9" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ARTILLERY" _StoryTitle="STR_STORYTITLE_ARTILLERY" _Story="STR_STORY_ARTILLERY" _BaseFeature="STR_BASEFEATURE_ARTILLERY" _RangeFeature="STR_RANGEFEATURE_ARTILLERY" _PhysicalAttackFeature="7" _MagicalAttackFeature="4" _ViabilityFeature="5" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="4" />
+    <Kfm_ComData KeyName="ARTILLERY" />
+    <PhysXMeshComData _ColliderRadius="89" _ColliderHeight="155" />
+    <HUDComData _NameTagOffsetZ="350" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180020040" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180020030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180020050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ARTILLERY" _DestroyTime="5" _RankHitBonus="0.7" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="1600" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ARTILLERY_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="31.76" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ARTILLERY_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="31.9" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ARTILLERY_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ARTILLERY_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="artillery_01">
+      <_FireLight _PlayTime="1.6" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="230" g="170" b="110" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180020040" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180020030" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180020010" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180020020" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180020050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180020000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180020002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131102011" />
+      <_DefaultWeaponIndex DATA="131102021" />
+      <_DefaultWeaponIndex DATA="131102031" />
+      <_FairPvPWeaponIndex DATA="131102011" />
+      <_FairPvPWeaponIndex DATA="131102021" />
+      <_FairPvPWeaponIndex DATA="131102031" />
+      <_FairPvPMasterGearIndex DATA="880000003" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000003">
+    <EntityComData _Name="ASSASSIN" _Title="CLASS_TYPE_SUBNAME_ASSASSIN" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="False" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ASSASSIN" _StoryTitle="STR_STORYTITLE_ASSASSIN" _Story="STR_STORY_ASSASSIN" _BaseFeature="STR_BASEFEATURE_ASSASSIN" _RangeFeature="STR_RANGEFEATURE_ASSASSIN" _PhysicalAttackFeature="10" _MagicalAttackFeature="4" _ViabilityFeature="2" _DifficultyFeature="9" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="2" />
+    <Kfm_ComData KeyName="ASSASSIN" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180030020" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180030030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180030050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ASSASSIN" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="450" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_ENERGY">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ASSASSIN_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="6.01" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ASSASSIN_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ASSASSIN_ABILITY_03" _IconAlias="ability_criticalrate_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_CRITICALRATE" DATA="3.72" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ASSASSIN_ABILITY_04" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="assassin_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="180" b="170" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180030020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180030030" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180030010" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180030040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180030050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180030000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180030002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="4" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131103011" />
+      <_DefaultWeaponIndex DATA="131103021" />
+      <_DefaultWeaponIndex DATA="131103031" />
+      <_FairPvPWeaponIndex DATA="131103011" />
+      <_FairPvPWeaponIndex DATA="131103021" />
+      <_FairPvPWeaponIndex DATA="131103031" />
+      <_FairPvPMasterGearIndex DATA="880000002" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000004">
+    <EntityComData _Name="ELECTRO" _Title="CLASS_TYPE_SUBNAME_ELECTRO" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1.1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ELECTRO" _StoryTitle="STR_STORYTITLE_ELECTRO" _Story="STR_STORY_ELECTRO" _BaseFeature="STR_BASEFEATURE_ELECTRO" _RangeFeature="STR_RANGEFEATURE_ELECTRO" _PhysicalAttackFeature="4" _MagicalAttackFeature="8" _ViabilityFeature="4" _DifficultyFeature="3" />
+    <MoveController_ComData Lock_RotateAngle="0" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="5" />
+    <Kfm_ComData KeyName="ELECTRO" />
+    <PhysXMeshComData _ColliderRadius="41" _ColliderHeight="191" />
+    <HUDComData _NameTagOffsetZ="340" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180040010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180040020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180040050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ELECTRO" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="730" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ELECTRO_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="1.89" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ELECTRO_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="37" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ELECTRO_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ELECTRO_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="electro_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="20" _Radius="600">
+        <_DiffuseColor r="40" g="90" b="220" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180040010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180040020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180040030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180040040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180040050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180040000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180040002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131104011" />
+      <_DefaultWeaponIndex DATA="131104021" />
+      <_DefaultWeaponIndex DATA="131104031" />
+      <_FairPvPWeaponIndex DATA="131104011" />
+      <_FairPvPWeaponIndex DATA="131104021" />
+      <_FairPvPWeaponIndex DATA="131104031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000005">
+    <EntityComData _Name="DEFENDER" _Title="CLASS_TYPE_SUBNAME_DEFENDER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="50" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1.1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_DEFENDER" _StoryTitle="STR_STORYTITLE_DEFENDER" _Story="STR_STORY_DEFENDER" _BaseFeature="STR_BASEFEATURE_DEFENDER" _RangeFeature="STR_RANGEFEATURE_DEFENDER" _PhysicalAttackFeature="2" _MagicalAttackFeature="4" _ViabilityFeature="10" _DifficultyFeature="5" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="6" />
+    <Kfm_ComData KeyName="DEFENDER" />
+    <PhysXMeshComData _ColliderRadius="73" _ColliderHeight="127" />
+    <HUDComData _NameTagOffsetZ="350" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180050010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180050020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180050050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_DEFENDER" _DestroyTime="5" _RankHitBonus="0.5" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="480" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_RAGE">
+      <_STAT_INIT DATAKEY="STAT_TYPE_RAGE" DATA="100" />
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEFENDER_ABILITY_01" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="58" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEFENDER_ABILITY_02" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.09" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEFENDER_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="2.87" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEFENDER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_RAGE_ATTACK_RECOVERY_VALUE" DATA="0.12" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="defender_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="70" g="120" b="210" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180050010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180050020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180050030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180050040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180050050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180050000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180050002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="4" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131105011" />
+      <_DefaultWeaponIndex DATA="131105021" />
+      <_DefaultWeaponIndex DATA="131105031" />
+      <_FairPvPWeaponIndex DATA="131105011" />
+      <_FairPvPWeaponIndex DATA="131105021" />
+      <_FairPvPWeaponIndex DATA="131105031" />
+      <_FairPvPMasterGearIndex DATA="880000005" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000006">
+    <EntityComData _Name="SNIPER" _Title="CLASS_TYPE_SUBNAME_SNIPER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SNIPER" _StoryTitle="STR_STORYTITLE_SNIPER" _Story="STR_STORY_SNIPER" _BaseFeature="STR_BASEFEATURE_SNIPER" _RangeFeature="STR_RANGEFEATURE_SNIPER" _PhysicalAttackFeature="9" _MagicalAttackFeature="4" _ViabilityFeature="3" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="7" />
+    <Kfm_ComData KeyName="SNIPER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180060040" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180060010" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180060050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SNIPER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="1100" _RClickMoveAttackMoveSpeedRatio="0.77" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SNIPER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="19.01" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SNIPER_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SNIPER_ABILITY_03" _IconAlias="ability_criticalrate_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_CRITICALRATE" DATA="3.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SNIPER_ABILITY_04" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="sniper_01">
+      <_FireLight _PlayTime="1" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="210" b="140" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180060040" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180060010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180060020" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180060030" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180060050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180060000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180060002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131106011" />
+      <_DefaultWeaponIndex DATA="131106021" />
+      <_DefaultWeaponIndex DATA="131106031" />
+      <_FairPvPWeaponIndex DATA="131106011" />
+      <_FairPvPWeaponIndex DATA="131106021" />
+      <_FairPvPWeaponIndex DATA="131106031" />
+      <_FairPvPMasterGearIndex DATA="880000004" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000007">
+    <EntityComData _Name="DEATHKNIGHT" _Title="CLASS_TYPE_SUBNAME_DEATHKNIGHT" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_DEATHKNIGHT" _StoryTitle="STR_STORYTITLE_DEATHKNIGHT" _Story="STR_STORY_DEATHKNIGHT" _BaseFeature="STR_BASEFEATURE_DEATHKNIGHT" _RangeFeature="STR_RANGEFEATURE_DEATHKNIGHT" _PhysicalAttackFeature="3" _MagicalAttackFeature="5" _ViabilityFeature="8" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="8" />
+    <Kfm_ComData KeyName="DEATHKNIGHT" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="320" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180070010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180070020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180070050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_DEATHKNIGHT" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="0.7" _ReqAchievementIndex="300200505">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEATHKNIGHT_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="3.51" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEATHKNIGHT_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="57" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEATHKNIGHT_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.73" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DEATHKNIGHT_ABILITY_04" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.56" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="deathknight_01">
+      <_FireLight _PlayTime="0.5" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="190" b="100" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180070010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180070020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180070030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180070040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180070050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180070000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180070002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180070003" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131107011" />
+      <_DefaultWeaponIndex DATA="131107021" />
+      <_DefaultWeaponIndex DATA="131107031" />
+      <_FairPvPWeaponIndex DATA="131107011" />
+      <_FairPvPWeaponIndex DATA="131107021" />
+      <_FairPvPWeaponIndex DATA="131107031" />
+      <_FairPvPMasterGearIndex DATA="880000006" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000008">
+    <EntityComData _Name="DESTROYER" _Title="CLASS_TYPE_SUBNAME_DESTROYER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="50" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_DESTROYER" _StoryTitle="STR_STORYTITLE_DESTROYER" _Story="STR_STORY_DESTROYER" _BaseFeature="STR_BASEFEATURE_DESTROYER" _RangeFeature="STR_RANGEFEATURE_DESTROYER" _PhysicalAttackFeature="3" _MagicalAttackFeature="5" _ViabilityFeature="8" _DifficultyFeature="3" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="9" />
+    <Kfm_ComData KeyName="DESTROYER" />
+    <PhysXMeshComData _ColliderRadius="80" _ColliderHeight="140" />
+    <HUDComData _NameTagOffsetZ="350" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180080010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180080020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180080050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_DESTROYER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="600" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_RAGE">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DESTROYER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="8.72" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DESTROYER_ABILITY_02" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.29" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DESTROYER_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.09" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DESTROYER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_RAGE_ATTACK_RECOVERY_VALUE" DATA="0.39" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="destroyer_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180080010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180080020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180080030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180080040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180080050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180080000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180080002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131108011" />
+      <_DefaultWeaponIndex DATA="131108021" />
+      <_DefaultWeaponIndex DATA="131108031" />
+      <_FairPvPWeaponIndex DATA="131108011" />
+      <_FairPvPWeaponIndex DATA="131108021" />
+      <_FairPvPWeaponIndex DATA="131108031" />
+      <_FairPvPMasterGearIndex DATA="880000006" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000009">
+    <EntityComData _Name="MECHANIC" _Title="CLASS_TYPE_SUBNAME_MECHANIC" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1.1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_MECHANIC" _StoryTitle="STR_STORYTITLE_MECHANIC" _Story="STR_STORY_MECHANIC" _BaseFeature="STR_BASEFEATURE_MECHANIC" _RangeFeature="STR_RANGEFEATURE_MECHANIC" _PhysicalAttackFeature="5" _MagicalAttackFeature="7" _ViabilityFeature="4" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="10" />
+    <Kfm_ComData KeyName="MECHANIC" />
+    <PhysXMeshComData _ColliderRadius="41" _ColliderHeight="191" />
+    <HUDComData _NameTagOffsetZ="260" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180090010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180090020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180090050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_MECHANIC" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="400" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MECHANIC_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="24.2" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MECHANIC_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MECHANIC_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.81" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MECHANIC_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="mechanic_01">
+      <_FireLight _PlayTime="1" _Dimmer="20" _Radius="600">
+        <_DiffuseColor r="186" g="156" b="255" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180090010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180090020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180090030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180090040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180090050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180090000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180090002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131109011" />
+      <_DefaultWeaponIndex DATA="131109021" />
+      <_DefaultWeaponIndex DATA="131109031" />
+      <_FairPvPWeaponIndex DATA="131109011" />
+      <_FairPvPWeaponIndex DATA="131109021" />
+      <_FairPvPWeaponIndex DATA="131109031" />
+      <_FairPvPMasterGearIndex DATA="880000010" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000010">
+    <EntityComData _Name="SOULMASTER" _Title="CLASS_TYPE_SUBNAME_SOULMASTER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SOULMASTER" _StoryTitle="STR_STORYTITLE_SOULMASTER" _Story="STR_STORY_SOULMASTER" _BaseFeature="STR_BASEFEATURE_SOULMASTER" _RangeFeature="STR_RANGEFEATURE_SOULMASTER" _PhysicalAttackFeature="4" _MagicalAttackFeature="8" _ViabilityFeature="4" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="11" />
+    <Kfm_ComData KeyName="SOULMASTER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="220" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180100010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180100020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180100050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SOULMASTER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="1200" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SOULMASTER_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="41.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SOULMASTER_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="54" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SOULMASTER_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SOULMASTER_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="soulmaster_01">
+      <_FireLight _PlayTime="0.9" _Dimmer="12" _Radius="600">
+        <_DiffuseColor r="236" g="217" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180100010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180100020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180100030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180100040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180100050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180100000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180100002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100003" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100041" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100042" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100043" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100044" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180100021" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="4" />
+      <_DefaultWeaponIndex DATA="131110011" />
+      <_DefaultWeaponIndex DATA="131110021" />
+      <_DefaultWeaponIndex DATA="131110031" />
+      <_FairPvPWeaponIndex DATA="131110011" />
+      <_FairPvPWeaponIndex DATA="131110021" />
+      <_FairPvPWeaponIndex DATA="131110031" />
+      <_FairPvPMasterGearIndex DATA="880000008" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000011">
+    <EntityComData _Name="DOUBLEGUN" _Title="CLASS_TYPE_SUBNAME_DOUBLEGUN" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="0.9" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_DOUBLEGUN" _StoryTitle="STR_STORYTITLE_DOUBLEGUN" _Story="STR_STORY_DOUBLEGUN" _BaseFeature="STR_BASEFEATURE_DOUBLEGUN" _RangeFeature="STR_RANGEFEATURE_DOUBLEGUN" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="3" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="12" />
+    <Kfm_ComData KeyName="DOUBLEGUN" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="233" />
+    <HUDComData _NameTagOffsetZ="320" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180110010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180110020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180110050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_DOUBLEGUN" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="900" _RClickMoveAttackMoveSpeedRatio="0.8" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DOUBLEGUN_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="3.95" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DOUBLEGUN_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="45.5" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DOUBLEGUN_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_DOUBLEGUN_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="doublegun_01">
+      <_FireLight _PlayTime="0.5" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="247" g="234" b="179" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180110010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180110020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180110030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180110040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180110050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180110000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180110002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131111011" />
+      <_DefaultWeaponIndex DATA="131111021" />
+      <_DefaultWeaponIndex DATA="131111031" />
+      <_FairPvPWeaponIndex DATA="131111011" />
+      <_FairPvPWeaponIndex DATA="131111021" />
+      <_FairPvPWeaponIndex DATA="131111031" />
+      <_FairPvPMasterGearIndex DATA="880000004" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000012">
+    <EntityComData _Name="JINSEOYEON" _Title="CLASS_TYPE_SUBNAME_JINSEOYEON" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_JINSEOYEON" _StoryTitle="STR_STORYTITLE_JINSEOYEON" _Story="STR_STORY_JINSEOYEON" _BaseFeature="STR_BASEFEATURE_JINSEOYEON" _RangeFeature="STR_RANGEFEATURE_JINSEOYEON" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="13" />
+    <Kfm_ComData KeyName="JINSEOYEON" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="290" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180120010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180120020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180120050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_JINSEOYEON" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="380" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_BUBBLE">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_JINSEOYEON_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="6.61" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_JINSEOYEON_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_JINSEOYEON_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_JINSEOYEON_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="jinseoyeon_01">
+      <_FireLight _PlayTime="0.8" _Dimmer="20" _Radius="600">
+        <_DiffuseColor r="75" g="110" b="145" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180120010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180120020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180120030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180120040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180120050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180120000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180120002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180120011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180120021" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131112011" />
+      <_DefaultWeaponIndex DATA="131112021" />
+      <_DefaultWeaponIndex DATA="131112031" />
+      <_FairPvPWeaponIndex DATA="131112011" />
+      <_FairPvPWeaponIndex DATA="131112021" />
+      <_FairPvPWeaponIndex DATA="131112031" />
+      <_FairPvPMasterGearIndex DATA="880000003" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000013">
+    <EntityComData _Name="KROMEDE" _Title="CLASS_TYPE_SUBNAME_KROMEDE" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_KROMEDE" _StoryTitle="STR_STORYTITLE_KROMEDE" _Story="STR_STORY_KROMEDE" _BaseFeature="STR_BASEFEATURE_KROMEDE" _RangeFeature="STR_RANGEFEATURE_KROMEDE" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="14" />
+    <Kfm_ComData KeyName="KROMEDE" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="290" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180130010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180130020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180130050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_KROMEDE" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="1200" _RClickMoveAttackMoveSpeedRatio="0.6" _ReqAchievementIndex="300200503" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_KROMEDE_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="8.96" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_KROMEDE_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="41.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_KROMEDE_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="3.29" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_KROMEDE_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="kromede_01">
+      <_FireLight _PlayTime="1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="70" g="120" b="220" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180130010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180130020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180130030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180130040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180130050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180130000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180130002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180130011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180130012" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131113011" />
+      <_DefaultWeaponIndex DATA="131113021" />
+      <_DefaultWeaponIndex DATA="131113031" />
+      <_FairPvPWeaponIndex DATA="131113011" />
+      <_FairPvPWeaponIndex DATA="131113021" />
+      <_FairPvPWeaponIndex DATA="131113031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000014">
+    <EntityComData _Name="RODMASTER" _Title="CLASS_TYPE_SUBNAME_RODMASTER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_RODMASTER" _StoryTitle="STR_STORYTITLE_RODMASTER" _Story="STR_STORY_RODMASTER" _BaseFeature="STR_BASEFEATURE_RODMASTER" _RangeFeature="STR_RANGEFEATURE_RODMASTER" _PhysicalAttackFeature="3" _MagicalAttackFeature="5" _ViabilityFeature="8" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _PassiveCountDesc="rodmaster_countdesc" _SortingOrder="15" />
+    <Kfm_ComData KeyName="RODMASTER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180140010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180140020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180140050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_RODMASTER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="400" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_ENERGY">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RODMASTER_ABILITY_01" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RODMASTER_ABILITY_02" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.63" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RODMASTER_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.45" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RODMASTER_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.25" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="rodmaster_01">
+      <_FireLight _PlayTime="0.7" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="225" g="153" b="84" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180140010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180140020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180140030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180140040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180140050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180140000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180140002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180140003" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180140021" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131114011" />
+      <_DefaultWeaponIndex DATA="131114021" />
+      <_DefaultWeaponIndex DATA="131114031" />
+      <_FairPvPWeaponIndex DATA="131114011" />
+      <_FairPvPWeaponIndex DATA="131114021" />
+      <_FairPvPWeaponIndex DATA="131114031" />
+      <_FairPvPMasterGearIndex DATA="880000007" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000015">
+    <EntityComData _Name="PHOTOG" _Title="CLASS_TYPE_SUBNAME_PHOTOG" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_PHOTOG" _StoryTitle="STR_STORYTITLE_PHOTOG" _Story="STR_STORY_PHOTOG" _BaseFeature="STR_BASEFEATURE_PHOTOG" _RangeFeature="STR_RANGEFEATURE_PHOTOG" _PhysicalAttackFeature="5" _MagicalAttackFeature="6" _ViabilityFeature="5" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="16" />
+    <Kfm_ComData KeyName="PHOTOG" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="280" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180150010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180150020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180150050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_PHOTOG" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="800" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PHOTOG_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="3.79" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PHOTOG_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PHOTOG_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PHOTOG_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="photog_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="30" _Radius="600">
+        <_DiffuseColor r="165" g="240" b="135" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180150010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180150020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180150030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180150040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180150050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180150000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180150002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131115011" />
+      <_DefaultWeaponIndex DATA="131115021" />
+      <_DefaultWeaponIndex DATA="131115031" />
+      <_FairPvPWeaponIndex DATA="131115011" />
+      <_FairPvPWeaponIndex DATA="131115021" />
+      <_FairPvPWeaponIndex DATA="131115031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000016">
+    <EntityComData _Name="ICEQUEEN" _Title="CLASS_TYPE_SUBNAME_ICEQUEEN" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ICEQUEEN" _StoryTitle="STR_STORYTITLE_ICEQUEEN" _Story="STR_STORY_ICEQUEEN" _BaseFeature="STR_BASEFEATURE_ICEQUEEN" _RangeFeature="STR_RANGEFEATURE_ICEQUEEN" _PhysicalAttackFeature="4" _MagicalAttackFeature="9" _ViabilityFeature="3" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="0" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="17" />
+    <Kfm_ComData KeyName="ICEQUEEN" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180160010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180160020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180160050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ICEQUEEN" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="800" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ICEQUEEN_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="18.6" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ICEQUEEN_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="29.2" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ICEQUEEN_ABILITY_03" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ICEQUEEN_ABILITY_04" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="icequeen_01">
+      <_FireLight _PlayTime="0.9" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="185" g="235" b="245" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180160010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180160020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180160030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180160040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180160050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180160000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180160002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180160003" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180160011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180160031" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131116011" />
+      <_DefaultWeaponIndex DATA="131116021" />
+      <_DefaultWeaponIndex DATA="131116031" />
+      <_FairPvPWeaponIndex DATA="131116011" />
+      <_FairPvPWeaponIndex DATA="131116021" />
+      <_FairPvPWeaponIndex DATA="131116031" />
+      <_FairPvPMasterGearIndex DATA="880000010" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000017">
+    <EntityComData _Name="MAGICGIRL" _Title="CLASS_TYPE_SUBNAME_MAGICGIRL" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1.1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_MAGICGIRL" _StoryTitle="STR_STORYTITLE_MAGICGIRL" _Story="STR_STORY_MAGICGIRL" _BaseFeature="STR_BASEFEATURE_MAGICGIRL" _RangeFeature="STR_RANGEFEATURE_MAGICGIRL" _PhysicalAttackFeature="5" _MagicalAttackFeature="6" _ViabilityFeature="5" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _PassiveCountDesc="magicgirl_countdesc" _SortingOrder="18" />
+    <Kfm_ComData KeyName="MAGICGIRL" />
+    <PhysXMeshComData _ColliderRadius="41" _ColliderHeight="191" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180170010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180170020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180170050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_MAGICGIRL" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="800" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MAGICGIRL_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="4.62" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MAGICGIRL_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MAGICGIRL_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MAGICGIRL_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="magicgirl_01">
+      <_FireLight _PlayTime="1" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="210" b="140" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180170010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180170020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180170030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180170040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180170050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180170000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180170002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="4" />
+      <_DefaultWeaponIndex DATA="131117011" />
+      <_DefaultWeaponIndex DATA="131117021" />
+      <_DefaultWeaponIndex DATA="131117031" />
+      <_FairPvPWeaponIndex DATA="131117011" />
+      <_FairPvPWeaponIndex DATA="131117021" />
+      <_FairPvPWeaponIndex DATA="131117031" />
+      <_FairPvPMasterGearIndex DATA="880000008" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000018">
+    <EntityComData _Name="POHWARAN" _Title="CLASS_TYPE_SUBNAME_POHWARAN" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_POHWARAN" _StoryTitle="STR_STORYTITLE_POHWARAN" _Story="STR_STORY_POHWARAN" _BaseFeature="STR_BASEFEATURE_POHWARAN" _RangeFeature="STR_RANGEFEATURE_POHWARAN" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="3" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="19" />
+    <Kfm_ComData KeyName="POHWARAN" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180180010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180180030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180180050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_POHWARAN" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="1200" _RClickMoveAttackMoveSpeedRatio="0.7" _ReqAchievementIndex="300200501" _SkillStatType="STAT_TYPE_MANA">
+      <_STAT_INIT DATAKEY="STAT_TYPE_BUBBLE" DATA="1" />
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_POHWARAN_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="6.67" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_POHWARAN_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_POHWARAN_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_POHWARAN_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="pohwaran_01">
+      <_FireLight _PlayTime="1" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="210" b="140" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180180010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180180020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180180030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180180040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180180050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180180000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180180002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180180041" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131118011" />
+      <_DefaultWeaponIndex DATA="131118021" />
+      <_DefaultWeaponIndex DATA="131118031" />
+      <_FairPvPWeaponIndex DATA="131118011" />
+      <_FairPvPWeaponIndex DATA="131118021" />
+      <_FairPvPWeaponIndex DATA="131118031" />
+      <_FairPvPMasterGearIndex DATA="880000004" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000019">
+    <EntityComData _Name="BOOMERANG" _Title="CLASS_TYPE_SUBNAME_BOOMERANG" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_BOOMERANG" _StoryTitle="STR_STORYTITLE_BOOMERANG" _Story="STR_STORY_BOOMERANG" _BaseFeature="STR_BASEFEATURE_BOOMERANG" _RangeFeature="STR_RANGEFEATURE_BOOMERANG" _PhysicalAttackFeature="5" _MagicalAttackFeature="7" _ViabilityFeature="4" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="20" />
+    <Kfm_ComData KeyName="BOOMERANG" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="290" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180190010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180190020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180190050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_BOOMERANG" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="1000" _RClickMoveAttackMoveSpeedRatio="0.8" _SkillStatType="STAT_TYPE_BUBBLE">
+      <_STAT_INIT DATAKEY="STAT_TYPE_BUBBLE" DATA="2" />
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOOMERANG_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="14.67" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOOMERANG_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="28.8" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOOMERANG_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="54" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOOMERANG_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="boomerang_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="230" b="150" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180190010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180190020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180190030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180190040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180190050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180190000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180190002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131119011" />
+      <_DefaultWeaponIndex DATA="131119021" />
+      <_DefaultWeaponIndex DATA="131119031" />
+      <_FairPvPWeaponIndex DATA="131119011" />
+      <_FairPvPWeaponIndex DATA="131119021" />
+      <_FairPvPWeaponIndex DATA="131119031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000020">
+    <EntityComData _Name="SLIME" _Title="CLASS_TYPE_SUBNAME_SLIME" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="50" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SLIME" _StoryTitle="STR_STORYTITLE_SLIME" _Story="STR_STORY_SLIME" _BaseFeature="STR_BASEFEATURE_SLIME" _RangeFeature="STR_RANGEFEATURE_SLIME" _PhysicalAttackFeature="3" _MagicalAttackFeature="6" _ViabilityFeature="7" _DifficultyFeature="8" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="21" />
+    <Kfm_ComData KeyName="SLIME" />
+    <PhysXMeshComData _ColliderRadius="80" _ColliderHeight="140" />
+    <HUDComData _NameTagOffsetZ="330" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180200010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180200020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180200050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SLIME" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="1500" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_RAGE">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SLIME_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="8.27" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SLIME_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="58" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SLIME_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.16" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SLIME_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.25" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="slime_01">
+      <_FireLight _PlayTime="0.5" _Dimmer="5" _Radius="600">
+        <_DiffuseColor r="250" g="145" b="40" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180200010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180200020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180200030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180200040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180200050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180200000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180200002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180200011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180200012" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180200013" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131120011" />
+      <_DefaultWeaponIndex DATA="131120021" />
+      <_DefaultWeaponIndex DATA="131120031" />
+      <_FairPvPWeaponIndex DATA="131120011" />
+      <_FairPvPWeaponIndex DATA="131120021" />
+      <_FairPvPWeaponIndex DATA="131120031" />
+      <_FairPvPMasterGearIndex DATA="880000010" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000021">
+    <EntityComData _Name="MONDOZAX" _Title="CLASS_TYPE_SUBNAME_MONDOZAX" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_MONDOZAX" _StoryTitle="STR_STORYTITLE_MONDOZAX" _Story="STR_STORY_MONDOZAX" _BaseFeature="STR_BASEFEATURE_MONDOZAX" _RangeFeature="STR_RANGEFEATURE_MONDOZAX" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="22" />
+    <Kfm_ComData KeyName="MONDOZAX" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="240" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180210010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180210030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180210050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_MONDOZAX" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="800" _RClickMoveAttackMoveSpeedRatio="0.9" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MONDOZAX_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="37" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MONDOZAX_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="54" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MONDOZAX_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_MONDOZAX_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="mondozax_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="160" g="230" b="230" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180210010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180210020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180210030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180210040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180210050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180210000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180210002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131121011" />
+      <_DefaultWeaponIndex DATA="131121021" />
+      <_DefaultWeaponIndex DATA="131121031" />
+      <_FairPvPWeaponIndex DATA="131121011" />
+      <_FairPvPWeaponIndex DATA="131121021" />
+      <_FairPvPWeaponIndex DATA="131121031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000022">
+    <EntityComData _Name="LILU" _Title="CLASS_TYPE_SUBNAME_LILU" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_LILU" _StoryTitle="STR_STORYTITLE_LILU" _Story="STR_STORY_LILU" _BaseFeature="STR_BASEFEATURE_LILU" _RangeFeature="STR_RANGEFEATURE_LILU" _PhysicalAttackFeature="5" _MagicalAttackFeature="7" _ViabilityFeature="4" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="23" />
+    <Kfm_ComData KeyName="LILU" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180220010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180220020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180220050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_LILU" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="800" _RClickMoveAttackMoveSpeedRatio="0.7" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LILU_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="10.05" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LILU_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LILU_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LILU_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.25" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="lilu_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="160" g="230" b="200" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180220010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180220020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180220030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180220040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180220050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180220000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180220002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180220011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180220012" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180220031" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180220041" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="4" />
+      <_DefaultWeaponIndex DATA="131122011" />
+      <_DefaultWeaponIndex DATA="131122021" />
+      <_DefaultWeaponIndex DATA="131122031" />
+      <_FairPvPWeaponIndex DATA="131122011" />
+      <_FairPvPWeaponIndex DATA="131122021" />
+      <_FairPvPWeaponIndex DATA="131122031" />
+      <_FairPvPMasterGearIndex DATA="880000008" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000023">
+    <EntityComData _Name="EFREET" _Title="CLASS_TYPE_SUBNAME_EFREET" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="50" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1.1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_EFREET" _StoryTitle="STR_STORYTITLE_EFREET" _Story="STR_STORY_EFREET" _BaseFeature="STR_BASEFEATURE_EFREET" _RangeFeature="STR_RANGEFEATURE_EFREET" _PhysicalAttackFeature="3" _MagicalAttackFeature="5" _ViabilityFeature="8" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="0" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="24" />
+    <Kfm_ComData KeyName="EFREET" />
+    <PhysXMeshComData _ColliderRadius="73" _ColliderHeight="127" />
+    <HUDComData _NameTagOffsetZ="400" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180230010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180230020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180230050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_EFREET" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="550" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_RAGE">
+      <_STAT_INIT DATAKEY="STAT_TYPE_RAGE" DATA="100" />
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_EFREET_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="67.3" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_EFREET_ABILITY_02" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.15" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_EFREET_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.05" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_EFREET_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_RAGE_ATTACK_RECOVERY_VALUE" DATA="0.39" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="efreet_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="220" g="50" b="30" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180230010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180230020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180230030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180230040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180230050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180230000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180230002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180230003" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131123011" />
+      <_DefaultWeaponIndex DATA="131123021" />
+      <_DefaultWeaponIndex DATA="131123031" />
+      <_FairPvPWeaponIndex DATA="131123011" />
+      <_FairPvPWeaponIndex DATA="131123021" />
+      <_FairPvPWeaponIndex DATA="131123031" />
+      <_FairPvPMasterGearIndex DATA="880000006" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000024">
+    <EntityComData _Name="SHADOWHUNTER" _Title="CLASS_TYPE_SUBNAME_SHADOWHUNTER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SHADOWHUNTER" _StoryTitle="STR_STORYTITLE_SHADOWHUNTER" _Story="STR_STORY_SHADOWHUNTER" _BaseFeature="STR_BASEFEATURE_SHADOWHUNTER" _RangeFeature="STR_RANGEFEATURE_SHADOWHUNTER" _PhysicalAttackFeature="7" _MagicalAttackFeature="6" _ViabilityFeature="3" _DifficultyFeature="9" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="25" />
+    <Kfm_ComData KeyName="SHADOWHUNTER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180240010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180240020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180240050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SHADOWHUNTER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_ENERGY">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHADOWHUNTER_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="30.8" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHADOWHUNTER_ABILITY_02" _IconAlias="ability_criticalrate_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_CRITICALRATE" DATA="4.89" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHADOWHUNTER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHADOWHUNTER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_ENERGYREGEN" DATA="0.17" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="shadowhunter_01">
+      <_FireLight _PlayTime="1" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="140" g="200" b="250" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180240010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180240020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180240030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180240040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180240050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180240000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180240002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180240003" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180240051" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="4" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131124011" />
+      <_DefaultWeaponIndex DATA="131124021" />
+      <_DefaultWeaponIndex DATA="131124031" />
+      <_FairPvPWeaponIndex DATA="131124011" />
+      <_FairPvPWeaponIndex DATA="131124021" />
+      <_FairPvPWeaponIndex DATA="131124031" />
+      <_FairPvPMasterGearIndex DATA="880000002" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000025">
+    <EntityComData _Name="RYTLOCK" _Title="CLASS_TYPE_SUBNAME_RYTLOCK" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_RYTLOCK" _StoryTitle="STR_STORYTITLE_RYTLOCK" _Story="STR_STORY_RYTLOCK" _BaseFeature="STR_BASEFEATURE_RYTLOCK" _RangeFeature="STR_RANGEFEATURE_RYTLOCK" _PhysicalAttackFeature="4" _MagicalAttackFeature="4" _ViabilityFeature="8" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="26" />
+    <Kfm_ComData KeyName="RYTLOCK" />
+    <PhysXMeshComData _ColliderRadius="80" _ColliderHeight="140" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180250010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180250020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180250050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_RYTLOCK" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _ReqAchievementIndex="300200507">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RYTLOCK_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="28.4" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RYTLOCK_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="58" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RYTLOCK_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.15" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RYTLOCK_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="rytlock_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="180" b="170" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180250010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180250020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180250030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180250040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180250050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180250000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180250002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180250031" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131125011" />
+      <_DefaultWeaponIndex DATA="131125021" />
+      <_DefaultWeaponIndex DATA="131125031" />
+      <_FairPvPWeaponIndex DATA="131125011" />
+      <_FairPvPWeaponIndex DATA="131125021" />
+      <_FairPvPWeaponIndex DATA="131125031" />
+      <_FairPvPMasterGearIndex DATA="880000006" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000026">
+    <EntityComData _Name="CATTHECAT" _Title="CLASS_TYPE_SUBNAME_CATTHECAT" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_CATTHECAT" _StoryTitle="STR_STORYTITLE_CATTHECAT" _Story="STR_STORY_CATTHECAT" _BaseFeature="STR_BASEFEATURE_CATTHECAT" _RangeFeature="STR_RANGEFEATURE_CATTHECAT" _PhysicalAttackFeature="4" _MagicalAttackFeature="5" _ViabilityFeature="7" _DifficultyFeature="8" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="27" />
+    <Kfm_ComData KeyName="CATTHECAT" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180260010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180260020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180260050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_CATTHECAT" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _ReqAchievementIndex="300200506" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_CATTHECAT_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="3.56" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_CATTHECAT_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_CATTHECAT_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="3.09" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_CATTHECAT_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.25" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="catthecat_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="180" b="170" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180260010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180260020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180260030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180260040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180260050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180260000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180260002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180260051" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180260052" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180260053" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131126011" />
+      <_DefaultWeaponIndex DATA="131126021" />
+      <_DefaultWeaponIndex DATA="131126031" />
+      <_FairPvPWeaponIndex DATA="131126011" />
+      <_FairPvPWeaponIndex DATA="131126021" />
+      <_FairPvPWeaponIndex DATA="131126031" />
+      <_FairPvPMasterGearIndex DATA="880000007" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000027">
+    <EntityComData _Name="RNB" _Title="CLASS_TYPE_SUBNAME_RNB" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_RNB" _StoryTitle="STR_STORYTITLE_RNB" _Story="STR_STORY_RNB" _BaseFeature="STR_BASEFEATURE_RNB" _RangeFeature="STR_RANGEFEATURE_RNB" _PhysicalAttackFeature="4" _MagicalAttackFeature="9" _ViabilityFeature="3" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="28" />
+    <Kfm_ComData KeyName="RNB" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="340" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180270010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180270030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180270050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_RNB" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="1400" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RNB_ABILITY_01" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RNB_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RNB_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_RNB_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="rnb_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="204" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180270010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180270020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180270030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180270040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180270050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180270000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180270002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131127011" />
+      <_DefaultWeaponIndex DATA="131127021" />
+      <_DefaultWeaponIndex DATA="131127031" />
+      <_FairPvPWeaponIndex DATA="131127011" />
+      <_FairPvPWeaponIndex DATA="131127021" />
+      <_FairPvPWeaponIndex DATA="131127031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000028">
+    <EntityComData _Name="BATTER" _Title="CLASS_TYPE_SUBNAME_BATTER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_BATTER" _StoryTitle="STR_STORYTITLE_BATTER" _Story="STR_STORY_BATTER" _BaseFeature="STR_BASEFEATURE_BATTER" _RangeFeature="STR_RANGEFEATURE_BATTER" _PhysicalAttackFeature="6" _MagicalAttackFeature="6" _ViabilityFeature="4" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="29" />
+    <Kfm_ComData KeyName="BATTER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180280030" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180280040" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180280050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_BATTER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="1400" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BATTER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="13.42" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BATTER_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BATTER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BATTER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="batter_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="204" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180280010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180280020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180280030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180280040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180280050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180280000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180280002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180280021" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180280022" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180280031" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131128011" />
+      <_DefaultWeaponIndex DATA="131128021" />
+      <_DefaultWeaponIndex DATA="131128031" />
+      <_FairPvPWeaponIndex DATA="131128011" />
+      <_FairPvPWeaponIndex DATA="131128021" />
+      <_FairPvPWeaponIndex DATA="131128031" />
+      <_FairPvPMasterGearIndex DATA="880000004" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000029">
+    <EntityComData _Name="ANDROA" _Title="CLASS_TYPE_SUBNAME_ANDROA" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ANDROA" _StoryTitle="STR_STORYTITLE_ANDROA" _Story="STR_STORY_ANDROA" _BaseFeature="STR_BASEFEATURE_ANDROA" _RangeFeature="STR_RANGEFEATURE_ANDROA" _PhysicalAttackFeature="7" _MagicalAttackFeature="6" _ViabilityFeature="3" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="30" />
+    <Kfm_ComData KeyName="ANDROA" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180290030" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180290040" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180290050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ANDROA" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="400" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROA_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="33.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROA_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROA_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROA_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="androa_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="204" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180290010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180290020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180290030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180290040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180290050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180290000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180290002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180290011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180290012" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131129011" />
+      <_DefaultWeaponIndex DATA="131129021" />
+      <_DefaultWeaponIndex DATA="131129031" />
+      <_FairPvPWeaponIndex DATA="131129011" />
+      <_FairPvPWeaponIndex DATA="131129021" />
+      <_FairPvPWeaponIndex DATA="131129031" />
+      <_FairPvPMasterGearIndex DATA="880000004" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000030">
+    <EntityComData _Name="ANDROB" _Title="CLASS_TYPE_SUBNAME_ANDROB" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ANDROB" _StoryTitle="STR_STORYTITLE_ANDROB" _Story="STR_STORY_ANDROB" _BaseFeature="STR_BASEFEATURE_ANDROB" _RangeFeature="STR_RANGEFEATURE_ANDROB" _PhysicalAttackFeature="3" _MagicalAttackFeature="7" _ViabilityFeature="6" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="31" />
+    <Kfm_ComData KeyName="ANDROB" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180300030" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180300020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180300050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ANDROB" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROB_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="2.14" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROB_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="58" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROB_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.05" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ANDROB_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="androb_01">
+      <_FireLight _PlayTime="1" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="140" g="200" b="250" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180300030" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180300020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180300010" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180300040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180300050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180300000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180300002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180300011" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131130011" />
+      <_DefaultWeaponIndex DATA="131130021" />
+      <_DefaultWeaponIndex DATA="131130031" />
+      <_FairPvPWeaponIndex DATA="131130011" />
+      <_FairPvPWeaponIndex DATA="131130021" />
+      <_FairPvPWeaponIndex DATA="131130031" />
+      <_FairPvPMasterGearIndex DATA="880000010" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000031">
+    <EntityComData _Name="ATTACKER" _Title="CLASS_TYPE_SUBNAME_ATTACKER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ATTACKER" _StoryTitle="STR_STORYTITLE_ATTACKER" _Story="STR_STORY_ATTACKER" _BaseFeature="STR_BASEFEATURE_ATTACKER" _RangeFeature="STR_RANGEFEATURE_ATTACKER" _PhysicalAttackFeature="8" _MagicalAttackFeature="3" _ViabilityFeature="4" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="32" />
+    <Kfm_ComData KeyName="ATTACKER" />
+    <PhysXMeshComData _ColliderRadius="80" _ColliderHeight="140" />
+    <HUDComData _NameTagOffsetZ="370" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180310010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180310020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180310050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ATTACKER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="480" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ATTACKER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="7.54" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ATTACKER_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ATTACKER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ATTACKER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="attacker_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="70" g="120" b="210" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180310010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180310020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180310030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180310040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180310050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180310000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180310002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180310011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180310012" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131131011" />
+      <_DefaultWeaponIndex DATA="131131021" />
+      <_DefaultWeaponIndex DATA="131131031" />
+      <_FairPvPWeaponIndex DATA="131131011" />
+      <_FairPvPWeaponIndex DATA="131131021" />
+      <_FairPvPWeaponIndex DATA="131131031" />
+      <_FairPvPMasterGearIndex DATA="880000003" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000032">
+    <EntityComData _Name="BOXER" _Title="CLASS_TYPE_SUBNAME_BOXER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_BOXER" _StoryTitle="STR_STORYTITLE_BOXER" _Story="STR_STORY_BOXER" _BaseFeature="STR_BASEFEATURE_BOXER" _RangeFeature="STR_RANGEFEATURE_BOXER" _PhysicalAttackFeature="7" _MagicalAttackFeature="5" _ViabilityFeature="4" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="33" />
+    <Kfm_ComData KeyName="BOXER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180320010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180320020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180320050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_BOXER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="500" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOXER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="10.48" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOXER_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="37" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOXER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_BOXER_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.25" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="boxer_01">
+      <_FireLight _PlayTime="0.2" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="255" g="204" b="153" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180320010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180320020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180320030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180320040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180320050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180320000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180320002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320012" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320013" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320014" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320021" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320022" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320031" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320032" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320041" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180320042" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="3" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="1" />
+      <_DefaultWeaponIndex DATA="131132011" />
+      <_DefaultWeaponIndex DATA="131132021" />
+      <_DefaultWeaponIndex DATA="131132031" />
+      <_FairPvPWeaponIndex DATA="131132011" />
+      <_FairPvPWeaponIndex DATA="131132021" />
+      <_FairPvPWeaponIndex DATA="131132031" />
+      <_FairPvPMasterGearIndex DATA="880000003" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000033">
+    <EntityComData _Name="SHUGOTRADER" _Title="CLASS_TYPE_SUBNAME_SHUGOTRADER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_SHUGOTRADER" _StoryTitle="STR_STORYTITLE_SHUGOTRADER" _Story="STR_STORY_SHUGOTRADER" _BaseFeature="STR_BASEFEATURE_SHUGOTRADER" _RangeFeature="STR_RANGEFEATURE_SHUGOTRADER" _PhysicalAttackFeature="5" _MagicalAttackFeature="7" _ViabilityFeature="4" _DifficultyFeature="6" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="34" />
+    <Kfm_ComData KeyName="SHUGOTRADER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="300" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180330010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180330020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180330050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_SHUGOTRADER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="1100" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_RAGE">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUGOTRADER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="5.8" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUGOTRADER_ABILITY_02" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="3.29" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUGOTRADER_ABILITY_03" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_RAGE_ATTACK_RECOVERY_VALUE" DATA="0.39" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_SHUGOTRADER_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="shugotrader_01">
+      <_FireLight _PlayTime="1" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="140" g="200" b="250" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180330010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180330020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180330030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180330040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180330050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180330000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180330002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="4" />
+      <_DefaultWeaponIndex DATA="131133011" />
+      <_DefaultWeaponIndex DATA="131133021" />
+      <_DefaultWeaponIndex DATA="131133031" />
+      <_FairPvPWeaponIndex DATA="131133011" />
+      <_FairPvPWeaponIndex DATA="131133021" />
+      <_FairPvPWeaponIndex DATA="131133031" />
+      <_FairPvPMasterGearIndex DATA="880000008" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000034">
+    <EntityComData _Name="NAGA" _Title="CLASS_TYPE_SUBNAME_NAGA" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="0.85" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_NAGA" _StoryTitle="STR_STORYTITLE_NAGA" _Story="STR_STORY_NAGA" _BaseFeature="STR_BASEFEATURE_NAGA" _RangeFeature="STR_RANGEFEATURE_NAGA" _PhysicalAttackFeature="5" _MagicalAttackFeature="4" _ViabilityFeature="7" _DifficultyFeature="4" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="35" />
+    <Kfm_ComData KeyName="NAGA" />
+    <PhysXMeshComData _ColliderRadius="53" _ColliderHeight="247" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180340010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180340020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180340050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_NAGA" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="450" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_NAGA_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="41.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_NAGA_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="57" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_NAGA_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.31" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_NAGA_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="naga_01">
+      <_FireLight _PlayTime="0.4" _Dimmer="10" _Radius="600">
+        <_DiffuseColor r="255" g="180" b="170" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180340010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180340020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180340030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180340040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180340050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180340000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180340002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180340031" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180340032" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180340033" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131134011" />
+      <_DefaultWeaponIndex DATA="131134021" />
+      <_DefaultWeaponIndex DATA="131134031" />
+      <_FairPvPWeaponIndex DATA="131134011" />
+      <_FairPvPWeaponIndex DATA="131134021" />
+      <_FairPvPWeaponIndex DATA="131134031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000035">
+    <EntityComData _Name="LAUNCHER" _Title="CLASS_TYPE_SUBNAME_LAUNCHER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="False" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_LAUNCHER" _StoryTitle="STR_STORYTITLE_LAUNCHER" _Story="STR_STORY_LAUNCHER" _BaseFeature="STR_BASEFEATURE_LAUNCHER" _RangeFeature="STR_RANGEFEATURE_LAUNCHER" _PhysicalAttackFeature="6" _MagicalAttackFeature="5" _ViabilityFeature="5" _DifficultyFeature="2" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _PassiveCountDesc="launcher_countdesc" _SortingOrder="1" />
+    <Kfm_ComData KeyName="LAUNCHER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180350010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180350030" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180350050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_LAUNCHER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="1100" _RClickMoveAttackMoveSpeedRatio="0.6" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LAUNCHER_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="4.29" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LAUNCHER_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LAUNCHER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_LAUNCHER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="launcher_01">
+      <_FireLight _PlayTime="1" _Dimmer="7" _Radius="600">
+        <_DiffuseColor r="140" g="200" b="250" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180350010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180350030" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180350040" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180350020" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180350050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180350000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180350002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131135011" />
+      <_DefaultWeaponIndex DATA="131135021" />
+      <_DefaultWeaponIndex DATA="131135031" />
+      <_FairPvPWeaponIndex DATA="131135011" />
+      <_FairPvPWeaponIndex DATA="131135021" />
+      <_FairPvPWeaponIndex DATA="131135031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000036">
+    <EntityComData _Name="STATESMAN" _Title="CLASS_TYPE_SUBNAME_STATESMAN" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_STATESMAN" _StoryTitle="STR_STORYTITLE_STATESMAN" _Story="STR_STORY_STATESMAN" _BaseFeature="STR_BASEFEATURE_STATESMAN" _RangeFeature="STR_RANGEFEATURE_STATESMAN" _PhysicalAttackFeature="3" _MagicalAttackFeature="4" _ViabilityFeature="9" _DifficultyFeature="5" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="36" />
+    <Kfm_ComData KeyName="STATESMAN" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="320" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180360010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180360020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180360050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_STATESMAN" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STATESMAN_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="5.13" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STATESMAN_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="56" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STATESMAN_ABILITY_03" _IconAlias="ability_defence_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE" DATA="2.12" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_STATESMAN_ABILITY_04" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="3.01" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="statesman_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180360010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180360020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180360030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180360040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180360050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180360000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180360002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="2" />
+      <_DefaultWeaponIndex DATA="131136011" />
+      <_DefaultWeaponIndex DATA="131136021" />
+      <_DefaultWeaponIndex DATA="131136031" />
+      <_FairPvPWeaponIndex DATA="131136011" />
+      <_FairPvPWeaponIndex DATA="131136021" />
+      <_FairPvPWeaponIndex DATA="131136031" />
+      <_FairPvPMasterGearIndex DATA="880000001" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000037">
+    <EntityComData _Name="YURI" _Title="CLASS_TYPE_SUBNAME_YURI" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_YURI" _StoryTitle="STR_STORYTITLE_YURI" _Story="STR_STORY_YURI" _BaseFeature="STR_BASEFEATURE_YURI" _RangeFeature="STR_RANGEFEATURE_YURI" _PhysicalAttackFeature="5" _MagicalAttackFeature="8" _ViabilityFeature="3" _DifficultyFeature="8" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="38" />
+    <Kfm_ComData KeyName="YURI" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="270" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180370010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180370020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180370050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_YURI" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_RED" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_RAGE">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_YURI_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="23.1" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_YURI_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_YURI_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="43" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_YURI_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="0.89" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="yuri_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180370010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180370020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180370030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180370040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180370050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180370000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180370002" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180370003" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180370011" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180370031" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_COMBOSET" _Index="180370032" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131137011" />
+      <_DefaultWeaponIndex DATA="131137021" />
+      <_DefaultWeaponIndex DATA="131137031" />
+      <_FairPvPWeaponIndex DATA="131137011" />
+      <_FairPvPWeaponIndex DATA="131137021" />
+      <_FairPvPWeaponIndex DATA="131137031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000038">
+    <EntityComData _Name="ESPER" _Title="CLASS_TYPE_SUBNAME_ESPER" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_ESPER" _StoryTitle="STR_STORYTITLE_ESPER" _Story="STR_STORY_ESPER" _BaseFeature="STR_BASEFEATURE_ESPER" _RangeFeature="STR_RANGEFEATURE_ESPER" _PhysicalAttackFeature="5" _MagicalAttackFeature="7" _ViabilityFeature="4" _DifficultyFeature="5" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="40" />
+    <Kfm_ComData KeyName="ESPER" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="280" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180380010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180380020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180380050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_ESPER" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="300" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ESPER_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="41.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ESPER_ABILITY_02" _IconAlias="ability_penetration_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_DEFENCE_PENETRATION" DATA="2.04" />
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_DEFENCE_PENETRATION" DATA="2.04" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ESPER_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="55" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_ESPER_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="esper_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180380010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180380020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180380030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180380040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180380050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180380000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180380002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131138011" />
+      <_DefaultWeaponIndex DATA="131138021" />
+      <_DefaultWeaponIndex DATA="131138031" />
+      <_FairPvPWeaponIndex DATA="131138011" />
+      <_FairPvPWeaponIndex DATA="131138021" />
+      <_FairPvPWeaponIndex DATA="131138031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000039">
+    <EntityComData _Name="PRIEST" _Title="CLASS_TYPE_SUBNAME_PRIEST" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_PRIEST" _StoryTitle="STR_STORYTITLE_PRIEST" _Story="STR_STORY_PRIEST" _BaseFeature="STR_BASEFEATURE_PRIEST" _RangeFeature="STR_RANGEFEATURE_PRIEST" _PhysicalAttackFeature="3" _MagicalAttackFeature="6" _ViabilityFeature="5" _DifficultyFeature="2" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="39" />
+    <Kfm_ComData KeyName="PRIEST" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="340" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180390010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180390020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180390050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_PRIEST" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_BLUE" _AttackRangeMin="1200" _RClickMoveAttackMoveSpeedRatio="1" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PRIEST_ABILITY_01" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="41.7" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PRIEST_ABILITY_02" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="56" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PRIEST_ABILITY_03" _IconAlias="ability_skillresist_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" DATA="4.23" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_PRIEST_ABILITY_04" _IconAlias="ability_skillfrequency_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" DATA="2.22" />
+        <_STAT_UP DATAKEY="STAT_TYPE_MANAREGEN" DATA="0.28" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="priest_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180390010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180390020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180390030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180390040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180390050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180390000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180390002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131139011" />
+      <_DefaultWeaponIndex DATA="131139021" />
+      <_DefaultWeaponIndex DATA="131139031" />
+      <_FairPvPWeaponIndex DATA="131139011" />
+      <_FairPvPWeaponIndex DATA="131139021" />
+      <_FairPvPWeaponIndex DATA="131139031" />
+      <_FairPvPMasterGearIndex DATA="880000010" />
+    </EquipComData>
+  </INFO>
+  <INFO ID="100000040">
+    <EntityComData _Name="GHOSTWIDOW" _Title="CLASS_TYPE_SUBNAME_GHOSTWIDOW" _Type="ENTITY_TYPE_CREATURE" _IsRotatable="True" _DensityCount="10" _IsTargetable="True" _IsAimingTarget="True" _Outline="True" _MaterialType="MATERIAL_TYPE_DEFAULT" _MoveSpeed="620" _RotateSpeed="700" _Scale="1" _SightRadius="1600" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _Description="STR_MASTER_GHOSTWIDOW" _StoryTitle="STR_STORYTITLE_GHOSTWIDOW" _Story="STR_STORY_GHOSTWIDOW" _BaseFeature="STR_BASEFEATURE_GHOSTWIDOW" _RangeFeature="STR_RANGEFEATURE_GHOSTWIDOW" _PhysicalAttackFeature="6" _MagicalAttackFeature="7" _ViabilityFeature="3" _DifficultyFeature="7" />
+    <MoveController_ComData Lock_RotateAngle="1" ActorRadius="100" ActorHeight="70" _AILength="110" />
+    <CreatureComData _Type="CREATURE_TYPE_PC" _SortingOrder="37" />
+    <Kfm_ComData KeyName="GHOSTWIDOW" />
+    <PhysXMeshComData _ColliderRadius="45" _ColliderHeight="210" />
+    <HUDComData _NameTagOffsetZ="310" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="-1" _ShowMinimap="True" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_USER" />
+    <QuickSlotComData NULL="NULL">
+      <_QuickSlotGroup DATAKEY="0">
+        <_QuickSlot DATAKEY="0" _Type="QUICK_SLOT_SKILL" _Data="180400010" />
+        <_QuickSlot DATAKEY="1" _Type="QUICK_SLOT_SKILL" _Data="180400020" />
+      </_QuickSlotGroup>
+      <_QuickSlotGroup>
+        <_QuickSlot DATAKEY="4" _Type="QUICK_SLOT_SKILL" _Data="180400050" />
+      </_QuickSlotGroup>
+    </QuickSlotComData>
+    <StatsComData _Team="TEAM_PLAYER" _class="CLASS_TYPE_GHOSTWIDOW" _DestroyTime="5" _RankHitBonus="1" _ElementType="CELEMENT_TYPE_GREEN" _AttackRangeMin="950" _RClickMoveAttackMoveSpeedRatio="0.7" _ReqAchievementIndex="300200508" _SkillStatType="STAT_TYPE_MANA">
+      <_AbilityData DATAKEY="ABILITY_01" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GHOSTWIDOW_ABILITY_01" _IconAlias="ability_weaponpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_ATTACK" DATA="15.46" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_02" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GHOSTWIDOW_ABILITY_02" _IconAlias="ability_skillpower_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_SKILLPOWER" DATA="30.2" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_03" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GHOSTWIDOW_ABILITY_03" _IconAlias="ability_health_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_HEALTH" DATA="53" />
+      </_AbilityData>
+      <_AbilityData DATAKEY="ABILITY_04" _StatUpCountLimit="12" _Tooltip="STR_TOOLTIP_GHOSTWIDOW_ABILITY_04" _IconAlias="ability_mobility_01">
+        <_STAT_UP DATAKEY="STAT_TYPE_MOVESPEED" DATA="1.4" />
+        <_STAT_UP DATAKEY="STAT_TYPE_STAMINAREGEN" DATA="0.4" />
+      </_AbilityData>
+    </StatsComData>
+    <PassiveComData NULL="NULL" />
+    <ResourceComData _IconAlias="ghostwidow_01">
+      <_FireLight _PlayTime="1.1" _Dimmer="15" _Radius="600">
+        <_DiffuseColor r="210" g="204" b="205" />
+        <_SpecularColor r="0" g="0" b="0" />
+      </_FireLight>
+    </ResourceComData>
+    <SkillComData>
+      <_SkillID _SkillSlot="SKILL_SLOT_1" _Index="180400010" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_2" _Index="180400020" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_3" _Index="180400030" _UnLock="False" _UnlockOrder="1" />
+      <_SkillID _SkillSlot="SKILL_SLOT_4" _Index="180400040" _UnLock="False" _UnlockOrder="2" />
+      <_SkillID _SkillSlot="SKILL_SLOT_UG" _Index="180400050" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_PASSIVE" _Index="180400000" _UnLock="True" />
+      <_SkillID _SkillSlot="SKILL_SLOT_SHIRK" _Index="180400002" _UnLock="True" />
+    </SkillComData>
+    <EquipComData>
+      <_AttachNode DATAKEY="ITEM_SLOT_WEAPON_PRIMARY" _NodeName="R_WEAPONPOS" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_ATT" _Count="2" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_DEF" _Count="1" />
+      <_EffectiveGearCount _Type="GEAR_TYPE_UTIL" _Count="3" />
+      <_DefaultWeaponIndex DATA="131140011" />
+      <_DefaultWeaponIndex DATA="131140021" />
+      <_DefaultWeaponIndex DATA="131140031" />
+      <_FairPvPWeaponIndex DATA="131140011" />
+      <_FairPvPWeaponIndex DATA="131140021" />
+      <_FairPvPWeaponIndex DATA="131140031" />
+      <_FairPvPMasterGearIndex DATA="880000009" />
+    </EquipComData>
+  </INFO>
+</ENTITY_FILE>

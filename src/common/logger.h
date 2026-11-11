@@ -35,6 +35,8 @@ struct Logger
 		va_end(list);
 	}
 
+	static thread_local int gameTag;
+
 	inline void __LogfLine(const char* fmt, ...)
 	{
 		eastl::fixed_string<char,8192,false> preBuff;

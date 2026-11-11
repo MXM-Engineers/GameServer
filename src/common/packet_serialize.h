@@ -24,7 +24,7 @@ namespace PS
 }
 
 #define SER_BEGIN() auto& str = PS::NewString()
-#define SER(fmt, ...) str.append_sprintf(fmt "\n", __VA_ARGS__);
+#define SER(fmt, ...) str.append_sprintf(fmt "\n", ##__VA_ARGS__);
 
 template<typename Packet>
 const char* PacketSerialize(const void* packetData, const i32 packetSize)

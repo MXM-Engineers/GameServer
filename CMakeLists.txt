@@ -68,6 +68,9 @@ endfunction()
 set(PHYSX_DIR ${EXTERNAL_DIR}/physx-4.1)
 set(PHYSX_DLLS PhysXCommon_64.dll PhysXCooking_64.dll PhysXFoundation_64.dll PhysX_64.dll)
 function(copy_physx_dlls target)
+	if(NOT WIN32)
+		return()
+	endif()
 	foreach(dll IN LISTS PHYSX_DLLS)
 		add_custom_command(TARGET ${target} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -101,6 +104,22 @@ if(CMAKE_CONFIGURATION_TYPES)
 		string(TOUPPER ${_cfg} _CFG_UPPER)
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${_CFG_UPPER} ${CMAKE_SOURCE_DIR}/build)
 	endforeach()
+endif()
+
+# PhysX ships prebuilt win64 libs; on Linux they have to be built from source
+# (see .github/workflows/build.yml). Without them game_srv and col are skipped
+# so the rest of the tree still builds.
+if(WIN32)
+	set(MXM_HAVE_PHYSX ON)
+else()
+	set(PHYSX_LINUX_LIB_DIR "${PHYSX_DIR}/lib/linux-release" CACHE PATH
+		"Directory holding the PhysX 4.1 Linux static libraries")
+	if(EXISTS "${PHYSX_LINUX_LIB_DIR}/libPhysX_static_64.a")
+		set(MXM_HAVE_PHYSX ON)
+	else()
+		set(MXM_HAVE_PHYSX OFF)
+		message(STATUS "PhysX Linux libraries not found in ${PHYSX_LINUX_LIB_DIR} -- skipping game_srv and col")
+	endif()
 endif()
 
 add_subdirectory(external)

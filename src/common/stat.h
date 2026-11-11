@@ -14,10 +14,10 @@ inline void WriteInitStat(W& packet, const StatValue* stats, u16 count)
 	ASSERT(stats);
 	ASSERT(count > 0);
 
-	packet.Write<u16>(count);
+	packet.template Write<u16>(count);
 	for(u16 i = 0; i < count; i++) {
-		packet.Write<u8>(stats[i].type);
-		packet.Write<f32>(stats[i].value);
+		packet.template Write<u8>(stats[i].type);
+		packet.template Write<f32>(stats[i].value);
 	}
 
 	StatValue cur[8];
@@ -49,10 +49,10 @@ inline void WriteInitStat(W& packet, const StatValue* stats, u16 count)
 	if(hasRes) cur[n++] = { resourceType, resourceVal };
 	if(stamina != 0.f) cur[n++] = { (u8)StatType::STAT_TYPE_STAMINA, stamina };
 
-	packet.Write<u16>(n);
+	packet.template Write<u16>(n);
 	for(u16 i = 0; i < n; i++) {
-		packet.Write<u8>(cur[i].type);
-		packet.Write<f32>(cur[i].value);
+		packet.template Write<u8>(cur[i].type);
+		packet.template Write<f32>(cur[i].value);
 	}
 }
 

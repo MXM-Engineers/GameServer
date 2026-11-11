@@ -5,6 +5,7 @@
 #include <common/protocol.h>
 #include <EASTL/fixed_set.h>
 
+#include "config.h"
 #include "matchmaker_connector.h"
 #include "instance.h"
 #include "account.h"

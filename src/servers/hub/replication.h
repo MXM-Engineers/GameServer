@@ -4,6 +4,7 @@
 #include <common/utils.h>
 #include <common/protocol.h>
 #include <common/inner_protocol.h>
+#include <common/packet_serialize.h>
 #include <EASTL/array.h>
 #include <EASTL/fixed_vector.h>
 #include <EASTL/fixed_set.h>

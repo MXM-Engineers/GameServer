@@ -35,6 +35,7 @@ target_link_libraries(navmesh PRIVATE ${TOOL_COMMON_LINKS})
 mxm_debug_suffix(navmesh)
 
 # ---- ToolCollision (col) ----
+if(MXM_HAVE_PHYSX)
 add_executable(col ${TOOL_COMMON_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/collision/tool_collision.cpp)
 target_include_directories(col PRIVATE
 	${TOOL_COMMON_INCLUDES}
@@ -42,3 +43,4 @@ target_include_directories(col PRIVATE
 target_link_libraries(col PRIVATE ${TOOL_COMMON_LINKS} physx)
 copy_physx_dlls(col)
 mxm_debug_suffix(col)
+endif()

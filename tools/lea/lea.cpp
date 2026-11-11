@@ -693,8 +693,14 @@ private:
 
 // C api
 extern "C" {
-__declspec(dllexport) Filter* GenerateKey(const char* ipPortString);
-__declspec(dllexport) void Decrypt(Filter* filter, void* data, const i32 dataSize);
+#ifdef CONF_WINDOWS
+#define LEA_EXPORT __declspec(dllexport)
+#else
+#define LEA_EXPORT __attribute__((visibility("default")))
+#endif
+
+LEA_EXPORT Filter* GenerateKey(const char* ipPortString);
+LEA_EXPORT void Decrypt(Filter* filter, void* data, const i32 dataSize);
 }
 
 Filter* GenerateKey(const char* ipPortString)

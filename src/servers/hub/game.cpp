@@ -478,7 +478,7 @@ bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 
 		if (EA::StdC::Strncmp(msg, L"spawn ", 6) == 0) {
 			msg += 6; // skip command
-			int classTypeVal = _wtoi(msg); // convert wide string to integer
+			int classTypeVal = EA::StdC::AtoI32(msg); // convert wide string to integer
 
 			WorldHub::ActorCore* playerActor = world.FindPlayerActor(playerActorUID[userID]);
 			ASSERT(playerActor);
@@ -516,14 +516,14 @@ bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 				wchar firstNum[32];
 				size_t len = space - msg;
 				if (len < sizeof(firstNum)) {
-					wcsncpy(firstNum, msg, len);
+					EA::StdC::Strncpy(firstNum, msg, len);
 					firstNum[len] = L'\0';
-					classTypeVal = _wtoi(firstNum);
-					skinIndex = _wtoi(space + 1); // Convert second number after space
+					classTypeVal = EA::StdC::AtoI32(firstNum);
+					skinIndex = EA::StdC::AtoI32(space + 1); // Convert second number after space
 				}
 			}
 			else {
-				classTypeVal = _wtoi(msg); // Just class type provided
+				classTypeVal = EA::StdC::AtoI32(msg); // Just class type provided
 			}
 
 			WorldHub::ActorPlayer* playerActor = world.FindPlayerActor(playerActorUID[userID]);

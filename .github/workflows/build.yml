@@ -1,0 +1,225 @@
+name: build
+
+# Every push to master builds Windows and Linux and refreshes the rolling
+# "latest" release. Pull requests build too, but publish nothing.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PHYSX_TAG: "4.1.2"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  #  Windows -- PhysX ships prebuilt in external/physx-4.1, so nothing to fetch.
+  # ---------------------------------------------------------------------------
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Same flow as the README: setup.bat locates VS via vswhere and loads the
+      # MSVC x64 environment, then the repo's own Ninja presets do the work.
+      #
+      # The *_RELEASE overrides only add debug info: CMAKE_BUILD_TYPE=Release
+      # emits no PDBs on its own, and we ship them. /Z7 rather than /Zi because
+      # Ninja compiles in parallel and /Zi would have every cl.exe contending
+      # for one vc.pdb. /DEBUG implies /OPT:NOREF, so REF|ICF are restored.
+      - name: Build
+        shell: cmd
+        run: |
+          call .\setup.bat
+          if errorlevel 1 exit /b 1
+          where ninja >nul 2>&1 || set "PATH=%VSINSTALLDIR%Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;%PATH%"
+          cmake --preset release ^
+            -DCMAKE_C_FLAGS_RELEASE="/O2 /Ob2 /DNDEBUG /Z7" ^
+            -DCMAKE_CXX_FLAGS_RELEASE="/O2 /Ob2 /DNDEBUG /Z7" ^
+            -DCMAKE_EXE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
+          if errorlevel 1 exit /b 1
+          cmake --build --preset release
+          if errorlevel 1 exit /b 1
+
+      # All binaries land in build/ (only intermediates go to build/release).
+      # build/gamedata is deliberately excluded: game data comes from the
+      # client, not from us.
+      - name: Stage package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $stage = 'stage/win64'
+          New-Item -ItemType Directory -Force -Path $stage, "$stage/third-party-licenses" | Out-Null
+
+          foreach ($srv in 'login_srv', 'hub_srv', 'mm_srv', 'game_srv') {
+            Copy-Item "build/$srv.exe" $stage
+            Copy-Item "build/$srv.pdb" $stage
+          }
+          Copy-Item 'build/PhysX*.dll' $stage
+          Copy-Item 'external/physx-4.1/LICENSE.md' "$stage/third-party-licenses/PhysX-4.1-LICENSE.md"
+          Copy-Item 'LICENSE.md' $stage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: win64
+          path: stage/win64/
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  #  Linux -- PhysX has no prebuilt Linux binaries, so it is built from source
+  #  and cached. First run is slow; later runs restore in seconds.
+  # ---------------------------------------------------------------------------
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang
+
+      - name: Cache PhysX
+        id: physx-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/physx-libs
+          key: physx-${{ env.PHYSX_TAG }}-${{ runner.os }}-clang-v1
+
+      # PhysX 4.1 predates these compilers and builds with -Werror alongside
+      # clang's -Weverything, so every warning added to clang since 2021 breaks
+      # it. Dropping -Werror is the only change needed.
+      - name: Build PhysX
+        if: steps.physx-cache.outputs.cache-hit != 'true'
+        run: |
+          set -e
+          git clone --depth 1 --branch 4.1 https://github.com/NVIDIAGameWorks/PhysX.git /tmp/physx-src
+          cd /tmp/physx-src
+          sed -i 's/ -Werror//g' physx/source/compiler/cmake/linux/CMakeLists.txt
+          sed -e 's/PX_BUILDSNIPPETS" value="True"/PX_BUILDSNIPPETS" value="False"/' \
+              -e 's/PX_BUILDPUBLICSAMPLES" value="True"/PX_BUILDPUBLICSAMPLES" value="False"/' \
+              -e 's/name="linux"/name="linux-headless"/' \
+              physx/buildtools/presets/public/linux.xml \
+              > physx/buildtools/presets/public/linux-headless.xml
+          cd physx
+          export PHYSX_ROOT_DIR="$PWD"
+          export PM_PxShared_PATH="$PHYSX_ROOT_DIR/../pxshared"
+          export PM_CMakeModules_PATH="$PHYSX_ROOT_DIR/../externals/cmakemodules"
+          export PM_PATHS="$PM_CMakeModules_PATH"
+          python3 ./buildtools/cmake_generate_projects.py linux-headless
+          cmake --build compiler/linux-headless-release -j "$(nproc)"
+          mkdir -p ~/physx-libs
+          cp bin/linux.clang/release/*.a ~/physx-libs/
+          ls -la ~/physx-libs
+
+      # -g plus a split of the debug info into .debug files, so the shipped
+      # binaries stay small while crashes remain symbolicatable -- the Linux
+      # equivalent of the PDBs the Windows job ships.
+      - name: Build
+        run: |
+          cmake --preset release \
+            -DPHYSX_LINUX_LIB_DIR="$HOME/physx-libs" \
+            -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -g" \
+            -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -g"
+          cmake --build --preset release
+
+      - name: Stage package
+        run: |
+          set -e
+          stage=stage/linux64
+          mkdir -p "$stage/third-party-licenses"
+          for srv in login_srv hub_srv mm_srv game_srv; do
+            cp "build/$srv" "$stage/"
+            objcopy --only-keep-debug "$stage/$srv" "$stage/$srv.debug"
+            objcopy --strip-debug "$stage/$srv"
+            objcopy --add-gnu-debuglink="$stage/$srv.debug" "$stage/$srv"
+            chmod +x "$stage/$srv"
+          done
+          cp external/physx-4.1/LICENSE.md "$stage/third-party-licenses/PhysX-4.1-LICENSE.md"
+          cp LICENSE.md "$stage/"
+          ls -la "$stage"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux64
+          path: stage/linux64/
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  #  Rolling release: one "latest" tag, replaced on every push to master.
+  # ---------------------------------------------------------------------------
+  release:
+    needs: [windows, linux]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Package
+        run: |
+          set -e
+          built=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          for plat in win64 linux64; do
+            cat > "artifacts/$plat/BUILDINFO.txt" <<EOF
+          MXM GameServer - $plat (Release)
+
+          commit:  ${{ github.sha }}
+          branch:  ${{ github.ref_name }}
+          built:   $built
+          run:     ${{ github.run_number }}
+
+          Extract somewhere and run the servers with that folder as the working
+          directory. gamedata/ and the .cfg files are resolved from the CWD;
+          missing .cfg files fall back to compiled defaults, but gamedata/ is
+          required and is NOT included here -- it is extracted from the game
+          client.
+
+          Start order: mm_srv, then hub_srv and game_srv, then login_srv.
+          EOF
+          done
+          # zip for Windows; tar.gz for Linux, because zip does not preserve
+          # the executable bit.
+          (cd artifacts/win64 && zip -qr ../../MXM-GameServer-win64.zip .)
+          chmod +x artifacts/linux64/*_srv
+          tar -czf MXM-GameServer-linux64.tar.gz -C artifacts/linux64 .
+          ls -la MXM-GameServer-*
+
+      - name: Publish rolling "latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Drop the previous release and its tag. Fails harmlessly on the very
+          # first run, when there is nothing to delete.
+          gh release delete latest --yes --cleanup-tag --repo "$GITHUB_REPOSITORY" || true
+
+          short="${GITHUB_SHA:0:7}"
+          cat > notes.md <<EOF
+          Automated build of \`master\` @ [\`$short\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+
+          Built by [run #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+          | download | contents |
+          |---|---|
+          | \`MXM-GameServer-win64.zip\` | \`login_srv\`, \`hub_srv\`, \`mm_srv\`, \`game_srv\` + PDBs, and the NVIDIA PhysX 4.1 runtime DLLs |
+          | \`MXM-GameServer-linux64.tar.gz\` | the same four servers (PhysX linked statically) + separate \`.debug\` symbol files |
+
+          Game data is **not** included -- it is extracted from the game client.
+          EOF
+
+          gh release create latest \
+            --title "Latest master build (#${{ github.run_number }})" \
+            --notes-file notes.md \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --repo "$GITHUB_REPOSITORY" \
+            MXM-GameServer-win64.zip \
+            MXM-GameServer-linux64.tar.gz

@@ -4581,4 +4581,12 @@
     </StatsComData>
     <LifeTime_ComData LifeTime="0.5" />
   </INFO>
+  <INFO ID="110041070">
+    <EntityComData _Type="ENTITY_TYPE_DYNAMIC" KEYNAME="GX09_Board_Point" _Scale="1" _SizeType="SIZE_TYPE_NONE" _Outline="0" _IsTargetable="FALSE" _IsAimingTarget="FALSE" _DensityCount="1000000" _MaterialType="MATERIAL_TYPE_DEFAULT" />
+    <Kfm_ComData KeyName="Dummy_Invisible2" _UseHitColor="false" />
+    <DynamicComData _IgnoreSubBound="True" _IgnoreSkillCastPick="True" _AniUpdate="False" _RankDetail="DYNAMIC_RANK_DETAIL_IMMORTAL" _Type="DYNAMIC_TYPE_CONTROL" />
+    <HUDComData _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _ShowMinimap="false" />
+    <InteractionRecvComData _Index="900000071" />
+    <StatsComData _DestroyTime="1" _Team="TEAM_DYNAMIC" />
+  </INFO>
 </ENTITY_FILE>

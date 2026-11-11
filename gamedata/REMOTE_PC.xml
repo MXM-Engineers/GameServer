@@ -20114,4 +20114,648 @@
     <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
     <RemoteSFXComData _ResName="TITAN_SIEGE_Attack2_Explosion" _ScaleX="0.75" _ScaleY="0.75" _ScaleZ="0.75" />
   </INFO>
+  <INFO ID="1440410000" KEYNAME="REMOTE_SHUTTLE_SHIRK_RECOVER_RAGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 회피 : 공격 성공시 자원 회복" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="400" _LengthZ="300" _OffsetZ="0" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsOwner="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="False" _CriticalRate="0" _LifeTime="1" _OffsetY="250" _OnHitOwnerStatusIndex="1230410005" _PenetrationCount="10000000" _SkillIndex="180410010" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _GroundMoveOffsetZ="1" _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+  </INFO>
+  <INFO ID="1440410010" KEYNAME="REMOTE_SHUTTLE_SK1_SLOW" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬1 : 둔화효과 유지용 바닥" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _IncludeParty="True" _LengthX="300" _LengthY="400" _LengthZ="800" _OffsetZ="0" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsOwner="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="False" _CriticalRate="0" _LifeTime="4" _OffsetY="250" _PenetrationCount="10000000" _SkillIndex="180410010" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410010" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1230410013" _Rate="100" _Value="100" />
+      <_StatusFriendly DATAKEY="1230410011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _GroundMoveOffsetZ="1" _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="SHUTTLE_skill01_Remote" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440410011" KEYNAME="REMOTE_SHUTTLE_SK1_TOOLTIP" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬1 : 툴팁 표시용" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="300" _LengthY="800" _LengthZ="200" _OffsetZ="0" _Type="E_BOUND_BOX" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="False" _CriticalRate="0" _LifeTime="0.1" _SkillIndex="180410010" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1440410012" KEYNAME="REMOTE_SHUTTLE_SK1_TOOLTIP_UP1" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬1 : 툴팁 표시용 강화1" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="300" _LengthY="1200" _LengthZ="200" _OffsetZ="0" _Type="E_BOUND_BOX" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="False" _CriticalRate="0" _LifeTime="0.1" _SkillIndex="180410010" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1440410020" KEYNAME="REMOTE_SHUTTLE_SK2_DEBUFF_PC" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬2 폭발 : 스테미너,MP 버닝용 (PC용)" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _AddContactGroup="eFRIEND" _DamageGroup="eENEMY" _IgnoreGround="true" _IncludeParty="True" _LengthX="800" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" _VsOwner="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410020" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410020" _Rate="100" _Value="100" />
+      <_StatusFriendly DATAKEY="1230410022" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_skill02_Remote" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440410021" KEYNAME="REMOTE_SHUTTLE_SK2_DEBUFF_MONSTER" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬2 폭발 : 공포 (몬스터용)" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="800" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410020" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410021" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1440410030" KEYNAME="REMOTE_SHUTTLE_SK3_KNOCKDOWN" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬3 폭발 : 넘어뜨리기" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="800" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DamageDistStart="200" _DamageOnBound="70" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410030" _UseSkillGroggy="True">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410030" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_skill03_Remote01" />
+  </INFO>
+  <INFO ID="1440410050" KEYNAME="REMOTE_SHUTTLE_EP_TELEPORT_AREA" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 필살기 : 소환가능 영역 이펙트" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _ActivateDelayTime="2.9" _DamageGroup="eFRIEND" _IgnoreGround="true" _LengthX="1000" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsOwner="True" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180410050" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_EP_Remote" />
+  </INFO>
+  <INFO ID="1440410051" KEYNAME="REMOTE_SHUTTLE_EP_TELEPORT_FLAG" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 필살기 : 아군 버프 교체용" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="1000" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410050" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.1" />
+  </INFO>
+  <INFO ID="1440410022" KEYNAME="REMOTE_SHUTTLE_SK2_DEBUFF_PC_UP1" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬2 폭발 : 스테미너,MP 버닝용 강화1 (PC용)" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _AddContactGroup="eFRIEND" _DamageGroup="eENEMY" _IgnoreGround="true" _IncludeParty="True" _LengthX="1100" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" _VsOwner="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410020" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410020" _Rate="100" _Value="100" />
+      <_StatusFriendly DATAKEY="1230410022" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_skill02_Remote" _ScaleX="1.375" _ScaleY="1.375" _ScaleZ="1.375" />
+  </INFO>
+  <INFO ID="1430410010" KEYNAME="REMOTE_SHUTTLE_ATTACK_DEFAULT_REMOTE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 기본 공격" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="12" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Normal_Attack_1" />
+  </INFO>
+  <INFO ID="1430410011" KEYNAME="REMOTE_SHUTTLE_ATTACK_DEFAULT_CHARGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 챠지 공격" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="500" _LengthZ="400" _OffsetY="-150" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="21.5" _AttachFireObject="true" _AttackMultiplier="1.25" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Charge_Remote" />
+  </INFO>
+  <INFO ID="1430410110" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE_REMOTE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 기본 공격 : 사거리 타입1" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="330" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="12" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Normal_Attack_1" _ScaleX="1.1" _ScaleY="1.1" _ScaleZ="1.1" />
+  </INFO>
+  <INFO ID="1430410111" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE1_REMOTE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 기본 공격 : 사거리 타입2" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="12" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Normal_Attack_1" _ScaleX="1.17" _ScaleY="1.17" _ScaleZ="1.17" />
+  </INFO>
+  <INFO ID="1430410112" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE2_REMOTE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 기본 공격 : 사거리 타입3" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="370" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="12" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Normal_Attack_1" _ScaleX="1.24" _ScaleY="1.24" _ScaleZ="1.24" />
+  </INFO>
+  <INFO ID="1430410113" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE3_REMOTE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 기본 공격 : 사거리 타입4" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="12" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Normal_Attack_1" _ScaleX="1.34" _ScaleY="1.34" _ScaleZ="1.34" />
+  </INFO>
+  <INFO ID="1430410114" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE_CHARGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 챠지 공격 : 사거리 타입1" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="520" _LengthZ="400" _OffsetY="-150" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="21.5" _AttachFireObject="true" _AttackMultiplier="1.25" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Charge_Remote" _ScaleX="1" _ScaleY="1.1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1430410115" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE1_CHARGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 챠지 공격 : 사거리 타입2" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="560" _LengthZ="400" _OffsetY="-150" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="21.5" _AttachFireObject="true" _AttackMultiplier="1.25" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Charge_Remote" _ScaleX="1" _ScaleY="1.15" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1430410116" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE2_CHARGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 챠지 공격 : 사거리 타입3" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="590" _LengthZ="400" _OffsetY="-150" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="21.5" _AttachFireObject="true" _AttackMultiplier="1.25" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Charge_Remote" _ScaleX="1" _ScaleY="1.2" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1430410117" KEYNAME="REMOTE_SHUTTLE_ATTACK_RANGE3_CHARGE" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 테이저건 챠지 공격 : 사거리 타입4" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="620" _LengthZ="400" _OffsetY="-150" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AddGroggy="21.5" _AttachFireObject="true" _AttackMultiplier="1.25" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000" _RangeType="SHORT_RANGE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="SHUTTLE_Charge_Remote" _ScaleX="1" _ScaleY="1.25" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440410023" KEYNAME="REMOTE_SHUTTLE_SK2_DEBUFF_MONSTER_UP1" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 스킬2 폭발 : 공포 강화1 (몬스터용)" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1100" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180410020" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410021" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1440410052" KEYNAME="REMOTE_SHUTTLE_EP_TELEPORT_BUFF" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 필살기 : 아군 버프" />
+    <RemoteBoundComData2 _DamageGroup="eFRIEND" _IgnoreGround="true" _LengthX="1000" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsOwner="True" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180410050" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410054" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1.5" />
+  </INFO>
+  <INFO ID="1440410053" KEYNAME="REMOTE_SHUTTLE_EP_TELEPORT_BUFF_UP1" _DocID="100000041">
+    <EntityComData _Description="[우주셔틀] 필살기 : 아군 버프 강화" />
+    <RemoteBoundComData2 _DamageGroup="eFRIEND" _IgnoreGround="true" _LengthX="1000" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsOwner="True" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180410050" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230410055" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1.5" />
+  </INFO>
+  <INFO ID="1440430010" KEYNAME="REMOTE_GATLING_ANCHOR_RANGE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬1 닻 던지기 : 범위 표시" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="470" _LengthY="2050" _LengthZ="100" _OffsetZ="-130" _Type="E_BOUND_BOX" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.7" _OffsetY="750" _PenetrationCount="10000000" _SkillIndex="180430010" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL1_ANCHOR_RANGE" _ScaleX="1.1" _ScaleY="0.785" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430011" KEYNAME="REMOTE_GATLING_ANCHOR_FIRE" _DocID="100000043">
+    <EntityComData _DensityCount="1000" _Description="[연화린] 스킬1 닻 던지기 : 데미지" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _ActivateDelayTime="0.3" _DamageGroup="eENEMY" _LengthX="470" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _Extensive="true" _LifeTime="1" _OffsetY="200" _PenetrationCount="10000000" _SkillIndex="180430010" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1575" _MaxSpeed="10" />
+    <RemoteSFXComData _ResName="GATLING_SKILL1_ANCHOR" />
+    <RemoteSystemComData>
+      <_Time _Time="0.3">
+        <_ChangeMaxSpeed _Speed="2600" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430020" KEYNAME="REMOTE_GATLING_KNOCKDOWN_DAMAGE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬2 기관총 넉다운 : 데미지" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _Angle="180" _DamageGroup="eENEMY" _LengthX="700" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180430020" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430020" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL2_TACKLE" _ScaleX="1.4" _ScaleY="1.4" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430030" KEYNAME="REMOTE_GATLING_LEAP_RANGE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬3 도약 난사 : 범위표시" />
+    <RemoteBoundComData2 _Angle="180" _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="1400" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.3" _PenetrationCount="10" _SkillIndex="180430030" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL3_FORWARD_SIGN" _ScaleX="1.167" _ScaleY="1.167" _ScaleZ="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430031" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430031" KEYNAME="REMOTE_GATLING_LEAP_FIRE" _DocID="100000043">
+    <EntityComData _DensityCount="1000" _Description="[연화린] 스킬3 도약 난사 : 데미지" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _Angle="180" _DamageGroup="eENEMY" _LengthX="1400" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _Extensive="true" _LifeTime="0.4" _PenetrationCount="10000000" _SkillIndex="180430030" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1230430031" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL3_FORWARD" _ScaleX="1.167" _ScaleY="1.167" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430040" KEYNAME="REMOTE_GATLING_SNIPE_RANGE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 범위 표시" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _OffsetZ="0" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="1" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_SIGN" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430041" KEYNAME="REMOTE_GATLING_SNIPE_REMOTE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : ATTACH 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="600" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="9999" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430042" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430042" KEYNAME="REMOTE_GATLING_SNIPE_BOMB_FLAG" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지 지연 FLAG" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="600" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.4" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_DROP" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430043" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430043" KEYNAME="REMOTE_GATLING_SNIPE_BOMB" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="600" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DamageDistStart="300" _DamageOnBound="60" _DirectExplosion="true" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_EXPLOSION" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430050" KEYNAME="REMOTE_GATLING_RAMPAGE_RANGE_AREA" _DocID="100000043">
+    <EntityComData _Description="[연화린] EP스킬 범위표시" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1400" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="9999" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180430050" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILLUG_360ATTACK_SIGN" />
+  </INFO>
+  <INFO ID="1440430051" KEYNAME="REMOTE_GATLING_RAMPAGE_DAMAGE" _DocID="100000043">
+    <EntityComData _Description="[연화린] EP스킬 데미지" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1400" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _Extensive="true" _LifeTime="1.8" _PenetrationCount="10000000" _SkillIndex="180430050" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1230430050" _Rate="100" _Value="100" />
+      <_DamageIndication _Delay="0.1" _Divide="2" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.4" />
+    <RemoteSFXComData _ResName="GATLING_SKILLUG_360ATTACK" />
+  </INFO>
+  <INFO ID="1440430060" KEYNAME="REMOTE_GATLING_SHIRK_SPIDERMINE" _DocID="100000043">
+    <EntityComData _Description="[연화린] 지뢰 범위표시 설치용" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="10" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="2.5" _PenetrationCount="10000000" _SkillIndex="180430002" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_EVADE_MINE" />
+  </INFO>
+  <INFO ID="1440430032" KEYNAME="REMOTE_GATLING_LEAP_RANGE_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬3 도약 난사 : 범위표시 강화6" />
+    <RemoteBoundComData2 _Angle="180" _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="1800" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.3" _PenetrationCount="10" _SkillIndex="180430030" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL3_FORWARD_SIGN" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430033" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430033" KEYNAME="REMOTE_GATLING_LEAP_FIRE_UP1" _DocID="100000043">
+    <EntityComData _DensityCount="1000" _Description="[연화린] 스킬3 도약 난사 : 데미지 강화6" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _Angle="180" _DamageGroup="eENEMY" _LengthX="1800" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _Extensive="true" _LifeTime="0.4" _PenetrationCount="10000000" _SkillIndex="180430030" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1230430031" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL3_FORWARD" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1440430044" KEYNAME="REMOTE_GATLING_SNIPE_RANGE_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 범위 표시 [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _OffsetZ="0" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="1" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_SIGN" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+  </INFO>
+  <INFO ID="1440430045" KEYNAME="REMOTE_GATLING_SNIPE_REMOTE_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : ATTACH 리모트 [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="9999" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430046" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430046" KEYNAME="REMOTE_GATLING_SNIPE_BOMB_FLAG_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지 지연 FLAG [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.4" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_DROP" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430047" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430047" KEYNAME="REMOTE_GATLING_SNIPE_BOMB_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지 [강화]" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DamageDistStart="400" _DamageOnBound="60" _DirectExplosion="true" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_EXPLOSION" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+  </INFO>
+  <INFO ID="1440430070" KEYNAME="REMOTE_GATLING_SNIPE_RANGE_UP2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 범위 표시 [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _OffsetZ="0" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="1" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_SIGN" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+  </INFO>
+  <INFO ID="1440430071" KEYNAME="REMOTE_GATLING_SNIPE_REMOTE_UP2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : ATTACH 리모트 [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="9999" _AttachTargetObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_TARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="3" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430072" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430072" KEYNAME="REMOTE_GATLING_SNIPE_BOMB_FLAG_UP2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지 지연 FLAG [강화]" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _LifeTime="0.4" _PenetrationCount="10" _SkillIndex="180430040" _UseSkillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_DROP" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1440430073" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1440430073" KEYNAME="REMOTE_GATLING_SNIPE_BOMB_UP2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 스킬4 대형 저격 : 데미지 [강화]" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="900" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DamageDistStart="400" _DamageOnBound="60" _DirectExplosion="true" _Extensive="true" _LifeTime="0.1" _PenetrationCount="10000000" _SkillIndex="180430040" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430041" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_B" />
+    <RemoteSFXComData _ResName="GATLING_SKILL4_SNIPE_EXPLOSION" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+  </INFO>
+  <INFO ID="1440430052" KEYNAME="REMOTE_GATLING_RAMPAGE_DAMAGE_UP1" _DocID="100000043">
+    <EntityComData _Description="[연화린] EP스킬 데미지 [강화]" />
+    <ST_TOOLTIP _Attr="DELIGATE" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1400" _OffsetZ="0" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _Extensive="true" _LifeTime="1.8" _PenetrationCount="10000000" _SkillIndex="180430050" _UseSkillGroggy="True">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1230430050" _Rate="100" _Value="100" />
+      <_DamageIndication _Delay="0.1" _Divide="2" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.3" />
+    <RemoteSFXComData _ResName="GATLING_SKILLUG_360ATTACK" />
+  </INFO>
+  <INFO ID="1430430010" KEYNAME="REMOTE_GATLING_SHOT_DEFAULT" _DocID="100000043">
+    <EntityComData _Description="[연화린] 기본 발사" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1000" _MaxSpeed="1400" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430011" KEYNAME="REMOTE_GATLING_SHOT_RANGE1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 기본 발사 사거리 타입1" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1050" _MaxSpeed="1400" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430012" KEYNAME="REMOTE_GATLING_SHOT_RANGE2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 기본 발사 사거리 타입2" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1100" _MaxSpeed="1400" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430013" KEYNAME="REMOTE_GATLING_SHOT_RANGE3" _DocID="100000043">
+    <EntityComData _Description="[연화린] 기본 발사 사거리 타입3" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1150" _MaxSpeed="1400" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430014" KEYNAME="REMOTE_GATLING_SHOT_RANGE4" _DocID="100000043">
+    <EntityComData _Description="[연화린] 기본 발사 사거리 타입4" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1200" _MaxSpeed="1400" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430025" KEYNAME="REMOTE_GATLING_WAVESHOT_SPEED1" _DocID="100000043">
+    <EntityComData _Description="[연화린] 웨이브샷 탄속 타입1" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1000" _MaxSpeed="1480" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430026" KEYNAME="REMOTE_GATLING_WAVESHOT_SPEED2" _DocID="100000043">
+    <EntityComData _Description="[연화린] 웨이브샷 탄속 타입2" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1000" _MaxSpeed="1560" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430027" KEYNAME="REMOTE_GATLING_WAVESHOT_SPEED3" _DocID="100000043">
+    <EntityComData _Description="[연화린] 웨이브샷 탄속 타입3" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1000" _MaxSpeed="1640" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1430430028" KEYNAME="REMOTE_GATLING_WAVESHOT_SPEED4" _DocID="100000043">
+    <EntityComData _Description="[연화린] 웨이브샷 탄속 타입4" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _LengthX="20" _LengthY="50" _LengthZ="20" _OffsetZ="0" _SubBoundLength="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="true" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10" _RangeType="MID_RANGE" _UseOwnerRemoteSpeedRatio="TRUE" _UseSKillGroggy="False">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1230430000" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="1000" _MaxSpeed="1720" />
+    <RemoteSFXComData _ResName="GATLING_ATTACK" />
+    <RemoteSystemComData>
+      <_ReachedMaxDistance>
+        <_DestroySelf _LifeTime="0" />
+      </_ReachedMaxDistance>
+    </RemoteSystemComData>
+  </INFO>
 </ENTITY_FILE>

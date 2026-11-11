@@ -7676,4 +7676,301 @@
       </_PROPERTY_LEVEL>
     </ST_SKILL_PROPERTY>
   </INFO>
+  <INFO ID="280411001" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411001" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_1" _CoolTime="10.5" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280411002" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411002" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _ConsumeRP="45" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280411003" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411003" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280411003" _TargetMaxDistance="1300" _SkillRangeLengthX="300" _SkillRangeLengthY="1300" _Action="SKILL_6_BEHAVIORSTATE">
+        <_REMOTELIST _RemoteIndex="1440410011" _ReplaceIndex="1440410012" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280411004" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411004" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_1" _CoolTime="10" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280411005" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411005" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _ConsumeRP="40" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280411006" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280411006" _Name="방해 루트" _SkillIndex="180410010" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280411006">
+        <_STATUSLIST _StatusIndex="1230410011" _ReplaceIndex="1230410012" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412001" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412001" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_2" _CoolTime="8.5" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412002" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412002" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _ConsumeRP="55" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412003" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412003" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280412003" _TargetMaxDistance="550" _SkillRangeLengthX="550" _SkillRangeLengthY="550">
+        <_REMOTELIST _RemoteIndex="1440410020" _ReplaceIndex="1440410022" />
+        <_REMOTELIST _RemoteIndex="1440410021" _ReplaceIndex="1440410023" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412004" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412004" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_2" _CoolTime="8" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412005" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412005" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _ConsumeRP="50" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280412006" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280412006" _Name="B-EMP" _SkillIndex="180410020" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280412006">
+        <_STATUSLIST _StatusIndex="1230410022" _ReplaceIndex="1230410023" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414001" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414001" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_4" _CoolTime="21" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414002" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414002" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _ConsumeRP="45" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414003" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414003" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280414003">
+        <_STATUSLIST _StatusIndex="1230410041" _ReplaceIndex="1230410042" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414004" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414004" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_4" _CoolTime="20" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414005" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414005" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _ConsumeRP="40" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280414006" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280414006" _Name="마스터 수송" _SkillIndex="180410040" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280414006" _Action="SKILL_9_BEHAVIORSTATE" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415001" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415001" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _CoolTimeType="ULTIMATE" _CoolTime="165" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415002" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415002" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _CoolTimeType="ULTIMATE" _CoolTime="150" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415003" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415003" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280415003">
+        <_REMOTELIST _RemoteIndex="1440410051" _ReplaceIndex="1440410052" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415004" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415004" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _CoolTimeType="ULTIMATE" _CoolTime="135" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415005" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415005" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _CoolTimeType="ULTIMATE" _CoolTime="120" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280415006" _DocID="100000041">
+    <ST_SKILL_PROPERTY _Index="280415006" _Name="전송 장치" _SkillIndex="180410050" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280415006">
+        <_REMOTELIST _RemoteIndex="1440410051" _ReplaceIndex="1440410053" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431001" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431001" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _ConsumeMP="205" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431002" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431002" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_1" _CoolTime="21" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431003" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431003" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="3">
+      <_PROPERTY_LEVEL _BaseDamage="700" _AttackMultiplier="0.635" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431004" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431004" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _ConsumeMP="200" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431005" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431005" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_1" _CoolTime="20" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280431006" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280431006" _Name="닻 던지기" _SkillIndex="180430010" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="6">
+      <_PROPERTY_LEVEL _BaseDamage="765" _AttackMultiplier="0.635" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432001" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432001" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _ConsumeMP="175" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432002" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432002" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_2" _CoolTime="14" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432003" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432003" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_RANGE" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280432003" _TargetMaxDistance="1000" _SkillRangeLengthX="1000" _SkillRangeLengthY="1000" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432004" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432004" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _ConsumeMP="170" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432005" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432005" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_2" _CoolTime="13" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280432006" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280432006" _Name="뒤잡기" _SkillIndex="180430020" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280432006" _Action="SKILL_7_BEHAVIORSTATE" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433001" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433001" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _ConsumeMP="195" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433002" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433002" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_3" _CoolTime="17" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433003" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433003" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_RANGE" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280433003" _SkillRangeLengthX="750" _SkillRangeLengthY="750">
+        <_REMOTELIST _RemoteIndex="1440430030" _ReplaceIndex="1440430032" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433004" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433004" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _ConsumeMP="190" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433005" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433005" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_3" _CoolTime="16" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280433006" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280433006" _Name="범위난사" _SkillIndex="180430030" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="6">
+      <_PROPERTY_LEVEL _BaseDamage="110" _AttackMultiplier="0.1" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434001" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434001" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_COST" _Priority="1">
+      <_PROPERTY_LEVEL _ConsumeMP="245" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434002" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434002" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_COST" _Priority="2">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_4" _CoolTime="24" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434003" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434003" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_RANGE" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280434003">
+        <_REMOTELIST _RemoteIndex="1440430040" _ReplaceIndex="1440430044" />
+        <_REMOTELIST _RemoteIndex="1440430041" _ReplaceIndex="1440430045" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434004" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434004" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_COST" _Priority="4">
+      <_PROPERTY_LEVEL _ConsumeMP="240" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434005" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434005" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_COST" _Priority="5">
+      <_PROPERTY_LEVEL _CoolTimeType="SKILL_4" _CoolTime="23" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280434006" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280434006" _Name="대형저격" _SkillIndex="180430040" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280434006">
+        <_REMOTELIST _RemoteIndex="1440430040" _ReplaceIndex="1440430070" />
+        <_REMOTELIST _RemoteIndex="1440430041" _ReplaceIndex="1440430071" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435001" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435001" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="1">
+      <_PROPERTY_LEVEL _BaseDamage="155" _AttackMultiplier="0.075" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435002" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435002" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="2">
+      <_PROPERTY_LEVEL _BaseDamage="160" _AttackMultiplier="0.075" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435003" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435003" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="3">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280435003">
+        <_STATUSLIST _StatusIndex="1230430052" _ReplaceIndex="1230430053" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435004" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435004" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="4">
+      <_PROPERTY_LEVEL _BaseDamage="165" _AttackMultiplier="0.075" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435005" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435005" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_DAMAGE" _Priority="5">
+      <_PROPERTY_LEVEL _BaseDamage="170" _AttackMultiplier="0.075" />
+    </ST_SKILL_PROPERTY>
+  </INFO>
+  <INFO ID="280435006" _DocID="100000043">
+    <ST_SKILL_PROPERTY _Index="280435006" _Name="대형난사" _SkillIndex="180430050" _Type="E_SKILL_PROPERTY_EFFECT" _Priority="6">
+      <_PROPERTY_LEVEL _Tooltip="STR_SKILL_PROPERTY_TOOLTIP1_280435006">
+        <_REMOTELIST _RemoteIndex="1440430051" _ReplaceIndex="1440430052" />
+      </_PROPERTY_LEVEL>
+    </ST_SKILL_PROPERTY>
+  </INFO>
 </ENTITY_FILE>

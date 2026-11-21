@@ -37,6 +37,7 @@ struct FixedWideString
 };
 
 typedef FixedWideString<32> StrName;
+typedef FixedWideString<8> StrGuildTag;
 
 inline u32 ProduceInstantKey(AccountUID accountUID, SortieUID sortieUID)
 {
@@ -78,6 +79,38 @@ struct HQ_PartyCreate
 	AccountUID leader;
 };
 
+struct HQ_PartyAddMember
+{
+	enum { NET_ID = 1007 };
+
+	PartyUID partyUID;
+	StrName name;
+	AccountUID accountUID;
+};
+
+struct HQ_PartyRemoveMember
+{
+	enum { NET_ID = 1008 };
+
+	PartyUID partyUID;
+	AccountUID accountUID;
+};
+
+struct HQ_PartyCancelMatching
+{
+	enum { NET_ID = 1009 };
+
+	PartyUID partyUID;
+};
+
+struct CustomTeams
+{
+	u8 count;
+	eastl::array<AccountUID,10> accounts;
+	eastl::array<u8,10> teams;
+	eastl::array<u8,2> bots;
+};
+
 struct HQ_PartyEnqueue
 {
 	enum { NET_ID = 1003 };
@@ -86,6 +119,10 @@ struct HQ_PartyEnqueue
 	AreaIndex areaIndex;
 	StageIndex stageIndex;
 	MapIndex mapIndex;
+	GameType gameType;
+	u8 teamSize;
+	CustomTeams custom;
+	u8 draft;
 };
 
 PUSH_PACKED
@@ -129,6 +166,10 @@ struct HQ_RoomCreateGame
 		eastl::array<i32,2> weaponGrades;
 		eastl::array<u8,2> masterGearNo;
 		eastl::array<i32,2> characterType;
+		StrGuildTag guildTag;
+		SkillID stageSkill;
+		u16 guildBoostGold;
+		u16 guildBoostExp;
 	};
 
 	SortieUID sortieUID;
@@ -150,6 +191,13 @@ struct GQ_Handshake
 struct GR_GameCreated
 {
 	enum { NET_ID = 2002 };
+
+	SortieUID sortieUID;
+};
+
+struct GN_GameEnded
+{
+	enum { NET_ID = 2003 };
 
 	SortieUID sortieUID;
 };
@@ -199,6 +247,8 @@ struct MN_RoomCreated
 	SortieUID sortieUID;
 	u8 playerCount;
 	eastl::array<RoomUser,16> playerList;
+	StageIndex stageIndex;
+	u8 draft;
 };
 
 struct MQ_CreateGame
@@ -218,6 +268,10 @@ struct MQ_CreateGame
 		eastl::array<i32,2> weaponGrades;
 		eastl::array<u8,2> masterGearNo;
 		eastl::array<i32,2> characterType;
+		StrGuildTag guildTag;
+		SkillID stageSkill;
+		u16 guildBoostGold;
+		u16 guildBoostExp;
 	};
 
 	SortieUID sortieUID;
@@ -241,6 +295,20 @@ struct MN_MatchCreated
 	SortieUID sortieUID;
 	eastl::array<u8,4> serverIp;
 	u16 serverPort;
+};
+
+struct MN_GameEnded
+{
+	enum { NET_ID = 3009 };
+
+	SortieUID sortieUID;
+};
+
+struct MN_RoomCancelled
+{
+	enum { NET_ID = 3010 };
+
+	SortieUID sortieUID;
 };
 POP_PACKED
 

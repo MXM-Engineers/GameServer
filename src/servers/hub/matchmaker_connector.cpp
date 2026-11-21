@@ -1,5 +1,6 @@
 #include "matchmaker_connector.h"
 #include <common/inner_protocol.h>
+#include <mxm/game_content.h>
 
 MatchmakerConnector* g_connector = nullptr;
 
@@ -57,12 +58,38 @@ void MatchmakerConnector::Update()
 					conn.SendPacket(packet);
 				} break;
 
+				case Query::Type::PartyAddMember: {
+					In::HQ_PartyAddMember packet;
+					packet.partyUID = q->PartyAddMember.partyUID;
+					packet.name = q->PartyAddMember.name;
+					packet.accountUID = q->PartyAddMember.accountUID;
+					conn.SendPacket(packet);
+				} break;
+
+				case Query::Type::PartyRemoveMember: {
+					In::HQ_PartyRemoveMember packet;
+					packet.partyUID = q->PartyRemoveMember.partyUID;
+					packet.accountUID = q->PartyRemoveMember.accountUID;
+					conn.SendPacket(packet);
+				} break;
+
+				case Query::Type::PartyCancelMatching: {
+					In::HQ_PartyCancelMatching packet;
+					packet.partyUID = q->PartyCancelMatching.partyUID;
+					conn.SendPacket(packet);
+				} break;
+
 				case Query::Type::PartyEnqueue: {
 					In::HQ_PartyEnqueue packet;
 					packet.partyUID = q->PartyEnqueue.partyUID;
 					packet.areaIndex = q->PartyEnqueue.areaIndex;
 					packet.stageIndex = q->PartyEnqueue.stageIndex;
 					packet.mapIndex = q->PartyEnqueue.mapIndex;
+					packet.gameType = q->PartyEnqueue.gameType;
+					const GameXmlContent::StageMaps* stage = GetGameXmlContent().FindStageMaps(q->PartyEnqueue.stageIndex);
+					packet.teamSize = stage ? (u8)stage->joinMemberMax : 0;
+					packet.custom = q->PartyEnqueue.custom;
+					packet.draft = q->PartyEnqueue.draft;
 					conn.SendPacket(packet);
 				} break;
 
@@ -106,6 +133,10 @@ void MatchmakerConnector::Update()
 							player.weaponGrades = rp.weaponGrades;
 							player.masterGearNo = rp.masterGearNo;
 							player.characterType = rp.characterType;
+							player.guildTag = rp.guildTag;
+							player.stageSkill = rp.stageSkill;
+							player.guildBoostGold = rp.guildBoostGold;
+							player.guildBoostExp = rp.guildBoostExp;
 							packet.players[packet.playerCount++] = player;
 						}
 					}
@@ -122,6 +153,45 @@ void MatchmakerConnector::Update()
 	}
 }
 
+void MatchmakerConnector::QueryPartyAddMember(PartyUID partyUID, const WideString& name, AccountUID accountUID)
+{
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::PartyAddMember);
+	query.PartyAddMember.partyUID = partyUID;
+	query.PartyAddMember.name.Copy(name);
+	query.PartyAddMember.accountUID = accountUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
+void MatchmakerConnector::QueryPartyRemoveMember(PartyUID partyUID, AccountUID accountUID)
+{
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::PartyRemoveMember);
+	query.PartyRemoveMember.partyUID = partyUID;
+	query.PartyRemoveMember.accountUID = accountUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
+void MatchmakerConnector::QueryPartyCancelMatching(PartyUID partyUID)
+{
+	MMQueryUID queryUID = nextQueryUID;
+	nextQueryUID = MMQueryUID((u32)nextQueryUID + 1);
+
+	Query query(queryUID, Query::Type::PartyCancelMatching);
+	query.PartyCancelMatching.partyUID = partyUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
 // Thread: Any Lane
 void MatchmakerConnector::QueryPartyCreate(const WideString& name, AccountUID leader)
 {
@@ -136,7 +206,7 @@ void MatchmakerConnector::QueryPartyCreate(const WideString& name, AccountUID le
 	queries.push_back(query);
 }
 
-void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex)
+void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex, GameType gameType, const In::CustomTeams* custom, bool draft)
 {
 	DBG_ASSERT(partyUID != PartyUID::INVALID);
 
@@ -148,6 +218,10 @@ void MatchmakerConnector::QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaInd
 	query.PartyEnqueue.areaIndex = areaIndex;
 	query.PartyEnqueue.stageIndex = stageIndex;
 	query.PartyEnqueue.mapIndex = mapIndex;
+	query.PartyEnqueue.gameType = gameType;
+	query.PartyEnqueue.draft = draft ? 1 : 0;
+	if(custom) query.PartyEnqueue.custom = *custom;
+	else memset(&query.PartyEnqueue.custom, 0, sizeof(query.PartyEnqueue.custom));
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);

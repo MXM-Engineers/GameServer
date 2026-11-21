@@ -97,6 +97,8 @@ struct InstancePool
 		ProfileMutex(Mutex, mutexCreateRoomQueue);
 		struct CreateRoomEntry {
 			SortieUID sortieUID;
+			StageIndex stageIndex;
+			bool draft;
 			eastl::fixed_vector<RoomUser,16> users;
 		};
 		eastl::fixed_vector<CreateRoomEntry,128> createRoomQueue;
@@ -149,7 +151,7 @@ struct InstancePool
 
 	// Thread: Coordinator
 	void QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID);
-	void QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount);
+	void QueueCreateRoom(SortieUID sortieUID, StageIndex stageIndex, bool draft, const RoomUser* userList, const i32 userCount);
 
 	void QueuePopPlayers(const ClientHandle* clientList, const i32 count); // on disconnect
 

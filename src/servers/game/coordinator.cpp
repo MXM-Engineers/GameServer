@@ -84,6 +84,7 @@ intptr_t ThreadCoordinator(void* pData)
 }
 
 static EA::Thread::AtomicUint32 g_NextInstanceUID = 1;
+static const f64 HYP_EMPTY_GAME_GRACE_SEC = 120.0;
 
 void InstancePool::Lane::Update()
 {
@@ -110,7 +111,13 @@ void InstancePool::Lane::Update()
 	}
 
 	foreach_const(tr, disconnectedList) {
-		auto client = clientMap.at(*tr);
+		auto found = clientMap.find(*tr);
+		if(found == clientMap.end()) {
+			LOCK_MUTEX(mutexClientDisconnectQueue);
+			clientDisconnectQueue.push_back(*tr);
+			continue;
+		}
+		auto client = found->second;
 
 		switch(client->instanceType) {
 			case InstanceType::PVP_3V3: {
@@ -137,6 +144,11 @@ void InstancePool::Lane::Update()
 	}
 
 	foreach_const(e, connectedList) {
+		if(instancePvpMap.find(e->sortieUID) == instancePvpMap.end()) {
+			LOG("[Lane_%d][client%x] sortie %llu no longer exists, dropping the client", laneIndex, e->clientHd, e->sortieUID);
+			server->DisconnectClient(e->clientHd);
+			continue;
+		}
 		clientList.push_back();
 		auto cit = --clientList.end();
 		Client& client = *cit;
@@ -254,6 +266,24 @@ void InstancePool::Lane::Update()
 		Logger::gameTag = (i32)((u64)room->sortieUID & 0xffff);
 		room->Update(localTime);
 		Logger::gameTag = 0;
+		if(room->game.gameEnded && !room->endReported) {
+			room->endReported = true;
+			Matchmaker().QueryGameEnded(room->sortieUID);
+		}
+	}
+
+	for(auto room = instancePvpList.begin(); room != instancePvpList.end();) {
+		bool linked = false;
+		foreach_const(c, this->clientList) if(c->sortieUID == room->sortieUID) { linked = true; break; }
+		if(linked) room->emptySince = Time::ZERO;
+		else if(room->emptySince == Time::ZERO) room->emptySince = localTime;
+		const bool abandoned = room->phase == PvpInstance::Phase::PlayingGame && !linked && (room->game.Deserted() || TimeDiffSec(TimeDiff(room->emptySince, localTime)) >= HYP_EMPTY_GAME_GRACE_SEC);
+		if(linked || (!room->game.Finished() && !abandoned)) { ++room; continue; }
+		LOG("[Lane_%d] Destroyed game (sortieUID=%llu)%s", laneIndex, room->sortieUID, room->game.Finished() ? "" : " abandoned by every client");
+		if(!room->endReported) Matchmaker().QueryGameEnded(room->sortieUID);
+		room->game.Cleanup();
+		instancePvpMap.erase(room->sortieUID);
+		room = instancePvpList.erase(room);
 	}
 }
 
@@ -413,6 +443,7 @@ void Coordinator::Update()
 
 	// clear client data
 	foreach_const(cl, clientDisconnectedList) {
+		if(instancePool.IsClientInsideAnInstance(*cl)) instancePool.QueuePopPlayers(&*cl, 1);
 		const i32 clientID = plidMap.Get(*cl);
 		plidMap.Pop(*cl);
 		clientHandle[clientID] = ClientHandle::INVALID;
@@ -590,7 +621,18 @@ void Coordinator::HandlePacket_CQ_AuthenticateGameServer(ClientHandle clientHd, 
 		if(e->instantKey == instantKey) {
 			accountUID = e->accountUID;
 			sortieUID = e->sortieUID;
+			if(joinedClientList.full()) joinedClientList.erase(joinedClientList.begin());
+			joinedClientList.push_back(*e);
 			pendingClientQueue.erase(e);
+			break;
+		}
+	}
+	if(accountUID == AccountUID::INVALID) {
+		foreach_const(e, joinedClientList) {
+			if(e->instantKey != instantKey) continue;
+			accountUID = e->accountUID;
+			sortieUID = e->sortieUID;
+			LOG("[client%x] Client returns to its running game (accountUID=%u sortieUID=%llu)", clientHd, accountUID, sortieUID);
 			break;
 		}
 	}
@@ -647,6 +689,7 @@ void Coordinator::CreateDevGame()
 	};
 
 	In::MQ_CreateGame game;
+	foreach(pl, game.players) { pl->guildTag.len = 0; pl->stageSkill = SkillID::INVALID; pl->guildBoostGold = 0; pl->guildBoostExp = 0; }
 	game.sortieUID = SortieUID(1);
 	game.spectatorCount = 0;
 
@@ -664,8 +707,8 @@ void Coordinator::CreateDevGame()
 	game.areaIndex = areaID;
 	game.stageIndex = stageID;
 	game.mapIndex = mapID;
-	game.gameType = GameType::PVP_Tutorial;
-	game.canEscape = game.gameType != GameType::PVP_Rank;
+	game.gameType = GameType::PVP_AI;
+	game.canEscape = GameTypeCanEscape(game.gameType);
 	game.surrenderAbleTime = 180000;
 
 	auto& p = game.players[0];

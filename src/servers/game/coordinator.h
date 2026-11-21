@@ -144,6 +144,7 @@ private:
 	};
 
 	eastl::fixed_vector<PendingClientEntry,2048> pendingClientQueue; // TODO: timeout entries eventually if client does not connect
+	eastl::fixed_vector<PendingClientEntry,256> joinedClientList;
 
 	void ProcessMatchmakerPackets();
 	void HandleMatchmakerPacket(const NetHeader& header, const u8* packetData, const i32 packetSize);

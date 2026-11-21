@@ -104,9 +104,9 @@ bool PhysicsContext::Init()
 		return false;
 	}
 
-	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01Collision)) return false;
-	if(!LoadCollisionMeshes(gc.filePvpDeathmatch01CollisionWalls)) return false;
-	if(!LoadCollisionMeshes(gc.filePvpDeathNmWall04)) return false;
+	foreach_const(file, gc.collisionFiles) {
+		if(!LoadCollisionMeshes(*file)) return false;
+	}
 
 	LOG("PhysicsContext initialised");
 	return true;
@@ -145,7 +145,7 @@ bool PhysicsContext::LoadCollisionMeshes(const FileBuffer& file)
 		const i32 nameLen = buff.Read<i32>();
 		const char* name = (char*)buff.ReadRaw(nameLen);
 
-		const u16 meshDataSize = buff.Read<u32>();
+		const u32 meshDataSize = buff.Read<u32>();
 		void* meshData = buff.ReadRaw(meshDataSize);
 
 		PhysxReadBuffer readBuff(meshData, meshDataSize);
@@ -155,8 +155,12 @@ bool PhysicsContext::LoadCollisionMeshes(const FileBuffer& file)
 			return false;
 		}
 
-		const size_t key = eastl::hash<const char*>{}(FixedStr64(name, nameLen).data());
-		ASSERT(triangleMeshMap.find(key) == triangleMeshMap.end());
+		const size_t key = eastl::hash<const char*>{}(eastl::fixed_string<char,128,true>(name, nameLen).data());
+		if(triangleMeshMap.find(key) != triangleMeshMap.end()) {
+			LOG("[PhysX] WARNING: duplicate mesh '%.*s' ignored", nameLen, name);
+			tri->release();
+			continue;
+		}
 		triangleMeshMap.emplace(key, tri);
 
 		LOG("[PhysX] '%.*s' loaded", nameLen, name);
@@ -207,6 +211,7 @@ void PhysicsContext::CreateScene(PhysicsScene* out)
 		// ground plane to aid with visualization (pvd)
 		PxRigidStatic* groundPlane = PxCreatePlane(*physics, PxPlane(0,0,1,0), *material);
 		scene->addActor(*groundPlane);
+		out->groundPlane = groundPlane;
 
 		out->controllerMngr = PxCreateControllerManager(*scene);
 		if(!out->controllerMngr) {
@@ -228,12 +233,14 @@ void PhysicsScene::Step()
 		PxControllerFilters filter;
 		filter.mCCTFilterCallback = &g_cctCollisionFilterCallback; // cct filter callback
 
+		c->collider->setStepOffset(c->grounded ? c->stepOffset : 0.0f);
 		c->vel += vec3(0, 0, -GRAVITY) * (f32)UPDATE_RATE;
 		const vec3 disp = c->vel * (f32)UPDATE_RATE;
 		PxControllerCollisionFlags collisionFlags = c->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, (f32)UPDATE_RATE, filter, nullptr /* obstacles? */);
 
 		// grounded
-		if(collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN) {
+		c->grounded = collisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN);
+		if(c->grounded) {
 			c->vel.z = 0;
 		}
 	}
@@ -255,14 +262,17 @@ void PhysicsScene::Destroy()
     }
 }
 
-void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot)
+static const u32 NO_SIGHT_WORD = 1;
+
+PxRigidStatic* PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, const vec3& rot, f32 scale, bool blocksSight)
 {
 	auto& ctx = PhysContext();
 
-	PxTriangleMeshGeometry geometry = PxTriangleMeshGeometry(ctx.triangleMeshMap.at(eastl::hash<const char*>{}(meshName)));
+	PxTriangleMeshGeometry geometry = PxTriangleMeshGeometry(ctx.triangleMeshMap.at(eastl::hash<const char*>{}(meshName)), PxMeshScale(scale));
 
 	PxShape* shape = ctx.physics->createShape(geometry, *ctx.matMapSurface);
 	ASSERT(shape); // createShape failed
+	if(!blocksSight) shape->setQueryFilterData(PxFilterData(0, 0, NO_SIGHT_WORD, 0));
 
 	PxRigidStatic* ground = ctx.physics->createRigidStatic(PxTransform{PxIdentity});
 	ground->attachShape(*shape);
@@ -270,6 +280,38 @@ void PhysicsScene::CreateStaticCollider(const char* meshName, const vec3& pos, c
 	glm::quat quat(vec3(rot.x, rot.y, -rot.z)); // quaternion from euler angles
 	ground->setGlobalPose(PxTransform(PxVec3(pos.x, pos.y, pos.z), PxQuat(quat.x, quat.y, quat.z, quat.w)));
 	scene->addActor(*ground);
+	mapStatics.push_back(ground);
+	return ground;
+}
+
+void PhysicsScene::SetGroundPlaneEnabled(bool enabled)
+{
+	SetStaticEnabled(groundPlane, enabled);
+}
+
+void PhysicsScene::ClearMapStatics()
+{
+	foreach(s, mapStatics) {
+		if((*s)->getScene()) scene->removeActor(**s);
+		(*s)->release();
+	}
+	mapStatics.clear();
+}
+
+void PhysicsScene::SetStaticEnabled(PxRigidStatic* actor, bool enabled)
+{
+	if(!actor || (actor->getScene() != nullptr) == enabled) return;
+	if(enabled) scene->addActor(*actor);
+	else scene->removeActor(*actor);
+}
+
+static const f32 HYP_CONTROLLER_STEP_OFFSET = 30.0f;
+
+f32 PhysicsScene::MaxWalkRise(f32 horizontal) const
+{
+	const f32 slope = PxCapsuleControllerDesc().slopeLimit;
+	ASSERT(slope > 0.0f);
+	return horizontal * sqrtf(MAX(1.0f - slope * slope, 0.0f)) / slope + HYP_CONTROLLER_STEP_OFFSET;
 }
 
 PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, const vec3& pos)
@@ -281,6 +323,7 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 	desc.radius = radius;
 	desc.upDirection = PxVec3(0.0f, 0.0f, 1.0f);
 	desc.material = ctx.matMapSurface;
+	if(groundPlane && !groundPlane->getScene()) desc.stepOffset = HYP_CONTROLLER_STEP_OFFSET;
 
 	PxCapsuleController* ctrl = (PxCapsuleController*)controllerMngr->createController(desc);
 	ASSERT(ctrl);
@@ -289,6 +332,7 @@ PhysicsDynamicBody* PhysicsScene::CreateDynamicBody(f32 radius, f32 height, cons
 
 	PhysicsDynamicBody collider;
 	collider.collider = ctrl;
+	collider.stepOffset = ctrl->getStepOffset();
 	collider.height = height;
 	collider.radius = radius;
 
@@ -301,11 +345,27 @@ struct IgnoreOtherCharacters: PxControllerFilterCallback
 	bool filter(const PxController&, const PxController&) override { return false; }
 };
 
+struct PassTeamWalls: PxQueryFilterCallback
+{
+	u32 teamWord = 0;
+	PxQueryHitType::Enum preFilter(const PxFilterData&, const PxShape* shape, const PxRigidActor*, PxHitFlags&) override
+	{
+		return shape->getQueryFilterData().word0 == teamWord ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK;
+	}
+	PxQueryHitType::Enum postFilter(const PxFilterData&, const PxQueryHit&) override { return PxQueryHitType::eBLOCK; }
+};
+
 vec3 PhysicsScene::Move(PhysicsDynamicBody* body, const vec3& disp, f32 time)
 {
 	static IgnoreOtherCharacters ignoreCharacters;
+	static PassTeamWalls passWalls;
 	PxControllerFilters filter;
 	filter.mCCTFilterCallback = &ignoreCharacters;
+	if(body->passWallTeam >= 0) {
+		passWalls.teamWord = (u32)body->passWallTeam + 1;
+		filter.mFilterCallback = &passWalls;
+		filter.mFilterFlags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+	}
 	//filter.mFilterFlags = PxQueryFlag::eSTATIC; // only collide with static colliders
 	PxControllerCollisionFlags collisionFlags = body->collider->move(PxVec3(disp.x, disp.y, disp.z), 0, time, filter, nullptr /* obstacles? */);
 	return body->GetWorldPos();
@@ -319,17 +379,21 @@ vec3 PhysicsScene::FindMovePos(PhysicsDynamicBody* body, const vec3& disp, f32 t
 	return end;
 }
 
+static const u32 BODY_BLOCKER_WORD = 1;
+
 struct IgnoreTeamWalls: PxQueryFilterCallback
 {
 	u32 teamWord = 0;
+	bool sight = false;
 	PxQueryHitType::Enum preFilter(const PxFilterData&, const PxShape* shape, const PxRigidActor*, PxHitFlags&) override
 	{
-		return teamWord != 0 && shape->getQueryFilterData().word0 == teamWord ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK;
+		const PxFilterData data = shape->getQueryFilterData();
+		return data.word1 == BODY_BLOCKER_WORD || (teamWord != 0 && data.word0 == teamWord) || (sight && data.word2 == NO_SIGHT_WORD) ? PxQueryHitType::eNONE : PxQueryHitType::eBLOCK;
 	}
 	PxQueryHitType::Enum postFilter(const PxFilterData&, const PxQueryHit&) override { return PxQueryHitType::eBLOCK; }
 };
 
-bool PhysicsScene::RaycastStatic(const vec3& from, const vec3& to, f32* hitDist, i32 ignoreTeam)
+bool PhysicsScene::RaycastStatic(const vec3& from, const vec3& to, f32* hitDist, i32 ignoreTeam, const PxRigidActor** hitActor)
 {
 	const vec3 d = to - from;
 	const f32 len = glm::length(d);
@@ -341,10 +405,27 @@ bool PhysicsScene::RaycastStatic(const vec3& from, const vec3& to, f32* hitDist,
 	if(!scene->raycast(PxVec3(from.x, from.y, from.z), PxVec3(d.x / len, d.y / len, d.z / len), len, hit, PxHitFlag::eDEFAULT, filter, &teamFilter)) return false;
 	if(!hit.hasBlock) return false;
 	if(hitDist) *hitDist = hit.block.distance;
+	if(hitActor) *hitActor = hit.block.actor;
 	return true;
 }
 
-void* PhysicsScene::CreateWall(const vec3& pos, f32 width, f32 depth, f32 height, f32 yaw, i32 team)
+bool PhysicsScene::RaycastSight(const vec3& from, const vec3& to, f32* hitDist, const PxRigidActor** hitActor)
+{
+	const vec3 d = to - from;
+	const f32 len = glm::length(d);
+	if(len < 0.001f) return false;
+	PxRaycastBuffer hit;
+	IgnoreTeamWalls sightFilter;
+	sightFilter.sight = true;
+	const PxQueryFilterData filter(PxQueryFlag::eSTATIC | PxQueryFlag::ePREFILTER);
+	if(!scene->raycast(PxVec3(from.x, from.y, from.z), PxVec3(d.x / len, d.y / len, d.z / len), len, hit, PxHitFlag::eDEFAULT, filter, &sightFilter)) return false;
+	if(!hit.hasBlock) return false;
+	if(hitDist) *hitDist = hit.block.distance;
+	if(hitActor) *hitActor = hit.block.actor;
+	return true;
+}
+
+PxRigidStatic* PhysicsScene::CreateWall(const vec3& pos, f32 width, f32 depth, f32 height, f32 yaw, i32 team)
 {
 	auto& ctx = PhysContext();
 	PxShape* shape = ctx.physics->createShape(PxBoxGeometry(depth * 0.5f, width * 0.5f, height * 0.5f), *ctx.matMapSurface, true);
@@ -358,12 +439,32 @@ void* PhysicsScene::CreateWall(const vec3& pos, f32 width, f32 depth, f32 height
 	return wall;
 }
 
-void PhysicsScene::RemoveWall(void* wall)
+bool PhysicsScene::HasStaticMesh(const char* meshName) const
+{
+	auto& ctx = PhysContext();
+	return ctx.triangleMeshMap.find(eastl::hash<const char*>{}(meshName)) != ctx.triangleMeshMap.end();
+}
+
+PxRigidStatic* PhysicsScene::CreateBodyBlocker(const vec3& pos, f32 radius, f32 height)
+{
+	auto& ctx = PhysContext();
+	const f32 halfHeight = MAX(height * 0.5f, 1.0f);
+	PxShape* shape = ctx.physics->createShape(PxCapsuleGeometry(radius, halfHeight), *ctx.matMapSurface, true);
+	if(!shape) return nullptr;
+	shape->setQueryFilterData(PxFilterData(0, BODY_BLOCKER_WORD, 0, 0));
+	const glm::quat upright = glm::angleAxis(glm::half_pi<f32>(), vec3(0, 1, 0));
+	PxRigidStatic* blocker = ctx.physics->createRigidStatic(PxTransform(PxVec3(pos.x, pos.y, pos.z + halfHeight), PxQuat(upright.x, upright.y, upright.z, upright.w)));
+	blocker->attachShape(*shape);
+	shape->release();
+	scene->addActor(*blocker);
+	return blocker;
+}
+
+void PhysicsScene::RemoveWall(PxRigidStatic* wall)
 {
 	if(!wall) return;
-	PxRigidStatic* actor = (PxRigidStatic*)wall;
-	scene->removeActor(*actor);
-	actor->release();
+	scene->removeActor(*wall);
+	wall->release();
 }
 
 static PhysicsContext* g_Context;

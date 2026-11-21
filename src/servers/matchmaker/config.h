@@ -5,6 +5,9 @@ struct CConfigGame
 {
 	i32 ListenPort = 13900;
 	i32 TraceNetwork = false;
+	i32 SoloRooms = 0;
+	i32 TeamSize = 3;
+	i32 MatchingWaitSec = 10;
 	i32 GameServerPublicIP[4] = { 0, 0, 0, 0 };
 
 	bool ParseLine(const char* line);

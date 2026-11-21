@@ -177,6 +177,18 @@ enum class ErrorType: u32
 {
 	SUCCESS = 0,
 	WHISPER_SEND_NOT_FOUND = 0x126,
+	MAIL_GET_ATTACHMENT_NOT_ENOUGH_INVENTORY = 0x14c,
+	MAIL_GET_ATTACHMENT_NO_ATTACHMENT = 0x14d,
+	MAIL_MOVE_DELETE_FAIL_HAS_ITEM = 0x150,
+	MAIL_EMPTY_NICKNAME = 0x152,
+	MAIL_EMPTY_SUBJECT = 0x153,
+	MAIL_EMPTY_CONTENTS = 0x154,
+	MAIL_EXCESS_SUBJECT = 0x156,
+	MAIL_EXCESS_CONTENTS = 0x157,
+	MAIL_WRITE_INVAILID_NICKNAME = 0x158,
+	MAIL_SEND_ARCHIVE_FAIL_ARCHIVE_FULL = 0x159,
+	CHARACTER_SKIN_SELECT_INVALID_DATA = 0x100,
+	RANDOM_MISSION_ALREADY_COMPLETED = 0x1ad,
 };
 
 // values from decompile
@@ -437,15 +449,22 @@ enum class GuildRankType : u8
 enum class GameType: i32
 {
 	INVALID = 0,
-	PvP_Normal = 1, // not PvP?
-	PvP_NormalFFA = 2,
-	PVP_AI = 3,
-	PVP_Rank = 4,
-	PVP_Custom = 5,
-	PVP_Tutorial = 6,
-	PVP_GuildPvp = 7,
-	PVP_FakeAi = 8,
+	PVE_NORMAL = 1,
+	PVE_RANDOM = 2,
+	PVE_TICKET = 3,
+	PVP_NORMAL = 4,
+	PVP_RANK = 5,
+	PVP_AI = 6,
+	PVP_NORMAL_FFA = 7,
+	PVP_GUILD = 8,
+	PVP_FAKE_AI = 9,
+	MAX = 10
 };
+
+inline bool GameTypeCanEscape(GameType type)
+{
+	return type == GameType::PVE_NORMAL || type == GameType::PVE_RANDOM || type == GameType::PVE_TICKET || type == GameType::PVP_AI;
+}
 
 enum class GameDefinition: i32
 {
@@ -483,8 +502,21 @@ enum class Faction: i32
 	RED = 0,
 	BLUE = 1,
 	DYNAMIC = 2,
+	MONSTER = 3,
+	ORANGE = 4,
 	_COUNT = 2
 };
+
+inline TeamType FactionTeamType(Faction faction)
+{
+	switch(faction) {
+		case Faction::RED: return TeamType::RED;
+		case Faction::BLUE: return TeamType::BLUE;
+		case Faction::DYNAMIC: return TeamType::DYNAMIC;
+		case Faction::ORANGE: return TeamType::ORANGE;
+		default: return TeamType::MONSTER;
+	}
+}
 
 enum class RemoteIdx: i32
 {
@@ -660,14 +692,14 @@ struct CA_CityLobbyJoinCity
 	enum { NET_ID = 60034 };
 };
 
-struct CN_PlayerTagCompleted
+struct CQ_CancelCastSkill
 {
 	enum { NET_ID = 60038 };
 
 	LocalActorID actorID;
-	i32 unk;
+	SkillID skillID;
 };
-ASSERT_SIZE(CN_PlayerTagCompleted, 8);
+ASSERT_SIZE(CQ_CancelCastSkill, 8);
 
 struct CQ_PlayerCastSkill
 {
@@ -780,7 +812,7 @@ struct CQ_PartyModify
 
 	u16 stageCount;
 	i32 stages[1];
-	i32 gametype;
+	GameType gametype;
 	i32 unk1;
 	u8 unk2;
 };
@@ -1262,8 +1294,8 @@ PUSH_PACKED
 struct CQ_SkillUpgradeIngame
 {
 	enum { NET_ID = 60055 };
-	u32 unkIngameContext; // 4 bytes: session-constant from game context (FUN_01a37e2b); observed 1 (EU/NA) and 8 (Titan Ruins)
-	u32 skillUpgradeId; // 4 bytes: upgraded skill/option id; observed 0, 1 and 12
+	u32 userID; // 4 bytes
+	u32 slot; // 4 bytes
 };
 POP_PACKED
 
@@ -1385,18 +1417,21 @@ PUSH_PACKED
 struct CQ_PartySwapTeam
 {
 	enum { NET_ID = 60077 };
-	u32 field1_id_id; // 4 bytes
+	u32 originTeam;
+	u8 originSlot;
+	u32 targetTeam;
+	u8 targetSlot;
 };
 POP_PACKED
-ASSERT_SIZE(CQ_PartySwapTeam, 4);
+ASSERT_SIZE(CQ_PartySwapTeam, 10);
 
 PUSH_PACKED
 struct CQ_PartyInvite
 {
 	enum { NET_ID = 60078 };
-	u16 field1_len;
-	wchar field1[1];
-	u32 field2;
+	u16 nickname_len;
+	wchar nickname[1];
+	u32 teamType;
 };
 POP_PACKED
 
@@ -1448,33 +1483,29 @@ POP_PACKED
 ASSERT_SIZE(CQ_RejectPartyRoom, 4);
 
 PUSH_PACKED
-struct CQ_JoinPartyAsSpectator
+struct CQ_PartyInviteAccept
 {
 	enum { NET_ID = 60084 };
-	u32 newLeaderProfileId; // 4 bytes
-	u32 secondId; // 4 bytes
+	i32 partyID;
+	u32 zero;
+	u16 inviterNick_len;
+	wchar inviterNick[1];
 };
 POP_PACKED
-ASSERT_SIZE(CQ_JoinPartyAsSpectator, 8);
 
 PUSH_PACKED
 struct CQ_LeavePartyRoom
 {
 	enum { NET_ID = 60085 };
-	u32 field1_id_id; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_LeavePartyRoom, 4);
 
 PUSH_PACKED
 struct CQ_BreakUpPartyRoom
 {
 	enum { NET_ID = 60086 };
-	ItemUID itemInstanceUID; // 4 bytes: 0x40000000-tagged instance uid, same id space as SN_ItemUpdate.m_itemID; server zeroes/decrements it on use
-	u32 slotOrParam; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_BreakUpPartyRoom, 8);
 
 PUSH_PACKED
 struct CQ_PartyKickAll
@@ -1560,8 +1591,6 @@ PUSH_PACKED
 struct CQ_CancelMatching
 {
 	enum { NET_ID = 60098 };
-	u8 flagByte; // 1 bytes (bool)
-	u32 wideStringField; // 4 bytes (unclassified writer wstring)
 };
 POP_PACKED
 
@@ -1692,25 +1721,26 @@ PUSH_PACKED
 struct CQ_SelectSkin
 {
 	enum { NET_ID = 60115 };
-	u32 roomIdOrInviterId; // 4 bytes
-	u8 constZero; // 1 bytes (bool)
-	u32 rejectMessage; // 4 bytes (unclassified writer wstring)
+	u32 classType;
+	u32 skinIndex;
 };
 POP_PACKED
+ASSERT_SIZE(CQ_SelectSkin, 8);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60116
+struct CQ_FriendRequest
 {
 	enum { NET_ID = 60116 };
-	u32 roomOrHostId; // 4 bytes
-	u32 joinRole; // 4 bytes
-	u32 password; // 4 bytes (unclassified writer wstring)
+	u16 nickname_len;
+	wchar nickname[1];
 };
 POP_PACKED
 
 PUSH_PACKED
 struct CQ_FriendRequestRespond
-{	u16 playerNameLen;
+{
+	enum { NET_ID = 60117 };
+	u16 playerNameLen;
 	wchar playerName[1]; // length is playerNameLen
 	u8 accepted;
 
@@ -1808,7 +1838,7 @@ struct CQ_CommunityBlockAdd
 POP_PACKED
 
 PUSH_PACKED
-struct CN_UNKNOWN_60128
+struct CQ_CommunityBlockRemove
 {
 	enum { NET_ID = 60128 };
 	u16 textField_len; // 2 bytes
@@ -2756,22 +2786,22 @@ struct CQ_RequestMissionList
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_WarehouseItemDelete
+struct CQ_RequestMissionReward
 {
 	enum { NET_ID = 60226 };
-	u32 amount_u32; // 4 bytes
+	u32 missionIndex;
 };
 POP_PACKED
-ASSERT_SIZE(CQ_WarehouseItemDelete, 4);
+ASSERT_SIZE(CQ_RequestMissionReward, 4);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60227
+struct CQ_DailyMissionChange
 {
 	enum { NET_ID = 60227 };
-	u32 value_u32; // 4 bytes
+	u32 step;
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60227, 4);
+ASSERT_SIZE(CQ_DailyMissionChange, 4);
 
 PUSH_PACKED
 struct CQ_PvpRecord
@@ -3165,7 +3195,7 @@ POP_PACKED
 PUSH_PACKED
 struct CQ_CalendarDetail
 {
-	enum { NET_ID = 60273 };
+	enum { NET_ID = 60274 };
 	u32 value_u32; // 4 bytes
 };
 POP_PACKED
@@ -3174,8 +3204,8 @@ ASSERT_SIZE(CQ_CalendarDetail, 4);
 PUSH_PACKED
 struct CQ_StageSkillSelect
 {
-	enum { NET_ID = 60274 };
-	u32 object_id_u32; // 4 bytes
+	enum { NET_ID = 60273 };
+	SkillID skillIndex;
 };
 POP_PACKED
 ASSERT_SIZE(CQ_StageSkillSelect, 4);
@@ -3682,11 +3712,11 @@ struct CQ_UNKNOWN_60307
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60308
+struct CQ_Praise
 {
 	enum { NET_ID = 60308 };
-	u16 text_wstring_len;
-	wchar text_wstring[1];
+	u16 nickname_len;
+	wchar nickname[1];
 };
 POP_PACKED
 

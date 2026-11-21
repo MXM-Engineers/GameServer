@@ -1,5 +1,6 @@
 #include <common/platform.h>
 #include <mxm/game_content.h>
+#include <mxm/safe_file.h>
 
 #include "coordinator.h"
 #include "config.h"
@@ -32,6 +33,12 @@ int main(int argc, char** argv)
 	if(!r) {
 		LOG("ERROR: Could not set control handler");
 		return 1;
+	}
+
+	{
+		static const i32 ACCOUNT_BACKUPS_KEPT = 10;
+		const i32 copied = BackupDirectory("accounts", "accounts_backup", ACCOUNT_BACKUPS_KEPT);
+		LOG("Accounts backup :: %d file(s) copied", copied);
 	}
 
 	r = GameXmlContentLoad();

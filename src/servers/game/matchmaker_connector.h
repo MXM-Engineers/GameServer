@@ -9,6 +9,7 @@ struct MatchmakerConnector
 		enum class Type: u8 {
 			Invalid = 0,
 			GameCreated,
+			GameEnded,
 		};
 
 		const Type type;
@@ -17,6 +18,9 @@ struct MatchmakerConnector
 			struct {
 				SortieUID sortieUID;
 			} GameCreated;
+			struct {
+				SortieUID sortieUID;
+			} GameEnded;
 		};
 
 		explicit Query(Type type_): type(type_) {}
@@ -34,6 +38,7 @@ struct MatchmakerConnector
 	void Update();
 
 	void QueryGameCreated(SortieUID sortieUID);
+	void QueryGameEnded(SortieUID sortieUID);
 };
 
 MatchmakerConnector& Matchmaker();

@@ -1,5 +1,8 @@
 #include "network.h"
 #include "protocol.h"
+#include <chrono>
+
+static const i32 TRACE_CLIENTS_PER_SERVER = 1000;
 
 const char* IpToString(const u8* ip)
 {
@@ -280,8 +283,9 @@ void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, co
 	if(clientID == -1) return;
 
 	const i32 packetTotalSize = packetSize+sizeof(NetHeader);
-	u8 sendBuff[8192];
-	ASSERT(packetTotalSize <= sizeof(sendBuff));
+	static const i32 MAX_PACKET_TOTAL_SIZE = 0xFFFF;
+	ASSERT(packetTotalSize <= MAX_PACKET_TOTAL_SIZE);
+	static thread_local u8 sendBuff[MAX_PACKET_TOTAL_SIZE];
 
 	NetHeader header;
 	header.size = packetTotalSize;
@@ -293,10 +297,28 @@ void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, co
 
 	if(doTraceNetwork) {
 		static Mutex mutexFile;
+		static i32 traceCounter = 0;
+		static i32 traceServers = 0;
 		mutexFile.Lock();
-		fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d.raw", packetCounter, header.netID)), sendBuff, header.size);
+		if(traceServerID < 0) traceServerID = traceServers++;
+		fileSaveBuff(FormatPath(FMT("trace/game_%d_sv_%d_c%d.raw", traceCounter, header.netID, traceServerID * TRACE_CLIENTS_PER_SERVER + clientID)), sendBuff, header.size);
+		traceCounter++;
 		packetCounter++;
 		mutexFile.Unlock();
+	}
+
+	if(doStreamNetwork) {
+		static Mutex mutexStream;
+		static FILE* streams[MAX_CLIENTS] = {};
+		mutexStream.Lock();
+		if(!streams[clientID]) streams[clientID] = fopen(FormatPath(FMT("trace/stream_c%d.bin", clientID)), "wb");
+		if(streams[clientID]) {
+			const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+			fwrite(&wall, sizeof(wall), 1, streams[clientID]);
+			fwrite(sendBuff, 1, header.size, streams[clientID]);
+			fflush(streams[clientID]);
+		}
+		mutexStream.Unlock();
 	}
 }
 
@@ -390,6 +412,8 @@ void Listener::Listen()
 			}
 		}
 
+		const int noDelay = 1;
+		setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&noDelay, sizeof(noDelay));
 		LOG("[%d] New connection (%s)", listenPort, GetIpString(clientAddr));
 		server.ListenerAddClient(clientSocket, clientAddr);
 	}

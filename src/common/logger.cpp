@@ -76,6 +76,7 @@ void Logger::WriteOut()
 	const size_t len = buffer.length();
 	if(flags & LoggerFlags::PrintToStdout) fwrite(buffer.data(), 1, len, stdout);
 	fwrite(buffer.data(), 1, len, file);
+	fflush(file);
 
 #ifdef CONF_WINDOWS
 #ifdef CONF_DEBUG

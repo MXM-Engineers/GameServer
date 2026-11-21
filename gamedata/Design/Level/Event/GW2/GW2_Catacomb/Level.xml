@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-2000" fSpacing="100" dwWidth="512" dwHeight="512" ReferenceLevel="Design\Level\ART_Levels\Collabo_Art\GW2\GW2_S1Z1" ReferenceOffset="1000000">
+      <LockStates />
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\GW2_Wall01_BaseA01_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\GW2_Wall01_BaseB03_01M.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\GW2_Wall01_BaseB02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\GW2_Wall01_CatacombA02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\GW2_Wall01_CatacombA01_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\GW2_Pillar01_CatacombA02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\GW2_Pillar01_StoneTyC02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Gate_01\GW2_Gate01_IronGateA01_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\BS_Deco_metalLamp_A_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Effect_01\BG_Effect_FireTorchA01_01_Z.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\GW2_Pillar01_StoneTyA02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Lamp_01\CRS_Lamp_TorchA01_01.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="GW2_S1Z1_RGBM_Set" defaultMaterial="True" entityAmbientR="0" entityAmbientG="0.129412" entityAmbientB="0.164706" entityDiffuseR="0.439216" entityDiffuseG="0.494118" entityDiffuseB="0.419608" entitySpecularR="0.941176" entitySpecularG="0.643137" entitySpecularB="0.435294" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="100" creatureAmbientR="0.086275" creatureAmbientG="0.086275" creatureAmbientB="0.082353" creatureDiffuseR="0.454902" creatureDiffuseG="0.501961" creatureDiffuseB="0.411765" creatureSpecularR="0.678431" creatureSpecularG="0.556863" creatureSpecularB="0.439216" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="40" dynamicAmbientR="0.058824" dynamicAmbientG="0.047059" dynamicAmbientB="0.015686" dynamicDiffuseR="0.176471" dynamicDiffuseG="0.14902" dynamicDiffuseB="0.141176" dynamicSpecularR="0.647059" dynamicSpecularG="0.505882" dynamicSpecularB="0.247059" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="40" levelAmbientR="0.266667" levelAmbientG="0.301961" levelAmbientB="0.364706" levelDiffuseR="0.784314" levelDiffuseG="0.54902" levelDiffuseB="0.211765" levelSpecularR="0.819608" levelSpecularG="0.619608" levelSpecularB="0.356863" levelEmittanceR="0.05882353" levelEmittanceG="0.05882353" levelEmittanceB="0.03921569" levelVertColIntR="0.262745" levelVertColIntG="0.298039" levelVertColIntB="0.278431" levelShiness="30" sfxIntensity="0.55" itemIntensity="1" bgfxIntensity="1" hitColorIntensity="1" specularIntensity="1" dirDimmer="2.6" dirShadowBrightness="0.2" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.152941" dirAmbientG="0.266667" dirAmbientB="0.4" dirDiffuseR="0.894118" dirDiffuseG="0.733333" dirDiffuseB="0.6" dirSpecularR="1" dirSpecularG="0.909804" dirSpecularB="0.67451" globalAmbientR="0.4" globalAmbientG="0.431373" globalAmbientB="0.47451" rimDirRotate="81" rimDirGradient="20" rimDirPower="6" rimColorR="0.823529" rimColorG="0.329412" rimColorB="0.101961" rimStrength="5" hdrExposure="1.54" hdrShoulderStrength="0.98" hdrLinearStrength="0.99" hdrLinearAngle="1" hdrToeStrength="2.13" hdrToeNumerator="0" hdrToeDenominator="0.74" hdrWhitePoint="2.4" bloomWhitePoint="0.34" bloomGradient="0.62" bloomStrength="1" bloomTintR="0.882353" bloomTintG="0.47451" bloomTintB="0.2" bloomThreshold="0.46" bloomIntensity="0.67" bloomRadius="1.34" bloom2Intensity="0.75" bloom2Radius="1.5" bloom3Intensity="0.88" bloom3Radius="2.5" bloom4Intensity="0.65" bloom4Radius="3.2" bloom5Intensity="0.83" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

@@ -23,6 +23,7 @@ enum {
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 	#include <netinet/ip.h>
+	#include <netinet/tcp.h>
 	#include <arpa/inet.h>
 	#include <unistd.h>
 	#include <netdb.h>
@@ -165,6 +166,7 @@ struct Server
 	EA::Thread::Thread thread;
 
 	i32 packetCounter = 0;
+	i32 traceServerID = -1;
 	bool doTraceNetwork = false;
 
 	bool Init();
@@ -195,7 +197,9 @@ struct Server
 		if(clientConnectedList.size() > 0) {
 			LOCK_MUTEX(mutexClientConnectedList);
 			foreach_const(cl, clientConnectedList) {
-				eastl::pair<ClientHandle,ClientInfo> pair(*cl, clientInfo[clientHandle2IDMap.at(*cl)]);
+				const auto id = clientHandle2IDMap.find(*cl);
+				if(id == clientHandle2IDMap.end()) continue;
+				eastl::pair<ClientHandle,ClientInfo> pair(*cl, clientInfo[id->second]);
 				out->push_back(pair);
 			}
 			clientConnectedList.clear();

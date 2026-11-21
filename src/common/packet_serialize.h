@@ -803,6 +803,304 @@ inline const char* PacketSerialize<Sv::SN_GamePlayerStock>(const void* packetDat
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_SelectSkin>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_SelectSkin(%d, %d) :: {", Cl::CQ_SelectSkin::NET_ID, packetSize);
+	SER("	classType=%u", buff.Read<u32>());
+	SER("	skinIndex=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_CharacterSkinSelect>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_CharacterSkinSelect(%d, %d) :: {", Sv::SA_CharacterSkinSelect::NET_ID, packetSize);
+	SER("	result=0x%x", buff.Read<u32>());
+	SER("	classType=%u", buff.Read<u32>());
+	SER("	skinIndex=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_MailShowList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_MailShowList(%d, %d) :: {", Cl::CQ_MailShowList::NET_ID, packetSize);
+	SER("	mailboxType=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_RequestMissionReward>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_RequestMissionReward(%d, %d) :: {", Cl::CQ_RequestMissionReward::NET_ID, packetSize);
+	SER("	missionIndex=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_DailyMissionChange>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_DailyMissionChange(%d, %d) :: {", Cl::CQ_DailyMissionChange::NET_ID, packetSize);
+	SER("	step=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_MailRead>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_MailRead(%d, %d) :: {", Cl::CQ_MailRead::NET_ID, packetSize);
+	SER("	mailId=%llu", buff.Read<u64>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_MailWrite>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_MailWrite(%d, %d) :: {", Cl::CQ_MailWrite::NET_ID, packetSize);
+	SER("	to='%ls'", buff.ReadWideStringObj().data());
+	SER("	subject='%ls'", buff.ReadWideStringObj().data());
+	SER("	content='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_MailMove>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_MailMove(%d, %d) :: {", Cl::CQ_MailMove::NET_ID, packetSize);
+	SER("	moveType=%u", buff.Read<u8>());
+	const u16 count = buff.Read<u16>();
+	SER("	mailUIDs_count=%u", count);
+	for(u16 i = 0; i < count; i++) SER("	mailUIDs[%u]=%llu", i, buff.Read<u64>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailUnreadNotice>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailUnreadNotice(%d, %d) :: {", Sv::SN_MailUnreadNotice::NET_ID, packetSize);
+	SER("	unreadInboxMailCount=%u", buff.Read<u16>());
+	SER("	unreadArchivedMailCount=%u", buff.Read<u16>());
+	SER("	unreadShopMailCount=%u", buff.Read<u16>());
+	SER("	inboxMailCount=%u", buff.Read<u16>());
+	SER("	archivedMailCount=%u", buff.Read<u16>());
+	SER("	shopMailCount=%u", buff.Read<u16>());
+	SER("	newAttachmentsPending_count=%u", buff.Read<u16>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailList(%d, %d) :: {", Sv::SN_MailList::NET_ID, packetSize);
+	SER("	packetNum=%u", buff.Read<u8>());
+	SER("	mailboxType=%u", buff.Read<u8>());
+	const u16 count = buff.Read<u16>();
+	SER("	mailList_count=%u", count);
+	for(u16 i = 0; i < count; i++) {
+		const i64 id = buff.Read<i64>();
+		const i64 sent = buff.Read<i64>();
+		const i64 expire = buff.Read<i64>();
+		const u8 isRead = buff.Read<u8>();
+		const u8 isGM = buff.Read<u8>();
+		const u8 hasAttachment = buff.Read<u8>();
+		SER("	mailList[%u]=(mailId=%lld send=%lld expire=%lld isRead=%u isGMMail=%u hasAttachment=%u", i, id, sent, expire, isRead, isGM, hasAttachment);
+		SER("		from='%ls'", buff.ReadWideStringObj().data());
+		SER("		subject='%ls'", buff.ReadWideStringObj().data());
+		const u16 items = buff.Read<u16>();
+		for(u16 k = 0; k < items; k++) SER("		items[%u]=%u", k, buff.Read<u32>());
+	}
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailRead>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailRead(%d, %d) :: {", Sv::SN_MailRead::NET_ID, packetSize);
+	SER("	mailId=%lld", buff.Read<i64>());
+	SER("	isRead=%u", buff.Read<u8>());
+	SER("	isGMMail=%u", buff.Read<u8>());
+	SER("	fromNickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	subject='%ls'", buff.ReadWideStringObj().data());
+	SER("	content='%ls'", buff.ReadWideStringObj().data());
+	SER("	sendUTCDate=%lld", buff.Read<i64>());
+	SER("	expireUTCDate=%lld", buff.Read<i64>());
+	SER("	money=%lld", buff.Read<i64>());
+	SER("	exp=%lld", buff.Read<i64>());
+	SER("	ccoin=%lld", buff.Read<i64>());
+	SER("	guildFund=%u", buff.Read<u32>());
+	SER("	itemList_count=%u", buff.Read<u16>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailListNewInbox>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailListNewInbox(%d, %d) :: {", Sv::SN_MailListNewInbox::NET_ID, packetSize);
+	SER("	mailboxType=%u", buff.Read<u8>());
+	const u16 count = buff.Read<u16>();
+	SER("	mailList_count=%u", count);
+	for(u16 i = 0; i < count; i++) {
+		SER("	mailList[%u].mailId=%lld", i, buff.Read<i64>());
+		buff.Read<i64>();
+		buff.Read<i64>();
+		buff.Read<u8>();
+		buff.Read<u8>();
+		buff.Read<u8>();
+		SER("		from='%ls'", buff.ReadWideStringObj().data());
+		SER("		subject='%ls'", buff.ReadWideStringObj().data());
+		const u16 items = buff.Read<u16>();
+		for(u16 k = 0; k < items; k++) buff.Read<u32>();
+	}
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailWriteResult>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailWriteResult(%d, %d) :: {", Sv::SN_MailWriteResult::NET_ID, packetSize);
+	SER("	nErrorType=0x%x", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MailMoveResult>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_MailMoveResult(%d, %d) :: {", Sv::SN_MailMoveResult::NET_ID, packetSize);
+	SER("	nErrorType=0x%x", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_RequestMissionReward>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_RequestMissionReward(%d, %d) :: {", Sv::SA_RequestMissionReward::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	const u32 index = buff.Read<u32>();
+	const i64 progress = buff.Read<i64>();
+	const u16 changed = buff.Read<u16>();
+	const u8 cleared = buff.Read<u8>();
+	const u8 rewarded = buff.Read<u8>();
+	SER("	mission=(index=%u progressCount=%lld changedCount=%u isCleared=%u isRewarded=%u)", index, progress, changed, cleared, rewarded);
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_DailyMissionChange>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_DailyMissionChange(%d, %d) :: {", Sv::SA_DailyMissionChange::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("	step=%u", buff.Read<u32>());
+	const u32 index = buff.Read<u32>();
+	const i64 progress = buff.Read<i64>();
+	const u16 changed = buff.Read<u16>();
+	const u8 cleared = buff.Read<u8>();
+	const u8 rewarded = buff.Read<u8>();
+	SER("	mission=(index=%u progressCount=%lld changedCount=%u isCleared=%u isRewarded=%u)", index, progress, changed, cleared, rewarded);
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_ExpGain>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_ExpGain(%d, %d) :: {", Sv::SN_ExpGain::NET_ID, packetSize);
+	SER("	amount=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_MissionList>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_MissionList(%d, %d) :: {", Sv::SN_MissionList::NET_ID, packetSize);
+	const u16 count = buff.Read<u16>();
+	SER("	missions_count=%u", count);
+	for(u16 i = 0; i < count; i++) {
+		const u32 index = buff.Read<u32>();
+		const i64 progress = buff.Read<i64>();
+		const u16 changed = buff.Read<u16>();
+		const u8 cleared = buff.Read<u8>();
+		const u8 rewarded = buff.Read<u8>();
+		SER("	missions[%u]=(index=%u progressCount=%lld changedCount=%u isCleared=%u isRewarded=%u)", i, index, progress, changed, cleared, rewarded);
+	}
+	SER("	dailyMissionRemainTimeMS=%u", buff.Read<u32>());
+	SER("	weeklyMissionRemainTimeMS=%u", buff.Read<u32>());
+	SER("	monthlyMissionRemainTimeMS=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_Exp>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_Exp(%d, %d) :: {", Sv::SN_Exp::NET_ID, packetSize);
+	SER("	leaderCSN=0x%08x", buff.Read<u32>());
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	isLevelUp=%u", buff.Read<u8>());
+	SER("	level=%u", buff.Read<u16>());
+	SER("	currentLevelExp=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_GamePlayerTag>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -1131,6 +1429,52 @@ inline const char* PacketSerialize<Sv::SA_RTT_Time>(const void* packetData, cons
 	SER("	serverTimestamp=%lld", p.serverTimestamp);
 	SER("}");
 
+	return str.data();
+}
+
+inline void SerializeSkillProperties(eastl::fixed_string<char,8192,true>& str, ConstBuffer& buff)
+{
+	const u16 count = buff.Read<u16>();
+	SER("	properties_count=%u", count);
+	for(u16 i = 0; i < count; i++) {
+		const u32 prop = buff.Read<u32>();
+		SER("	property[%u]={ index=%u level=%u }", i, prop, buff.Read<u32>());
+	}
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_SkillUpgradeIngame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_SkillUpgradeIngame(%d, %d) :: {", Sv::SA_SkillUpgradeIngame::NET_ID, packetSize);
+	SER("	result=%d", buff.Read<i32>());
+	for(i32 m = 0; m < 2; m++) {
+		SER("	masterID=0x%08x", buff.Read<u32>());
+		SER("	characterID=0x%08x", buff.Read<u32>());
+		SER("	skillIndex=%u", buff.Read<u32>());
+		SER("	isUnlocked=%u", buff.Read<u8>());
+		SER("	isActivated=%u", buff.Read<u8>());
+		SerializeSkillProperties(str, buff);
+	}
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_PlayerSkillUpdate>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_PlayerSkillUpdate(%d, %d) :: {", Sv::SN_PlayerSkillUpdate::NET_ID, packetSize);
+	SER("	characterID=0x%08x", buff.Read<u32>());
+	SER("	nSkillIndex=%u", buff.Read<u32>());
+	SER("	nCoolTime=%u", buff.Read<u32>());
+	SER("	bUnlocked=%u", buff.Read<u8>());
+	SerializeSkillProperties(str, buff);
+	SER("	isUnlocked=%u", buff.Read<u8>());
+	SER("	isActivated=%u", buff.Read<u8>());
+	SER("}");
 	return str.data();
 }
 
@@ -2098,6 +2442,7 @@ inline const char* PacketSerialize<In::HQ_PartyEnqueue>(const void* packetData, 
 	SER("	areaIndex=%d", (i32)packet.areaIndex);
 	SER("	stageIndex=%d", (i32)packet.stageIndex);
 	SER("	mapIndex=%d", (i32)packet.mapIndex);
+	SER("	teamSize=%d", (i32)packet.teamSize);
 	SER("}");
 
 	return str.data();
@@ -2287,6 +2632,45 @@ inline const char* PacketSerialize<In::GR_GameCreated>(const void* packetData, c
 }
 
 template<>
+inline const char* PacketSerialize<In::GN_GameEnded>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::GN_GameEnded& packet = SafeCast<In::GN_GameEnded>(packetData, packetSize);
+
+	SER("GN_GameEnded(%d, %d) :: {", In::GN_GameEnded::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MN_GameEnded>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::MN_GameEnded& packet = SafeCast<In::MN_GameEnded>(packetData, packetSize);
+
+	SER("MN_GameEnded(%d, %d) :: {", In::MN_GameEnded::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<In::MN_RoomCancelled>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const In::MN_RoomCancelled& packet = SafeCast<In::MN_RoomCancelled>(packetData, packetSize);
+
+	SER("MN_RoomCancelled(%d, %d) :: {", In::MN_RoomCancelled::NET_ID, packetSize);
+	SER("	sortieUID=%llu", packet.sortieUID);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<In::MN_MatchCreated>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -2437,6 +2821,70 @@ inline const char* PacketSerialize<Cl::CQ_LoadingProgressData>(const void* packe
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_GetGroundItem>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_GetGroundItem(%d, %d) :: {", Cl::CQ_GetGroundItem::NET_ID, packetSize);
+	SER("	srcEntityId=%u", buff.Read<u32>());
+	SER("	targetEntityId=0x%08x", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_CreateGroundItem>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_CreateGroundItem(%d, %d) :: {}", Sv::SN_CreateGroundItem::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_GetGroundItem>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SA_GetGroundItem(%d, %d) :: {}", Sv::SA_GetGroundItem::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_GetPublicGroundItem>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_GetPublicGroundItem(%d, %d) :: {}", Sv::SN_GetPublicGroundItem::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_PvpEventAnnouncement>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_PvpEventAnnouncement(%d, %d) :: {}", Sv::SN_PvpEventAnnouncement::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_DestroyGroundItem>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_DestroyGroundItem(%d, %d) :: {}", Sv::SN_DestroyGroundItem::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_SkillUpgradeIngame>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_SkillUpgradeIngame(%d, %d) :: {", Cl::CQ_SkillUpgradeIngame::NET_ID, packetSize);
+	SER("	userID=%u", buff.Read<u32>());
+	SER("	slot=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Cl::CQ_GamePlayerTag>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -2555,6 +3003,82 @@ inline const char* PacketSerialize<Sv::SN_DestroyEntity>(const void* packetData,
 	SER("}");
 	return str.data();
 }
+template<>
+inline const char* PacketSerialize<Sv::SN_RemoteActivated>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_RemoteActivated& p = *(Sv::SN_RemoteActivated*)packetData;
+	SER("SN_RemoteActivated(%d, %d) :: {", Sv::SN_RemoteActivated::NET_ID, packetSize);
+	SER("	remoteID=0x%08x", p.remoteID);
+	SER("	defID=%u", p.defID);
+	SER("	penetrationCount=%u", p.penetrationCount);
+	SER("	remotePos=(%f, %f, %f)", p.remotePos.x, p.remotePos.y, p.remotePos.z);
+	SER("}");
+	return str.data();
+}
+template<>
+inline const char* PacketSerialize<Sv::SN_ChangeBattleState>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_ChangeBattleState& p = *(Sv::SN_ChangeBattleState*)packetData;
+	SER("SN_ChangeBattleState(%d, %d) :: {", Sv::SN_ChangeBattleState::NET_ID, packetSize);
+	SER("	objectID=%u", p.objectID);
+	SER("	isInBattle=%u", p.isInBattle);
+	SER("	baseMoveSpeed=%f", p.baseMoveSpeed);
+	SER("}");
+	return str.data();
+}
+template<>
+inline const char* PacketSerialize<Sv::SN_UpdateTargetGraphMove>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_UpdateTargetGraphMove& p = *(Sv::SN_UpdateTargetGraphMove*)packetData;
+	SER("SN_UpdateTargetGraphMove(%d, %d) :: {", Sv::SN_UpdateTargetGraphMove::NET_ID, packetSize);
+	SER("	characterID=%u", p.characterID);
+	SER("	targetID=%u", p.targetID);
+	SER("	targetPos=(%f, %f, %f)", p.targetPos.x, p.targetPos.y, p.targetPos.z);
+	SER("	curActionID=%u", p.curActionID);
+	SER("}");
+	return str.data();
+}
+template<>
+inline const char* PacketSerialize<Sv::SN_BroadcastEvade>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_BroadcastEvade& p = *(Sv::SN_BroadcastEvade*)packetData;
+	SER("SN_BroadcastEvade(%d, %d) :: {", Sv::SN_BroadcastEvade::NET_ID, packetSize);
+	SER("	attID=%u", p.attID);
+	SER("	defID=%u", p.defID);
+	SER("	remoteID=0x%08x", p.remoteID);
+	SER("	remoteDocIndex=%u", p.remoteDocIndex);
+	SER("}");
+	return str.data();
+}
+template<>
+inline const char* PacketSerialize<Sv::SN_ModifyStatus>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_ModifyStatus& p = *(Sv::SN_ModifyStatus*)packetData;
+	SER("SN_ModifyStatus(%d, %d) :: {", Sv::SN_ModifyStatus::NET_ID, packetSize);
+	SER("	statusID=%u", p.statusID);
+	SER("	targetID=%u", p.targetID);
+	SER("	overlapCount=%u", p.overlapCount);
+	SER("	customValue=%u", p.customValue);
+	SER("}");
+	return str.data();
+}
+template<>
+inline const char* PacketSerialize<Sv::SN_ResistStatus>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	const Sv::SN_ResistStatus& p = *(Sv::SN_ResistStatus*)packetData;
+	SER("SN_ResistStatus(%d, %d) :: {", Sv::SN_ResistStatus::NET_ID, packetSize);
+	SER("	target=%u", p.target);
+	SER("	caster=%u", p.caster);
+	SER("	event=%u", p.event);
+	SER("}");
+	return str.data();
+}
 DEFAULT_SERIALIZE(Sv::SN_RegionServicePolicy);
 DEFAULT_SERIALIZE(Sv::SN_AllCharacterBaseData);
 DEFAULT_SERIALIZE(Sv::SN_MyGuild);
@@ -2567,7 +3091,6 @@ DEFAULT_SERIALIZE(Sv::SN_PveComradeInfo);
 DEFAULT_SERIALIZE(Sv::SN_AchieveUpdate);
 DEFAULT_SERIALIZE(Sv::SN_FriendRequestList);
 DEFAULT_SERIALIZE(Sv::SN_BlockList);
-DEFAULT_SERIALIZE(Sv::SN_MailUnreadNotice);
 DEFAULT_SERIALIZE(Sv::SN_WarehouseItems);
 DEFAULT_SERIALIZE(Sv::SN_MutualFriendList);
 DEFAULT_SERIALIZE(Sv::SN_GuildMemberStatus);
@@ -2592,7 +3115,272 @@ DEFAULT_SERIALIZE(Cl::CQ_LoadingComplete);
 DEFAULT_SERIALIZE(Cl::CQ_GameIsReady);
 DEFAULT_SERIALIZE(Sv::SN_Unknown_62472);
 DEFAULT_SERIALIZE(Sv::SN_UpdateEntrySystem);
+DEFAULT_SERIALIZE(Sv::SN_PveTodayStageInfo);
+DEFAULT_SERIALIZE(Sv::SN_FatiguePointInfo);
+DEFAULT_SERIALIZE(Sv::SN_GameEventActivated);
+DEFAULT_SERIALIZE(Sv::SN_GameEventPending);
+DEFAULT_SERIALIZE(Sv::SN_AddictionWarning);
+DEFAULT_SERIALIZE(Sv::SN_ItemLifetimeExpired);
+DEFAULT_SERIALIZE(Sv::SN_EffectLifetimeExpired);
+DEFAULT_SERIALIZE(Sv::SN_EffectLifetimeList);
+DEFAULT_SERIALIZE(Sv::SN_CurrentGuideMission);
+DEFAULT_SERIALIZE(Sv::SN_ServerUtcTime);
+DEFAULT_SERIALIZE(Sv::SN_GmDisabledMasters);
+DEFAULT_SERIALIZE(Sv::SN_GmDisabledSkins);
+DEFAULT_SERIALIZE(Sv::SN_GmDisabledStages);
+DEFAULT_SERIALIZE(Sv::SN_HudEventList);
+DEFAULT_SERIALIZE(Sv::SN_CshopEventList);
+DEFAULT_SERIALIZE(Sv::SN_PlayerStateInTown);
 
+DEFAULT_SERIALIZE(In::HQ_PartyAddMember);
+DEFAULT_SERIALIZE(In::HQ_PartyRemoveMember);
+DEFAULT_SERIALIZE(In::HQ_PartyCancelMatching);
+DEFAULT_SERIALIZE(Cl::CQ_BreakUpPartyRoom);
+DEFAULT_SERIALIZE(Cl::CQ_CancelMatching);
+DEFAULT_SERIALIZE(Sv::SN_PartyInvite);
+DEFAULT_SERIALIZE(Sv::SA_PartyInvite);
+DEFAULT_SERIALIZE(Sv::SA_PartyJoin);
+DEFAULT_SERIALIZE(Sv::SN_PartyJoin);
+DEFAULT_SERIALIZE(Sv::SN_PartyLeave);
+DEFAULT_SERIALIZE(Sv::SA_PartyBreakup);
+DEFAULT_SERIALIZE(Sv::SN_PartyBreakup);
+DEFAULT_SERIALIZE(Sv::SN_PartyCancelInvite);
+DEFAULT_SERIALIZE(Sv::SN_CancelMatchingQueue);
+template<>
+inline const char* PacketSerialize<Cl::CQ_PartyInvite>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_PartyInvite(%d, %d) :: {", Cl::CQ_PartyInvite::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	teamType=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_PartyInviteAccept>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_PartyInviteAccept(%d, %d) :: {", Cl::CQ_PartyInviteAccept::NET_ID, packetSize);
+	SER("	partyID=%d", buff.Read<i32>());
+	SER("	zero=%u", buff.Read<u32>());
+	SER("	inviterNick='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+DEFAULT_SERIALIZE(Sv::SN_FriendStateChanged);
+DEFAULT_SERIALIZE(Sv::SA_FriendRequest);
+DEFAULT_SERIALIZE(Sv::SN_FriendRequested);
+DEFAULT_SERIALIZE(Sv::SA_FriendRespond);
+DEFAULT_SERIALIZE(Sv::SN_FriendAdded);
+DEFAULT_SERIALIZE(Sv::SA_FriendRemove);
+DEFAULT_SERIALIZE(Sv::SN_FriendRemoved);
+template<>
+inline const char* PacketSerialize<Cl::CQ_FriendRequest>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_FriendRequest(%d, %d) :: {", Cl::CQ_FriendRequest::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_FriendRequestRespond>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_FriendRequestRespond(%d, %d) :: {", Cl::CQ_FriendRequestRespond::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	accepted=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_FriendRemove>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_FriendRemove(%d, %d) :: {", Cl::CQ_FriendRemove::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+DEFAULT_SERIALIZE(Sv::SN_CommunityStatusMessage);
+DEFAULT_SERIALIZE(Sv::SA_CommunityStatusMessage);
+DEFAULT_SERIALIZE(Sv::SN_FriendPartycreation);
+DEFAULT_SERIALIZE(Sv::SA_PartyLeave);
+DEFAULT_SERIALIZE(Sv::SN_RestartPvpEntryStart);
+DEFAULT_SERIALIZE(Sv::SN_RestartPvpEntryUpdate);
+DEFAULT_SERIALIZE(Sv::SA_Honor);
+DEFAULT_SERIALIZE(Sv::SN_ItemUpdate);
+DEFAULT_SERIALIZE(Sv::SN_ItemAcquisition);
+DEFAULT_SERIALIZE(Sv::SN_CCoin);
+DEFAULT_SERIALIZE(Sv::SA_NpBuyCshopItem);
+DEFAULT_SERIALIZE(Sv::SA_BuyCshopItem);
+DEFAULT_SERIALIZE(Sv::SA_BuyShopItem);
+DEFAULT_SERIALIZE(Sv::SA_ItemCraft);
+DEFAULT_SERIALIZE(Sv::SA_InventoryExpand);
+DEFAULT_SERIALIZE(Sv::SA_CreateGuild);
+DEFAULT_SERIALIZE(Sv::SA_DissolveGuild);
+DEFAULT_SERIALIZE(Sv::SA_DonateToGuild);
+DEFAULT_SERIALIZE(Sv::SA_EditGuildnotice);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildinvitationlist);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildjoinrequestlist);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildpublicprofile);
+DEFAULT_SERIALIZE(Sv::SA_GetRecommendedguildlist);
+DEFAULT_SERIALIZE(Sv::SA_JoinGuild);
+DEFAULT_SERIALIZE(Sv::SA_QuitGuild);
+DEFAULT_SERIALIZE(Sv::SA_RespondGuildinvitation);
+DEFAULT_SERIALIZE(Sv::SA_RespondGuildjoinrequest);
+DEFAULT_SERIALIZE(Sv::SA_SetGuildjointype);
+DEFAULT_SERIALIZE(Sv::SN_GuildInvitation);
+DEFAULT_SERIALIZE(Sv::SN_GuildJoinapproval);
+DEFAULT_SERIALIZE(Sv::SN_GuildLevelup);
+DEFAULT_SERIALIZE(Sv::SN_GuildNotice);
+DEFAULT_SERIALIZE(Sv::SN_GuildchannelLeave);
+DEFAULT_SERIALIZE(Sv::SN_GuildfundAdded);
+DEFAULT_SERIALIZE(Sv::SN_GuildmemberJoin);
+DEFAULT_SERIALIZE(Sv::SN_GuildmemberQuit);
+DEFAULT_SERIALIZE(Sv::SN_GuildpointandfundChange);
+DEFAULT_SERIALIZE(Sv::SN_LevelIngame);
+DEFAULT_SERIALIZE(Sv::SN_ExpIngame);
+DEFAULT_SERIALIZE(Sv::SN_CharacterPropertyPoint);
+DEFAULT_SERIALIZE(Sv::SQ_TeleportObject);
+DEFAULT_SERIALIZE(Sv::SN_PlayerSyncTeleport);
+DEFAULT_SERIALIZE(Cl::CQ_PlayerSyncTeleport);
+DEFAULT_SERIALIZE(Sv::SN_CharacterPropertyInfo);
+DEFAULT_SERIALIZE(Sv::SN_CharacterPropertyReset);
+DEFAULT_SERIALIZE(Sv::SA_CharacterPropertyUpgrade);
+DEFAULT_SERIALIZE(Sv::SA_CharacterPropertyReset);
+DEFAULT_SERIALIZE(Sv::SN_NotifyIsInSafeZone);
+DEFAULT_SERIALIZE(Sv::SN_RequestVoting);
+DEFAULT_SERIALIZE(Sv::SN_Vote);
+DEFAULT_SERIALIZE(Sv::SN_VotingResult);
+DEFAULT_SERIALIZE(Sv::SA_TransformCharacter);
+DEFAULT_SERIALIZE(Sv::SN_TransformCharacter);
+DEFAULT_SERIALIZE(Sv::SN_ChangeCharacterMode);
+DEFAULT_SERIALIZE(Sv::SN_PvpResultScoreGot);
+DEFAULT_SERIALIZE(Sv::SN_PraiseInfo);
+DEFAULT_SERIALIZE(Sv::SN_MonsterRespawnTime);
+DEFAULT_SERIALIZE(Sv::SN_InteractionCancel);
+DEFAULT_SERIALIZE(Sv::SN_StageSkillAvailable);
+DEFAULT_SERIALIZE(Sv::SA_StageSkillSelect);
+DEFAULT_SERIALIZE(Sv::SN_StageSkillSelect);
+DEFAULT_SERIALIZE(Sv::SN_BushObjectState);
+DEFAULT_SERIALIZE(Sv::SN_LightOnArea);
+DEFAULT_SERIALIZE(Sv::SN_LightOffArea);
+DEFAULT_SERIALIZE(Sv::SN_UpdateGamePlayerTagCooltime);
+DEFAULT_SERIALIZE(Sv::SN_UpdateCanCastSkillSlotUg);
+DEFAULT_SERIALIZE(Sv::SN_JukeboxHotTrackList);
+DEFAULT_SERIALIZE(Sv::SN_Calendar);
+DEFAULT_SERIALIZE(Sv::SN_MatchingPartyConfirm);
+DEFAULT_SERIALIZE(Cl::CQ_GetUserInfo);
+DEFAULT_SERIALIZE(Sv::SA_MasterUnpick);
+DEFAULT_SERIALIZE(Sv::SN_MasterUnpick);
+DEFAULT_SERIALIZE(Sv::SA_ItemTrade);
+DEFAULT_SERIALIZE(Sv::SA_ItemUse);
+DEFAULT_SERIALIZE(Sv::SA_ActivityReward);
+DEFAULT_SERIALIZE(Sv::SN_MailGetAttachmentResult);
+DEFAULT_SERIALIZE(Sv::SA_PartySwapTeam);
+DEFAULT_SERIALIZE(Sv::SN_PartySwapTeam);
+DEFAULT_SERIALIZE(Sv::SA_PartyAddBot);
+DEFAULT_SERIALIZE(Sv::SA_PartyRemoveBot);
+DEFAULT_SERIALIZE(Sv::SN_PvpResultScoreOccupy);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildranklist);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildrank);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildrankrewardinfo);
+DEFAULT_SERIALIZE(Sv::SA_GetPlayingGuildpvplist);
+DEFAULT_SERIALIZE(Sv::SN_SortieMasterBanPhaseEnd);
+DEFAULT_SERIALIZE(Sv::SN_SortieMasterBan);
+DEFAULT_SERIALIZE(Sv::SA_SortieMasterBan);
+DEFAULT_SERIALIZE(Sv::SN_SortieMasterBanPhaseStart);
+DEFAULT_SERIALIZE(Sv::SA_GetGuildskilllist);
+DEFAULT_SERIALIZE(Sv::SA_BuyGuildskill);
+DEFAULT_SERIALIZE(Sv::SA_ExtendGuildlimitedskill);
+DEFAULT_SERIALIZE(Sv::SN_GuildskillAcquired);
+DEFAULT_SERIALIZE(Sv::SN_GuildskillUpgraded);
+DEFAULT_SERIALIZE(Sv::SN_GuildskillExtended);
+DEFAULT_SERIALIZE(Sv::SN_GuildconstraintChange);
+DEFAULT_SERIALIZE(Sv::SA_EditGuildtag);
+DEFAULT_SERIALIZE(Sv::SN_GuildtagChanged);
+DEFAULT_SERIALIZE(Sv::SA_SetGuildemblem);
+DEFAULT_SERIALIZE(Sv::SN_GuildemblemChange);
+DEFAULT_SERIALIZE(Sv::SA_SetGuildmemberclass);
+DEFAULT_SERIALIZE(Sv::SA_SetGuildmaster);
+DEFAULT_SERIALIZE(Sv::SA_CreateGuildmembership);
+DEFAULT_SERIALIZE(Sv::SA_DeleteGuildmembership);
+DEFAULT_SERIALIZE(Sv::SA_EditGuildmembership);
+DEFAULT_SERIALIZE(Sv::SN_GuildmembershipAdded);
+DEFAULT_SERIALIZE(Sv::SN_GuildmembershipRemoved);
+DEFAULT_SERIALIZE(Sv::SN_GuildmembershipModified);
+DEFAULT_SERIALIZE(Sv::SN_GuildmemberChgclass);
+DEFAULT_SERIALIZE(Sv::SN_GuildmasterDelegation);
+DEFAULT_SERIALIZE(Sv::SA_MyPveRanking);
+DEFAULT_SERIALIZE(Sv::SA_RequestSummaryInfoEach);
+DEFAULT_SERIALIZE(Sv::SA_StartGame);
+DEFAULT_SERIALIZE(Sv::SA_MasterTrainingEvent);
+DEFAULT_SERIALIZE(Sv::SN_GameAreaMove);
+DEFAULT_SERIALIZE(Sv::SN_StageClearResult);
+DEFAULT_SERIALIZE(Sv::SN_RewardItemList);
+DEFAULT_SERIALIZE(Sv::SN_RewardStageStartNp);
+DEFAULT_SERIALIZE(Sv::SA_RewardSelectSlot);
+DEFAULT_SERIALIZE(Sv::SA_RewardRequestFinish);
+DEFAULT_SERIALIZE(Sv::SN_WarnPveGameend);
+DEFAULT_SERIALIZE(Sv::SN_NotifyUserLifeInfo);
+DEFAULT_SERIALIZE(Sv::SN_StageRank);
+DEFAULT_SERIALIZE(Sv::SN_DefenceClearResult);
+DEFAULT_SERIALIZE(Sv::SN_PhaseStart);
+DEFAULT_SERIALIZE(Sv::SN_PhaseEnd);
+DEFAULT_SERIALIZE(Sv::SA_DefenceBestRecord);
+DEFAULT_SERIALIZE(Sv::SA_GearEquip);
+DEFAULT_SERIALIZE(Sv::SA_PvpRecord);
+DEFAULT_SERIALIZE(Sv::SA_FriendStateChange);
+DEFAULT_SERIALIZE(Sv::SA_QuickRunArena);
+DEFAULT_SERIALIZE(Sv::SA_WeaponUnlock);
+DEFAULT_SERIALIZE(Sv::SA_WeaponUpgrade);
+DEFAULT_SERIALIZE(Sv::SA_WeaponEquip);
+DEFAULT_SERIALIZE(Sv::SA_SkillUpgrade);
+DEFAULT_SERIALIZE(Sv::SN_TitleAdd);
+DEFAULT_SERIALIZE(Sv::SN_SummaryRewardResult);
+DEFAULT_SERIALIZE(Sv::SN_SummaryUpdate);
+DEFAULT_SERIALIZE(Sv::SN_PlayerTitleSelect);
+DEFAULT_SERIALIZE(Sv::SA_MastergearAdd);
+DEFAULT_SERIALIZE(Sv::SN_MissionUpdate);
+DEFAULT_SERIALIZE(Sv::SN_RecommendedfriendList);
+DEFAULT_SERIALIZE(Sv::SA_SearchGuild);
+DEFAULT_SERIALIZE(Sv::SN_ActiveIngameEventList);
+DEFAULT_SERIALIZE(Sv::SN_PveLastgameRanking);
+DEFAULT_SERIALIZE(Sv::SN_RegameData);
+DEFAULT_SERIALIZE(Sv::SN_RegameAvailable);
+DEFAULT_SERIALIZE(Sv::SA_RestartGame);
+DEFAULT_SERIALIZE(Sv::SA_GiftFriendsAvailable);
+DEFAULT_SERIALIZE(Sv::SA_RestartPvpEntryJoin);
+DEFAULT_SERIALIZE(Sv::SN_RestartPvpGameInfo);
+DEFAULT_SERIALIZE(Sv::SN_RestartPvpEntryFinish);
+DEFAULT_SERIALIZE(Sv::SA_SelectBadge);
+DEFAULT_SERIALIZE(Sv::SA_RewardBuyChance);
+DEFAULT_SERIALIZE(Sv::SA_TierStageRecord);
+DEFAULT_SERIALIZE(Sv::SN_PartyInviteRecommend);
+DEFAULT_SERIALIZE(Sv::SA_PartyInviteRecommendResponse);
+DEFAULT_SERIALIZE(Sv::SN_PartyInviteRecommendResponse);
+DEFAULT_SERIALIZE(Sv::SN_AvailableAccountEquipmentList);
+DEFAULT_SERIALIZE(Sv::SN_BroadcastGamePingData);
+DEFAULT_SERIALIZE(Sv::SN_DefenceLastgameRanking);
+DEFAULT_SERIALIZE(Sv::SN_ActivatedSupportkit);
+DEFAULT_SERIALIZE(Sv::SA_SelectAccountEquipment);
+DEFAULT_SERIALIZE(Sv::SA_TitleSelect);
+DEFAULT_SERIALIZE(Sv::SA_SkillUnlock);
+DEFAULT_SERIALIZE(Sv::SA_PvpDetailRecord);
+DEFAULT_SERIALIZE(Sv::SA_GearUnequip);
+DEFAULT_SERIALIZE(Sv::SA_MastergearSelect);
+DEFAULT_SERIALIZE(Sv::SA_MastergearRename);
+DEFAULT_SERIALIZE(Sv::SA_ItemMerge);
+DEFAULT_SERIALIZE(Sv::SQ_PrepareHandoverToChannel);
 #undef DEFAULT_SERIALIZE
 
 template<>
@@ -2641,6 +3429,86 @@ inline const char* PacketSerialize<Sv::SN_SkillSelect>(const void* packetData, c
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_Praise>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_Praise(%d, %d) :: {", Cl::CQ_Praise::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_EnterChannel>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_EnterChannel(%d, %d) :: {", Sv::SN_EnterChannel::NET_ID, packetSize);
+	SER("	chID=%u", buff.Read<u32>());
+	SER("	channelType=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_PvpAvailableReportCount>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_PvpAvailableReportCount(%d, %d) :: {", Sv::SN_PvpAvailableReportCount::NET_ID, packetSize);
+	SER("	isTroll=%u", buff.Read<u8>());
+	SER("	remainingCount=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_PraiseStart>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_PraiseStart(%d, %d) :: {", Sv::SN_PraiseStart::NET_ID, packetSize);
+	SER("	remainDurationMs=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_Praise>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_Praise(%d, %d) :: {", Sv::SA_Praise::NET_ID, packetSize);
+	SER("	errorType=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_Praise>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_Praise(%d, %d) :: {", Sv::SN_Praise::NET_ID, packetSize);
+	SER("	nickName='%ls'", buff.ReadWideStringObj().data());
+	SER("	praiseCount=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_UserReturnToCity>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_UserReturnToCity(%d, %d) :: {", Sv::SN_UserReturnToCity::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SA_ReturnToCity>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -2656,6 +3524,14 @@ inline const char* PacketSerialize<Sv::SN_AIMonsterSyncMove>(const void* packetD
 {
 	SER_BEGIN();
 	SER("SN_AIMonsterSyncMove(%d, %d) :: {}", Sv::SN_AIMonsterSyncMove::NET_ID, packetSize);
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AIMonsterSyncTurn>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	SER("SN_AIMonsterSyncTurn(%d, %d) :: {}", Sv::SN_AIMonsterSyncTurn::NET_ID, packetSize);
 	return str.data();
 }
 
@@ -2738,6 +3614,61 @@ inline const char* PacketSerialize<Sv::SN_RemoteSyncTarget>(const void* packetDa
 	SER("	remoteID=0x%08x", buff.Read<u32>());
 	SER("	targetEntity=0x%08x", buff.Read<u32>());
 	SER("	DestPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AiSetTarget>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_AiSetTarget(%d, %d) :: {", Sv::SN_AiSetTarget::NET_ID, packetSize);
+	SER("	entityID=0x%08x", buff.Read<u32>());
+	SER("	targetEntityID=0x%08x", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AiSyncMonsterSkillTarget>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_AiSyncMonsterSkillTarget(%d, %d) :: {", Sv::SN_AiSyncMonsterSkillTarget::NET_ID, packetSize);
+	SER("	entityID=0x%08x", buff.Read<u32>());
+	SER("	targetID=0x%08x", buff.Read<u32>());
+	SER("	targetPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AiSetMovetargetpos>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_AiSetMovetargetpos(%d, %d) :: {", Sv::SN_AiSetMovetargetpos::NET_ID, packetSize);
+	SER("	entityID=0x%08x", buff.Read<u32>());
+	SER("	movePresetType=%u", buff.Read<u32>());
+	SER("	moveTargetPos=%s", PS::ToStr(buff.Read<float3>()));
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_AiSetActionState>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_AiSetActionState(%d, %d) :: {", Sv::SN_AiSetActionState::NET_ID, packetSize);
+	const u8 excluded = buff.Read<u8>();
+	SER("	excludedFieldBits=%u", excluded);
+	SER("	entityID=0x%08x", buff.Read<u32>());
+	if(!(excluded & 0x02)) SER("	motionType=%d", buff.Read<i16>());
+	if(!(excluded & 0x04)) SER("	lowerBodyYaw=%d", buff.Read<i16>());
+	if(!(excluded & 0x08)) SER("	moveSpeed=%u", buff.Read<u16>());
+	SER("	pos=%s", PS::ToStr(buff.Read<float3>()));
 	SER("}");
 	return str.data();
 }
@@ -2989,6 +3920,43 @@ inline const char* PacketSerialize<Cl::CQ_WeaponState>(const void* packetData, c
 }
 
 template<>
+inline const char* PacketSerialize<Sv::SN_BushState>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_BushState(%d, %d) :: {", Sv::SN_BushState::NET_ID, packetSize);
+	SER("	bushID=%u", buff.Read<u32>());
+	SER("	curState=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_UpdateMasterGroupingEffect>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_UpdateMasterGroupingEffect(%d, %d) :: {", Sv::SN_UpdateMasterGroupingEffect::NET_ID, packetSize);
+	SER("	instanceID=%u", buff.Read<u32>());
+	SER("	index=%d", buff.Read<i32>());
+	SER("	classType=%d", buff.Read<i32>());
+	SER("	activate=%d", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_DespawnMonster>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_DespawnMonster(%d, %d) :: {", Sv::SN_DespawnMonster::NET_ID, packetSize);
+	SER("	objectID=0x%08x", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Sv::SN_UpdateStat>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -3190,6 +4158,34 @@ inline const char* PacketSerialize<Sv::SN_DeadAck>(const void* packetData, const
 	SER("	dwRemoteID=%u", buff.Read<u32>());
 	SER("	dwRemoteDocIndex=%u", buff.Read<u32>());
 	SER("	isPast=%u", buff.Read<u8>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_DeadDamageInfo>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_DeadDamageInfo(%d, %d) :: {", Sv::SN_DeadDamageInfo::NET_ID, packetSize);
+	auto readList = [&](const char* label) {
+		const u16 count = buff.Read<u16>();
+		SER("	%s count=%u", label, count);
+		for(int i = 0; i < count; i++) {
+			const u32 objectID = buff.Read<u32>();
+			const u32 skill = buff.Read<u32>();
+			const u32 status = buff.Read<u32>();
+			const u32 damage = buff.Read<u32>();
+			const u8 monster = buff.Read<u8>();
+			const u8 type = buff.Read<u8>();
+			SER("		object=0x%08x skill=%u status=%u damage=%u monster=%u type=%u", objectID, skill, status, damage, monster, type);
+		}
+		SER("	%s attackerKey=%u", label, buff.Read<u32>());
+	};
+	readList("killer");
+	const u16 others = buff.Read<u16>();
+	for(int i = 0; i < others; i++) readList("other");
+	SER("	durationTime=%u", buff.Read<u32>());
 	SER("}");
 	return str.data();
 }

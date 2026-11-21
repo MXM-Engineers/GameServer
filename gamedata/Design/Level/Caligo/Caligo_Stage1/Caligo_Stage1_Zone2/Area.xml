@@ -1,0 +1,431 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_AREA_INFO>
+    <_AreaList DATAKEY="24" dwID="24" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="2863.64" kTranslate_y="16475.26" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="200039" dwID="200039" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6863.52" kTranslate_y="17032.99" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="200090" dwID="200090" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="8293.35" kTranslate_y="16541.47" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="1.568877" layer="28">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="200095" dwID="200095" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="19163.2" kTranslate_y="8853.03" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="28">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="500056" dwID="500056" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6642.53" kTranslate_y="16449.19" kTranslate_z="56.49" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="34" dwID="34" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5843.35" kTranslate_y="17160.27" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="300156" dwID="300156" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6837.48" kTranslate_y="16466.61" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="49" dwID="49" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12757.42" kTranslate_y="9163.13" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="-1.563291" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="300042" dwID="300042" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="15960.22" kTranslate_y="8867.6" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="45" dwID="45" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15525.7" kTranslate_y="8293.61" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="35" dwID="35" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5851.61" kTranslate_y="16551.92" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="38" dwID="38" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11487.28" kTranslate_y="17081.33" kTranslate_z="562.15" kRotation_x="0" kRotation_y="0" kRotation_z="0.09983283" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="23" dwID="23" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11742.02" kTranslate_y="12816.82" kTranslate_z="560.79" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="300201" dwID="300201" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="10952.49" kTranslate_y="10489.18" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="2.960253" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="300203" dwID="300203" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="18091.71" kTranslate_y="8862.1" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100190" dwID="100190" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10953.32" kTranslate_y="11579.59" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.135309" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100189" dwID="100189" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11388.7" kTranslate_y="11587.22" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.136531" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100162" dwID="100162" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11335.29" kTranslate_y="13961.86" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.105814" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100055" dwID="100055" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6617.96" kTranslate_y="17043.43" kTranslate_z="56.29" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100186" dwID="100186" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="3736.24" kTranslate_y="17084.87" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="1.330465" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="51" dwID="51" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12766.41" kTranslate_y="8727.14" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="-1.558055" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100249" dwID="100249" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6457.46" kTranslate_y="16882.07" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100286" dwID="100286" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="3809.72" kTranslate_y="16419.32" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="2.163161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="37" dwID="37" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11150.34" kTranslate_y="17108.27" kTranslate_z="562.15" kRotation_x="0" kRotation_y="0" kRotation_z="0.1658063" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="36" dwID="36" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="8291.58" kTranslate_y="16408.41" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="50" dwID="50" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12773.44" kTranslate_y="8935.27" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="-1.576207" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="48" dwID="48" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="8289.4" kTranslate_y="17129.59" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100167" dwID="100167" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="10926.51" kTranslate_y="13821.89" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.117333" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100038" dwID="100038" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10781.24" kTranslate_y="13900.49" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100047" dwID="100047" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20136.41" kTranslate_y="15357.84" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100048" dwID="100048" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="21737.95" kTranslate_y="14832.4" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="1.593486" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100061" dwID="100061" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20934.56" kTranslate_y="15350.88" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100062" dwID="100062" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="19673.59" kTranslate_y="15353.04" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100064" dwID="100064" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20574.92" kTranslate_y="15353.91" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100081" dwID="100081" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="21286.79" kTranslate_y="15351.17" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100003" dwID="100003" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15518.66" kTranslate_y="9123.85" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100013" dwID="100013" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15528.31" kTranslate_y="8694.1" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100012" dwID="100012" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10957.37" kTranslate_y="11569.33" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.134612" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100010" dwID="100010" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11435.75" kTranslate_y="11586.8" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="3.136182" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100027" dwID="100027" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="6133.02" kTranslate_y="16933.07" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="-1.288926" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100016" dwID="100016" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11169.9" kTranslate_y="10480.69" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100026" dwID="100026" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11182.92" kTranslate_y="12792.06" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100031" dwID="100031" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="14037.26" kTranslate_y="8877.17" kTranslate_z="1045.6" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100119" dwID="100119" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="21002.94" kTranslate_y="8592.66" kTranslate_z="1053.52" kRotation_x="0" kRotation_y="0" kRotation_z="1.560499" layer="29">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100117" dwID="100117" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10775.45" kTranslate_y="8427.11" kTranslate_z="576.37" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="52" dwID="52" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12765.83" kTranslate_y="8496.41" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="-1.570447" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="5" dwID="5" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="2834.33" kTranslate_y="17113.34" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100041" dwID="100041" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15519.82" kTranslate_y="8905.04" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100067" dwID="100067" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15530.4" kTranslate_y="8491.39" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100046" dwID="100046" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11332.37" kTranslate_y="13705.17" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-3.117333" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="100096" dwID="100096" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11005.41" kTranslate_y="13824.76" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="3.132168" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="41" dwID="41" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11460.13" kTranslate_y="13394.61" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="56" dwID="56" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="14753.27" kTranslate_y="8881.52" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="-1.564862" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="84" dwID="84" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="16809" kTranslate_y="8273" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="-3.1388" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="400220" dwID="400220" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="15960" kTranslate_y="9264" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="11" dwID="11" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="6144" kTranslate_y="17159.85" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="6" dwID="6" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="19458.26" kTranslate_y="14502.05" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="8" dwID="8" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="14500.04" kTranslate_y="9245.92" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="10" dwID="10" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5055.77" kTranslate_y="17002.92" kTranslate_z="48.98" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="33">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="12" dwID="12" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="4175.27" kTranslate_y="16877.13" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.586504" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="14" dwID="14" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="4188.67" kTranslate_y="16436.72" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.552645" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="15" dwID="15" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="4188.55" kTranslate_y="16682.28" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.591217" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="42" dwID="42" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="10614.2" kTranslate_y="12804.46" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="43" dwID="43" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="16801.3" kTranslate_y="9410.8" kTranslate_z="1053.42" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="44" dwID="44" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15722.61" kTranslate_y="8851" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="46" dwID="46" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="21287" kTranslate_y="14286" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="47" dwID="47" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20935" kTranslate_y="14287.22" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="57" dwID="57" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20575" kTranslate_y="14287" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="58" dwID="58" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="20136" kTranslate_y="14287" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="59" dwID="59" dwType="1" fWidth="100" fHeight="500" fLength="100" kTranslate_x="19674" kTranslate_y="14282" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="77" dwID="77" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17788.58" kTranslate_y="8297" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="78" dwID="78" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17777.58" kTranslate_y="9124" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="79" dwID="79" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17786.58" kTranslate_y="8694" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="80" dwID="80" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17778.58" kTranslate_y="8905" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="81" dwID="81" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17788.58" kTranslate_y="8491" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.612161" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="82" dwID="82" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="18091.22" kTranslate_y="8573" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.559277" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="86" dwID="86" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10740" kTranslate_y="11570" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="85" dwID="85" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11170" kTranslate_y="11570" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="91" dwID="91" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="1626" kTranslate_y="16957" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.376018" layer="30">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="92" dwID="92" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="1626" kTranslate_y="16774" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.47777" layer="30">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="93" dwID="93" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="1626" kTranslate_y="16586" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="-1.605005" layer="30">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="106" dwID="106" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20228.91" kTranslate_y="11009.77" kTranslate_z="1040.58" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="108" dwID="108" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15722.23" kTranslate_y="8525" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="0" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="109" dwID="109" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="21586.85" kTranslate_y="15226.27" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="33">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="110" dwID="110" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="21024.27" kTranslate_y="15528.85" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="33">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="111" dwID="111" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20814.41" kTranslate_y="11943.71" kTranslate_z="1040.58" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="112" dwID="112" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20815.83" kTranslate_y="10531.25" kTranslate_z="1040.58" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="117" dwID="117" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="11162.94" kTranslate_y="16323.76" kTranslate_z="562.15" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="119" dwID="119" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5056" kTranslate_y="17003" kTranslate_z="49.16" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="120" dwID="120" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="14500" kTranslate_y="9246" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="121" dwID="121" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="19458" kTranslate_y="14502" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="122" dwID="122" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11761" kTranslate_y="15396" kTranslate_z="550" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="123" dwID="123" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10578" kTranslate_y="15396" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="124" dwID="124" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11757.48" kTranslate_y="13259" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="125" dwID="125" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10581.76" kTranslate_y="13259" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="126" dwID="126" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11179.74" kTranslate_y="11859.18" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="3.141593" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="127" dwID="127" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10591.89" kTranslate_y="11055" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="-1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="128" dwID="128" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11754.22" kTranslate_y="11055" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="129" dwID="129" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="10900.06" kTranslate_y="9829" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="3.141593" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="131" dwID="131" dwType="0" fWidth="100" fHeight="100" fLength="100" kTranslate_x="11476.2" kTranslate_y="13900" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <SpawnEntityInfo SpawnDelayTime="0" SpawnAniIndex="0" AIWanderDistOverride="-1" EntityCount="1" LoopCount="1" IntervalTime="0" TriggerAreaID="0" SpawnEntityType="ENTITY_TYPE_CREATURE" SpawnDocIndex="0" SpawnTag="" />
+    </_AreaList>
+    <_AreaList DATAKEY="4" dwID="4" dwType="1" fWidth="300" fHeight="100" fLength="500" kTranslate_x="704.5" kTranslate_y="16096.99" kTranslate_z="57.33" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="200088" dwID="200088" dwType="1" fWidth="500" fHeight="500" fLength="1" kTranslate_x="5462.96" kTranslate_y="16768.25" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="33">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="200091" dwID="200091" dwType="1" fWidth="700" fHeight="800" fLength="1" kTranslate_x="16581.68" kTranslate_y="8921.05" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="28">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="500054" dwID="500054" dwType="1" fWidth="300" fHeight="500" fLength="1" kTranslate_x="8081.2" kTranslate_y="16753.27" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100161" dwID="100161" dwType="1" fWidth="400" fHeight="300" fLength="1" kTranslate_x="11180.28" kTranslate_y="16078.61" kTranslate_z="549.87" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100131" dwID="100131" dwType="1" fWidth="300" fHeight="800" fLength="1" kTranslate_x="13533.43" kTranslate_y="8861.65" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100185" dwID="100185" dwType="1" fWidth="300" fHeight="500" fLength="1" kTranslate_x="2449.12" kTranslate_y="16729.8" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="32" dwID="32" dwType="1" fWidth="100" fHeight="500" fLength="500" kTranslate_x="3727.65" kTranslate_y="16767.73" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100148" dwID="100148" dwType="1" fWidth="200" fHeight="500" fLength="1" kTranslate_x="6894.82" kTranslate_y="16781.04" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100248" dwID="100248" dwType="1" fWidth="200" fHeight="500" fLength="1" kTranslate_x="4571.99" kTranslate_y="16756.93" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100036" dwID="100036" dwType="1" fWidth="800" fHeight="300" fLength="1" kTranslate_x="11204.42" kTranslate_y="13484.7" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100001" dwID="100001" dwType="1" fWidth="300" fHeight="800" fLength="1" kTranslate_x="13724.8" kTranslate_y="8860.94" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100098" dwID="100098" dwType="1" fWidth="300" fHeight="800" fLength="1" kTranslate_x="16249.58" kTranslate_y="8869.07" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100029" dwID="100029" dwType="1" fWidth="800" fHeight="300" fLength="1" kTranslate_x="11183.82" kTranslate_y="11636.31" kTranslate_z="549.92" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100298" dwID="100298" dwType="3" fWidth="300" fHeight="1" fLength="300" kTranslate_x="17103.31" kTranslate_y="14815.4" kTranslate_z="1050.05" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100030" dwID="100030" dwType="1" fWidth="300" fHeight="800" fLength="1" kTranslate_x="14756" kTranslate_y="8835.33" kTranslate_z="1032.3" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100032" dwID="100032" dwType="1" fWidth="500" fHeight="500" fLength="1" kTranslate_x="11015.52" kTranslate_y="16747.47" kTranslate_z="562.15" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100033" dwID="100033" dwType="1" fWidth="500" fHeight="500" fLength="1" kTranslate_x="11168.2" kTranslate_y="9013.02" kTranslate_z="576.37" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100034" dwID="100034" dwType="1" fWidth="500" fHeight="500" fLength="1" kTranslate_x="20394.26" kTranslate_y="8829.32" kTranslate_z="1053.35" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="27">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="100069" dwID="100069" dwType="1" fWidth="1600" fHeight="1600" fLength="1" kTranslate_x="20513.91" kTranslate_y="15552.93" kTranslate_z="1049.9" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="33" dwID="33" dwType="1" fWidth="100" fHeight="800" fLength="500" kTranslate_x="5784.22" kTranslate_y="16755.02" kTranslate_z="68.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="401675" dwID="401675" dwType="1" fWidth="200" fHeight="500" fLength="1" kTranslate_x="7554.46" kTranslate_y="16760.91" kTranslate_z="35.94" kRotation_x="0" kRotation_y="0" kRotation_z="3.138975" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="9" dwID="9" dwType="1" fWidth="1000" fHeight="100" fLength="500" kTranslate_x="20497.53" kTranslate_y="13150.93" kTranslate_z="1045.62" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="3" dwID="3" dwType="1" fWidth="200" fHeight="500" fLength="500" kTranslate_x="1081.67" kTranslate_y="16716.55" kTranslate_z="68.32" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="20" dwID="20" dwType="1" fWidth="300" fHeight="800" fLength="1" kTranslate_x="13511.56" kTranslate_y="8861" kTranslate_z="1057.62" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="6">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="103" dwID="103" dwType="1" fWidth="500" fHeight="500" fLength="500" kTranslate_x="20588.66" kTranslate_y="10847.68" kTranslate_z="1040.58" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21">
+      <AreaTrigger AreaTriggerType="OWN" />
+    </_AreaList>
+    <_AreaList DATAKEY="300171" dwID="300171" dwType="4" fWidth="938.7441" fHeight="938.7441" fLength="938.7441" kTranslate_x="9676.42" kTranslate_y="16742.36" kTranslate_z="56.56" kRotation_x="0" kRotation_y="0" kRotation_z="3.138102" layer="29" />
+    <_AreaList DATAKEY="300172" dwID="300172" dwType="4" fWidth="938.7441" fHeight="938.7441" fLength="938.7441" kTranslate_x="11175.17" kTranslate_y="9553.2" kTranslate_z="563.01" kRotation_x="0" kRotation_y="0" kRotation_z="-1.562244" layer="29" />
+    <_AreaList DATAKEY="300194" dwID="300194" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5392.7" kTranslate_y="17264.8" kTranslate_z="68.16" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="300195" dwID="300195" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5577.66" kTranslate_y="16211.92" kTranslate_z="68.16" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100378" dwID="100378" dwType="4" fWidth="2067.003" fHeight="2067.003" fLength="2067.003" kTranslate_x="11429.52" kTranslate_y="15870.42" kTranslate_z="549.82" kRotation_x="0" kRotation_y="0" kRotation_z="-3.141593" layer="29" />
+    <_AreaList DATAKEY="100118" dwID="100118" dwType="4" fWidth="718.2928" fHeight="718.2928" fLength="718.2928" kTranslate_x="11841.23" kTranslate_y="11537.8" kTranslate_z="542.07" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="100149" dwID="100149" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="5809.71" kTranslate_y="16211.64" kTranslate_z="68.16" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100092" dwID="100092" dwType="4" fWidth="718.2928" fHeight="718.2928" fLength="718.2928" kTranslate_x="15510.74" kTranslate_y="9524.63" kTranslate_z="1039" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100104" dwID="100104" dwType="4" fWidth="718.2928" fHeight="718.2928" fLength="718.2928" kTranslate_x="17866.08" kTranslate_y="9524.38" kTranslate_z="1039" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100300" dwID="100300" dwType="4" fWidth="757.2524" fHeight="757.2524" fLength="757.2524" kTranslate_x="19003.99" kTranslate_y="14847.51" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="100105" dwID="100105" dwType="4" fWidth="718.2928" fHeight="718.2928" fLength="718.2928" kTranslate_x="11845.15" kTranslate_y="13780.69" kTranslate_z="542.08" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="100028" dwID="100028" dwType="4" fWidth="1424.681" fHeight="1424.681" fLength="1424.681" kTranslate_x="677.53" kTranslate_y="14633.84" kTranslate_z="541.05" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="21" />
+    <_AreaList DATAKEY="100297" dwID="100297" dwType="4" fWidth="1424.681" fHeight="1424.681" fLength="1424.681" kTranslate_x="17103.31" kTranslate_y="14815.4" kTranslate_z="1049.95" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100296" dwID="100296" dwType="4" fWidth="757.2524" fHeight="757.2524" fLength="757.2524" kTranslate_x="20508.66" kTranslate_y="13347.05" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100292" dwID="100292" dwType="4" fWidth="938.7441" fHeight="938.7441" fLength="938.7441" kTranslate_x="19806.73" kTranslate_y="8863.22" kTranslate_z="1043.59" kRotation_x="0" kRotation_y="0" kRotation_z="-3.120823" layer="29" />
+    <_AreaList DATAKEY="100287" dwID="100287" dwType="4" fWidth="718.2928" fHeight="718.2928" fLength="718.2928" kTranslate_x="21301" kTranslate_y="16174.87" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100224" dwID="100224" dwType="4" fWidth="2067.003" fHeight="2067.003" fLength="2067.003" kTranslate_x="10925.62" kTranslate_y="15870" kTranslate_z="549.82" kRotation_x="0" kRotation_y="0" kRotation_z="3.141593" layer="29" />
+    <_AreaList DATAKEY="100151" dwID="100151" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="21300.11" kTranslate_y="16528.87" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100068" dwID="100068" dwType="4" fWidth="424.1114" fHeight="424.1114" fLength="424.1114" kTranslate_x="20958.84" kTranslate_y="16532.02" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100152" dwID="100152" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="20562.06" kTranslate_y="16520.64" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100157" dwID="100157" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="20204.5" kTranslate_y="16757.56" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100094" dwID="100094" dwType="4" fWidth="424.1114" fHeight="424.1114" fLength="424.1114" kTranslate_x="20204.33" kTranslate_y="16546.39" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100153" dwID="100153" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="19785.5" kTranslate_y="16528.39" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100160" dwID="100160" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="21300.85" kTranslate_y="16741.53" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100159" dwID="100159" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="20948.71" kTranslate_y="16740.32" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100158" dwID="100158" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="20564.6" kTranslate_y="16732.74" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100154" dwID="100154" dwType="4" fWidth="438.9963" fHeight="438.9963" fLength="438.9963" kTranslate_x="19778.07" kTranslate_y="16738.53" kTranslate_z="1049.8" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100143" dwID="100143" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="2028.69" kTranslate_y="17169.16" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100144" dwID="100144" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="2344.2" kTranslate_y="16398.03" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100074" dwID="100074" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12946.29" kTranslate_y="13796.65" kTranslate_z="319.58" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="100078" dwID="100078" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="12946.29" kTranslate_y="11552.18" kTranslate_z="319.58" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="100079" dwID="100079" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="15489.9" kTranslate_y="10543.83" kTranslate_z="814.5" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="100116" dwID="100116" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="17867.51" kTranslate_y="10543.83" kTranslate_z="814.5" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="13" dwID="13" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20042.51" kTranslate_y="8823.91" kTranslate_z="1053.25" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" layer="29" />
+    <_AreaList DATAKEY="16" dwID="16" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="18731" kTranslate_y="14833.53" kTranslate_z="1049.89" kRotation_x="0" kRotation_y="0" kRotation_z="-1.570796" layer="29" />
+    <_AreaList DATAKEY="60" dwID="60" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="8521.37" kTranslate_y="17122.35" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="64" dwID="64" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="8521" kTranslate_y="16365.74" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="63" dwID="63" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="8521" kTranslate_y="16615" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="69" dwID="69" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20158.12" kTranslate_y="10536.67" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="70" dwID="70" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20368.74" kTranslate_y="10537.04" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="71" dwID="71" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20663" kTranslate_y="11270" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="72" dwID="72" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20874" kTranslate_y="11270" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="73" dwID="73" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20150.12" kTranslate_y="11951.03" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="74" dwID="74" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="20361.12" kTranslate_y="11951.03" kTranslate_z="1040.48" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="90" dwID="90" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="3491" kTranslate_y="16375" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="89" dwID="89" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="3282.7" kTranslate_y="16372.75" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="88" dwID="88" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="3111.87" kTranslate_y="17145.32" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+    <_AreaList DATAKEY="87" dwID="87" dwType="0" fWidth="1" fHeight="1" fLength="1" kTranslate_x="3111.87" kTranslate_y="16925.32" kTranslate_z="35.84" kRotation_x="0" kRotation_y="0" kRotation_z="0" layer="29" />
+  </MAP_AREA_INFO>
+</MAP_INFO>

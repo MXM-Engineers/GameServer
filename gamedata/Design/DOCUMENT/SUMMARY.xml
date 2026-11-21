@@ -1,0 +1,1715 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="220002100">
+    <ST_SUMMARY _Index="220002100" _StageIndex="200002101" _UIPriority="3">
+      <_RARE_MONSTER_LIST _CreatureIndex="106130109">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106140102">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106110105">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160241">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160251">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160271">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160231">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160261">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220002101" _Name="STR_SUMMARY_CHALLENGE_220002101" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002102" _Name="STR_SUMMARY_CHALLENGE_220002102" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5">
+        <_TargetInfo _Index="110041414" _Count="2" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002103" _Name="STR_SUMMARY_CHALLENGE_220002103" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="106530000" />
+        <_TargetInfo _Index="106530100" />
+        <_TargetInfo _Index="106530200" />
+        <_TargetInfo _Index="106530300" />
+        <_TargetInfo _Index="106530400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002104" _Name="STR_SUMMARY_CHALLENGE_220002104" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5">
+        <_TargetInfo _Index="106130100" _Count="3" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002105" _Name="STR_SUMMARY_CHALLENGE_220002105" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002106" _Name="STR_SUMMARY_CHALLENGE_220002106" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="3" _TotalCount="3">
+        <_TargetInfo _Index="106140100" />
+        <_TargetInfo _Index="106140101" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002107" _Name="STR_SUMMARY_CHALLENGE_220002107" _eType="SUMMARY_CHALLENGE_TYPE_KILL_LESS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="106130104" _Count="13" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002108" _Name="STR_SUMMARY_CHALLENGE_220002108" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002109" _Name="STR_SUMMARY_CHALLENGE_220002109" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002110" _Name="STR_SUMMARY_CHALLENGE_220002110" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="110040396" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040402" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220002200">
+    <ST_SUMMARY _Index="220002200" _StageIndex="200002201" _UIPriority="2">
+      <_RARE_MONSTER_LIST _CreatureIndex="106160111">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160121">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160131">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160151">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160161">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160181">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160141">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160171">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220002201" _Name="STR_SUMMARY_CHALLENGE_220002201" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002202" _Name="STR_SUMMARY_CHALLENGE_220002202" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SHOCKED">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002203" _Name="STR_SUMMARY_CHALLENGE_220002203" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="106510000" />
+        <_TargetInfo _Index="106510100" />
+        <_TargetInfo _Index="106510200" />
+        <_TargetInfo _Index="106510300" />
+        <_TargetInfo _Index="106510400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002204" _Name="STR_SUMMARY_CHALLENGE_220002204" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="18" _TotalCount="15">
+        <_TargetInfo _Index="106110100" />
+        <_TargetInfo _Index="106110102" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002205" _Name="STR_SUMMARY_CHALLENGE_220002205" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002206" _Name="STR_SUMMARY_CHALLENGE_220002206" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="106170000" />
+        <_TargetInfo _Index="106030100" />
+        <_TargetInfo _Index="106030120" />
+        <_TargetInfo _Index="106040100" />
+        <_TargetInfo _Index="106040200" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002207" _Name="STR_SUMMARY_CHALLENGE_220002207" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="1">
+        <_TargetInfo _Index="106170410" _Count="7" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002208" _Name="STR_SUMMARY_CHALLENGE_220002208" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002209" _Name="STR_SUMMARY_CHALLENGE_220002209" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002210" _Name="STR_SUMMARY_CHALLENGE_220002210" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="110042016" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040403" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220002300">
+    <ST_SUMMARY _Index="220002300" _StageIndex="200002301" _UIPriority="1">
+      <_RARE_MONSTER_LIST _CreatureIndex="106030201">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106010101">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106010301">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160191">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160201">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160221">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106050101">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160211">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220002301" _Name="STR_SUMMARY_CHALLENGE_220002301" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002302" _Name="STR_SUMMARY_CHALLENGE_220002302" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="110040290" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002303" _Name="STR_SUMMARY_CHALLENGE_220002303" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="106531000" />
+        <_TargetInfo _Index="106531100" />
+        <_TargetInfo _Index="106531200" />
+        <_TargetInfo _Index="106531300" />
+        <_TargetInfo _Index="106531400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002304" _Name="STR_SUMMARY_CHALLENGE_220002304" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="106030300" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002305" _Name="STR_SUMMARY_CHALLENGE_220002305" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002306" _Name="STR_SUMMARY_CHALLENGE_220002306" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="5" _TotalCount="6">
+        <_TargetInfo _Index="106050100" />
+        <_TargetInfo _Index="106050100" />
+        <_TargetInfo _Index="106050102" />
+        <_TargetInfo _Index="106050103" />
+        <_TargetInfo _Index="106050200" />
+        <_TargetInfo _Index="106050300" />
+        <_TargetInfo _Index="106050500" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002307" _Name="STR_SUMMARY_CHALLENGE_220002307" _eType="SUMMARY_CHALLENGE_TYPE_KILL_LESS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="106531620" _Count="17" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002308" _Name="STR_SUMMARY_CHALLENGE_220002308" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002309" _Name="STR_SUMMARY_CHALLENGE_220002309" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002310" _Name="STR_SUMMARY_CHALLENGE_220002310" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="3" _UseTargetOrder="True">
+        <_TargetInfo _Index="106030200" />
+        <_TargetInfo _Index="106040200" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011201" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040401" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220002500">
+    <ST_SUMMARY _Index="220002500" _StageIndex="200002501" _UIPriority="4">
+      <_RARE_MONSTER_LIST _CreatureIndex="106050201">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106060102">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106060301">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160281">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160291">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160311">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106060401">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="106160301">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220002501" _Name="STR_SUMMARY_CHALLENGE_220002501" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002502" _Name="STR_SUMMARY_CHALLENGE_220002502" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SHOCKED">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002503" _Name="STR_SUMMARY_CHALLENGE_220002503" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="106520000" />
+        <_TargetInfo _Index="106520100" />
+        <_TargetInfo _Index="106520200" />
+        <_TargetInfo _Index="106520300" />
+        <_TargetInfo _Index="106520400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002504" _Name="STR_SUMMARY_CHALLENGE_220002504" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="10" _TotalCount="7">
+        <_TargetInfo _Index="106060200" />
+        <_TargetInfo _Index="106100100" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002505" _Name="STR_SUMMARY_CHALLENGE_220002505" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002506" _Name="STR_SUMMARY_CHALLENGE_220002506" _eType="SUMMARY_CHALLENGE_TYPE_KILL_GREATER_EQUAL" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="1" _TotalCount="9">
+        <_TargetInfo _Index="106010100" />
+        <_TargetInfo _Index="106010200" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002507" _Name="STR_SUMMARY_CHALLENGE_220002507" _eType="SUMMARY_CHALLENGE_TYPE_KILL_GREATER_EQUAL" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="2">
+        <_TargetInfo _Index="110040550" _Count="4" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002508" _Name="STR_SUMMARY_CHALLENGE_220002508" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002509" _Name="STR_SUMMARY_CHALLENGE_220002509" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220002510" _Name="STR_SUMMARY_CHALLENGE_220002510" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="110040592" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135020101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040400" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220003200">
+    <ST_SUMMARY _Index="220003200" _StageIndex="200003201" _UIPriority="2">
+      <_RARE_MONSTER_LIST _CreatureIndex="103010050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103010051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103050050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103050051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103110050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103110150">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103110151">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103050052">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220003201" _Name="STR_SUMMARY_CHALLENGE_220003201" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003202" _Name="STR_SUMMARY_CHALLENGE_220003202" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="8" _TotalCount="9">
+        <_TargetInfo _Index="103010000" />
+        <_TargetInfo _Index="103010100" />
+        <_TargetInfo _Index="103010101" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003203" _Name="STR_SUMMARY_CHALLENGE_220003203" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="103500000" />
+        <_TargetInfo _Index="103500100" />
+        <_TargetInfo _Index="103500200" />
+        <_TargetInfo _Index="103500300" />
+        <_TargetInfo _Index="103500400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003204" _Name="STR_SUMMARY_CHALLENGE_220003204" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SLOW">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003205" _Name="STR_SUMMARY_CHALLENGE_220003205" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003206" _Name="STR_SUMMARY_CHALLENGE_220003206" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="103820000" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003207" _Name="STR_SUMMARY_CHALLENGE_220003207" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="103500010" />
+        <_TargetInfo _Index="103500011" />
+        <_TargetInfo _Index="103500012" />
+        <_TargetInfo _Index="103500030" />
+        <_TargetInfo _Index="103500031" />
+        <_TargetInfo _Index="103500032" />
+        <_TargetInfo _Index="103500033" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003208" _Name="STR_SUMMARY_CHALLENGE_220003208" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003209" _Name="STR_SUMMARY_CHALLENGE_220003209" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003210" _Name="STR_SUMMARY_CHALLENGE_220003210" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SHOCKED" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040200" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220003300">
+    <ST_SUMMARY _Index="220003300" _StageIndex="200003301" _UIPriority="1">
+      <_RARE_MONSTER_LIST _CreatureIndex="103180050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103180051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103190050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103190051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103110250">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103110251">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103100050">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103100051">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220003301" _Name="STR_SUMMARY_CHALLENGE_220003301" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003302" _Name="STR_SUMMARY_CHALLENGE_220003302" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="3">
+        <_TargetInfo _Index="103190000" _Count="2" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003303" _Name="STR_SUMMARY_CHALLENGE_220003303" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="103530000" />
+        <_TargetInfo _Index="103530100" />
+        <_TargetInfo _Index="103530200" />
+        <_TargetInfo _Index="103530300" />
+        <_TargetInfo _Index="103530400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003304" _Name="STR_SUMMARY_CHALLENGE_220003304" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="1" _TotalCount="3">
+        <_TargetInfo _Index="103050011" />
+        <_TargetInfo _Index="103180011" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003305" _Name="STR_SUMMARY_CHALLENGE_220003305" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003306" _Name="STR_SUMMARY_CHALLENGE_220003306" _eType="SUMMARY_CHALLENGE_TYPE_KILL_GREATER_EQUAL" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="2" _UseTargetOrder="True">
+        <_TargetInfo _Index="103010103" />
+        <_TargetInfo _Index="103090000" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003307" _Name="STR_SUMMARY_CHALLENGE_220003307" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003308" _Name="STR_SUMMARY_CHALLENGE_220003308" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003309" _Name="STR_SUMMARY_CHALLENGE_220003309" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003310" _Name="STR_SUMMARY_CHALLENGE_220003310" _eType="SUMMARY_CHALLENGE_TYPE_STATUSINDEX" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _StatusIndex="1261510000">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040203" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220003400">
+    <ST_SUMMARY _Index="220003400" _StageIndex="200003401" _UIPriority="3">
+      <_RARE_MONSTER_LIST _CreatureIndex="103020150">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103020151">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103030050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103070150">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103070151">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103090050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103030051">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103090051">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220003401" _Name="STR_SUMMARY_CHALLENGE_220003401" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003402" _Name="STR_SUMMARY_CHALLENGE_220003402" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="1" _TotalCount="6">
+        <_TargetInfo _Index="103010000" />
+        <_TargetInfo _Index="103010100" />
+        <_TargetInfo _Index="103010101" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003403" _Name="STR_SUMMARY_CHALLENGE_220003403" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="103520000" />
+        <_TargetInfo _Index="103520100" />
+        <_TargetInfo _Index="103520200" />
+        <_TargetInfo _Index="103520300" />
+        <_TargetInfo _Index="103520400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003404" _Name="STR_SUMMARY_CHALLENGE_220003404" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="2" _UseTargetOrder="True">
+        <_TargetInfo _Index="103100000" />
+        <_TargetInfo _Index="103050000" _Count="2" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003405" _Name="STR_SUMMARY_CHALLENGE_220003405" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003406" _Name="STR_SUMMARY_CHALLENGE_220003406" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="2" _UseTargetOrder="True">
+        <_TargetInfo _Index="103100000" />
+        <_TargetInfo _Index="103050100" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003407" _Name="STR_SUMMARY_CHALLENGE_220003407" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="103840002" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003408" _Name="STR_SUMMARY_CHALLENGE_220003408" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003409" _Name="STR_SUMMARY_CHALLENGE_220003409" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003410" _Name="STR_SUMMARY_CHALLENGE_220003410" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SHOCKED" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040202" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220003500">
+    <ST_SUMMARY _Index="220003500" _StageIndex="200003501" _UIPriority="4">
+      <_RARE_MONSTER_LIST _CreatureIndex="103020050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103020051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103080050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103140050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103140051">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103150050">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103080051">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="103150051">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220003501" _Name="STR_SUMMARY_CHALLENGE_220003501" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003502" _Name="STR_SUMMARY_CHALLENGE_220003502" _eType="SUMMARY_CHALLENGE_TYPE_STATUSINDEX" _StatusIndex="1263160000">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003503" _Name="STR_SUMMARY_CHALLENGE_220003503" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="103510000" />
+        <_TargetInfo _Index="103510100" />
+        <_TargetInfo _Index="103510200" />
+        <_TargetInfo _Index="103510300" />
+        <_TargetInfo _Index="103510400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003504" _Name="STR_SUMMARY_CHALLENGE_220003504" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="8" _TotalCount="2">
+        <_TargetInfo _Index="103140000" />
+        <_TargetInfo _Index="103140001" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003505" _Name="STR_SUMMARY_CHALLENGE_220003505" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003506" _Name="STR_SUMMARY_CHALLENGE_220003506" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_BURNING" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003507" _Name="STR_SUMMARY_CHALLENGE_220003507" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="103160010" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003508" _Name="STR_SUMMARY_CHALLENGE_220003508" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003509" _Name="STR_SUMMARY_CHALLENGE_220003509" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220003510" _Name="STR_SUMMARY_CHALLENGE_220003510" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="1">
+        <_TargetInfo _Index="103510010" _Count="8" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135020101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040201" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220004100">
+    <ST_SUMMARY _Index="220004100" _StageIndex="200004101" _UIPriority="1">
+      <_RARE_MONSTER_LIST _CreatureIndex="102001100">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001101">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001102">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001103">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001104">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001105">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001106">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001107">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220004101" _Name="STR_SUMMARY_CHALLENGE_220004101" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004102" _Name="STR_SUMMARY_CHALLENGE_220004102" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="10">
+        <_TargetInfo _Index="102030000" />
+        <_TargetInfo _Index="102030001" />
+        <_TargetInfo _Index="102030100" />
+        <_TargetInfo _Index="102030200" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004103" _Name="STR_SUMMARY_CHALLENGE_220004103" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102500000" />
+        <_TargetInfo _Index="102500100" />
+        <_TargetInfo _Index="102500200" />
+        <_TargetInfo _Index="102500300" />
+        <_TargetInfo _Index="102500400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004104" _Name="STR_SUMMARY_CHALLENGE_220004104" _eType="SUMMARY_CHALLENGE_TYPE_KILL_GREATER_EQUAL">
+        <_TargetInfo _Index="102070000" _Count="10" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004105" _Name="STR_SUMMARY_CHALLENGE_220004105" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004106" _Name="STR_SUMMARY_CHALLENGE_220004106" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="1">
+        <_TargetInfo _Index="102060000" _Count="2" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004107" _Name="STR_SUMMARY_CHALLENGE_220004107" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="10" _UseTargetOrder="True">
+        <_TargetInfo _Index="102200000" _Count="1" />
+        <_TargetInfo _Index="102240000" _Count="1" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004108" _Name="STR_SUMMARY_CHALLENGE_220004108" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004109" _Name="STR_SUMMARY_CHALLENGE_220004109" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004110" _Name="STR_SUMMARY_CHALLENGE_220004110" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="102500040" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040100" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220004200">
+    <ST_SUMMARY _Index="220004200" _StageIndex="200004201" _UIPriority="2">
+      <_RARE_MONSTER_LIST _CreatureIndex="102001200">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001201">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001202">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001203">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001204">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001205">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001206">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001207">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220004201" _Name="STR_SUMMARY_CHALLENGE_220004201" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004202" _Name="STR_SUMMARY_CHALLENGE_220004202" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL">
+        <_TargetInfo _Index="102020200" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004203" _Name="STR_SUMMARY_CHALLENGE_220004203" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102510000" />
+        <_TargetInfo _Index="102510100" />
+        <_TargetInfo _Index="102510200" />
+        <_TargetInfo _Index="102510300" />
+        <_TargetInfo _Index="102510400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004204" _Name="STR_SUMMARY_CHALLENGE_220004204" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_SHOCKED">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004205" _Name="STR_SUMMARY_CHALLENGE_220004205" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004206" _Name="STR_SUMMARY_CHALLENGE_220004206" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="1">
+        <_TargetInfo _Index="102200100" />
+        <_TargetInfo _Index="102050100" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004207" _Name="STR_SUMMARY_CHALLENGE_220004207" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="3">
+        <_TargetInfo _Index="102240400" _Count="2" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004208" _Name="STR_SUMMARY_CHALLENGE_220004208" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004209" _Name="STR_SUMMARY_CHALLENGE_220004209" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004210" _Name="STR_SUMMARY_CHALLENGE_220004210" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="5" _UseTargetOrder="True">
+        <_TargetInfo _Index="102200100" />
+        <_TargetInfo _Index="102240400" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040103" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220004300">
+    <ST_SUMMARY _Index="220004300" _StageIndex="200004301" _UIPriority="3">
+      <_RARE_MONSTER_LIST _CreatureIndex="102001300">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001301">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001302">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001303">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001304">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001305">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001306">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001307">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220004301" _Name="STR_SUMMARY_CHALLENGE_220004301" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004302" _Name="STR_SUMMARY_CHALLENGE_220004302" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102030000" />
+        <_TargetInfo _Index="102030001" />
+        <_TargetInfo _Index="102030100" />
+        <_TargetInfo _Index="102030200" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004303" _Name="STR_SUMMARY_CHALLENGE_220004303" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102520000" />
+        <_TargetInfo _Index="102520100" />
+        <_TargetInfo _Index="102520200" />
+        <_TargetInfo _Index="102520300" />
+        <_TargetInfo _Index="102520400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004304" _Name="STR_SUMMARY_CHALLENGE_220004304" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102040600" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004305" _Name="STR_SUMMARY_CHALLENGE_220004305" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004306" _Name="STR_SUMMARY_CHALLENGE_220004306" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="3" _TotalCount="15">
+        <_TargetInfo _Index="102010000" />
+        <_TargetInfo _Index="102010001" />
+        <_TargetInfo _Index="102010200" />
+        <_TargetInfo _Index="102010201" />
+        <_TargetInfo _Index="102010400" />
+        <_TargetInfo _Index="102010300" />
+        <_TargetInfo _Index="102010100" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004307" _Name="STR_SUMMARY_CHALLENGE_220004307" _eType="SUMMARY_CHALLENGE_TYPE_NOKILL" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="110042301" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004308" _Name="STR_SUMMARY_CHALLENGE_220004308" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004309" _Name="STR_SUMMARY_CHALLENGE_220004309" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004310" _Name="STR_SUMMARY_CHALLENGE_220004310" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="3">
+        <_TargetInfo _Index="102040000" _Count="3" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220004400">
+    <ST_SUMMARY _Index="220004400" _StageIndex="200004401" _UIPriority="4">
+      <_RARE_MONSTER_LIST _CreatureIndex="102001400">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001401">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001402">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001403">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001404">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001405">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001406">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="102001407">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220004401" _Name="STR_SUMMARY_CHALLENGE_220004401" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004402" _Name="STR_SUMMARY_CHALLENGE_220004402" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="110041240" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004403" _Name="STR_SUMMARY_CHALLENGE_220004403" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="102530002" />
+        <_TargetInfo _Index="102530102" />
+        <_TargetInfo _Index="102530202" />
+        <_TargetInfo _Index="102530302" />
+        <_TargetInfo _Index="102530402" />
+        <_TargetInfo _Index="102530000" />
+        <_TargetInfo _Index="102530001" />
+        <_TargetInfo _Index="102530002" />
+        <_TargetInfo _Index="102530003" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004404" _Name="STR_SUMMARY_CHALLENGE_220004404" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="20">
+        <_TargetInfo _Index="102080000" />
+        <_TargetInfo _Index="102080020" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004405" _Name="STR_SUMMARY_CHALLENGE_220004405" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004406" _Name="STR_SUMMARY_CHALLENGE_220004406" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="2">
+        <_TargetInfo _Index="102100200" _Count="2" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004407" _Name="STR_SUMMARY_CHALLENGE_220004407" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="2">
+        <_TargetInfo _Index="102100200" _Count="3" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004408" _Name="STR_SUMMARY_CHALLENGE_220004408" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004409" _Name="STR_SUMMARY_CHALLENGE_220004409" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220004410" _Name="STR_SUMMARY_CHALLENGE_220004410" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="2">
+        <_TargetInfo _Index="102030300" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135020101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040102" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398591" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220005100">
+    <ST_SUMMARY _Index="220005100" _StageIndex="200005101" _UIPriority="1">
+      <_RARE_MONSTER_LIST _CreatureIndex="104010010">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104010011">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040630">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040631">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040220">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040221">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050420">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050421">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220005101" _Name="STR_SUMMARY_CHALLENGE_220005101" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005102" _Name="STR_SUMMARY_CHALLENGE_220005102" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="10" _TotalCount="6">
+        <_TargetInfo _Index="104010000" />
+        <_TargetInfo _Index="104010001" />
+        <_TargetInfo _Index="104010002" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005103" _Name="STR_SUMMARY_CHALLENGE_220005103" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104060000" />
+        <_TargetInfo _Index="104060010" />
+        <_TargetInfo _Index="104060020" />
+        <_TargetInfo _Index="104060030" />
+        <_TargetInfo _Index="104060600" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005104" _Name="STR_SUMMARY_CHALLENGE_220005104" _eType="SUMMARY_CHALLENGE_TYPE_STATUSINDEX" _StatusIndex="1201200901">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005105" _Name="STR_SUMMARY_CHALLENGE_220005105" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005106" _Name="STR_SUMMARY_CHALLENGE_220005106" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="5" _TotalCount="3">
+        <_TargetInfo _Index="104040000" />
+        <_TargetInfo _Index="104040001" />
+        <_TargetInfo _Index="104040010" />
+        <_TargetInfo _Index="104040011" />
+        <_TargetInfo _Index="104040100" />
+        <_TargetInfo _Index="104040110" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005107" _Name="STR_SUMMARY_CHALLENGE_220005107" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="104050900" />
+        <_TargetInfo _Index="104050910" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005108" _Name="STR_SUMMARY_CHALLENGE_220005108" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005109" _Name="STR_SUMMARY_CHALLENGE_220005109" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005110" _Name="STR_SUMMARY_CHALLENGE_220005110" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="150" _TotalCount="20">
+        <_TargetInfo _Index="104010000" />
+        <_TargetInfo _Index="104010001" />
+        <_TargetInfo _Index="104010002" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040300" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220005200">
+    <ST_SUMMARY _Index="220005200" _StageIndex="200005201" _UIPriority="2">
+      <_RARE_MONSTER_LIST _CreatureIndex="104040020">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040021">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040830">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040831">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104051250">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104051251">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104051150">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104051151">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220005201" _Name="STR_SUMMARY_CHALLENGE_220005201" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005202" _Name="STR_SUMMARY_CHALLENGE_220005202" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104040800" />
+        <_TargetInfo _Index="104040810" />
+        <_TargetInfo _Index="104040820" />
+        <_TargetInfo _Index="104040900" />
+        <_TargetInfo _Index="104040910" />
+        <_TargetInfo _Index="104040920" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005203" _Name="STR_SUMMARY_CHALLENGE_220005203" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104062000" />
+        <_TargetInfo _Index="104062001" />
+        <_TargetInfo _Index="104062100" />
+        <_TargetInfo _Index="104062200" />
+        <_TargetInfo _Index="104062210" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005204" _Name="STR_SUMMARY_CHALLENGE_220005204" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="8" _TotalCount="4">
+        <_TargetInfo _Index="104040000" />
+        <_TargetInfo _Index="104040001" />
+        <_TargetInfo _Index="104040010" />
+        <_TargetInfo _Index="104040100" />
+        <_TargetInfo _Index="104040110" />
+        <_TargetInfo _Index="104040011" />
+        <_TargetInfo _Index="104040400" />
+        <_TargetInfo _Index="104040410" />
+        <_TargetInfo _Index="104040500" />
+        <_TargetInfo _Index="104040510" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005205" _Name="STR_SUMMARY_CHALLENGE_220005205" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005206" _Name="STR_SUMMARY_CHALLENGE_220005206" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005207" _Name="STR_SUMMARY_CHALLENGE_220005207" _eType="SUMMARY_CHALLENGE_TYPE_KILL_LESS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _TotalCount="6">
+        <_TargetInfo _Index="104040003" />
+        <_TargetInfo _Index="104040403" />
+        <_TargetInfo _Index="104040603" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005208" _Name="STR_SUMMARY_CHALLENGE_220005208" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005209" _Name="STR_SUMMARY_CHALLENGE_220005209" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005210" _Name="STR_SUMMARY_CHALLENGE_220005210" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="1">
+        <_TargetInfo _Index="104051310" />
+        <_TargetInfo _Index="104051210" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011201" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040302" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220005400">
+    <ST_SUMMARY _Index="220005400" _StageIndex="200005401" _UIPriority="3">
+      <_RARE_MONSTER_LIST _CreatureIndex="104020220">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104020221">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040420">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104040421">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050520">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050521">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050120">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104050121">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220005401" _Name="STR_SUMMARY_CHALLENGE_220005401" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005402" _Name="STR_SUMMARY_CHALLENGE_220005402" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104050800" />
+        <_TargetInfo _Index="104050802" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005403" _Name="STR_SUMMARY_CHALLENGE_220005403" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104061000" />
+        <_TargetInfo _Index="104061010" />
+        <_TargetInfo _Index="104061020" />
+        <_TargetInfo _Index="104061030" />
+        <_TargetInfo _Index="104061300" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005404" _Name="STR_SUMMARY_CHALLENGE_220005404" _eType="SUMMARY_CHALLENGE_TYPE_STATUSTYPE" _StatusType="STATUS_TYPE_PUSH">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005405" _Name="STR_SUMMARY_CHALLENGE_220005405" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005406" _Name="STR_SUMMARY_CHALLENGE_220005406" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="8" _TotalCount="6">
+        <_TargetInfo _Index="104040000" />
+        <_TargetInfo _Index="104040001" />
+        <_TargetInfo _Index="104040010" />
+        <_TargetInfo _Index="104040100" />
+        <_TargetInfo _Index="104040110" />
+        <_TargetInfo _Index="104040011" />
+        <_TargetInfo _Index="104040400" />
+        <_TargetInfo _Index="104040410" />
+        <_TargetInfo _Index="104040500" />
+        <_TargetInfo _Index="104040510" />
+        <_TargetInfo _Index="104040800" />
+        <_TargetInfo _Index="104040810" />
+        <_TargetInfo _Index="104040820" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005407" _Name="STR_SUMMARY_CHALLENGE_220005407" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="110050006" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005408" _Name="STR_SUMMARY_CHALLENGE_220005408" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005409" _Name="STR_SUMMARY_CHALLENGE_220005409" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005410" _Name="STR_SUMMARY_CHALLENGE_220005410" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HELL" _fTime="2" _UseTargetOrder="True">
+        <_TargetInfo _Index="104040111" />
+        <_TargetInfo _Index="104051310" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040301" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220005500">
+    <ST_SUMMARY _Index="220005500" _StageIndex="200005501" _UIPriority="4">
+      <_RARE_MONSTER_LIST _CreatureIndex="104054230">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054231">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054200">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054201">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054210">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054211">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054220">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="104054221">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220005501" _Name="STR_SUMMARY_CHALLENGE_220005501" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005502" _Name="STR_SUMMARY_CHALLENGE_220005502" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="8" _TotalCount="4">
+        <_TargetInfo _Index="104020100" />
+        <_TargetInfo _Index="104020101" />
+        <_TargetInfo _Index="104020200" />
+        <_TargetInfo _Index="104020210" />
+        <_TargetInfo _Index="104020211" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005503" _Name="STR_SUMMARY_CHALLENGE_220005503" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="104063000" />
+        <_TargetInfo _Index="104063010" />
+        <_TargetInfo _Index="104063020" />
+        <_TargetInfo _Index="104063030" />
+        <_TargetInfo _Index="104063040" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005504" _Name="STR_SUMMARY_CHALLENGE_220005504" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="2">
+        <_TargetInfo _Index="104051800" />
+        <_TargetInfo _Index="104051810" />
+        <_TargetInfo _Index="104051900" />
+        <_TargetInfo _Index="104051910" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005505" _Name="STR_SUMMARY_CHALLENGE_220005505" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005506" _Name="STR_SUMMARY_CHALLENGE_220005506" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="110050016" />
+        <_TargetInfo _Index="110050017" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005507" _Name="STR_SUMMARY_CHALLENGE_220005507" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="104050440" />
+        <_TargetInfo _Index="104054000" />
+        <_TargetInfo _Index="104054010" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005508" _Name="STR_SUMMARY_CHALLENGE_220005508" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005509" _Name="STR_SUMMARY_CHALLENGE_220005509" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220005510" _Name="STR_SUMMARY_CHALLENGE_220005510" _eType="SUMMARY_CHALLENGE_TYPE_KILL_GREATER_EQUAL" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="103063010" _Count="12" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135020101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040303" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220010100">
+    <ST_SUMMARY _Index="220010100" _StageIndex="200010101" _UIPriority="1">
+      <_RARE_MONSTER_LIST _CreatureIndex="107012101">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012102">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012103">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012104">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012106">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012108">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012107">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012105">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220010101" _Name="STR_SUMMARY_CHALLENGE_220010101" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010102" _Name="STR_SUMMARY_CHALLENGE_220010102" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="10">
+        <_TargetInfo _Index="107010432" />
+        <_TargetInfo _Index="107012080" />
+        <_TargetInfo _Index="107033260" />
+        <_TargetInfo _Index="107033261" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010103" _Name="STR_SUMMARY_CHALLENGE_220010103" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="107012000" />
+        <_TargetInfo _Index="107012010" />
+        <_TargetInfo _Index="107012020" />
+        <_TargetInfo _Index="107012030" />
+        <_TargetInfo _Index="107012040" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010104" _Name="STR_SUMMARY_CHALLENGE_220010104" _eType="SUMMARY_CHALLENGE_TYPE_STATUSINDEX" _StatusIndex="1260107009">
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010105" _Name="STR_SUMMARY_CHALLENGE_220010105" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010106" _Name="STR_SUMMARY_CHALLENGE_220010106" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="107010400" />
+        <_TargetInfo _Index="107010410" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010107" _Name="STR_SUMMARY_CHALLENGE_220010107" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="107010490" />
+        <_TargetInfo _Index="107010491" />
+        <_TargetInfo _Index="107010492" />
+        <_TargetInfo _Index="107012110" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010108" _Name="STR_SUMMARY_CHALLENGE_220010108" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010109" _Name="STR_SUMMARY_CHALLENGE_220010109" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010110" _Name="STR_SUMMARY_CHALLENGE_220010110" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="107010480" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040500" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220010400">
+    <ST_SUMMARY _Index="220010400" _StageIndex="200010401" _UIPriority="2">
+      <_RARE_MONSTER_LIST _CreatureIndex="107033241">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033242">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033251">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033252">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033311">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033312">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033243">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107033244">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220010401" _Name="STR_SUMMARY_CHALLENGE_220010401" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010402" _Name="STR_SUMMARY_CHALLENGE_220010402" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="5">
+        <_TargetInfo _Index="107010432" />
+        <_TargetInfo _Index="107012080" />
+        <_TargetInfo _Index="107033260" />
+        <_TargetInfo _Index="107033261" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010403" _Name="STR_SUMMARY_CHALLENGE_220010403" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="107033600" />
+        <_TargetInfo _Index="107033610" />
+        <_TargetInfo _Index="107033620" />
+        <_TargetInfo _Index="107033630" />
+        <_TargetInfo _Index="107033640" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010404" _Name="STR_SUMMARY_CHALLENGE_220010404" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="107033200" />
+        <_TargetInfo _Index="107033210" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010405" _Name="STR_SUMMARY_CHALLENGE_220010405" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010406" _Name="STR_SUMMARY_CHALLENGE_220010406" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="107033500" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010407" _Name="STR_SUMMARY_CHALLENGE_220010407" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="5" _UseTargetOrder="True">
+        <_TargetInfo _Index="107033240" />
+        <_TargetInfo _Index="107033210" _Count="2" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010408" _Name="STR_SUMMARY_CHALLENGE_220010408" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010409" _Name="STR_SUMMARY_CHALLENGE_220010409" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010410" _Name="STR_SUMMARY_CHALLENGE_220010410" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="107033000" />
+        <_TargetInfo _Index="107033010" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135030101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040502" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132298592" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220010200">
+    <ST_SUMMARY _Index="220010200" _StageIndex="200010201" _UIPriority="3">
+      <_RARE_MONSTER_LIST _CreatureIndex="107012120">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012130">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012140">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012150">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012170">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012180">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012160">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107012190">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220010201" _Name="STR_SUMMARY_CHALLENGE_220010201" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010202" _Name="STR_SUMMARY_CHALLENGE_220010202" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="2">
+        <_TargetInfo _Index="107010490" />
+        <_TargetInfo _Index="107010491" />
+        <_TargetInfo _Index="107010492" />
+        <_TargetInfo _Index="107012110" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010203" _Name="STR_SUMMARY_CHALLENGE_220010203" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="107031200" />
+        <_TargetInfo _Index="107031210" />
+        <_TargetInfo _Index="107031220" />
+        <_TargetInfo _Index="107031230" />
+        <_TargetInfo _Index="107031240" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010204" _Name="STR_SUMMARY_CHALLENGE_220010204" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="3">
+        <_TargetInfo _Index="107010440" />
+        <_TargetInfo _Index="107012100" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010205" _Name="STR_SUMMARY_CHALLENGE_220010205" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010206" _Name="STR_SUMMARY_CHALLENGE_220010206" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HARD">
+        <_TargetInfo _Index="107031300" />
+        <_TargetInfo _Index="107031310" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010207" _Name="STR_SUMMARY_CHALLENGE_220010207" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME" _fTime="5" _UseTargetOrder="True">
+        <_TargetInfo _Index="107010491" />
+        <_TargetInfo _Index="107012100" _Count="3" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010208" _Name="STR_SUMMARY_CHALLENGE_220010208" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010209" _Name="STR_SUMMARY_CHALLENGE_220010209" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010210" _Name="STR_SUMMARY_CHALLENGE_220010210" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="107031370" />
+        <_TargetInfo _Index="107031380" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011101" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040503" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132198593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+  <INFO ID="220010300">
+    <ST_SUMMARY _Index="220010300" _StageIndex="200010301" _UIPriority="4">
+      <_RARE_MONSTER_LIST _CreatureIndex="107020600">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020601">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020602">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020604">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020605">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020606">
+        <_Reward _Type="EXP" _Amount="500" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020603">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_RARE_MONSTER_LIST _CreatureIndex="107020607">
+        <_Reward _Type="CCOIN" _Amount="100" />
+      </_RARE_MONSTER_LIST>
+      <_CHALLENGE_LIST _index="220010301" _Name="STR_SUMMARY_CHALLENGE_220010301" _eType="SUMMARY_CHALLENGE_TYPE_NODIE">
+        <_Reward _Type="GOLD" _Amount="1000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010302" _Name="STR_SUMMARY_CHALLENGE_220010302" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="10">
+        <_TargetInfo _Index="107020000" />
+        <_TargetInfo _Index="107020001" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010303" _Name="STR_SUMMARY_CHALLENGE_220010303" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS">
+        <_TargetInfo _Index="107050000" />
+        <_TargetInfo _Index="107050100" />
+        <_TargetInfo _Index="107050200" />
+        <_TargetInfo _Index="107050300" />
+        <_TargetInfo _Index="107050400" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010304" _Name="STR_SUMMARY_CHALLENGE_220010304" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _fTime="5" _TotalCount="3">
+        <_TargetInfo _Index="107020200" />
+        <_Reward _Type="GOLD" _Amount="2000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010305" _Name="STR_SUMMARY_CHALLENGE_220010305" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_EASY">
+        <_Reward _Type="CCOIN" _Amount="10" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010306" _Name="STR_SUMMARY_CHALLENGE_220010306" _eType="SUMMARY_CHALLENGE_TYPE_KILL_IN_TIME" _Difficulty="WORLD_STAGE_DIFFICULT_HARD" _fTime="5" _UseTargetOrder="True">
+        <_TargetInfo _Index="107020200" />
+        <_TargetInfo _Index="107020000" _Count="10" />
+        <_Reward _Type="GOLD" _Amount="3000" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010307" _Name="STR_SUMMARY_CHALLENGE_220010307" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_TargetInfo _Index="107020300" />
+        <_TargetInfo _Index="107020310" />
+        <_TargetInfo _Index="107020320" />
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010308" _Name="STR_SUMMARY_CHALLENGE_220010308" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_S" _Difficulty="WORLD_STAGE_DIFFICULT_EXTREME">
+        <_Reward _Type="CCOIN" _Amount="25" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010309" _Name="STR_SUMMARY_CHALLENGE_220010309" _eType="SUMMARY_CHALLENGE_TYPE_RANK_OVER" _rank="E_CLEAR_RANK_TYPE_C" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_CHALLENGE_LIST _index="220010310" _Name="STR_SUMMARY_CHALLENGE_220010310" _eType="SUMMARY_CHALLENGE_TYPE_NOHITBYBOSS" _Difficulty="WORLD_STAGE_DIFFICULT_HELL">
+        <_TargetInfo _Index="107020200" />
+        <_TargetInfo _Index="107033400" />
+        <_Reward _Type="CCOIN" _Amount="50" />
+      </_CHALLENGE_LIST>
+      <_PROGRESS_REWARD _STEP="1">
+        <_Reward _Type="ITEM" _Amount="2" _ItemIndex="135011201" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="2">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="136040501" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="3">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="132398593" />
+      </_PROGRESS_REWARD>
+      <_PROGRESS_REWARD _STEP="4">
+        <_Reward _Type="ITEM" _Amount="1" _ItemIndex="138000905" />
+      </_PROGRESS_REWARD>
+    </ST_SUMMARY>
+  </INFO>
+</ENTITY_FILE>

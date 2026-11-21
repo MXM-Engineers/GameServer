@@ -30,8 +30,11 @@ struct HubInstance
 	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
 };
 
-void MarkAccountSentToGame(const WideString& nickname);
-bool TakeAccountReturningFromGame(const WideString& nickname);
+void MarkAccountSentToGame(const WideString& nickname, SortieUID sortieUID, AccountUID gameAccountUID);
+void MarkSortieEnded(SortieUID sortieUID);
+void MarkSortieGameServer(SortieUID sortieUID, const eastl::array<u8,4>& ip, u16 port);
+bool FindSortieGameServer(SortieUID sortieUID, eastl::array<u8,4>* ip, u16* port);
+bool TakeAccountReturningFromGame(const WideString& nickname, SortieUID* sortieUID, AccountUID* gameAccountUID);
 
 struct RoomInstance
 {
@@ -84,10 +87,12 @@ struct RoomInstance
 
 		// picking phase related stuff
 		eastl::array<Master,2> masters;
+		SkillID stageSkill = SkillID::INVALID;
 		bool isReady = false;
 
 		struct {
 			u8 masterPick: 1;
+			u8 masterUnpick: 1;
 			u8 ready: 1;
 			// TODO: add other stuff
 		} replicate = {0};
@@ -110,12 +115,14 @@ struct RoomInstance
 	enum class Phase: u8 {
 		Picking = 0,
 		StartingMatch,
-		MatchReady
+		MatchReady,
+		Banning
 	};
 
 	Server* server;
 	const HubInstanceUID UID;
 	const SortieUID sortieUID;
+	StageIndex stageIndex = StageIndex(0);
 	ClientLocalMapping plidMap;
 
 	eastl::fixed_vector<User,16,false> userList;
@@ -133,6 +140,11 @@ struct RoomInstance
 
 	bool markedAsRemove = false;
 	Phase phase = Phase::Picking;
+	bool draft = false;
+	u8 banRound = 0;
+	Time banRoundStart = Time::ZERO;
+	eastl::array<eastl::fixed_vector<ClassType,8,false>,2> teamBans;
+	eastl::array<bool,2> bannedThisRound = {{ false, false }};
 
 	eastl::array<u8,4> matchServerIp = {0};
 	u16 matchServerPort = 0x0;
@@ -146,6 +158,13 @@ struct RoomInstance
 	}
 
 	void Init(Server* server_, const NewUser* userlist, const i32 userCount);
+	void SendPickPhaseStart(const struct User& user);
+	void StartBanRound();
+	void PickBotMasters();
+	bool ProhibitedFor(i32 team, ClassType classType) const;
+	void UpdateBans();
+	bool BanMaster(i32 team, ClassType classType);
+	const struct User* TeamLeader(i32 team) const;
 	void Update(Time localTime_);
 	void Replicate();
 

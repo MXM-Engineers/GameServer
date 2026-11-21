@@ -216,6 +216,38 @@ inline bool ValidatePacket<Cl::CQ_WhisperSend>(const void* packetData, i32 packe
 }
 
 template<>
+inline bool ValidatePacket<Cl::CQ_MailWrite>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	for(int i = 0; i < 3; i++) {
+		if(!buff.CanRead(sizeof(u16))) return false;
+		const u16 len = buff.Read<u16>();
+		if(!buff.CanRead(len * sizeof(wchar))) return false;
+		buff.ReadRaw(len * sizeof(wchar));
+	}
+	return true;
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_MailGetAttachmentMulti>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 count = buff.Read<u16>();
+	return count <= 64 && buff.CanRead(count * sizeof(u64));
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_MailMove>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u8) + sizeof(u16))) return false;
+	buff.Read<u8>();
+	const u16 count = buff.Read<u16>();
+	return count <= 64 && buff.CanRead(count * sizeof(u64));
+}
+
+template<>
 inline bool ValidatePacket<Cl::CQ_PartyModify>(const void* packetData, i32 packetSize)
 {
 	ConstBuffer buff(packetData, packetSize);

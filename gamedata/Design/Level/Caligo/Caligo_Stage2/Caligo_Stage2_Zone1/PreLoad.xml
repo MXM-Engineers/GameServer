@@ -1,0 +1,431 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\CALIGO\BOLTON\BOLTON.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\BOLTON_Whip\BOLTON_Whip.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\CableRobot\CableRobot.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\EarthwormRobot\EarthwormRobot.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\EarthwormRobot\EarthwormRobot_Summon.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\G-003_G-005\G-003.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\G-4\G-4.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\HammerRobot\HammerRobot.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\SCV_Long\SCV_Long.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CALIGO\SCV_Short\SCV_Short.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="BOLTON" />
+        <_keyname keyname="BOLTON_Whip" />
+        <_keyname keyname="CableRobot" />
+        <_keyname keyname="EarthwormRobot" />
+        <_keyname keyname="EarthwormRobot_Summon" />
+        <_keyname keyname="G-4" />
+        <_keyname keyname="G-6" />
+        <_keyname keyname="HammerRobot" />
+        <_keyname keyname="SCV_Long" />
+        <_keyname keyname="SCV_Short" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_FX_spawn_eff" />
+        <_sfx path="Mob_Fx_GT-5A_laser_Beam_Remote" />
+        <_sfx path="Mob_Fx_GT_5A_Aim_laser_Remote" />
+        <_sfx path="Mob_Fx_G_003_laser_Cast" />
+        <_sfx path="Mon_Fx_BOLTON_Skill_2_Remote" />
+        <_sfx path="Mon_Fx_G-20_Howizer_Skill_1_GroundHit" />
+        <_sfx path="Mon_Fx_G-20_Howizer_Skill_1_Hit" />
+        <_sfx path="Mon_Fx_SCV_Short_Spark" />
+        <_sfx path="PhysX_Mon_Debris_Small" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_1s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Pard_Hero_Skill_3_Remote_2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="2" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_Fx_BK_GENOCIDE_Skill_2_Hit" colorIndex="0" />
+        <_sfxHWInfo path="Mon_Fx_BK_GENOCIDE_Skill_2_Remote2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_BOLTON_Whip_Skill_2_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_BOLTON_Whip_Skill_2_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_BOLTON_Whip_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_BOLTON_Whip_Skill_5_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_CableRobot_Skill_2_RemoteGround" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_EarthwormRobot_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_EarthwormRobot_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_EarthwormRobot_Skill_2_Remote_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G-20_Shield_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G-6_Skill_BeamGroundDamage" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G_2_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G_2_Skill_1_Remote_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G_4_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_G_4_Skill_2_Remote_Ground_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_HammerRobot_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_HammerRobot_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_2_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_2_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_SCV_Long_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_ITEM_CONTINUITY_HP" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BOMB" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DIGITALSPAWN_2S" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="BKGenocide_Skill02_Beam_Remote_Explosion" />
+        <_soundEventInfo id="BoltonWhip_Normal_DefeatFly_End" />
+        <_soundEventInfo id="BoltonWhip_Normal_DefeatFly_Start" />
+        <_soundEventInfo id="BoltonWhip_Normal_DefeatKnockdown" />
+        <_soundEventInfo id="BoltonWhip_Normal_DefeatPush" />
+        <_soundEventInfo id="BoltonWhip_Normal_Die" />
+        <_soundEventInfo id="BoltonWhip_Normal_Footstep" />
+        <_soundEventInfo id="BoltonWhip_Skill03_Explosion" />
+        <_soundEventInfo id="BoltonWhip_Skill03_Projectile" />
+        <_soundEventInfo id="BoltonWhip_Skill03_Shot" />
+        <_soundEventInfo id="BoltonWhip_Skill06_Shot" />
+        <_soundEventInfo id="BoltonWhip_Skill07_Shot" />
+        <_soundEventInfo id="Bolton_Normal_DefeatFly_End" />
+        <_soundEventInfo id="Bolton_Normal_DefeatFly_Start" />
+        <_soundEventInfo id="Bolton_Normal_DefeatKnockdown" />
+        <_soundEventInfo id="Bolton_Normal_DefeatPush" />
+        <_soundEventInfo id="Bolton_Normal_Die" />
+        <_soundEventInfo id="Bolton_Skill01" />
+        <_soundEventInfo id="Bolton_Skill02" />
+        <_soundEventInfo id="CableRobot_Normal_Bodyfall" />
+        <_soundEventInfo id="CableRobot_Normal_Die" />
+        <_soundEventInfo id="CableRobot_Normal_Spawn_10000" />
+        <_soundEventInfo id="CableRobot_Normal_Spawn_10100" />
+        <_soundEventInfo id="CableRobot_Normal_Spawn_10200" />
+        <_soundEventInfo id="CableRobot_Skill02_Attack" />
+        <_soundEventInfo id="CableRobot_Skill02_Ready" />
+        <_soundEventInfo id="CableRobot_Skill02_Remote_Ground" />
+        <_soundEventInfo id="CableRobot_Skill02_Remote_Impact" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Damage" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Die" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Run" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Spawn_Drop" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="EarthwormRobot_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="EarthwormRobot_Skill_01" />
+        <_soundEventInfo id="EarthwormRobot_Skill_02" />
+        <_soundEventInfo id="EarthwormRobot_Skill_02_Explosion" />
+        <_soundEventInfo id="EarthwormRobot_Summon_Normal_Attack" />
+        <_soundEventInfo id="EarthwormRobot_Summon_Normal_Damage" />
+        <_soundEventInfo id="EarthwormRobot_Summon_Normal_Die" />
+        <_soundEventInfo id="EarthwormRobot_Summon_Normal_Run" />
+        <_soundEventInfo id="EarthwormRobot_Summon_Normal_Spawn" />
+        <_soundEventInfo id="G20_Howitzer_Skill_Explosion" />
+        <_soundEventInfo id="G20_Skill01_Shot_Loop_RMT" />
+        <_soundEventInfo id="G4_Normal_Attack_Return" />
+        <_soundEventInfo id="G4_Normal_Attack_Start" />
+        <_soundEventInfo id="G4_Normal_Defeat_End" />
+        <_soundEventInfo id="G4_Normal_Defeat_Knockdown" />
+        <_soundEventInfo id="G4_Normal_Defeat_Push" />
+        <_soundEventInfo id="G4_Normal_Defeat_Start" />
+        <_soundEventInfo id="G4_Normal_Die" />
+        <_soundEventInfo id="G4_Normal_Missile_Attack_RMT" />
+        <_soundEventInfo id="G4_Normal_Missile_Explosion_RMT" />
+        <_soundEventInfo id="G4_Normal_Rotation" />
+        <_soundEventInfo id="G4_Normal_Spawn" />
+        <_soundEventInfo id="G4_Normal_Spawn_C" />
+        <_soundEventInfo id="G4_Normal_Spawn_Effect" />
+        <_soundEventInfo id="G6_Normal_Defeat_Fly_End" />
+        <_soundEventInfo id="G6_Normal_Defeat_Fly_Start" />
+        <_soundEventInfo id="G6_Normal_Defeat_Knockdown" />
+        <_soundEventInfo id="G6_Normal_Defeat_Push" />
+        <_soundEventInfo id="G6_Normal_Die" />
+        <_soundEventInfo id="G6_Normal_Rotation" />
+        <_soundEventInfo id="G6_Normal_Spawn" />
+        <_soundEventInfo id="G6_Skill01_Atk_End" />
+        <_soundEventInfo id="G6_Skill01_Atk_Start" />
+        <_soundEventInfo id="G6_Skill01_Laser_Ready" />
+        <_soundEventInfo id="G6_Skilll01_Laser_Shot" />
+        <_soundEventInfo id="GT5A_Skill_Laser_Charge" />
+        <_soundEventInfo id="HammerRobot_Normal_Bodyfall" />
+        <_soundEventInfo id="HammerRobot_Normal_Die" />
+        <_soundEventInfo id="HammerRobot_Normal_Spawn_10000" />
+        <_soundEventInfo id="HammerRobot_Normal_Spawn_10100" />
+        <_soundEventInfo id="HammerRobot_Normal_Spawn_10200" />
+        <_soundEventInfo id="HammerRobot_Skill02_Attack" />
+        <_soundEventInfo id="HammerRobot_Skill02_Ready" />
+        <_soundEventInfo id="HammerRobot_Skill02_Remote_Projectile" />
+        <_soundEventInfo id="HammerRobot_Skill_Remote_End" />
+        <_soundEventInfo id="HammerRobot_Skill_Remote_Impact" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="Monster_Common_DigitalSpawn_2S" />
+        <_soundEventInfo id="PardHero_Skill03_Remote02" />
+        <_soundEventInfo id="PardHero_Skill03_Remote03_End" />
+        <_soundEventInfo id="SCV_Long_Extramotion_01" />
+        <_soundEventInfo id="SCV_Long_Normal_Die" />
+        <_soundEventInfo id="SCV_Long_Normal_Stun" />
+        <_soundEventInfo id="SCV_Long_Skill_01" />
+        <_soundEventInfo id="SCV_Long_Skill_02" />
+        <_soundEventInfo id="SCV_Short_Foot" />
+        <_soundEventInfo id="SCV_Short_Normal_Die" />
+        <_soundEventInfo id="SCV_Short_Normal_Stun" />
+        <_soundEventInfo id="SCV_Short_Skill_01" />
+        <_soundEventInfo id="SCV_Short_Skill_02" />
+        <_soundEventInfo id="STATUS_SFX_MOB_HPREGEN" />
+        <_soundEventInfo id="Sound_SCV_Long_Projectile_Explosion_01" />
+        <_soundEventInfo id="Sound_SCV_Long_Projectile_Explosion_02" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="StoryCut01_2100" />
+        <_soundEventInfo id="StoryCut01_2101" />
+        <_soundEventInfo id="StoryCut01_2102" />
+        <_soundEventInfo id="Story01_201" />
+        <_soundEventInfo id="Story01_203" />
+        <_soundEventInfo id="Story01_200" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Goldbox\Box_NM_interaction_Goldbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Silverbox\Box_NM_interaction_Silverbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Attack\Guide_UI_Move.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\NewFactory\Cal_S2_DM_Wiregate\Cal_S2_DM_Wiregate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\NewFactory\Cal_S2_NM_BrokenCable\Cal_S2_NM_BrokenCable2.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\NewFactory\Cal_S2_NM_EffectDoor\Cal_S2_NM_EffectDoor.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\NewFactory\Cal_S5_DM_RaserTrap7\Cal_S5_DM_RaserTrap7.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_NormalAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_ShockAura.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SkillCoolTime.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SuperAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_01.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_02.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Box_NM_interaction_Goldbox" />
+        <_keyname keyname="Box_NM_interaction_Silverbox" />
+        <_keyname keyname="Cal_S2_DM_Wiregate" />
+        <_keyname keyname="Cal_S2_NM_BrokenCable2" />
+        <_keyname keyname="Cal_S2_NM_EffectDoor" />
+        <_keyname keyname="Cal_S5_DM_RaserTrap7" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Attack" />
+        <_keyname keyname="Guide_UI_Here" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_OPEN" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_Stand" />
+        <_sfx path="Dynamic_FX_Cal_S2_NM_BrokenCable2" />
+        <_sfx path="Dynamic_Fx_Cal_S2_DM_Wiregate_Explosion" />
+        <_sfx path="Dynamic_Fx_Cal_S2_DM_Wiregate_Remote_1" />
+        <_sfx path="Dynamic_Fx_Cal_S2_DM_Wiregate_Remote_2" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Item_BlueDrop_Get" />
+        <_sfx path="Item_BlueDrop_Spawn" />
+        <_sfx path="Item_PU_Get" />
+        <_sfx path="Item_PU_Spawn" />
+        <_sfx path="Item_PU_Violet_Get" />
+        <_sfx path="Item_PU_Violet_Spawn" />
+        <_sfx path="Item_SP_Previous" />
+        <_sfx path="Item_UG_Get" />
+        <_sfx path="Item_UG_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="PhysX_Cal_S2_DM_Wiregate" />
+        <_sfx path="PhysX_Cal_S2_NM_BrokenCable2" />
+        <_sfx path="PvP_StartDelay_Gate_01_Exp" />
+        <_sfx path="PvP_StartDelay_Gate_01_Idle" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_NormalAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_ShockAura" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SkillAttack" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+        <_sfx path="dynamic_fx_lasertrap_cal5_remote_long" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STAT_TYPE_MON_ATTACK" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Box_NM_Interaction_Goldbox_Die" />
+        <_soundEventInfo id="Box_NM_Interaction_Silverbox_Die" />
+        <_soundEventInfo id="Cal_S2_DM_Wiregate_Die" />
+        <_soundEventInfo id="Cal_S2_DM_Wiregate_Spark" />
+        <_soundEventInfo id="Cal_S2_NM_BrokenCable2_Die" />
+        <_soundEventInfo id="Cal_S2_NM_BrokenCable2_Open" />
+        <_soundEventInfo id="Cal_S2_NM_EffectDoor_Close" />
+        <_soundEventInfo id="Cal_S2_NM_EffectDoor_Open" />
+        <_soundEventInfo id="Cal_S5_DM_RaserTrap1_Close_Loop" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="UI_Item_Get_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Pickup_AtkSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Cooltime" />
+        <_soundEventInfo id="UI_Item_Pickup_Critical" />
+        <_soundEventInfo id="UI_Item_Pickup_Overheat" />
+        <_soundEventInfo id="UI_Item_Pickup_UG" />
+        <_soundEventInfo id="UI_Item_Previous" />
+        <_soundEventInfo id="UI_Item_ShockAura_End" />
+        <_soundEventInfo id="UI_Item_ShockAura_Start" />
+        <_soundEventInfo id="UI_Item_Spawn_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Spawn_PU" />
+        <_soundEventInfo id="UI_Item_Spawn_PU_Violet" />
+        <_soundEventInfo id="UI_Item_Spawn_UG" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

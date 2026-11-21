@@ -20,8 +20,12 @@ struct PvpInstance
 	Time localTime;
 
 	Phase phase = Phase::PlayerConnecting;
+	bool endReported = false;
 	eastl::array<ClientHandle, Game::MAX_PLAYERS> clientAccountLink;
 	i32 remainingLinks;
+	i32 humanCount;
+	Time tFirstLink = Time::ZERO;
+	Time emptySince = Time::ZERO;
 
 	GamePacketHandler packetHandler;
 	Game game;
@@ -33,4 +37,6 @@ struct PvpInstance
 	void OnClientsDisconnected(const ClientHandle* clientList, const i32 count);
 	void OnClientPacket(ClientHandle clientHd, const NetHeader& header, const u8* packetData);
 	void OnMatchmakerPacket(const NetHeader& header, const u8* packetData);
+	void CountLinks();
+	void StartGame();
 };

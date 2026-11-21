@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MeasuredFireNodes source="Tools/pcap/gen_fire_nodes.py">
+  <FIRE skill="180010030" remote="1440010080" index="0" forward="0" side="0" up="0" rot="0.0" samples="70" />
+  <FIRE skill="180010040" remote="1440010050" index="0" forward="126" side="-34" up="165" rot="0.0" samples="57" />
+  <FIRE skill="180020002" remote="1440020250" index="0" forward="-0" side="0" up="0" rot="0.0" samples="55" />
+  <FIRE skill="180020002" remote="1440020251" index="0" forward="-0" side="0" up="0" rot="0.0" samples="55" />
+  <FIRE skill="180020010" remote="1440020010" index="0" forward="-13" side="38" up="289" rot="0.0" samples="97" />
+  <FIRE skill="180020010" remote="1440020010" index="1" forward="51" side="-135" up="289" rot="0.0" samples="95" />
+  <FIRE skill="180020010" remote="1440020010" index="2" forward="66" side="138" up="293" rot="0.0" samples="95" />
+  <FIRE skill="180020010" remote="1440020010" index="3" forward="-17" side="-35" up="296" rot="0.0" samples="94" />
+  <FIRE skill="180020030" remote="1440020040" index="0" forward="0" side="0" up="0" rot="0.0" samples="19" />
+  <FIRE skill="180020030" remote="1440020041" index="0" forward="0" side="0" up="0" rot="0.0" samples="19" />
+  <FIRE skill="180020040" remote="1440020030" index="0" forward="-36" side="4" up="223" rot="0.0" samples="10" childForward="-409" childSide="3" childUp="833" childRot="0" childDirZ="0.12" />
+  <FIRE skill="180020040" remote="1440020030" index="1" forward="-51" side="-18" up="159" rot="0.0" samples="10" childForward="134" childSide="526" childUp="587" childRot="-109" childDirZ="0.52" />
+  <FIRE skill="180020040" remote="1440020030" index="2" forward="-37" side="14" up="157" rot="0.0" samples="10" childForward="153" childSide="-517" childUp="588" childRot="111" childDirZ="0.52" />
+  <FIRE skill="180020040" remote="1440020030" index="3" forward="-34" side="-21" up="149" rot="0.0" samples="10" childForward="-350" childSide="417" childUp="613" childRot="-53" childDirZ="0.44" />
+  <FIRE skill="180020040" remote="1440020030" index="4" forward="-21" side="15" up="157" rot="0.0" samples="10" childForward="-409" childSide="-300" childUp="672" childRot="38" childDirZ="0.38" />
+  <FIRE skill="180040020" remote="1440040020" index="0" forward="73" side="2" up="-2" rot="0.0" samples="30" />
+  <FIRE skill="180050010" remote="1440050050" index="0" forward="201" side="-1" up="212" rot="0.0" samples="58" />
+  <FIRE skill="180050020" remote="1440050020" index="0" forward="582" side="2" up="12" rot="0.0" samples="31" />
+  <FIRE skill="180050020" remote="1440050031" index="0" forward="582" side="2" up="12" rot="0.0" samples="31" />
+  <FIRE skill="180070050" remote="1440070050" index="0" forward="0" side="0" up="0" rot="0.0" samples="37" />
+  <FIRE skill="180080010" remote="1440080020" index="0" forward="70" side="-4" up="147" rot="0.0" samples="12" />
+  <FIRE skill="180080030" remote="1440080030" index="0" forward="6" side="3" up="0" rot="0.0" samples="6" />
+  <FIRE skill="180080030" remote="1440080032" index="0" forward="0" side="0" up="0" rot="0.0" samples="6" />
+  <FIRE skill="180080040" remote="1440080040" index="0" forward="12" side="0" up="0" rot="0.0" samples="85" />
+  <FIRE skill="180090020" remote="1440090000" index="0" forward="-2" side="0" up="248" rot="0.0" samples="25" />
+  <FIRE skill="180090030" remote="1440090000" index="0" forward="-1" side="0" up="248" rot="0.0" samples="102" />
+  <FIRE skill="180090050" remote="1440090050" index="0" forward="44" side="-87" up="252" rot="0.0" samples="15" />
+  <FIRE skill="180090050" remote="1440090052" index="0" forward="44" side="81" up="252" rot="0.0" samples="15" />
+  <FIRE skill="180090050" remote="1440090080" index="0" forward="0" side="-0" up="0" rot="0.0" samples="15" />
+  <FIRE skill="180110010" remote="1440110010" index="0" forward="105" side="-16" up="173" rot="0.0" samples="224" />
+  <FIRE skill="180110010" remote="1440110010" index="1" forward="84" side="19" up="171" rot="0.0" samples="224" />
+  <FIRE skill="180110010" remote="1440110010" index="2" forward="17" side="-24" up="156" rot="0.0" samples="224" />
+  <FIRE skill="180110010" remote="1440110010" index="3" forward="99" side="21" up="170" rot="0.0" samples="223" />
+  <FIRE skill="180110010" remote="1440110010" index="4" forward="24" side="-25" up="149" rot="0.0" samples="223" />
+  <FIRE skill="180110020" remote="1440110020" index="0" forward="43" side="-4" up="155" rot="0.0" samples="75" />
+  <FIRE skill="180110030" remote="1440110030" index="0" forward="122" side="-18" up="192" rot="0.0" samples="118" />
+  <FIRE skill="180110030" remote="1440110030" index="1" forward="117" side="-16" up="190" rot="0.0" samples="117" />
+  <FIRE skill="180110030" remote="1440110031" index="0" forward="114" side="16" up="208" rot="0.0" samples="117" />
+  <FIRE skill="180110030" remote="1440110031" index="1" forward="117" side="18" up="194" rot="0.0" samples="117" />
+  <FIRE skill="180120002" remote="1440120010" index="0" forward="95" side="0" up="152" rot="0.0" samples="268" />
+  <FIRE skill="180120020" remote="1440120022" index="0" forward="198" side="2" up="166" rot="0.0" samples="201" />
+  <FIRE skill="180120021" remote="1440120023" index="0" forward="21" side="61" up="203" rot="0.0" samples="114" />
+  <FIRE skill="180130010" remote="1440130010" index="0" forward="43" side="-23" up="209" rot="0.0" samples="14" />
+  <FIRE skill="180130020" remote="1440130040" index="0" forward="19" side="-9" up="145" rot="0.0" samples="55" />
+  <FIRE skill="180140050" remote="1440140050" index="0" forward="88" side="-14" up="191" rot="0.0" samples="24" />
+  <FIRE skill="180150030" remote="1440150020" index="0" forward="30" side="4" up="155" rot="0.0" samples="23" />
+  <FIRE skill="180160002" remote="1440160010" index="0" forward="-0" side="-0" up="0" rot="0.0" samples="85" />
+  <FIRE skill="180160010" remote="1440160020" index="0" forward="121" side="-1" up="211" rot="0.0" samples="70" />
+  <FIRE skill="180160020" remote="1440160030" index="0" forward="-0" side="0" up="0" rot="0.0" samples="118" />
+  <FIRE skill="180160050" remote="1440160060" index="0" forward="9" side="1" up="0" rot="0.0" samples="49" />
+  <FIRE skill="180160050" remote="1440160061" index="0" forward="0" side="-0" up="0" rot="0.0" samples="50" />
+  <FIRE skill="180170010" remote="1440170010" index="0" forward="40" side="10" up="172" rot="0.0" samples="22" />
+  <FIRE skill="180170030" remote="1440170030" index="0" forward="84" side="2" up="165" rot="0.0" samples="100" />
+  <FIRE skill="180170040" remote="1440170040" index="0" forward="0" side="0" up="0" rot="0.0" samples="73" />
+  <FIRE skill="180170040" remote="1440170041" index="0" forward="0" side="0" up="0" rot="0.0" samples="73" />
+  <FIRE skill="180170040" remote="1440170042" index="0" forward="0" side="0" up="0" rot="0.0" samples="73" />
+  <FIRE skill="180170040" remote="1440170043" index="0" forward="0" side="0" up="0" rot="0.0" samples="73" />
+  <FIRE skill="180170050" remote="1440170050" index="0" forward="0" side="0" up="0" rot="0.0" samples="9" />
+  <FIRE skill="180180010" remote="1440180010" index="0" forward="105" side="-9" up="128" rot="0.0" samples="388" />
+  <FIRE skill="180180030" remote="1440180030" index="0" forward="-1" side="0" up="31" rot="0.0" samples="23" />
+  <FIRE skill="180180030" remote="1440180031" index="0" forward="6" side="-4" up="31" rot="0.0" samples="21" />
+  <FIRE skill="180190010" remote="1440190010" index="0" forward="-1" side="-57" up="170" rot="0.0" samples="222" />
+  <FIRE skill="180190040" remote="1440190040" index="0" forward="90" side="1" up="182" rot="0.0" samples="104" />
+  <FIRE skill="180190050" remote="1440190050" index="0" forward="73" side="-75" up="243" rot="0.0" samples="15" />
+  <FIRE skill="180200002" remote="1440200000" index="0" forward="0" side="0" up="0" rot="0.0" samples="23" />
+  <FIRE skill="180200020" remote="1440200020" index="0" forward="0" side="0" up="0" rot="0.0" samples="43" />
+  <FIRE skill="180220040" remote="1440220040" index="0" forward="100" side="-0" up="157" rot="0.0" samples="51" />
+  <FIRE skill="180220041" remote="1440220041" index="0" forward="78" side="-4" up="94" rot="0.0" samples="26" />
+  <FIRE skill="180220050" remote="1440220050" index="0" forward="0" side="0" up="0" rot="0.0" samples="53" />
+  <FIRE skill="180240020" remote="1440240024" index="0" forward="-150" side="200" up="0" rot="0.0" samples="15" />
+  <FIRE skill="180240020" remote="1440240024" index="1" forward="300" side="-100" up="0" rot="0.0" samples="15" />
+  <FIRE skill="180240020" remote="1440240024" index="2" forward="-0" side="0" up="0" rot="0.0" samples="15" />
+  <FIRE skill="180240020" remote="1440240024" index="3" forward="-50" side="-200" up="0" rot="0.0" samples="15" />
+  <FIRE skill="180240030" remote="1440240030" index="0" forward="0" side="0" up="0" rot="0.0" samples="7" />
+  <FIRE skill="180250020" remote="1440250020" index="0" forward="103" side="4" up="192" rot="0.0" samples="28" />
+  <FIRE skill="180250040" remote="1440250040" index="0" forward="149" side="0" up="201" rot="0.0" samples="95" />
+  <FIRE skill="180260010" remote="1440260010" index="0" forward="76" side="4" up="88" rot="0.0" samples="93" />
+  <FIRE skill="180260030" remote="1440260030" index="0" forward="76" side="4" up="88" rot="0.0" samples="86" />
+  <FIRE skill="180280040" remote="1440280080" index="0" forward="51" side="2" up="222" rot="0.0" samples="30" />
+  <FIRE skill="180310040" remote="1440310040" index="0" forward="4" side="0" up="0" rot="0.0" samples="6" />
+  <FIRE skill="180310050" remote="1440310055" index="0" forward="0" side="0" up="0" rot="0.0" samples="22" />
+  <FIRE skill="180320010" remote="1440320010" index="0" forward="133" side="-2" up="191" rot="0.0" samples="5" />
+  <FIRE skill="180320020" remote="1440320020" index="0" forward="138" side="-5" up="172" rot="0.0" samples="147" />
+  <FIRE skill="180320021" remote="1440320021" index="0" forward="133" side="32" up="197" rot="0.0" samples="39" />
+  <FIRE skill="180320022" remote="1440320022" index="0" forward="137" side="17" up="287" rot="0.0" samples="93" />
+  <FIRE skill="180330030" remote="1440330030" index="0" forward="38" side="2" up="169" rot="0.0" samples="24" />
+  <FIRE skill="180330040" remote="1440330040" index="0" forward="89" side="1" up="140" rot="0.0" samples="18" />
+  <FIRE skill="189000010" remote="1449000020" index="0" forward="0" side="0" up="0" rot="0.0" samples="15" />
+  <FIRE skill="189100010" remote="1449100026" index="0" forward="0" side="0" up="0" rot="0.0" samples="6" />
+</MeasuredFireNodes>

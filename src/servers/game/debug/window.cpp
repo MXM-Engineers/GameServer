@@ -530,7 +530,7 @@ void Window::WindowPhysicsTest()
 void Window::WindowAreas()
 {
 	const GameXmlContent& xml = GetGameXmlContent();
-	const auto& map = xml.mapPvpDeathMatch;
+	const auto& map = *xml.FindPvpMap(MapIndex::PVP_DEATHMATCH);
 
 	const eastl::array<vec3,5> color = {
 		vec3(1, 1, 1),

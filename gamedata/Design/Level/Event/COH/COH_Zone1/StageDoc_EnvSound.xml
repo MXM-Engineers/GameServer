@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Document version="1.5">
+  <Entities container="EDIT_CONTAINER">
+    <Entity id="189" TypeName="EnvSound" x="4000" y="11000" z="-1529.26" relx="4000" rely="11000" relz="-1529.26" angx="0" angy="0" angz="0" layer="41" soundName="Ambient_COH_Wave">
+      <PrefabLink value="&lt;TreeInfo /&gt;" />
+      <Bound boundType="Sphere" width="4000" />
+    </Entity>
+  </Entities>
+  <Entities container="HIDE_CONTAINER" />
+</Document>

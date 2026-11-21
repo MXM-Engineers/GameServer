@@ -2,8 +2,8 @@
 #include <EASTL/fixed_string.h>
 #include <EAStdC/EASprintf.h>
 
-template<size_t N>
-static bool ParseIdList(const char* line, const char (&key)[N], eastl::fixed_vector<i32,16>& out)
+template<size_t N, size_t C>
+static bool ParseIdList(const char* line, const char (&key)[N], eastl::fixed_vector<i32,C>& out)
 {
 	const size_t keyLen = N - 1;
 	if(strncmp(line, key, keyLen) != 0) return false;
@@ -28,6 +28,7 @@ bool CConfigHub::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevDailyAreaEvent=%d", &DevDailyAreaEvent) == 1) return true;
 	if(ParseIdList(line, "RegionBanMaster=", regionBanMaster)) return true;
 	if(ParseIdList(line, "RegionNewMaster=", regionNewMaster)) return true;
 	if(ParseIdList(line, "EventBanMaster=", eventBanMaster)) return true;
@@ -96,6 +97,7 @@ bool CConfigHub::SaveConfigFile()
 	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("LobbyMap=%d\n", LobbyMap);
+	out.append_sprintf("DevDailyAreaEvent=%d\n", DevDailyAreaEvent);
 	AppendIdList(out, "RegionBanMaster", regionBanMaster);
 	AppendIdList(out, "RegionNewMaster", regionNewMaster);
 	AppendIdList(out, "EventBanMaster", eventBanMaster);
@@ -123,6 +125,7 @@ void CConfigHub::Print() const
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
+	LOG("	DevDailyAreaEvent=%d", DevDailyAreaEvent);
 	LogIdList("RegionBanMaster", regionBanMaster);
 	LogIdList("RegionNewMaster", regionNewMaster);
 	LogIdList("EventBanMaster", eventBanMaster);

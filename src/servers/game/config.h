@@ -7,11 +7,16 @@ struct CConfigGame
 	i32 DevMode = false;
 	i32 DevQuickConnect = false;
 	i32 DevForcedMap = 0;
+	i32 DevBotStageSkill = 0;
 	i32 ShotLeadMs = 50;
+	i32 DevAutoStage = 0;
+	i32 DevGodPlayers = 0;
+	i32 DevBotMonsterSkills = 0;
 	i32 HostIP[4] = { 0, 0, 0, 0 };
 	i32 HubServerPublicIP[4] = { 0, 0, 0, 0 };
 	i32 HubServerPort = 11900;
 	i32 TraceNetwork = false;
+	i32 BotSyncCadence = 0;
 	i32 WindowWidth = 1280;
 	i32 WindowHeight = 720;
 	f32 DbgCamPosX = 0;

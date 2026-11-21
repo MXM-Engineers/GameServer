@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<STATUS_STAT_MODS>
+  <MOD status="1264070031" stat="STAT_TYPE_HEALTH" value="3" mul="1" count="1800" source="MEASURED 7 official 5v5 captures: 3.0% of max HP every 0.2 s in the base recovery zone (2738 ticks)" />
+  <MOD status="1200100020" stat="STAT_TYPE_LIFESTEAL" value="20" source="GAMETIP_TITAN_LAYOUT_2_DESC_01" />
+  <MOD status="1200100020" stat="STAT_TYPE_STAMINAREGEN" value="5" source="GAMETIP_TITAN_LAYOUT_2_DESC_01" />
+  <MOD status="1200100022" stat="STAT_TYPE_HEALTHREGEN" value="30" source="GAMETIP_TITAN_LAYOUT_2_DESC_02" />
+  <MOD status="1200100022" stat="STAT_TYPE_DEFENCE" value="30" mul="1" source="GAMETIP_TITAN_LAYOUT_2_DESC_02" />
+  <MOD status="1200100021" stat="STAT_TYPE_MANAREGEN" value="10" source="GAMETIP_TITAN_LAYOUT_2_DESC_03" />
+  <MOD status="1200100021" stat="STAT_TYPE_ENERGYREGEN" value="3" source="GAMETIP_TITAN_LAYOUT_2_DESC_03" />
+  <MOD status="1200100021" stat="STAT_TYPE_SKILL_COOLTIME_DISCOUNT" value="20" source="STR_STATUS_MOB_TOOLTIP_1200100021; MEASURED 7 official 5v5 captures: SN_UpdateStat 53 = 20 on add (157 of 356)" />
+  <MOD status="1200100022" stat="STAT_TYPE_SKILLDAMAGE_REDUCE_RATIO" value="15" source="STR_STATUS_MOB_TOOLTIP_1200100022; MEASURED 7 official 5v5 captures: SN_UpdateStat 58 = 15 on add (276 of 280)" />
+  <MOD status="1200100032" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="STR_STATUS_MOB_TOOLTIP_1200100032; MEASURED 7 official 5v5 captures: +50% (45 of 77 adds, 57 of 89 removes)" />
+  <MOD status="1200100033" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" source="MEASURED 7 official 5v5 captures: -30% (107 of 170 adds, 132 of 201 removes); tooltip says -0%" />
+  <MOD status="1200100031" stat="SERVER_DAMAGE_TAKEN_RATIO" value="25" mul="1" source="MEASURED 7 official 5v5 captures (Rozark curse on towers, 5 kills): minion remotes 1480010020/024 on cursed towers 165 vs 133 on uncursed towers in the same minutes, step x1.31 at the curse with x1.04 minion growth" />
+  <MOD status="1200100031" stat="STAT_TYPE_ATTACK" value="-30" mul="1" source="MEASURED 7 official 5v5 captures (Rozark curse on towers): tower shots 1480010004/005 on monsters x0.69/x0.70 during the curse (n 61/82)" />
+  <MOD status="1200100003" stat="STAT_TYPE_TAG_HEALTHREGEN_VALUE" value="40" samples="6" />
+  <MOD status="1200100006" stat="STAT_TYPE_STAMINAREGEN" value="3" samples="6" />
+  <MOD status="1200100006" stat="STAT_TYPE_MANAREGEN" value="12" samples="6" />
+  <MOD status="1200100006" stat="STAT_TYPE_ENERGYREGEN" value="3" samples="6" />
+  <MOD status="1200100003" stat="STAT_TYPE_TAG_COOLTIME" value="-25" mul="1" samples="8" />
+  <MOD status="1200100006" stat="STAT_TYPE_TAG_COOLTIME" value="-25" mul="1" samples="6" />
+  <MOD status="1230010061" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" samples="46" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230020052" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="30" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230070052" stat="STAT_TYPE_MOVESPEED" value="-60" mul="1" samples="77" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230090040" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="3320" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230110050" stat="STAT_TYPE_MOVESPEED" value="-5" mul="1" samples="693" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230110080" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="220" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230120060" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="3" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230150071" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="44" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230150080" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" samples="104" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230190030" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" samples="68" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230190031" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" samples="496" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230200011" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="222" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230240010" stat="STAT_TYPE_MOVESPEED" value="-20" mul="1" samples="274" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230260066" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="26" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230270002" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="74" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230270020" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="153" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230330000" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" samples="28" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000060" stat="STAT_TYPE_MOVESPEED" value="-10" mul="1" samples="2634" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1239000001" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="55" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1239000012" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" samples="33" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230030051" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000061" stat="STAT_TYPE_MOVESPEED" value="-15" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000062" stat="STAT_TYPE_MOVESPEED" value="-20" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000063" stat="STAT_TYPE_MOVESPEED" value="-25" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000064" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1232000065" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" source="KEYNAME" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230370015" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="TOOLTIP_STR_SKILL_DESC_180370010" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230100041" stat="STAT_TYPE_MOVESPEED" value="-60" mul="1" source="SKILLTT_LEVEL" samples="331" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230140032" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" source="SKILLTT_LEVEL" samples="3" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230160041" stat="STAT_TYPE_MOVESPEED" value="-10" mul="1" source="SKILLTT_LEVEL" samples="14" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230160072" stat="STAT_TYPE_MOVESPEED" value="-20" mul="1" source="SKILLTT_LEVEL" samples="691" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230170015" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="SKILLTT_LEVEL" samples="9" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230180031" stat="STAT_TYPE_MOVESPEED" value="-60" mul="1" source="SKILLTT_LEVEL" samples="22" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230240032" stat="STAT_TYPE_MOVESPEED" value="-20" mul="1" source="SKILLTT_LEVEL" samples="2" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230250021" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="SKILLTT_LEVEL" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230360011" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="SKILLTT_LEVEL" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230380034" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" source="SKILLTT_LEVEL" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230380036" stat="STAT_TYPE_MOVESPEED" value="-40" mul="1" source="SKILLTT_LEVEL" note="Tools/notes/specs/slows_measured.md" />
+  <MOD status="1230370003" stat="STAT_TYPE_RAGE" value="12" count="1000" interval="1" source="MEASURED 4 official games with Yuri: Sol Infusion toggle (STATUS_YURI_SHIRK_RPREGEN, no _Interval in data) gives +12 rage every 1.0 s (stat 36 reason 4, 40 steps)" />
+  <MOD status="1230370001" stat="STAT_TYPE_HEALTH" value="5" mul="1" count="5" source="STR_SKILL_DESC_180370000 Triage: restores 5% max HP per second for the 5 s of STATUS_YURI_PASSIVE_HEAL (_DurationTime 5000, _Interval 1000); no official capture of the trigger" />
+  <MOD status="1230120091" stat="STAT_TYPE_HEALTH" value="15" mul="1" count="1" source="MEASURED official Chi Pull empowered: +306 HP = 15% of 2040 max HP in one tick" />
+  <MOD status="1230000141" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official after-dodge speed status: x1.15 (362 cases)" />
+  <MOD status="1230130020" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="MEASURED official Kromede Windborne Shield speed: x1.50 (27 cases)" />
+  <MOD status="1230040176" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="MEASURED official Demenos Shock Therapy self speed: 105.5 -> 158.2 for 4 s" />
+  <MOD status="1230070062" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070062" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070066" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070066" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070067" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070067" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070068" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070068" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070069" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070069" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070070" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="MEASURED official Unholy Fury: speed 104.3 -> 120.0 (n=15)" />
+  <MOD status="1230070070" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Unholy Fury: defence 115.6 -> 125.6 (n=11)" />
+  <MOD status="1230070042" stat="STAT_TYPE_MOVESPEED" value="10" mul="1" source="MEASURED official Quickening: speed x1.10 (n=48)" />
+  <MOD status="1230070043" stat="STAT_TYPE_MOVESPEED" value="10" mul="1" source="MEASURED official Quickening upgrade: speed x1.10 (n=58)" />
+  <MOD status="1230070043" stat="STAT_TYPE_DEFENCE" value="10" mul="1" source="MEASURED official Quickening upgrade: defence +10 (n=58)" />
+  <MOD status="1230030160" stat="STAT_TYPE_ATTACK" value="20" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Sizuka Snap Strike rank 6: +20% Weapon Damage" />
+  <MOD status="1230030160" stat="STAT_TYPE_SKILLPOWER" value="200" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Sizuka Snap Strike rank 6: +200 Skill Power" />
+  <MOD status="1230150037" stat="STAT_TYPE_ATTACK" value="30" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Photog Lens Focus rank 6: Weapon Damage +30% to allies" />
+  <MOD status="1230160054" stat="STAT_TYPE_DEFENCE" value="100" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Ice Queen Frost Spire rank 6: +100% Defense for 10 sec" />
+  <MOD status="1230220031" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Lilu Birds of a Feather rank 3: +50% Movespeed for allies" />
+  <MOD status="1230250011" stat="STAT_TYPE_MOVESPEED" value="100" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Rytlock skill 1 rank 6: +100% movespeed for 1 second" />
+  <MOD status="1230300034" stat="STAT_TYPE_SKILLPOWER" value="100" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: AndroB Combat Protocol rank 3: Skill Power +100 while active" />
+  <MOD status="1230300035" stat="STAT_TYPE_SKILLPOWER" value="200" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: AndroB Combat Protocol ranks 3+6: Skill Power +100 each (sum assumed)" />
+  <MOD status="1230300052" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: AndroB ultimate rank 3: Maia's Movespeed +50% for 3 seconds" />
+  <MOD status="1230330014" stat="STAT_TYPE_DEFENCE" value="20" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Shugo Enchantment Stone Bundle rank 6: +20% Defense Effect" />
+  <MOD status="1230370013" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Yuri Sol Fist rank 3: Movespeed +30% for 3 seconds on hit" />
+  <MOD status="1230370041" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Yuri skill 4 rank 6: Movespeed +50% for 2 seconds" />
+  <MOD status="1230390033" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Priest skill 3 rank 3: +30% Movespeed to allies" />
+  <MOD status="1230400047" stat="STAT_TYPE_DEFENCE" value="100" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Ghostwidow Ethereal rank 6: +100% Defense for 3 sec" />
+  <MOD status="1230400084" stat="STAT_TYPE_MOVESPEED" value="15" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP: Ghostwidow skill 1 rank 3: Movespeed +15% for 5 sec" />
+  <MOD status="1230150010" stat="STAT_TYPE_MOVESPEED" value="100" mul="1" source="skilldesc STR_SKILL_DESC: Photog passive Flash Step: skills grant 100% movespeed for 1 second" />
+  <MOD status="1230260002" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="skilldesc STR_SKILL_DESC: The Cat dodge: +50% movespeed once invincibility ends" />
+  <MOD status="1230100062" stat="STAT_TYPE_MOVESPEED" value="100" mul="1" source="skilldesc STR_SKILL_DESC: Soulmaster dodge Doppelganger: +100% movespeed while stealthed" />
+  <MOD status="1230050071" stat="STAT_TYPE_MOVESPEED" value="20" mul="1" source="skilldesc STR_SKILL_DESC: Koom Magnetic Barrier: grants 20% Movespeed for 3 seconds" />
+  <MOD status="1230020040" stat="STAT_TYPE_DEFENCE" value="15" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 4/5" />
+  <MOD status="1230050065" stat="STAT_TYPE_MOVESPEED" value="-35" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 4/7" />
+  <MOD status="1230060100" stat="STAT_TYPE_MOVESPEED" value="10" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 13/20" />
+  <MOD status="1230100052" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 20/33" />
+  <MOD status="1230160030" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 53/118" />
+  <MOD status="1230180050" stat="STAT_TYPE_MOVESPEED" value="-18" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 29/60" />
+  <MOD status="1230340052" stat="STAT_TYPE_MOVESPEED" value="5" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 4/5" />
+  <MOD status="1230340053" stat="STAT_TYPE_MOVESPEED" value="5" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 4/7" />
+  <MOD status="1230330011" stat="STAT_TYPE_ATTACK" value="35" mul="1" source="STR_SKILL_DESC_180330010: [High Roller] instead increases weapon damage by 35%" />
+  <MOD status="1230330011" stat="STAT_TYPE_SKILLPOWER" value="350" source="STR_SKILL_DESC_180330010: [High Roller] and skill power by 350" />
+  <MOD status="1230330041" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="STR_SKILL_DESC_180330040: [High Roller] grants its effects (skilltt 1230330040 movespeed +30%); official captures delta +29.7" />
+  <MOD status="1230210047" stat="STAT_TYPE_MOVESPEED" value="-30" mul="1" source="STATUS_PC _Description: -30% slow, 1 s" />
+  <MOD status="1230080021" stat="STAT_TYPE_DEFENCE" value="-30" mul="1" source="STATUS_PC _Description: defence -30%" />
+  <MOD status="1230160031" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="STATUS_PC _Description: movespeed +50; official captures 99 -> 128.7 (+30% 1230160030) -> 160 cap with both" />
+  <MOD status="1230410012" stat="SERVER_DAMAGE_TAKEN_RATIO" value="-30" mul="1" source="STATUS_PC _Description: damage taken -30%" />
+  <MOD status="1239100010" stat="SERVER_DAMAGE_TAKEN_RATIO" value="10" mul="1" source="STATUS_PC _Description: damage taken +10%" />
+  <MOD status="1230020030" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: link status (강화 연결용), no stat" />
+  <MOD status="1230030170" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: crit +0% (_Description), no stat" />
+  <MOD status="1230030140" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: link status for the movespeed buff (연결용), no stat" />
+  <MOD status="1230130070" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: link status for the attack buff and effect (연결용), no stat" />
+  <MOD status="1230180051" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: empty link status (강화 연결용 빈 상태이상), no stat" />
+  <MOD status="1230180042" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: empty status (빈 상태이상), no stat" />
+  <MOD status="1230230040" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: rage regen 0 while toggled; Efreet has no rage regen stat, no stat" />
+  <MOD status="1230270051" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: bind cast marker, no stat" />
+  <MOD status="1230270053" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: bind cast marker rank 1, no stat" />
+  <MOD status="1230270055" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: bind cast marker rank 2, no stat" />
+  <MOD status="1230300033" stat="STAT_TYPE_ATTACK" value="0" source="STATUS_PC _Description: melee mode upgrade link status (강화용), no stat" />
+  <MOD status="1230330013" stat="STAT_TYPE_DEFENCE" value="20" mul="1" source="Skillpropertydesc STR_SKILL_PROPERTY_TOOLTIP1_280331006: Shugo Enchantment Stone Bundle rank 6 adds +20% Defense Effect (1230330012 -> 1230330013)" />
+  <MOD status="1230200001" stat="STAT_TYPE_RAGE" value="5" count="20" source="MEASURED 7 official 5v5 captures: slime mass +5 every 0.5 s while charging (807 steps after the charge status)" />
+  <MOD status="1230200002" stat="STAT_TYPE_RAGE" value="-10" count="1" source="MEASURED 7 official 5v5 captures: slime mass -10 per basic fire (328 steps)" />
+  <MOD status="1230170007" stat="STAT_TYPE_DEFENCE" value="30" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 153/318; KEYNAME MAGICGIRL_ATTACK_DEFENCEUP_30" />
+  <MOD status="1230330002" stat="STAT_TYPE_MOVESPEED" value="-10" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 224/269; Shugo Trader passive check" />
+  <MOD status="1230340202" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 21/35; KEYNAME NAGA_ATTACK_MOVESPEED_UP3" />
+  <MOD status="1230340203" stat="STAT_TYPE_MOVESPEED" value="40" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 151/157; KEYNAME NAGA_ATTACK_MOVESPEED_UP4" />
+  <MOD status="1239100021" stat="STAT_TYPE_MOVESPEED" value="30" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 10/13; Titan Siege skill 2 movespeed" />
+  <MOD status="1230140013" stat="STAT_TYPE_ATTACK" value="1" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 1605/1626; Rodmaster attack stat up per stack" />
+  <MOD status="1230110011" stat="STAT_TYPE_MOVESPEED" value="20" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 156/423; KEYNAME DOUBLEGUN_PASSIVE_MOVESPEED" />
+  <MOD status="1200070821" stat="STAT_TYPE_MOVESPEED" value="50" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 235/250; STATUS_MOB [base] speed up when leaving" />
+  <MOD status="1264070033" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 52/86; STATUS_MOB [guardian tower] slow on explosion" />
+  <MOD status="1200082420" stat="STAT_TYPE_MOVESPEED" value="-50" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 45/83; STATUS_MOB slow 50% 2 s" />
+  <MOD status="1200000091" stat="STAT_TYPE_MOVESPEED" value="-20" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 69/104; STATUS_ITEM titan piece: sight exposed, no stealth, movespeed -20% (always added with 1200000090, which carries no slow)" />
+  <MOD status="1200000093" stat="STAT_TYPE_MOVESPEED" value="20" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 75/117; STATUS_ITEM friendly spirit: attack/skill power/attack speed +20%, movespeed +20" />
+  <MOD status="1200000093" stat="STAT_TYPE_ATTACK" value="20" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 89/125; STATUS_ITEM friendly spirit: attack/skill power/attack speed +20%, movespeed +20" />
+  <MOD status="1200100015" stat="STAT_TYPE_MOVESPEED" value="20" mul="1" source="MEASURED official captures, Tools/pcap/measure_status_stats.py: stat change when the status is added, mode 17/28; STATUS_MOB Ruark battle cry" />
+</STATUS_STAT_MODS>

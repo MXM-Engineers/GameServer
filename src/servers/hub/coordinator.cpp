@@ -1,9 +1,16 @@
+#include "achieve_rules.h"
 #include <common/packet_serialize.h>
 #include <common/packet_validator.h>
 #include <common/inner_protocol.h>
 #include <mxm/game_content.h>
+#include <mxm/account_progress.h>
+#include <mxm/mission_progress.h>
+#include "guild_store.h"
+#include "town_rules.h"
+#include <time.h>
 #include <zlib.h>
 #include <EAStdC/EAString.h>
+
 #include <EAStdC/EASprintf.h>
 
 #include "coordinator.h"
@@ -179,6 +186,8 @@ void InstancePool::Lane::Update()
 			}
 		}
 
+		room.stageIndex = cr->stageIndex;
+		room.draft = cr->draft;
 		room.Init(server, cr->users.data(), cr->users.size());
 	}
 
@@ -395,7 +404,7 @@ void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accoun
 	l.hubPushPlayerQueue.push_back(player);
 }
 
-void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount)
+void InstancePool::QueueCreateRoom(SortieUID sortieUID, StageIndex stageIndex, bool draft, const RoomUser* userList, const i32 userCount)
 {
 	// TODO: choose a lane based on capacity
 	Lane& roomLane = lanes.front();
@@ -422,6 +431,8 @@ void InstancePool::QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList
 
 	Lane::CreateRoomEntry create;
 	create.sortieUID = sortieUID;
+	create.stageIndex = stageIndex;
+	create.draft = draft;
 
 	for(i32 i = 0; i < userCount; i++) {
 		const RoomUser& user = userList[i];
@@ -562,7 +573,7 @@ void Coordinator::Update(f64 delta)
 				}
 			}
 
-			instancePool.QueueCreateRoom(packet.sortieUID, roomClientList.data(), roomClientList.size());
+			instancePool.QueueCreateRoom(packet.sortieUID, packet.stageIndex, packet.draft != 0, roomClientList.data(), roomClientList.size());
 		}
 	}
 	matchmaker.packetQueue.Clear();
@@ -691,13 +702,76 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 	Account& account = *(--am.accountList.end());
 	account.nickname.assign(nick, nickLen);
-	account.guildTag = L"Alpha";
+	account.guildTag.clear();
 	account.leaderMasterID = 0; // Lua
 
 	// remove the @plaync... part
 	i64 f = account.nickname.find(L'@');
 	if(f != -1) {
 		account.nickname = account.nickname.left(f);
+	}
+
+	AccountProgress progress = AccountProgressLoad(account.nickname.data());
+	const AccountReward reward = AccountRewardTake(account.nickname.data());
+	if(reward.games > 0) {
+		if(!reward.records.empty()) {
+			foreach_const(r, reward.records) {
+				account.pendingGuildPoints += r->guildPoints;
+				if(r->gameType >= (i32)GameType::PVP_NORMAL && r->gameType <= (i32)GameType::PVP_FAKE_AI && r->pvpSaveType != 0) {
+					AccountPvpHistory history = AccountPvpHistoryLoad(account.nickname.data());
+					AccountPvpHistoryAdd(&history, *r);
+					AccountPvpHistorySave(account.nickname.data(), history);
+				}
+				if(r->gameType == (i32)GameType::PVP_RANK) {
+					static const i32 MEASURED_RANK_WIN_POINTS = 40;
+					static const i32 MEASURED_RANK_LOSE_POINTS = 28;
+					AccountTier tier = AccountTierLoad(account.nickname.data());
+					if(r->won) { tier.win++; tier.points += MEASURED_RANK_WIN_POINTS; }
+					else if(r->draw) tier.draw++;
+					else { tier.lose++; tier.points = MAX(tier.points - MEASURED_RANK_LOSE_POINTS, 0); }
+					AccountTierSave(account.nickname.data(), tier);
+					LOG("[client%x] Account :: %ls ranked %s, %d points", clientHd, account.nickname.data(), r->won ? "win" : r->draw ? "draw" : "loss", tier.points);
+				}
+				if(r->stageIndex == 0) continue;
+				if(r->gameType >= (i32)GameType::PVE_NORMAL && r->gameType <= (i32)GameType::PVE_TICKET && !r->won) account.pveFailedReturn = true;
+				if(r->gameType >= (i32)GameType::PVE_NORMAL && r->gameType <= (i32)GameType::PVE_TICKET) continue;
+				if(r->won) progress.wins++;
+				else if(r->draw) progress.draws++;
+				else progress.losses++;
+			}
+		}
+		progress.gold += reward.gold;
+		if(ProgressGainExp(&progress, reward.exp)) LOG("[client%x] Account :: %ls reaches level %u", clientHd, account.nickname.data(), (u32)progress.level);
+		LOG("[client%x] Account :: %ls rewards of %d game(s): %lld gold, %u exp -> level %u (%u exp), %lld gold", clientHd, account.nickname.data(), reward.games, reward.gold, reward.exp, (u32)progress.level, progress.levelExp, progress.gold);
+	}
+	AchieveOnLogin(account, progress);
+	ActivityRefresh(&progress, (i64)time(nullptr));
+	if(reward.playSeconds > 0) progress.activityPoint = MIN(progress.activityPoint + (i32)reward.playSeconds, GetGameXmlContent().activityMaxPoint);
+	AccountProgressSave(account.nickname.data(), progress);
+	{
+		const auto rewardItems = AccountRewardItemsTake(account.nickname.data());
+		if(!rewardItems.empty()) {
+			AccountInventory inventory = AccountInventoryLoad(account.nickname.data());
+			foreach_const(ri, rewardItems) {
+				const GameXmlContent::ItemInfo* info = GetGameXmlContent().FindItemInfo(ri->first);
+				if(!info || ri->second <= 0) continue;
+				AccountInventoryAdd(&inventory, ri->first, ri->second, info->maxStack, nullptr, info->firstSlot);
+				LOG("[client%x] Account :: %ls receives reward item %d x%d", clientHd, account.nickname.data(), ri->first, ri->second);
+			}
+			AccountInventorySave(account.nickname.data(), inventory);
+		}
+	}
+	account.level = progress.level;
+	account.levelExp = progress.levelExp;
+	account.gold = progress.gold;
+	account.wins = progress.wins;
+	account.draws = progress.draws;
+	account.losses = progress.losses;
+	account.ccoin = progress.ccoin;
+	{
+		GuildStore& guilds = GetGuildStore();
+		std::lock_guard<std::recursive_mutex> lock(guilds.mutex);
+		if(const GuildRecord* guild = guilds.FindByMember(account.nickname)) account.guildTag = guild->tag;
 	}
 
 	accChdMap.emplace(accountUID, clientHd);
@@ -711,6 +785,9 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 
 void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 {
+	const AccountUID settingsAccount = clientAccountUID[plidMap.Get(clientHd)];
+	auto settingsFound = GetAccountManager().accountMap.find(settingsAccount);
+	const wchar* accountNick = settingsFound != GetAccountManager().accountMap.end() ? settingsFound->second->nickname.data() : L"";
 	// SN_ClientSettings
 	{
 		PacketWriter<Sv::SN_ClientSettings,2048> packet;
@@ -833,8 +910,15 @@ void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 		}
 
 		packet.Write<u8>(0); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
+		const AccountSettingsBlob stored = AccountSettingsLoad(accountNick, 0);
+		if(!stored.data.empty()) {
+			packet.Write<u16>((u16)stored.data.size());
+			packet.WriteRaw(stored.data.data(), stored.data.size());
+		}
+		else {
+			packet.Write<u16>(destLen);
+			packet.WriteRaw(dest, destLen);
+		}
 
 		SendPacket(clientHd, packet);
 	}
@@ -929,8 +1013,15 @@ void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 		}
 
 		packet.Write<u8>(1); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
+		const AccountSettingsBlob stored = AccountSettingsLoad(accountNick, 1);
+		if(!stored.data.empty()) {
+			packet.Write<u16>((u16)stored.data.size());
+			packet.WriteRaw(stored.data.data(), stored.data.size());
+		}
+		else {
+			packet.Write<u16>(destLen);
+			packet.WriteRaw(dest, destLen);
+		}
 
 		SendPacket(clientHd, packet);
 	}
@@ -1059,8 +1150,15 @@ void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 		}
 
 		packet.Write<u8>(2); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
+		const AccountSettingsBlob stored = AccountSettingsLoad(accountNick, 2);
+		if(!stored.data.empty()) {
+			packet.Write<u16>((u16)stored.data.size());
+			packet.WriteRaw(stored.data.data(), stored.data.size());
+		}
+		else {
+			packet.Write<u16>(destLen);
+			packet.WriteRaw(dest, destLen);
+		}
 
 		SendPacket(clientHd, packet);
 	}

@@ -30,6 +30,10 @@ struct MatchmakerConnector
 		eastl::array<i32,2> weaponGrades;
 		eastl::array<u8,2> masterGearNo;
 		eastl::array<i32,2> characterType;
+		In::StrGuildTag guildTag;
+		SkillID stageSkill;
+		u16 guildBoostGold = 0;
+		u16 guildBoostExp = 0;
 	};
 
 	struct Query
@@ -37,6 +41,9 @@ struct MatchmakerConnector
 		enum class Type: u8 {
 			Invalid = 0,
 			PartyCreate,
+			PartyAddMember,
+			PartyRemoveMember,
+			PartyCancelMatching,
 			PartyEnqueue,
 			PlayerNotifyRoomFound,
 			PlayerRoomConfirm,
@@ -54,9 +61,27 @@ struct MatchmakerConnector
 
 			struct {
 				PartyUID partyUID;
+				In::StrName name;
+				AccountUID accountUID;
+			} PartyAddMember;
+
+			struct {
+				PartyUID partyUID;
+				AccountUID accountUID;
+			} PartyRemoveMember;
+
+			struct {
+				PartyUID partyUID;
+			} PartyCancelMatching;
+
+			struct {
+				PartyUID partyUID;
 				AreaIndex areaIndex;
 				StageIndex stageIndex;
 				MapIndex mapIndex;
+				GameType gameType;
+				In::CustomTeams custom;
+				u8 draft;
 			} PartyEnqueue;
 
 			struct {
@@ -96,7 +121,10 @@ struct MatchmakerConnector
 	void Update();
 
 	void QueryPartyCreate(const WideString& name, AccountUID leader);
-	void QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex);
+	void QueryPartyAddMember(PartyUID partyUID, const WideString& name, AccountUID accountUID);
+	void QueryPartyRemoveMember(PartyUID partyUID, AccountUID accountUID);
+	void QueryPartyCancelMatching(PartyUID partyUID);
+	void QueryPartyEnqueue(PartyUID partyUID, AreaIndex areaIndex, StageIndex stageIndex, MapIndex mapIndex, GameType gameType, const In::CustomTeams* custom, bool draft);
 	void QueryPlayerNotifyRoomFound(AccountUID playerAccountUID, SortieUID sortieUID);
 	void QueryPlayerRoomConfirm(AccountUID playerAccountUID, SortieUID sortieUID, u8 confirm);
 	void QueryRoomCreateGame(SortieUID sortieUID, const RoomPlayer* playerList, u32 playerCount);

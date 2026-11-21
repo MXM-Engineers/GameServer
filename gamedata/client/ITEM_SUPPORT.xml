@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="135011101">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135011101" _Description="STR_SUPPORTKIT_DESC_135011101" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_LEGENDARY" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyType="BUY_TYPE_CCOIN" _BuyValue="35" _SellValue="0" _Indestructible="False" _SellTypeToShop="0" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000010" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="bm_supportkit_hprecovery_01" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+  <INFO ID="135011201">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135011201" _Description="STR_SUPPORTKIT_DESC_135011201" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_LEGENDARY" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyType="BUY_TYPE_CCOIN" _BuyValue="35" _SellValue="0" _Indestructible="False" _SellTypeToShop="0" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000020" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="bm_supportkit_hprecovery_02" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+  <INFO ID="135020101">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135020101" _Description="STR_SUPPORTKIT_DESC_135020101" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_LEGENDARY" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyType="BUY_TYPE_CCOIN" _BuyValue="15" _SellValue="0" _Indestructible="False" _SellTypeToShop="0" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000040" />
+      <_STATUS  DATA="1238000001" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="bm_supportkit_defenceup_01" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+  <INFO ID="135030101">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135030101" _Description="STR_SUPPORTKIT_DESC_135030101" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_LEGENDARY" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyType="BUY_TYPE_CCOIN" _BuyValue="15" _SellValue="0" _Indestructible="False" _SellTypeToShop="0" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000069" />
+      <_STATUS  DATA="1238000000" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="bm_supportkit_enemystun_01" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+  <INFO ID="135040001">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135040001" _Description="STR_SUPPORTKIT_DESC_135040001" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_RARE" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyValue="999999" _SellValue="10" _Indestructible="False" _SellTypeToShop="1" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000011" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="supportkit_hprecovery_01" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+  <INFO ID="135040002">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" _Name="STR_SUPPORTKIT_NAME_135040002" _Description="STR_SUPPORTKIT_DESC_135040002" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_RARE" _MaxStack="99" _CoolTimeID="135000000" _CoolTime="120" _BuyValue="999999" _SellValue="10" _Indestructible="False" _SellTypeToShop="1" />
+    <EtcItemComData _Type="ETC_TYPE_SUPPORTKIT" />
+    <SupportKitItemComData _Type="HP" _Value="20">
+      <_STATUS  DATA="1238000041" />
+      <_STATUS  DATA="1238000003" />
+    </SupportKitItemComData>
+    <ResourceComData _IconAlias="supportkit_defenceup_01" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <Nif_ComData Name="Graphic\Item\Drop\SUPPORTKIT_DROP_01.nif" />
+  </INFO>
+</ENTITY_FILE>

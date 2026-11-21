@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-5000" fSpacing="100" dwWidth="256" dwHeight="256" ReferenceLevel="Design\Level\ART_Levels\Desert_Art\DST_S4Z2" ReferenceOffset="1000000">
+      <LockStates>
+        <LockState difficulty="1" IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      </LockStates>
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Beam_01\CLG_Beam_FrameD_03.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="DST_S4Z2_RGBM" defaultMaterial="True" entityAmbientR="0.164706" entityAmbientG="0.294118" entityAmbientB="0.368627" entityDiffuseR="0.494118" entityDiffuseG="0.847059" entityDiffuseB="0.819608" entitySpecularR="0.247059" entitySpecularG="0.380392" entitySpecularB="0.839216" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="40" creatureAmbientR="0.098039" creatureAmbientG="0.066667" creatureAmbientB="0.141176" creatureDiffuseR="0.345098" creatureDiffuseG="0.509804" creatureDiffuseB="0.905882" creatureSpecularR="0.356863" creatureSpecularG="0.466667" creatureSpecularB="0.913725" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="40" dynamicAmbientR="0.086275" dynamicAmbientG="0.105882" dynamicAmbientB="0.172549" dynamicDiffuseR="0.298039" dynamicDiffuseG="0.376471" dynamicDiffuseB="0.807843" dynamicSpecularR="0.313726" dynamicSpecularG="0.631373" dynamicSpecularB="0.823529" dynamicEmittanceR="0.1" dynamicEmittanceG="0.1" dynamicEmittanceB="0.1" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="50" levelAmbientR="0.329412" levelAmbientG="0.160784" levelAmbientB="0.329412" levelDiffuseR="0.572549" levelDiffuseG="0.886275" levelDiffuseB="0.741176" levelSpecularR="0.439216" levelSpecularG="0.627451" levelSpecularB="0.466667" levelEmittanceR="0.019608" levelEmittanceG="0.019608" levelEmittanceB="0.019608" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="20" sfxIntensity="0.85" itemIntensity="1.33" bgfxIntensity="0.96" hitColorIntensity="0.6" specularIntensity="1" dirDimmer="3.3" dirShadowBrightness="0.1" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.47451" dirAmbientG="0.364706" dirAmbientB="0.592157" dirDiffuseR="0.772549" dirDiffuseG="0.705882" dirDiffuseB="0.878431" dirSpecularR="0.913725" dirSpecularG="0.862745" dirSpecularB="0.941176" globalAmbientR="0.145098" globalAmbientG="0.219608" globalAmbientB="0.584314" rimDirRotate="65" rimDirGradient="15" rimDirPower="4" rimColorR="0.505882" rimColorG="0.701961" rimColorB="0.956863" rimStrength="8" hdrExposure="1.77" hdrShoulderStrength="1.52" hdrLinearStrength="0.74" hdrLinearAngle="1" hdrToeStrength="3" hdrToeNumerator="0" hdrToeDenominator="1" hdrWhitePoint="1.7" bloomWhitePoint="0.52" bloomGradient="1" bloomStrength="1" bloomTintR="0.6392157" bloomTintG="0.4862745" bloomTintB="0.3372549" bloomThreshold="1.01" bloomIntensity="0.61" bloomRadius="2.69" bloom2Intensity="1.3" bloom2Radius="2.77" bloom3Intensity="1.35" bloom3Radius="3.49" bloom4Intensity="1.26" bloom4Radius="3.2" bloom5Intensity="1.47" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="0.3" radius="1999" ambientR="0" ambientG="0" ambientB="0" diffuseR="0.7450981" diffuseG="0.6196079" diffuseB="0.4666667" specularR="0.07843138" specularG="0.07843138" specularB="0.07843138" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="5927.08" y="5893.47" z="775.4" />
+          <_p2 x="5927.08" y="5293.47" z="775.4" />
+        </_line1>
+        <_line2>
+          <_p1 x="6270.46" y="5894.7" z="475.8" />
+          <_p2 x="6270.46" y="5294.7" z="475.8" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="10838.8" y="6529.632" z="475" />
+          <_p2 x="10902.36" y="5933.007" z="475" />
+        </_line1>
+        <_line2>
+          <_p1 x="11177.9" y="6645.839" z="199.7" />
+          <_p2 x="11326.3" y="6064.481" z="199.7" />
+        </_line2>
+      </_PathObject>
+    </_AIPathObjs>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

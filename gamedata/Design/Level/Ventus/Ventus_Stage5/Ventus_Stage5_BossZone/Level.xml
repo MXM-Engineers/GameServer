@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="31555" RTSCameraPresetIdx="0" KillZ="-10000" fSpacing="100" dwWidth="128" dwHeight="128" ReferenceLevel="Design\Level\ART_Levels\Ventus_Art\VTS_S5ZB" ReferenceOffset="1000000">
+      <LockStates />
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Fence_BridgeWireA.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A11.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\VTS_Box_RedPropA_06.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\VTS_Bridge_FanB.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\CLG_Bridge_07.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Fence_01\LCR_Fence_GFenceC_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\VTS_Bridge_PipeA.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\LCR_Box_A_A07.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Floor_02\VTS_Floor_ConveyC_Set_05.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A05.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A07.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A10.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\CLG_Etc_Ventilator_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A04.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\VTS_Etc_Gabage_A06.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\CLG_Bridge_08.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\CLG_Bridge_09.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="VTS_S5ZB_LWF" defaultMaterial="True" entityAmbientR="0.219608" entityAmbientG="0.321569" entityAmbientB="0.486275" entityDiffuseR="0.588235" entityDiffuseG="0.705882" entityDiffuseB="0.764706" entitySpecularR="0.913725" entitySpecularG="0.737255" entitySpecularB="0.513726" entityEmittanceR="0.011765" entityEmittanceG="0.011765" entityEmittanceB="0.011765" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="100" creatureAmbientR="0.145098" creatureAmbientG="0.164706" creatureAmbientB="0.137255" creatureDiffuseR="0.713726" creatureDiffuseG="0.694118" creatureDiffuseB="0.560784" creatureSpecularR="0.886275" creatureSpecularG="0.713726" creatureSpecularB="0.431373" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="20" dynamicAmbientR="0.301961" dynamicAmbientG="0.25098" dynamicAmbientB="0.282353" dynamicDiffuseR="0.65098" dynamicDiffuseG="0.560784" dynamicDiffuseB="0.392157" dynamicSpecularR="0.282353" dynamicSpecularG="0.196078" dynamicSpecularB="0.066667" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="50" levelAmbientR="0.427451" levelAmbientG="0.435294" levelAmbientB="0.462745" levelDiffuseR="1" levelDiffuseG="0.792157" levelDiffuseB="0.784314" levelSpecularR="0.678431" levelSpecularG="0.517647" levelSpecularB="0.321569" levelEmittanceR="0.039216" levelEmittanceG="0.039216" levelEmittanceB="0.039216" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="50" sfxIntensity="0.9" itemIntensity="1.8" bgfxIntensity="1" hitColorIntensity="0.8" specularIntensity="1" dirDimmer="2.51" dirShadowBrightness="0.1" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.211765" dirAmbientG="0.34902" dirAmbientB="0.54902" dirDiffuseR="0.984314" dirDiffuseG="0.8" dirDiffuseB="0.521569" dirSpecularR="1" dirSpecularG="0.8" dirSpecularB="0.678431" globalAmbientR="0.403922" globalAmbientG="0.490196" globalAmbientB="0.678431" rimDirRotate="280" rimDirGradient="20" rimDirPower="5" rimColorR="1" rimColorG="0.494118" rimColorB="0.298039" rimStrength="6" hdrExposure="1.64" hdrShoulderStrength="1.61" hdrLinearStrength="0.99" hdrLinearAngle="0.73" hdrToeStrength="2.26" hdrToeNumerator="0" hdrToeDenominator="0.84" hdrWhitePoint="2.84" bloomWhitePoint="0.35" bloomGradient="1" bloomStrength="1" bloomTintR="0.882353" bloomTintG="0.45098" bloomTintB="0.219608" bloomThreshold="0.46" bloomIntensity="0.71" bloomRadius="0.6" bloom2Intensity="0.68" bloom2Radius="1.5" bloom3Intensity="0.84" bloom3Radius="2.5" bloom4Intensity="0.9" bloom4Radius="3.2" bloom5Intensity="0.88" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="2.2" radius="1200" ambientR="0" ambientG="0" ambientB="0" diffuseR="1" diffuseG="1" diffuseB="1" specularR="0.07843138" specularG="0.3568628" specularB="0.6627451" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="130400001">
+    <EntityComData _Type="ENTITY_TYPE_ITEM" />
+    <ItemComData _Type="ITEM_TYPE_ETC" _Rank="ITEM_RANK_NORMAL" _RonMin="1" _RonMax="1" _GetSFX="ETC_SFX_ITEM_GET_GOLD" />
+    <EtcItemComData _Type="ETC_TYPE_GOLD" />
+    <HUDComData _NameTagOffsetZ="80" />
+    <ResourceComData _IconAlias="money_ron_01" />
+    <Nif_ComData Name="Graphic\Item\Drop\RON_DROP_01.nif" />
+	<DropItemComData _SpawnSFX="ETC_SFX_ITEM_SPAWN_GOLD" _MaxDist="500" _MinDropTime="1000" >
+		<CountableDropData _Count="1" _ResLink="Graphic/Item/Drop/RON_DROP_01.nif" />
+		<CountableDropData _Count="10" _ResLink="Graphic/Item/Drop/RON_DROP_02.nif" />
+		<CountableDropData _Count="50" _ResLink="Graphic/Item/Drop/RON_DROP_03.nif" />
+	</DropItemComData>
+    <LifeTime_ComData LifeTime="120" />
+</INFO>
+  <INFO ID="130400002">
+    <EntityComData _Type="ENTITY_TYPE_ITEM"/>
+    <ItemComData _Type="ITEM_TYPE_ETC" _RandomDrop="False" _Rank="ITEM_RANK_NORMAL" _RonMin="500" _RonMax="500" />
+    <EtcItemComData _Type="ETC_TYPE_SOUL" />
+    <HUDComData _NameTagOffsetZ="91" />
+    <ResourceComData _IconAlias="money_soulpiece_01" />
+    <Nif_ComData Name="Graphic\Item\Drop\CALIGO_MONSTER_DROP_01.nif" />
+	<DropItemComData>
+		<CountableDropData _Count="1" _ResLink="Graphic/Item/Drop/SOULCHIP_DROP_01.nif" />
+		<CountableDropData _Count="5" _ResLink="Graphic/Item/Drop/SOULCHIP_DROP_02.nif" />
+		<CountableDropData _Count="10" _ResLink="Graphic/Item/Drop/SOULCHIP_DROP_03.nif" />
+	</DropItemComData>
+    <LifeTime_ComData LifeTime="120" />
+  </INFO>
+</ENTITY_FILE>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_ENTITY_TYPE_CREATURE>
+    <_SpawnList strName="Creature12" dwID="12" dwDoc="100010101" dwType="1" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="SPAWN_BEHAVIORSTATE" kTranslate_x="3462.63" kTranslate_y="3115.05" kTranslate_z="2752.36" kRotation_x="0" kRotation_y="0" kRotation_z="0" fScale="1" kTag="" _TagID="-1" layer="22" team="TEAM_DYNAMIC" itemDrop="True" stageDifficultyMask="31" />
+    <_SpawnList strName="Creature15" dwID="15" dwDoc="100010102" dwType="1" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="SPAWN_BEHAVIORSTATE" kTranslate_x="4638.44" kTranslate_y="2984.07" kTranslate_z="2752.36" kRotation_x="0" kRotation_y="0" kRotation_z="0" fScale="1" kTag="" _TagID="-1" layer="22" team="TEAM_DYNAMIC" itemDrop="True" stageDifficultyMask="31" />
+    <_SpawnList strName="Creature2" dwID="2" dwDoc="100000001" dwType="1" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="DYNAMIC_NORMAL_STAND" kTranslate_x="2140.39" kTranslate_y="2367.56" kTranslate_z="2824.57" kRotation_x="0" kRotation_y="0" kRotation_z="0.196175" fScale="1.0" kTag="" _TagID="-1" layer="24" team="TEAM_PLAYER" ReturnPoint="False" />
+    <_SpawnList strName="Creature9" dwID="9" dwDoc="100000001" dwType="1" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="DYNAMIC_NORMAL_STAND" kTranslate_x="1904" kTranslate_y="2502" kTranslate_z="2824.57" kRotation_x="0" kRotation_y="0" kRotation_z="0.07696902" fScale="1.0" kTag="" _TagID="-1" layer="24" team="TEAM_PLAYER" ReturnPoint="False" />
+    <_SpawnList strName="Creature10" dwID="10" dwDoc="100000001" dwType="1" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="DYNAMIC_NORMAL_STAND" kTranslate_x="2192" kTranslate_y="2118" kTranslate_z="2824.57" kRotation_x="0" kRotation_y="0" kRotation_z="0.238412" fScale="1.0" kTag="" _TagID="-1" layer="24" team="TEAM_PLAYER" ReturnPoint="False" />
+  </MAP_ENTITY_TYPE_CREATURE>
+  <MAP_ENTITY_TYPE_DYNAMIC>
+    <_SpawnList strName="Dynamic16" dwID="16" dwDoc="110042664" dwType="3" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="DYNAMIC_BATTLE_STAND" kTranslate_x="2069.9" kTranslate_y="2312.3" kTranslate_z="2752.26" kRotation_x="0" kRotation_y="0" kRotation_z="0" fScale="1" kTag="" _TagID="-1" layer="23" team="TEAM_DYNAMIC" itemDrop="True" isGuideEntity="False" stageDifficultyMask="31" />
+    <_SpawnList strName="UIMarker11" dwID="11" dwDoc="110041382" dwType="3" dwSpawnAnim="0" AIWanderDistOverride="-1" strActionState="DYNAMIC_NORMAL_STAND" kTranslate_x="3842.4" kTranslate_y="3417.84" kTranslate_z="2752.36" kRotation_x="0" kRotation_y="0" kRotation_z="0" fScale="1" kTag="" _TagID="-1" layer="19" team="TEAM_TYPE_INVALID" objType="HERE" isGuideEntity="True" />
+  </MAP_ENTITY_TYPE_DYNAMIC>
+  <MAP_ENTITY_LINKABLE_MARKER />
+</MAP_INFO>

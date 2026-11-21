@@ -344,7 +344,7 @@ struct GrowableBuffer
 	u8* Append(const void* buff, i32 buffSize)
 	{
 		if(size + buffSize > capacity) {
-			Reserve(MIN(size+buffSize, capacity*2));
+			Reserve(MAX(size+buffSize, capacity*2));
 		}
 		memmove(data+size, buff, buffSize);
 		u8* r = data+size;

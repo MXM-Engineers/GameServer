@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_PATH_LIST>
+    <MAP_PATH_INFO DATAKEY="157">
+      <_PathList dwID="157" dwParent="157" kTranslate_x="10098.28" kTranslate_y="18163.55" kTranslate_z="2020.22" kRotation_x="0" kRotation_y="0" kRotation_z="0.0003490659" _RandomRadius="200" />
+      <_PathList dwID="15" dwParent="157" kTranslate_x="10097.94" kTranslate_y="16980.06" kTranslate_z="1920.39" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="42">
+      <_PathList dwID="42" dwParent="42" kTranslate_x="14488.28" kTranslate_y="16153.56" kTranslate_z="1295.8" kRotation_x="0" kRotation_y="0" kRotation_z="0.1064651" _RandomRadius="499.8377" />
+      <_PathList dwID="27" dwParent="42" kTranslate_x="14353.55" kTranslate_y="14892.05" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="43">
+      <_PathList dwID="43" dwParent="43" kTranslate_x="15294.22" kTranslate_y="14002.8" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="1.566608" _RandomRadius="300" />
+      <_PathList dwID="56" dwParent="43" kTranslate_x="15055.56" kTranslate_y="14001.79" kTranslate_z="1288.47" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="57" dwParent="56" kTranslate_x="14052.74" kTranslate_y="14556.14" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="45">
+      <_PathList dwID="45" dwParent="45" kTranslate_x="14230.08" kTranslate_y="13778.69" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="3.093596" _RandomRadius="800" />
+      <_PathList dwID="29" dwParent="45" kTranslate_x="14176.51" kTranslate_y="14895.83" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="46">
+      <_PathList dwID="46" dwParent="46" kTranslate_x="12662.54" kTranslate_y="14523.09" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="-2.485698" _RandomRadius="500" />
+      <_PathList dwID="130" dwParent="46" kTranslate_x="12849.28" kTranslate_y="14765.71" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="131" dwParent="130" kTranslate_x="14259.61" kTranslate_y="14765.72" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="232">
+      <_PathList dwID="232" dwParent="232" kTranslate_x="10327.89" kTranslate_y="15805.54" kTranslate_z="1914.53" kRotation_x="0" kRotation_y="0" kRotation_z="3.125536" _RandomRadius="450" />
+      <_PathList dwID="17" dwParent="232" kTranslate_x="10309.17" kTranslate_y="16976.86" kTranslate_z="1840.28" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="257">
+      <_PathList dwID="257" dwParent="257" kTranslate_x="14132.73" kTranslate_y="15646.94" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="-0.7229154" _RandomRadius="250" />
+      <_PathList dwID="77" dwParent="257" kTranslate_x="14367.95" kTranslate_y="15380.36" kTranslate_z="991.74" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="1" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="50">
+      <_PathList dwID="50" dwParent="50" kTranslate_x="11290.34" kTranslate_y="17572.55" kTranslate_z="1920.17" kRotation_x="0" kRotation_y="0" kRotation_z="-0.0005235988" _RandomRadius="350" />
+      <_PathList dwID="19" dwParent="50" kTranslate_x="11290.42" kTranslate_y="17400.66" kTranslate_z="1840.52" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="21" dwParent="19" kTranslate_x="10261.16" kTranslate_y="16820.03" kTranslate_z="1840.52" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="81">
+      <_PathList dwID="81" dwParent="81" kTranslate_x="15953.94" kTranslate_y="7477.91" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="1.587901" _RandomRadius="700" />
+      <_PathList dwID="62" dwParent="81" kTranslate_x="15556.08" kTranslate_y="7484.7" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="72" dwParent="62" kTranslate_x="13562.75" kTranslate_y="7720.51" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="82">
+      <_PathList dwID="82" dwParent="82" kTranslate_x="12453.59" kTranslate_y="6610.31" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="-2.645047" _RandomRadius="700" />
+      <_PathList dwID="63" dwParent="82" kTranslate_x="12698.99" kTranslate_y="7063.26" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="60" dwParent="63" kTranslate_x="14031.67" kTranslate_y="7849.52" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="83">
+      <_PathList dwID="83" dwParent="83" kTranslate_x="14373.01" kTranslate_y="6082.33" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="2.960428" _RandomRadius="700" />
+      <_PathList dwID="64" dwParent="83" kTranslate_x="14279.73" kTranslate_y="6591.51" kTranslate_z="0.86" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="61" dwParent="64" kTranslate_x="13742.13" kTranslate_y="7933.48" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="84">
+      <_PathList dwID="84" dwParent="84" kTranslate_x="11319.3" kTranslate_y="7850.08" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="-1.85546" _RandomRadius="500" />
+      <_PathList dwID="65" dwParent="84" kTranslate_x="11700.3" kTranslate_y="7961.53" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="58" dwParent="65" kTranslate_x="14147.97" kTranslate_y="7696.31" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="88">
+      <_PathList dwID="88" dwParent="88" kTranslate_x="12977.51" kTranslate_y="9132.01" kTranslate_z="82.09" kRotation_x="0" kRotation_y="0" kRotation_z="-0.2045526" _RandomRadius="400" />
+      <_PathList dwID="66" dwParent="88" kTranslate_x="13078.55" kTranslate_y="8644.8" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="1" AIPerceptionEnable="0" />
+      <_PathList dwID="59" dwParent="66" kTranslate_x="13979.11" kTranslate_y="7524.7" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="51">
+      <_PathList dwID="51" dwParent="51" kTranslate_x="11195.14" kTranslate_y="16271.61" kTranslate_z="1922.26" kRotation_x="0" kRotation_y="0" kRotation_z="-3.137055" _RandomRadius="350" />
+      <_PathList dwID="23" dwParent="51" kTranslate_x="11196.28" kTranslate_y="16519.37" kTranslate_z="1845.98" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+      <_PathList dwID="25" dwParent="23" kTranslate_x="10200.35" kTranslate_y="17037.67" kTranslate_z="1840.34" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="52">
+      <_PathList dwID="52" dwParent="52" kTranslate_x="15037.84" kTranslate_y="9149.3" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0.1567306" _RandomRadius="10" />
+      <_PathList dwID="117" dwParent="52" kTranslate_x="14838.2" kTranslate_y="7885.4" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="53">
+      <_PathList dwID="53" dwParent="53" kTranslate_x="14511" kTranslate_y="9442.33" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0.3804817" _RandomRadius="10" />
+      <_PathList dwID="102" dwParent="53" kTranslate_x="14036.55" kTranslate_y="8256.2" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="54">
+      <_PathList dwID="54" dwParent="54" kTranslate_x="15144.21" kTranslate_y="9417.64" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="-0.07627089" _RandomRadius="10" />
+      <_PathList dwID="118" dwParent="54" kTranslate_x="15255.5" kTranslate_y="7962.12" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="1" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="31">
+      <_PathList dwID="31" dwParent="31" kTranslate_x="16950" kTranslate_y="13500" kTranslate_z="1280.11" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="100" />
+      <_PathList dwID="33" dwParent="31" kTranslate_x="16950" kTranslate_y="12125.6" kTranslate_z="643.44" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="149">
+      <_PathList dwID="149" dwParent="149" kTranslate_x="14761.86" kTranslate_y="9161.1" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0.2958333" _RandomRadius="1" />
+      <_PathList dwID="150" dwParent="149" kTranslate_x="14395.3" kTranslate_y="7958.22" kTranslate_z="11.07" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+  </MAP_PATH_LIST>
+</MAP_INFO>

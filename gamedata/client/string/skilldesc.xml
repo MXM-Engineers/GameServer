@@ -739,5 +739,33 @@
     <StringData DATAKEY="STR_SKILL_DESC_180000200" data="Rytlock follows you for a moment." />
     <StringData DATAKEY="STR_SKILL_NAME_180000210" data="Rytlock's Defense" />
     <StringData DATAKEY="STR_SKILL_DESC_180000210" data="Rytlock enters a defensive state for 3 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410000" DocId="100000041" data="Energy Conversion" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410000" DocId="100000041" data="{color:#35a6e6}[Fuel Recovery]{color:end}&#10;Charged attacks recover 20 Fuel.&#10;Recovers 5 Fuel per second while charging.&#10;&#10;{color:#35a6e6}[Plasma Shield]{color:end}&#10;Using a skill creates a shield that absorbs 250 damage for 3 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410002" DocId="100000041" data="Sudden Acceleration" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410002" DocId="100000041" data="Moves 8m in the movement direction and gains Super Armor for 1 second.&#10;Recovers 22 Fuel for each enemy in the path." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410010" DocId="100000041" data="Disruption Route" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410010" DocId="100000041" data="Moves {skill:180410010:actionbase:movehorizon} forward, leaving a distorted trail. Enemies on the distorted trail are slowed by {skill:180410010:status:stat:mul:movespeed}% and all targets in the area are pulled toward its center." />
+    <StringData DATAKEY="STR_SKILL_NAME_180410020" DocId="100000041" data="B-EMP" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410020" DocId="100000041" data="Drains 30% of the MP and EP of enemy masters in the area.&#10;{color:#e45f5f}Targets that are not masters are Feared.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410030" DocId="100000041" data="Shockwave" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410030" DocId="100000041" data="Releases a shockwave around GX-09, knocking enemies in the area back to the edge of the shockwave and down.&#10;{color:#e45f5f}The closer to the center, the farther enemies are knocked back.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410040" DocId="100000041" data="Master Transport" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410040" DocId="100000041" data="Transforms into transport mode. For 3 seconds, allies can board GX-09 with the interaction key.&#10;Transport mode lasts {skill:180410040:stancedurationtime} seconds and increases movespeed by {skill:180410040:status:stat:mul:movespeed}%.&#10;{color:#e45f5f}Passengers are dropped off when the transformation ends, or when GX-09 dies or tags out.{color:end}" />
+    <StringData DATAKEY="STR_SKILL_NAME_180410050" DocId="100000041" data="Teleporter" />
+    <StringData DATAKEY="STR_SKILL_DESC_180410050" DocId="100000041" data="Places a teleporter at an ally's position on the minimap or in the field. After 3 seconds, allies near the teleporter are moved to GX-09's position." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430000" DocId="100000043" data="Armor-Piercing Rounds" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430000" DocId="100000043" data="{color:#35a6e6}[Armor-Piercing Rounds]{color:end}&#10;Basic attacks, Leap Barrage and Heavy Barrage lower the target's defense by 1.5% per stack (up to 10 stacks, 2.5 seconds).&#10;&#10;{color:#35a6e6}[Suppression]{color:end}&#10;An enemy hit 4 times by Leap Barrage is slowed by 50% for 2.5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430002" DocId="100000043" data="Spider Mine" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430002" DocId="100000043" data="Dashes 6m forward and marks the ground with a spider mine for 2.5 seconds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430010" DocId="100000043" data="Anchor Throw" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430010" DocId="100000043" data="Steps back 2.5m and hurls an anchor forward. It travels 15.75m and deals damage to every enemy within 2.35m of its path." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430020" DocId="100000043" data="Back Grab" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430020" DocId="100000043" data="Dashes through the targeted enemy (up to 8m) while evading attacks, then fires a burst in front, dealing damage to enemies within 3.5m and knocking them down." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430030" DocId="100000043" data="Leap Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430030" DocId="100000043" data="Leaps in place while evading attacks and sprays bullets in a half circle in front, dealing damage to enemies within 7m up to 4 times. Applies Armor-Piercing Rounds." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430040" DocId="100000043" data="Heavy Snipe" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430040" DocId="100000043" data="Locks onto an enemy within 15m. After 3 seconds an explosion deals damage to enemies within 3m of them." />
+    <StringData DATAKEY="STR_SKILL_NAME_180430050" DocId="100000043" data="Heavy Barrage" />
+    <StringData DATAKEY="STR_SKILL_DESC_180430050" DocId="100000043" data="Plants in place with Super Armor and fires in every direction, dealing damage to enemies within 7m every 0.4 seconds and pushing them out. Applies Armor-Piercing Rounds." />
   </StringTableData>
 </ENTITY_FILE>

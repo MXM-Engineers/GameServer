@@ -1,0 +1,429 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\COMMON\DUMMYCYLINDER\DummyCylinder.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COMMON\Dummy_DirectionGuide\Dummy_DirectionGuide.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\BK-01_02\BK-01.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\BK-01_02\BK-02.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\REAPER\Reaper.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Empty_NoCollision\Empty_NoCollision.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="BK-01" />
+        <_keyname keyname="BK-02" />
+        <_keyname keyname="DUMMYBOX_DWEventTrigger_0" />
+        <_keyname keyname="DUMMYCYLINDER_DWTargetAgent_0" />
+        <_keyname keyname="Level_Remote" />
+        <_keyname keyname="REAPER" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="Attack_Range_Ring_RED_Mon" />
+        <_sfx path="Dynamic_Fx_Cal_S2_DM_RobotBox" />
+        <_sfx path="Dynamic_Fx_Traile_Bk_02" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_FX_Interceptturret_BOSS_charge" />
+        <_sfx path="Mob_Fx_BK01_Guided_Missile_Remote_Fire_L_1" />
+        <_sfx path="Mob_Fx_BK01_Guided_Missile_Remote_Fire_R_1" />
+        <_sfx path="Mob_Fx_Currus_Electric_Remote" />
+        <_sfx path="Mob_Fx_Destroyer_Melee_Area_Hit_1" />
+        <_sfx path="Mob_Fx_G003_Aim_laser_Remote" />
+        <_sfx path="Mob_Fx_GT_5A_Aim_laser_Remote" />
+        <_sfx path="Mob_Fx_Gt_5_laser_Fire_1" />
+        <_sfx path="Mob_Fx_Reaper_Barrier_Rotate_Attack_B" />
+        <_sfx path="Mob_Fx_Reaper_Explosion_Die" />
+        <_sfx path="Mob_Fx_Reaper_Ground_Missile_Remote_1" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_1" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy52" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy53" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy55" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy56" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy57" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy60" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy62" />
+        <_sfx path="Mob_Fx_Reaper_Missile_Fire_FX_Dummy63" />
+        <_sfx path="Mob_Fx_Reaper_Parts_Die" />
+        <_sfx path="Mob_Fx_Reaper_Rocket_Bg_Hit" />
+        <_sfx path="Mob_Fx_Reaper_Spawn" />
+        <_sfx path="Mob_Fx_Reaper_laser_Beam_Cast" />
+        <_sfx path="Mon_Fx_BK-01_White_Spawn" />
+        <_sfx path="Mon_Fx_BK_GENOCIDE_Skill_2_Hit" />
+        <_sfx path="Mon_Fx_BK_GENOCIDE_Skill_2_Remote2" />
+        <_sfx path="Mon_Fx_Common_FireStart" />
+        <_sfx path="Mon_Fx_DESERT_HOLE_Remote_15s" />
+        <_sfx path="Mon_Fx_DRON_HUMANCLONE_Skill_5_Casting" />
+        <_sfx path="Mon_Fx_DRON_RAIDLEAP_Beam" />
+        <_sfx path="Mon_Fx_Desert_Hole_Remote" />
+        <_sfx path="Pc_Fx_Aura_Knockback" />
+        <_sfx path="Pc_Fx_Aura_Knockback_End" />
+        <_sfx path="PhyX_Reaper_FX_EX2" />
+        <_sfx path="PhysX_Mon_Debris_Small" />
+        <_sfx path="PhysX_Reaper_FX_BB_Front_Down" />
+        <_sfx path="PhysX_Reaper_FX_BB_Front_Up" />
+        <_sfx path="PhysX_Reaper_FX_Die" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_1s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_BK01_Guided_Missile_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_BK01_laser_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_BK01_laser_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Gt_5_laser_Fire_2" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Gt_5_laser_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Gt_5_laser_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Ground_Missile_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Missile_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Sky_Mine_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Sky_Mine_Remote_Destroy" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Sky_Missile_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_laser_Beam_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="3" />
+        <_sfxHWInfo path="Mon_Fx_BK_GENOCIDE_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Common_Fireloop_4m2s" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_REAPER_SINGLE_Destroy" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_REAPER_SINGLE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_REAPER_SINGLE_REMOTE_2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Tribe_Necromencer_Skill_8_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Rocket_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BURNING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DIGITALSPAWN_2S" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRAGGED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SHIRK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_REAPER_BIGBOOSTER_1" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_REAPER_BIGBOOSTER_2" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_REAPER_MINIBOOSTER" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="BK01G_Normal_Attack01_Remote_Attack" />
+        <_soundEventInfo id="BK01G_Normal_Attack01_Remote_Impact" />
+        <_soundEventInfo id="BK01G_Normal_Die" />
+        <_soundEventInfo id="BK01G_Normal_RunFront01" />
+        <_soundEventInfo id="BK01G_Normal_Spawn" />
+        <_soundEventInfo id="BK02_Normal_BattleStand" />
+        <_soundEventInfo id="BK02_Normal_Die_Critical" />
+        <_soundEventInfo id="BK02_Normal_NormalStand" />
+        <_soundEventInfo id="BK02_Normal_Spawn01" />
+        <_soundEventInfo id="BK02_Skill04_End" />
+        <_soundEventInfo id="BK02_Skill04_Fire" />
+        <_soundEventInfo id="BK02_Skill04_Remote_Impact" />
+        <_soundEventInfo id="BK02_Skill04_Start" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_15sec" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_End" />
+        <_soundEventInfo id="DronRaidLeap_Beam_Remote_Projectile" />
+        <_soundEventInfo id="DronSlaughterFire_Normal_Fire" />
+        <_soundEventInfo id="GT5A_Skill_Laser_Charge" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="Monster_Common_DigitalSpawn_2S" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_End" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_Hit" />
+        <_soundEventInfo id="Reaper_Burier_Skill_10_End" />
+        <_soundEventInfo id="Reaper_Burier_Skill_10_Start" />
+        <_soundEventInfo id="Reaper_Burier_Skill_13_Loop" />
+        <_soundEventInfo id="Reaper_Circle_Fire" />
+        <_soundEventInfo id="Reaper_Circle_Fire_Blue_Big" />
+        <_soundEventInfo id="Reaper_Circle_Fire_Blue_Mid" />
+        <_soundEventInfo id="Reaper_Circle_Fire_Blue_Small" />
+        <_soundEventInfo id="Reaper_Circle_Fire_Red" />
+        <_soundEventInfo id="Reaper_Circle_Hit" />
+        <_soundEventInfo id="Reaper_Circle_Ready" />
+        <_soundEventInfo id="Reaper_Circle_Spread" />
+        <_soundEventInfo id="Reaper_Curve_Missile" />
+        <_soundEventInfo id="Reaper_Down" />
+        <_soundEventInfo id="Reaper_Ground_Down" />
+        <_soundEventInfo id="Reaper_Ground_Up" />
+        <_soundEventInfo id="Reaper_Machinegun_Fire" />
+        <_soundEventInfo id="Reaper_Missile_Explosion" />
+        <_soundEventInfo id="Reaper_Missile_Whoosh" />
+        <_soundEventInfo id="Reaper_Nomal_Foot_Ground" />
+        <_soundEventInfo id="Reaper_Servo_End_Montion" />
+        <_soundEventInfo id="Reaper_Servo_Start_Montion" />
+        <_soundEventInfo id="Reaper_Skill_Barrier_Missile" />
+        <_soundEventInfo id="Reaper_Spawn" />
+        <_soundEventInfo id="Reaper_Spawn02" />
+        <_soundEventInfo id="Reaper_Spin_Attack" />
+        <_soundEventInfo id="Reaper_Spin_End" />
+        <_soundEventInfo id="Reaper_Start_Montion" />
+        <_soundEventInfo id="Reaper_Stick_Laser_Cast" />
+        <_soundEventInfo id="Reaper_Stick_Laser_End" />
+        <_soundEventInfo id="Reaper_Straight_Laser_Explosion" />
+        <_soundEventInfo id="Reaper_Straight_Laser_Fire" />
+        <_soundEventInfo id="Reaper_Straight_Laser_loop" />
+        <_soundEventInfo id="Reaper_Straight_Missile" />
+        <_soundEventInfo id="Reaper_Up" />
+        <_soundEventInfo id="Reaper_VOX_Move" />
+        <_soundEventInfo id="Reaper_normal_Die_Ground" />
+        <_soundEventInfo id="Reaper_normal_Wing_Extra_01" />
+        <_soundEventInfo id="State_Fire_to_Monster" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="TribeNecromancer_Normal_Skill_08_Defence_RMT" />
+        <_soundEventInfo id="VT_CT_PowerConverter_Laser" />
+        <_soundEventInfo id="System472" />
+        <_soundEventInfo id="System470" />
+        <_soundEventInfo id="System471" />
+        <_soundEventInfo id="StoryCut03_3B00" />
+        <_soundEventInfo id="StoryCut03_3B01" />
+        <_soundEventInfo id="StoryCut03_3B02" />
+        <_soundEventInfo id="PvE_ALL_BuffBox_Send_001" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Goldbox\Box_NM_interaction_Goldbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Silverbox\Box_NM_interaction_Silverbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Cal_S5_CT_GemstoneMachine1\Cal_S5_CT_GemstoneMachine1.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Guide_UI_Point\Guide_UI_Point.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_Reaper_Barrier\Reaper_Burier.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S1_GT_UIDoor_01\Lac_S1_GT_UIDoor_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S3_NM_BrakeBanister\Lac_S3_NM_BrakeBanister.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S4_NM_StealthMachine\Lac_S4_NM_StealthMachine.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Mon_REAPER_Barrier\Reaper_Burier_sky.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_NormalAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SkillCoolTime.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_Speed.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SuperAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_HP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_01.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_02.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Box_NM_interaction_Goldbox" />
+        <_keyname keyname="Box_NM_interaction_Silverbox" />
+        <_keyname keyname="Cal_S5_CT_GemstoneMachine1" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Guide_UI_Point" />
+        <_keyname keyname="Lac_Reaper_Barrier" />
+        <_keyname keyname="Lac_S1_GT_UIDoor_01" />
+        <_keyname keyname="Lac_S3_NM_BrakeBanister" />
+        <_keyname keyname="Lac_S4_NM_StealthMachine" />
+        <_keyname keyname="Mon_REAPER_Barrier" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_OPEN" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_Stand" />
+        <_sfx path="Dynamic_FX_stealthMachine" />
+        <_sfx path="Dynamic_Fx_AlertSystem_Spark_1" />
+        <_sfx path="Dynamic_Fx_Cal_S5_CT_GemstoneMachine1" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Dynamic_Fx_Lac_S3_NM_BrakeBanister_Ex" />
+        <_sfx path="Item_BlueDrop_Get" />
+        <_sfx path="Item_BlueDrop_Spawn" />
+        <_sfx path="Item_HP_Get" />
+        <_sfx path="Item_HP_Spawn" />
+        <_sfx path="Item_PU_Get" />
+        <_sfx path="Item_PU_Spawn" />
+        <_sfx path="Item_PU_Violet_Get" />
+        <_sfx path="Item_PU_Violet_Spawn" />
+        <_sfx path="Item_SP_Get" />
+        <_sfx path="Item_SP_Previous" />
+        <_sfx path="Item_SP_Spawn" />
+        <_sfx path="Item_UG_Get" />
+        <_sfx path="Item_UG_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_Reaper_Barrier_Spawn_End" />
+        <_sfx path="Mob_Fx_Reaper_Barrier_Spawn_Start" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_NormalAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SkillAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SpeedUp" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_ITEM_INSTANT_HP" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Box_NM_Interaction_Goldbox_Die" />
+        <_soundEventInfo id="Box_NM_Interaction_Silverbox_Die" />
+        <_soundEventInfo id="Cal_S5_CT_GemstoneMachine1_Close" />
+        <_soundEventInfo id="Cal_S5_CT_GemstoneMachine1_Open" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S1_GT_UIDoor_01_NormalStand_Loop" />
+        <_soundEventInfo id="Lac_S1_GT_UIDoor_01_Open" />
+        <_soundEventInfo id="Lac_S3_NM_BrakeBanister_Break" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="Lac_S4_NM_StealthMachine_Active" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="Reaper_Burier_End" />
+        <_soundEventInfo id="Reaper_Burier_Land" />
+        <_soundEventInfo id="Reaper_Burier_Spawn" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="UI_Item_Get_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Pickup_AtkSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Cooltime" />
+        <_soundEventInfo id="UI_Item_Pickup_HP" />
+        <_soundEventInfo id="UI_Item_Pickup_MovSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Overheat" />
+        <_soundEventInfo id="UI_Item_Pickup_UG" />
+        <_soundEventInfo id="UI_Item_Previous" />
+        <_soundEventInfo id="UI_Item_Spawn_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Spawn_HP" />
+        <_soundEventInfo id="UI_Item_Spawn_PU" />
+        <_soundEventInfo id="UI_Item_Spawn_PU_Violet" />
+        <_soundEventInfo id="UI_Item_Spawn_SP" />
+        <_soundEventInfo id="UI_Item_Spawn_UG" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

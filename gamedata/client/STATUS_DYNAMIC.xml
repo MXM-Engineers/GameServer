@@ -1,0 +1,436 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ENTITY_FILE>
+  <INFO ID="1201200000" KEYNAME="STATUS_DYNAMIC_DANGEROUS_EFFECT">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="동적객체용 폭발 위험 표시 이펙트" _EffectKeyName="STATUS_SFX_DYNAMIC_DANGEROUS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="동적객체용 폭발 위험 표시 이펙트" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_EFFECT" />
+  </INFO>
+  <INFO ID="1201200100" KEYNAME="STATUS_DYNAMIC_ATTRACTIVE_EFFECT">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="동적객체용 주의 끄는 이펙트" _DurationTime="-1" _EffectKeyName="STATUS_SFX_DYNAMIC_ATTRACTIVE" _EffectSlot="30000" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="동적객체용 주의 끄는 이펙트" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_EFFECT" />
+  </INFO>
+  <INFO ID="1201200010" KEYNAME="STATUS_DYNAMIC_ALL_WITH_ICON_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="레벨 공통으로 사용하는 무적" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defensemode_01" _Interval="0" _Name="공용 무적 (아이콘 있음) - 9999초" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1201200020" KEYNAME="STATUS_DYNAMIC_ALL_WITHOUT_ICON_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="레벨 공통으로 사용하는 무적" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="공용 무적 (아이콘 없음) - 9999초" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1201200030" KEYNAME="STATUS_DYNAMIC_ALL_BURROW">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="레벨 공통으로 사용하는 무적" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="공용 버로우 - 9999초" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_BURROW" />
+  </INFO>
+  <INFO ID="1201200001" KEYNAME="STATUS_CALIGO_ALL_GASBOX_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 2m" _DistanceRatio="1.5" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="폭발 박스 폭발하면서 길게 푸쉬" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201170005" KEYNAME="STATUS_DYNAMIC_AIRBORNE_100">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="AIRBORNE 100%" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _HeightRatio="1" _Interval="0" _LyingTime="0.2" _Name="동적객체 에어본 100%" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_AIRBORNE" />
+  </INFO>
+  <INFO ID="1201170006" KEYNAME="STATUS_DYNAMIC_SLOW_50">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="SLOW 50% 2SEC" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="동적객체 슬로우 50% 2sec" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201170006" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1201170004" KEYNAME="STATUS_DYNAMIC_PUSH_100">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 100%" _DistanceRatio="1" _EffectType="STATUS_EFFECT_DEBUFF" _Name="동적객체 푸쉬 100%" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1202070300" KEYNAME="STATUS_DESERT_S3_FRESHWATER_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이속 30%, 공속 30% 증가_8초" _DurationTime="8000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="사막3_흐르는 지하수 이속 증가" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202070300" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202070301" KEYNAME="STATUS_DESERT_S3_BASESPEED_80">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="BASESPEED 80%감소" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="사막3_물 폭발 몬스터 슬로우" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202070302" KEYNAME="STATUS_Nuran_S3_DynamicUp_FORCEBACK">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="누란 3스테이지 암석 밀어내기" _Distance="400" _DraggedByForceMax="1000" _DraggedByForceMin="1000" _DurationTime="300" _EffectType="STATUS_EFFECT_BUFF" _Name="누란 3스테이지 암석 밀어내기" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_SYSTEM_PUSH" />
+  </INFO>
+  <INFO ID="1201240010" KEYNAME="STATUS_LACRI_ALL_CAR_FLY">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="저멀리 안드로메다로" _DistanceRatio="1" _DurationTime="2000" _EffectType="STATUS_EFFECT_BUFF" _HeightRatio="2" _Interval="0" _LyingTime="0.2" _Name="자동차 폭발시 플라이" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_FLY" />
+  </INFO>
+  <INFO ID="1200040001" KEYNAME="STATUS_LACRI_S2_ELECTRONICLINE_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="1초간 감전" _DurationTime="1000" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="라크리 2-1 감전리모트" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1200040001" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1200040002" KEYNAME="STATUS_LACRI_S2_SPARKMACHINE_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.5초간 감전" _DurationTime="650" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="라크리 2-1 전기폭풍 감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1200040002" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1201300000" KEYNAME="STATUS_PVP_GiantWalk_MoveSpeed_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="거인 돌격전 본진 벗어날 때 이속 증가" _DurationTime="7500" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="거인 돌격전_이동속도 증가 75%" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201300000" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1201300001" KEYNAME="STATUS_PVP_GiantWalk_Heal">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="틱당 HP 100 회복" _DurationTime="360000" _EffectKeyName="STATUS_SFX_ITEM_CONTINUITY_HP" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="거인 돌격전_회복 존" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1201200002" KEYNAME="STATUS_CALIGO_S4_HUEBLADE_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 1.5m" _DistanceRatio="1" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="거대 톱날 피격시 Push" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="0.5" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201200004" KEYNAME="STATUS_CALIGO_S5_SERVER_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 1.5m" _DistanceRatio="1" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="서버객체 이동시 Push" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="0.5" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201200005" KEYNAME="STATUS_CALIGO_S3_CRUSHERCUTTER_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="크러숴 커터 푸시" _DistanceRatio="0.5" _EffectType="STATUS_EFFECT_DEBUFF" _Name="크러숴 커터 푸시" _Passive="false" _ReAction="false" _SaveDB="false" _TimeRatio="0.5" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201400003" KEYNAME="STATUS_CALIGO_S2_LASER_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.5초간 감전되는 레이저 절단 장치, 레이저 절단 장치B" _DurationTime="200" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201400003" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1201400007" KEYNAME="STATUS_CALIGO_S3_LEVEL1_POISON">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="3-3 노멀/하드 구간에 존재하는 독가스 구역의 상태이상" _DurationTime="10000" _EffectKeyName="STATUS_SFX_DYNAMIC_POISON" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="poison_01" _Interval="1000" _Name="가스 중독(사용하지 않는듯)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_POISON" />
+  </INFO>
+  <INFO ID="1201400008" KEYNAME="STATUS_CALIGO_S3_LEVEL2_POISON">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="3-3 이지 구간에 존재하는 독가스 구역의 상태이상" _DurationTime="10000" _EffectKeyName="STATUS_SFX_DYNAMIC_POISON" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="poison_01" _Interval="1000" _Name="가스 중독(사용하지 않는듯)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_POISON" />
+  </INFO>
+  <INFO ID="1201400100" KEYNAME="STATUS_LACRI_S2_Z2_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 100%, 리액션 없음" _DistanceRatio="1" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _HeightRatio="1" _Interval="0" _Name="라크리모사 2-2 전력장치 닫힘용 푸쉬" _Passive="false" _ReAction="false" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201400101" KEYNAME="STATUS_PVP_Death_UPDOWN_FORCEBACK">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="PvP 업다운 벽 Forceback" _Distance="400" _DistanceRatio="0.5" _DurationTime="300" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="PvP 업다운 벽 Forceback" _Passive="false" _ReAction="false" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_FORCEBACK" />
+  </INFO>
+  <INFO ID="1201400002" KEYNAME="STATUS_CALIGO_S4_PRESS_STUN">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="프레스배리어에 의한 스턴" _DurationTime="500" _EffectKeyName="STATUS_SFX_DYNAMIC_STUN" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="stun_01" _Interval="0" _Name="프레스배리어에 의한 스턴" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201400002" _Type="STATUS_TYPE_STUN" />
+  </INFO>
+  <INFO ID="1201400009" KEYNAME="STATUS_CALIGO_S4_LASER_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="감전_0.2초" _DurationTime="200" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="칼리고 4스테이지 차단장치 감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201400009" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1200070396" KEYNAME="STATUS_CALIGO_S5_PAN1_DRAGGED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="환풍기 팬에 걸린 빨아들이기" _DurationTime="3000" _EffectKeyName="STATUS_SFX_DYNAMIC_DRAGGEDBYFORCE" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="dragged_01" _Interval="0" _Name="빨아들이기" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_DRAGGED" />
+  </INFO>
+  <INFO ID="1200070397" KEYNAME="STATUS_CALIGO_S5_PAN2_DRAGGED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="팬 트랩 빨아들이기" _DraggedByForceMax="500" _DraggedByForceMin="300" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_DRAGGEDBYFORCE" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="빨아들이기" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+  </INFO>
+  <INFO ID="1200070499" KEYNAME="STATUS_CALIGO_S5_SERVER_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="5-1 서버 컴퓨터 보호 완료 시 무적 상태 이상" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="공장 서버컴퓨터 무적 상태" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1200070450" KEYNAME="STATUS_CALIGO_S5_SERVER_GODMODE_1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="PVP 데스매치 무적" _DurationTime="5000" _EffectKeyName="STATUS_SFX_PC_MagicGirl_EyeContact_Shield" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="PVP 데스매치 무적" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1201070401" KEYNAME="STATUS_CALIGO_S1_Shift_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="칼리고 정비 구역 전송 장치 무적 상태" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="칼리고 정비 구역 전송 장치 무적 상태" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000011" KEYNAME="STATUS_VENTUS_S2_DARK_SLOW">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이동 속도 30% 감소" _DurationTime="1500" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="벤투스_형광물질_이속 감소" _Passive="False" _ReAction="False" _SaveDB="False" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000011" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1200070500" KEYNAME="STATUS_CALIGO_TEST_VALVE_FREEZE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="냉각가스에 맞았을 때 빙결" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_FREEZE" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="냉각장치 프리즈" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_FREEZE" />
+  </INFO>
+  <INFO ID="1201170003" KEYNAME="STATUS_CHARIS_ALL_TOTEM_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="공격력 30%, 이속 30%증가_10cho" _DurationTime="10000" _EffectKeyName="STATUS_SFX_PC_ATTACK" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="powerup_01" _Interval="0" _Name="카리스토템_버프_공격력_이속 증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201170003" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1200070004" KEYNAME="STATUS_CHARIS_ALL_TOTEM_HEAL">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 200 회복" _DurationTime="1000" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hpup_01" _Interval="0" _Name="카리스토템_버프_힐" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1200070009" KEYNAME="STATUS_CHARIS_ALL_TOTEM_JUMP">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="8초간 SP 재생 500% 증가" _DurationTime="8000" _EffectKeyName="STATUS_SFX_PC_STAMINA" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="카리스토템_버프_SP재생" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1200070009" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1201170002" KEYNAME="STATUS_CHARIS_STALACTITE_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.5초간 0.5의 힘으로 Push" _DistanceRatio="0.5" _DurationTime="350" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="카리스 종유석_푸쉬" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="0.5" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1201200003" KEYNAME="STATUS_CALIGO_S3_BELT_DRAGGED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="칼리고 컨베이어 벨트 효과끌어당기기" _DraggedByForceMax="160" _DraggedByForceMin="160" _DurationTime="1000" _EffectType="STATUS_EFFECT_UNKNOWN" _Interval="0" _Name="칼리고 끌어당기기" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_DRAGGEDDIR" />
+  </INFO>
+  <INFO ID="1202000002" KEYNAME="STATUS_VENTUS_S4_WALL_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="푸쉬 1.5m" _DistanceRatio="0.7" _DurationTime="500" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="벤투스 전기벽 튕김" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="0.7" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1202000003" KEYNAME="STATUS_VENTUS_S4_WALL_SLOW">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="느려짐" _DurationTime="1000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="벤투스 전기벽 느려짐" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000003" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000005" KEYNAME="STATUS_Event_ALL_CUVE_PUSH">
+    <ST_COMMONSTATUS _CanDispel="False" _Description="푸쉬 2m" _DistanceRatio="1.7" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="서버객체 이동시 Push" _Passive="False" _ReAction="True" _SaveDB="False" _TimeRatio="0.5" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1202000006" KEYNAME="STATUS_FACTORY_S5_LASER_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.5초간 감전되는 레이저 절단 장치, 레이저 절단 장치B" _DurationTime="500" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="공장_레이저트랩_감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000006" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1201200007" KEYNAME="STATUS_VENTUS_S4_FAN_DRAGGED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 4 보스 연출용 끌어당기기" _DraggedByForceMax="700" _DraggedByForceMin="700" _DurationTime="1000" _EffectType="STATUS_EFFECT_UNKNOWN" _Interval="0" _Name="벤투스 끌어당기기" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+  </INFO>
+  <INFO ID="1200400008" KEYNAME="STATUS_Event_ALL_Box_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="문을 열기 전까지 무적 상태" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="이벤트존 박스 무적" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1201400010" KEYNAME="STATUS_VENTUS_S4_LASER_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.3초간 감전되는 벤투스 회전 레이저" _DurationTime="300" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1201400010" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1200400009" KEYNAME="STATUS_FACTORY_S5_SEVER_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="2초간 감전되는 서버 컴퓨터 상태" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="공장 바닥 감전" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1200400009" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1200400010" KEYNAME="STATUS_FACTORY_S5_GROGGY_CRITICAL">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="공장 바닥 그로기 상태" _DurationTime="2000" _EffectType="STATUS_EFFECT_DEBUFF" _Name="공장 바닥 그로기 상태" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000009" KEYNAME="STATUS_VENTUS_S5_FLAME_PC">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 5 화염방사 불타기 PC용" _DotDamageMultiplier="0.15" _DurationTime="6000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="벤투스 5 화염방사 불타기 PC용" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000009" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000010" KEYNAME="STATUS_VENTUS_S5_FLAME_MOB">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 5 화염방사 불타기 몹용" _DurationTime="6000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_BUFF" _Interval="1000" _Name="벤투스 5 화염방사 불타기 몹용" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000013" KEYNAME="STATUS_VENTUS_S5_FLAME_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 불길 이속 증가" _DurationTime="15000" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="벤투스 불길 이속 증가 (Extreme/Hell용)" _Passive="FALSE" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000015" KEYNAME="STATUS_VENTUS_VARIATION_MOB">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 드론을 변이시키는 상태이상" _DurationTime="999999" _EffectType="STATUS_EFFECT_BUFF" _Name="벤투스 드론을 변이시키는 상태이상" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000019" KEYNAME="STATUS_VENTUS_CAPSULE_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="벤투스 3 캡슐 올라올 때 푸쉬 100%" _DistanceRatio="0.5" _EffectType="STATUS_EFFECT_DEBUFF" _Name="캡슐 올라올 때 푸쉬 100%" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1202000007" KEYNAME="STATUS_FACTORY_S2_SPARK_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="공격력 20%, 이속 40% 증가, HP 20% 감소" _DurationTime="15000" _EffectKeyName="STATUS_SFX_MOB_ATTACK" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="powerup_01" _Interval="0" _Name="공장_스파크_로봇 스팀팩" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000008" KEYNAME="STATUS_CALIGO_S3_CRUSHERCUTTER_FLAG">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="크러숴 커터 플래그" _DurationTime="3000" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="크러숴 커터 플래그" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1202000014" KEYNAME="STATUS_FACTORY_S5_LASER_2_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="1초간 감전되는 레이저 절단 장치, 레이저 절단 장치B" _DurationTime="800" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="운동회_레이저트랩_감전(0.8초)" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000014" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1202000023" KEYNAME="STATUS_Sports_S5_LASER_2_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="0.5초간 감전되는 레이저 절단 장치, 레이저 절단 장치B" _DurationTime="500" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="운동회_레이저트랩_감전(0.5초)" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000023" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1202000024" KEYNAME="STATUS_Sports_S1_Remote_SLOW">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_달리기 탄_1초 감속 70%" _DurationTime="1000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="운동회_달리기 탄_감속 70%" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000024" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000016" KEYNAME="STATUS_Sports_S1_BUFF_MOVE1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="8초간 이속 증가 버프" _DurationTime="8000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="운동회_이속 증가 버프" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000016" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000017" KEYNAME="STATUS_Sports_S1_BUFF_STAMINA1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_무한 스태미너" _DurationTime="500000" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="운동회_무한 스태미너" _Passive="true" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000017" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000018" KEYNAME="STATUS_Sports_S1_BUFF_STAMINA2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_무한 스태미너" _DurationTime="500000" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="운동회_무한 스태미너+이속증가" _Passive="true" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000018" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000020" KEYNAME="STATUS_Sports_S3_BUFF_MOVE2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_3초간 이속 20% 증가 버프" _DurationTime="3000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="운동회_아이템_이속 20% 증가" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000020" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000021" KEYNAME="STATUS_Sports_S3_BUFF_MOVE3">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_3초간 이속 20% 감소 버프" _DurationTime="3000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="운동회_아이템_이속 20% 감소" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000021" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000022" KEYNAME="STATUS_Sports_S3_BUFF_HP1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_아이템_HP 10% 회복" _DurationTime="1000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="운동회_아이템_HP 10% 회복" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000022" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000031" KEYNAME="STATUS_Sports_SideRun_BUFF_MOVE1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적3초_이속10%증가" _DurationTime="3000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="가로 달리기_무적3초_이속10%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000031" _Type="STATUS_TYPE_SUPERARMOR" />
+  </INFO>
+  <INFO ID="1202000032" KEYNAME="STATUS_Sports_SideRun_BUFF_MOVE2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적5초_이속30%증가" _DurationTime="5000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="가로 달리기_무적5초_이속30%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000032" _Type="STATUS_TYPE_SUPERARMOR" />
+  </INFO>
+  <INFO ID="1202000033" KEYNAME="STATUS_Sports_SideRun_BUFF_MOVE3">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적7초_이속60%증가" _DurationTime="7000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="가로 달리기_무적7초_이속60%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000033" _Type="STATUS_TYPE_SUPERARMOR" />
+  </INFO>
+  <INFO ID="1202000034" KEYNAME="STATUS_Sports_Run_BUFF_MOVE1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적6초_이속15%증가" _DurationTime="6000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="달리기_무적6초_이속15%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000034" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000035" KEYNAME="STATUS_Sports_Run_BUFF_MOVE2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적6초_이속30%증가" _DurationTime="6000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="달리기_무적6초_이속30%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000035" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000036" KEYNAME="STATUS_Sports_Run_BUFF_MOVE3">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="무적6초_이속60%증가" _DurationTime="6000" _EffectKeyName="STATUS_SFX_ITEM_GODMODE_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superarmor_01" _Name="달리기_무적6초_이속60%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000036" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000106" KEYNAME="STATUS_DYNAMIC_ALL_ATTACK_GUIDE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="어택 마커" _DurationTime="3000000" _EffectKeyName="STATUS_SFX_DYNAMIC_GUIDE_ATTACK" _EffectType="STATUS_EFFECT_BUFF" _Name="동적객체 이동 가이드 마커" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_EFFECT" />
+  </INFO>
+  <INFO ID="1202000107" KEYNAME="STATUS_PVP_TEST_Success_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="1차 공격 성공시 보여주는 버프" _DurationTime="3000000" _EffectKeyName="STATUS_SFX_MOB_WATER_BUFF" _EffectSlot="31014" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="점령 시 확인 버프" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000108" KEYNAME="STATUS_Dredgion_Engine_FLAG">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="엔진 체크 플레그" _DurationTime="0" _EffectType="STATUS_EFFECT_DEBUFF" _Interval="0" _Name="엔진 플레그" _Passive="true" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_FLAG" />
+  </INFO>
+  <INFO ID="1202000109" KEYNAME="STATUS_Dredgion_Engine_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="드레드기온 엔진 10초 무적" _DurationTime="10000" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defensemode_01" _Interval="0" _Name="10초 무적" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000110" KEYNAME="STATUS_Dredgion_Defect_DRAGGEDBYFORCE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="드레드기온 결함 빨아드리기" _DraggedByForceMax="500" _DraggedByForceMin="400" _DurationTime="200" _EffectKeyName="STATUS_SFX_MOB_DRAGGEDBYFORCE" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="dragged_01" _Interval="0" _Name="결함 빨아드리기" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+  </INFO>
+  <INFO ID="1202000111" KEYNAME="STATUS_Dredgion_IceBox_FREEZE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="냉각가스에 맞았을 때 10초 빙결" _DurationTime="10000" _EffectKeyName="STATUS_SFX_DYNAMIC_FREEZE" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="냉각장치" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_FREEZE" />
+  </INFO>
+  <INFO ID="1202000112" KEYNAME="STATUS_Dredgion_IceBox_STUN">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="냉각가스에 맞았을 때 10초 스턴" _DurationTime="10000" _EffectKeyName="STATUS_SFX_DYNAMIC_FREEZE" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="냉각장치 (스턴)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STUN" />
+  </INFO>
+  <INFO ID="1202000113" KEYNAME="STATUS_Nuran_s1_Defect_DRAGGEDBYFORCE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="누란 유사 빨아드리기(직선형)" _DraggedByForceMax="300" _DraggedByForceMin="200" _DurationTime="1000" _EffectKeyName="STATUS_SFX_MOB_DRAGGEDBYFORCE" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="dragged_01" _Interval="0" _Name="누란_빨아드리기(직선형)" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_DRAGGEDBYFORCE" />
+  </INFO>
+  <INFO ID="1202000114" KEYNAME="STATUS_PvE_Defense_Debuff_Move">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="PC 공격력 50% 디버프" _DurationTime="5000" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="PvE 디펜스 상태이상" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000117" KEYNAME="STATUS_PvE_Defense_MoveSpeed_BUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스 이속 증가 30% 5초" _DurationTime="5000" _EffectKeyName="STATUS_SFX_ITEM_BUFF_SpeedUp" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="디펜스_이동속도 증가 30%" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000117" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000118" KEYNAME="STATUS_PvE_Defense_MoveSpeed_BUFF90">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스 이속 증가 90초" _DurationTime="90000" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _Name="디펜스_이동속도 증가 50% 90초" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000118" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000140" KEYNAME="STATUS_PvE_Defense_MoveSpeed_STACKBUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="[디펜스] 버프자판기 이속버프" _DurationTime="120000" _EffectKeyName="STATUS_SFX_MOB_WIND_SPEED_BUFF" _EffectSlot="31015" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="0" _MaxOverlapCount="5" _Name="[디펜스] 버프자판기 이속버프" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000140" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000141" KEYNAME="STATUS_PvE_Defense_StaminaRegen_STACKBUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="[디펜스] 버프자판기 스태미너리젠버프" _DurationTime="120000" _EffectKeyName="STATUS_SFX_PVP_TITAN_SPEED_03" _EffectSlot="31016" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="titan_epic_01" _Interval="0" _MaxOverlapCount="5" _Name="[디펜스] 버프자판기 스태미너리젠버프" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000141" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000142" KEYNAME="STATUS_PvE_Defense_UGRegen_STACKBUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="[디펜스] 버프자판기  UG리젠버프" _DurationTime="120000" _EffectKeyName="STATUS_SFX_PC_UpgradeBuff_03" _EffectSlot="31017" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="titan_instantbuff_01" _Interval="0" _MaxOverlapCount="5" _Name="[디펜스] 버프자판기 UG리젠버프" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000142" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000143" KEYNAME="STATUS_PvE_Defense_TagCooltime_STACKBUFF">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="[디펜스] 버프자판기 태그쿨타임 감소버프" _DurationTime="120000" _EffectKeyName="STATUS_SFX_PC_SoloBuff_Skill" _EffectSlot="31018" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="titan_persistentbuff_01" _Interval="0" _MaxOverlapCount="5" _Name="[디펜스] 버프자판기 태그쿨타임 감소버프" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000143" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000144" KEYNAME="STATUS_PvE_Defense_Zone_HP">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_회복존 효과 HP" _DurationTime="360000" _EffectType="STATUS_EFFECT_BUFF" _Interval="500" _Name="디펜스_회복존 효과 HP" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000145" KEYNAME="STATUS_PvE_Defense_Zone_MP">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_회복존 효과 MP" _DurationTime="360000" _EffectType="STATUS_EFFECT_BUFF" _Interval="500" _Name="디펜스_회복존 효과 MP" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000146" KEYNAME="STATUS_PvE_Defense_PC_Heal">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_PC 회복" _DurationTime="3100" _EffectKeyName="STATUS_SFX_MOB_HPREGEN" _EffectType="STATUS_EFFECT_BUFF" _Interval="300" _Name="디펜스_PC 회복" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000147" KEYNAME="STATUS_PvE_Defense_Tower_Heal">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_포탑 회복" _EffectKeyName="STATUS_SFX_MOB_HPREGEN" _EffectType="STATUS_EFFECT_BUFF" _Name="디펜스_포탑 회복" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000148" KEYNAME="STATUS_PvP_Defense_Core_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_코어 무적" _DurationTime="9999999" _EffectKeyName="STATUS_SFX_MOB_GODMODE" _EffectType="STATUS_EFFECT_BUFF" _Name="디펜스_코어 무적" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000149" KEYNAME="STATUS_PvE_Defense_Core_Heal">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_포탑 회복" _EffectKeyName="STATUS_SFX_MOB_HPREGEN" _EffectType="STATUS_EFFECT_BUFF" _Name="디펜스_코어 회복" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000150" KEYNAME="STATUS_PvE_Defense_Core_Heal_Small">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_포탑 회복" _EffectKeyName="STATUS_SFX_MOB_HPREGEN" _EffectType="STATUS_EFFECT_BUFF" _Name="디펜스_코어 회복_소량" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000201" KEYNAME="STATUS_Sports_ALL_Debuff_DOT15">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="초당 5씩 HP 감소" _DotBaseDamage="100" _DotDamageMultiplier="15" _DurationTime="50000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="운동회_탄막 먹기_도트 데미지_15(사용하지 않는듯)" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000201" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000202" KEYNAME="STATUS_Sports_ALL_Debuff_DOT25">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="초당 10씩 HP 감소" _DotBaseDamage="200" _DotDamageMultiplier="25" _DurationTime="55000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="운동회_탄막 먹기_도트 데미지_25(사용하지 않는듯)" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000202" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000203" KEYNAME="STATUS_Sports_ALL_Debuff_DOT35">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="초당 20씩 HP 감소" _DotBaseDamage="300" _DotDamageMultiplier="35" _DurationTime="999999" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="운동회_탄막 먹기_도트 데미지_35(사용하지 않는듯)" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000203" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000204" KEYNAME="STATUS_Sports_ALL_Remote_HEAL1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 100 회복" _DurationTime="1000" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hpup_01" _Interval="0" _Name="운동회_탄막 먹기_힐링 리모트" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000205" KEYNAME="STATUS_Sports_ALL_Remote_HEAL2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 500 회복" _DurationTime="1000" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hpup_01" _Interval="0" _Name="운동회_탄막 먹기_힐링 리모트" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000206" KEYNAME="STATUS_Sports_ALL_BUFF_MOVE1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="5초간 이속 증가 버프" _DurationTime="999999" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Interval="1000" _Name="운동회_탄막 먹기_이속 증가 버프" _Passive="false" _ReAction="true" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000206" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000207" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL5">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 5 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_5" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000208" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL10">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 10 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_10" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000209" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL20">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 20 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_20" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000210" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL30">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 30 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_30" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000211" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL40">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 40 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_40" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000212" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL50">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 50 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_50" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000213" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL60">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 60 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_60" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000214" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL80">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 80 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_80" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000215" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL100">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 100 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_100" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000216" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL150">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 150 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_150" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000217" KEYNAME="STATUS_Sports_HitRemote_Remote_HEAL200">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 200 회복" _DurationTime="90" _EffectKeyName="STATUS_SFX_ITEM_INSTANT_HP_SPORTS" _EffectType="STATUS_EFFECT_BUFF" _Interval="0" _Name="탄막 먹기_힐링 리모트_200" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000218" KEYNAME="STATUS_Sports_SideRun_Remote_Fly">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="사이드뷰 달리기 플라이" _DistanceRatio="0.5" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _LyingTime="0.2" _Name="사이드뷰 달리기 플라이" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_FLY" />
+  </INFO>
+  <INFO ID="1202000219" KEYNAME="STATUS_Sports_SideRun_Remote_SHOCKED2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="1초 감전" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="사이드뷰 달리기 쇼크 2단계" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1202000220" KEYNAME="STATUS_Sports_SideRun_Remote_SLOW1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_달리기 감속" _DurationTime="1000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="사이드뷰 달리기 감속탄_1단계" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000221" KEYNAME="STATUS_Sports_SideRun_Remote_PUSH">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="사이드뷰 달리기 푸쉬" _DistanceRatio="1.5" _DurationTime="2000" _EffectType="STATUS_EFFECT_DEBUFF" _Name="사이드뷰 달리기 푸쉬" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_PUSH" />
+  </INFO>
+  <INFO ID="1202000222" KEYNAME="STATUS_Sports_SideRun_Remote_SLOW2">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회_달리기 감속" _DurationTime="2000" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="사이드뷰 달리기 감속탄_2단계" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000223" KEYNAME="STATUS_Sports_SideRun_Remote_SHOCKED1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="1초 감전" _DurationTime="1000" _EffectKeyName="STATUS_SFX_DYNAMIC_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Interval="0" _Name="사이드뷰 달리기 쇼크 1단계" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1202000224" KEYNAME="STATUS_Sports_SideDodge_FLAME_Dot">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="가로 피하기 화염 도트 데미지" _DotBaseDamage="120" _DotDamageMultiplier="0.4" _DurationTime="5000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="가로 피하기 화염 도트 데미지" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000224" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000115" KEYNAME="STATUS_PvP_Death_Remote_MOVESPEED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="이속 증가 50%" _DurationTime="20000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hpup_01" _Interval="0" _Name="전투 훈련실 부시형 이속 증가" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000115" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000116" KEYNAME="STATUS_PvP_Death_God_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="전투 훈련실 무적" _DurationTime="4500" _EffectKeyName="STATUS_SFX_PC_GODMODE2_PvP" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defensemode_01" _Interval="0" _Name="무적 (5초) - 전투 훈련실" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000116" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000119" KEYNAME="STATUS_PvP_Occupy_God_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="점령전 무적" _DurationTime="2500" _EffectKeyName="STATUS_SFX_PC_GODMODE2_PvP" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="defensemode_01" _Interval="0" _Name="무적 (2.5초) - 점령전" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000119" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000121" KEYNAME="STATUS_Sports_LiftJump_Remote_SHOCKED">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="위아래 버티기 쇼크" _DurationTime="1000" _EffectKeyName="STATUS_SFX_MOB_SHOCKED" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="shocked_01" _Name="위아래 버티기 쇼크" _Passive="false" _ReAction="true" _SaveDB="false" _Type="STATUS_TYPE_SHOCKED" />
+  </INFO>
+  <INFO ID="1202000200" KEYNAME="STATUS_Sports_Bubble_Remove">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="운동회 버블 삭제" _EffectType="STATUS_EFFECT_DEBUFF" _Name="운동회 버블 삭제" _Passive="true" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000231" KEYNAME="STATUS_PvE_ALL_BUFF_MOVE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="PVE_7초_이속30%증가" _DurationTime="7000" _EffectKeyName="STATUS_SFX_ITEM_BUFF_SpeedUp" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Name="PVE_7초_이속40%증가" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000231" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000236" KEYNAME="STATUS_Event_Antnest_Remote_SLOW">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="개미굴_웅덩이 슬로우 효과(PC)" _DurationTime="1500" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="개미굴_웅덩이 슬로우 효과" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000236" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000237" KEYNAME="STATUS_Event_Antnest_Remote_SLOW1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="개미굴_웅덩이 슬로우 효과(Mob)" _DurationTime="1500" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Interval="0" _Name="개미굴_웅덩이 슬로우 효과" _Passive="false" _ReAction="true" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000237" _Type="STATUS_TYPE_SLOW" />
+  </INFO>
+  <INFO ID="1202000125" KEYNAME="STATUS_PvP_DeathPortal_Remote_HIDE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="전투 훈련실 포탈형 포탈 은신 (버로우)" _DurationTime="1600" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hide_01" _Name="전투 훈련실 포탈형 포탈 은신" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_BURROW">
+      <_INPUT_STATE_BLOCK _Attack="1" _HideSkill="1" _Jump="1" _Move="1" _MoveSkill="1" _MovingShirk="1" _Skill="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1202000126" KEYNAME="STATUS_PvP_DeathPortal_Remote_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="전투 훈련실 포탈형 포탈 무적" _DurationTime="1500" _EffectType="STATUS_EFFECT_BUFF" _Name="전투 훈련실 포탈형 포탈 무적" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000127" KEYNAME="STATUS_PvE_Gludio_PortalEffect_In">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="글루디오 포탈 이동 IN" _DurationTime="800" _EffectKeyName="STATUS_SFX_PC_L1_Public_Teleport_In" _EffectType="STATUS_EFFECT_BUFF" _Name="글루디오 포탈 이동 IN" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000128" KEYNAME="STATUS_PvE_Gludio_PortalEffect_Out">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="글루디오 포탈 이동 OUT" _DurationTime="800" _EffectKeyName="STATUS_SFX_PC_L1_Public_Teleport_Out" _EffectType="STATUS_EFFECT_BUFF" _Name="글루디오 포탈 이동 OUT" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000129" KEYNAME="STATUS_PvE_Gludio_Remote_HIDE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="글루디오 포탈 은신" _DurationTime="1000" _EffectKeyName="STATUS_SFX_PC_HIDE_GLUDIO" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hide_01" _Name="글루디오 포탈 은신" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_HIDE">
+      <_INPUT_STATE_BLOCK _Jump="1" _MoveSkill="1" _MovingShirk="1" _StandingShirk="1" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1202000130" KEYNAME="STATUS_PvE_Gludio_Remote_GODMODE">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="글루디오 포탈 무적" _DurationTime="1000" _EffectType="STATUS_EFFECT_BUFF" _Name="글루디오 포탈 무적" _Passive="false" _ReAction="false" _SaveDB="false" _Type="STATUS_TYPE_GODMODE" />
+  </INFO>
+  <INFO ID="1202000250" KEYNAME="STATUS_ALL_Stage_DynamicUp_FORCEBACK">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="동적객체 업 밀어냄 상태이상(지우지 말 것)" _Distance="300" _DraggedByForceMax="1000" _DraggedByForceMin="1000" _DurationTime="300" _EffectType="STATUS_EFFECT_BUFF" _Name="동적객체 업 밀어냄 상태이상(지우지 말 것)" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_SYSTEM_PUSH" />
+  </INFO>
+  <INFO ID="1202000251" KEYNAME="STATUS_ALL_Stage_DynamicUp_FORCEBACK_2m">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="동적객체 업 밀어냄 상태이상(지우지 말 것)" _Distance="200" _DraggedByForceMax="1000" _DraggedByForceMin="1000" _DurationTime="300" _EffectType="STATUS_EFFECT_BUFF" _Name="동적객체 업 밀어냄 상태이상(지우지 말 것)_2m 밀림" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_SYSTEM_PUSH" />
+  </INFO>
+  <INFO ID="1202000252" KEYNAME="STATUS_ALL_Stage_DynamicUp_FORCEBACK_2m_1">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="동적객체 업 밀어냄 상태이상(지우지 말 것)" _Distance="300" _DraggedByForceMax="1000" _DraggedByForceMin="1000" _DurationTime="2000" _EffectType="STATUS_EFFECT_BUFF" _Name="동적객체 업 밀어냄 상태이상(지우지 말 것)_3m 2초간" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Type="STATUS_TYPE_SYSTEM_PUSH" />
+  </INFO>
+  <INFO ID="1202000241" KEYNAME="STATUS_PvE_Defense_MoveSpeed_BUFF100">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스 이속 증가" _DurationTime="5000" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Name="디펜스_이동속도 증가 30% 지속" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000241" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000242" KEYNAME="STATUS_PvE_Defense_MagicZone_Damage">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_마법진 대미지" _DotDamageMultiplier="0.3" _DurationTime="3000" _EffectKeyName="STATUS_SFX_MOB_BURNING" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="burning_01" _Interval="1000" _Name="디펜스_마법진 대미지" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000242" _Type="STATUS_TYPE_BURNING" />
+  </INFO>
+  <INFO ID="1202000243" KEYNAME="STATUS_PvE_Defense_MagicZone_Slow">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_마법진 이속 감소" _DurationTime="500" _EffectKeyName="STATUS_SFX_DYNAMIC_SLOW" _EffectType="STATUS_EFFECT_DEBUFF" _IconAlias="slow_01" _Name="디펜스_마법진 이속 감소" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000243" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000244" KEYNAME="STATUS_PvE_Defense_MagicZone_SpeedUp">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스_마법진 이속 증가" _DurationTime="3000" _EffectKeyName="STATUS_SFX_PC_MOVESPEED" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Name="디펜스_마법진 이속 증가" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000244" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000350" KEYNAME="STATUS_Tutorial_Fly">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="튜토리얼 플라이" _DistanceRatio="1.25" _DurationTime="1000" _EffectType="STATUS_EFFECT_DEBUFF" _LyingTime="0.2" _Name="튜토리얼 플라이" _Passive="false" _ReAction="true" _SaveDB="false" _TimeRatio="1" _Type="STATUS_TYPE_FLY" />
+  </INFO>
+  <INFO ID="1202000245" KEYNAME="STATUS_PvE_Defense_MoveSpeed_15">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="디펜스 기본 이속 증가" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _Name="디펜스_이동속도 증가 15% 지속 무한" _Passive="true" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000245" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+  <INFO ID="1202000300" KEYNAME="STATUS_PvP_Occupy_Core_HEAL">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="HP 30% 회복" _DurationTime="1000" _EffectKeyName="STATUS_SFX_MOB_HPREGEN" _EffectSlot="31020" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="hpup_01" _Interval="0" _Name="점령전 장치점령 회복버프" _Passive="false" _ReAction="false" _SaveDB="false" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000300" _Type="STATUS_TYPE_HEAL" />
+  </INFO>
+  <INFO ID="1202000301" KEYNAME="STATUS_PvP_Occupy_Core_SpeedUp">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="(최대 3스택)\n스택당 이동속도 2% 증가" _DurationTime="-1" _EffectKeyName="STATUS_SFX_PC_UpgradeBuff_01" _EffectSlot="31021" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="speedup_01" _MaxOverlapCount="3" _Name="점령전 장치점령 이속버프 (스택)" _Passive="true" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000301" _Type="STATUS_TYPE_STAT">
+      <_EffectKeyNames DATA="STATUS_SFX_PC_UpgradeBuff_02" />
+      <_EffectKeyNames DATA="STATUS_SFX_PC_UpgradeBuff_03" />
+    </ST_COMMONSTATUS>
+  </INFO>
+  <INFO ID="1202000302" KEYNAME="STATUS_PvP_Occupy_Master_PowerUp">
+    <ST_COMMONSTATUS _CanDispel="false" _Description="공격력, 방어력이 15%씩 증가하고, 크리티컬 확률이 20%씩 증가합니다." _DurationTime="10000" _EffectKeyName="STATUS_SFX_ITEM_BUFF_SuperAttack" _EffectSlot="31022" _EffectType="STATUS_EFFECT_BUFF" _IconAlias="superimmune_01" _Interval="0" _Name="점령전 정복자 종합버프" _Passive="false" _ReAction="false" _SaveDB="false" _TargetingType="BOTH_CHARACTER" _Tooltip="STR_STATUS_DYNAMIC_TOOLTIP_1202000302" _Type="STATUS_TYPE_STAT" />
+  </INFO>
+</ENTITY_FILE>

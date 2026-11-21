@@ -1,0 +1,4021 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <ST_EXP_INFO>
+    <EXP_INFO DATAKEY="1" _RequiredExp="1000" />
+    <EXP_INFO DATAKEY="2" _RequiredExp="1000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="3" _RequiredExp="1000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+      <_Reward _Type="ITEM" _ItemIndex="136020013" _Amount="3" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="4" _RequiredExp="1000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+      <_Reward _Type="ITEM" _ItemIndex="136020002" _Amount="5" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="5" _RequiredExp="1500" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="5000" />
+      <_Reward _Type="ITEM" _ItemIndex="132199292" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="6" _RequiredExp="1500">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="7" _RequiredExp="1500">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="8" _RequiredExp="1500">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="9" _RequiredExp="2000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="10" _RequiredExp="2000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="5000" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="11" _RequiredExp="2000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="12" _RequiredExp="2000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="13" _RequiredExp="2000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="14" _RequiredExp="2000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="15" _RequiredExp="2460" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="5000" />
+      <_Reward _Type="ITEM" _ItemIndex="132399391" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="16" _RequiredExp="2500">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="17" _RequiredExp="2540">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="132199393" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="18" _RequiredExp="2580">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="19" _RequiredExp="2640">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="20" _RequiredExp="2690" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="10000" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="21" _RequiredExp="2760">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="22" _RequiredExp="2830">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+      <_Reward _Type="ITEM" _ItemIndex="137112001" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="23" _RequiredExp="2900">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="132299394" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="24" _RequiredExp="2990">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="25" _RequiredExp="3080" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137100010" _Amount="3" />
+      <_Reward _Type="ITEM" _ItemIndex="137120001" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="26" _RequiredExp="3190">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="27" _RequiredExp="3300">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="28" _RequiredExp="3430">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="29" _RequiredExp="3570">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="132199392" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="30" _RequiredExp="3720" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="10000" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="31" _RequiredExp="3890">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="32" _RequiredExp="4080">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="33" _RequiredExp="4280">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+      <_Reward _Type="ITEM" _ItemIndex="137112001" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="34" _RequiredExp="4500">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="35" _RequiredExp="4750" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137120001" _Amount="3" />
+      <_Reward _Type="REWARD_TYPE_DESCRIPTION" _Desc="level_cond_defence_stage_open" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="36" _RequiredExp="5020">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="37" _RequiredExp="5310">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="38" _RequiredExp="5630">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="39" _RequiredExp="5980">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="1500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="40" _RequiredExp="6360" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="132100401" _Amount="1" />
+      <_Reward _Type="REWARD_TYPE_DESCRIPTION" _Desc="level_cond_arena_rank_open" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="41" _RequiredExp="6770">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="42" _RequiredExp="7210">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="43" _RequiredExp="7690">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="44" _RequiredExp="8210">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137100001" _Amount="4" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="45" _RequiredExp="8770" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="6000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="46" _RequiredExp="9360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="47" _RequiredExp="9990">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="48" _RequiredExp="10670">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="49" _RequiredExp="11380">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="50" _RequiredExp="12140" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="10000" />
+      <_Reward _Type="ITEM" _ItemIndex="138000901" _Amount="6" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="51" _RequiredExp="12930">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="52" _RequiredExp="13760">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="53" _RequiredExp="14630">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="54" _RequiredExp="15520">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="55" _RequiredExp="16450" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="8000" />
+      <_Reward _Type="ITEM" _ItemIndex="138000903" _Amount="6" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="56" _RequiredExp="17400">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="57" _RequiredExp="18370">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="58" _RequiredExp="19360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="59" _RequiredExp="20360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="60" _RequiredExp="21360" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299601" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="61" _RequiredExp="22360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="62" _RequiredExp="23360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="63" _RequiredExp="24350">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="64" _RequiredExp="25320">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="65" _RequiredExp="26270" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="5000" />
+      <_Reward _Type="ITEM" _ItemIndex="138000904" _Amount="3" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="66" _RequiredExp="27200">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="6666" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="67" _RequiredExp="28090">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="68" _RequiredExp="28960">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="69" _RequiredExp="29790">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="70" _RequiredExp="30580" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299601" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="71" _RequiredExp="31340">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="72" _RequiredExp="32050">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="73" _RequiredExp="32730">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="74" _RequiredExp="33360">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="75" _RequiredExp="33950" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="5000" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="76" _RequiredExp="34510">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="77" _RequiredExp="35030">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="78" _RequiredExp="35510">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="79" _RequiredExp="35950">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="80" _RequiredExp="36360" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="138000905" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="81" _RequiredExp="36740">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="82" _RequiredExp="37090">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="83" _RequiredExp="37410">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+      <_Reward _Type="ITEM" _ItemIndex="137100011" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="84" _RequiredExp="37700">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="85" _RequiredExp="37970" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299601" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="86" _RequiredExp="38220">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="87" _RequiredExp="38440">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="88" _RequiredExp="38640">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="8888" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="89" _RequiredExp="38830">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="2500" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="90" _RequiredExp="39000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299601" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="132100501" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="91" _RequiredExp="39150">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="3000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="92" _RequiredExp="39290">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="3000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="93" _RequiredExp="39420">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="94" _RequiredExp="39530">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="3000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="95" _RequiredExp="39640" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299601" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="96" _RequiredExp="39730">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="3000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="97" _RequiredExp="39820">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="3000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="98" _RequiredExp="39890">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299600" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="99" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299602" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="100" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="ITEM" _ItemIndex="137299602" _Amount="1" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="101" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="102" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="103" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="104" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="105" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="106" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="107" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="108" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="109" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="110" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="111" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="112" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="113" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="114" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="115" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="116" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="117" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="118" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="119" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="120" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="121" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="122" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="123" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="124" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="125" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="126" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="127" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="128" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="129" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="130" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="131" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="132" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="133" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="134" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="135" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="136" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="137" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="138" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="139" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="140" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="141" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="142" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="143" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="144" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="145" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="146" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="147" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="148" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="149" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="150" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="151" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="152" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="153" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="154" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="155" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="156" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="157" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="158" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="159" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="160" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="161" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="162" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="163" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="164" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="165" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="166" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="167" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="168" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="169" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="170" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="171" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="172" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="173" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="174" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="175" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="176" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="177" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="178" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="179" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="180" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="181" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="182" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="183" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="184" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="185" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="186" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="187" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="188" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="189" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="190" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="191" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="192" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="193" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="194" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="195" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="196" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="197" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="198" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="199" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="200" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="201" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="202" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="203" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="204" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="205" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="206" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="207" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="208" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="209" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="210" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="211" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="212" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="213" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="214" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="215" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="216" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="217" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="218" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="219" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="220" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="221" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="222" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="223" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="224" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="225" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="226" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="227" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="228" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="229" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="230" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="231" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="232" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="233" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="234" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="235" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="236" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="237" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="238" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="239" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="240" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="241" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="242" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="243" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="244" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="245" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="246" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="247" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="248" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="249" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="250" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="251" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="252" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="253" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="254" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="255" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="256" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="257" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="258" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="259" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="260" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="261" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="262" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="263" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="264" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="265" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="266" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="267" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="268" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="269" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="270" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="271" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="272" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="273" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="274" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="275" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="276" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="277" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="278" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="279" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="280" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="281" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="282" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="283" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="284" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="285" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="286" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="287" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="288" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="289" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="290" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="291" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="292" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="293" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="294" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="295" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="296" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="297" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="298" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="299" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="300" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="301" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="302" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="303" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="304" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="305" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="306" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="307" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="308" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="309" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="310" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="311" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="312" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="313" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="314" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="315" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="316" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="317" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="318" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="319" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="320" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="321" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="322" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="323" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="324" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="325" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="326" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="327" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="328" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="329" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="330" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="331" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="332" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="333" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="334" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="335" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="336" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="337" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="338" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="339" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="340" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="341" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="342" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="343" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="344" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="345" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="346" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="347" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="348" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="349" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="350" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="351" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="352" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="353" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="354" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="355" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="356" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="357" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="358" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="359" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="360" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="361" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="362" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="363" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="364" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="365" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="366" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="367" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="368" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="369" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="370" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="371" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="372" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="373" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="374" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="375" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="376" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="377" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="378" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="379" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="380" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="381" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="382" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="383" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="384" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="385" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="386" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="387" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="388" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="389" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="390" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="391" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="392" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="393" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="394" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="395" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="396" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="397" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="398" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="399" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="400" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="401" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="402" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="403" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="404" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="405" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="406" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="407" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="408" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="409" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="410" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="411" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="412" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="413" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="414" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="415" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="416" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="417" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="418" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="419" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="420" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="421" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="422" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="423" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="424" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="425" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="426" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="427" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="428" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="429" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="430" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="431" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="432" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="433" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="434" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="435" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="436" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="437" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="438" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="439" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="440" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="441" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="442" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="443" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="444" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="445" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="446" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="447" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="448" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="449" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="450" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="451" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="452" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="453" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="454" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="455" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="456" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="457" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="458" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="459" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="460" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="461" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="462" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="463" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="464" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="465" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="466" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="467" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="468" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="469" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="470" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="471" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="472" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="473" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="474" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="475" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="476" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="477" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="478" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="479" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="480" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="481" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="482" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="483" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="484" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="485" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="486" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="487" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="488" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="489" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="490" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="491" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="492" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="493" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="494" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="495" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="496" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="497" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="498" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="499" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="500" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="501" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="502" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="503" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="504" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="505" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="506" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="507" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="508" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="509" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="510" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="511" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="512" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="513" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="514" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="515" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="516" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="517" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="518" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="519" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="520" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="521" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="522" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="523" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="524" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="525" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="526" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="527" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="528" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="529" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="530" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="531" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="532" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="533" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="534" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="535" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="536" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="537" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="538" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="539" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="540" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="541" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="542" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="543" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="544" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="545" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="546" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="547" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="548" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="549" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="550" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="551" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="552" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="553" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="554" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="555" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="556" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="557" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="558" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="559" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="560" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="561" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="562" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="563" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="564" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="565" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="566" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="567" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="568" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="569" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="570" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="571" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="572" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="573" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="574" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="575" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="576" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="577" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="578" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="579" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="580" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="581" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="582" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="583" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="584" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="585" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="586" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="587" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="588" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="589" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="590" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="591" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="592" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="593" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="594" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="595" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="596" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="597" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="598" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="599" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="600" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="601" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="602" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="603" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="604" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="605" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="606" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="607" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="608" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="609" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="610" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="611" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="612" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="613" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="614" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="615" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="616" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="617" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="618" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="619" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="620" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="621" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="622" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="623" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="624" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="625" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="626" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="627" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="628" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="629" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="630" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="631" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="632" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="633" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="634" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="635" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="636" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="637" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="638" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="639" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="640" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="641" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="642" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="643" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="644" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="645" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="646" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="647" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="648" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="649" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="650" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="651" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="652" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="653" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="654" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="655" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="656" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="657" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="658" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="659" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="660" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="661" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="662" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="663" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="664" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="665" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="666" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="667" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="668" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="669" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="670" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="671" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="672" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="673" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="674" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="675" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="676" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="677" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="678" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="679" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="680" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="681" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="682" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="683" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="684" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="685" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="686" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="687" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="688" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="689" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="690" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="691" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="692" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="693" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="694" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="695" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="696" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="697" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="698" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="699" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="700" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="701" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="702" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="703" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="704" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="705" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="706" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="707" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="708" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="709" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="710" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="711" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="712" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="713" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="714" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="715" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="716" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="717" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="718" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="719" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="720" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="721" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="722" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="723" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="724" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="725" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="726" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="727" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="728" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="729" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="730" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="731" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="732" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="733" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="734" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="735" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="736" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="737" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="738" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="739" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="740" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="741" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="742" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="743" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="744" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="745" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="746" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="747" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="748" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="749" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="750" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="751" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="752" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="753" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="754" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="755" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="756" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="757" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="758" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="759" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="760" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="761" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="762" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="763" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="764" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="765" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="766" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="767" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="768" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="769" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="770" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="771" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="772" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="773" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="774" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="775" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="776" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="777" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="778" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="779" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="780" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="781" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="782" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="783" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="784" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="785" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="786" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="787" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="788" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="789" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="790" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="791" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="792" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="793" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="794" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="795" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="796" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="797" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="798" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="799" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="800" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="801" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="802" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="803" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="804" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="805" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="806" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="807" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="808" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="809" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="810" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="811" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="812" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="813" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="814" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="815" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="816" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="817" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="818" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="819" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="820" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="821" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="822" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="823" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="824" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="825" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="826" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="827" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="828" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="829" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="830" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="831" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="832" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="833" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="834" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="835" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="836" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="837" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="838" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="839" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="840" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="841" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="842" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="843" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="844" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="845" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="846" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="847" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="848" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="849" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="850" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="851" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="852" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="853" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="854" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="855" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="856" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="857" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="858" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="859" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="860" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="861" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="862" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="863" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="864" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="865" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="866" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="867" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="868" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="869" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="870" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="871" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="872" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="873" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="874" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="875" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="876" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="877" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="878" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="879" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="880" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="881" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="882" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="883" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="884" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="885" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="886" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="887" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="888" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="889" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="890" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="891" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="892" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="893" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="894" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="895" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="896" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="897" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="898" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="899" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="900" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="901" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="902" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="903" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="904" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="905" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="906" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="907" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="908" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="909" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="910" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="911" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="912" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="913" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="914" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="915" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="916" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="917" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="918" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="919" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="920" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="921" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="922" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="923" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="924" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="925" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="926" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="927" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="928" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="929" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="930" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="931" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="932" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="933" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="934" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="935" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="936" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="937" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="938" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="939" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="940" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="941" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="942" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="943" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="944" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="945" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="946" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="947" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="948" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="949" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="950" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="951" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="952" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="953" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="954" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="955" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="956" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="957" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="958" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="959" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="960" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="961" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="962" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="963" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="964" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="965" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="966" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="967" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="968" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="969" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="970" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="971" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="972" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="973" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="974" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="975" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="976" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="977" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="978" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="979" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="980" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="981" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="982" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="983" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="984" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="985" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="986" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="987" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="988" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="989" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="990" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="991" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="992" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="993" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="994" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="995" _RequiredExp="40000" _BroadcastLvlUp="True">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="996" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="997" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="998" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+    <EXP_INFO DATAKEY="999" _RequiredExp="40000">
+      <_Reward _Type="ITEM" _ItemIndex="130000000" _Amount="1" />
+      <_Reward _Type="GOLD" _Amount="4000" />
+    </EXP_INFO>
+  </ST_EXP_INFO>
+</ENTITY_FILE>

@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GAMEINFO_FILE>
+	<ST_FIXED_DATA>
+		<!--/cs skilltest-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_PC_TEST_PASSIVE_SKILLCOST" DATA="1200005001"/>
+		<!--부활무적-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_PC_SKILL_INVICIBLE_3S" DATA="1230000010"/>
+		<!--태그무적-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_PC_TAG_GODMODE" DATA="1230000020"/>
+		<!--디피트 처리-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_PC_DEFEAT_SUPERARMOR" DATA="1230000101"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_PC_DEFEAT_AND_LIE_SUPERARMOR" DATA="1230000102"/>
+		<!--부쉬-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_All_BUSH_PASSIVE_HIDE" DATA="1200000010"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_All_BUSH_PASSIVE_REVEAL" DATA="1200000011"/>
+		<!--군중제어효과 감소 테스트용-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_TEST_CC_REDUCE" DATA="400000005"/>
+		<!--더블건 패시브 상태이상-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_DOUBLEGUN_PASSIVE_1" DATA="1230110011"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_DOUBLEGUN_PASSIVE_2" DATA="1230110012"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_DOUBLEGUN_PASSIVE_3" DATA="1230110013"/>
+		<!--리모트부활 및 태그 리모트 생성-->
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_FLY_SPAWN" DATA="1400000010"/>
+		<!--무작위 스테이지-->
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_AREA" DATA="190000000"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_STAGE_EASY" DATA="200020000"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_STAGE_NORMAL" DATA="200020001"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_STAGE_HARD" DATA="200020002"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_STAGE_EXTREME" DATA="200020003"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_STAGE_HELL" DATA="200020004"/>
+		<_IndexMap DATAKEY="E_FIXED_RANDOM_ARENA" DATA="200021000"/>
+		<!--스턴 유발 PUSH 충돌 영역 체크용 리모트 인덱스(크로메데용)-->
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_STUN_BY_PUSH" DATA="1440130041"/>
+		
+		<!--티탄의 현신 독인덱스-->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TRANSFORMATION_TITAN" DATA="100000900"/>	
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TRANSFORMATION_TITAN_BOT" DATA="100000902"/>			
+		
+		<!--티탄의 현신 스폰 시 이동불가 상태이상-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_TITAN_SPAWN" DATA="1239000040"/>	
+		
+		<!--티탄의 현신 변신 대기시 걸리는 상태이상-->		
+		<_IndexMap DATAKEY="E_FIXED_STATUS_TITAN_READY" DATA="1239000002"/>
+		<!--몬스터 회귀 시 걸리는 슈퍼아머 상태이상-->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_MOB_RETURN_SUPERARMOR" DATA="1264070082"/>			
+			
+		<!--비전투 상태 표현용, 실제 상태이상을 거는 것이 아닌 SFX, ICON, TOOLTIP 가져오기용 상태이상-->
+		<_IndexMap DATAKEY="E_FIXED_NORMAL_MOVE_STATUS" DATA="1230000040"/>
+		
+		<!-- 바닥 삭제 운동회 복귀 오오라 상태이상 인덱스 / AI TRIGGER -->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_SPORTS_FADEFLOOR_RETURN" DATA="1264070120"/>	
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_SPORTS_FADEFLOOR_RETURN" DATA="1002"/>
+		
+		<!--PVP 귀환 스킬 -->
+		<_IndexMap DATAKEY="E_FIXED_TELEPORT_SKILL_FOR_PVP" DATA="180000010"/>
+		
+		<!--PVP 텔레포트 스킬, 텔레포트용 몬스터 -->
+		<_IndexMap DATAKEY="E_FIXED_TELEPORT_TO_TARGET_SKILL_FOR_PVP" DATA="180000120"/>		
+		<_IndexMap DATAKEY="E_FIXED_TELEPORT_MARKING_STATUS" DATA="1230001002"/>
+
+		<!-- BOSS NPC 머리 밀어내기용 리모트 및 상태이상-->	
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_BOSSHEAD_FRONT_ENEMY" DATA="1400006003"/>
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_BOSSHEAD_FRONT_ALL" DATA="1400006004"/>
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_BOSSHEAD_BACK_ENEMY" DATA="1400006005"/>
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_BOSSHEAD_BACK_ALL" DATA="1400006006"/>
+		<_IndexMap DATAKEY="E_FIXED_REMOTE_BOSSHEAD_FIXED" DATA="1400006001"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_BOSSHEAD_PUSH_FRONT" DATA="1200070415"/>
+		<_IndexMap DATAKEY="E_FIXED_STATUS_BOSSHEAD_PUSH_BACK" DATA="1200070416"/>
+
+		<!-- 군주벌레(아귀머리, 화염머리) 내려치기 패턴 및 쫄 전용바운드 -->
+		<_IndexMap DATAKEY="E_FIXED_DEATHWORM_WHIP" DATA="102530000" />
+		<_IndexMap DATAKEY="E_FIXED_DEATHWORM_DRAGON" DATA="102530001" />
+		<_IndexMap DATAKEY="E_FIXED_DEATHWORM_WAVE" DATA="102530003" />
+
+		<!--하이패스 티켓 -->
+		<_IndexMap DATAKEY="E_FIXED_GOLDEN_TICKET" DATA="137100010"/>
+		<!-- 포화란 이벤트 스테이지 -->
+		<_IndexMap DATAKEY="E_FIXED_POHWARAN_STAGE_EASY" DATA="200007101"/>
+		<_IndexMap DATAKEY="E_FIXED_POHWARAN_STAGE_NORMAL" DATA="200007103"/>
+
+    	<!-- 마을 줌인 카메라 -->
+    	<_IndexMap DATAKEY="E_FIXED_ZOOMIN_CAMERA" DATA="1001"/>
+    
+		<!-- 마을 줌아웃 카메라 -->
+		<_IndexMap DATAKEY="E_FIXED_ZOOMOUT_CAMERA" DATA="1000"/>
+		
+		<!-- 티탄의 유적 거인 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_SPEEDY_GIANT" DATA="105001100"/>
+		<_IndexMap DATAKEY="E_FIXED_HEALTHY_GIANT" DATA="105001101"/>
+		<_IndexMap DATAKEY="E_FIXED_POWERFUL_GIANT" DATA="105001102"/>
+		
+		<!-- 티탄의 유적 타워 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_TOWER_GROUP_1_START" DATA="105000300"/>
+		<_IndexMap DATAKEY="E_FIXED_TOWER_GROUP_1_END" DATA="105000312"/>
+
+		<!-- 고스트 블링크용 PVP GROUP_BODY_BOSS_NPC -->
+		<_IndexMap DATAKEY="E_FIXED_GOT_PVP_TANIAN_KING" DATA="105001040"/>
+		<_IndexMap DATAKEY="E_FIXED_GOT_PVP_TITAN_BOSS" DATA="105001200"/>
+		<_IndexMap DATAKEY="E_FIXED_GOT_PVP_ROBOT_PIECE" DATA="105001402"/>
+
+		<!-- 고스트 블링크용 PVP 시작용 게이트 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_GOT_PVP_GATE_START" DATA="110040546"/>
+		<_IndexMap DATAKEY="E_FIXED_GOT_PVP_GATE_END" DATA="110040547"/>
+
+		<!-- 고스트 블링크용 티탄 파괴 가능한 벽 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_GOT_JUMPABLE_WALL" DATA="110043044"/>
+		
+		<!-- 고스트 블링크용 티탄 본진 게이트 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_GOT_INNER_GATE_START" DATA="110043010"/>
+		<_IndexMap DATAKEY="E_FIXED_GOT_INNER_GATE_END" DATA="110043021"/>
+
+		<!-- 점프 예외 처리 용 운동회 가로 달리기 맵 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_OLYMPIC_SIDERUN_JUMP_EXCEPTION" DATA="160006118"/>
+
+		<!-- 나티움 방어전 쿰 보호막 예외(R1 ONLY) -->
+		<_IndexMap DATAKEY="E_FIXED_DEFENDER_SHIELDWALL_1" DATA="100033400" />
+		<_IndexMap DATAKEY="E_FIXED_DEFENDER_SHIELDWALL_2" DATA="100033401" />
+		<_IndexMap DATAKEY="E_FIXED_DEFENDER_SHIELDWALL_3" DATA="100033402" />
+		<_IndexMap DATAKEY="E_FIXED_DEFENCE_MAP_INDEX" DATA="160011107" />
+
+		<!-- 길드전 -->
+		<_IndexMap DATAKEY="E_FIXED_GUILDPVP_ENTRY" DATA="210037010"/>
+		
+		<!-- 디펜스 모드 -->
+		<_IndexMap DATAKEY="E_FIXED_DEFENSE_CORE" DATA="110070003"/>
+		
+		<!-- 서비스 -->
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_EXPAND_MASTERGEAR" DATA="17400001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_EXPAND_INVENTORY_GEAR" DATA="17410001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_EXPAND_INVENTORY_NORMAL" DATA="17420001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_EXPAND_INVENTORY_MATERIAL" DATA="17430001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_EXPAND_WAREHOUSE" DATA="17440001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_REVIVAL_BY_COIN" DATA="17500000"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_REFILL_STAGE_BATTERY" DATA="17450001"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_OPEN_REWARD_ONEMORE" DATA="17500100"/>
+		<_IndexMap DATAKEY="E_FIXED_SERVICE_OPEN_REWARD_ALL" DATA="17500200"/>
+		
+		<!-- 이미지 튜토리얼 누적 솔론 업적 ID -->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIALINFO_ACHIEVEMENT_ID" DATA="300220001"/>
+
+		<!-- 티탄의 유적 조각 인덱스 -->
+		<_IndexMap DATAKEY="E_FIXED_TITAN_PIECE" DATA="130100904"/>
+		
+		<!-- 티탄의 유적 index -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_STAGEINDEX" DATA="200101000"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_EVENT_STAGEINDEX" DATA="200101340"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_EVENT2_STAGEINDEX" DATA="200101350"/>
+		
+		<!-- 가이드 미션으로 생성되는 전투훈련실 AI 전용 index -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_GUIDEMISSION_DEATH_MATCH_STAGEINDEX" DATA="200020104"/>
+		
+		<!-- 티탄전 튜토리얼 맵 index-->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_TUTORIAL_STAGEINDEX_BASIC" DATA="200101320"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_TUTORIAL_STAGEINDEX_ADVANCED" DATA="200101330"/>
+
+		<!-- 티탄전 튜토리얼 기본 캐릭터 index-->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_TUTORIAL_CHARACTER_1" DATA="100000035"/> <!-- 루아 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_TUTORIAL_CHARACTER_2" DATA="100000003"/> <!-- 시즈카 -->
+		
+		<!-- 티탄전 튜토리얼 출격실 대기 시간 -->
+		<_IndexMap DATAKEY="E_FIXED_TITAN_TUTORIAL_COUNTDOWN" DATA="10"/> 
+
+		<!-- 티탄전 튜토리얼 맵 가이드 AI 봇(리루) index-->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_TITAN_TUTORIAL_GUIDE_AI_BOT_INDEX" DATA="105000500"/>
+
+        <!-- Jumpable Dynamic ignoreJumpable 풀릴때 overlap 후 Status -->
+        <_IndexMap DATAKEY="E_FIXED_INDEX_JUMPABLE_SYSTEM_PUSH_STATUS" DATA="1202000250"/>
+
+		<!-- CUSTOM AI TRIGGER -->
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_GET_TITANPIECE" DATA="1010"/>
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_SAVE_TITANPIECE" DATA="3333"/>
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_TRANSFORM_TITAN" DATA="300"/>
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_TRANSFORM_TITAN_TUTORIAL" DATA="1013"/>
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_TUTORIAL_END_CUTSCENE" DATA="8000"/>
+		<_IndexMap DATAKEY="E_FIXED_AITRIGGER_TUTORIAL_TAG" DATA="9998"/>
+		
+		<!--튜토리얼 ACTIVE GUIDE-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_WSTRIKER_SKILL_1" DATA="180350010"/> 	<!--여자태진 Q(산탄 로켓)-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_WSTRIKER_SKILL_2" DATA="180350030"/> 	<!--여자태진 E(메가 히트)-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_WSTRIKER_SKILL_R" DATA="180350050"/> 	<!--여자태진 R-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_ASSASSIN_SKILL_1" DATA="180030020"/> 	<!--시즈카 Q(돌진베기))-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_ASSASSIN_SKILL_2" DATA="180030030 "/> 	<!--시즈카 E(마름쇠)-->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_ASSASSIN_SKILL_R" DATA="180030040"/> 	<!--시즈카 R(잔상베기)-->
+
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_SHIRK" DATA="9995"/>
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_SKILL_Q" DATA="9994"/>
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_SKILL_UG" DATA="9993"/>
+		
+		<!-- PVE 출격기 -->
+		<_IndexMap DATAKEY="E_FIXED_PVE_ENTRYSYSTEM_INDEX" DATA="210036889"/>
+		
+		<!-- PVP  에어리어 -->
+		<_IndexMap DATAKEY="E_FIXED_PVP_AREAINDEX" DATA="190002101"/>
+	
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_AREA_ID" DATA="190003000"/>	
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_STAGEINDEX" DATA="200008000"/>
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_MAP_INDEX" DATA="160008112"/>
+		
+		<!-- 튜토리얼 SORTIE -->
+		<_IndexMap DATAKEY="E_FIXED_TUTORIAL_PVE_SORTIE" DATA="210036002"/>
+
+		<!-- 타틴 보스존 입구 Area Index -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_BOSSZONE_INSIDE_DOOR" DATA="1001"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_BOSSZONE_OUTSIDE_DOOR" DATA="1000"/>
+		
+		<!-- 스트링 데이터 -->
+		<_StringMap _Key="E_FIXED_GET_ITEM" _Type="FDT_SFX" _Data="GET_ITEM"/>
+		<_StringMap _Key="E_FIXED_PVP_INDICATOR_RED" _Type="FDT_SFX" _Data="PVP_INDICATOR_RED"/>
+		<_StringMap _Key="E_FIXED_PVP_INDICATOR_BLUE" _Type="FDT_SFX" _Data="PVP_INDICATOR_BLUE"/>
+		<_StringMap _Key="E_FIXED_STATUS_FX_PC_DESTROYER_BURN" _Type="FDT_SFX" _Data="STATUS_Fx_Pc_Destroyer_Burn"/>
+		<_StringMap _Key="E_FIXED_STATUS_FX_PC_TARGET" _Type="FDT_SFX" _Data="STATUS_FX_PC_TARGET"/>
+		<_StringMap _Key="E_FIXED_REFLECTION_EFFECT" _Type="FDT_SFX" _Data="PC_Common_ReflectDamage"/>
+		<_StringMap _Key="E_FIXED_REFLECTION_REMOTE_EFFECT" _Type="FDT_SFX" _Data="Pc_Fx_RodMaster_Reflect_Hit"/>
+		<_StringMap _Key="E_FIXED_GEAR_ATT" _Type="FDT_NIRES" _Data="Graphic\Item\Drop\GEAR_ATT.nif"/>
+		<_StringMap _Key="E_FIXED_GEAR_DEF" _Type="FDT_NIRES" _Data="Graphic\Item\Drop\GEAR_DEF.nif"/>
+		<_StringMap _Key="E_FIXED_GEAR_UTIL" _Type="FDT_NIRES" _Data="Graphic\Item\Drop\GEAR_UTIL.nif"/>
+		<_StringMap _Key="E_FIXED_PING_GENERAL" _Type="FDT_SFX" _Data="UI_Fx_Ping_General"/>
+		<_StringMap _Key="E_FIXED_PING_BACK" _Type="FDT_SFX" _Data="UI_Fx_Ping_Back"/>
+		<_StringMap _Key="E_FIXED_PING_TARGET_DEFENCE" _Type="FDT_SFX" _Data="UI_Fx_Ping_Target_defence"/>
+		<_StringMap _Key="E_FIXED_PING_DEFENCE" _Type="FDT_SFX" _Data="UI_Fx_Ping_Defence"/>
+		<_StringMap _Key="E_FIXED_PING_DANGER" _Type="FDT_SFX" _Data="UI_Fx_Ping_Danger"/>
+		<_StringMap _Key="E_FIXED_PING_MOVE" _Type="FDT_SFX" _Data="UI_Fx_Ping_Move"/>
+		<_StringMap _Key="E_FIXED_PING_TARGET_SUPPORT" _Type="FDT_SFX" _Data="UI_Fx_Ping_Target_support"/>
+		<_StringMap _Key="E_FIXED_PING_SUPPORT" _Type="FDT_SFX" _Data="UI_Fx_Ping_Support"/>
+		<_StringMap _Key="E_FIXED_PING_TARGET" _Type="FDT_SFX" _Data="UI_Fx_Ping_Target"/>
+		<_StringMap _Key="E_FIXED_GROGGY_SFX" _Type="FDT_SFX" _Data="STATUS_FX_MOB_Burning_Hit"/>
+		<_StringMap _Key="E_FIXED_PC_FX_LOBBY_JOIN_EFFECT" _Type="FDT_SFX" _Data="ETC_SFX_PC_SPAWN_LOBBY"/> 
+		<_StringMap _Key="E_FIXED_PC_FX_LOBBY_LEAVE_EFFECT" _Type="FDT_SFX" _Data="ETC_SFX_PC_LEAVE_LOBBY"/>
+		<_StringMap _Key="E_FIXED_CSHOP_BUFF_BENEFIT_ICON" _Type="FDT_ICON" _Data="cshop_buff1_benefit_01"/>
+		<_StringMap _Key="E_FIXED_CSHOP_BUFF_BENEFIT_ICON2" _Type="FDT_ICON" _Data="cshop_buff1_benefit_02"/>
+		<_StringMap _Key="E_FIXED_CSHOP_BUFF_BENEFIT_ICON3" _Type="FDT_ICON" _Data="cshop_buff1_benefit_03"/>
+		<_StringMap _Key="E_FIXED_CSHOP_BUFF_BENEFIT_ICON4" _Type="FDT_ICON" _Data="cshop_buff1_benefit_04"/>
+		<_StringMap _Key="E_FIXED_CSHOP_BUNDLE_BG" _Type="FDT_ICON" _Data="shop_bundle_background"/>
+		<_StringMap _Key="E_FIXED_LOBBY_PCCAFE_BUFF_ICON" _Type="FDT_ICON" _Data="lobby_pccafe_benefit_01"/>
+		<_StringMap _Key="E_FIXED_LOBBY_TAG_BUFF_ICON" _Type="FDT_ICON" _Data="lobby_pccafe_benefit_02"/>
+		<_StringMap _Key="E_FIXED_DEADINFO_DAMAGE" _Type="FDT_ICON" _Data="DI_damage"/>
+
+		<_IndexMap DATAKEY="E_FIXED_OCCUPY_NORMAL_HQCORE1" DATA="110045550"/>
+		<_IndexMap DATAKEY="E_FIXED_OCCUPY_NORMAL_HQCORE2" DATA="110045551"/>
+		<_IndexMap DATAKEY="E_FIXED_OCCUPY_BUSH_HQCORE1" DATA="110045554"/>
+		<_IndexMap DATAKEY="E_FIXED_OCCUPY_BUSH_HQCORE2" DATA="110045555"/>
+		
+		<!-- 스킨교환 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_SOURCE" DATA="138000901"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_ADDITIVE" DATA="137100011"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_CRAFT_FREE" DATA="240000001"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_CRAFT_PREMIUM" DATA="240000002"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_DISASSEMBLE_1" DATA="240000003"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_DISASSEMBLE_2" DATA="240000004"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_DISASSEMBLE_3" DATA="240000005"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_DISASSEMBLE_4" DATA="240000006"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINTRADE_DISASSEMBLE_5" DATA="240000007"/>
+		
+		<!-- 훈장교환 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_MEDAL_BATTLE" DATA="138000391"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_MEDAL_HONOR" DATA="138000392"/>
+		
+		<!-- 교환상점 NPC -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_MEDAL_TRADER_NPC" DATA="100036842"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_MATERIAL_TRADER_NPC" DATA="100036843"/>
+		
+		<!-- 스킨교환석 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINCHIP_LEVEL_1" DATA="138000903"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINCHIP_LEVEL_2" DATA="138000904"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINCHIP_LEVEL_3" DATA="138000905"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINCHIP_LEVEL_4" DATA="138000906"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_SKINCHIP_LEVEL_5" DATA="138000907"/>
+		
+		<!-- 아이템 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_ITEM_EXP" DATA="130000001"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_ITEM_CCOIN" DATA="138999990"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_ITEM_RON" DATA="138999992"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_JUKEBOXCOIN" DATA="137120001"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_GUILDFUND" DATA="138999993"/>
+		
+		<!-- 상점 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_CSHOP" DATA="170000022"/>
+		<_IndexMap DATAKEY="E_FIXED_INDEX_CSHOP_VIP" DATA="170000030"/>
+
+		<!-- 액션 텍스트 -->
+		<_IndexMap DATAKEY="E_FIXED_INDEX_ACTIONTEXT_VALID_RADIUS" DATA="4000"/>
+		
+		<!-- 티탄 커스텀 카메라 TAG명-->
+		<_StringMap _Key="E_FIXED_GUARDIAN" _Type="FDT_NO_RESOURCE" _Data="Boss_Position"/>
+		<_StringMap _Key="E_FIXED_WIZARD" _Type="FDT_NO_RESOURCE" _Data="EliteWizard_Position"/>
+		<_StringMap _Key="E_FIXED_ADAMAN_SEAL" _Type="FDT_NO_RESOURCE" _Data="Totem_Adaman_Seal"/>
+		<_StringMap _Key="E_FIXED_ADAMAN_ACTIVE" _Type="FDT_NO_RESOURCE" _Data="Totem_Adaman_Active"/>
+		<_StringMap _Key="E_FIXED_ADAMAN_BLUE" _Type="FDT_NO_RESOURCE" _Data="Adaman_Blue"/>
+		<_StringMap _Key="E_FIXED_ADAMAN_RED" _Type="FDT_NO_RESOURCE" _Data="Adaman_Red"/>
+		<_StringMap _Key="E_FIXED_RUAK_SEAL" _Type="FDT_NO_RESOURCE" _Data="Totem_Ruak_Seal"/>
+		<_StringMap _Key="E_FIXED_RUAK_ACTIVE" _Type="FDT_NO_RESOURCE" _Data="Totem_Ruak_Active"/>
+		<_StringMap _Key="E_FIXED_RUAK_BLUE" _Type="FDT_NO_RESOURCE" _Data="Ruak_Blue"/>
+		<_StringMap _Key="E_FIXED_RUAK_RED" _Type="FDT_NO_RESOURCE" _Data="Ruak_Red"/>
+		<_StringMap _Key="E_FIXED_TITAN_BLUE" _Type="FDT_NO_RESOURCE" _Data="Titan_Blue"/>
+		<_StringMap _Key="E_FIXED_TITAN_RED" _Type="FDT_NO_RESOURCE" _Data="Titan_Red"/>
+		
+		<!-- 마을 매칭 대기 이팩트 -->
+		<_StringMap _Key="E_FIXED_MATCHING_PVE" _Type="FDT_SFX" _Data="ETC_SFX_PC_STANDBY_PVE"/>
+		<_StringMap _Key="E_FIXED_MATCHING_PVP" _Type="FDT_SFX" _Data="ETC_SFX_PC_STANDBY_PVP"/>
+		
+		<!-- 티탄 튜토리얼 종료시 호출 파일 -->
+		<_StringMap _Key="E_FIXED_TITAN_TUTORIAL_TEMINATE_FILE" _Type="FDT_NO_RESOURCE" _Data="Design\Script\TitanTutorial\Terminate.lua"/>
+		
+		<!-- lua bot 관련 파일들 -->
+		<_StringMap _Key="E_FIXED_LUA_AI_BOT_FILE" _Type="FDT_NO_RESOURCE" _Data="AIBot.lua"/>
+		<_StringMap _Key="E_FIXED_LUA_PLAYER_BOT_FILE" _Type="FDT_NO_RESOURCE" _Data="PlayerBot.lua"/>
+
+		<!-- 계정레벨 이펙트 -->
+		<_StringMap _Key="E_FIXED_PC_FX_LEVELUP" _Type="FDT_SFX" _Data="ETC_SFX_PC_LEVEL_UP_LOBBY" />
+		
+		<!-- 티탄 인게임 레벨 업 이펙트 -->
+		<_StringMap _Key="E_FIXED_PC_FX_INGAMELEVELUP" _Type="FDT_SFX" _Data="ETC_SFX_TITAN_LEVEL_UP_INGAME" />
+		
+		<!-- 티탄 인게임 막타 이펙트 -->
+		<_StringMap _Key="E_FIXED_EXECUTE_EFFECT" _Type="FDT_SFX" _Data="ETC_SFX_TITAN_EXP"/>
+		
+		<!-- 리모트가 부쉬에 충돌했을 때 출력할 이펙트 키네임 -->
+		<_StringMap _Key="E_FIXED_REMOTE_FX_BUSH_IN" _Type="FDT_SFX" _Data="ETC_SFX_PC_BUSH_HIT"/>
+
+		<!-- 플레이어 사망 공용 이펙트 -->
+		<_StringMap _Key="E_FIXED_PC_FX_DIE" _Type="FDT_SFX" _Data="ETC_SFX_PC_GHOST"/>
+		
+		<!-- B 폭탄 경고 -->
+		<_StringMap _Key="E_FIXED_BOMB_WARNING" _Type="FDT_NO_RESOURCE" _Data="PvE_Defense_Guide_NpcBomb_01"/>
+
+		<!-- 티탄의 유적 이벤트 모드 Fire Power : 오버히트 -->
+		<_IndexMap DATAKEY="E_FIXED_STATUS_TITAN_FIRE_POWER_TRANSFORM" DATA="1238000184"/>
+		
+		<!-- 티탄의 유적 거인 모델 -->
+		<_StringMap _Key="E_FIXED_SPEEDY_GIANT_KFMNAME" _Type="FDT_NO_RESOURCE" _Data="PvP_GoT_Titan_Speed"/>
+		<_StringMap _Key="E_FIXED_HEALTHY_GIANT_KFMNAME" _Type="FDT_NO_RESOURCE" _Data="PvP_GoT_Titan_Defence"/>
+		<_StringMap _Key="E_FIXED_POWERFUL_GIANT_KFMNAME" _Type="FDT_NO_RESOURCE" _Data="PvP_GoT_Titan_Attack"/>
+
+		<!-- 마을 실루엣 -->
+		<_StringMap _Key="E_FIXED_STANDBY_SILHOUETTE" _Type="FDT_SFX" _Data="ETC_SFX_STANDBY_SILHOUETTE"/>
+
+		<!-- 티탄 변신 아이콘 -->
+		<_StringMap _Key="E_FIXED_TITAN_TRANSFORM_ICON" _Type="FDT_ICON" _Data="titan_transform_01"/>
+		
+		<!-- MOTG 로딩 씬 -->
+		<_StringMap _Key="E_FIXED_MOTG_LOADING_ICON" _Type="FDT_ICON" _Data="potg_01"/>
+		
+		<!-- 네임드 몬스터에게 적용되어야할 쉐이더 -->
+		<_StringMap _Key="E_FIXED_FX_NAMED_MOB" _Type="FDT_SFX" _Data="ETC_SFX_NAMED_MOB" />
+	</ST_FIXED_DATA>
+</GAMEINFO_FILE>

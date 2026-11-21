@@ -1,0 +1,672 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="105000304">
+    <EntityComData KEYNAME="PvP_GoT_Core_Red_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_20M" _bShowInFog="True" _TargetGroup="TITAN_CORE" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Core" _DensityCount="1000" _IsAimingTarget="false" _Outline="FALSE" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000304" _Description="STR_MONSTER_DESC_105000304" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7" />
+    <Kfm_ComData KeyName="PvP_GoT_Core" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Core" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="200" _ColliderHeight="286" />
+    <StatsComData _DestroyTime="9999" _DFStatusIndex="400000160" _Team="TEAM_RED" />
+    <MoveController_ComData ActorRadius="100" ActorHeight="286" _AILength="130" _AIWidth="130" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_CORE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="520" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_NEXUS" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_TITAN_CORE" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000305">
+    <EntityComData KEYNAME="PvP_GoT_Core_Blue_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_20M" _bShowInFog="True" _TargetGroup="TITAN_CORE" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Core" _DensityCount="1000" _IsAimingTarget="false" _Outline="FALSE" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000305" _Description="STR_MONSTER_DESC_105000305" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7" />
+    <Kfm_ComData KeyName="PvP_GoT_Core" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Core" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="200" _ColliderHeight="286" />
+    <StatsComData _DestroyTime="9999" _DFStatusIndex="400000160" _Team="TEAM_BLUE" />
+    <MoveController_ComData ActorRadius="100" ActorHeight="286" _AILength="130" _AIWidth="130" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_CORE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="520" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_NEXUS" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_TITAN_CORE" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000306">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Center_Lane_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _canTeleportTarget="True" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Center" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000306" _Description="STR_MONSTER_DESC_105000306" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7">
+      <_HideDetector _Radius="16" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Center" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="140" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="70" ActorHeight="250" _AILength="100" _AIWidth="100" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SUBTURRET" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000312">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Center_Lane_Wall_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _canTeleportTarget="True" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Center" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000312" _Description="STR_MONSTER_DESC_105000312" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7">
+      <_HideDetector _Radius="16" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Center" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower_Wall" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="140" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="70" ActorHeight="250" _AILength="100" _AIWidth="100" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SUBTURRET" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000307">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Center_Core_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _canTeleportTarget="True" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Center" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000307" _Description="STR_MONSTER_DESC_105000307" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7">
+      <_HideDetector _Radius="16" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Center" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="140" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="70" ActorHeight="250" _AILength="100" _AIWidth="100" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SUBTURRET" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000308">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Side_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _canTeleportTarget="True" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Side" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000308" _Description="STR_MONSTER_DESC_105000308" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6">
+      <_HideDetector _Radius="16" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Side" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower_Side" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Chief|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="140" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="70" ActorHeight="250" _AILength="100" _AIWidth="100" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SUBTURRET" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000311">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Side_Forward_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _canTeleportTarget="True" _canShieldTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Side" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000311" _Description="STR_MONSTER_DESC_105000311" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6">
+      <_HideDetector _Radius="16" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Side" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower_Wall" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="True" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1500" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Chief|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="140" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="70" ActorHeight="250" _AILength="100" _AIWidth="100" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SUBTURRET" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000309">
+    <EntityComData KEYNAME="PvP_GoT_Turret_Sub_Cannon_NT_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _bShowInFog="True" _TargetGroup="TITAN_TOWER" _ApplysServerBound="False" _AITag="Tower_Side" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000309" _Description="STR_MONSTER_DESC_105000309" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6" />
+    <Kfm_ComData KeyName="PvP_GoT_Turret_Sub_Cannon" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower_vsTitan" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="4200" _TargetLostLength="4200" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="1" _ColliderHeight="250" />
+    <StatsComData _VariationType="1" _DestroyTime="1" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="250" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="535" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105001010">
+    <EntityComData KEYNAME="PvP_GoT_Minion_Melee_NT_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="660" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.9" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _AITag="Minion" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001010" _Description="STR_MONSTER_DESC_105001010" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_GoT_Minion_Melee" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Minion_Melee" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1200" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Tower_Side|Minion|Core|Player|Player_Summonee" />
+    <StatsComData _DestroyTime="4" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="60" _ColliderHeight="40" />
+    <MoveController_ComData ActorRadius="27" ActorHeight="36" _AILength="57" _AIWidth="57" _AIDistanceWidth="114" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="180" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_MINION" />
+    <ResourceComData _IconAlias="DI_minion" />
+  </INFO>
+  <INFO ID="105001011">
+    <EntityComData KEYNAME="PvP_GoT_Minion_Range_NT_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="660" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.9" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _AITag="Minion" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001011" _Description="STR_MONSTER_DESC_105001011" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_GoT_Minion_Range" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Minion_Range" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1200" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Tower_Side|Minion|Core|Player|Player_Summonee" />
+    <StatsComData _DestroyTime="4" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="60" _ColliderHeight="35" />
+    <MoveController_ComData ActorRadius="27" ActorHeight="31.5" _AILength="57" _AIWidth="57" _AIDistanceWidth="114" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="180" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_MINION" />
+    <ResourceComData _IconAlias="DI_minion" />
+  </INFO>
+  <INFO ID="105001012">
+    <EntityComData KEYNAME="PvP_GoT_SuperMinion_NT_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="660" _MoveSpeed="400" _RotateSpeed="270" _Scale="1.1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_6M" _ApplysServerBound="True" _AITag="Minion" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001012" _Description="STR_MONSTER_DESC_105001012" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_GoT_SuperMinion" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_SuperMinion" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1200" _TargetLostLength="1200" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Tower_Side|Minion|Core|Player|Player_Summonee" />
+    <StatsComData _DestroyTime="4" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="75" _ColliderHeight="45" />
+    <MoveController_ComData ActorRadius="42" ActorHeight="49.5" _AILength="72" _AIWidth="72" _AIDistanceWidth="144" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="225" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_MINION" />
+    <ResourceComData _IconAlias="DI_minion" />
+  </INFO>
+  <INFO ID="105001100">
+    <EntityComData KEYNAME="PvP_GoT_Titan_Speed_NT_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.42" _SizeType="SIZE_TYPE_BIG_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001100" _Description="STR_MONSTER_DESC_105001100" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PvP_GoT_Titan_Speed" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Titan_Quick" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Core|Minion|Player|Player_Summonee" _PerceptionByAITags="Titan_Soul" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="320" _ColliderHeight="900" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DestroyTime="12" _DFStatusIndex="400000140" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="68" ActorHeight="378" _AILength="98" _AIWidth="98" _AIDistanceWidth="196" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SUPERELITE_SHOWVALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_GIANT" _NameTagOffsetZ="550" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_GIANT" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_GIANT_EXPEDITIOUS" />
+    <ResourceComData _IconAlias="DI_giant_speed" />
+  </INFO>
+  <INFO ID="105001101">
+    <EntityComData KEYNAME="PvP_GoT_Titan_Attack_NT_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.42" _SizeType="SIZE_TYPE_BIG_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001101" _Description="STR_MONSTER_DESC_105001101" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PvP_GoT_Titan_Attack" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Titan_Attack" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Core|Minion|Player|Player_Summonee" _PerceptionByAITags="Titan_Soul" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="320" _ColliderHeight="900" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DestroyTime="12" _DFStatusIndex="400000140" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="68" ActorHeight="378" _AILength="98" _AIWidth="98" _AIDistanceWidth="196" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SUPERELITE_SHOWVALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_GIANT" _NameTagOffsetZ="500" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_GIANT" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_GIANT_POWERFUL" />
+    <ResourceComData _IconAlias="DI_giant_attack" />
+  </INFO>
+  <INFO ID="105001102">
+    <EntityComData KEYNAME="PvP_GoT_Titan_Defence_NT_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.42" _SizeType="SIZE_TYPE_BIG_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001102" _Description="STR_MONSTER_DESC_105001102" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PvP_GoT_Titan_Defence" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Titan_Defence" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Core|Minion|Player|Player_Summonee" _PerceptionByAITags="Titan_Soul|Player" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="320" _ColliderHeight="900" />
+    <StatsComData _ElementType="CELEMENT_TYPE_GREEN" _DestroyTime="12" _DFStatusIndex="400000140" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="68" ActorHeight="378" _AILength="98" _AIWidth="98" _AIDistanceWidth="196" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SUPERELITE_SHOWVALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_GIANT" _NameTagOffsetZ="500" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_GIANT" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_GIANT_STRONG" />
+    <ResourceComData _IconAlias="DI_giant_defend" />
+  </INFO>
+  <INFO ID="105001103">
+    <EntityComData KEYNAME="PvP_GoT_Titan_Attack_NT_Tutorial_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="270" _Scale="0.42" _SizeType="SIZE_TYPE_BIG_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001103" _Description="STR_MONSTER_DESC_105001103" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PvP_GoT_Titan_Attack" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Titan_Attack_Tutorial" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Chief|Tower_Center|Core|Minion|Player|Player_Summonee" _PerceptionByAITags="Titan_Soul" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="320" _ColliderHeight="600" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DestroyTime="12" _DFStatusIndex="400000140" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="68" ActorHeight="252" _AILength="98" _AIWidth="98" _AIDistanceWidth="196" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SUPERELITE_SHOWVALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_GIANT" _NameTagOffsetZ="500" _HUDAdditionalUI="HUD_ADDITIONAL_UI_TURRET_GIANT" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_GIANT_POWERFUL" />
+    <ResourceComData _IconAlias="DI_giant_attack" />
+  </INFO>
+  <INFO ID="105001105">
+    <EntityComData KEYNAME="PVP_TITAN_SOULSTONE_Speed_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan_Soul" _DensityCount="1000" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105001105" _Description="STR_MONSTER_DESC_105001105" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PVP_TITAN_SOULSTONE" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_SOULSTONE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _VariationType="1" _DestroyTime="8" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" _DropType="DROP_TYPE_TITAN_FISH" _DropIndex="151000998" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="105001106">
+    <EntityComData KEYNAME="PVP_TITAN_SOULSTONE_Attack_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan_Soul" _DensityCount="1000" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105001106" _Description="STR_MONSTER_DESC_105001106" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PVP_TITAN_SOULSTONE" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_SOULSTONE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _VariationType="2" _DestroyTime="8" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" _DropType="DROP_TYPE_TITAN_FISH" _DropIndex="151000998" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="105001107">
+    <EntityComData KEYNAME="PVP_TITAN_SOULSTONE_Defence_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_16M" _ApplysServerBound="True" _AITag="Titan_Soul" _DensityCount="1000" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105001107" _Description="STR_MONSTER_DESC_105001107" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="PVP_TITAN_SOULSTONE" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_SOULSTONE" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _VariationType="3" _DestroyTime="8" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" _DropType="DROP_TYPE_TITAN_FISH" _DropIndex="151000998" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="105001108">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_Victory_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="1000" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105001108" _Description="STR_MONSTER_DESC_105001108" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_VICTORY_TRIGGER" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="8" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="105001040">
+    <EntityComData KEYNAME="PVP_TITAN_TANIAN_KING_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="250" _MoveSpeed="450" _RotateSpeed="180" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _ApplysServerBound="True" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001040" _Title="STR_MONSTER_TITLE_105001040" _Description="STR_MONSTER_DESC_105001040" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6" />
+    <Kfm_ComData KeyName="PVP_TITAN_TANIAN_KING" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_TANIAN_KING" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1250" _TargetLostLength="1250" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="120" _ColliderHeight="350" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="60" ActorHeight="350" _AILength="90" _AIWidth="90" _AIDistanceWidth="180" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SUPERELITE_SHOWVALUE" _NameTagOffsetZ="325" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_PARTYBUFF_MONSTER" />
+    <ResourceComData _IconAlias="DI_titan_tanianking" />
+  </INFO>
+  <INFO ID="105001200">
+    <EntityComData KEYNAME="PvP_Titan_Boss_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="450" _RotateSpeed="270" _Scale="1.5" _SizeType="SIZE_TYPE_BIG_NORANGE" _ApplysServerBound="True" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001200" _Title="STR_MONSTER_TITLE_105001200" _Description="STR_MONSTER_DESC_105001200" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6" _UnhideAfterSpawnAction="True" />
+    <Kfm_ComData KeyName="PvP_Titan_Boss" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_BOSS" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="3000" _TargetLostLength="3000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="130" _ColliderHeight="350" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="98" ActorHeight="525" _AILength="128" _AIWidth="128" _AIDistanceWidth="256" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_EPIC" _MessageAlarmType="EMESSAGE_ALARM_TYPE_BOSSMONSTER" _NameTagOffsetZ="600" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_PVP_BOSS" />
+    <ResourceComData _IconAlias="DI_titan_boss" />
+  </INFO>
+  <INFO ID="105000800">
+    <EntityComData KEYNAME="PvP_GoT_Fish_C" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="400" _MoveSpeed="400" _RotateSpeed="270" _Scale="1" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000800" _Description="STR_MONSTER_DESC_105000800" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_COMMON" _RankDetail="CREATURE_RANK_DETAIL_COMMON_3" />
+    <Kfm_ComData KeyName="PvP_GoT_Fish" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Fish" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="300" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player" />
+    <StatsComData _DestroyTime="1" _Team="TEAM_MONSTER" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151000995" />
+    <PhysXMeshComData _ColliderRadius="50" _ColliderHeight="30" />
+    <MoveController_ComData ActorRadius="25" ActorHeight="30" _AILength="55" _AIWidth="55" _AIDistanceWidth="110" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="1100" _ShowHP="1100" _ShowIcon="0" _NameTagOffsetZ="160" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_fish" />
+  </INFO>
+  <INFO ID="105001400">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_MELEE_BUFF_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1.1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001400" _Description="STR_MONSTER_DESC_105001400" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_MELEE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_MELEE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _ReturnToSpawnPosSpeedRate="1.5" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="75" />
+    <MoveController_ComData ActorRadius="50" ActorHeight="82.5" _AILength="80" _AIWidth="80" _AIDistanceWidth="160" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="280" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_REDBUFF" />
+    <ResourceComData _IconAlias="DI_robot_melee" />
+  </INFO>
+  <INFO ID="105001401">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_EXP_EXP_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="450" _RotateSpeed="180" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001401" _Description="STR_MONSTER_DESC_105001401" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_EXP" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_EXP" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _ReturnToSpawnPosSpeedRate="1.5" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="75" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="75" _AILength="75" _AIWidth="75" _AIDistanceWidth="150" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="275" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_robot_range" />
+  </INFO>
+  <INFO ID="105001402">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_COMPONENT_PIECE_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL" _ApplysServerBound="True" _UseSilhouette="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105001402" _Description="STR_MONSTER_DESC_105001402" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_COMPONENT" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_COMPONENT" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="650" _TargetLostLength="650" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="75" _ColliderHeight="340" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151000998" />
+    <MoveController_ComData ActorRadius="38" ActorHeight="340" _AILength="68" _AIWidth="68" _AIDistanceWidth="136" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="300" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_OWNBUFF_MONSTER" />
+    <ResourceComData _IconAlias="DI_robot_melee" />
+  </INFO>
+  <INFO ID="105001403">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_RANGE_BUFF_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="450" _RotateSpeed="180" _Scale="1.2" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001403" _Description="STR_MONSTER_DESC_105001403" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_RANGE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_RANGE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _ReturnToSpawnPosSpeedRate="1.5" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="75" />
+    <MoveController_ComData ActorRadius="54" ActorHeight="90" _AILength="84" _AIWidth="84" _AIDistanceWidth="168" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="275" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_BLUEBUFF" />
+    <ResourceComData _IconAlias="DI_robot_range" />
+  </INFO>
+  <INFO ID="105001410">
+    <EntityComData KEYNAME="PVP_TITAN_AKMAN_RUAK_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _AITag="Chief" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001410" _Title="STR_MONSTER_TITLE_105001410" _Description="STR_MONSTER_DESC_105001410" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_5" />
+    <Kfm_ComData KeyName="PVP_TITAN_AKMAN" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Chief_Akman" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Tower_Side|Tower_Center|Core|Minion|Player|Player_Summonee" _PerceptionByAITags="Player|Minion" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000190" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="120" _ColliderHeight="75" />
+    <MoveController_ComData ActorRadius="60" ActorHeight="75" _AILength="90" _AIWidth="90" _AIDistanceWidth="180" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_CHIEFTAINMONSTER" _NameTagOffsetZ="475" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_HERO" />
+    <ResourceComData _IconAlias="DI_titan_akman" />
+  </INFO>
+  <INFO ID="105000430">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_GUARD_Titan_Guard_E_A" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="320" _MoveSpeed="500" _RotateSpeed="270" _Scale="0.9" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000430" _Description="STR_MONSTER_DESC_105000430" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_4" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_GUARD" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_GUARD" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1700" _ReturnToSpawnPosSpeedRate="1.5" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="1000" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="75.6" _AILength="71" _AIWidth="71" _AIDistanceWidth="142" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="350" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_robot_melee" />
+  </INFO>
+  <INFO ID="105000431">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_GUARD_Titan_Guard_E_B" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="320" _MoveSpeed="500" _RotateSpeed="270" _Scale="0.9" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_MONSTER_STONE" _Name="STR_MONSTER_NAME_105000431" _Description="STR_MONSTER_DESC_105000431" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_4" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_GUARD" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_GUARD" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1700" _ReturnToSpawnPosSpeedRate="1.5" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="1000" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="75.6" _AILength="71" _AIWidth="71" _AIDistanceWidth="142" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _NameTagOffsetZ="350" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_robot_melee" />
+  </INFO>
+  <INFO ID="105000391">
+    <EntityComData KEYNAME="PVP_TITAN_SIGHT_Titan_Sight_EX_12m" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1.5" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _bShowInFog="True" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000391" _Description="STR_MONSTER_DESC_105000391" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="12" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PVP_TITAN_SIGHT" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000060" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="-1" _ShowHP="0" _ShowIcon="0" _IconType="IT_SIGHT_AREA" />
+  </INFO>
+  <INFO ID="105000392">
+    <EntityComData KEYNAME="PVP_TITAN_SIGHT_Titan_Sight_EX_8m" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_8M" _bShowInFog="True" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000392" _Description="STR_MONSTER_DESC_105000392" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX">
+      <_HideDetector _Radius="8" />
+    </CreatureComData>
+    <Kfm_ComData KeyName="PVP_TITAN_SIGHT" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000060" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="0" _ShowIcon="0" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_TRANSPARENT" />
+  </INFO>
+  <INFO ID="105000398">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_Titan_RespawnTimer_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000398" _Description="STR_MONSTER_DESC_105000398" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000060" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="300" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_REGEN_TIMER" />
+  </INFO>
+  <INFO ID="105000396">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_7_Totem_Active_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000396" _Description="STR_MONSTER_DESC_105000396" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_7" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_DYNAMIC" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_STATUE_HERO_ACTIVE" />
+  </INFO>
+  <INFO ID="105000397">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_7_Totem_DeActive_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000397" _Description="STR_MONSTER_DESC_105000397" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_7" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_DYNAMIC" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_STATUE_HERO_INACTIVE" />
+  </INFO>
+  <INFO ID="105000395">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_7_Totem_Seal_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000395" _Description="STR_MONSTER_DESC_105000395" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_7" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_DYNAMIC" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_STATUE_HERO_SEAL" />
+  </INFO>
+  <INFO ID="105000399">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_LaneTower_Sight_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_2M" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000399" _Description="STR_MONSTER_DESC_105000399" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000060" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="300" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_TRANSPARENT" />
+  </INFO>
+  <INFO ID="105000453">
+    <EntityComData KEYNAME="PvP_Titan_Ward_Titan_Ward_EX_10m" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_10M" _TargetGroup="TITAN_WARD" _canTeleportTarget="True" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="TRUE" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000453" _Description="STR_MONSTER_DESC_105000453" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Titan_Ward" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <LifeTime_ComData LifeTime="300" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="-1" _ShowIcon="0" _NameTagOffsetZ="450" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_3" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_WARD" />
+  </INFO>
+  <INFO ID="105000100">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Direct_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000100" _Description="STR_MONSTER_DESC_105000100" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Direct" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000101">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Direct_Upgrade_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000101" _Description="STR_MONSTER_DESC_105000101" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Direct_E" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000110">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Circle_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000110" _Description="STR_MONSTER_DESC_105000110" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Circle" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000111">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Circle_Upgrade_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000111" _Description="STR_MONSTER_DESC_105000111" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Circle_E" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000120">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Rotate_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000120" _Description="STR_MONSTER_DESC_105000120" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Rotate" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000121">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Rotate_Upgrade_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000121" _Description="STR_MONSTER_DESC_105000121" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_Dodge_Rotate_E" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="105000130">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_7_Dodge_TalkAgent_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000130" _Description="STR_MONSTER_DESC_105000130" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_7" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="102240500" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="2000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _ElementType="CELEMENT_TYPE_BLUE" _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_DYNAMIC" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" />
+  </INFO>
+  <INFO ID="105000131">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_FadeFloor_RemoteAgent_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="300" _MoveSpeed="500" _RotateSpeed="180" _Scale="1" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000131" _Description="STR_MONSTER_DESC_105000131" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_Sports_FadeFloor_RemoteAgent" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="8000" _TargetLostLength="8000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" />
+  </INFO>
+  <INFO ID="105000132">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_FadeFloor_ReturnAgent_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="1000" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000132" _Description="STR_MONSTER_DESC_105000132" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_8" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_Sports_FadeFloor_ReturnAgent" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1000" _TargetLostLength="1000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="8" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="1" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="108011106">
+    <EntityComData KEYNAME="Sports_Hedgehog_Sports_ShockBody_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="300" _MoveSpeed="420" _RotateSpeed="200" _Scale="1" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_108011106" _Description="STR_MONSTER_DESC_108011106" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Sports_Hedgehog" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_SideViewRun_Shock" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DestroyTime="6" _DFStatusIndex="400000030" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="108011107">
+    <EntityComData KEYNAME="Sports_Armadillo_Sports_Rolling_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="180" _MoveSpeed="420" _RotateSpeed="270" _Scale="1" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_108011107" _Description="STR_MONSTER_DESC_108011107" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="Sports_Armadillo" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_SideViewRun_Rolling" _LockRotateLowerBody="False" _Climb="True" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1800" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="True" _PerceptionBroadcastRange="400" />
+    <StatsComData _ElementType="CELEMENT_TYPE_RED" _DestroyTime="6" _DFStatusIndex="400000030" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="43" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="43" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="1100" _ShowHP="1100" _ShowIcon="-1" _NameTagOffsetZ="250" />
+  </INFO>
+  <INFO ID="108011108">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Hit_High_EX" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_108011108" _Description="STR_MONSTER_DESC_108011108" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_PvP_HitRemote_High" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="108011109">
+    <EntityComData KEYNAME="PvP_Sports_Turret_Hit_High_EX_Divide" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="180" _Scale="3" _SizeType="SIZE_TYPE_SMALLANDMEDIUM" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_108011109" _Description="STR_MONSTER_DESC_108011109" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Sports_Turret" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_Sports_PvP_HitRemote_High_Divide" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="5000" _TargetLostLength="5000" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000010" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="28" _ColliderHeight="853" />
+    <MoveController_ComData ActorRadius="41" ActorHeight="2558" _AILength="71" _AIWidth="71" _AIDistanceWidth="82" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _NameTagOffsetZ="140" />
+  </INFO>
+  <INFO ID="108011130">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_Occupy_Sight_EX_10m" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_108011130" _Description="STR_MONSTER_DESC_108011130" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_DYNAMIC" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="-1" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_NONE" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALLY" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_OCCUPY" />
+  </INFO>
+  <INFO ID="105000900">
+    <EntityComData KEYNAME="DUMMYBOX_DWEventTrigger_0_TitanTuto_Sight_EX_20m" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_NONE" _SightRadiusType="SIGHT_RADIUS_TYPE_20M" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000900" _Description="STR_MONSTER_DESC_105000900" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="DUMMYBOX_DWEventTrigger_0" _UseHitColor="False" _HitColorPower="0" _ToolMeshPath="ToolMeshPath\DUMMY_CYLINDER\DummyCylinder.nif" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000060" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="1" ActorHeight="1" _AILength="1" _AIWidth="1" _AIDistanceWidth="0" />
+    <HUDComData _ShowMinimap="FALSE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _IconType="IT_SIGHT_AREA" />
+  </INFO>
+  <INFO ID="105000200">
+    <EntityComData KEYNAME="PvP_Titan_Tower_Center_Occupy_Tower_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="360" _Scale="0.7" _SizeType="SIZE_TYPE_MEDIUM_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_ZERO" _bShowInFog="True" _canTeleportTarget="True" _ApplysServerBound="True" _UseSilhouette="True" _AITag="Tower_Center" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105000200" _Description="STR_MONSTER_DESC_105000200" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_7" />
+    <Kfm_ComData KeyName="PvP_Titan_Tower_Center" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_NewTitan_Tower" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Minion|Player|Player_Summonee" />
+    <PhysXMeshComData _ActorGroup="GROUP_BODY_BOSSNPC" _ColliderRadius="150" _ColliderHeight="250" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000160" _Team="TEAM_MONSTER" />
+    <MoveController_ComData ActorRadius="53" ActorHeight="175" _AILength="83" _AIWidth="83" _AIDistanceWidth="105" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _MessageAlarmType="EMESSAGE_ALARM_TYPE_TURRET" _NameTagOffsetZ="500" />
+    <ResourceComData _IconAlias="DI_titan_tower" />
+  </INFO>
+  <INFO ID="105000201">
+    <EntityComData KEYNAME="PvP_Titan_Ward_Occupy_Sight_EX_2" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="0" _MoveSpeed="0" _RotateSpeed="0" _Scale="1" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_ZERO" _canTeleportTarget="True" _ApplysServerBound="True" _DensityCount="10" _IsTargetable="false" _IsAimingTarget="false" _Outline="False" _MaterialType="MATERIAL_TYPE_DEFAULT" _Name="STR_MONSTER_NAME_105000201" _Description="STR_MONSTER_DESC_105000201" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_EX" _RankDetail="CREATURE_RANK_DETAIL_EX" />
+    <Kfm_ComData KeyName="PvP_Titan_Ward" _UseHitColor="False" _HitColorPower="0" />
+    <Ai_ComData _AiIndex="AI_BLANK" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="0" _TargetLostLength="0" _PerceptionDelay="0" _PerceptionBroadcast="False" />
+    <PhysXMeshComData _ActorGroup="GROUP_DUMMY" _ColliderRadius="0" _ColliderHeight="0" />
+    <StatsComData _DestroyTime="1" _DFStatusIndex="400000040" _Team="TEAM_MONSTER" _AITargetProof="True" />
+    <MoveController_ComData ActorRadius="40" ActorHeight="150" _AILength="70" _AIWidth="70" _AIDistanceWidth="79" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="0" _ShowHP="0" _ShowIcon="0" _NameTagOffsetZ="450" _MinimapViewRadius="EMINIMAP_VIEW_RADIUS_8" _MinimapViewShareRange="EMINIMAP_VIEW_SHARE_RANGE_ALL" _MinimapViewType="EMINIMAP_VIEW_TYPE_ALL" _IconType="IT_SIGHT_AREA" />
+  </INFO>
+  <INFO ID="105001300">
+    <EntityComData KEYNAME="PvP_GoT_Chief_Ruak_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1.5" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _AITag="Chief" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001300" _Description="STR_MONSTER_DESC_105001300" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_5" />
+    <Kfm_ComData KeyName="PvP_GoT_Chief_Ruak" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Chief" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Tower_Side|Tower_Center|Core|Minion" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000170" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="76" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="57" ActorHeight="126" _AILength="87" _AIWidth="87" _AIDistanceWidth="400" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_CHIEFTAINMONSTER" _NameTagOffsetZ="475" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_CHIEFTAIN" />
+    <ResourceComData _IconAlias="DI_titan_akman" />
+  </INFO>
+  <INFO ID="105001301">
+    <EntityComData KEYNAME="PvP_GoT_Chief_Adaman_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _SightRadiusType="SIGHT_RADIUS_TYPE_12M" _ApplysServerBound="True" _AITag="Chief" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _DyeType="DYE_TYPE_RELATIVE_TEAMCOLOR" _MaterialType="MATERIAL_TYPE_CHARACTER_METAL" _Name="STR_MONSTER_NAME_105001301" _Description="STR_MONSTER_DESC_105001301" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_5" />
+    <Kfm_ComData KeyName="PvP_GoT_Chief_Adaman" _UseHitColor="True" _HitColorPower="1" />
+    <Ai_ComData _AiIndex="AI_PvP_Titan_Chief" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _SightAngle="0" _SightLength="0" _PerceptionLength="1500" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Titan|Tower_Side|Tower_Center|Core|Minion" />
+    <StatsComData _DestroyTime="6" _DFStatusIndex="400000170" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="117" _ColliderHeight="123" />
+    <MoveController_ComData ActorRadius="59" ActorHeight="123" _AILength="89" _AIWidth="89" _AIDistanceWidth="400" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_LARGE_LONG_SHOW_VALUE" _MessageAlarmType="EMESSAGE_ALARM_TYPE_CHIEFTAINMONSTER" _NameTagOffsetZ="450" _MinimapViewType="EMINIMAP_VIEW_TYPE_NONE" _IconType="IT_CHIEFTAIN" />
+    <ResourceComData _IconAlias="DI_titan_runarina" />
+  </INFO>
+  <INFO ID="105001020">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_MELEE_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001020" _Description="STR_MONSTER_DESC_105001020" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_MELEE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_MELEE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="84" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="250" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_robot_melee" />
+  </INFO>
+  <INFO ID="105001021">
+    <EntityComData KEYNAME="PVP_TITAN_TANIAN_MELEE_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="270" _Scale="1.2" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001021" _Description="STR_MONSTER_DESC_105001021" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_TANIAN_MELEE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_TANIAN_MELEE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="54" ActorHeight="101" _AILength="84" _AIWidth="84" _AIDistanceWidth="108" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="325" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_tanian_melee" />
+  </INFO>
+  <INFO ID="105001022">
+    <EntityComData KEYNAME="PVP_TITAN_ROBOT_RANGE_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="450" _RotateSpeed="180" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001022" _Description="STR_MONSTER_DESC_105001022" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_ROBOT_RANGE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_ROBOT_RANGE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="91" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="91" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="275" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_robot_range" />
+  </INFO>
+  <INFO ID="105001023">
+    <EntityComData KEYNAME="PVP_TITAN_TANIAN_RANGE_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="500" _MoveSpeed="500" _RotateSpeed="180" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="10" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001023" _Description="STR_MONSTER_DESC_105001023" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_3" />
+    <Kfm_ComData KeyName="PVP_TITAN_TANIAN_RANGE" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_TANIAN_RANGE" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="84" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="350" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_GUARDIAN" />
+    <ResourceComData _IconAlias="DI_tanian_range" />
+  </INFO>
+  <INFO ID="105001030">
+    <EntityComData KEYNAME="PVP_TITAN_AKMAN_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="500" _RotateSpeed="250" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001030" _Description="STR_MONSTER_DESC_105001030" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6" />
+    <Kfm_ComData KeyName="PVP_TITAN_AKMAN" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_AKMAN" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1750" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="84" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="400" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_OWNBUFF_MONSTER" />
+    <ResourceComData _IconAlias="DI_titan_akman" />
+  </INFO>
+  <INFO ID="105001031">
+    <EntityComData KEYNAME="PVP_TITAN_LUNARINA_E" _Type="ENTITY_TYPE_CREATURE" _NormalMoveSpeed="450" _MoveSpeed="500" _RotateSpeed="250" _Scale="1" _bBushPass="True" _SizeType="SIZE_TYPE_SMALL_NORANGE" _ApplysServerBound="True" _DensityCount="1000" _IsAimingTarget="false" _Outline="True" _MaterialType="MATERIAL_TYPE_CHARACTER_REDSKIN" _Name="STR_MONSTER_NAME_105001031" _Description="STR_MONSTER_DESC_105001031" />
+    <CreatureComData _Type="CREATURE_TYPE_MONSTER" _Rank="CREATURE_RANK_ELITE" _RankDetail="CREATURE_RANK_DETAIL_ELITE_6" />
+    <Kfm_ComData KeyName="PVP_TITAN_LUNARINA" _UseHitColor="True" _HitColorPower="2" />
+    <Ai_ComData _AiIndex="AI_PVP_TITAN_LUNARINA" _Offensive="False" _LockRotateLowerBody="False" _Climb="False" _CheckGoTo="False" _Detecting="False" _CheckLineOfSight="False" _ReturnToSpawnPosDistance="1300" _SightAngle="0" _SightLength="0" _PerceptionLength="1750" _TargetLostLength="1800" _PerceptionDelay="0" _PerceptionBroadcast="False" _PerceptionByAITagsForEnemy="Player|Player_Summonee" />
+    <StatsComData _DestroyTime="6" _Team="TEAM_MONSTER" _DropType="DROP_TYPE_PUBLIC" _DropIndex="151000998" />
+    <PhysXMeshComData _ColliderRadius="90" _ColliderHeight="84" />
+    <MoveController_ComData ActorRadius="45" ActorHeight="84" _AILength="75" _AIWidth="75" _AIDistanceWidth="90" />
+    <HUDComData _ShowMinimap="TRUE" _ShowNameTag="-1" _ShowHP="-1" _ShowIcon="0" _HPGaugeType="GAUGETYPE_SHOW_VALUE" _NameTagOffsetZ="400" _MinimapViewType="EMINIMAP_VIEW_TYPE_SPAWN" _IconType="IT_HERO" />
+    <ResourceComData _IconAlias="DI_titan_runarina" />
+  </INFO>
+</ENTITY_FILE>

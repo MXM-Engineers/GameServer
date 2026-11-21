@@ -7,7 +7,11 @@
 #include <common/packet_serialize.h>
 #include <EAStdC/EAScanf.h>
 #include <EASTL/hash_map.h>
+#include <EASTL/algorithm.h>
 #include "config.h"
+
+static const i32 MAX_TEAM_SIZE = 5;
+static const f64 HYP_ROOM_CONFIRM_TIMEOUT_SEC = 20.0;
 
 Server* g_Server = nullptr;
 Listener* g_Listener = nullptr;
@@ -59,10 +63,14 @@ struct Matchmaker
 			ClientHandle instanceChd;
 		};
 
-		eastl::fixed_vector<Member,5,false> memberList;
+		eastl::fixed_vector<Member,10,false> memberList;
+		In::CustomTeams custom = {};
+		u8 draft = 0;
 		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
 		MapIndex mapIndex = MapIndex(0);
+		GameType gameType = GameType::PVP_NORMAL;
+		i32 teamSize = 0;
 
 		Party(PartyUID UID_): UID(UID_) {}
 	};
@@ -99,6 +107,10 @@ struct Matchmaker
 			PlayerStatus status = PlayerStatus::Unknown;
 			Team team;
 			u8 isBot = false;
+			In::StrGuildTag guildTag = {};
+			SkillID stageSkill = SkillID::INVALID;
+			u16 guildBoostGold = 0;
+			u16 guildBoostExp = 0;
 
 			eastl::array<Master,2> masters;
 
@@ -113,6 +125,9 @@ struct Matchmaker
 		AreaIndex areaIndex = AreaIndex(0);
 		StageIndex stageIndex = StageIndex(0);
 		MapIndex mapIndex = MapIndex(0);
+		GameType gameType = GameType::PVP_NORMAL;
+		u8 draft = 0;
+		Time tCreated = Time::ZERO;
 		eastl::fixed_vector<Player,16,false> playerList;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamRed;
 		eastl::fixed_vector<decltype(playerList)::iterator,5> teamBlue;
@@ -172,9 +187,11 @@ struct Matchmaker
 
 		foreach_const(cl, clientDisconnectedList) {
 			const ClientHandle clientHd = *cl;
+			const auto found = connMap.find(clientHd);
+			if(found == connMap.end()) continue;
 
-			connList.erase(connMap.at(clientHd));
-			connMap.erase(clientHd);
+			connList.erase(found->second);
+			connMap.erase(found);
 		}
 
 		server.TransferAllReceivedData(&recvDataBuff);
@@ -222,7 +239,9 @@ struct Matchmaker
 	{
 		const i32 packetSize = header.size - sizeof(NetHeader);
 
-		Connection& conn = *connMap.at(clientHd);
+		const auto found = connMap.find(clientHd);
+		if(found == connMap.end()) return;
+		Connection& conn = *found->second;
 
 		switch(conn.type) {
 			case Connection::Type::Undecided: OnPacketUndecided(conn, header, packetData, packetSize); break;
@@ -270,7 +289,6 @@ struct Matchmaker
 			} break;
 
 			default: {
-				ASSERT_MSG(0, "case not handled");
 				WARN("[client%x] Unhandled packet (netID=%u size=%u)", conn.clientHd, header.netID, header.size);
 				server.DisconnectClient(conn.clientHd);
 			}
@@ -307,6 +325,39 @@ struct Matchmaker
 				SendPacket(conn.clientHd, resp);
 			} break;
 
+			case In::HQ_PartyAddMember::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyAddMember>(packetData, packetSize));
+				const In::HQ_PartyAddMember& packet = SafeCast<In::HQ_PartyAddMember>(packetData, packetSize);
+				auto f = partyMap.find(packet.partyUID);
+				if(f == partyMap.end()) break;
+				Party& party = *f->second;
+				bool known = false;
+				foreach_const(m, party.memberList) known = known || m->accountUID == packet.accountUID;
+				if(known || party.memberList.full()) break;
+				Party::Member member;
+				member.name.assign(packet.name.data, packet.name.len);
+				member.accountUID = packet.accountUID;
+				member.instanceChd = conn.clientHd;
+				party.memberList.push_back(member);
+				LOG("Party %u :: %ls joined (%d member(s))", (u32)party.UID, member.name.data(), (i32)party.memberList.size());
+			} break;
+
+			case In::HQ_PartyRemoveMember::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyRemoveMember>(packetData, packetSize));
+				const In::HQ_PartyRemoveMember& packet = SafeCast<In::HQ_PartyRemoveMember>(packetData, packetSize);
+				auto f = partyMap.find(packet.partyUID);
+				if(f == partyMap.end()) break;
+				Party& party = *f->second;
+				party.memberList.erase(eastl::remove_if(party.memberList.begin(), party.memberList.end(), [&](const Party::Member& m) { return m.accountUID == packet.accountUID; }), party.memberList.end());
+				if(party.memberList.empty()) matchingPartyList.erase(eastl::remove(matchingPartyList.begin(), matchingPartyList.end(), packet.partyUID), matchingPartyList.end());
+			} break;
+
+			case In::HQ_PartyCancelMatching::NET_ID: {
+				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyCancelMatching>(packetData, packetSize));
+				const In::HQ_PartyCancelMatching& packet = SafeCast<In::HQ_PartyCancelMatching>(packetData, packetSize);
+				matchingPartyList.erase(eastl::remove(matchingPartyList.begin(), matchingPartyList.end(), packet.partyUID), matchingPartyList.end());
+			} break;
+
 			case In::HQ_PartyEnqueue::NET_ID: {
 				NT_LOG("[hub%x] %s", conn.clientHd, PacketSerialize<In::HQ_PartyEnqueue>(packetData, packetSize));
 				const In::HQ_PartyEnqueue& packet = SafeCast<In::HQ_PartyEnqueue>(packetData, packetSize);
@@ -317,8 +368,10 @@ struct Matchmaker
 				}
 
 				Party& party = *partyMap.at(packet.partyUID);
-				if(party.memberList.size() > 3) {
-					WARN("Party is too large for a team (partyUID=%u, members=%d)", (u32)packet.partyUID, (i32)party.memberList.size());
+				const i32 teamSize = packet.teamSize > 0 ? MIN((i32)packet.teamSize, MAX_TEAM_SIZE) : Config().TeamSize;
+				const bool pve = packet.gameType == GameType::PVE_NORMAL || packet.gameType == GameType::PVE_RANDOM || packet.gameType == GameType::PVE_TICKET;
+				if(!pve && packet.custom.count == 0 && (i32)party.memberList.size() > teamSize * 2) {
+					WARN("Party is too large for a room (partyUID=%u, members=%d)", (u32)packet.partyUID, (i32)party.memberList.size());
 					break;
 				}
 				ASSERT(packet.areaIndex != AreaIndex(0));
@@ -327,9 +380,13 @@ struct Matchmaker
 				party.areaIndex = packet.areaIndex;
 				party.stageIndex = packet.stageIndex;
 				party.mapIndex = packet.mapIndex;
+				party.gameType = packet.gameType;
+				party.teamSize = packet.teamSize;
+				party.custom = packet.custom;
+				party.draft = packet.draft;
 				matchingPartyList.push_back(packet.partyUID);
 
-				eastl::fixed_set<ClientHandle,5,false> setInstance;
+				eastl::fixed_set<ClientHandle,10,false> setInstance;
 				foreach_const(mem, party.memberList) {
 					setInstance.insert(mem->instanceChd);
 				}
@@ -349,7 +406,9 @@ struct Matchmaker
 				// TODO: validate args?
 
 				bool found = false;
-				Room& room = *roomMap.at(packet.sortieUID);
+				auto roomIt = roomMap.find(packet.sortieUID);
+				if(roomIt == roomMap.end()) break;
+				Room& room = *roomIt->second;
 				foreach(pl, room.playerList) {
 					if(pl->accountUID == packet.accountUID) {
 						pl->status = Room::PlayerStatus::RoomFoundAck;
@@ -369,7 +428,9 @@ struct Matchmaker
 				// TODO: validate args?
 
 				bool found = false;
-				Room& room = *roomMap.at(packet.sortieUID);
+				auto roomIt = roomMap.find(packet.sortieUID);
+				if(roomIt == roomMap.end()) break;
+				Room& room = *roomIt->second;
 				foreach(pl, room.playerList) {
 					if(pl->accountUID == packet.accountUID) {
 						if(packet.confirm) {
@@ -417,6 +478,10 @@ struct Matchmaker
 					p.masters[1].masterGearNo = pp.masterGearNo[1];
 					p.masters[0].characterType = pp.characterType[0];
 					p.masters[1].characterType = pp.characterType[1];
+					p.guildTag = pp.guildTag;
+					p.stageSkill = pp.stageSkill;
+					p.guildBoostGold = pp.guildBoostGold;
+					p.guildBoostExp = pp.guildBoostExp;
 				}
 
 				RoomCreateGame(room);
@@ -431,6 +496,16 @@ struct Matchmaker
 	void OnPacketGame(Connection& conn, const NetHeader& header, const u8* packetData, const i32 packetSize)
 	{
 		switch(header.netID) {
+			case In::GN_GameEnded::NET_ID: {
+				const In::GN_GameEnded& packet = SafeCast<In::GN_GameEnded>(packetData, packetSize);
+				LOG("[game%x] Game ended (sortieUID=%llu)", conn.clientHd, (u64)packet.sortieUID);
+				In::MN_GameEnded notify;
+				notify.sortieUID = packet.sortieUID;
+				foreach_const(c, connList) {
+					if(c->type == Connection::Type::HubServer) SendPacket(c->clientHd, notify);
+				}
+			} break;
+
 			case In::GR_GameCreated::NET_ID: {
 				NT_LOG("[game%x] %s", conn.clientHd, PacketSerialize<In::GR_GameCreated>(packetData, packetSize));
 				const In::GR_GameCreated& packet = SafeCast<In::GR_GameCreated>(packetData, packetSize);
@@ -479,8 +554,6 @@ struct Matchmaker
 
 	void MatchParties()
 	{
-		const f64 MATCHING_WAIT_SEC = 10.0;
-
 		if(matchingPartyList.empty()) {
 			matchingStartTime = Time::ZERO;
 			return;
@@ -489,16 +562,20 @@ struct Matchmaker
 		const Time now = TimeRelNow();
 		if(matchingStartTime == Time::ZERO) matchingStartTime = now;
 
-		const i32 TEAM_SIZE = 3;
 		const Party& firstParty = *partyMap.at(matchingPartyList.front());
+		const i32 teamSize = firstParty.teamSize > 0 ? MIN(firstParty.teamSize, MAX_TEAM_SIZE) : Config().TeamSize;
+		const bool pve = firstParty.gameType == GameType::PVE_NORMAL || firstParty.gameType == GameType::PVE_RANDOM || firstParty.gameType == GameType::PVE_TICKET;
+		const In::CustomTeams frontCustom = firstParty.custom;
+		const bool custom = frontCustom.count > 0;
+		const bool soloRoom = Config().SoloRooms || pve || custom;
 
 		i32 humanCount = 0;
 		foreach_const(puid, matchingPartyList) {
 			const Party& party = *partyMap.at(*puid);
-			if(party.areaIndex != firstParty.areaIndex || party.stageIndex != firstParty.stageIndex || party.mapIndex != firstParty.mapIndex) continue;
+			if(party.stageIndex != firstParty.stageIndex) continue;
 			humanCount += party.memberList.size();
 		}
-		if(humanCount < TEAM_SIZE * 2 && TimeDiffSec(TimeDiff(matchingStartTime, now)) < MATCHING_WAIT_SEC) return;
+		if(!soloRoom && humanCount < teamSize * 2 && TimeDiffSec(TimeDiff(matchingStartTime, now)) < (f64)Config().MatchingWaitSec) return;
 		matchingStartTime = Time::ZERO;
 		decltype(matchingPartyList) laterParties;
 		decltype(matchingPartyList) placedParties;
@@ -513,26 +590,48 @@ struct Matchmaker
 		room.areaIndex = firstParty.areaIndex;
 		room.stageIndex = firstParty.stageIndex;
 		room.mapIndex = firstParty.mapIndex;
+		room.gameType = firstParty.gameType;
+		room.draft = firstParty.draft;
+		room.tCreated = now;
 
 		foreach_const(puid, matchingPartyList) {
 			const Party& party = *partyMap.at(*puid);
+			const bool first = puid == matchingPartyList.begin();
 			const i32 memberCount = party.memberList.size();
 			const i32 redCount = room.teamRed.size();
 			const i32 blueCount = room.teamBlue.size();
-			const bool compatible = party.areaIndex == firstParty.areaIndex && party.stageIndex == firstParty.stageIndex && party.mapIndex == firstParty.mapIndex;
-			const bool fitsRed = redCount + memberCount <= TEAM_SIZE;
-			const bool fitsBlue = blueCount + memberCount <= TEAM_SIZE;
-			if(!compatible || (!fitsRed && !fitsBlue)) {
+			const bool compatible = first || (!soloRoom && party.stageIndex == firstParty.stageIndex);
+			const bool fitsRed = redCount + memberCount <= teamSize;
+			const bool fitsBlue = blueCount + memberCount <= teamSize;
+			if(!compatible || (!first && !fitsRed && !fitsBlue)) {
 				laterParties.push_back(*puid);
 				continue;
 			}
 
-			const bool red = fitsRed && (!fitsBlue || redCount <= blueCount);
+			if(custom) {
+				for(i32 i = 0; i < frontCustom.count; i++) {
+					const Party::Member* found = nullptr;
+					foreach_const(pl, party.memberList) if(pl->accountUID == frontCustom.accounts[i]) found = &*pl;
+					if(!found) continue;
+					const bool toRed = frontCustom.teams[i] == (u8)Team::RED;
+					Room::Player player(found->name, found->accountUID, found->instanceChd);
+					player.team = toRed ? Team::RED : Team::BLUE;
+					room.playerList.push_back(player);
+					if(toRed) room.teamRed.push_back(&room.playerList.back());
+					else room.teamBlue.push_back(&room.playerList.back());
+				}
+				placedParties.push_back(*puid);
+				continue;
+			}
+
+			const bool red = pve || (fitsRed && (!fitsBlue || redCount <= blueCount)) || (!fitsRed && !fitsBlue && redCount <= blueCount);
 			foreach_const(pl, party.memberList) {
+				if(room.teamRed.size() >= teamSize && room.teamBlue.size() >= teamSize) break;
+				const bool toRed = pve || (red ? room.teamRed.size() < teamSize : room.teamBlue.size() >= teamSize);
 				Room::Player player(pl->name, pl->accountUID, pl->instanceChd);
-				player.team = red ? Team::RED : Team::BLUE;
+				player.team = toRed ? Team::RED : Team::BLUE;
 				room.playerList.push_back(player);
-				if(red) room.teamRed.push_back(&room.playerList.back());
+				if(toRed) room.teamRed.push_back(&room.playerList.back());
 				else room.teamBlue.push_back(&room.playerList.back());
 			}
 			placedParties.push_back(*puid);
@@ -542,7 +641,17 @@ struct Matchmaker
 		LOG("MatchParties :: creating room %llu with %d player(s) from %d party(ies)", (u64)room.UID, (i32)room.playerList.size(), (i32)placedParties.size());
 
 		i32 botID = 1;
-		while(room.teamRed.size() < TEAM_SIZE) {
+		for(i32 t = 0; custom && t < 2; t++) {
+			for(u8 b = 0; b < frontCustom.bots[t]; b++) {
+				Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
+				player.team = t == 0 ? Team::RED : Team::BLUE;
+				player.isBot = true;
+				room.playerList.push_back(player);
+				if(t == 0) room.teamRed.push_back(&room.playerList.back());
+				else room.teamBlue.push_back(&room.playerList.back());
+			}
+		}
+		while(!pve && !custom && room.teamRed.size() < teamSize) {
 			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 			player.team = Team::RED;
 			player.isBot = true;
@@ -550,7 +659,7 @@ struct Matchmaker
 			room.playerList.push_back(player);
 			room.teamRed.push_back(&room.playerList.back());
 		}
-		while(room.teamBlue.size() < TEAM_SIZE) {
+		while(!pve && !custom && room.teamBlue.size() < teamSize) {
 			Room::Player player(LFMT(L"Bot%d", botID++), AccountUID::INVALID, ClientHandle::INVALID);
 			player.team = Team::BLUE;
 			player.isBot = true;
@@ -571,13 +680,7 @@ struct Matchmaker
 				In::MN_MatchingPartyFound resp;
 				resp.partyUID = *puid;
 				resp.sortieUID = room.UID;
-				resp.gameType = GameType::PvP_Normal;
-				foreach_const(bpl, room.playerList) {
-					if(bpl->isBot) {
-						resp.gameType = GameType::PVP_Tutorial;
-						break;
-					}
-				}
+				resp.gameType = room.gameType;
 
 				resp.playerCount = 0;
 				foreach(pl, room.playerList) {
@@ -598,6 +701,7 @@ struct Matchmaker
 	void UpdateRooms()
 	{
 		eastl::fixed_vector<SortieUID,128> removeList;
+		const Time now = TimeRelNow();
 
 		foreach(r, roomList) {
 			// check if all players have accepted the match
@@ -617,6 +721,8 @@ struct Matchmaker
 
 				In::MN_RoomCreated packet;
 				packet.sortieUID = r->UID;
+				packet.stageIndex = r->stageIndex;
+				packet.draft = r->draft;
 				packet.playerCount = 0;
 
 				foreach_const(pl, r->playerList) {
@@ -638,6 +744,32 @@ struct Matchmaker
 					SendPacket(*chd, packet);
 				}
 			}
+
+			bool expired = false;
+			bool inLobby = false;
+			foreach_const(pl, r->playerList) {
+				if(pl->isBot) continue;
+				inLobby = inLobby || pl->status == Room::PlayerStatus::InLobby;
+				if(pl->status == Room::PlayerStatus::Accepted || pl->status == Room::PlayerStatus::InLobby) continue;
+				expired = expired || pl->status == Room::PlayerStatus::Refused || TimeDiffSec(TimeDiff(r->tCreated, now)) >= HYP_ROOM_CONFIRM_TIMEOUT_SEC;
+			}
+			if(expired && !inLobby && !removeList.full()) removeList.push_back(r->UID);
+		}
+
+		foreach_const(uid, removeList) {
+			auto r = roomMap.find(*uid);
+			In::MN_RoomCancelled cancel;
+			cancel.sortieUID = *uid;
+			eastl::fixed_set<ClientHandle,16,false> setInstance;
+			foreach_const(pl, r->second->playerList) {
+				if(!pl->isBot) setInstance.insert(pl->instanceChd);
+			}
+			foreach_const(chd, setInstance) {
+				SendPacket(*chd, cancel);
+			}
+			LOG("Room %llu cancelled, match not confirmed", (u64)*uid);
+			roomList.erase(r->second);
+			roomMap.erase(r);
 		}
 	}
 
@@ -647,17 +779,11 @@ struct Matchmaker
 		packet.sortieUID = room.UID;
 		packet.playerCount = 0;
 		packet.spectatorCount = 0;
-		packet.gameType = GameType::PvP_Normal;
-		foreach_const(bp, room.playerList) {
-			if(bp->isBot) {
-				packet.gameType = GameType::PVP_Tutorial;
-				break;
-			}
-		}
+		packet.gameType = room.gameType;
 		packet.areaIndex = room.areaIndex;
 		packet.stageIndex = room.stageIndex;
 		packet.mapIndex = room.mapIndex;
-		packet.canEscape = packet.gameType != GameType::PVP_Rank;
+		packet.canEscape = GameTypeCanEscape(packet.gameType);
 		packet.surrenderAbleTime = 180000;
 
 		foreach_const(p, room.playerList) {
@@ -686,6 +812,10 @@ struct Matchmaker
 				player.masterGearNo[1] = p->masters[1].masterGearNo;
 				player.characterType[0] = p->masters[0].characterType;
 				player.characterType[1] = p->masters[1].characterType;
+				player.guildTag = p->guildTag;
+				player.stageSkill = p->stageSkill;
+				player.guildBoostGold = p->guildBoostGold;
+				player.guildBoostExp = p->guildBoostExp;
 				packet.players[packet.playerCount++] = player;
 			}
 		}

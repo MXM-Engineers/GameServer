@@ -8,11 +8,16 @@ bool CConfigGame::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevMode=%d", &DevMode) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevForcedMap=%d", &DevForcedMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevBotStageSkill=%d", &DevBotStageSkill) == 1) return true;
 	if(EA::StdC::Sscanf(line, "ShotLeadMs=%d", &ShotLeadMs) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevAutoStage=%d", &DevAutoStage) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevGodPlayers=%d", &DevGodPlayers) == 1) return true;
+	if(EA::StdC::Sscanf(line, "DevBotMonsterSkills=%d", &DevBotMonsterSkills) == 1) return true;
 	if(EA::StdC::Sscanf(line, "HostIP=%d.%d.%d.%d", &HostIP[0], &HostIP[1], &HostIP[2], &HostIP[3]) == 4) return true;
 	if(EA::StdC::Sscanf(line, "HubServerPublicIP=%d.%d.%d.%d", &HubServerPublicIP[0], &HubServerPublicIP[1], &HubServerPublicIP[2], &HubServerPublicIP[3]) == 4) return true;
 	if(EA::StdC::Sscanf(line, "HubServerPort=%d", &HubServerPort) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
+	if(EA::StdC::Sscanf(line, "BotSyncCadence=%d", &BotSyncCadence) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowWidth=%d", &WindowWidth) == 1) return true;
 	if(EA::StdC::Sscanf(line, "WindowHeight=%d", &WindowHeight) == 1) return true;
 
@@ -79,6 +84,7 @@ bool CConfigGame::SaveConfigFile()
 	out.append_sprintf("DevMode=%d\n", DevMode);
 	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("DevForcedMap=%d\n", DevForcedMap);
+	out.append_sprintf("DevBotStageSkill=%d\n", DevBotStageSkill);
 	out.append_sprintf("ShotLeadMs=%d\n", ShotLeadMs);
 	out.append_sprintf("HostIP=%d.%d.%d.%d\n", HostIP[0], HostIP[1], HostIP[2], HostIP[3]);
 	out.append_sprintf("HubServerPublicIP=%d.%d.%d.%d\n", HubServerPublicIP[0], HubServerPublicIP[1], HubServerPublicIP[2], HubServerPublicIP[3]);
@@ -108,7 +114,10 @@ void CConfigGame::Print() const
 	LOG("	DevMode=%d", DevMode);
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	DevForcedMap=%d", DevForcedMap);
+	LOG("	DevBotStageSkill=%d", DevBotStageSkill);
 	LOG("	ShotLeadMs=%d", ShotLeadMs);
+	LOG("	DevAutoStage=%d", DevAutoStage);
+	LOG("	DevBotMonsterSkills=%d", DevBotMonsterSkills);
 	LOG("	HostIP=%d.%d.%d.%d", HostIP[0], HostIP[1], HostIP[2], HostIP[3]);
 	LOG("	HubServerPublicIP=%d.%d.%d.%d", HubServerPublicIP[0], HubServerPublicIP[1], HubServerPublicIP[2], HubServerPublicIP[3]);
 	LOG("	HubServerPort=%d", HubServerPort);

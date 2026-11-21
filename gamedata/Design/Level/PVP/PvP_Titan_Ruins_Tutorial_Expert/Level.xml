@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="10" RTSCameraPresetIdx="12" KillZ="-5000" fSpacing="100" dwWidth="512" dwHeight="512" ReferenceLevel="Design\Level\ART_Levels\PVP_Art\PVP_Titan_Ruins" ReferenceOffset="1000000">
+      <LockStates IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      <ObserverCamBoundInfo width="30000" height="26000" bposx="1700" bposy="1700" bposz="1000" visible="False" apply="True" shape="RHOMBUS" />
+    </_LevelData>
+    <_PropResources />
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="Titan_Ruins_RGBM_Set" defaultMaterial="True" entityAmbientR="0.12549" entityAmbientG="0.176471" entityAmbientB="0.317647" entityDiffuseR="0.294118" entityDiffuseG="0.360784" entityDiffuseB="0.454902" entitySpecularR="0.384314" entitySpecularG="0.443137" entitySpecularB="0.443137" entityEmittanceR="0.015686" entityEmittanceG="0.015686" entityEmittanceB="0.015686" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="50" creatureAmbientR="0.113725" creatureAmbientG="0.152941" creatureAmbientB="0.188235" creatureDiffuseR="0.494118" creatureDiffuseG="0.607843" creatureDiffuseB="0.752941" creatureSpecularR="0.921569" creatureSpecularG="0.690196" creatureSpecularB="0.411765" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="20" dynamicAmbientR="0.086275" dynamicAmbientG="0.14902" dynamicAmbientB="0.286275" dynamicDiffuseR="0.670588" dynamicDiffuseG="0.694118" dynamicDiffuseB="0.639216" dynamicSpecularR="0.921569" dynamicSpecularG="0.682353" dynamicSpecularB="0.329412" dynamicEmittanceR="0.039216" dynamicEmittanceG="0.039216" dynamicEmittanceB="0.039216" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="30" levelAmbientR="0.372549" levelAmbientG="0.341177" levelAmbientB="0.470588" levelDiffuseR="0.956863" levelDiffuseG="0.882353" levelDiffuseB="0.819608" levelSpecularR="0.262745" levelSpecularG="0.262745" levelSpecularB="0.196078" levelEmittanceR="0.019608" levelEmittanceG="0.019608" levelEmittanceB="0.019608" levelVertColIntR="0.294118" levelVertColIntG="0.294118" levelVertColIntB="0.294118" levelShiness="30" sfxIntensity="0.7" itemIntensity="1" bgfxIntensity="1" hitColorIntensity="1" specularIntensity="2.2" dirDimmer="3.5" dirShadowBrightness="0.2" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.356863" dirAmbientG="0.694118" dirAmbientB="0.831373" dirDiffuseR="1" dirDiffuseG="0.847059" dirDiffuseB="0.709804" dirSpecularR="0.811765" dirSpecularG="0.831373" dirSpecularB="0.776471" globalAmbientR="0.231373" globalAmbientG="0.286275" globalAmbientB="0.309804" rimDirRotate="281" rimDirGradient="20" rimDirPower="3" rimColorR="0.819608" rimColorG="0.54902" rimColorB="0.329412" rimStrength="3" hdrExposure="1.6" hdrShoulderStrength="1.65" hdrLinearStrength="0.59" hdrLinearAngle="0.59" hdrToeStrength="1.63" hdrToeNumerator="0" hdrToeDenominator="0.79" hdrWhitePoint="2.7" bloomWhitePoint="0.49" bloomGradient="0.85" bloomStrength="1" bloomTintR="0.847059" bloomTintG="0.470588" bloomTintB="0.337255" bloomThreshold="0.6" bloomIntensity="1.2" bloomRadius="1.08" bloom2Intensity="0.75" bloom2Radius="0.74" bloom3Intensity="0.95" bloom3Radius="2.74" bloom4Intensity="0.83" bloom4Radius="3.01" bloom5Intensity="0.72" bloom5Radius="3.19" />
+    </_LevelMaterials>
+    <_PCLight dimmer="1" radius="1500" ambientR="0" ambientG="0" ambientB="0" diffuseR="1" diffuseG="1" diffuseB="1" specularR="0.4039216" specularG="0.2156863" specularB="0.8784314" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Aim" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

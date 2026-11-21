@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SERVICEPRICE_FILE>
+	<ST_SERVICEPRICE _NeedReviveCoin="90" _BatteryRefillCost="200" _ClearFatiguePointCost="200">	<!-- BUY_TYPE_CCOIN -->
+	
+		<!-- BUY_TYPE_CCOIN -->
+		<_RewardBuyChanceCost DATAKEY="WORLD_STAGE_DIFFICULT_EASY"		DATA="90" />
+		<_RewardBuyChanceCost DATAKEY="WORLD_STAGE_DIFFICULT_NORMAL"	DATA="90" />
+		<_RewardBuyChanceCost DATAKEY="WORLD_STAGE_DIFFICULT_HARD"		DATA="190" />
+		<_RewardBuyChanceCost DATAKEY="WORLD_STAGE_DIFFICULT_EXTREME"	DATA="290" />
+		<_RewardBuyChanceCost DATAKEY="WORLD_STAGE_DIFFICULT_HELL"		DATA="390" />
+
+		<!-- BUY_TYPE_CCOIN -->
+		<!-- 현재는 NCW 전용 -->
+		<_RewardBuyChanceCostSteps DATAKEY="WORLD_STAGE_DIFFICULT_EASY"		DATA="90,100,110" />
+		<_RewardBuyChanceCostSteps DATAKEY="WORLD_STAGE_DIFFICULT_NORMAL"	DATA="90,100,110" />
+		<_RewardBuyChanceCostSteps DATAKEY="WORLD_STAGE_DIFFICULT_HARD"		DATA="190,200,210" />
+		<_RewardBuyChanceCostSteps DATAKEY="WORLD_STAGE_DIFFICULT_EXTREME"	DATA="290,300,310" />
+		<_RewardBuyChanceCostSteps DATAKEY="WORLD_STAGE_DIFFICULT_HELL"		DATA="390,400,410" />
+		
+		<!-- BUY_TYPE_CCOIN -->
+		<_RewardOpenAllSlotsCost DATAKEY="WORLD_STAGE_DIFFICULT_EASY"		DATA="1980" />
+		<_RewardOpenAllSlotsCost DATAKEY="WORLD_STAGE_DIFFICULT_NORMAL"		DATA="1980" />
+		<_RewardOpenAllSlotsCost DATAKEY="WORLD_STAGE_DIFFICULT_HARD"		DATA="2980" />
+		<_RewardOpenAllSlotsCost DATAKEY="WORLD_STAGE_DIFFICULT_EXTREME"	DATA="4980" />
+		<_RewardOpenAllSlotsCost DATAKEY="WORLD_STAGE_DIFFICULT_HELL"		DATA="6980" />
+		
+		<_PvESkillUpgradeCost DATAKEY="1" _Type="BUY_TYPE_RON" _Amount="500"/>
+		<_PvESkillUpgradeCost DATAKEY="2" _Type="BUY_TYPE_RON" _Amount="1000"/>
+		<_PvESkillUpgradeCost DATAKEY="3" _Type="BUY_TYPE_RON" _Amount="1500"/>
+		<_PvESkillUpgradeCost DATAKEY="4" _Type="BUY_TYPE_RON" _Amount="2500"/>
+		<_PvESkillUpgradeCost DATAKEY="5" _Type="BUY_TYPE_RON" _Amount="4500"/>
+		<_PvESkillUpgradeCost DATAKEY="6" _Type="BUY_TYPE_RON" _Amount="8000"/>
+
+		<_InvenUnlockCost DATAKEY="1"	_Type="BUY_TYPE_RON"	_Amount="1800"/>
+		<_InvenUnlockCost DATAKEY="2"	_Type="BUY_TYPE_RON"	_Amount="3500"/>
+		<_InvenUnlockCost DATAKEY="3"	_Type="BUY_TYPE_CCOIN"	_Amount="150"/>
+		<_InvenUnlockCost DATAKEY="4"	_Type="BUY_TYPE_CCOIN"	_Amount="300"/>
+		<_InvenUnlockCost DATAKEY="5"	_Type="BUY_TYPE_CCOIN"	_Amount="350"/>
+		<_InvenUnlockCost DATAKEY="6"	_Type="BUY_TYPE_CCOIN"	_Amount="500"/>
+		<_InvenUnlockCost DATAKEY="7"	_Type="BUY_TYPE_CCOIN"	_Amount="550"/>
+		<_InvenUnlockCost DATAKEY="8"	_Type="BUY_TYPE_CCOIN"	_Amount="700"/>
+		<_InvenUnlockCost DATAKEY="9"	_Type="BUY_TYPE_CCOIN"	_Amount="750"/>
+		<_InvenUnlockCost DATAKEY="10"	_Type="BUY_TYPE_CCOIN"	_Amount="1000"/>
+		<_InvenUnlockCost DATAKEY="11"	_Type="BUY_TYPE_CCOIN"	_Amount="1500"/>
+		<_InvenUnlockCost DATAKEY="12"	_Type="BUY_TYPE_CCOIN"	_Amount="2000"/>
+		
+		<_WarehouseUnlockCost DATAKEY="1"	_Type="BUY_TYPE_CCOIN"	_Amount="50"/>
+		<_WarehouseUnlockCost DATAKEY="2"	_Type="BUY_TYPE_CCOIN"	_Amount="100"/>
+		<_WarehouseUnlockCost DATAKEY="3"	_Type="BUY_TYPE_CCOIN"	_Amount="150"/>
+		<_WarehouseUnlockCost DATAKEY="4"	_Type="BUY_TYPE_CCOIN"	_Amount="300"/>
+		<_WarehouseUnlockCost DATAKEY="5"	_Type="BUY_TYPE_CCOIN"	_Amount="350"/>
+		<_WarehouseUnlockCost DATAKEY="6"	_Type="BUY_TYPE_CCOIN"	_Amount="500"/>
+		<_WarehouseUnlockCost DATAKEY="7"	_Type="BUY_TYPE_CCOIN"	_Amount="550"/>
+		<_WarehouseUnlockCost DATAKEY="8"	_Type="BUY_TYPE_CCOIN"	_Amount="700"/>
+		
+		<_MissionChangeCost DATAKEY="1" _Type="BUY_TYPE_RON"	_Amount="200"/>
+		<_MissionChangeCost DATAKEY="3" _Type="BUY_TYPE_RON"	_Amount="500"/>
+		<_MissionChangeCost DATAKEY="5" _Type="BUY_TYPE_RON"	_Amount="1000"/>
+		<_MissionChangeCost DATAKEY="7" _Type="BUY_TYPE_RON"	_Amount="1500"/>
+		<_MissionChangeCost DATAKEY="9" _Type="BUY_TYPE_RON"	_Amount="3000"/>
+		<_MissionChangeCost DATAKEY="11" _Type="BUY_TYPE_RON"	_Amount="10000"/>
+		
+		<_SkillUnlockInfo _UnlockOrder="1" _RequiredLevel="1">	<_Cost _Type="BUY_TYPE_RON"	_Amount="300"/>	</_SkillUnlockInfo>
+		<_SkillUnlockInfo _UnlockOrder="2" _RequiredLevel="1">	<_Cost _Type="BUY_TYPE_RON"	_Amount="700"/>	</_SkillUnlockInfo>
+
+		<_WeaponUnlockInfo _WeaponType="WEAPON_TYPE_1" _RequiredLevel="1" />	<!-- default weapon type, no unlock cost -->
+		<_WeaponUnlockInfo _WeaponType="WEAPON_TYPE_2" _RequiredLevel="1">	<_Cost _Type="BUY_TYPE_RON"	_Amount="500"/>	</_WeaponUnlockInfo>
+		<_WeaponUnlockInfo _WeaponType="WEAPON_TYPE_3" _RequiredLevel="1">	<_Cost _Type="BUY_TYPE_RON"	_Amount="1000"/>	</_WeaponUnlockInfo>
+		
+		<_MasterGearCostInfo _MasterGearRepairCostPerPoint="1">
+			<_AddCost DATAKEY="1"	_Type="BUY_TYPE_RON"	_Amount="0"/>		<!-- default mastergear 1 -->
+			<_AddCost DATAKEY="2"	_Type="BUY_TYPE_RON"	_Amount="0"/>		<!-- default mastergear 2 -->
+			<_AddCost DATAKEY="3"	_Type="BUY_TYPE_RON"	_Amount="4800"/>
+			<_AddCost DATAKEY="4"	_Type="BUY_TYPE_CCOIN"	_Amount="440"/>
+			<_AddCost DATAKEY="5"	_Type="BUY_TYPE_CCOIN"	_Amount="770"/>
+			<_AddCost DATAKEY="6"	_Type="BUY_TYPE_CCOIN"	_Amount="1188"/>
+			<_AddCost DATAKEY="7"	_Type="BUY_TYPE_CCOIN"	_Amount="1694"/>
+			<_AddCost DATAKEY="8"	_Type="BUY_TYPE_CCOIN"	_Amount="2288"/>
+			<_AddCost DATAKEY="9"	_Type="BUY_TYPE_CCOIN"	_Amount="2970"/>
+			<_AddCost DATAKEY="10"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="11"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="12"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="13"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="14"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="15"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="16"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="17"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="18"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="19"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+			<_AddCost DATAKEY="20"	_Type="BUY_TYPE_CCOIN"	_Amount="3740"/>
+		</_MasterGearCostInfo>
+
+    <_SkinChipPrice DATAKEY="SKIN_ARTILLERY_02" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_ASSASSIN_03" _BuyItemIndex="138000903" _BuyItemPrice="6"/>
+    <_SkinChipPrice DATAKEY="SKIN_ELECTRO_02" _BuyItemIndex="138000906" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_DEFENDER_05" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_DEFENDER_06" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_SNIPER_03" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_DESTROYER_04" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_MECHANIC_03" _BuyItemIndex="138000905" _BuyItemPrice="2"/>
+    <_SkinChipPrice DATAKEY="SKIN_SOULMASTER_03" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_DOUBLEGUN_03" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_JINSEOYEON_02" _BuyItemIndex="138000906" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_RODMASTER_03" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_PHOTOG_02" _BuyItemIndex="138000903" _BuyItemPrice="6"/>
+    <_SkinChipPrice DATAKEY="SKIN_ICEQUEEN_02" _BuyItemIndex="138000903" _BuyItemPrice="6"/>
+    <_SkinChipPrice DATAKEY="SKIN_MAGICGIRL_02" _BuyItemIndex="138000903" _BuyItemPrice="6"/>
+    <_SkinChipPrice DATAKEY="SKIN_MAGICGIRL_03" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_POHWARAN_03" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_POHWARAN_04" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_BOOMERANG_03" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_SLIME_03" _BuyItemIndex="138000904" _BuyItemPrice="4"/>
+    <_SkinChipPrice DATAKEY="SKIN_MONDOZAX_02" _BuyItemIndex="138000905" _BuyItemPrice="1"/>
+    <_SkinChipPrice DATAKEY="SKIN_EFREET_02" _BuyItemIndex="138000903" _BuyItemPrice="6"/>
+
+    <_MasterPrice DATAKEY="100000001" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1890"/>	 <!--CLASS_TYPE_STRIKER-->
+    <_MasterPrice DATAKEY="100000002" _CharacterUnlockCost="2" _CharacterUnlockCCoinCost ="590"/>    <!--CLASS_TYPE_ARTILLERY-->
+    <_MasterPrice DATAKEY="100000003" _CharacterUnlockCost="0" _CharacterUnlockCCoinCost ="0"/>      <!--CLASS_TYPE_ASSASSIN-->
+    <_MasterPrice DATAKEY="100000004" _CharacterUnlockCost="2" _CharacterUnlockCCoinCost ="590"/>    <!--CLASS_TYPE_ELECTRO-->
+    <_MasterPrice DATAKEY="100000005" _CharacterUnlockCost="2" _CharacterUnlockCCoinCost ="590"/>    <!--CLASS_TYPE_DEFENDER-->
+    <_MasterPrice DATAKEY="100000006" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1890"/>   <!--CLASS_TYPE_SNIPER-->
+    <_MasterPrice DATAKEY="100000007" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_DEATHKNIGHT-->
+    <_MasterPrice DATAKEY="100000008" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1290"/>   <!--CLASS_TYPE_DESTROYER-->
+    <_MasterPrice DATAKEY="100000009" _CharacterUnlockCost="2" _CharacterUnlockCCoinCost ="1290"/>   <!--CLASS_TYPE_MECHANIC-->
+    <_MasterPrice DATAKEY="100000010" _CharacterUnlockCost="2" _CharacterUnlockCCoinCost ="590"/>    <!--CLASS_TYPE_SOULMASTER-->
+    <_MasterPrice DATAKEY="100000011" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_DOUBLEGUN-->
+    <_MasterPrice DATAKEY="100000012" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_JINSEOYEON-->
+    <_MasterPrice DATAKEY="100000013" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_KROMEDE-->
+    <_MasterPrice DATAKEY="100000014" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1890"/>   <!--CLASS_TYPE_RODMASTER-->
+    <_MasterPrice DATAKEY="100000015" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1290"/>   <!--CLASS_TYPE_PHOTOG-->
+    <_MasterPrice DATAKEY="100000016" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_ICEQUEEN-->
+    <_MasterPrice DATAKEY="100000017" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_MAGICGIRL-->
+    <_MasterPrice DATAKEY="100000018" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_POHWARAN-->
+    <_MasterPrice DATAKEY="100000019" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_BOOMERANG-->
+    <_MasterPrice DATAKEY="100000020" _CharacterUnlockCost="10" _CharacterUnlockCCoinCost ="1890"/>  <!--CLASS_TYPE_SLIME-->
+    <_MasterPrice DATAKEY="100000021" _CharacterUnlockCost="10" _CharacterUnlockCCoinCost ="1890"/>  <!--CLASS_TYPE_MONDOZAX-->
+    <_MasterPrice DATAKEY="100000022" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_LILU-->
+    <_MasterPrice DATAKEY="100000023" _CharacterUnlockCost="10" _CharacterUnlockCCoinCost ="1890"/>  <!--CLASS_TYPE_EFREET-->
+    <_MasterPrice DATAKEY="100000024" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_SHADOWHUNTER-->
+    <_MasterPrice DATAKEY="100000025" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_RYTLOCK-->
+    <_MasterPrice DATAKEY="100000026" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_CATTHECAT-->
+    <_MasterPrice DATAKEY="100000027" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_RNB-->
+    <_MasterPrice DATAKEY="100000028" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_BATTER-->
+    <_MasterPrice DATAKEY="100000029" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_ANDROA-->
+    <_MasterPrice DATAKEY="100000030" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2490"/>  <!--CLASS_TYPE_ANDROB-->
+    <_MasterPrice DATAKEY="100000031" _CharacterUnlockCost="10" _CharacterUnlockCCoinCost ="1890"/>  <!--CLASS_TYPE_ATTACKER-->
+    <_MasterPrice DATAKEY="100000032" _CharacterUnlockCost="14" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_BOXER-->
+    <_MasterPrice DATAKEY="100000033" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1290"/>   <!--CLASS_TYPE_SHUGOTRADER-->
+    <_MasterPrice DATAKEY="100000034" _CharacterUnlockCost="6" _CharacterUnlockCCoinCost ="1290"/>   <!--CLASS_TYPE_NAGA-->
+    <_MasterPrice DATAKEY="100000035" _CharacterUnlockCost="0" _CharacterUnlockCCoinCost ="0"/>      <!--CLASS_TYPE_LAUNCHER-->
+    <_MasterPrice DATAKEY="100000036" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_STATESMAN-->
+    <_MasterPrice DATAKEY="100000037" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_YURI-->
+    <_MasterPrice DATAKEY="100000038" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="2980"/>  <!--CLASS_TYPE_ESPER-->
+    <_MasterPrice DATAKEY="100000039" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="1290"/>  <!--CLASS_TYPE_PRIEST-->
+    <_MasterPrice DATAKEY="100000040" _CharacterUnlockCost="18" _CharacterUnlockCCoinCost ="5980"/>  <!--CLASS_TYPE_GHOSTWIDOW-->
+  </ST_SERVICEPRICE>
+</SERVICEPRICE_FILE>
+

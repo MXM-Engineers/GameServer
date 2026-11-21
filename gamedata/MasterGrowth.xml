@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<MASTER_GROWTH maxLevel="18">
+  <INFO class="1">
+    <STAT type="0" linear="58.0000" quadratic="0" increments="17" kept="15" />
+    <STAT type="6" linear="2.7300" quadratic="0.00000" increments="17" kept="9" />
+    <STAT type="8" linear="24.4000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="2">
+    <STAT type="0" linear="35.0000" quadratic="0" increments="17" kept="16" />
+    <STAT type="6" linear="26.3500" quadratic="0" increments="17" kept="16" />
+    <STAT type="8" linear="39.5301" quadratic="0.94279" increments="17" kept="17" />
+  </INFO>
+  <INFO class="3">
+    <STAT type="0" linear="32.0000" quadratic="-0.00000" increments="17" kept="9" />
+    <STAT type="6" linear="6.3100" quadratic="0" increments="17" kept="13" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="4">
+    <STAT type="0" linear="107.4390" quadratic="-3.07425" increments="17" kept="14" />
+    <STAT type="6" linear="1.3272" quadratic="0" increments="17" kept="16" />
+    <STAT type="8" linear="33.6461" quadratic="-0.30098" increments="17" kept="17" />
+  </INFO>
+  <INFO class="5">
+    <STAT type="0" linear="114.8571" quadratic="0" increments="17" kept="14" />
+    <STAT type="6" linear="2.7800" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="6">
+    <STAT type="0" linear="5.4647" quadratic="2.31471" increments="16" kept="16" />
+    <STAT type="6" linear="9.0093" quadratic="2.00369" increments="16" kept="16" />
+    <STAT type="8" linear="4.3453" quadratic="1.87529" increments="16" kept="16" />
+  </INFO>
+  <INFO class="7">
+    <STAT type="0" linear="85.0000" quadratic="0" increments="17" kept="13" />
+    <STAT type="6" linear="3.3900" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="8">
+    <STAT type="0" linear="14.5888" quadratic="6.18722" increments="17" kept="12" />
+    <STAT type="6" linear="0.8502" quadratic="0.44160" increments="17" kept="16" />
+    <STAT type="8" linear="2.5222" quadratic="1.08174" increments="17" kept="17" />
+  </INFO>
+  <INFO class="9">
+    <STAT type="0" linear="8.5379" quadratic="3.68430" increments="16" kept="16" />
+    <STAT type="6" linear="0.9484" quadratic="0.39998" increments="16" kept="13" />
+    <STAT type="8" linear="19.4444" quadratic="1.57993" increments="16" kept="16" />
+  </INFO>
+  <INFO class="10">
+    <STAT type="0" linear="88.6603" quadratic="-2.35256" increments="17" kept="3" />
+    <STAT type="6" linear="19.7686" quadratic="-0.56068" increments="17" kept="15" />
+    <STAT type="8" linear="42.4527" quadratic="-1.20326" increments="17" kept="13" />
+  </INFO>
+  <INFO class="11">
+    <STAT type="0" linear="39.0000" quadratic="0" increments="17" kept="16" />
+    <STAT type="6" linear="4.0300" quadratic="0.00000" increments="17" kept="4" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="16" />
+  </INFO>
+  <INFO class="12">
+    <STAT type="0" linear="63.8090" quadratic="-1.79494" increments="17" kept="8" />
+    <STAT type="6" linear="12.6516" quadratic="-0.36148" increments="17" kept="12" />
+    <STAT type="8" linear="54.4774" quadratic="-1.54608" increments="17" kept="17" />
+  </INFO>
+  <INFO class="13">
+    <STAT type="0" linear="52.1538" quadratic="0" increments="17" kept="13" />
+    <STAT type="6" linear="10.9464" quadratic="0.18341" increments="17" kept="17" />
+    <STAT type="8" linear="24.4000" quadratic="0" increments="17" kept="15" />
+  </INFO>
+  <INFO class="14">
+    <STAT type="0" linear="89.0000" quadratic="0" increments="17" kept="13" />
+    <STAT type="6" linear="3.4600" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="15">
+    <STAT type="0" linear="67.3824" quadratic="-1.91176" increments="17" kept="17" />
+    <STAT type="6" linear="11.6635" quadratic="-0.25505" increments="17" kept="17" />
+    <STAT type="8" linear="54.4774" quadratic="-1.54608" increments="17" kept="17" />
+  </INFO>
+  <INFO class="16">
+    <STAT type="0" linear="5.4485" quadratic="2.31618" increments="17" kept="17" />
+    <STAT type="6" linear="1.9775" quadratic="0.86750" increments="17" kept="17" />
+    <STAT type="8" linear="23.7667" quadratic="1.74314" increments="17" kept="17" />
+  </INFO>
+  <INFO class="17">
+    <STAT type="0" linear="102.3037" quadratic="-2.92132" increments="17" kept="16" />
+    <STAT type="6" linear="7.9812" quadratic="-0.22575" increments="17" kept="15" />
+    <STAT type="8" linear="23.7417" quadratic="-0.10245" increments="17" kept="17" />
+  </INFO>
+  <INFO class="18">
+    <STAT type="0" linear="37.0000" quadratic="0" increments="17" kept="13" />
+    <STAT type="6" linear="6.9900" quadratic="-0.00000" increments="17" kept="4" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="15" />
+  </INFO>
+  <INFO class="19">
+    <STAT type="0" linear="50.0000" quadratic="0" increments="13" kept="13" />
+    <STAT type="6" linear="9.6186" quadratic="0" increments="13" kept="12" />
+    <STAT type="8" linear="48.2373" quadratic="-0.32542" increments="13" kept="13" />
+  </INFO>
+  <INFO class="20">
+    <STAT type="0" linear="105.0000" quadratic="0" increments="17" kept="15" />
+    <STAT type="6" linear="7.6100" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="15" />
+  </INFO>
+  <INFO class="21">
+    <STAT type="0" linear="87.2610" quadratic="-2.48897" increments="16" kept="16" />
+    <STAT type="6" linear="19.2728" quadratic="-0.55065" increments="16" kept="16" />
+    <STAT type="8" linear="80.8243" quadratic="-1.87066" increments="16" kept="16" />
+  </INFO>
+  <INFO class="22">
+    <STAT type="0" linear="101.0500" quadratic="-2.85000" increments="17" kept="5" />
+    <STAT type="6" linear="16.0905" quadratic="-0.45636" increments="17" kept="15" />
+    <STAT type="8" linear="42.4443" quadratic="-1.20343" increments="17" kept="15" />
+  </INFO>
+  <INFO class="24">
+    <STAT type="0" linear="4.9137" quadratic="2.09464" increments="15" kept="15" />
+    <STAT type="6" linear="1.3812" quadratic="0.59205" increments="15" kept="15" />
+    <STAT type="8" linear="4.3750" quadratic="1.87500" increments="15" kept="15" />
+  </INFO>
+  <INFO class="25">
+    <STAT type="0" linear="105.0000" quadratic="0" increments="17" kept="17" />
+    <STAT type="6" linear="1.7220" quadratic="0" increments="17" kept="12" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="26">
+    <STAT type="0" linear="58.0000" quadratic="0" increments="17" kept="16" />
+    <STAT type="6" linear="4.4541" quadratic="0" increments="17" kept="15" />
+    <STAT type="8" linear="24.4000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="27">
+    <STAT type="0" linear="102.3037" quadratic="-2.92132" increments="17" kept="16" />
+    <STAT type="6" linear="18.5965" quadratic="-0.53150" increments="17" kept="4" />
+    <STAT type="8" linear="42.4917" quadratic="-1.20539" increments="17" kept="17" />
+  </INFO>
+  <INFO class="29">
+    <STAT type="0" linear="37.0000" quadratic="0" increments="17" kept="17" />
+    <STAT type="6" linear="9.8000" quadratic="-0.00000" increments="17" kept="8" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="13" />
+  </INFO>
+  <INFO class="30">
+    <STAT type="0" linear="183.4529" quadratic="-5.24706" increments="16" kept="16" />
+    <STAT type="6" linear="3.7229" quadratic="-0.10633" increments="16" kept="12" />
+    <STAT type="8" linear="31.5000" quadratic="-0.90000" increments="16" kept="12" />
+  </INFO>
+  <INFO class="31">
+    <STAT type="0" linear="43.0000" quadratic="0" increments="17" kept="15" />
+    <STAT type="6" linear="8.8934" quadratic="0.20523" increments="17" kept="17" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="32">
+    <STAT type="0" linear="39.0000" quadratic="0" increments="17" kept="15" />
+    <STAT type="6" linear="9.6200" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="31.2000" quadratic="0" increments="17" kept="16" />
+  </INFO>
+  <INFO class="33">
+    <STAT type="0" linear="97.1035" quadratic="-2.77190" increments="15" kept="14" />
+    <STAT type="6" linear="18.2749" quadratic="-0.34848" increments="15" kept="15" />
+    <STAT type="8" linear="40.4339" quadratic="-0.54540" increments="15" kept="15" />
+  </INFO>
+  <INFO class="34">
+    <STAT type="0" linear="97.0000" quadratic="0" increments="17" kept="12" />
+    <STAT type="6" linear="2.0275" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="18.0000" quadratic="0" increments="17" kept="14" />
+  </INFO>
+  <INFO class="35">
+    <STAT type="0" linear="58.0000" quadratic="0" increments="17" kept="15" />
+    <STAT type="6" linear="3.1742" quadratic="0" increments="17" kept="16" />
+    <STAT type="8" linear="24.4000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="36">
+    <STAT type="0" linear="88.9231" quadratic="0" increments="17" kept="13" />
+    <STAT type="6" linear="5.0178" quadratic="0" increments="17" kept="17" />
+    <STAT type="8" linear="24.4000" quadratic="0" increments="17" kept="17" />
+  </INFO>
+  <INFO class="40">
+    <STAT type="0" linear="5.2431" quadratic="2.34928" increments="17" kept="15" />
+    <STAT type="6" linear="1.7211" quadratic="0.73614" increments="17" kept="6" />
+    <STAT type="8" linear="4.3750" quadratic="1.87500" increments="17" kept="17" />
+  </INFO>
+</MASTER_GROWTH>

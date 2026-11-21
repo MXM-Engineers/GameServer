@@ -58,6 +58,12 @@ void MatchmakerConnector::Update()
 					conn.SendPacket(packet);
 				} break;
 
+				case Query::Type::GameEnded: {
+					In::GN_GameEnded packet;
+					packet.sortieUID = q->GameEnded.sortieUID;
+					conn.SendPacket(packet);
+				} break;
+
 				default: {
 					ASSERT_MSG(0, "case not handled");
 				}
@@ -72,6 +78,15 @@ void MatchmakerConnector::QueryGameCreated(SortieUID sortieUID)
 {
 	Query query(Query::Type::GameCreated);
 	query.GameCreated.sortieUID = sortieUID;
+
+	LOCK_MUTEX(mutexQueries);
+	queries.push_back(query);
+}
+
+void MatchmakerConnector::QueryGameEnded(SortieUID sortieUID)
+{
+	Query query(Query::Type::GameEnded);
+	query.GameEnded.sortieUID = sortieUID;
 
 	LOCK_MUTEX(mutexQueries);
 	queries.push_back(query);

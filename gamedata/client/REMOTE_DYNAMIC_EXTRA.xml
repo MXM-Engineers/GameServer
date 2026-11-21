@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ENTITY_FILE>
+  <INFO ID="1467020600" KEYNAME="REMOTE_DESERT_Dynamic_Fountain_Explosion">
+    <EntityComData _Description="사막 동적객체_물분수 리모트 데미지 " />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1260107007" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1260107012" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+</ENTITY_FILE>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_PATH_LIST>
+    <MAP_PATH_INFO DATAKEY="32">
+      <_PathList dwID="32" dwParent="32" kTranslate_x="12460" kTranslate_y="16430" kTranslate_z="3931.22" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="254.3597" />
+      <_PathList dwID="41" dwParent="32" kTranslate_x="10300" kTranslate_y="16430" kTranslate_z="3931.42" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="29">
+      <_PathList dwID="29" dwParent="29" kTranslate_x="12790" kTranslate_y="13990" kTranslate_z="3931.22" kRotation_x="0" kRotation_y="0" kRotation_z="1.570796" _RandomRadius="254.3597" />
+      <_PathList dwID="49" dwParent="29" kTranslate_x="12790" kTranslate_y="16160" kTranslate_z="3931.44" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+  </MAP_PATH_LIST>
+</MAP_INFO>

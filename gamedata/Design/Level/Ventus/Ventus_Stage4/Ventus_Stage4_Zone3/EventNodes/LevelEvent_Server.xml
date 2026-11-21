@@ -1,0 +1,1793 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+	<ClientLevelEventList>
+		<_LevelEventData _EventDataID="AI 트리거 실행3_Normal" _ConvertedEventDataID="26" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="3" />
+			<_InvokeAITriggerInfo _INDEX="300" _Description="목표점3 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal1" _ConvertedEventDataID="25" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰14_Normal" _ConvertedEventDataID="24" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200036" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene2_Key" _TagID="0" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal" _ConvertedEventDataID="24" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal1" _ConvertedEventDataID="25" />
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200036" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="EASY" _Tag="Scene2_Key" _TagID="0" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea16" _ConvertedEventDataID="23" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경2_Normal" _ConvertedEventDataID="22" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="6" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경2_Normal" _ConvertedEventDataID="22" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea16" _ConvertedEventDataID="23" />
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="200046" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경2_Normal1" _ConvertedEventDataID="21" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="26" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200026P" _ConvertedEventDataID="20" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행3_Normal" _ConvertedEventDataID="26" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal" _ConvertedEventDataID="24" />
+			<_OutputLink _LinkKey="액션 변경2_Normal" _ConvertedEventDataID="22" />
+			<_OutputLink _LinkKey="액션 변경2_Normal1" _ConvertedEventDataID="21" />
+			<_BoundTriggerData _AreaID="200026" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행5_Normal" _ConvertedEventDataID="36" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_InvokeAITriggerInfo _INDEX="400" _Description="목표점4 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰24_Normal" _ConvertedEventDataID="35" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200019" _CallCount="1" _CallDelayTime="7" _RandomDelayTimeVariance="0" _CallIntervalTime="1.5" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰25_Normal" _ConvertedEventDataID="34" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103090000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200018" _CallCount="1" _CallDelayTime="11" _RandomDelayTimeVariance="0" _CallIntervalTime="10" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰26_Normal" _ConvertedEventDataID="33" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="28" _CallCount="2" _CallDelayTime="1.5" _RandomDelayTimeVariance="0" _CallIntervalTime="2" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰26_Normal1" _ConvertedEventDataID="32" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200017" _CallCount="2" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="2" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰27_Normal" _ConvertedEventDataID="31" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103090000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200016" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea18" _ConvertedEventDataID="30" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경3_Normal" _ConvertedEventDataID="29" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="8" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경3_Normal" _ConvertedEventDataID="29" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea18" _ConvertedEventDataID="30" />
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="200045" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경3_Normal1" _ConvertedEventDataID="28" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="24" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200009P" _ConvertedEventDataID="27" _Comment="" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행5_Normal" _ConvertedEventDataID="36" />
+			<_OutputLink _LinkKey="몬스터 스폰24_Normal" _ConvertedEventDataID="35" />
+			<_OutputLink _LinkKey="몬스터 스폰25_Normal" _ConvertedEventDataID="34" />
+			<_OutputLink _LinkKey="몬스터 스폰26_Normal" _ConvertedEventDataID="33" />
+			<_OutputLink _LinkKey="몬스터 스폰26_Normal1" _ConvertedEventDataID="32" />
+			<_OutputLink _LinkKey="몬스터 스폰27_Normal" _ConvertedEventDataID="31" />
+			<_OutputLink _LinkKey="액션 변경3_Normal" _ConvertedEventDataID="29" />
+			<_OutputLink _LinkKey="액션 변경3_Normal1" _ConvertedEventDataID="28" />
+			<_BoundTriggerData _AreaID="200009" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal9" _ConvertedEventDataID="49" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="37" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_NORMAL_STAND" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Normal2" _ConvertedEventDataID="48" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰1_Normal2" _ConvertedEventDataID="47" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500014" _CallCount="1" _CallDelayTime="0.5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Normal2" _ConvertedEventDataID="47" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Normal2" _ConvertedEventDataID="48" />
+			<_InputLink _LinkKey="몬스터 스폰3_Normal1" _ConvertedEventDataID="46" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500013" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Normal1" _ConvertedEventDataID="46" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Normal2" _ConvertedEventDataID="47" />
+			<_InputLink _LinkKey="몬스터 스폰1_Normal1" _ConvertedEventDataID="45" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500012" _CallCount="1" _CallDelayTime="3.8" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Normal1" _ConvertedEventDataID="45" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Normal1" _ConvertedEventDataID="46" />
+			<_InputLink _LinkKey="몬스터 스폰3_Normal" _ConvertedEventDataID="44" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="2.5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Normal" _ConvertedEventDataID="44" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Normal1" _ConvertedEventDataID="45" />
+			<_InputLink _LinkKey="몬스터 스폰1_Normal" _ConvertedEventDataID="43" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200004" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Normal" _ConvertedEventDataID="43" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Normal" _ConvertedEventDataID="44" />
+			<_InputLink _LinkKey="딜레이1" _ConvertedEventDataID="42" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200002" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이1" _ConvertedEventDataID="42" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Normal" _ConvertedEventDataID="43" />
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="3" />
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행1_Normal" _ConvertedEventDataID="41" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="3" />
+			<_InvokeAITriggerInfo _INDEX="200" _Description="목표점2 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea14" _ConvertedEventDataID="40" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경4_Normal" _ConvertedEventDataID="39" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="3" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경4_Normal" _ConvertedEventDataID="39" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea14" _ConvertedEventDataID="40" />
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="200047" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경4_Normal1" _ConvertedEventDataID="38" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="3" />
+			<_ActionChangeInfo _ID="23" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200001P" _ConvertedEventDataID="37" _Comment="" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal9" _ConvertedEventDataID="49" />
+			<_OutputLink _LinkKey="딜레이1" _ConvertedEventDataID="42" />
+			<_OutputLink _LinkKey="AI 트리거 실행1_Normal" _ConvertedEventDataID="41" />
+			<_OutputLink _LinkKey="액션 변경4_Normal" _ConvertedEventDataID="39" />
+			<_OutputLink _LinkKey="액션 변경4_Normal1" _ConvertedEventDataID="38" />
+			<_BoundTriggerData _AreaID="200001" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행2" _ConvertedEventDataID="55" _GroupTag="Portal" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이24_Normal1" _ConvertedEventDataID="54" _StageDifficultyMask="31" />
+			<_InvokeAITriggerInfo _INDEX="10000" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이24_Normal1" _ConvertedEventDataID="54" _GroupTag="Portal" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="AI 트리거 실행2" _ConvertedEventDataID="55" />
+			<_InputLink _LinkKey="존 이동 메시지2" _ConvertedEventDataID="53" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="5" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="존 이동 메시지2" _ConvertedEventDataID="53" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이24_Normal1" _ConvertedEventDataID="54" />
+			<_InputLink _LinkKey="EventPartyConditionInfo1" _ConvertedEventDataID="52" _StageDifficultyMask="31" />
+			<_ShowProgressMessageInfo _ActionType="TYPE_START" _ProgressTime="5" _Title="NOTICE_LOADING" _Message="System008" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EventPartyConditionInfo1" _ConvertedEventDataID="52" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="존 이동 메시지2" _ConvertedEventDataID="53" />
+			<_InputLink _LinkKey="EnterTrigger200020" _ConvertedEventDataID="50" _StageDifficultyMask="31" />
+			<_EventPartyConditionInfo _IsSingleParty="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal2" _ConvertedEventDataID="51" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200020" _ConvertedEventDataID="50" _StageDifficultyMask="31" />
+			<_ActionChangeInfo _ID="200056" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200020" _ConvertedEventDataID="50" _Comment="" _LoopCount="1" _GroupTag="포탈" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="EventPartyConditionInfo1" _ConvertedEventDataID="52" />
+			<_OutputLink _LinkKey="액션 변경12_Normal2" _ConvertedEventDataID="51" />
+			<_BoundTriggerData _AreaID="200020" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="ActiveEvents1" _ConvertedEventDataID="58" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AI 트리거 실행3" _ConvertedEventDataID="57" _StageDifficultyMask="31" />
+			<_ActiveEvents _InvokeGroupTag="Portal" _Active="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행3" _ConvertedEventDataID="57" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="ActiveEvents1" _ConvertedEventDataID="58" />
+			<_InputLink _LinkKey="EnterTrigger200020P" _ConvertedEventDataID="56" _StageDifficultyMask="31" />
+			<_InvokeAITriggerInfo _INDEX="10000" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200020P" _ConvertedEventDataID="56" _Comment="" _LoopCount="1" _GroupTag="포탈" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행3" _ConvertedEventDataID="57" />
+			<_BoundTriggerData _AreaID="200020" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행6_Normal" _ConvertedEventDataID="63" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger5" _ConvertedEventDataID="59" _StageDifficultyMask="2" />
+			<_InvokeAITriggerInfo _INDEX="501" _Description="목표점5 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지3_Normal" _ConvertedEventDataID="62" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경12_Normal" _ConvertedEventDataID="61" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal" _ConvertedEventDataID="61" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지3_Normal" _ConvertedEventDataID="62" />
+			<_InputLink _LinkKey="KillTrigger5" _ConvertedEventDataID="59" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="200048" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal3" _ConvertedEventDataID="60" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger5" _ConvertedEventDataID="59" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="25" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger5" _ConvertedEventDataID="59" _Comment="" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행6_Normal" _ConvertedEventDataID="63" />
+			<_OutputLink _LinkKey="액션 변경12_Normal" _ConvertedEventDataID="61" />
+			<_OutputLink _LinkKey="액션 변경12_Normal3" _ConvertedEventDataID="60" />
+			<_DeadCountTriggerData _EntityIndex="key3" _TagID="1" _IsChild="0" _RandomRate="100" _Count="11" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰28_Normal1" _ConvertedEventDataID="73" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰29_Normal1" _ConvertedEventDataID="72" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="7" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰29_Normal1" _ConvertedEventDataID="72" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰28_Normal1" _ConvertedEventDataID="73" />
+			<_InputLink _LinkKey="몬스터 스폰3_Normal3" _ConvertedEventDataID="71" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200006" _CallCount="1" _CallDelayTime="6" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Normal3" _ConvertedEventDataID="71" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰29_Normal1" _ConvertedEventDataID="72" />
+			<_InputLink _LinkKey="몬스터 스폰1_Normal3" _ConvertedEventDataID="70" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500014" _CallCount="1" _CallDelayTime="0.5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Normal3" _ConvertedEventDataID="70" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Normal3" _ConvertedEventDataID="71" />
+			<_InputLink _LinkKey="몬스터 스폰3_Normal4" _ConvertedEventDataID="69" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500013" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Normal4" _ConvertedEventDataID="69" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Normal3" _ConvertedEventDataID="70" />
+			<_InputLink _LinkKey="몬스터 스폰1_Normal4" _ConvertedEventDataID="68" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500012" _CallCount="1" _CallDelayTime="3.8" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Normal4" _ConvertedEventDataID="68" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Normal4" _ConvertedEventDataID="69" />
+			<_InputLink _LinkKey="딜레이14" _ConvertedEventDataID="67" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="2.5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이14" _ConvertedEventDataID="67" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Normal4" _ConvertedEventDataID="68" />
+			<_InputLink _LinkKey="몬스터 스폰28_Normal" _ConvertedEventDataID="66" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="4" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰28_Normal" _ConvertedEventDataID="66" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이14" _ConvertedEventDataID="67" />
+			<_InputLink _LinkKey="KillTrigger66" _ConvertedEventDataID="64" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰29_Normal" _ConvertedEventDataID="65" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger66" _ConvertedEventDataID="64" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200006" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key" _TagID="2" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger66" _ConvertedEventDataID="64" _Comment="추가 몬스터" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰28_Normal" _ConvertedEventDataID="66" />
+			<_OutputLink _LinkKey="몬스터 스폰29_Normal" _ConvertedEventDataID="65" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key" _TagID="2" _IsChild="0" _RandomRate="100" _Count="5" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤2_Normal" _ConvertedEventDataID="77" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="16" />
+			<_OutputLink _LinkKey="몬스터 스폰31_Normal" _ConvertedEventDataID="79" />
+			<_OutputLink _LinkKey="몬스터 스폰4_Normal" _ConvertedEventDataID="78" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="3">
+					<_EvtList _EvtID="몬스터 스폰4_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="10">
+					<_EvtList _EvtID="몬스터 스폰31_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰31_Normal" _ConvertedEventDataID="79" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤2_Normal" _ConvertedEventDataID="77" />
+			<_CallMonsterInfo _Index="110052042" _SpawnAnim="0" _Count="1" _SpawnAreaID="200062" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰4_Normal" _ConvertedEventDataID="78" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤2_Normal" _ConvertedEventDataID="77" />
+			<_CallMonsterInfo _Index="110052041" _SpawnAnim="0" _Count="1" _SpawnAreaID="200062" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤1_Normal" _ConvertedEventDataID="74" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="16" />
+			<_OutputLink _LinkKey="몬스터 스폰30_Normal" _ConvertedEventDataID="76" />
+			<_OutputLink _LinkKey="몬스터 스폰2_Normal" _ConvertedEventDataID="75" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="3">
+					<_EvtList _EvtID="몬스터 스폰2_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="10">
+					<_EvtList _EvtID="몬스터 스폰30_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰30_Normal" _ConvertedEventDataID="76" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤1_Normal" _ConvertedEventDataID="74" />
+			<_CallMonsterInfo _Index="110052042" _SpawnAnim="0" _Count="1" _SpawnAreaID="200061" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰2_Normal" _ConvertedEventDataID="75" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤1_Normal" _ConvertedEventDataID="74" />
+			<_CallMonsterInfo _Index="110052041" _SpawnAnim="0" _Count="1" _SpawnAreaID="200061" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="보물상자 스폰" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤2_Normal" _ConvertedEventDataID="77" />
+			<_OutputLink _LinkKey="랜덤1_Normal" _ConvertedEventDataID="74" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트1_Normal" _ConvertedEventDataID="81" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200054" _Tag="" _TagID="-1" _ActiveType="ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트1_Normal" _ConvertedEventDataID="81" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트3_Normal" _ConvertedEventDataID="84" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200070" _ConvertedEventDataID="82" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200057" _Tag="" _TagID="-1" _ActiveType="ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트2_Normal" _ConvertedEventDataID="83" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200070" _ConvertedEventDataID="82" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200054" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200070" _ConvertedEventDataID="82" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트3_Normal" _ConvertedEventDataID="84" />
+			<_OutputLink _LinkKey="진행 목표점 업데이트2_Normal" _ConvertedEventDataID="83" />
+			<_BoundTriggerData _AreaID="200070" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트4_Normal" _ConvertedEventDataID="86" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger200" _ConvertedEventDataID="85" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200057" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger200" _ConvertedEventDataID="85" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트4_Normal" _ConvertedEventDataID="86" />
+			<_AITriggerData _INDEX="200" _Description="목표점2 OFF" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트9_Normal" _ConvertedEventDataID="88" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger301" _ConvertedEventDataID="87" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200058" _Tag="" _TagID="-1" _ActiveType="ONLY_ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger301" _ConvertedEventDataID="87" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트9_Normal" _ConvertedEventDataID="88" />
+			<_AITriggerData _INDEX="301" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트6_Normal" _ConvertedEventDataID="90" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger400" _ConvertedEventDataID="89" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200059" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger400" _ConvertedEventDataID="89" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트6_Normal" _ConvertedEventDataID="90" />
+			<_AITriggerData _INDEX="400" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트5_Normal" _ConvertedEventDataID="92" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger300" _ConvertedEventDataID="91" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200058" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger300" _ConvertedEventDataID="91" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트5_Normal" _ConvertedEventDataID="92" />
+			<_AITriggerData _INDEX="300" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트8_Normal" _ConvertedEventDataID="94" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger401" _ConvertedEventDataID="93" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200059" _Tag="" _TagID="-1" _ActiveType="ONLY_ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger401" _ConvertedEventDataID="93" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트8_Normal" _ConvertedEventDataID="94" />
+			<_AITriggerData _INDEX="401" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트10_Normal" _ConvertedEventDataID="96" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger201" _ConvertedEventDataID="95" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200057" _Tag="" _TagID="-1" _ActiveType="ONLY_ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger201" _ConvertedEventDataID="95" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트10_Normal" _ConvertedEventDataID="96" />
+			<_AITriggerData _INDEX="201" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트7_Normal" _ConvertedEventDataID="98" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger601" _ConvertedEventDataID="97" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200060" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger601" _ConvertedEventDataID="97" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트7_Normal" _ConvertedEventDataID="98" />
+			<_AITriggerData _INDEX="601" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경14_Normal" _ConvertedEventDataID="100" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이15_Normal" _ConvertedEventDataID="99" _StageDifficultyMask="31" />
+			<_ActionChangeInfo _ID="200055" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_DIE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이15_Normal" _ConvertedEventDataID="99" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="액션 변경14_Normal" _ConvertedEventDataID="100" />
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="포탈" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이15_Normal" _ConvertedEventDataID="99" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행9_Normal" _ConvertedEventDataID="101" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="18" />
+			<_InvokeAITriggerInfo _INDEX="1001" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200001P" _ConvertedEventDataID="37" _Comment="1씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="18" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행9_Normal" _ConvertedEventDataID="101" />
+			<_BoundTriggerData _AreaID="200001" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행10_Normal" _ConvertedEventDataID="102" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="18" />
+			<_InvokeAITriggerInfo _INDEX="1002" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200009P" _ConvertedEventDataID="27" _Comment="3씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="18" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행10_Normal" _ConvertedEventDataID="102" />
+			<_BoundTriggerData _AreaID="200009" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal6" _ConvertedEventDataID="113" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="5" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경21_Normal" _ConvertedEventDataID="112" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="200003" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행4_Normal" _ConvertedEventDataID="111" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_InvokeAITriggerInfo _INDEX="401" _Description="목표점4 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경8_Normal" _ConvertedEventDataID="110" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="21" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경9_Normal" _ConvertedEventDataID="109" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지2_Normal" _ConvertedEventDataID="108" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경10_Normal" _ConvertedEventDataID="107" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경10_Normal" _ConvertedEventDataID="107" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지2_Normal" _ConvertedEventDataID="108" />
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경11_Normal" _ConvertedEventDataID="106" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="200046" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경11_Normal2" _ConvertedEventDataID="105" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND11" _ConvertedEventDataID="104" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="26" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger10" _ConvertedEventDataID="103" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND11" _ConvertedEventDataID="104" />
+			<_DeadCountTriggerData _EntityIndex="Scene2_Key_2" _TagID="3" _IsChild="0" _RandomRate="100" _Count="5" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AND11" _ConvertedEventDataID="104" _Comment="스토리 문열기" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal6" _ConvertedEventDataID="113" />
+			<_OutputLink _LinkKey="액션 변경21_Normal" _ConvertedEventDataID="112" />
+			<_OutputLink _LinkKey="AI 트리거 실행4_Normal" _ConvertedEventDataID="111" />
+			<_OutputLink _LinkKey="액션 변경8_Normal" _ConvertedEventDataID="110" />
+			<_OutputLink _LinkKey="액션 변경9_Normal" _ConvertedEventDataID="109" />
+			<_OutputLink _LinkKey="액션 변경10_Normal" _ConvertedEventDataID="107" />
+			<_OutputLink _LinkKey="액션 변경11_Normal" _ConvertedEventDataID="106" />
+			<_OutputLink _LinkKey="액션 변경11_Normal2" _ConvertedEventDataID="105" />
+			<_InputLink _LinkKey="KillTrigger10" _ConvertedEventDataID="103" _StageDifficultyMask="1" />
+			<_EventAndConditionInfo _ResetAfterEvent="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성4_Normal" _ConvertedEventDataID="115" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="18" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1002" _Active="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성3_Normal" _ConvertedEventDataID="114" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="18" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1001" _Active="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="18" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="이벤트 트리거 활성4_Normal" _ConvertedEventDataID="115" />
+			<_OutputLink _LinkKey="이벤트 트리거 활성3_Normal" _ConvertedEventDataID="114" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤4_Normal" _ConvertedEventDataID="116" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="2" />
+			<_OutputLink _LinkKey="딜레이22_Normal" _ConvertedEventDataID="119" />
+			<_OutputLink _LinkKey="딜레이42_Normal" _ConvertedEventDataID="117" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="10">
+					<_EvtList _EvtID="딜레이42_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="10">
+					<_EvtList _EvtID="딜레이22_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성1_Normal" _ConvertedEventDataID="120" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이22_Normal" _ConvertedEventDataID="119" _StageDifficultyMask="31" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1002" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이22_Normal" _ConvertedEventDataID="119" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="이벤트 트리거 활성1_Normal" _ConvertedEventDataID="120" />
+			<_InputLink _LinkKey="랜덤4_Normal" _ConvertedEventDataID="116" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성2_Normal" _ConvertedEventDataID="118" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이42_Normal" _ConvertedEventDataID="117" _StageDifficultyMask="31" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1001" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이42_Normal" _ConvertedEventDataID="117" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="이벤트 트리거 활성2_Normal" _ConvertedEventDataID="118" />
+			<_InputLink _LinkKey="랜덤4_Normal" _ConvertedEventDataID="116" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤4_Normal" _ConvertedEventDataID="116" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤6_Normal" _ConvertedEventDataID="121" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger1002" _ConvertedEventDataID="124" _StageDifficultyMask="2" />
+			<_OutputLink _LinkKey="몬스터 스폰109_Normal" _ConvertedEventDataID="123" />
+			<_OutputLink _LinkKey="몬스터 스폰107_Normal" _ConvertedEventDataID="122" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰107_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰109_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰109_Normal" _ConvertedEventDataID="123" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤6_Normal" _ConvertedEventDataID="121" />
+			<_CallMonsterInfo _Index="103020151" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰107_Normal" _ConvertedEventDataID="122" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤6_Normal" _ConvertedEventDataID="121" />
+			<_CallMonsterInfo _Index="103020150" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger1002" _ConvertedEventDataID="124" _Comment="3씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤6_Normal" _ConvertedEventDataID="121" />
+			<_AITriggerData _INDEX="1002" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤5_Normal" _ConvertedEventDataID="125" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger1001" _ConvertedEventDataID="128" _StageDifficultyMask="2" />
+			<_OutputLink _LinkKey="몬스터 스폰108_Normal" _ConvertedEventDataID="127" />
+			<_OutputLink _LinkKey="몬스터 스폰103_Normal" _ConvertedEventDataID="126" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰103_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰108_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰108_Normal" _ConvertedEventDataID="127" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤5_Normal" _ConvertedEventDataID="125" />
+			<_CallMonsterInfo _Index="103020151" _SpawnAnim="1" _Count="1" _SpawnAreaID="200066" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰103_Normal" _ConvertedEventDataID="126" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤5_Normal" _ConvertedEventDataID="125" />
+			<_CallMonsterInfo _Index="103020150" _SpawnAnim="1" _Count="1" _SpawnAreaID="200066" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger1001" _ConvertedEventDataID="128" _Comment="1씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤5_Normal" _ConvertedEventDataID="125" />
+			<_AITriggerData _INDEX="1001" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤7_Normal" _ConvertedEventDataID="133" _LoopCount="1">
+			<_InputLink _LinkKey="HPTrigger1" _ConvertedEventDataID="137" _StageDifficultyMask="3" />
+			<_OutputLink _LinkKey="몬스터 스폰33_Normal" _ConvertedEventDataID="136" />
+			<_OutputLink _LinkKey="몬스터 스폰34_Normal" _ConvertedEventDataID="135" />
+			<_OutputLink _LinkKey="몬스터 스폰35_Normal" _ConvertedEventDataID="134" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="33">
+					<_EvtList _EvtID="몬스터 스폰35_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="33">
+					<_EvtList _EvtID="몬스터 스폰34_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="34">
+					<_EvtList _EvtID="몬스터 스폰33_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰33_Normal" _ConvertedEventDataID="136" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤7_Normal" _ConvertedEventDataID="133" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰34_Normal" _ConvertedEventDataID="135" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤7_Normal" _ConvertedEventDataID="133" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰35_Normal" _ConvertedEventDataID="134" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤7_Normal" _ConvertedEventDataID="133" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200027" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤3_Normal" _ConvertedEventDataID="129" _LoopCount="1">
+			<_InputLink _LinkKey="HPTrigger1" _ConvertedEventDataID="137" _StageDifficultyMask="3" />
+			<_OutputLink _LinkKey="몬스터 스폰17_Normal" _ConvertedEventDataID="132" />
+			<_OutputLink _LinkKey="몬스터 스폰16_Normal" _ConvertedEventDataID="131" />
+			<_OutputLink _LinkKey="몬스터 스폰15_Normal" _ConvertedEventDataID="130" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="33">
+					<_EvtList _EvtID="몬스터 스폰15_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="33">
+					<_EvtList _EvtID="몬스터 스폰16_Normal" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="34">
+					<_EvtList _EvtID="몬스터 스폰17_Normal" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰17_Normal" _ConvertedEventDataID="132" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤3_Normal" _ConvertedEventDataID="129" />
+			<_CallMonsterInfo _Index="103030000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰16_Normal" _ConvertedEventDataID="131" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤3_Normal" _ConvertedEventDataID="129" />
+			<_CallMonsterInfo _Index="103030000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰15_Normal" _ConvertedEventDataID="130" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤3_Normal" _ConvertedEventDataID="129" />
+			<_CallMonsterInfo _Index="103030000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200027" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="HPTrigger1" _ConvertedEventDataID="137" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤7_Normal" _ConvertedEventDataID="133" />
+			<_OutputLink _LinkKey="랜덤3_Normal" _ConvertedEventDataID="129" />
+			<_HPTriggerData _HP="50" _Rate="100" _EntityIndex="Scene2_Key" _TagID="0" _LocalID="0" _IsChild="0" _SyncType="NETWORK_SYNC" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Hell2" _ConvertedEventDataID="147" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103020100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Hell" _ConvertedEventDataID="146" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103010200" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Hell1" _ConvertedEventDataID="145" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103170000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200036" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경23_Hell" _ConvertedEventDataID="144" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500144" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경24_Hell" _ConvertedEventDataID="143" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500143" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경25_Hell" _ConvertedEventDataID="142" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500142" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행3_Hell" _ConvertedEventDataID="141" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="300" _Description="목표점3 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea17" _ConvertedEventDataID="140" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경2_Hell" _ConvertedEventDataID="139" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="6" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경2_Hell" _ConvertedEventDataID="139" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea17" _ConvertedEventDataID="140" />
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200046" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경2_Hell1" _ConvertedEventDataID="138" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="26" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200026P" _ConvertedEventDataID="20" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰14_Hell2" _ConvertedEventDataID="147" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Hell" _ConvertedEventDataID="146" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Hell1" _ConvertedEventDataID="145" />
+			<_OutputLink _LinkKey="액션 변경23_Hell" _ConvertedEventDataID="144" />
+			<_OutputLink _LinkKey="액션 변경24_Hell" _ConvertedEventDataID="143" />
+			<_OutputLink _LinkKey="액션 변경25_Hell" _ConvertedEventDataID="142" />
+			<_OutputLink _LinkKey="AI 트리거 실행3_Hell" _ConvertedEventDataID="141" />
+			<_OutputLink _LinkKey="액션 변경2_Hell" _ConvertedEventDataID="139" />
+			<_OutputLink _LinkKey="액션 변경2_Hell1" _ConvertedEventDataID="138" />
+			<_BoundTriggerData _AreaID="200026" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰39_Hell" _ConvertedEventDataID="154" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200019" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰37_Hell" _ConvertedEventDataID="153" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103090000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200017" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="1" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰27_Hell" _ConvertedEventDataID="152" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103050100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200016" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행5_Hell" _ConvertedEventDataID="151" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="400" _Description="목표점4 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea20" _ConvertedEventDataID="150" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경3_Hell" _ConvertedEventDataID="149" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="8" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경3_Hell" _ConvertedEventDataID="149" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea20" _ConvertedEventDataID="150" />
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200045" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경3_Hell1" _ConvertedEventDataID="148" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200009P" _ConvertedEventDataID="27" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="24" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200009P" _ConvertedEventDataID="27" _Comment="" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰39_Hell" _ConvertedEventDataID="154" />
+			<_OutputLink _LinkKey="몬스터 스폰37_Hell" _ConvertedEventDataID="153" />
+			<_OutputLink _LinkKey="몬스터 스폰27_Hell" _ConvertedEventDataID="152" />
+			<_OutputLink _LinkKey="AI 트리거 실행5_Hell" _ConvertedEventDataID="151" />
+			<_OutputLink _LinkKey="액션 변경3_Hell" _ConvertedEventDataID="149" />
+			<_OutputLink _LinkKey="액션 변경3_Hell1" _ConvertedEventDataID="148" />
+			<_BoundTriggerData _AreaID="200009" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰13_Hell" _ConvertedEventDataID="160" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰12_Hell" _ConvertedEventDataID="159" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500024" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰12_Hell" _ConvertedEventDataID="159" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰13_Hell" _ConvertedEventDataID="160" />
+			<_InputLink _LinkKey="몬스터 스폰11_Hell" _ConvertedEventDataID="158" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500015" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰11_Hell" _ConvertedEventDataID="158" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰12_Hell" _ConvertedEventDataID="159" />
+			<_InputLink _LinkKey="몬스터 스폰10_Hell" _ConvertedEventDataID="157" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500014" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰10_Hell" _ConvertedEventDataID="157" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰11_Hell" _ConvertedEventDataID="158" />
+			<_InputLink _LinkKey="몬스터 스폰9_Hell" _ConvertedEventDataID="156" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500013" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰9_Hell" _ConvertedEventDataID="156" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰10_Hell" _ConvertedEventDataID="157" />
+			<_InputLink _LinkKey="몬스터 스폰8_Hell" _ConvertedEventDataID="155" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500012" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰8_Hell" _ConvertedEventDataID="155" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰9_Hell" _ConvertedEventDataID="156" />
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103040000" _SpawnAnim="0" _Count="2" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰8_Hell" _ConvertedEventDataID="155" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰38_Hell" _ConvertedEventDataID="163" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger61" _ConvertedEventDataID="161" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103090000" _SpawnAnim="2" _Count="1" _SpawnAreaID="500002" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="3" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰55_Hell" _ConvertedEventDataID="162" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger61" _ConvertedEventDataID="161" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103010200" _SpawnAnim="2" _Count="1" _SpawnAreaID="500006" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger61" _ConvertedEventDataID="161" _Comment="추가 지옥" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰38_Hell" _ConvertedEventDataID="163" />
+			<_OutputLink _LinkKey="몬스터 스폰55_Hell" _ConvertedEventDataID="162" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key1" _TagID="6" _IsChild="0" _RandomRate="100" _Count="3" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰52_Hell3" _ConvertedEventDataID="168" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger11" _ConvertedEventDataID="164" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103050100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰52_Hell2" _ConvertedEventDataID="167" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger11" _ConvertedEventDataID="164" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103020100" _SpawnAnim="1" _Count="1" _SpawnAreaID="28" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰52_Hell1" _ConvertedEventDataID="166" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger11" _ConvertedEventDataID="164" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103070100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200018" _CallCount="1" _CallDelayTime="1.5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰52_Hell" _ConvertedEventDataID="165" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger11" _ConvertedEventDataID="164" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103170000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200016" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene3_Key" _TagID="5" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger11" _ConvertedEventDataID="164" _Comment="" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰52_Hell3" _ConvertedEventDataID="168" />
+			<_OutputLink _LinkKey="몬스터 스폰52_Hell2" _ConvertedEventDataID="167" />
+			<_OutputLink _LinkKey="몬스터 스폰52_Hell1" _ConvertedEventDataID="166" />
+			<_OutputLink _LinkKey="몬스터 스폰52_Hell" _ConvertedEventDataID="165" />
+			<_DeadCountTriggerData _EntityIndex="Scene3_Key" _TagID="5" _IsChild="0" _RandomRate="100" _Count="2" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal8" _ConvertedEventDataID="184" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="5" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경9_Hell" _ConvertedEventDataID="181" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200003" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경22_Hell" _ConvertedEventDataID="180" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500144" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경21_Hell" _ConvertedEventDataID="179" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500143" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Hell" _ConvertedEventDataID="178" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="500142" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행7_Hell" _ConvertedEventDataID="177" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="401" _Description="목표점4 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경16_Hell" _ConvertedEventDataID="176" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="21" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경17_Hell" _ConvertedEventDataID="175" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지8_Hell" _ConvertedEventDataID="174" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경18_Hell" _ConvertedEventDataID="173" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경18_Hell" _ConvertedEventDataID="173" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지8_Hell" _ConvertedEventDataID="174" />
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Hell" _ConvertedEventDataID="172" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200046" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Hell1" _ConvertedEventDataID="171" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND1" _ConvertedEventDataID="170" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="26" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger70" _ConvertedEventDataID="169" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND1" _ConvertedEventDataID="170" />
+			<_DeadCountTriggerData _EntityIndex="2Scene_1" _TagID="4" _IsChild="0" _RandomRate="100" _Count="6" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AND1" _ConvertedEventDataID="170" _Comment="문열기 지옥" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal8" _ConvertedEventDataID="184" />
+			<_OutputLink _LinkKey="액션 변경9_Hell" _ConvertedEventDataID="181" />
+			<_OutputLink _LinkKey="액션 변경22_Hell" _ConvertedEventDataID="180" />
+			<_OutputLink _LinkKey="액션 변경21_Hell" _ConvertedEventDataID="179" />
+			<_OutputLink _LinkKey="액션 변경20_Hell" _ConvertedEventDataID="178" />
+			<_OutputLink _LinkKey="AI 트리거 실행7_Hell" _ConvertedEventDataID="177" />
+			<_OutputLink _LinkKey="액션 변경16_Hell" _ConvertedEventDataID="176" />
+			<_OutputLink _LinkKey="액션 변경17_Hell" _ConvertedEventDataID="175" />
+			<_OutputLink _LinkKey="액션 변경18_Hell" _ConvertedEventDataID="173" />
+			<_OutputLink _LinkKey="액션 변경19_Hell" _ConvertedEventDataID="172" />
+			<_OutputLink _LinkKey="액션 변경19_Hell1" _ConvertedEventDataID="171" />
+			<_InputLink _LinkKey="KillTrigger70" _ConvertedEventDataID="169" _StageDifficultyMask="16" />
+			<_EventAndConditionInfo _ResetAfterEvent="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤8_Hell" _ConvertedEventDataID="185" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger1002" _ConvertedEventDataID="124" _StageDifficultyMask="16" />
+			<_OutputLink _LinkKey="몬스터 스폰123_Hell" _ConvertedEventDataID="187" />
+			<_OutputLink _LinkKey="몬스터 스폰113_Hell" _ConvertedEventDataID="186" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰113_Hell" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰123_Hell" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰123_Hell" _ConvertedEventDataID="187" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤8_Hell" _ConvertedEventDataID="185" />
+			<_CallMonsterInfo _Index="103090051" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰113_Hell" _ConvertedEventDataID="186" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤8_Hell" _ConvertedEventDataID="185" />
+			<_CallMonsterInfo _Index="103030051" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger1002" _ConvertedEventDataID="124" _Comment="3씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤8_Hell" _ConvertedEventDataID="185" />
+			<_AITriggerData _INDEX="1002" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤7_Hell" _ConvertedEventDataID="188" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger1001" _ConvertedEventDataID="128" _StageDifficultyMask="16" />
+			<_OutputLink _LinkKey="몬스터 스폰122_Hell" _ConvertedEventDataID="190" />
+			<_OutputLink _LinkKey="몬스터 스폰112_Hell" _ConvertedEventDataID="189" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰112_Hell" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="50">
+					<_EvtList _EvtID="몬스터 스폰122_Hell" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰122_Hell" _ConvertedEventDataID="190" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤7_Hell" _ConvertedEventDataID="188" />
+			<_CallMonsterInfo _Index="103090051" _SpawnAnim="1" _Count="1" _SpawnAreaID="500066" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰112_Hell" _ConvertedEventDataID="189" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤7_Hell" _ConvertedEventDataID="188" />
+			<_CallMonsterInfo _Index="103030051" _SpawnAnim="1" _Count="1" _SpawnAreaID="500066" _CallCount="1" _CallDelayTime="10" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger1001" _ConvertedEventDataID="128" _Comment="1씬 네임드" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤7_Hell" _ConvertedEventDataID="188" />
+			<_AITriggerData _INDEX="1001" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰56_Hell1" _ConvertedEventDataID="193" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger4" _ConvertedEventDataID="191" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="2" _Count="1" _SpawnAreaID="500067" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key2" _TagID="7" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰56_Hell" _ConvertedEventDataID="192" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger4" _ConvertedEventDataID="191" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103090000" _SpawnAnim="2" _Count="1" _SpawnAreaID="500067" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key2" _TagID="7" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger4" _ConvertedEventDataID="191" _Comment="추가 지옥" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰56_Hell1" _ConvertedEventDataID="193" />
+			<_OutputLink _LinkKey="몬스터 스폰56_Hell" _ConvertedEventDataID="192" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key1" _TagID="6" _IsChild="0" _RandomRate="100" _Count="1" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal5" _ConvertedEventDataID="208" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="4" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경8_Hell" _ConvertedEventDataID="205" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200005" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경13_Hell" _ConvertedEventDataID="204" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행2_Hell" _ConvertedEventDataID="203" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="301" _Description="목표점3 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경7_Hell" _ConvertedEventDataID="202" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경6_Hell" _ConvertedEventDataID="201" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="19" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지1_Hell" _ConvertedEventDataID="200" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경5_Hell" _ConvertedEventDataID="199" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경5_Hell" _ConvertedEventDataID="199" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지1_Hell" _ConvertedEventDataID="200" />
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200047" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경5_Hell1" _ConvertedEventDataID="198" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND22" _ConvertedEventDataID="197" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="23" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger14" _ConvertedEventDataID="196" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND22" _ConvertedEventDataID="197" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key1" _TagID="6" _IsChild="1" _RandomRate="100" _Count="1" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger3" _ConvertedEventDataID="195" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND22" _ConvertedEventDataID="197" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key2" _TagID="7" _IsChild="0" _RandomRate="100" _Count="2" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger80" _ConvertedEventDataID="194" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND22" _ConvertedEventDataID="197" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key1" _TagID="6" _IsChild="0" _RandomRate="100" _Count="6" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AND22" _ConvertedEventDataID="197" _Comment="문열기 지옥" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal5" _ConvertedEventDataID="208" />
+			<_OutputLink _LinkKey="액션 변경8_Hell" _ConvertedEventDataID="205" />
+			<_OutputLink _LinkKey="액션 변경13_Hell" _ConvertedEventDataID="204" />
+			<_OutputLink _LinkKey="AI 트리거 실행2_Hell" _ConvertedEventDataID="203" />
+			<_OutputLink _LinkKey="액션 변경7_Hell" _ConvertedEventDataID="202" />
+			<_OutputLink _LinkKey="액션 변경6_Hell" _ConvertedEventDataID="201" />
+			<_OutputLink _LinkKey="액션 변경5_Hell" _ConvertedEventDataID="199" />
+			<_OutputLink _LinkKey="액션 변경5_Hell1" _ConvertedEventDataID="198" />
+			<_InputLink _LinkKey="KillTrigger14" _ConvertedEventDataID="196" _StageDifficultyMask="16" />
+			<_InputLink _LinkKey="KillTrigger3" _ConvertedEventDataID="195" _StageDifficultyMask="16" />
+			<_InputLink _LinkKey="KillTrigger80" _ConvertedEventDataID="194" _StageDifficultyMask="16" />
+			<_EventAndConditionInfo _ResetAfterEvent="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="영역 트리거 활성1" _ConvertedEventDataID="220" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰3_Easy1" _ConvertedEventDataID="219" _StageDifficultyMask="31" />
+			<_ActiveTriggerInfo _AreaID="31" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Easy1" _ConvertedEventDataID="219" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="영역 트리거 활성1" _ConvertedEventDataID="220" />
+			<_InputLink _LinkKey="딜레이3" _ConvertedEventDataID="218" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="100036886" _SpawnAnim="0" _Count="1" _SpawnAreaID="29" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이3" _ConvertedEventDataID="218" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Easy1" _ConvertedEventDataID="219" />
+			<_InputLink _LinkKey="DespawnEntityInfo1" _ConvertedEventDataID="217" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="DespawnEntityInfo1" _ConvertedEventDataID="217" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이3" _ConvertedEventDataID="218" />
+			<_InputLink _LinkKey="딜레이2" _ConvertedEventDataID="216" _StageDifficultyMask="31" />
+			<_DespawnEntityInfo _LocalID="27" _Tag="" _TagID="-1" _RandomChoiceCount="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이2" _ConvertedEventDataID="216" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="DespawnEntityInfo1" _ConvertedEventDataID="217" />
+			<_InputLink _LinkKey="EnterTrigger200010" _ConvertedEventDataID="213" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지6_Easy" _ConvertedEventDataID="215" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이17_Easy" _ConvertedEventDataID="214" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="Story02_200" _LocalID="200010" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이17_Easy" _ConvertedEventDataID="214" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지6_Easy" _ConvertedEventDataID="215" />
+			<_InputLink _LinkKey="EnterTrigger200010" _ConvertedEventDataID="213" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200010" _ConvertedEventDataID="213" _Comment="1씬" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이2" _ConvertedEventDataID="216" />
+			<_OutputLink _LinkKey="딜레이17_Easy" _ConvertedEventDataID="214" />
+			<_BoundTriggerData _AreaID="200010" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="영역 트리거 활성2" _ConvertedEventDataID="228" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰3_Easy2" _ConvertedEventDataID="227" _StageDifficultyMask="31" />
+			<_ActiveTriggerInfo _AreaID="32" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Easy2" _ConvertedEventDataID="227" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="영역 트리거 활성2" _ConvertedEventDataID="228" />
+			<_InputLink _LinkKey="딜레이8" _ConvertedEventDataID="226" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="100036886" _SpawnAnim="0" _Count="1" _SpawnAreaID="30" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이8" _ConvertedEventDataID="226" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Easy2" _ConvertedEventDataID="227" />
+			<_InputLink _LinkKey="DespawnEntityInfo2" _ConvertedEventDataID="225" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="DespawnEntityInfo2" _ConvertedEventDataID="225" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이8" _ConvertedEventDataID="226" />
+			<_InputLink _LinkKey="딜레이9" _ConvertedEventDataID="224" _StageDifficultyMask="31" />
+			<_DespawnEntityInfo _LocalID="29" _Tag="" _TagID="-1" _RandomChoiceCount="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이9" _ConvertedEventDataID="224" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="DespawnEntityInfo2" _ConvertedEventDataID="225" />
+			<_InputLink _LinkKey="EnterTrigger200026" _ConvertedEventDataID="221" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지9_Easy" _ConvertedEventDataID="223" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이18_Easy" _ConvertedEventDataID="222" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="Story02_205" _LocalID="200026" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이18_Easy" _ConvertedEventDataID="222" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지9_Easy" _ConvertedEventDataID="223" />
+			<_InputLink _LinkKey="EnterTrigger200026" _ConvertedEventDataID="221" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200026" _ConvertedEventDataID="221" _Comment="2씬" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이9" _ConvertedEventDataID="224" />
+			<_OutputLink _LinkKey="딜레이18_Easy" _ConvertedEventDataID="222" />
+			<_BoundTriggerData _AreaID="200026" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지10_Easy" _ConvertedEventDataID="231" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이19_Easy" _ConvertedEventDataID="230" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="Story02_213" _LocalID="200009" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이19_Easy" _ConvertedEventDataID="230" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지10_Easy" _ConvertedEventDataID="231" />
+			<_InputLink _LinkKey="EnterTrigger200009" _ConvertedEventDataID="229" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200009" _ConvertedEventDataID="229" _Comment="" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이19_Easy" _ConvertedEventDataID="230" />
+			<_BoundTriggerData _AreaID="200009" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지11_Easy" _ConvertedEventDataID="233" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger81" _ConvertedEventDataID="232" _StageDifficultyMask="1" />
+			<_PrintMessageInfo _Key="Story02_211" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger81" _ConvertedEventDataID="232" _Comment="1씬 끝" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="메시지11_Easy" _ConvertedEventDataID="233" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key" _TagID="2" _IsChild="0" _RandomRate="100" _Count="12" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지7_Easy" _ConvertedEventDataID="236" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND2" _ConvertedEventDataID="235" _StageDifficultyMask="1" />
+			<_PrintMessageInfo _Key="Story02_211" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger1" _ConvertedEventDataID="234" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="1" _LinkState="STATE_LINKED">
+			<_OutputLink _LinkKey="AND2" _ConvertedEventDataID="235" />
+			<_DeadCountTriggerData _EntityIndex="Scen2_Key_2" _TagID="8" _IsChild="0" _RandomRate="100" _Count="5" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AND2" _ConvertedEventDataID="235" _Comment="2씬 끝" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="메시지7_Easy" _ConvertedEventDataID="236" />
+			<_InputLink _LinkKey="KillTrigger1" _ConvertedEventDataID="234" _StageDifficultyMask="1" />
+			<_EventAndConditionInfo _ResetAfterEvent="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal10" _ConvertedEventDataID="245" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="37" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_NORMAL_STAND" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행1_Hell1" _ConvertedEventDataID="244" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="200" _Description="목표점2 OFF" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰36_Hell1" _ConvertedEventDataID="243" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="몬스터 스폰36_Hell2" _ConvertedEventDataID="242" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103060001" _SpawnAnim="2" _Count="1" _SpawnAreaID="500011" _CallCount="1" _CallDelayTime="5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰36_Hell2" _ConvertedEventDataID="242" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰36_Hell1" _ConvertedEventDataID="243" />
+			<_InputLink _LinkKey="몬스터 스폰6_Hell1" _ConvertedEventDataID="241" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103070100" _SpawnAnim="2" _Count="1" _SpawnAreaID="500006" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰6_Hell1" _ConvertedEventDataID="241" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰36_Hell2" _ConvertedEventDataID="242" />
+			<_InputLink _LinkKey="몬스터 스폰1_Hell1" _ConvertedEventDataID="240" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103010200" _SpawnAnim="2" _Count="1" _SpawnAreaID="500004" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰1_Hell1" _ConvertedEventDataID="240" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰6_Hell1" _ConvertedEventDataID="241" />
+			<_InputLink _LinkKey="SaveKillZSpawnArea15" _ConvertedEventDataID="239" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="500010" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="Scene1_Key1" _TagID="6" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="SaveKillZSpawnArea15" _ConvertedEventDataID="239" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰1_Hell1" _ConvertedEventDataID="240" />
+			<_InputLink _LinkKey="액션 변경4_Hell1" _ConvertedEventDataID="238" _StageDifficultyMask="31" />
+			<_SaveKillZSpawnArea _AreaID="3" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경4_Hell1" _ConvertedEventDataID="238" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="SaveKillZSpawnArea15" _ConvertedEventDataID="239" />
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200047" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경4_Hell2" _ConvertedEventDataID="237" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="EnterTrigger200001P" _ConvertedEventDataID="37" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="23" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200001P" _ConvertedEventDataID="37" _Comment="" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal10" _ConvertedEventDataID="245" />
+			<_OutputLink _LinkKey="AI 트리거 실행1_Hell1" _ConvertedEventDataID="244" />
+			<_OutputLink _LinkKey="액션 변경4_Hell1" _ConvertedEventDataID="238" />
+			<_OutputLink _LinkKey="액션 변경4_Hell2" _ConvertedEventDataID="237" />
+			<_BoundTriggerData _AreaID="200001" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤4_Normal1" _ConvertedEventDataID="246" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="16" />
+			<_OutputLink _LinkKey="딜레이22_Normal1" _ConvertedEventDataID="249" />
+			<_OutputLink _LinkKey="딜레이42_Normal1" _ConvertedEventDataID="247" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="4">
+					<_EvtList _EvtID="딜레이42_Normal1" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="4">
+					<_EvtList _EvtID="딜레이22_Normal1" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성1_Normal1" _ConvertedEventDataID="250" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이22_Normal1" _ConvertedEventDataID="249" _StageDifficultyMask="31" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1002" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이22_Normal1" _ConvertedEventDataID="249" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="이벤트 트리거 활성1_Normal1" _ConvertedEventDataID="250" />
+			<_InputLink _LinkKey="랜덤4_Normal1" _ConvertedEventDataID="246" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="이벤트 트리거 활성2_Normal1" _ConvertedEventDataID="248" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이42_Normal1" _ConvertedEventDataID="247" _StageDifficultyMask="31" />
+			<_ActiveEventTriggerInfo _TriggerID="AITrigger1001" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이42_Normal1" _ConvertedEventDataID="247" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="이벤트 트리거 활성2_Normal1" _ConvertedEventDataID="248" />
+			<_InputLink _LinkKey="랜덤4_Normal1" _ConvertedEventDataID="246" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="네임드 스폰" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤4_Normal1" _ConvertedEventDataID="246" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallSFXInfo23" _ConvertedEventDataID="257" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="CallItemInfo26" _ConvertedEventDataID="256" _StageDifficultyMask="31" />
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_SP" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallItemInfo26" _ConvertedEventDataID="256" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallSFXInfo23" _ConvertedEventDataID="257" />
+			<_InputLink _LinkKey="딜레이20" _ConvertedEventDataID="255" _StageDifficultyMask="31" />
+			<_CallItemInfo _Index="151001020" _SpawnAreaID="17" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이20" _ConvertedEventDataID="255" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallItemInfo26" _ConvertedEventDataID="256" />
+			<_InputLink _LinkKey="CallSFXInfo24" _ConvertedEventDataID="254" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallSFXInfo24" _ConvertedEventDataID="254" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이20" _ConvertedEventDataID="255" />
+			<_InputLink _LinkKey="메시지15" _ConvertedEventDataID="253" _StageDifficultyMask="31" />
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_SP" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지15" _ConvertedEventDataID="253" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallSFXInfo24" _ConvertedEventDataID="254" />
+			<_InputLink _LinkKey="딜레이71" _ConvertedEventDataID="252" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이71" _ConvertedEventDataID="252" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지15" _ConvertedEventDataID="253" />
+			<_InputLink _LinkKey="EnterTrigger16P" _ConvertedEventDataID="251" _StageDifficultyMask="3" />
+			<_DelaySeqInfo _DelayTime="5" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger16P" _ConvertedEventDataID="251" _Comment="3씬_이지노멀" _LoopCount="1" _GroupTag="전투 아이템" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이71" _ConvertedEventDataID="252" />
+			<_BoundTriggerData _AreaID="16" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallSFXInfo25" _ConvertedEventDataID="263" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="CallItemInfo27" _ConvertedEventDataID="262" _StageDifficultyMask="31" />
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_SP" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallItemInfo27" _ConvertedEventDataID="262" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallSFXInfo25" _ConvertedEventDataID="263" />
+			<_InputLink _LinkKey="딜레이21" _ConvertedEventDataID="261" _StageDifficultyMask="31" />
+			<_CallItemInfo _Index="151001020" _SpawnAreaID="14" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이21" _ConvertedEventDataID="261" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallItemInfo27" _ConvertedEventDataID="262" />
+			<_InputLink _LinkKey="CallSFXInfo26" _ConvertedEventDataID="260" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CallSFXInfo26" _ConvertedEventDataID="260" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이21" _ConvertedEventDataID="261" />
+			<_InputLink _LinkKey="메시지16" _ConvertedEventDataID="259" _StageDifficultyMask="31" />
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_SP" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지16" _ConvertedEventDataID="259" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CallSFXInfo26" _ConvertedEventDataID="260" />
+			<_InputLink _LinkKey="딜레이72" _ConvertedEventDataID="258" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이72" _ConvertedEventDataID="258" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지16" _ConvertedEventDataID="259" />
+			<_InputLink _LinkKey="EnterTrigger200026P" _ConvertedEventDataID="20" _StageDifficultyMask="3" />
+			<_DelaySeqInfo _DelayTime="5" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger200026P" _ConvertedEventDataID="20" _Comment="2씬_이지노멀" _LoopCount="1" _GroupTag="전투 아이템" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이72" _ConvertedEventDataID="258" />
+			<_BoundTriggerData _AreaID="200026" _TrigerType="TRIGER_MEMBERSHIP_PARTY" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="1" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤1" _ConvertedEventDataID="264" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_OutputLink _LinkKey="영역 트리거 활성5" _ConvertedEventDataID="265" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="20">
+					<_EvtList _EvtID="영역 트리거 활성5" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="영역 트리거 활성5" _ConvertedEventDataID="265" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤1" _ConvertedEventDataID="264" />
+			<_ActiveTriggerInfo _AreaID="10" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="전투 아이템" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤1" _ConvertedEventDataID="264" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤2" _ConvertedEventDataID="266" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_OutputLink _LinkKey="영역 트리거 활성6" _ConvertedEventDataID="267" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="20">
+					<_EvtList _EvtID="영역 트리거 활성6" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="영역 트리거 활성6" _ConvertedEventDataID="267" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤2" _ConvertedEventDataID="266" />
+			<_ActiveTriggerInfo _AreaID="11" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="전투 아이템" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤2" _ConvertedEventDataID="266" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤3" _ConvertedEventDataID="268" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_OutputLink _LinkKey="영역 트리거 활성7" _ConvertedEventDataID="269" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="20">
+					<_EvtList _EvtID="영역 트리거 활성7" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="영역 트리거 활성7" _ConvertedEventDataID="269" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤3" _ConvertedEventDataID="268" />
+			<_ActiveTriggerInfo _AreaID="9" _Active="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="전투 아이템" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤3" _ConvertedEventDataID="268" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행6_Normal1" _ConvertedEventDataID="274" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger7" _ConvertedEventDataID="270" _StageDifficultyMask="16" />
+			<_InvokeAITriggerInfo _INDEX="501" _Description="목표점5 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지3_Normal1" _ConvertedEventDataID="273" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경12_Normal1" _ConvertedEventDataID="272" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal1" _ConvertedEventDataID="272" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지3_Normal1" _ConvertedEventDataID="273" />
+			<_InputLink _LinkKey="KillTrigger7" _ConvertedEventDataID="270" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="200048" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal4" _ConvertedEventDataID="271" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger7" _ConvertedEventDataID="270" _StageDifficultyMask="16" />
+			<_ActionChangeInfo _ID="25" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger7" _ConvertedEventDataID="270" _Comment="문열림 지옥" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행6_Normal1" _ConvertedEventDataID="274" />
+			<_OutputLink _LinkKey="액션 변경12_Normal1" _ConvertedEventDataID="272" />
+			<_OutputLink _LinkKey="액션 변경12_Normal4" _ConvertedEventDataID="271" />
+			<_DeadCountTriggerData _EntityIndex="Scene3_Key" _TagID="5" _IsChild="0" _RandomRate="100" _Count="7" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="진행 목표점 업데이트7_Normal1" _ConvertedEventDataID="276" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AITrigger501" _ConvertedEventDataID="275" _StageDifficultyMask="31" />
+			<_UpdateObjectivePointInfo _LocalID="200060" _Tag="" _TagID="-1" _ActiveType="ONLY_ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger501" _ConvertedEventDataID="275" _Comment="" _LoopCount="1" _GroupTag="진행목표점" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="진행 목표점 업데이트7_Normal1" _ConvertedEventDataID="276" />
+			<_AITriggerData _INDEX="501" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal3" _ConvertedEventDataID="286" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="4" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal1" _ConvertedEventDataID="285" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="200005" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경16_Normal1" _ConvertedEventDataID="284" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행7_Normal1" _ConvertedEventDataID="283" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_InvokeAITriggerInfo _INDEX="301" _Description="목표점3 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경17_Normal1" _ConvertedEventDataID="282" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경18_Normal3" _ConvertedEventDataID="281" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="19" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지8_Normal1" _ConvertedEventDataID="280" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경19_Normal1" _ConvertedEventDataID="279" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Normal1" _ConvertedEventDataID="279" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지8_Normal1" _ConvertedEventDataID="280" />
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="200047" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Normal2" _ConvertedEventDataID="278" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger8" _ConvertedEventDataID="277" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="23" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger8" _ConvertedEventDataID="277" _Comment="1씬 문열기 이지" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal3" _ConvertedEventDataID="286" />
+			<_OutputLink _LinkKey="액션 변경20_Normal1" _ConvertedEventDataID="285" />
+			<_OutputLink _LinkKey="액션 변경16_Normal1" _ConvertedEventDataID="284" />
+			<_OutputLink _LinkKey="AI 트리거 실행7_Normal1" _ConvertedEventDataID="283" />
+			<_OutputLink _LinkKey="액션 변경17_Normal1" _ConvertedEventDataID="282" />
+			<_OutputLink _LinkKey="액션 변경18_Normal3" _ConvertedEventDataID="281" />
+			<_OutputLink _LinkKey="액션 변경19_Normal1" _ConvertedEventDataID="279" />
+			<_OutputLink _LinkKey="액션 변경19_Normal2" _ConvertedEventDataID="278" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key" _TagID="2" _IsChild="0" _RandomRate="100" _Count="12" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CameraWallInfo1" _ConvertedEventDataID="297" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이4" _ConvertedEventDataID="296" _StageDifficultyMask="31" />
+			<_CameraWallInfo _Id="40" _On="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이4" _ConvertedEventDataID="296" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CameraWallInfo1" _ConvertedEventDataID="297" />
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0.1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="CameraWallInfo2" _ConvertedEventDataID="295" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이5" _ConvertedEventDataID="294" _StageDifficultyMask="31" />
+			<_CameraWallInfo _Id="40" _On="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이5" _ConvertedEventDataID="294" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="CameraWallInfo2" _ConvertedEventDataID="295" />
+			<_InputLink _LinkKey="InvokeDialogTriggerInfo1_Easy" _ConvertedEventDataID="293" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="InvokeDialogTriggerInfo1_Easy" _ConvertedEventDataID="293" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이5" _ConvertedEventDataID="294" />
+			<_InputLink _LinkKey="카메라 변경1_Easy" _ConvertedEventDataID="292" _StageDifficultyMask="31" />
+			<_InvokeDialogTriggerInfo _DialogID="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="카메라 변경1_Easy" _ConvertedEventDataID="292" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="InvokeDialogTriggerInfo1_Easy" _ConvertedEventDataID="293" />
+			<_InputLink _LinkKey="EventBehaviorInfo2_Easy" _ConvertedEventDataID="291" _StageDifficultyMask="31" />
+			<_ChangeCameraInfo _CameraPresetIdx="3" _TargetLocalID="0" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_PC" _ZoomDistanceBase="-1" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" _ChangeObserverCam="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EventBehaviorInfo2_Easy" _ConvertedEventDataID="291" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="카메라 변경1_Easy" _ConvertedEventDataID="292" />
+			<_InputLink _LinkKey="EventBehaviorInfo1_Easy" _ConvertedEventDataID="290" _StageDifficultyMask="31" />
+			<_EventBehaviorInfo _VariationType="0" _ApplyType="APPLY_LOCAL_ID" _LocalID="27" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EventBehaviorInfo1_Easy" _ConvertedEventDataID="290" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="EventBehaviorInfo2_Easy" _ConvertedEventDataID="291" />
+			<_InputLink _LinkKey="몬스터 스폰3_Easy" _ConvertedEventDataID="289" _StageDifficultyMask="31" />
+			<_EventBehaviorInfo _VariationType="0" _ApplyType="APPLY_MY_CHAR" _LocalID="0" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰3_Easy" _ConvertedEventDataID="289" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="EventBehaviorInfo1_Easy" _ConvertedEventDataID="290" />
+			<_InputLink _LinkKey="딜레이41_Easy" _ConvertedEventDataID="288" _StageDifficultyMask="31" />
+			<_CallMonsterInfo _Index="100036886" _SpawnAnim="0" _Count="1" _SpawnAreaID="27" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이41_Easy" _ConvertedEventDataID="288" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="몬스터 스폰3_Easy" _ConvertedEventDataID="289" />
+			<_InputLink _LinkKey="InputLockInfo1_Easy" _ConvertedEventDataID="287" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="InputLockInfo1_Easy" _ConvertedEventDataID="287" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이41_Easy" _ConvertedEventDataID="288" />
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="1" />
+			<_InputLockInfo _lockType="INPUT_LOCKTYPE_ALL" _IsLock="1" _IsClear="0" _LocalID="0" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이4" _ConvertedEventDataID="296" />
+			<_OutputLink _LinkKey="InputLockInfo1_Easy" _ConvertedEventDataID="287" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지17_Easy" _ConvertedEventDataID="306" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="카메라 변경3_Easy" _ConvertedEventDataID="305" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="TalkBox02_A002" _LocalID="27" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="카메라 변경3_Easy" _ConvertedEventDataID="305" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지17_Easy" _ConvertedEventDataID="306" />
+			<_InputLink _LinkKey="InputLockInfo4_Easy" _ConvertedEventDataID="304" _StageDifficultyMask="31" />
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="0" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_PC" _ZoomDistanceBase="-1" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" _ChangeObserverCam="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="InputLockInfo4_Easy" _ConvertedEventDataID="304" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="카메라 변경3_Easy" _ConvertedEventDataID="305" />
+			<_InputLink _LinkKey="메시지18_Easy" _ConvertedEventDataID="303" _StageDifficultyMask="31" />
+			<_InputLockInfo _lockType="INPUT_LOCKTYPE_NONE" _IsLock="0" _IsClear="1" _LocalID="0" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지18_Easy" _ConvertedEventDataID="303" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="InputLockInfo4_Easy" _ConvertedEventDataID="304" />
+			<_InputLink _LinkKey="메시지19_Easy" _ConvertedEventDataID="302" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="StoryCut02_4102" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지19_Easy" _ConvertedEventDataID="302" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지18_Easy" _ConvertedEventDataID="303" />
+			<_InputLink _LinkKey="메시지20_Easy" _ConvertedEventDataID="301" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="StoryCut02_4101" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지20_Easy" _ConvertedEventDataID="301" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지19_Easy" _ConvertedEventDataID="302" />
+			<_InputLink _LinkKey="InputLockInfo5_Easy" _ConvertedEventDataID="300" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="StoryCut02_4100" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="InputLockInfo5_Easy" _ConvertedEventDataID="300" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지20_Easy" _ConvertedEventDataID="301" />
+			<_InputLink _LinkKey="딜레이53_Easy" _ConvertedEventDataID="299" _StageDifficultyMask="31" />
+			<_InputLockInfo _lockType="INPUT_LOCKTYPE_ROTATE" _IsLock="1" _IsClear="0" _LocalID="27" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이53_Easy" _ConvertedEventDataID="299" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="InputLockInfo5_Easy" _ConvertedEventDataID="300" />
+			<_InputLink _LinkKey="DialogTrigger1" _ConvertedEventDataID="298" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0.3" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="DialogTrigger1" _ConvertedEventDataID="298" _Comment="" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이53_Easy" _ConvertedEventDataID="299" />
+			<_DialogTriggerData _ID="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰24_Normal16" _ConvertedEventDataID="311" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger6" _ConvertedEventDataID="307" _StageDifficultyMask="2" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200069" _CallCount="1" _CallDelayTime="4" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰24_Normal2" _ConvertedEventDataID="310" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger6" _ConvertedEventDataID="307" _StageDifficultyMask="2" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200017" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰24_Normal1" _ConvertedEventDataID="309" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger6" _ConvertedEventDataID="307" _StageDifficultyMask="2" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200019" _CallCount="1" _CallDelayTime="3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰25_Normal1" _ConvertedEventDataID="308" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger6" _ConvertedEventDataID="307" _StageDifficultyMask="2" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200018" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger6" _ConvertedEventDataID="307" _Comment="추가 몬스터 노멀" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰24_Normal16" _ConvertedEventDataID="311" />
+			<_OutputLink _LinkKey="몬스터 스폰24_Normal2" _ConvertedEventDataID="310" />
+			<_OutputLink _LinkKey="몬스터 스폰24_Normal1" _ConvertedEventDataID="309" />
+			<_OutputLink _LinkKey="몬스터 스폰25_Normal1" _ConvertedEventDataID="308" />
+			<_DeadCountTriggerData _EntityIndex="key3" _TagID="1" _IsChild="0" _RandomRate="100" _Count="5" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행6_Normal2" _ConvertedEventDataID="316" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger82" _ConvertedEventDataID="312" _StageDifficultyMask="1" />
+			<_InvokeAITriggerInfo _INDEX="501" _Description="목표점5 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지3_Normal8" _ConvertedEventDataID="315" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경12_Normal6" _ConvertedEventDataID="314" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal6" _ConvertedEventDataID="314" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지3_Normal8" _ConvertedEventDataID="315" />
+			<_InputLink _LinkKey="KillTrigger82" _ConvertedEventDataID="312" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="200048" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경12_Normal5" _ConvertedEventDataID="313" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger82" _ConvertedEventDataID="312" _StageDifficultyMask="1" />
+			<_ActionChangeInfo _ID="25" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger82" _ConvertedEventDataID="312" _Comment="문열림" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AI 트리거 실행6_Normal2" _ConvertedEventDataID="316" />
+			<_OutputLink _LinkKey="액션 변경12_Normal6" _ConvertedEventDataID="314" />
+			<_OutputLink _LinkKey="액션 변경12_Normal5" _ConvertedEventDataID="313" />
+			<_DeadCountTriggerData _EntityIndex="key3" _TagID="1" _IsChild="0" _RandomRate="100" _Count="7" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지1" _ConvertedEventDataID="319" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이10" _ConvertedEventDataID="318" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="Story02_207_Talkbox" _LocalID="30" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이10" _ConvertedEventDataID="318" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지1" _ConvertedEventDataID="319" />
+			<_InputLink _LinkKey="EnterTrigger32" _ConvertedEventDataID="317" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger32" _ConvertedEventDataID="317" _Comment="2씬 끝나고 나올 때 대사" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이10" _ConvertedEventDataID="318" />
+			<_BoundTriggerData _AreaID="32" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="0" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지2" _ConvertedEventDataID="322" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이13" _ConvertedEventDataID="321" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="Story02_204_Talkbox" _LocalID="29" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이13" _ConvertedEventDataID="321" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지2" _ConvertedEventDataID="322" />
+			<_InputLink _LinkKey="EnterTrigger31" _ConvertedEventDataID="320" _StageDifficultyMask="1" />
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="EnterTrigger31" _ConvertedEventDataID="320" _Comment="1씬 끝나고 나올 때 대사" _LoopCount="1" _GroupTag="스토리모드" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="딜레이13" _ConvertedEventDataID="321" />
+			<_BoundTriggerData _AreaID="31" _TrigerType="TRIGER_MEMBERSHIP_OWN" _MaxTriggerCount="1" _RetriggerDelay="0.5" _SyncType="NETWORK_SYNC" _Active="0" _IsEnter="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal6" _ConvertedEventDataID="329" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="4" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="EASY" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal7" _ConvertedEventDataID="328" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200027" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="EASY" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal5" _ConvertedEventDataID="327" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="4" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal4" _ConvertedEventDataID="326" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103050000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200027" _CallCount="1" _CallDelayTime="2" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal3" _ConvertedEventDataID="325" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="NORMAL" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰14_Normal2" _ConvertedEventDataID="324" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger2" _ConvertedEventDataID="323" _StageDifficultyMask="3" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="EASY" _Tag="Scene2_Key_2" _TagID="3" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger2" _ConvertedEventDataID="323" _Comment="회전 드론 죽으면" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="3" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal6" _ConvertedEventDataID="329" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal7" _ConvertedEventDataID="328" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal5" _ConvertedEventDataID="327" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal4" _ConvertedEventDataID="326" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal3" _ConvertedEventDataID="325" />
+			<_OutputLink _LinkKey="몬스터 스폰14_Normal2" _ConvertedEventDataID="324" />
+			<_DeadCountTriggerData _EntityIndex="Scene2_Key" _TagID="0" _IsChild="0" _RandomRate="100" _Count="1" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal7" _ConvertedEventDataID="342" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="5" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경21_Normal1" _ConvertedEventDataID="339" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="200003" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행4_Normal1" _ConvertedEventDataID="338" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_InvokeAITriggerInfo _INDEX="401" _Description="목표점4 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경8_Normal1" _ConvertedEventDataID="337" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="21" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경9_Normal1" _ConvertedEventDataID="336" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지2_Normal1" _ConvertedEventDataID="335" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경10_Normal1" _ConvertedEventDataID="334" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경10_Normal1" _ConvertedEventDataID="334" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지2_Normal1" _ConvertedEventDataID="335" />
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경11_Normal1" _ConvertedEventDataID="333" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="200046" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경11_Normal3" _ConvertedEventDataID="332" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="AND12" _ConvertedEventDataID="331" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="26" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger12" _ConvertedEventDataID="330" _Comment="" _LoopCount="1" _GroupTag="" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="AND12" _ConvertedEventDataID="331" />
+			<_DeadCountTriggerData _EntityIndex="Scene2_Key_2" _TagID="3" _IsChild="0" _RandomRate="100" _Count="5" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AND12" _ConvertedEventDataID="331" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal7" _ConvertedEventDataID="342" />
+			<_OutputLink _LinkKey="액션 변경21_Normal1" _ConvertedEventDataID="339" />
+			<_OutputLink _LinkKey="AI 트리거 실행4_Normal1" _ConvertedEventDataID="338" />
+			<_OutputLink _LinkKey="액션 변경8_Normal1" _ConvertedEventDataID="337" />
+			<_OutputLink _LinkKey="액션 변경9_Normal1" _ConvertedEventDataID="336" />
+			<_OutputLink _LinkKey="액션 변경10_Normal1" _ConvertedEventDataID="334" />
+			<_OutputLink _LinkKey="액션 변경11_Normal1" _ConvertedEventDataID="333" />
+			<_OutputLink _LinkKey="액션 변경11_Normal3" _ConvertedEventDataID="332" />
+			<_InputLink _LinkKey="KillTrigger12" _ConvertedEventDataID="330" _StageDifficultyMask="2" />
+			<_EventAndConditionInfo _ResetAfterEvent="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal4" _ConvertedEventDataID="354" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="4" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_EXTRAMOTION_1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경20_Normal2" _ConvertedEventDataID="351" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="200005" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경16_Normal2" _ConvertedEventDataID="350" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="20" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행7_Normal2" _ConvertedEventDataID="349" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_InvokeAITriggerInfo _INDEX="301" _Description="목표점3 ON" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경17_Normal2" _ConvertedEventDataID="348" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="22" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경18_Normal5" _ConvertedEventDataID="347" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="19" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="메시지8_Normal2" _ConvertedEventDataID="346" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="액션 변경19_Normal4" _ConvertedEventDataID="345" _StageDifficultyMask="31" />
+			<_PrintMessageInfo _Key="System007" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Normal4" _ConvertedEventDataID="345" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="메시지8_Normal2" _ConvertedEventDataID="346" />
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="200047" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="액션 변경19_Normal3" _ConvertedEventDataID="344" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger9" _ConvertedEventDataID="343" _StageDifficultyMask="2" />
+			<_ActionChangeInfo _ID="23" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_OPEN" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger9" _ConvertedEventDataID="343" _Comment="1씬 문열기 노멀" _LoopCount="1" _GroupTag="Scene1" _StageDifficultyMask="2" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="액션 변경20_Normal4" _ConvertedEventDataID="354" />
+			<_OutputLink _LinkKey="액션 변경20_Normal2" _ConvertedEventDataID="351" />
+			<_OutputLink _LinkKey="액션 변경16_Normal2" _ConvertedEventDataID="350" />
+			<_OutputLink _LinkKey="AI 트리거 실행7_Normal2" _ConvertedEventDataID="349" />
+			<_OutputLink _LinkKey="액션 변경17_Normal2" _ConvertedEventDataID="348" />
+			<_OutputLink _LinkKey="액션 변경18_Normal5" _ConvertedEventDataID="347" />
+			<_OutputLink _LinkKey="액션 변경19_Normal4" _ConvertedEventDataID="345" />
+			<_OutputLink _LinkKey="액션 변경19_Normal3" _ConvertedEventDataID="344" />
+			<_DeadCountTriggerData _EntityIndex="Scene1_Key" _TagID="2" _IsChild="0" _RandomRate="100" _Count="14" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰24_Normal3" _ConvertedEventDataID="357" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger13" _ConvertedEventDataID="355" _StageDifficultyMask="1" />
+			<_CallMonsterInfo _Index="103010000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200019" _CallCount="1" _CallDelayTime="5" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰25_Normal2" _ConvertedEventDataID="356" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger13" _ConvertedEventDataID="355" _StageDifficultyMask="1" />
+			<_CallMonsterInfo _Index="103100000" _SpawnAnim="1" _Count="1" _SpawnAreaID="200018" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="0" _StageLevel="ALL" _Tag="key3" _TagID="1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger13" _ConvertedEventDataID="355" _Comment="추가 몬스터 스토리" _LoopCount="1" _GroupTag="Scene3" _StageDifficultyMask="1" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰24_Normal3" _ConvertedEventDataID="357" />
+			<_OutputLink _LinkKey="몬스터 스폰25_Normal2" _ConvertedEventDataID="356" />
+			<_DeadCountTriggerData _EntityIndex="key3" _TagID="1" _IsChild="0" _RandomRate="100" _Count="2" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="BGMEventInfo1" _ConvertedEventDataID="358" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="31" />
+			<_BGMEventInfo _EventName="Ventus_S4_Intro" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="사운드" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="BGMEventInfo1" _ConvertedEventDataID="358" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰7_Hell" _ConvertedEventDataID="361" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger15" _ConvertedEventDataID="359" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103020100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200031" _CallCount="1" _CallDelayTime="2.3" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰5_Hell" _ConvertedEventDataID="360" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger15" _ConvertedEventDataID="359" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103020100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger15" _ConvertedEventDataID="359" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰7_Hell" _ConvertedEventDataID="361" />
+			<_OutputLink _LinkKey="몬스터 스폰5_Hell" _ConvertedEventDataID="360" />
+			<_DeadCountTriggerData _EntityIndex="2Scene_1" _TagID="4" _IsChild="0" _RandomRate="100" _Count="1" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰16_Hell" _ConvertedEventDataID="363" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="KillTrigger16" _ConvertedEventDataID="362" _StageDifficultyMask="16" />
+			<_CallMonsterInfo _Index="103070100" _SpawnAnim="1" _Count="1" _SpawnAreaID="200030" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="2Scene_1" _TagID="4" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="KillTrigger16" _ConvertedEventDataID="362" _Comment="" _LoopCount="1" _GroupTag="Scene2" _StageDifficultyMask="16" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="몬스터 스폰16_Hell" _ConvertedEventDataID="363" />
+			<_DeadCountTriggerData _EntityIndex="2Scene_1" _TagID="4" _IsChild="0" _RandomRate="100" _Count="2" _SyncType="NETWORK_SYNC" _Active="1" _Team="TEAM_TYPE_INVALID" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="포털1" _ConvertedEventDataID="368" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="딜레이19" _ConvertedEventDataID="367" _StageDifficultyMask="31" />
+			<_PortalEntityInfo _MapIndex="0" _SpawnAreaID="0" _ForcePartyCall="1" _IsMoviePlay="0" _ServerMessage="" _ReturnAreaID="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="딜레이19" _ConvertedEventDataID="367" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="포털1" _ConvertedEventDataID="368" />
+			<_InputLink _LinkKey="AI 트리거 실행1" _ConvertedEventDataID="366" _StageDifficultyMask="31" />
+			<_DelaySeqInfo _DelayTime="0.5" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AI 트리거 실행1" _ConvertedEventDataID="366" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="딜레이19" _ConvertedEventDataID="367" />
+			<_InputLink _LinkKey="존 이동 메시지1" _ConvertedEventDataID="365" _StageDifficultyMask="31" />
+			<_InvokeAITriggerInfo _INDEX="601" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="존 이동 메시지1" _ConvertedEventDataID="365" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_OutputLink _LinkKey="AI 트리거 실행1" _ConvertedEventDataID="366" />
+			<_InputLink _LinkKey="AITrigger10000" _ConvertedEventDataID="364" _StageDifficultyMask="31" />
+			<_ShowProgressMessageInfo _ActionType="TYPE_END" _ProgressTime="5" _Title="" _Message="" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="AITrigger10000" _ConvertedEventDataID="364" _Comment="포탈 트리거" _LoopCount="1" _GroupTag="포탈" _StageDifficultyMask="31" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="존 이동 메시지1" _ConvertedEventDataID="365" />
+			<_AITriggerData _INDEX="10000" _Description="" _Loop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤2_Normal1" _ConvertedEventDataID="372" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="14" />
+			<_OutputLink _LinkKey="몬스터 스폰31_Normal1" _ConvertedEventDataID="374" />
+			<_OutputLink _LinkKey="몬스터 스폰4_Normal1" _ConvertedEventDataID="373" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="5">
+					<_EvtList _EvtID="몬스터 스폰4_Normal1" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="16">
+					<_EvtList _EvtID="몬스터 스폰31_Normal1" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰31_Normal1" _ConvertedEventDataID="374" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤2_Normal1" _ConvertedEventDataID="372" />
+			<_CallMonsterInfo _Index="110052042" _SpawnAnim="0" _Count="1" _SpawnAreaID="200062" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰4_Normal1" _ConvertedEventDataID="373" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤2_Normal1" _ConvertedEventDataID="372" />
+			<_CallMonsterInfo _Index="110052041" _SpawnAnim="0" _Count="1" _SpawnAreaID="200062" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="랜덤1_Normal1" _ConvertedEventDataID="369" _LoopCount="1">
+			<_InputLink _LinkKey="LevelStart" _ConvertedEventDataID="80" _StageDifficultyMask="14" />
+			<_OutputLink _LinkKey="몬스터 스폰30_Normal1" _ConvertedEventDataID="371" />
+			<_OutputLink _LinkKey="몬스터 스폰2_Normal1" _ConvertedEventDataID="370" />
+			<_RandomConditionInfo>
+				<_RandomNodeList _Probability="5">
+					<_EvtList _EvtID="몬스터 스폰2_Normal1" />
+				</_RandomNodeList>
+				<_RandomNodeList _Probability="16">
+					<_EvtList _EvtID="몬스터 스폰30_Normal1" />
+				</_RandomNodeList>
+			</_RandomConditionInfo>
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰30_Normal1" _ConvertedEventDataID="371" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤1_Normal1" _ConvertedEventDataID="369" />
+			<_CallMonsterInfo _Index="110052042" _SpawnAnim="0" _Count="1" _SpawnAreaID="200061" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="몬스터 스폰2_Normal1" _ConvertedEventDataID="370" _GroupTag="" _StageDifficultyMask="31" _LoopCount="1">
+			<_InputLink _LinkKey="랜덤1_Normal1" _ConvertedEventDataID="369" />
+			<_CallMonsterInfo _Index="110052041" _SpawnAnim="0" _Count="1" _SpawnAreaID="200061" _CallCount="1" _CallDelayTime="0" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="ALL" _Tag="" _TagID="-1" _Team="TEAM_TYPE_INVALID" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData _EventDataID="LevelStart" _ConvertedEventDataID="80" _Comment="" _LoopCount="1" _GroupTag="보물상자 스폰" _StageDifficultyMask="14" _LinkState="STATE_NOT_LINKED">
+			<_OutputLink _LinkKey="랜덤2_Normal1" _ConvertedEventDataID="372" />
+			<_OutputLink _LinkKey="랜덤1_Normal1" _ConvertedEventDataID="369" />
+			<_LevelStartTriggerData />
+		</_LevelEventData>
+	</ClientLevelEventList>
+</ENTITY_FILE>

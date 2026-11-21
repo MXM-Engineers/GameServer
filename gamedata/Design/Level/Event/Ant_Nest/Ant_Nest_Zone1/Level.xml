@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-5000" fSpacing="100" dwWidth="256" dwHeight="256" ReferenceLevel="Design\Level\ART_Levels\Collabo_Art\Ant\Ant_S1Z1" ReferenceOffset="1000000">
+      <LockStates />
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\Ant_Pillar_AntpillarA01_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Stone_01\Ant_Stone_CrystalA01_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\Ant_Pillar_AntpillarA02_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Stone_01\Ant_Stone_eggA01_02.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="Ant_S1Z1_RGBM" defaultMaterial="True" entityAmbientR="0.32549" entityAmbientG="0.266667" entityAmbientB="0.611765" entityDiffuseR="0.654902" entityDiffuseG="0.768627" entityDiffuseB="0.941176" entitySpecularR="0.576471" entitySpecularG="0.65098" entitySpecularB="1" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="50" creatureAmbientR="0.192157" creatureAmbientG="0.121569" creatureAmbientB="0.305882" creatureDiffuseR="0.698039" creatureDiffuseG="0.509804" creatureDiffuseB="0.619608" creatureSpecularR="0.760784" creatureSpecularG="0.847059" creatureSpecularB="1" creatureEmittanceR="0.1" creatureEmittanceG="0.1" creatureEmittanceB="0.1" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="21.99" dynamicAmbientR="0.403922" dynamicAmbientG="0.270588" dynamicAmbientB="0.4" dynamicDiffuseR="0.788235" dynamicDiffuseG="0.741176" dynamicDiffuseB="0.9" dynamicSpecularR="1" dynamicSpecularG="1" dynamicSpecularB="1" dynamicEmittanceR="0.1" dynamicEmittanceG="0.1" dynamicEmittanceB="0.1" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="20" levelAmbientR="0.152941" levelAmbientG="0.156863" levelAmbientB="0.141176" levelDiffuseR="0.835294" levelDiffuseG="0.721569" levelDiffuseB="1" levelSpecularR="0.4" levelSpecularG="0.247059" levelSpecularB="0.643137" levelEmittanceR="0.066667" levelEmittanceG="0.05098" levelEmittanceB="0.101961" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="7.28" sfxIntensity="0.6" itemIntensity="2" bgfxIntensity="1" hitColorIntensity="0.6" specularIntensity="1.05" dirDimmer="1.35" dirShadowBrightness="0" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.882353" dirAmbientG="0.811765" dirAmbientB="0.466667" dirDiffuseR="0.839216" dirDiffuseG="0.764706" dirDiffuseB="0.572549" dirSpecularR="0.145098" dirSpecularG="0.698039" dirSpecularB="1" globalAmbientR="0.309804" globalAmbientG="0.592157" globalAmbientB="0.392157" rimDirRotate="67" rimDirGradient="10" rimDirPower="6" rimColorR="0.239216" rimColorG="0.592157" rimColorB="1" rimStrength="8" hdrExposure="1.78" hdrShoulderStrength="0.49" hdrLinearStrength="0.56" hdrLinearAngle="1" hdrToeStrength="3" hdrToeNumerator="0" hdrToeDenominator="1" hdrWhitePoint="1.78" bloomWhitePoint="0.4" bloomGradient="0.84" bloomStrength="1" bloomTintR="0.972549" bloomTintG="0.654902" bloomTintB="0.443137" bloomThreshold="0.38" bloomIntensity="0.54" bloomRadius="2.18" bloom2Intensity="0.66" bloom2Radius="2.76" bloom3Intensity="0.72" bloom3Radius="3.6" bloom4Intensity="0.83" bloom4Radius="3.2" bloom5Intensity="0.69" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="0.45" radius="1000" ambientR="0.003921569" ambientG="0.01176471" ambientB="0.4117647" diffuseR="0.6078432" diffuseG="0.9176471" diffuseB="1" specularR="0.4156863" specularG="0.7686275" specularB="0.9843137" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

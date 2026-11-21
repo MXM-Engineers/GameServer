@@ -1,0 +1,857 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="240000001">
+    <TRADEITEM _Index="240000001" _Name="STR_TRADE_NAME_240000001" _Tooltip="STR_TRADE_TOOLTIP_240000001" _IconAlias="trader_skin_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000901" _Amount="6" />
+      <_BUY _DataType="DropIndex" _DataKey="158001900" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="535" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000002">
+    <TRADEITEM _Index="240000002" _Name="STR_TRADE_NAME_240000002" _Tooltip="STR_TRADE_TOOLTIP_240000002" _IconAlias="trader_skin_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000901" _Amount="6" />
+      <_REQUIRED _ItemIndex="137100011" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001901" />
+      <_COST _Type="BUY_TYPE_RON" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000003">
+    <TRADEITEM _Index="240000003" _Name="STR_TRADE_NAME_240000003" _Tooltip="STR_TRADE_TOOLTIP_240000003" _IconAlias="trader_skin_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000903" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001902" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="1500" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000004">
+    <TRADEITEM _Index="240000004" _Name="STR_TRADE_NAME_240000004" _Tooltip="STR_TRADE_TOOLTIP_240000004" _IconAlias="trader_skin_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000904" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001903" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="1500" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000005">
+    <TRADEITEM _Index="240000005" _Name="STR_TRADE_NAME_240000005" _Tooltip="STR_TRADE_TOOLTIP_240000005" _IconAlias="trader_skin_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000905" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001904" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="1500" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000006">
+    <TRADEITEM _Index="240000006" _Name="STR_TRADE_NAME_240000006" _Tooltip="STR_TRADE_TOOLTIP_240000006" _IconAlias="trader_skin_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000906" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001905" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="1500" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="240000007">
+    <TRADEITEM _Index="240000007" _Name="STR_TRADE_NAME_240000007" _Tooltip="STR_TRADE_TOOLTIP_240000007" _IconAlias="trader_skin_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000907" _Amount="1" />
+      <_BUY _DataType="DropIndex" _DataKey="158001905" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="1500" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="244299010">
+    <TRADEITEM _Index="244299010" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_244299010" _IconAlias="itembox_slot_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000392" _Amount="1" />
+      <_BUY _DataType="ItemIndex" _DataKey="137299010" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="244299011">
+    <TRADEITEM _Index="244299011" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_244299011" _IconAlias="itembox_slot_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000392" _Amount="1" />
+      <_BUY _DataType="ItemIndex" _DataKey="137299011" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="244299012">
+    <TRADEITEM _Index="244299012" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_244299012" _IconAlias="itembox_slot_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000392" _Amount="2" />
+      <_BUY _DataType="ItemIndex" _DataKey="137299012" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="244299013">
+    <TRADEITEM _Index="244299013" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_244299013" _IconAlias="itembox_slot_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000392" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="137299013" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020001">
+    <TRADEITEM _Index="241020001" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020001" _IconAlias="ingredient_physical_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020001" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020002">
+    <TRADEITEM _Index="241020002" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020002" _IconAlias="ingredient_element_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020002" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020003">
+    <TRADEITEM _Index="241020003" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020003" _IconAlias="ingredient_energy_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020003" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020011">
+    <TRADEITEM _Index="241020011" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020011" _IconAlias="ingredient_damage_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020011" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020012">
+    <TRADEITEM _Index="241020012" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020012" _IconAlias="ingredient_swift_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020012" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020013">
+    <TRADEITEM _Index="241020013" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020013" _IconAlias="ingredient_extend_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020013" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020014">
+    <TRADEITEM _Index="241020014" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020014" _IconAlias="ingredient_focus_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020014" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241020015">
+    <TRADEITEM _Index="241020015" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241020015" _IconAlias="ingredient_trait_01_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136020015" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241030011">
+    <TRADEITEM _Index="241030011" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241030011" _IconAlias="ingredient_damage_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="6" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030011" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241030012">
+    <TRADEITEM _Index="241030012" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241030012" _IconAlias="ingredient_swift_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="6" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030012" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241030013">
+    <TRADEITEM _Index="241030013" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241030013" _IconAlias="ingredient_extend_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="6" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030013" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241030014">
+    <TRADEITEM _Index="241030014" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241030014" _IconAlias="ingredient_focus_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="6" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030014" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241030015">
+    <TRADEITEM _Index="241030015" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241030015" _IconAlias="ingredient_trait_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="6" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030015" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040400">
+    <TRADEITEM _Index="241040400" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040400" _IconAlias="ingredient_factory5_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040400" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040401">
+    <TRADEITEM _Index="241040401" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040401" _IconAlias="ingredient_factory3_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040401" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040402">
+    <TRADEITEM _Index="241040402" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040402" _IconAlias="ingredient_factory1_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040402" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040403">
+    <TRADEITEM _Index="241040403" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040403" _IconAlias="ingredient_factory2_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040403" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040200">
+    <TRADEITEM _Index="241040200" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040200" _IconAlias="ingredient_ventus2_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040200" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040201">
+    <TRADEITEM _Index="241040201" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040201" _IconAlias="ingredient_ventus5_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040201" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040202">
+    <TRADEITEM _Index="241040202" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040202" _IconAlias="ingredient_ventus4_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040202" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040203">
+    <TRADEITEM _Index="241040203" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040203" _IconAlias="ingredient_ventus3_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040203" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040100">
+    <TRADEITEM _Index="241040100" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040100" _IconAlias="ingredient_lacrimosa1_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040100" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040101">
+    <TRADEITEM _Index="241040101" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040101" _IconAlias="ingredient_lacrimosa3_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040101" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040102">
+    <TRADEITEM _Index="241040102" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040102" _IconAlias="ingredient_lacrimosa4_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040102" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040103">
+    <TRADEITEM _Index="241040103" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040103" _IconAlias="ingredient_lacrimosa2_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040103" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040300">
+    <TRADEITEM _Index="241040300" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040300" _IconAlias="ingredient_charis1_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040300" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040301">
+    <TRADEITEM _Index="241040301" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040301" _IconAlias="ingredient_charis4_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040301" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040302">
+    <TRADEITEM _Index="241040302" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040302" _IconAlias="ingredient_charis2_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040302" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040303">
+    <TRADEITEM _Index="241040303" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040303" _IconAlias="ingredient_charis5_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040303" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040500">
+    <TRADEITEM _Index="241040500" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040500" _IconAlias="ingredient_nuran1_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040500" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040501">
+    <TRADEITEM _Index="241040501" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040501" _IconAlias="ingredient_nuran4_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040501" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040502">
+    <TRADEITEM _Index="241040502" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040502" _IconAlias="ingredient_nuran2_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040502" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241040503">
+    <TRADEITEM _Index="241040503" _tradeItemType="INGREDIENT" _Name="STR_TRADE_NAME_241040503" _IconAlias="ingredient_nuran3_5_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="40" />
+      <_BUY _DataType="ItemIndex" _DataKey="136040503" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101301">
+    <TRADEITEM _Index="241101301" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101301" _IconAlias="attgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101301" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101303">
+    <TRADEITEM _Index="241101303" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101303" _IconAlias="attgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101303" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101305">
+    <TRADEITEM _Index="241101305" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101305" _IconAlias="attgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101305" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101306">
+    <TRADEITEM _Index="241101306" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101306" _IconAlias="attgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101306" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101401">
+    <TRADEITEM _Index="241101401" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101401" _IconAlias="attgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101401" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101402">
+    <TRADEITEM _Index="241101402" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101402" _IconAlias="attgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101402" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101403">
+    <TRADEITEM _Index="241101403" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101403" _IconAlias="attgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101403" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101404">
+    <TRADEITEM _Index="241101404" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101404" _IconAlias="attgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101404" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101405">
+    <TRADEITEM _Index="241101405" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101405" _IconAlias="attgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101405" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101406">
+    <TRADEITEM _Index="241101406" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101406" _IconAlias="attgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101406" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101501">
+    <TRADEITEM _Index="241101501" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101501" _IconAlias="attgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101501" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101502">
+    <TRADEITEM _Index="241101502" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101502" _IconAlias="attgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101502" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101503">
+    <TRADEITEM _Index="241101503" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101503" _IconAlias="attgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101503" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101504">
+    <TRADEITEM _Index="241101504" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101504" _IconAlias="attgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101504" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101505">
+    <TRADEITEM _Index="241101505" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101505" _IconAlias="attgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101505" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241101506">
+    <TRADEITEM _Index="241101506" _tradeItemType="GEAR_ATT" _Name="STR_TRADE_NAME_241101506" _IconAlias="attgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132101506" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201301">
+    <TRADEITEM _Index="241201301" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201301" _IconAlias="defgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201301" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201302">
+    <TRADEITEM _Index="241201302" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201302" _IconAlias="defgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201302" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201304">
+    <TRADEITEM _Index="241201304" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201304" _IconAlias="defgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201304" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201306">
+    <TRADEITEM _Index="241201306" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201306" _IconAlias="defgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201306" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201401">
+    <TRADEITEM _Index="241201401" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201401" _IconAlias="defgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201401" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201402">
+    <TRADEITEM _Index="241201402" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201402" _IconAlias="defgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201402" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201404">
+    <TRADEITEM _Index="241201404" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201404" _IconAlias="defgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201404" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201405">
+    <TRADEITEM _Index="241201405" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201405" _IconAlias="defgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201405" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201406">
+    <TRADEITEM _Index="241201406" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201406" _IconAlias="defgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201406" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201407">
+    <TRADEITEM _Index="241201407" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201407" _IconAlias="defgear_common_07" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201407" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201408">
+    <TRADEITEM _Index="241201408" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201408" _IconAlias="defgear_common_08" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201408" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201501">
+    <TRADEITEM _Index="241201501" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201501" _IconAlias="defgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201501" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201502">
+    <TRADEITEM _Index="241201502" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201502" _IconAlias="defgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201502" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201504">
+    <TRADEITEM _Index="241201504" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201504" _IconAlias="defgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201504" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201505">
+    <TRADEITEM _Index="241201505" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201505" _IconAlias="defgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201505" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201506">
+    <TRADEITEM _Index="241201506" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201506" _IconAlias="defgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201506" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201507">
+    <TRADEITEM _Index="241201507" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201507" _IconAlias="defgear_common_07" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201507" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241201508">
+    <TRADEITEM _Index="241201508" _tradeItemType="GEAR_DEF" _Name="STR_TRADE_NAME_241201508" _IconAlias="defgear_common_08" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132201508" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301301">
+    <TRADEITEM _Index="241301301" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301301" _IconAlias="utilgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301301" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301303">
+    <TRADEITEM _Index="241301303" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301303" _IconAlias="utilgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301303" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301306">
+    <TRADEITEM _Index="241301306" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301306" _IconAlias="utilgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301306" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301310">
+    <TRADEITEM _Index="241301310" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301310" _IconAlias="utilgear_common_10" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="10" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301310" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301401">
+    <TRADEITEM _Index="241301401" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301401" _IconAlias="utilgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301401" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301402">
+    <TRADEITEM _Index="241301402" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301402" _IconAlias="utilgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301402" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301403">
+    <TRADEITEM _Index="241301403" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301403" _IconAlias="utilgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301403" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301404">
+    <TRADEITEM _Index="241301404" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301404" _IconAlias="utilgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301404" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301405">
+    <TRADEITEM _Index="241301405" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301405" _IconAlias="utilgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301405" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301406">
+    <TRADEITEM _Index="241301406" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301406" _IconAlias="utilgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301406" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301407">
+    <TRADEITEM _Index="241301407" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301407" _IconAlias="utilgear_common_07" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301407" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301408">
+    <TRADEITEM _Index="241301408" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301408" _IconAlias="utilgear_common_08" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301408" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301409">
+    <TRADEITEM _Index="241301409" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301409" _IconAlias="utilgear_common_09" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301409" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301410">
+    <TRADEITEM _Index="241301410" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301410" _IconAlias="utilgear_common_10" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301410" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301411">
+    <TRADEITEM _Index="241301411" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301411" _IconAlias="utilgear_common_11" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301411" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301412">
+    <TRADEITEM _Index="241301412" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301412" _IconAlias="utilgear_common_12" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301412" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301413">
+    <TRADEITEM _Index="241301413" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301413" _IconAlias="utilgear_common_13" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301413" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301414">
+    <TRADEITEM _Index="241301414" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301414" _IconAlias="utilgear_common_14" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="50" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301414" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301501">
+    <TRADEITEM _Index="241301501" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301501" _IconAlias="utilgear_common_01" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301501" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301502">
+    <TRADEITEM _Index="241301502" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301502" _IconAlias="utilgear_common_02" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301502" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301503">
+    <TRADEITEM _Index="241301503" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301503" _IconAlias="utilgear_common_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301503" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301504">
+    <TRADEITEM _Index="241301504" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301504" _IconAlias="utilgear_common_04" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301504" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301505">
+    <TRADEITEM _Index="241301505" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301505" _IconAlias="utilgear_common_05" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301505" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301506">
+    <TRADEITEM _Index="241301506" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301506" _IconAlias="utilgear_common_06" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301506" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301507">
+    <TRADEITEM _Index="241301507" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301507" _IconAlias="utilgear_common_07" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301507" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301508">
+    <TRADEITEM _Index="241301508" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301508" _IconAlias="utilgear_common_08" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301508" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301509">
+    <TRADEITEM _Index="241301509" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301509" _IconAlias="utilgear_common_09" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301509" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301510">
+    <TRADEITEM _Index="241301510" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301510" _IconAlias="utilgear_common_10" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301510" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301511">
+    <TRADEITEM _Index="241301511" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301511" _IconAlias="utilgear_common_11" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301511" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301512">
+    <TRADEITEM _Index="241301512" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301512" _IconAlias="utilgear_common_12" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301512" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301513">
+    <TRADEITEM _Index="241301513" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301513" _IconAlias="utilgear_common_13" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301513" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="241301514">
+    <TRADEITEM _Index="241301514" _tradeItemType="GEAR_UTIL" _Name="STR_TRADE_NAME_241301514" _IconAlias="utilgear_common_14" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000391" _Amount="150" />
+      <_BUY _DataType="ItemIndex" _DataKey="132301514" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="0" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000014">
+    <TRADEITEM _Index="242000014" _Name="STR_TRADE_NAME_242000014" _Tooltip="STR_TRADE_TOOLTIP_242000014" _IconAlias="ingredient_damage_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="136020011" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030011" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="60" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000015">
+    <TRADEITEM _Index="242000015" _Name="STR_TRADE_NAME_242000015" _Tooltip="STR_TRADE_TOOLTIP_242000015" _IconAlias="ingredient_swift_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="136020012" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030012" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="60" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000016">
+    <TRADEITEM _Index="242000016" _Name="STR_TRADE_NAME_242000016" _Tooltip="STR_TRADE_TOOLTIP_242000016" _IconAlias="ingredient_extend_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="136020013" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030013" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="60" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000017">
+    <TRADEITEM _Index="242000017" _Name="STR_TRADE_NAME_242000017" _Tooltip="STR_TRADE_TOOLTIP_242000017" _IconAlias="ingredient_focus_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="136020014" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030014" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="60" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000018">
+    <TRADEITEM _Index="242000018" _Name="STR_TRADE_NAME_242000018" _Tooltip="STR_TRADE_TOOLTIP_242000018" _IconAlias="ingredient_trait_01_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="136020015" _Amount="3" />
+      <_BUY _DataType="ItemIndex" _DataKey="136030015" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="60" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000561">
+    <TRADEITEM _Index="242000561" _Name="STR_TRADE_NAME_242000561" _Tooltip="STR_TRADE_TOOLTIP_242000561" _IconAlias="misc_serpent_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000191" _Amount="25" />
+      <_REQUIRED _ItemIndex="138000192" _Amount="20" />
+      <_BUY _DataType="ItemIndex" _DataKey="138000193" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000562">
+    <TRADEITEM _Index="242000562" _Name="STR_TRADE_NAME_242000562" _Tooltip="STR_TRADE_TOOLTIP_242000562" _IconAlias="misc_flametemple_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138000195" _Amount="35" />
+      <_REQUIRED _ItemIndex="138000196" _Amount="25" />
+      <_BUY _DataType="ItemIndex" _DataKey="138000197" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000563">
+    <TRADEITEM _Index="242000563" _Name="STR_TRADE_NAME_242000563" _Tooltip="STR_TRADE_TOOLTIP_242000563" _IconAlias="misc_L1_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138900191" _Amount="35" />
+      <_REQUIRED _ItemIndex="138900192" _Amount="25" />
+      <_BUY _DataType="ItemIndex" _DataKey="138900193" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000564">
+    <TRADEITEM _Index="242000564" _Name="STR_TRADE_NAME_242000564" _Tooltip="STR_TRADE_TOOLTIP_242000564" _IconAlias="misc_L2_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138900194" _Amount="55" />
+      <_REQUIRED _ItemIndex="138900195" _Amount="35" />
+      <_BUY _DataType="ItemIndex" _DataKey="138900196" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000565">
+    <TRADEITEM _Index="242000565" _Name="STR_TRADE_NAME_242000565" _Tooltip="STR_TRADE_TOOLTIP_242000565" _IconAlias="misc_GW_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138900197" _Amount="30" />
+      <_REQUIRED _ItemIndex="138900198" _Amount="20" />
+      <_BUY _DataType="ItemIndex" _DataKey="138900199" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+  <INFO ID="242000566">
+    <TRADEITEM _Index="242000566" _Name="STR_TRADE_NAME_242000566" _Tooltip="STR_TRADE_TOOLTIP_242000566" _IconAlias="misc_COH_03" _FeedBackLevel="2">
+      <_REQUIRED _ItemIndex="138900200" _Amount="30" />
+      <_REQUIRED _ItemIndex="138900201" _Amount="20" />
+      <_BUY _DataType="ItemIndex" _DataKey="138900202" />
+      <_COST _Type="BUY_TYPE_RON" _Amount="990" />
+    </TRADEITEM>
+  </INFO>
+</ENTITY_FILE>

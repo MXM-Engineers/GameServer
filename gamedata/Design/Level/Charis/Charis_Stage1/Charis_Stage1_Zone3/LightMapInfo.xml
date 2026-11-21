@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LightMapSettings forceUnwrap="False" maxStretch="0.5" gutterSize="5" padding="4" textureRatio="1" giColor="68, 130, 255" giMultiplier="1" giSecondaryBounce="1" aoAmount="1" aoRadius="450" aoSubDivs="16" dmcAmount="0.9" dmcThreshold="0.02" colorMappingGamma="2.2" irradMapPreset="LOW" ddsRescaleFilter="CUBIC" ddsMipmapFilter="BOX" useHDR="True" maxRGBMValue="6" />
+    <_LevelLights>
+      <_LightData id="1001536" lightType="LM_DIRECTIONAL" x="23029.2" y="16065.4" z="17800.2" angx="14.67" angy="-41.58" angz="-111.53" scale="1">
+        <LM_Light useLight="True" hotspot="10000" fallOff="11000" shape="Circle" aspect="1" shadow="False" color="255, 227, 139" multiplier="0.2" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="65893.8" end="219864" areaShadow="True" vrayShape="Box" uvwSize="120" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000298" lightType="LM_DIRECTIONAL" x="21389" y="15597.2" z="16011.8" angx="14.67" angy="-41.58" angz="-111.53" scale="1">
+        <LM_Light useLight="True" hotspot="10000" fallOff="11000" shape="Circle" aspect="1" shadow="True" color="255, 227, 139" multiplier="2.8" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="65893.8" end="219864" areaShadow="True" vrayShape="Box" uvwSize="120" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000294" lightType="LM_DIRECTIONAL" x="21731.6" y="10104" z="-5377.44" angx="-153.53" angy="-55.43" angz="58.84" scale="1">
+        <LM_Light useLight="True" hotspot="10000" fallOff="11000" shape="Circle" aspect="1" shadow="False" color="255, 190, 98" multiplier="0.45" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="17900.3" end="23371.4" areaShadow="True" vrayShape="Sphere" uvwSize="75" subdivs="16" />
+      </_LightData>
+      <_LightData id="1000293" lightType="LM_DIRECTIONAL" x="877.56" y="20703.6" z="-6353.38" angx="128.37" angy="51.84" angz="-148.09" scale="1">
+        <LM_Light useLight="True" hotspot="10000" fallOff="11000" shape="Circle" aspect="1" shadow="False" color="158, 255, 185" multiplier="0.2" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="17900.3" end="23371.4" areaShadow="True" vrayShape="Sphere" uvwSize="75" subdivs="16" />
+      </_LightData>
+      <_LightData id="1000307" lightType="LM_POINT" x="13713.6" y="13441.4" z="1981.64" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="245, 107, 39" multiplier="1" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="130.489" end="314.452" areaShadow="True" vrayShape="Sphere" uvwSize="100" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000299" lightType="LM_POINT" x="20623.3" y="12126.8" z="1775.73" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="False" color="30, 136, 255" multiplier="2" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="523.729" end="1632.03" areaShadow="False" vrayShape="Sphere" uvwSize="10" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000147" lightType="LMVrayLight" x="-2432.33" y="1281.99" z="0" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light halfWidth="100" halfLength="150" color="150, 204, 255" multiplier="2.5" useLight="True" subdivs="32" shadow="True" type="Dome" doubleside="False" dome_spherical="True" lightDistribution="0" MapName="Graphic\BG\Temp\HDRI\MXM_Daylight_CRS.hdr" mappingtype="Spherical" horizontalRotation="-74" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+    </_LevelLights>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

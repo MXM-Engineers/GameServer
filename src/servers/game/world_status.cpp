@@ -247,7 +247,6 @@ void World::SyncPassivesOnDeath(const Player& target)
 bool World::PassiveBlocksCC(Player& target, const StatusInfo& info, f32* ccScale)
 {
 	if(info.kind != StatusInfo::Kind::HARD_CC && info.kind != StatusInfo::Kind::ROOT) return false;
-	if(ShowcaseIsDummy(target)) return false;
 	if(localTime < target.ccImmuneUntil) {
 		LOG("Passive :: %ls immune to status %d", target.name.data(), info.ID);
 		replication->SendResistStatusToAll(target.Main().UID, target.Main().UID, STATUS_RESIST_EVENT_PASSIVE);
@@ -261,7 +260,6 @@ bool World::PassiveBlocksCC(Player& target, const StatusInfo& info, f32* ccScale
 void World::PassiveOnCC(Player& target, const StatusInfo& info)
 {
 	if(info.kind != StatusInfo::Kind::HARD_CC && info.kind != StatusInfo::Kind::ROOT) return;
-	if(ShowcaseIsDummy(target)) return;
 	const ActiveStatus* st = FindPassiveOfType(target, StatusType::UNSHAKABLE);
 	if(!st) return;
 	if(target.cleanseCharges < 0) target.cleanseCharges = st->info->customInit;
@@ -311,7 +309,6 @@ bool World::PassiveOnLethal(Player& target)
 void World::PassiveOnDamaged(Player& target)
 {
 	if(target.dead) return;
-	if(ShowcaseIsDummy(target)) return;
 	const ActiveStatus* st = FindPassiveOfType(target, StatusType::HPTRIGGER);
 	if(!st) return;
 	const ActorMaster& chara = target.Main();
@@ -954,7 +951,6 @@ void World::ApplyStatus(Player& caster, Player& target, i32 statusID, f32 power,
 	ccScale *= statusDurationScale;
 	duration *= ccScale;
 	graphDuration *= ccScale;
-	ShowcaseOnStatus(caster, target, statusID);
 	const bool permanent = info && info->permanent && durationOverride <= 0;
 	if(permanent) duration = 1000000.0f;
 	const f32 sentDuration = info && info->permanent ? StatusSentDuration(*info) : statusAniEnd && info ? (info->durationSec > 0 ? info->durationSec : info->durationSec < 0 ? STATUS_INFINITE_DURATION_SEC : 0.0f) : durationOverride > 0 || !info || info->durationSec > 0 || defeatTimed ? duration : (info->durationSec < 0 ? STATUS_INFINITE_DURATION_SEC : 0.0f);

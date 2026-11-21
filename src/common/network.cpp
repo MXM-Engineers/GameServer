@@ -1,6 +1,5 @@
 #include "network.h"
 #include "protocol.h"
-#include <chrono>
 
 static const i32 TRACE_CLIENTS_PER_SERVER = 1000;
 
@@ -305,20 +304,6 @@ void Server::SendPacketData(ClientHandle clientHd, u16 netID, u16 packetSize, co
 		traceCounter++;
 		packetCounter++;
 		mutexFile.Unlock();
-	}
-
-	if(doStreamNetwork) {
-		static Mutex mutexStream;
-		static FILE* streams[MAX_CLIENTS] = {};
-		mutexStream.Lock();
-		if(!streams[clientID]) streams[clientID] = fopen(FormatPath(FMT("trace/stream_c%d.bin", clientID)), "wb");
-		if(streams[clientID]) {
-			const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			fwrite(&wall, sizeof(wall), 1, streams[clientID]);
-			fwrite(sendBuff, 1, header.size, streams[clientID]);
-			fflush(streams[clientID]);
-		}
-		mutexStream.Unlock();
 	}
 }
 

@@ -14,7 +14,6 @@
 
 #include "replication.h"
 #include "physics.h"
-#include "world_showcase.h"
 #include "world_master_rules.h"
 
 struct StatusInfo;
@@ -1086,7 +1085,6 @@ struct World
 	void UpdateBotCombat();
 	void BotIdleCharge(Player& bot);
 	void UpdateBotMovement();
-	void UpdateObserver();
 	void BuildTeamGates();
 	bool teamGatesBuilt = false;
 	struct TeamGate { i32 localID; vec2 a; vec2 b; i32 team; bool open; };
@@ -1097,19 +1095,8 @@ struct World
 	bool InsideBodyBlocker(const vec2& at, f32 margin) const;
 	void SetMonsterBattle(ActorNpc& npc, bool inBattle);
 	void UpdateNpcDrag(ActorNpc& npc, f32 delta);
-	struct PilotTour { u8 kind = 0; i32 localID = -1; ActorUID npc = ActorUID::INVALID; i32 doc = 0; Time since = Time::ZERO; bool hit = false; bool reacted = false; bool warped = false; };
-	PilotTour pilotTour;
-	eastl::fixed_vector<i32,128,true> pilotTourInteractions;
-	eastl::fixed_vector<ActorUID,256,true> pilotTourNpcs;
-	void PilotTourFinish(const char* result);
-	void PilotTourEvent(const char* what);
-	struct PilotDecision { vec3 goal = vec3(0); vec3 finalGoal = vec3(0); bool hasTarget = false; vec3 target = vec3(0); i32 hp = 0; i32 hpMax = 0; i32 doc = 0; bool master = false; bool hasInteract = false; vec3 interact = vec3(0); };
-	bool PilotTourStep(Player& p, PilotDecision* out, vec2* goal);
-	bool Pilot(Player& p, PilotDecision* out);
 	void GrantMasterKillExp(Player& killer, const Player& victim, const eastl::fixed_vector<Player*,10,false>& assisters);
 	void RewardMasterKill(Player* killer, const Player& victim);
-	Time observerNextMove = Time::ZERO;
-	i32 observerTarget = -1;
 	f32 PlayerMoveSpeed(const Player& p) const;
 	void UpdateBotSkills();
 	void UpdateSummonAi(f32 delta);
@@ -1190,26 +1177,10 @@ struct World
 	vec3 MonsterFireTargetPos(const ActorNpc& npc, ActorUID target) const;
 	f32 MonsterChainTravel(const ActorNpc& npc, const GameXmlContent::MonsterAttack& attack, ActorUID target, const GameXmlContent::MonsterFire** fireOut) const;
 	void UpdateSummonAttack(ActorNpc& npc, f32 delta);
-	void UpdateShowcase();
-	void ShowcaseOnCast(const Player& player);
-	bool ShowcaseKeepsFullRes(const Player& player) const;
-	bool ShowcaseIsDummy(const Player& target) const;
-	void ShowcaseOnStatus(const Player& caster, const Player& target, i32 statusID);
-	void ShowcaseOnDamage(const Player& target, i32 damage);
-	bool ShowcaseKeepsAlive(const Player& target) const;
-	void ShowcaseOnRemoteEnd(const RemoteInst& inst);
-	void ShowcaseWeaponAt(Player& shooter, const Player& target);
 	bool applyingCasterStatus = false;
 	void TeleportPlayer(Player& p, const vec3& pos, f32 yaw);
 	void MovePlayer(Player& p, const vec3& pos, f32 yaw, bool snap);
 	void WarpPlayer(Player& p, const vec3& pos, f32 yaw);
-	void GxTestDrive(Player& gx, const vec2& dir);
-	void GxPreviewPlace(Player& human, f32 enemyDist);
-	void GxPreviewPrompt(Player& human, const char* key, i32 click, i32 holdMs, i32 count, const vec3& target, i32 enemy = 0);
-	void UpdateGxPreview(Player& human);
-	void UpdateGatlingPreview(Player& human);
-	void UpdateGxEmpTest(Player& human);
-	ShowcaseState showcase;
 	void RunSummonState(ActorNpc& npc, i32 state);
 	void RelayPassive(ActorNpc& npc, const SummonInfo& info, Player& owner);
 	void RelayWarp(ActorNpc& npc, const vec3& to);
@@ -1288,7 +1259,6 @@ struct World
 	const ActiveStatus* FindCarrierPassive(const Player& carrier) const;
 	const ActiveStatus* FindGroupTeleportPassive(const Player& caster, SkillID skillID) const;
 	bool HasStatusFromSkill(const Player& target, u32 casterIndex, i32 skillID) const;
-	void UpdateGxTest(Player& human, Player& gx);
 	void OnWeaponShotPacket(Player& player, const vec3& origin, const vec2& dir, f32 distance, const u8* rawPacket, i32 rawSize);
 	void OnWeaponAimPacket(Player& player, f32 aimYaw);
 	void OnWeaponState(Player& player, i32 state, u8 chargeLevel, u8 firingCombo);

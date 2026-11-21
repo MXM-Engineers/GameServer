@@ -93,7 +93,6 @@ struct HubGame
 	eastl::array<u8,MAX_PLAYERS> pendingPartySelectMaster;
 	eastl::array<StageIndex,MAX_PLAYERS> pendingPartyStageIndex;
 	eastl::array<bool,MAX_PLAYERS> pendingRegame = {};
-	i32 autoQueued = 0;
 	eastl::fixed_vector<SortieUID,64,true> endedSorties;
 	struct SortieMember { AccountUID accountUID; u8 row; u32 teamType; bool bot; WideString nick; u8 team = 0; bool stayJoined = false; };
 	struct SortieRoster { SortieUID sortieUID; eastl::fixed_vector<SortieMember,16,false> members; EntrySystemID entry; StageType stageType; StageIndex stage; GameType gameType; GameDefinition gameDefinition; Time stayEndAt = Time::ZERO; bool stayDone = false; };
@@ -122,13 +121,6 @@ struct HubGame
 	void OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msglen);
 	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
 	void OnPlayerEnterCity(ClientHandle clientHd);
-	bool AutoQueueActive() const;
-	bool JoinDevAutoParty(ClientHandle clientHd);
-	void DevAutoPartyAdd(ClientHandle leaderHd, ClientHandle memberHd);
-	AccountUID devAutoPartyLeader = AccountUID::INVALID;
-	eastl::fixed_vector<AccountUID,8,false> devAutoPartyWaiting;
-	void StartNextSweepStage(ClientHandle clientHd);
-	i32 stageSweepDone = 0;
 	void OnReturnToCity(ClientHandle clientHd);
 	void OnReturnToGame(ClientHandle clientHd);
 	void BroadcastPlayerStateInTown(i32 userID, i8 state, const u8* modes, i32 modeCount);

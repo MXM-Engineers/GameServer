@@ -57,7 +57,6 @@ void World::PlayerWeaponFire(Player& player)
 	const vec2 dir = vec2(cosf(player.weaponAimYaw), sinf(player.weaponAimYaw));
 	const vec3 origin = player.body->GetWorldPos();
 
-	ShowcaseOnCast(player);
 	if(player.clientHd != ClientHandle::INVALID && player.Main().stance == 0 && player.casting.skillID == SkillID::INVALID) DropPendingActions(player);
 	if(player.clientHd != ClientHandle::INVALID && player.casting.skillID != SkillID::INVALID && player.casting.type == GameXmlContent::SkillCast::LIMIT) {
 		ReleaseCast(player);
@@ -145,7 +144,6 @@ void World::PlayerWeaponShot(Player& player, const vec3& origin, const vec2& dir
 		ReleaseCast(player);
 		return;
 	}
-	ShowcaseOnCast(player);
 	const i8 shotStance = player.Main().stance;
 	StanceWeaponUse(player);
 	if(projectileList.full()) return;

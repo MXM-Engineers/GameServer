@@ -1632,7 +1632,6 @@ void World::CompleteMapInteraction(Player& player)
 	}
 	replication->SendInteractionExecuteOnlyToAll(player.Main().UID, m.object, (u32)ActionStateID::INTERACTION_EXECUTE_BEHAVIORSTAT);
 	LOG("Interaction :: %ls takes object %d (team %d)", player.name.data(), m.localID, (i32)player.team);
-	if(pilotTour.kind == 1 && pilotTour.localID == m.localID) PilotTourFinish("done");
 	if(info->requireMinerals > 0) {
 		minerals = MAX(minerals - info->requireMinerals, 0);
 		SendMinerals();
@@ -1858,7 +1857,7 @@ void World::UpdateCreatureEnterTrigger(const GameXmlContent::LevelEventNode& nod
 
 void World::UpdateBoundTriggers()
 {
-	if(!levelEventsStarted || Config().DevShowcase) return;
+	if(!levelEventsStarted) return;
 	const GameXmlContent::Map& levelMap = *map;
 	foreach(p, players) {
 		if(p->campTeleportAt == Time::ZERO || localTime < p->campTeleportAt) continue;

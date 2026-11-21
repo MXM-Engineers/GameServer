@@ -50,7 +50,6 @@ static f32 MovementYaw(const World::Player& player, f32 fallback)
 void World::UpdateUltimateGauges(f32 delta)
 {
 	foreach(it, players) {
-		if(it->clientHd == ClientHandle::INVALID && (Config().DevShowcase || Config().DevMirror)) continue;
 		const ClassType cls = it->Main().classType;
 		const ClassType benchCls = it->Sub().classType;
 
@@ -230,12 +229,6 @@ void World::UpdateUltimateGauges(f32 delta)
 			}
 		}
 
-		if(ShowcaseKeepsFullRes(*it)) {
-			for(int r = 0; r < 3; r++) {
-				if(resMax[r] > 0 && it->res[r] != resMax[r]) { it->res[r] = resMax[r]; it->resDirty = true; }
-			}
-		}
-
 		const ActorUID mainUID = it->Main().UID;
 		if(it->ultDirty) replication->SendStatToAll(mainUID, (i32)StatType::STAT_TYPE_ULTIMATE, it->ultGauge, ultMax);
 		if(replication->titanMode) {
@@ -314,7 +307,6 @@ u32 World::PlayerPaySkillCost(Player& player, i32 skillID, bool pay)
 	const f32 resCost[3] = { PlayerSkillConsume(player, skillID, 0), PlayerSkillConsume(player, skillID, 1), PlayerSkillConsume(player, skillID, 2) };
 	const f32 hpCost = PlayerSkillConsume(player, skillID, 3);
 	if(mp <= 0 && ug <= 0 && st <= 0 && resCost[0] <= 0 && resCost[1] <= 0 && resCost[2] <= 0 && hpCost <= 0) return 0;
-	if(player.clientHd == ClientHandle::INVALID && (Config().DevShowcase || Config().DevMirror)) return 0;
 
 	const u32 error = SkillCostError(player, skillID, mp);
 	const bool ok = error == 0;
@@ -1984,7 +1976,7 @@ void World::UpdateSkillPoints()
 			it->nextSkillPointAt = TimeAdd(it->nextSkillPointAt, TimeMsToTime(SKILL_POINT_INTERVAL_MS));
 			GrantSkillPoint(*it);
 		}
-		if(!botUpgrades || (it->clientHd != ClientHandle::INVALID && Config().DevStartLevel <= 0 && Config().DevPilotUpgrades <= 0) || it->skillPoints <= 0 || it->dead) continue;
+		if(!botUpgrades || it->clientHd != ClientHandle::INVALID || it->skillPoints <= 0 || it->dead) continue;
 		if(it->botUpgradePlan < 0) {
 			i32 total = 0;
 			for(const i32 w : MEASURED_BOT_UPGRADE_PLAN_WEIGHTS) total += w;

@@ -394,110 +394,6 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 		if(!draft) SendPickPhaseStart(user);
 	}
 
-	if(Config().DevShowcase) {
-		static i32 showcaseRooms = 0;
-		static eastl::fixed_vector<i32,8> showcaseNextBySlice;
-		const i32 slices = eastl::max(1, Config().DevShowcaseSlices);
-		const i32 slice = showcaseRooms++ % slices;
-		if((i32)showcaseNextBySlice.size() < slices) showcaseNextBySlice.resize(slices, Config().DevShowcaseStart);
-		i32& showcaseNext = showcaseNextBySlice[slice];
-		eastl::fixed_vector<ClassType,100,false> all;
-		if(!Config().devShowcaseList.empty()) {
-			for(i32 c : Config().devShowcaseList) all.push_back((ClassType)c);
-		}
-		else {
-			foreach_const(it, allowedMastersSet) all.push_back(*it);
-			eastl::sort(all.begin(), all.end());
-		}
-		if(slices > 1) {
-			const i32 count = (i32)all.size();
-			all.erase(all.begin() + (slice + 1) * count / slices, all.end());
-			all.erase(all.begin(), all.begin() + slice * count / slices);
-			LOG("[Room] showcase slice %d/%d first %d count %d", slice + 1, slices, all.empty() ? 0 : (i32)all[0], (i32)all.size());
-		}
-		i32 humanTeam = -1;
-		foreach_const(u, userList) if(!u->isBot) humanTeam = (i32)u->team;
-		bool mirrorBotDone = false;
-		bool mirrorEnemyDone = false;
-		foreach(u, userList) {
-			const bool mirrorBot = u->isBot && (i32)u->team == humanTeam && !mirrorBotDone;
-			const bool mirrorEnemy = u->isBot && (i32)u->team != humanTeam && !mirrorEnemyDone;
-			const bool mirror = Config().DevMirror && all.size() >= 2 && (!u->isBot || mirrorBot || mirrorEnemy);
-			if(mirror && mirrorBot) mirrorBotDone = true;
-			if(mirror && mirrorEnemy) mirrorEnemyDone = true;
-			if(mirror && u->Main().classType == ClassType::NONE) {
-				TryPickMaster(u, all[0]);
-				TryPickMaster(u, all[1]);
-				const GameXmlContent& content = GetGameXmlContent();
-				for(int mi = 0; mi < 2; mi++) {
-					if(u->masters[mi].classType == ClassType::NONE) continue;
-					eastl::fixed_vector<SkillID,8,true> ids;
-					foreach_const(sid, content.masterClassTypeMap.at(u->masters[mi].classType)->skillIDs) {
-						const i32 slot = (i32)*sid % 100;
-						if(slot == 10 || slot == 20 || slot == 30 || slot == 40) ids.push_back(*sid);
-					}
-					eastl::sort(ids.begin(), ids.end());
-					const i32 first = Config().DevMirrorPass ? 2 : 0;
-					if((i32)ids.size() > first + 1) {
-						u->masters[mi].skills[0] = ids[first];
-						u->masters[mi].skills[1] = ids[first + 1];
-					}
-				}
-				u->replicate.masterPick = true;
-				LOG("[Room] mirror %s masters %d %d skills %d %d", u->isBot ? "bot" : "human", (i32)u->Main().classType, (i32)u->Sub().classType, (i32)u->Main().skills[0], (i32)u->Main().skills[1]);
-				continue;
-			}
-			if(!u->isBot && u->Main().classType == ClassType::NONE) {
-				if(!Config().devShowcaseList.empty()) {
-					TryPickMaster(u, all[0]);
-					if(all.size() > 1) TryPickMaster(u, all[1]);
-				}
-				if(u->Main().classType == ClassType::NONE) TryPickMaster(u, ClassType::STRIKER);
-				if(u->Sub().classType == ClassType::NONE) TryPickMaster(u, ClassType::LAUNCHER);
-				if(u->Sub().classType == ClassType::NONE) TryPickMaster(u, ClassType::STRIKER);
-				u->replicate.masterPick = true;
-			}
-			if(!u->isBot || all.empty()) continue;
-			for(int k = 0; k < 2; k++) {
-				const ClassType c = all[showcaseNext % all.size()];
-				showcaseNext++;
-				TryPickMaster(u, c);
-			}
-			if(u->Sub().classType == ClassType::NONE) TryPickMaster(u, all[showcaseNext++ % all.size()]);
-			foreach_const(fallback, allowedMastersSet) {
-				if(u->Main().classType != ClassType::NONE && u->Sub().classType != ClassType::NONE) break;
-				TryPickMaster(u, *fallback);
-			}
-			u->replicate.masterPick = true;
-			LOG("[Room] showcase bot masters %d %d", (i32)u->Main().classType, (i32)u->Sub().classType);
-		}
-	}
-
-	if(!Config().DevShowcase && !Config().devHumanPick.empty()) {
-		foreach(u, userList) {
-			if(u->isBot || u->Main().classType != ClassType::NONE) continue;
-			foreach_const(c, Config().devHumanPick) TryPickMaster(u, (ClassType)*c);
-			u->replicate.masterPick = true;
-			u->isReady = true;
-			LOG("[Room] dev human masters %d %d", (i32)u->Main().classType, (i32)u->Sub().classType);
-		}
-	}
-	if(!Config().DevShowcase && !Config().devBotPool.empty()) {
-		static u32 poolNext = 0;
-		foreach(u, userList) {
-			if(!u->isBot) continue;
-			bool humanTeam = false;
-			foreach_const(h, userList) if(!h->isBot && h->team == u->team) humanTeam = true;
-			for(u32 tries = 0; tries < Config().devBotPool.size() * 2 && u->Sub().classType == ClassType::NONE; tries++) {
-				const i32 cls = Config().devBotPool[poolNext++ % Config().devBotPool.size()];
-				if(humanTeam && (cls == Config().DevPickMasters[0] || cls == Config().DevPickMasters[1])) continue;
-				TryPickMaster(u, (ClassType)cls);
-			}
-			u->replicate.masterPick = true;
-			LOG("[Room] dev bot masters %d %d", (i32)u->Main().classType, (i32)u->Sub().classType);
-		}
-	}
-
 	if(draft) {
 		phase = Phase::Banning;
 		StartBanRound();
@@ -508,7 +404,7 @@ void RoomInstance::Init(Server* server_, const NewUser* userlist, const i32 user
 void RoomInstance::PickBotMasters()
 {
 	foreach(u, userList) {
-		if(u->isBot && !Config().DevShowcase && (Config().devBotPool.empty() || u->Sub().classType == ClassType::NONE)) {
+		if(u->isBot) {
 			static const ClassType botMasters[] = {
 				ClassType::STRIKER, ClassType::ARTILLERY, ClassType::ASSASSIN, ClassType::ELECTRO,
 				ClassType::DEFENDER, ClassType::SNIPER, ClassType::LAUNCHER,
@@ -667,22 +563,6 @@ void RoomInstance::Update(Time localTime_)
 	Replicate();
 
 	if(phase == Phase::Banning) UpdateBans();
-
-	if(phase == Phase::Picking && !devPicked && Config().DevPickMasters[0] > 0) {
-		devPicked = true;
-		foreach(u, userList) {
-			if(u->isBot) continue;
-			TryPickMaster(u, (ClassType)Config().DevPickMasters[0]);
-			if(Config().DevPickMasters[1] > 0) TryPickMaster(u, (ClassType)Config().DevPickMasters[1]);
-			foreach_const(m, allowedMastersSet) {
-				if(u->Main().classType != ClassType::NONE && u->Sub().classType != ClassType::NONE) break;
-				TryPickMaster(u, *m);
-			}
-			SetReady(u);
-			LOG("[Room] %ls dev picks masters %d and %d", u->name.data(), Config().DevPickMasters[0], Config().DevPickMasters[1]);
-		}
-		Replicate();
-	}
 
 	if(phase == Phase::Picking) {
 		bool allReady = true;
@@ -1233,23 +1113,6 @@ RoomInstance::User* RoomInstance::FindUser(ClientHandle clientHd)
 	return nullptr;
 }
 
-static void PickLabSkillPair(const GameXmlContent::Master& master, eastl::array<SkillID,2>& skills)
-{
-	static const i32 pairs[6][2] = { { 10, 20 }, { 30, 40 }, { 10, 30 }, { 20, 40 }, { 10, 40 }, { 20, 30 } };
-	static u32 next = RandUint() % 6;
-	const i32 forced[2] = { Config().DevLabSkillA, Config().DevLabSkillB };
-	const i32* pair = forced[0] > 0 ? forced : pairs[next++ % 6];
-	SkillID first = SkillID::INVALID;
-	SkillID second = SkillID::INVALID;
-	foreach_const(sid, master.skillIDs) {
-		if((i32)*sid % 100 == pair[0]) first = *sid;
-		if((i32)*sid % 100 == pair[1]) second = *sid;
-	}
-	if(first == SkillID::INVALID || second == SkillID::INVALID) return;
-	skills[0] = first;
-	skills[1] = second;
-}
-
 static void PickMeasuredLoadout(const GameXmlContent::Master& master, ClassType classType, eastl::array<SkillID,2>& skills)
 {
 	u32 total = 0;
@@ -1290,7 +1153,7 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Main().classType = classType;
 			user->Main().skills[0] = master.skillIDs[0];
 			user->Main().skills[1] = master.skillIDs[1];
-			if(user->isBot && !Config().DevShowcase) PickMeasuredLoadout(master, classType, user->Main().skills);
+			if(user->isBot) PickMeasuredLoadout(master, classType, user->Main().skills);
 			if(!master.fairPvpWeaponIDs.empty()) user->Main().weapon = master.fairPvpWeaponIDs[0];
 			else if(!master.defaultWeaponIDs.empty()) user->Main().weapon = master.defaultWeaponIDs[0];
 			else {
@@ -1308,7 +1171,6 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 				}
 				ArsenalSkills(arsenal, master, user->Main().skills.data());
 			}
-			if(Config().DevLabSkills) PickLabSkillPair(master, user->Main().skills);
 			user->Main().masterGearNo = user->isBot ? 1 : AccountGearsLoad(user->name.data()).SelectedPage((i32)classType);
 			user->Main().characterType = 1;
 		}
@@ -1316,7 +1178,7 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 			user->Sub().classType = classType;
 			user->Sub().skills[0] = master.skillIDs[0];
 			user->Sub().skills[1] = master.skillIDs[1];
-			if(user->isBot && !Config().DevShowcase) PickMeasuredLoadout(master, classType, user->Sub().skills);
+			if(user->isBot) PickMeasuredLoadout(master, classType, user->Sub().skills);
 			if(!master.fairPvpWeaponIDs.empty()) user->Sub().weapon = master.fairPvpWeaponIDs[0];
 			else if(!master.defaultWeaponIDs.empty()) user->Sub().weapon = master.defaultWeaponIDs[0];
 			else {
@@ -1334,7 +1196,6 @@ bool RoomInstance::TryPickMaster(User* user, ClassType classType)
 				}
 				ArsenalSkills(arsenal, master, user->Sub().skills.data());
 			}
-			if(Config().DevLabSkills) PickLabSkillPair(master, user->Sub().skills);
 			user->Sub().masterGearNo = user->isBot ? 1 : AccountGearsLoad(user->name.data()).SelectedPage((i32)classType);
 			user->Sub().characterType = 1;
 		}

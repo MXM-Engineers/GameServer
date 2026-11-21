@@ -83,7 +83,6 @@ struct Game
 	bool sentBackToLobby = false;
 	bool Finished() const { return gameEnded && sentBackToLobby; }
 	bool Deserted() const { foreach_const(p, playerList) if(p->clientHd != ClientHandle::INVALID && !p->left) return false; return true; }
-	bool IsDevPilot(const World::Player& p) const;
 	void EndGame();
 	f64 LevelStartLeadMs() const;
 	Time localTime;
@@ -133,17 +132,6 @@ struct Game
 	bool zoneLoading = false;
 	void MoveToNextZone();
 	void UpdateAutoStage();
-	void WriteTelemetry();
-	void WriteTrail();
-	void WriteTruth();
-	void WriteUserNote(ClientHandle clientHd, const wchar* msg, i32 msgLen);
-	void RunScenario();
-	struct ScenarioStep { f32 at; eastl::fixed_string<wchar,128,true> cmd; };
-	eastl::fixed_vector<ScenarioStep,512,true> scenario;
-	i32 scenarioNext = 0;
-	bool scenarioLoaded = false;
-	Time tNextTruth = Time::ZERO;
-	Time tNextTelemetry = Time::ZERO;
 	Time tAutoStageNext = Time::ZERO;
 	Time tAutoStageWait = Time::ZERO;
 	eastl::fixed_vector<i32,64,true> autoStageVisited;

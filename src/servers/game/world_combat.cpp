@@ -418,12 +418,11 @@ void World::DamagePlayer(Player& attacker, Player& target, SkillID skillID, i32 
 	if(damage <= 0) return;
 
 	ActorMaster& chara = target.Main();
-	ShowcaseOnDamage(target, damage);
 	target.damageTaken += damage;
 	target.hitsTaken++;
 	target.lastDamagedAt = localTime;
 	chara.hp = MAX(chara.hp - damage, (HasStatusType(target, StatusType::NEARLY_IMMORTAL) || HasStatusType(target, StatusType::UNDEAD)) ? 1 : 0);
-	if(ShowcaseKeepsAlive(target)) chara.hp = MAX(chara.hp, 1);
+	if(target.devGod) chara.hp = MAX(chara.hp, 1);
 	if(chara.hp == 0) PassiveOnLethal(target);
 	if(damage > 0 && target.casting.skillID != SkillID::INVALID && target.casting.interruptByAttacked) CancelCast(target, "attacked");
 	if(!reflecting && attacker.team != target.team && attacker.index != target.index && (proj || skillID != SkillID::INVALID)) {
@@ -630,10 +629,6 @@ void World::DamageNpc(Player& attacker, ActorNpc& npc, SkillID skillID, i32 dama
 		LightAttacker(attacker.body->GetWorldPos(), (i32)npc.faction);
 	}
 	if(npc.ownerUID == ActorUID::INVALID) OnMonsterDamaged(npc, hpBefore);
-	if(pilotTour.kind == 2 && pilotTour.npc == npc.UID && !pilotTour.hit) {
-		pilotTour.hit = true;
-		PilotTourEvent("first hit");
-	}
 	if(npc.ownerUID == ActorUID::INVALID) MonsterAggroOnHit(npc, attacker);
 	if(remoteHit && remoteHit->remoteID != 0) {
 		Replication::RemoteDamage hit = *remoteHit;
@@ -760,7 +755,7 @@ void World::DamagePlayerFromNpc(ActorNpc& attacker, Player& target, i32 damage, 
 	target.hitsTaken++;
 	target.lastDamagedAt = localTime;
 	chara.hp = MAX(chara.hp - damage, (HasStatusType(target, StatusType::NEARLY_IMMORTAL) || HasStatusType(target, StatusType::UNDEAD)) ? 1 : 0);
-	if(ShowcaseKeepsAlive(target)) chara.hp = MAX(chara.hp, 1);
+	if(target.devGod) chara.hp = MAX(chara.hp, 1);
 	if(chara.hp == 0) PassiveOnLethal(target);
 	if(target.casting.skillID != SkillID::INVALID && target.casting.interruptByAttacked) CancelCast(target, "attacked");
 	if((attacker.faction == Faction::RED || attacker.faction == Faction::BLUE) && (i32)attacker.faction != (i32)target.team) LightAttacker(attacker.pos, target.team);

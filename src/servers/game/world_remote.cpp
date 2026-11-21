@@ -212,7 +212,7 @@ World::RemoteInst* World::SpawnRemote(u32 ownerIndex, RemoteIdx idx, const vec3&
 		if(remoteTargetEntityOverride != ActorUID::INVALID) targetPos = pos;
 		const ActorUID sendOwner = remoteParentOverride != ActorUID::INVALID ? remoteParentOverride : players[ownerIndex].Main().UID;
 		const ActorUID sendTarget = remoteTargetEntityOverride != ActorUID::INVALID ? remoteTargetEntityOverride : (targetMaster ? target : ActorUID::INVALID);
-		const wchar* sendNode = child && remote->behaviorType == Remote::BehaviorType::CHAIN ? CHAIN_CHILD_NODE : (Config().DevNoFireNode ? GetGameXmlContent().GetNodeName(0) : GetGameXmlContent().GetNodeName(nodeName));
+		const wchar* sendNode = child && remote->behaviorType == Remote::BehaviorType::CHAIN ? CHAIN_CHILD_NODE : GetGameXmlContent().GetNodeName(nodeName);
 		const ClientHandle sendExclude = casterCreatesLocally ? players[ownerIndex].clientHd : ClientHandle::INVALID;
 		const vec3 sendFrom = remoteSendFromSet ? remoteSendFrom : sendPos;
 		if(remoteSendParentID != 0) replication->SendChildRemoteCreateToAll(sendOwner, sendOwner, remoteSendParentID, remoteSendParentSeedHd, seed, sendIdx, 0, sendFrom, sendYaw, targetPos, sendTarget, ActorUID::INVALID, sendNode, MEASURED_REMOTE_CREATE_FLAG_PARENT_REMOTE, sendExclude);
@@ -583,7 +583,6 @@ void World::TriggerSkillHitEvent(const RemoteInst& inst, Player& owner, ActorUID
 	ScheduleSkillRemotes(owner, inst.skillID, targetPos, Slice<const ActorUID>(&targetUID, 1), atan2f(rel.y, rel.x), 1, ActionStateID::INVALID, inst.casterClass);
 	schedulePassOffset = 0;
 	castCostLevel = nullptr;
-	if(Config().DevShowcase) return;
 	if(owner.clientHd != ClientHandle::INVALID) {
 		auto sk = content.skillMap.find(inst.skillID);
 		if(sk != content.skillMap.end()) UpdateComboSlot(owner, inst.skillID, sk->second.type, targetPos, true);
@@ -1008,7 +1007,6 @@ void World::UpdateRemotes(f32 delta)
 		}
 
 		FlushRemoteActivation();
-		if(destroyed && inst.speed > 0) ShowcaseOnRemoteEnd(inst);
 
 		if(destroyed) DestroyRemote(i);
 		else i++;

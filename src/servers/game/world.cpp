@@ -100,7 +100,6 @@ void World::Cleanup()
 void World::Update(Time localTime_)
 {
 	ProfileFunction();
-	ShowcaseTickTimer showcaseTimer(showcase);
 
 	const f64 tdelta = TimeDurationSec(localTime, localTime_);
 	localTime = localTime_;
@@ -356,14 +355,10 @@ void World::Update(Time localTime_)
 	if(!frozen) UpdatePushBounds();
 	if(!frozen) UpdateCasts();
 	if(!frozen) UpdateInteractions();
-	if(Config().DevShowcase) { if(!frozen) UpdateShowcase(); }
-	else {
-		BuildTeamGates();
-		if(!frozen && !combatLocked) UpdateBotMovement();
-		if(!frozen && !combatLocked) UpdateBotCombat();
-		if(!frozen && !combatLocked) UpdateBotSkills();
-		if(!frozen && !combatLocked) UpdateObserver();
-	}
+	BuildTeamGates();
+	if(!frozen && !combatLocked) UpdateBotMovement();
+	if(!frozen && !combatLocked) UpdateBotCombat();
+	if(!frozen && !combatLocked) UpdateBotSkills();
 
 	// execute skill programs
 	for(auto it = skillProgramList.begin(); it != skillProgramList.end(); ) {
@@ -866,7 +861,6 @@ void World::PlayerCastSkill(Player& player, SkillID skillIn, const vec3& castPos
 	const auto& skill = skillFound->second;
 	const bool followUp = forcedAction != ActionStateID::INVALID;
 	const bool castRelease = followUp && forcedAction == skill.action;
-	if(!followUp) ShowcaseOnCast(player);
 	if(!followUp && content.FindSkillToggle((i32)skillID)) {
 		if(player.toggleSkill == skillID) {
 			ToggleOff(player);

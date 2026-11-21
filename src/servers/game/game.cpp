@@ -4,7 +4,6 @@
 #include "game.h"
 
 #include <EAStdC/EAString.h>
-#include <chrono>
 #include <EAStdC/EAScanf.h>
 #include <common/utils.h>
 
@@ -54,7 +53,7 @@ static bool BotWeaponUsable(const GameXmlContent& xml, WeaponIndex current, i32 
 
 static void RollBotGear(World::PlayerDescription& desc)
 {
-	if(Config().DevShowcase || !desc.gearDocs[0].empty() || !desc.gearDocs[1].empty()) return;
+	if(!desc.gearDocs[0].empty() || !desc.gearDocs[1].empty()) return;
 	const GameXmlContent& xml = GetGameXmlContent();
 	for(i32 i = 0; i < 2; i++) {
 		const GameXmlContent::MeasuredBotGear* gear = xml.PickMeasuredBotGear(desc.masters[i], RandUint());
@@ -474,7 +473,7 @@ void Game::Update(Time localTime_)
 				tGameStarted = localTime;
 				gameStartUnix = (i64)time(nullptr);
 				world.combatLocked = false;
-				if(!Config().DevShowcase) world.gameStartedAt = localTime;
+				world.gameStartedAt = localTime;
 				world.RollBotSiegeFrom();
 				world.ApplyAllPassives();
 				world.StartSkillPoints();
@@ -485,18 +484,6 @@ void Game::Update(Time localTime_)
 		} break;
 
 		case Phase::Game: {
-			if(Config().DevTruth && localTime >= tNextTruth) {
-				static const f64 TRUTH_PERIOD_MS = 100.0;
-				tNextTruth = TimeAdd(localTime, TimeMsToTime(TRUTH_PERIOD_MS));
-				WriteTruth();
-			}
-			if(Config().DevScenario && tGameStarted != Time::ZERO) RunScenario();
-			if((Config().DevTelemetry || Config().DevTrail) && localTime >= tNextTelemetry) {
-				static const f64 TELEMETRY_PERIOD_MS = 200.0;
-				tNextTelemetry = TimeAdd(localTime, TimeMsToTime(TELEMETRY_PERIOD_MS));
-				if(Config().DevTelemetry) WriteTelemetry();
-				if(Config().DevTrail) WriteTrail();
-			}
 			if(Config().DevAutoStage && pveStage && !gameEnded) {
 				foreach(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed) p->devGod = true;
 				if(tGameStarted != Time::ZERO) UpdateAutoStage();
@@ -529,7 +516,6 @@ void Game::Update(Time localTime_)
 			if(!gameEnded && tGameStarted != Time::ZERO) {
 				f32 limit = GetGameXmlContent().GetStageTimeLimit((i32)replication.stageIndex);
 				if(limit <= 0) limit = STAGE_TIME_LIMIT_FALLBACK_SEC;
-				if(Config().DevGameTimeSec > 0) limit = (f32)Config().DevGameTimeSec;
 				if(TimeDiffSec(TimeDiff(tGameStarted, localTime)) >= limit) {
 					if(pveStage) EndStage(false);
 					else if(defenceStage) { world.defence.failed = true; EndDefence(); }
@@ -548,7 +534,7 @@ void Game::Update(Time localTime_)
 			}
 #if 1
 			// bot random actions
-			if(!gameEnded && !Config().DevShowcase) foreach(bot, botList) {
+			if(!gameEnded) foreach(bot, botList) {
 				if(localTime > bot->tNextAction) {
 					bot->tNextAction = TimeAdd(localTime, TimeMsToTime(Randf01() * 5 * 1000));
 					World::Player& wpl = world.GetPlayer(bot->playerIndex);
@@ -784,160 +770,6 @@ bool Game::LoadMap()
 		}
 	}
 	return true;
-}
-
-void Game::WriteTrail()
-{
-	FILE* f = fopen("trail.jsonl", "ab");
-	if(!f) return;
-	foreach_const(p, world.players) {
-		if(p->clientHd == ClientHandle::INVALID || p->removed || !p->body) continue;
-		const vec3 pos = p->body->GetWorldPos();
-		const World::ActorMaster& m = p->Main();
-		fprintf(f, "{\"t\":%.3f,\"stage\":%d,\"map\":%d,\"zone\":%d,\"started\":%d,\"name\":\"%ls\",\"x\":%.0f,\"y\":%.0f,\"z\":%.0f,\"yaw\":%.3f,\"class\":%d,\"hp\":%d,\"hpMax\":%d,\"dead\":%d}\n",
-			TimeDiffSec(TimeRelNow()), (i32)replication.stageIndex, (i32)replication.mapIndex, zoneIndex, tGameStarted != Time::ZERO ? 1 : 0, p->name.data(), pos.x, pos.y, pos.z, p->input.rot.bodyYaw, (i32)m.classType, m.hp, m.hpMax, p->dead ? 1 : 0);
-	}
-	fclose(f);
-}
-
-void Game::WriteTruth()
-{
-	ClientHandle viewer = ClientHandle::INVALID;
-	foreach_const(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed && IsDevPilot(*p)) { viewer = p->clientHd; break; }
-	if(viewer == ClientHandle::INVALID) return;
-	FILE* f = fopen("truth.jsonl", "ab");
-	if(!f) return;
-	const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	fprintf(f, "{\"w\":%lld,\"t\":%.3f,\"p\":[", wall, TimeDiffSec(TimeRelNow()));
-	bool first = true;
-	foreach_const(p, world.players) {
-		if(p->removed || !p->body) continue;
-		const vec3 pos = p->body->GetWorldPos();
-		const World::ActorMaster& m = p->Main();
-		ActionStateID state = m.actionState;
-		if(p->clientHd == ClientHandle::INVALID && world.localTime < p->botAttackStateUntil) state = p->botAttackState;
-		fprintf(f, "%s[%u,\"%ls\",%.0f,%.0f,%.0f,%d,%d,%d,%d,%d,%.2f]", first ? "" : ",", (u32)replication.GetLocalActorID(viewer, m.UID), p->name.data(), pos.x, pos.y, pos.z, (i32)state, m.hp, p->dead ? 1 : 0, p->clientHd != ClientHandle::INVALID ? 1 : 0, replication.HiddenFor(viewer, m.UID) ? 1 : 0, p->input.rot.bodyYaw);
-		first = false;
-	}
-	fprintf(f, "],\"n\":[");
-	first = true;
-	foreach_const(n, world.actorNpcList) {
-		if(n->hp <= 0 || n->removeAt != Time::ZERO) continue;
-		fprintf(f, "%s[%u,%d,%.0f,%.0f,%.0f,%d,%d,%d]", first ? "" : ",", (u32)replication.GetLocalActorID(viewer, n->UID), (i32)n->docID, n->pos.x, n->pos.y, n->pos.z, (i32)n->actionState, n->hp, replication.HiddenFor(viewer, n->UID) ? 1 : 0);
-		first = false;
-	}
-	fprintf(f, "],\"r\":[");
-	first = true;
-	foreach_const(r, world.remoteInsts) {
-		if(r->clientRemoteID == 0 || !r->remote) continue;
-		fprintf(f, "%s[%u,%d,%.0f,%.0f,%.0f]", first ? "" : ",", r->clientRemoteID, (i32)r->remote->ID, r->pos.x, r->pos.y, r->pos.z);
-		first = false;
-	}
-	foreach_const(r, world.monsterRemotes) {
-		if(!r->remote || r->seed == 0) continue;
-		fprintf(f, "%s[%u,%d,%.0f,%.0f,%.0f]", first ? "" : ",", r->seed, (i32)r->remote->ID, r->pos.x, r->pos.y, r->pos.z);
-		first = false;
-	}
-	fprintf(f, "]}\n");
-	fclose(f);
-}
-
-void Game::RunScenario()
-{
-	if(!scenarioLoaded) {
-		scenarioLoaded = true;
-		FILE* f = fopen("scenario.txt", "rb");
-		if(!f) return;
-		char line[256];
-		while(fgets(line, sizeof(line), f) && !scenario.full()) {
-			f32 at = 0;
-			i32 consumed = 0;
-			if(sscanf(line, "%f %n", &at, &consumed) < 1 || line[consumed] == 0) continue;
-			ScenarioStep step;
-			step.at = at;
-			for(const char* c = line + consumed; *c && *c != '\r' && *c != '\n'; c++) step.cmd.push_back((wchar)*c);
-			scenario.push_back(step);
-		}
-		fclose(f);
-		LOG("Scenario :: %d steps loaded", (i32)scenario.size());
-	}
-	ClientHandle human = ClientHandle::INVALID;
-	foreach_const(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed && IsDevPilot(*p)) { human = p->clientHd; break; }
-	if(human == ClientHandle::INVALID) return;
-	const f32 elapsed = (f32)TimeDiffSec(TimeDiff(tGameStarted, localTime));
-	while(scenarioNext < (i32)scenario.size() && elapsed >= scenario[scenarioNext].at) {
-		const ScenarioStep& step = scenario[scenarioNext++];
-		LOG("Scenario :: t=%.1f %ls", elapsed, step.cmd.c_str());
-		ParseChatCommand(human, step.cmd.data(), (i32)step.cmd.size());
-	}
-}
-
-void Game::WriteTelemetry()
-{
-	static const i32 TELEMETRY_MAX_MONSTERS = 40;
-	FILE* f = fopen("telemetry.tmp", "wb");
-	if(!f) return;
-	fprintf(f, "{\"t\":%.3f,\"map\":%d,\"started\":%d,\"ended\":%d,\"locked\":%d,\"zone\":%d,\"pve\":%d,\"players\":[", TimeDiffSec(TimeRelNow()), (i32)replication.mapIndex, tGameStarted != Time::ZERO ? 1 : 0, gameEnded ? 1 : 0, world.combatLocked ? 1 : 0, zoneIndex, pveStage ? 1 : 0);
-	bool first = true;
-	foreach_const(p, world.players) {
-		if(p->clientHd == ClientHandle::INVALID || p->removed || !p->body || !IsDevPilot(*p)) continue;
-		const vec3 pos = p->body->GetWorldPos();
-		const World::ActorMaster& m = p->Main();
-		fprintf(f, "%s{\"name\":\"%ls\",\"x\":%.0f,\"y\":%.0f,\"z\":%.0f,\"cx\":%.0f,\"cy\":%.0f,\"cz\":%.0f,\"yaw\":%.3f,\"hp\":%d,\"hpMax\":%d,\"dead\":%d,\"class\":%d}", first ? "" : ",", p->name.data(), pos.x, pos.y, pos.z, p->lastClientPos.x, p->lastClientPos.y, p->lastClientPos.z, p->input.rot.bodyYaw, m.hp, m.hpMax, p->dead ? 1 : 0, (i32)m.classType);
-		first = false;
-	}
-	fprintf(f, "],\"pilot\":");
-	World::Player* pilotPlayer = nullptr;
-	foreach(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed && p->body && IsDevPilot(*p)) { pilotPlayer = &*p; break; }
-	World::PilotDecision pilot;
-	if(pilotPlayer && world.Pilot(*pilotPlayer, &pilot)) {
-		fprintf(f, "{\"gx\":%.0f,\"gy\":%.0f,\"gz\":%.0f,\"fx\":%.0f,\"fy\":%.0f,\"target\":", pilot.goal.x, pilot.goal.y, pilot.goal.z, pilot.finalGoal.x, pilot.finalGoal.y);
-		if(pilot.hasTarget) fprintf(f, "{\"x\":%.0f,\"y\":%.0f,\"z\":%.0f,\"hp\":%d,\"hpMax\":%d,\"doc\":%d,\"master\":%d}", pilot.target.x, pilot.target.y, pilot.target.z, pilot.hp, pilot.hpMax, pilot.doc, pilot.master ? 1 : 0);
-		else fprintf(f, "null");
-		if(pilot.hasInteract) fprintf(f, ",\"interact\":{\"x\":%.0f,\"y\":%.0f}", pilot.interact.x, pilot.interact.y);
-		fprintf(f, "}");
-	}
-	else fprintf(f, "null");
-	fprintf(f, ",\"monsters\":[");
-	first = true;
-	i32 count = 0;
-	foreach_const(n, world.actorNpcList) {
-		if(count >= TELEMETRY_MAX_MONSTERS) break;
-		if(n->hp <= 0 || n->removeAt != Time::ZERO || !n->monsterAi || n->faction != Faction::MONSTER) continue;
-		bool targetsPlayer = false;
-		foreach_const(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed && (n->monsterTarget == p->Main().UID || n->monsterTarget == p->Sub().UID)) targetsPlayer = true;
-		const f32 reach = n->monsterAi->attacks.empty() ? 0.0f : n->monsterAi->attacks[0].range;
-		fprintf(f, "%s{\"doc\":%d,\"x\":%.0f,\"y\":%.0f,\"z\":%.0f,\"hp\":%d,\"hpMax\":%d,\"state\":%d,\"tgt\":%d,\"reach\":%.0f}", first ? "" : ",", (i32)n->docID, n->pos.x, n->pos.y, n->pos.z, n->hp, n->hpMax, (i32)n->actionState, targetsPlayer ? 1 : 0, reach);
-		first = false;
-		count++;
-	}
-	fprintf(f, "],\"incoming\":[");
-	first = true;
-	foreach_const(h, world.monsterHits) {
-		if(h->ally) continue;
-		bool onPlayer = false;
-		foreach_const(p, world.players) if(p->clientHd != ClientHandle::INVALID && !p->removed && (h->target == p->Main().UID || h->target == p->Sub().UID)) onPlayer = true;
-		if(!onPlayer) continue;
-		auto attacker = world.actorNpcMap.find(h->attacker);
-		if(attacker == world.actorNpcMap.end()) continue;
-		fprintf(f, "%s{\"doc\":%d,\"x\":%.0f,\"y\":%.0f,\"in\":%.3f,\"range\":%.0f,\"speed\":%.0f}", first ? "" : ",", (i32)attacker->second->docID, attacker->second->pos.x, attacker->second->pos.y, TimeDiffSec(TimeDiff(world.localTime, h->at)), h->attack->range, h->attack->speed);
-		first = false;
-	}
-	fprintf(f, "],\"exits\":[");
-	first = true;
-	if(world.map) {
-		foreach_const(n, world.map->levelEvents) {
-			if(n->kind != GameXmlContent::LevelEventNode::BOUND_TRIGGER || !n->enter || !world.LevelTriggerActive(*n)) continue;
-			const GameXmlContent::Map::Area* area = world.map->FindArea(n->areaID);
-			if(!area) continue;
-			fprintf(f, "%s{\"node\":%d,\"area\":%d,\"x\":%.0f,\"y\":%.0f,\"z\":%.0f}", first ? "" : ",", n->id, n->areaID, area->pos.x, area->pos.y, area->pos.z);
-			first = false;
-		}
-	}
-	fprintf(f, "]}");
-	fclose(f);
-	remove("telemetry.json");
-	rename("telemetry.tmp", "telemetry.json");
 }
 
 void Game::UpdateAutoStage()
@@ -1310,7 +1142,6 @@ void Game::OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID actorUID, cons
 	}
 	player.input.rot = rot;
 	player.input.speed = sliding ? MIN(glm::length(slideVel), speed) : speed;
-	if(Config().DevMirror) LOG("Aim :: yaw=%.4f pitch=%.4f", rot.upperYaw, rot.upperPitch);
 }
 
 void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, const RotationHumanoid& rot)
@@ -1336,7 +1167,6 @@ void Game::OnPlayerUpdateRotation(ClientHandle clientHd, ActorUID actorUID, cons
 	}
 
 	player.input.rot = rot;
-	if(Config().DevMirror) LOG("Aim :: yaw=%.4f pitch=%.4f", rot.upperYaw, rot.upperPitch);
 }
 
 void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar* msg, i32 msgLen)
@@ -1351,27 +1181,7 @@ void Game::OnPlayerChatMessage(ClientHandle clientHd, i32 chatType, const wchar*
 	// TODO: Actual chat system
 
 	Player& p = *playerMap.at(clientHd);
-	if(Config().DevTruth) WriteUserNote(clientHd, msg, msgLen);
 	replication.SendChatMessageToAll(p.name.data(), chatType, msg, msgLen);
-}
-
-void Game::WriteUserNote(ClientHandle clientHd, const wchar* msg, i32 msgLen)
-{
-	FILE* f = fopen("user_notes.jsonl", "ab");
-	if(!f) return;
-	const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	vec3 pos(0);
-	i32 classType = 0;
-	foreach_const(wp, world.players) {
-		if(wp->clientHd != clientHd || wp->removed || !wp->body) continue;
-		pos = wp->body->GetWorldPos();
-		classType = (i32)wp->Main().classType;
-	}
-	fprintf(f, "{\"w\":%lld,\"x\":%.0f,\"y\":%.0f,\"z\":%.0f,\"class\":%d,\"note\":\"", wall, pos.x, pos.y, pos.z, classType);
-	for(i32 i = 0; i < msgLen && msg[i]; i++) fprintf(f, "\\u%04x", (u32)(u16)msg[i]);
-	fprintf(f, "\"}\n");
-	fclose(f);
-	LOG("Note :: client %x at (%.0f, %.0f) wrote a note", (u32)clientHd, pos.x, pos.y);
 }
 
 void Game::OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg)
@@ -2313,15 +2123,6 @@ void Game::OnPlayerCancelStance(ClientHandle clientHd)
 	world.PlayerCancelStance(player);
 }
 
-bool Game::IsDevPilot(const World::Player& p) const
-{
-	const char* name = Config().DevPilotName;
-	if(!name[0]) return true;
-	i32 i = 0;
-	for(; name[i] && i < (i32)p.name.size(); i++) if((wchar)name[i] != p.name[i]) return false;
-	return !name[i] && i == (i32)p.name.size();
-}
-
 void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 {
 	const i32 READY_WAIT = 3000;
@@ -2345,7 +2146,7 @@ void Game::OnPlayerGameIsReady(ClientHandle clientHd)
 	if(phase == Phase::WaitingForFirstPlayer) {
 		phase = Phase::WaitingForReady;
 		phaseTime = TimeAdd(localTime, TimeMsToTime(READY_WAIT));
-		world.combatLocked = !Config().DevShowcase;
+		world.combatLocked = true;
 		replication.SendGameReady(clientHd, READY_WAIT, 0, player.userID);
 	}
 	else {

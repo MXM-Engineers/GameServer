@@ -9,23 +9,6 @@
 #include <EAStdC/EAString.h>
 #include <mxm/game_content.h>
 #include "config.h"
-#include <chrono>
-
-static void TruthEvent(const char* fmt, ...)
-{
-	if(!Config().DevTruth) return;
-	static FILE* f = nullptr;
-	if(!f) f = fopen("truth_events.jsonl", "ab");
-	if(!f) return;
-	const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	fprintf(f, "{\"w\":%lld,", wall);
-	va_list args;
-	va_start(args, fmt);
-	vfprintf(f, fmt, args);
-	va_end(args);
-	fprintf(f, "}\n");
-	fflush(f);
-}
 
 static const u32 PACKET_DAMAGE_TYPE_STATUS = 1;
 
@@ -1892,7 +1875,6 @@ bool Replication::SendRemoteCreateToClient(i32 clientID, const RemoteCreate& rem
 	const LocalActorID hitLocal = remote.hitInvalidUID != ActorUID::INVALID ? GetLocalActorID(clientHd, remote.hitInvalidUID) : LocalActorID::INVALID;
 	const u32 hitField = remote.hitInvalidUID == ActorUID::INVALID ? remote.hitInvalidTarget : (hitLocal != LocalActorID::INVALID ? (u32)hitLocal : 0);
 	const LocalActorID targetLocal = remote.targetUID != ActorUID::INVALID ? GetLocalActorID(clientHd, remote.targetUID) : LocalActorID::INVALID;
-	TruthEvent("\"c\":%d,\"remote\":%u,\"doc\":%d,\"owner\":%u,\"x\":%.0f,\"y\":%.0f,\"creator\":%d", clientID, remote.seed, (i32)remote.doc, (u32)ownerLocal, remote.firePos.x, remote.firePos.y, (i32)remote.creator);
 
 	if(remote.creator != 0) {
 		PacketWriter<Sv::SN_RemoteSyncCreateFromCreatorId,512> packet;
@@ -2037,7 +2019,6 @@ void Replication::SendRemoteDamageToAll(const RemoteDamage& hit)
 		const LocalActorID targetLocalID = GetLocalActorID(clientHd, hit.targetUID);
 		if(targetLocalID == LocalActorID::INVALID) continue;
 		if(playerLocalInfo[clientID].hiddenActors.count(hit.targetUID)) continue;
-		TruthEvent("\"c\":%d,\"damage\":%d,\"to\":%u,\"att\":%u,\"doc\":%d,\"rx\":%.0f,\"ry\":%.0f,\"tx\":%.0f,\"ty\":%.0f", clientID, hit.damage, (u32)targetLocalID, (u32)GetLocalActorID(clientHd, hit.attackerUID), (i32)hit.remoteDoc, hit.remotePos.x, hit.remotePos.y, hit.targetPos.x, hit.targetPos.y);
 
 		PacketWriter<Sv::SN_BroadcastDamage,256> packet;
 		packet.Write<u32>(seq);
@@ -2828,7 +2809,6 @@ void Replication::SendAddStatusToAll(i32 statusID, ActorUID targetUID, ActorUID 
 		const LocalActorID targetLocal = GetLocalActorID(clientHd, targetUID);
 		if(targetLocal == LocalActorID::INVALID) continue;
 		const LocalActorID casterLocal = GetCasterLocalID(clientHd, casterUID);
-		TruthEvent("\"c\":%d,\"status\":%d,\"to\":%u,\"from\":%u,\"dur\":%.2f,\"refresh\":%d", clientID, statusID, (u32)targetLocal, (u32)casterLocal, durationSec, refresh ? 1 : 0);
 
 		const f32 dist = to == vec3(0) ? 0.0f : glm::length(vec2(to - from));
 		PacketWriter<Sv::SN_AddStatus,128> packet;

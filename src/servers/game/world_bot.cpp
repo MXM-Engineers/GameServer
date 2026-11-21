@@ -238,7 +238,7 @@ void World::UpdateBotSkills()
 		if(bot.casting.skillID != SkillID::INVALID && (i32)bot.casting.skillID == content.BotReturnSkill()) bot.botReturnReady = TimeAdd(localTime, TimeMsToTime(content.BotConstant("BOTLOGIC_STRATEGY_CONST_KEY_USE_RETURN_SKILL_STRATEGY_DISABLE_TIME") * 1000.0));
 		if(localTime >= bot.tNextBotSkill && BotReleaseHold(bot)) continue;
 		if(localTime < bot.tNextBotSkill || localTime < bot.ccUntil || localTime < bot.dashUntil || localTime < bot.botSkillStillUntil || bot.botShotAt == localTime) continue;
-		if(bot.casting.skillID == SkillID::INVALID && !Config().DevShowcase && !IsBlocked(bot, false, false, true) && BotEvade(bot)) {
+		if(bot.casting.skillID == SkillID::INVALID && !IsBlocked(bot, false, false, true) && BotEvade(bot)) {
 			bot.tNextBotSkill = TimeAdd(localTime, TimeMsToTime(500));
 			continue;
 		}
@@ -279,7 +279,7 @@ void World::UpdateBotSkills()
 			const i32 combo = (i32)bot.botComboSkill;
 			const f32 comboDist = content.GetBotSkillMaxDistance(combo);
 			if(localTime >= bot.botComboUntil || bot.botComboClass != bot.Main().classType) bot.botComboSkill = SkillID::INVALID;
-			else if((comboDist <= 0 || best <= comboDist) && (Config().DevShowcase || Config().DevMirror || SkillCostAffordable(bot, combo, PlayerSkillConsumeMP(bot, combo)))) skill = combo;
+			else if((comboDist <= 0 || best <= comboDist) && SkillCostAffordable(bot, combo, PlayerSkillConsumeMP(bot, combo))) skill = combo;
 		}
 		if(skill == 0) {
 			const i32 base = (i32)bot.mainCharaID * 2;
@@ -287,10 +287,10 @@ void World::UpdateBotSkills()
 			for(i32 i = 0; i < 5; i++) {
 				const i32 skill = titan && i == 4 ? content.titan.forms[bot.titanForm].ug : (*skills)[i];
 				if(skill == 0 || localTime < bot.botSkillReady[i]) continue;
-				if(!titan && i != 4 && !Config().DevShowcase && (i32)bot.skills[base] != skill && (i32)bot.skills[base + 1] != skill) continue;
+				if(!titan && i != 4 && (i32)bot.skills[base] != skill && (i32)bot.skills[base + 1] != skill) continue;
 				const f32 maxDist = titan ? BotTitanSkillDistance(skill) : content.GetBotSkillMaxDistance(skill);
 				if(maxDist <= 0 || best > maxDist) continue;
-				if(!Config().DevShowcase && !Config().DevMirror && !SkillCostAffordable(bot, skill, PlayerSkillConsumeMP(bot, skill))) continue;
+				if(!SkillCostAffordable(bot, skill, PlayerSkillConsumeMP(bot, skill))) continue;
 				ready.push_back(i);
 			}
 			if(ready.empty()) continue;
@@ -1031,7 +1031,6 @@ bool World::BotDangerAt(const Player& bot, const vec2& at, vec2* towerPos, f32* 
 
 void World::UpdateBotMovement()
 {
-	if(Config().DevShowcase) return;
 	foreach(it, players) {
 		Player& bot = *it;
 		if(bot.clientHd != ClientHandle::INVALID || bot.dead || bot.Main().classType == ClassType::NONE) continue;
@@ -1246,225 +1245,6 @@ void World::UpdateBotMovement()
 	}
 }
 
-void World::PilotTourEvent(const char* what)
-{
-	FILE* f = fopen("pilot_tour.jsonl", "ab");
-	if(!f) return;
-	const i64 wall = (i64)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	u32 local = 0;
-	foreach_const(p, players) if(p->clientHd != ClientHandle::INVALID && !p->removed && pilotTour.npc != ActorUID::INVALID) local = (u32)replication->GetLocalActorID(p->clientHd, pilotTour.npc);
-	fprintf(f, "{\"w\":%lld,\"kind\":%d,\"id\":%d,\"local\":%u,\"warped\":%d,\"what\":\"%s\"}\n", wall, (i32)pilotTour.kind, pilotTour.kind == 1 ? pilotTour.localID : pilotTour.doc, local, pilotTour.warped ? 1 : 0, what);
-	fclose(f);
-}
-
-void World::PilotTourFinish(const char* result)
-{
-	if(pilotTour.kind) PilotTourEvent(result);
-	if(pilotTour.kind == 1) pilotTourInteractions.push_back(pilotTour.localID);
-	if(pilotTour.kind == 2) pilotTourNpcs.push_back(pilotTour.npc);
-	if(pilotTour.kind) LOG("PilotTour :: %s %d %s after %.1f s%s", pilotTour.kind == 1 ? "interaction" : "monster", pilotTour.kind == 1 ? pilotTour.localID : pilotTour.doc, result, TimeDiffSec(TimeDiff(pilotTour.since, localTime)), pilotTour.warped ? " (warped)" : "");
-	pilotTour = PilotTour();
-}
-
-bool World::PilotTourStep(Player& p, PilotDecision* out, vec2* goal)
-{
-	static const f64 HYP_TOUR_STOP_TIMEOUT_SEC = 150.0;
-	static const f32 HYP_TOUR_INTERACT_REACH = 500.0f;
-	const vec2 here = vec2(p.body->GetWorldPos());
-	if(pilotTour.kind && TimeDiffSec(TimeDiff(pilotTour.since, localTime)) > HYP_TOUR_STOP_TIMEOUT_SEC) PilotTourFinish(pilotTour.kind == 2 && pilotTour.reacted ? "FAILED (reacted but not killed)" : (pilotTour.kind == 2 && pilotTour.hit ? "FAILED (hit but never targeted the player)" : "FAILED (not reached or not completed)"));
-	if(pilotTour.kind == 1) {
-		bool still = false;
-		foreach_const(m, mapInteractions) if(m->localID == pilotTour.localID && m->active) still = true;
-		if(!still) PilotTourFinish("skipped (inactive)");
-	}
-	if(pilotTour.kind == 2) {
-		ActorNpc* npc = FindNpcActor(pilotTour.npc);
-		if(!npc || npc->hp <= 0) PilotTourFinish(!pilotTour.hit ? "skipped (gone)" : (pilotTour.reacted ? "done (reacted, killed)" : "FAILED (killed but never targeted the player)"));
-		else if(pilotTour.hit && !pilotTour.reacted && npc->monsterTarget == p.Main().UID) {
-			pilotTour.reacted = true;
-			PilotTourEvent("reacted");
-		}
-	}
-	if(!pilotTour.kind) {
-		f32 best = 1e12f;
-		foreach_const(m, mapInteractions) {
-			const GameXmlContent::InteractionInfo* info = GetGameXmlContent().FindInteraction(m->interactionID);
-			if(!m->active || m->creature || !info || info->pvpOccupy || info->action == GameXmlContent::InteractionInfo::OCCUPY) continue;
-			if(eastl::find(pilotTourInteractions.begin(), pilotTourInteractions.end(), m->localID) != pilotTourInteractions.end()) continue;
-			vec3 at;
-			if(!MapInteractionPos(*m, &at)) continue;
-			const f32 d = glm::length(vec2(at) - here);
-			if(d < best) { best = d; pilotTour = PilotTour(); pilotTour.kind = 1; pilotTour.localID = m->localID; }
-		}
-		foreach_const(npc, actorNpcList) {
-			if(!npc->monsterAi || npc->hp <= 0 || npc->ownerUID != ActorUID::INVALID || IsStructure(*npc) || !(npc->faction == Faction::ORANGE || (npc->faction == Faction::MONSTER && !hostileMonsters)) || !NpcHittableBy(*npc, p)) continue;
-			if(eastl::find(pilotTourNpcs.begin(), pilotTourNpcs.end(), npc->UID) != pilotTourNpcs.end()) continue;
-			const f32 d = Config().DevPilotTourFirst == (i32)npc->docID ? 0.0f : glm::length(vec2(npc->pos) - here);
-			if(d < best) { best = d; pilotTour = PilotTour(); pilotTour.kind = 2; pilotTour.npc = npc->UID; pilotTour.doc = (i32)npc->docID; }
-		}
-		if(!pilotTour.kind) return false;
-		pilotTour.since = localTime;
-		LOG("PilotTour :: next %s %d at %.0f", pilotTour.kind == 1 ? "interaction" : "monster", pilotTour.kind == 1 ? pilotTour.localID : pilotTour.doc, best);
-	}
-	static const f64 HYP_TOUR_WARP_AFTER_SEC = 20.0;
-	static const f32 HYP_TOUR_WARP_DIST = 700.0f;
-	static const f32 HYP_TOUR_WARP_STANDOFF = 350.0f;
-	static const f32 HYP_TOUR_WARP_LIFT = 30.0f;
-	if(!pilotTour.warped && TimeDiffSec(TimeDiff(pilotTour.since, localTime)) > HYP_TOUR_WARP_AFTER_SEC) {
-		vec3 at = vec3(0);
-		bool found = false;
-		if(pilotTour.kind == 1) foreach_const(m, mapInteractions) if(m->localID == pilotTour.localID && MapInteractionPos(*m, &at)) found = true;
-		if(pilotTour.kind == 2) if(ActorNpc* npc = FindNpcActor(pilotTour.npc)) { at = npc->pos; found = true; }
-		const vec2 rel = here - vec2(at);
-		const f32 len = glm::length(rel);
-		if(found && len > HYP_TOUR_WARP_DIST) {
-			const vec3 dest = vec3(vec2(at) + rel / len * HYP_TOUR_WARP_STANDOFF, at.z + HYP_TOUR_WARP_LIFT);
-			pilotTour.warped = true;
-			WarpPlayer(p, dest, atan2f(-rel.y, -rel.x));
-			LOG("PilotTour :: stuck %.0f from the stop after %.0f s, warped next to it", len, HYP_TOUR_WARP_AFTER_SEC);
-			PilotTourEvent("warped");
-		}
-	}
-	if(pilotTour.kind == 1) {
-		foreach_const(m, mapInteractions) {
-			vec3 at;
-			if(m->localID != pilotTour.localID || !MapInteractionPos(*m, &at)) continue;
-			*goal = vec2(at);
-			if(glm::length(vec2(at) - here) < HYP_TOUR_INTERACT_REACH) {
-				out->hasInteract = true;
-				out->interact = at;
-			}
-		}
-		return true;
-	}
-	ActorNpc* npc = FindNpcActor(pilotTour.npc);
-	*goal = vec2(npc->pos);
-	out->hasTarget = true;
-	out->target = npc->pos;
-	out->hp = npc->hp;
-	out->hpMax = npc->hpMax;
-	out->doc = (i32)npc->docID;
-	return true;
-}
-
-bool World::Pilot(Player& p, PilotDecision* out)
-{
-	static const f32 HYP_PILOT_ENGAGE_RANGE = 1300.0f;
-	if(!map || !p.body || p.dead || p.Main().classType == ClassType::NONE) return false;
-	const vec3 pos = p.body->GetWorldPos();
-	const vec2 here = vec2(pos);
-	if(!map->ingameLevels) {
-		const Player* nearest = nullptr;
-		f32 nearestDist = 0;
-		foreach_const(e, players) {
-			if(e->dead || e->untargetable || e->team == p.team || !e->body || e->Main().classType == ClassType::NONE || !(e->fogSeenBy & (1u << p.team))) continue;
-			const f32 d = glm::length(vec2(e->body->GetWorldPos()) - here);
-			if(nearest && d >= nearestDist) continue;
-			nearest = &*e;
-			nearestDist = d;
-		}
-		if(!nearest) return false;
-		const vec3 at = nearest->body->GetWorldPos();
-		if(nearestDist < HYP_PILOT_ENGAGE_RANGE) {
-			out->hasTarget = true;
-			out->master = true;
-			out->target = at;
-			out->hp = nearest->Main().hp;
-			out->hpMax = nearest->Main().hpMax;
-			out->doc = 100000000 + (i32)nearest->Main().classType;
-		}
-		out->finalGoal = at;
-		out->goal = vec3(BotNavStep(p, vec2(at)), pos.z);
-		return true;
-	}
-	vec2 goal = here;
-	const bool touring = Config().DevPilotTour && PilotTourStep(p, out, &goal);
-	const bool retreat = !touring && BotRetreat(p, &goal);
-	f32 best = retreat || touring ? 0.0f : HYP_PILOT_ENGAGE_RANGE;
-	foreach_const(e, players) {
-		if(e->dead || e->untargetable || e->team == p.team || !e->body || e->Main().classType == ClassType::NONE || !(e->fogSeenBy & (1u << p.team))) continue;
-		if(BotDangerAt(p, vec2(e->body->GetWorldPos()), nullptr, nullptr)) continue;
-		const f32 d = glm::length(vec2(e->body->GetWorldPos()) - here);
-		if(d >= best) continue;
-		best = d;
-		out->hasTarget = true;
-		out->master = true;
-		out->target = e->body->GetWorldPos();
-		out->hp = e->Main().hp;
-		out->hpMax = e->Main().hpMax;
-		out->doc = 100000000 + (i32)e->Main().classType;
-	}
-	if(!out->hasTarget) {
-		static const f32 HYP_PILOT_TARGET_PROGRESS_SEC = 8.0f;
-		static const f32 HYP_PILOT_TARGET_PROGRESS_DIST = 300.0f;
-		static const f32 HYP_PILOT_TARGET_SKIP_SEC = 30.0f;
-		for(i32 s = (i32)p.botFarmSkips.size() - 1; s >= 0; s--) if(localTime >= p.botFarmSkips[s].second) p.botFarmSkips.erase(p.botFarmSkips.begin() + s);
-		const ActorNpc* chosen = nullptr;
-		foreach_const(npc, actorNpcList) {
-			if(!npc->monsterAi || !NpcHittableBy(*npc, p) || NpcHasStatusType(*npc, StatusType::GODMODE)) continue;
-			if(IsStructure(*npc) && !BotSiegeOk(p, *npc)) continue;
-			if(!IsStructure(*npc) && BotDangerAt(p, vec2(npc->pos), nullptr, nullptr)) continue;
-			bool skipped = false;
-			foreach_const(s, p.botFarmSkips) if(s->first == npc->UID) skipped = true;
-			if(skipped) continue;
-			const f32 d = glm::length(vec2(npc->pos) - here);
-			if(d >= best) continue;
-			best = d;
-			chosen = &*npc;
-		}
-		if(chosen && chosen->UID != p.botFarmUID) {
-			p.botFarmUID = chosen->UID;
-			p.botFarmCheckAt = TimeAdd(localTime, TimeMsToTime(HYP_PILOT_TARGET_PROGRESS_SEC * 1000.0));
-			p.botFarmCheckDist = best;
-			p.botFarmCheckHp = chosen->hp;
-		}
-		else if(chosen && localTime >= p.botFarmCheckAt) {
-			if(best > p.botFarmCheckDist - HYP_PILOT_TARGET_PROGRESS_DIST && chosen->hp >= p.botFarmCheckHp) {
-				LOG("Pilot :: gives up creature=%d at %.0f (no progress, hp %d)", (i32)chosen->docID, best, chosen->hp);
-				if(p.botFarmSkips.full()) p.botFarmSkips.erase(p.botFarmSkips.begin());
-				p.botFarmSkips.push_back(eastl::make_pair(chosen->UID, TimeAdd(localTime, TimeMsToTime(HYP_PILOT_TARGET_SKIP_SEC * 1000.0))));
-				p.botFarmUID = ActorUID::INVALID;
-				chosen = nullptr;
-			}
-			else {
-				p.botFarmCheckAt = TimeAdd(localTime, TimeMsToTime(HYP_PILOT_TARGET_PROGRESS_SEC * 1000.0));
-				p.botFarmCheckDist = best;
-				p.botFarmCheckHp = chosen->hp;
-			}
-		}
-		if(chosen) {
-			out->hasTarget = true;
-			out->target = chosen->pos;
-			out->hp = chosen->hp;
-			out->hpMax = chosen->hpMax;
-			out->doc = (i32)chosen->docID;
-		}
-	}
-	vec2 occupyPoint;
-	ActorUID occupyObject = ActorUID::INVALID;
-	f32 occupyReach = 0;
-	if(touring) {}
-	else if(!retreat && !out->hasTarget && OccupyTarget(p, &occupyPoint, &occupyObject, &occupyReach)) {
-		out->hasInteract = true;
-		out->interact = vec3(occupyPoint, pos.z);
-		goal = occupyPoint;
-	}
-	else if(!retreat && !BotObjective(p, &goal) && !BotLaneGoal(p, &goal)) goal = here;
-	out->finalGoal = vec3(goal, pos.z);
-	goal = BotNavStep(p, goal);
-	vec2 tower;
-	f32 towerRange = 0;
-	if(BotDangerAt(p, goal, &tower, &towerRange)) {
-		const vec2 away = here - tower;
-		const f32 len = glm::length(away);
-		goal = tower + (len > 1.0f ? away / len : vec2(1, 0)) * towerRange;
-		out->finalGoal = vec3(goal, pos.z);
-	}
-	if(BotDangerAt(p, vec2(out->finalGoal), nullptr, nullptr)) out->finalGoal = vec3(goal, pos.z);
-	out->goal = vec3(goal, pos.z);
-	return true;
-}
-
 void World::BuildTeamGates()
 {
 	static const f32 GATE_PROBE_HEIGHT = 100.0f;
@@ -1586,35 +1366,6 @@ bool World::RaycastShot(const vec3& from, const vec3& to, i32 team, f32* dist, c
 	return blocked;
 }
 
-void World::UpdateObserver()
-{
-	static const f64 OBSERVER_MOVE_MS = 4000.0;
-	static const f64 OBSERVER_FIGHT_RECENT_SEC = 3.0;
-	static const f32 OBSERVER_DISTANCE = 450.0f;
-	if(!Config().DevObserver || gameStartedAt == Time::ZERO || localTime < observerNextMove) return;
-	observerNextMove = TimeAdd(localTime, TimeMsToTime(OBSERVER_MOVE_MS));
-	Player* human = nullptr;
-	foreach(p, players) if(p->clientHd != ClientHandle::INVALID && !p->removed && p->body) { human = &*p; break; }
-	if(!human || human->dead) return;
-	human->untargetable = true;
-	human->devGod = true;
-	const Player* best = nullptr;
-	f64 bestAge = 1e9;
-	foreach_const(p, players) {
-		if(p->clientHd != ClientHandle::INVALID || p->dead || !p->body || p->Main().classType == ClassType::NONE) continue;
-		const f64 age = p->battleActionAt == Time::ZERO ? 1e6 : TimeDiffSec(TimeDiff(p->battleActionAt, localTime));
-		const f64 score = age + (p->index == (u32)observerTarget && age < OBSERVER_FIGHT_RECENT_SEC ? -OBSERVER_FIGHT_RECENT_SEC : 0.0);
-		if(score < bestAge) { bestAge = score; best = &*p; }
-	}
-	if(!best) return;
-	observerTarget = (i32)best->index;
-	const vec3 at = best->body->GetWorldPos();
-	const f32 yaw = best->input.rot.bodyYaw;
-	const vec3 spot = at - vec3(cosf(yaw), sinf(yaw), 0) * OBSERVER_DISTANCE;
-	MovePlayer(*human, vec3(spot.x, spot.y, at.z), yaw, true);
-	LOG("Observer :: watches %ls at (%.0f, %.0f) last action %.1fs ago", best->name.data(), at.x, at.y, bestAge);
-}
-
 static const f32 MEASURED_SLIME_FIGHT_START_MASS[11] = { 0.0f, 0.0f, 0.0f, 5.0f, 20.0f, 35.0f, 60.0f, 70.0f, 80.0f, 90.0f, 90.0f };
 
 void World::BotIdleCharge(Player& bot)
@@ -1719,7 +1470,6 @@ void World::UpdateBotCombat()
 		if(BotHoldsHide(bot) || BotEvadeZone(bot, &zoneAway, &zoneDepth)) continue;
 		if(localTime < bot.dashUntil || localTime < bot.botSkillStillUntil || bot.casting.skillID != SkillID::INVALID) continue;
 		if(IsBlocked(bot, true, false, false)) continue;
-		if(WeaponIsMelee(bot) && Config().DevShowcase) continue;
 		if(WeaponIsMelee(bot)) {
 			bool swing = false;
 			const bool lateHit = WeaponHitsLater(bot);
@@ -1729,7 +1479,7 @@ void World::UpdateBotCombat()
 				if(e->dead || e->untargetable || e->team == bot.team || !(e->fogSeenBy & (1u << bot.team))) continue;
 				if(glm::length(vec2(e->body->GetWorldPos()) - vec2(bot.body->GetWorldPos())) <= meleeReach + HitRadius(*e) + HitRadius(bot)) { swing = true; swingAt = vec2(e->body->GetWorldPos()); break; }
 			}
-			if(!swing && !Config().DevShowcase) {
+			if(!swing) {
 				foreach_const(npc, actorNpcList) {
 					if(!NpcHittableBy(*npc, bot) || (IsStructure(*npc) && !BotSiegeOk(bot, *npc))) continue;
 					if(glm::length(vec2(npc->pos) - vec2(bot.body->GetWorldPos())) <= meleeReach + NpcHitRadius(*npc) + HitRadius(bot)) { swing = true; swingAt = vec2(npc->pos); break; }
@@ -1773,13 +1523,13 @@ void World::UpdateBotCombat()
 		}
 		bot.tNextBotShot = TimeAdd(localTime, TimeMsToTime(BotNextFireDelay(bot, bot.firingCombo) * 1000.0));
 		vec3 aim = target ? target->body->GetWorldPos() : vec3(0);
-		const ActorNpc* repair = !Config().DevShowcase ? BotRepairTarget(bot, range) : nullptr;
+		const ActorNpc* repair = BotRepairTarget(bot, range);
 		if(repair) {
 			target = nullptr;
 			aim = repair->pos;
 			best = glm::length(vec2(repair->pos) - vec2(pos));
 		}
-		if(!target && !repair && !Config().DevShowcase) {
+		if(!target && !repair) {
 			f32 bestNpc = range;
 			foreach_const(npc, actorNpcList) {
 				if(!NpcHittableBy(*npc, bot) || (IsStructure(*npc) && !BotSiegeOk(bot, *npc))) continue;

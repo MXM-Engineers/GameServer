@@ -718,19 +718,6 @@ void World::SpawnPendingSummons()
 				}
 			}
 			LOG("Summon :: %ls creature=%d at (%.0f, %.0f) life=%.1fs known=%d", owner.name.data(), ps->creature, ps->pos.x, ps->pos.y, life, info != nullptr);
-			if(Config().DevHideDetectTest > 0 && info && info->hideDetectRadius > 0 && !reuse) {
-				Player* nearest = nullptr;
-				f32 best = 0;
-				foreach(e, players) {
-					if(e->team == owner.team || e->dead) continue;
-					const f32 d = glm::length(vec2(e->body->GetWorldPos()) - vec2(ps->pos));
-					if(!nearest || d < best) { nearest = &*e; best = d; }
-				}
-				if(nearest) {
-					LOG("Hide :: dev test hides %ls at %.0f from detector", nearest->name.data(), best);
-					ApplyStatus(*nearest, *nearest, Config().DevHideDetectTest);
-				}
-			}
 		}
 		ps = pendingSummons.erase_unsorted(ps);
 	}

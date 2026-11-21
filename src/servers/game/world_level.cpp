@@ -28,11 +28,6 @@ void World::StartIngameLevels()
 		p->Sub().traitPoints = 0;
 		replication->SendLevelIngameToAll(p->userID, info.ExpToLevelUp(1), 1);
 	}
-	if(Config().DevStartLevel > 1) {
-		foreach(p, players) {
-			while(p->ingameLevel < MIN(Config().DevStartLevel, info.maxLevel)) GrantIngameExp(*p, MAX(info.ExpToLevelUp(p->ingameLevel) - p->ingameExp, 1), ActorUID::INVALID);
-		}
-	}
 	nextPassiveExpAt = info.passivePeriod > 0 ? TimeAdd(localTime, TimeMsToTime(info.passivePeriod * 1000.0)) : Time::ZERO;
 }
 

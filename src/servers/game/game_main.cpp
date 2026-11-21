@@ -59,7 +59,6 @@ int main(int argc, char** argv)
 	}
 	g_Server = &server;
 	server.doTraceNetwork = Config().TraceNetwork;
-	server.doStreamNetwork = Config().TraceStream;
 
 	Listener listen(&server);
 	g_Listener = &listen;

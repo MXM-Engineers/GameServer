@@ -381,6 +381,16 @@ void World::SetStance(ActorMaster& master, i8 stance, f32 duration, i32 weaponFi
 	if(oldStance != 0 && stance == 0 && master.parent) RunStanceOut(*master.parent, oldStance);
 }
 
+void World::MarkPlayerStatsDirty()
+{
+	foreach(p, players) {
+		p->manaDirty = true;
+		p->staminaDirty = true;
+		p->resDirty = true;
+		p->ultDirty = true;
+	}
+}
+
 void World::PlayerCancelStance(Player& player)
 {
 	if(player.dead || player.Main().stance == 0) return;

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<MONSTER_SCRIPTS source="Tools/notes/specs/pve/boss_pulverizer.md (official videos, M = measured, H = hypothesis per attribute note)">
+  <Script ID="106531100" start="1.5" period="26" pauseOnState="DEFEAT_GROGGY_BEHAVIORSTATE" groggyChance="1" groggyTime="6.5" groggyStatus="1263500056" note="Normal: cycle M pve_extreme_fr 5:41-6:54, groggy 6.5 s M, groggy chance 1 M (filled in one window solo)">
+    <Attack state="SKILL_11_BEHAVIORSTATE" anim="3" hits="2" interval="0" radius="300" speed="900" hitAt="0.45" note="D: 2 shells 1466541011/1466541010 at 0.45 s, impact 1466541012 sphere 600 x0.6" />
+    <Attack state="SKILL_12_BEHAVIORSTATE" anim="2" hits="3" interval="0.2" radius="0" speed="0" hitAt="0.8" note="D: beam 1466541020 BOX 300x2400 offset 1200 at 0.8/1.0/1.2 s x0.6" />
+    <Attack state="SKILL_3_BEHAVIORSTATE" anim="7" hits="1" radius="800" selfCentered="1" speed="0" hitAt="0.3" note="D: 1466541041 sphere 1600 x0.6 FLY 1200070020 at 0.3 s" />
+    <Attack state="SKILL_5_BEHAVIORSTATE" anim="5" evade="4.8" weakAt="4.9" weakTime="4" weakStatus="1263500058" />
+    <Attack state="SKILL_10_BEHAVIORSTATE" anim="5" evade="4.8" weakAt="4.9" weakTime="4" weakStatus="1263500058" />
+    <Step t="0" state="SKILL_11_BEHAVIORSTATE" aiTrigger="2" />
+    <Step t="3" state="SKILL_12_BEHAVIORSTATE" />
+    <Step t="10" state="SKILL_3_BEHAVIORSTATE" aiTrigger="12" />
+    <Step t="20" state="SKILL_5_BEHAVIORSTATE|SKILL_10_BEHAVIORSTATE" pick="random" />
+  </Script>
+  <Script ID="106531000" copyOf="106531100" note="H: Story, no video" />
+  <Script ID="106531200" copyOf="106531100" note="H: Brutal, no video" />
+  <Script ID="106531400" start="1.5" period="32" pauseOnState="DEFEAT_GROGGY_BEHAVIORSTATE" groggyChance="0" groggyTime="6.5" groggyStatus="1263500056" note="Nightmare: cycle M (5 videos), gauge never filled M">
+    <Attack state="SKILL_1_BEHAVIORSTATE" anim="3" hits="6" interval="0.15" radius="300" speed="900" hitAt="0.15" note="D: 6 shells at 0.15/0.3/0.6 s, impact sphere 600 x0.6; H: all aimed at the target" />
+    <Attack state="SKILL_2_BEHAVIORSTATE" anim="2" />
+    <Attack state="SKILL_22_BEHAVIORSTATE" like="SKILL_2_BEHAVIORSTATE" anim="2" />
+    <Attack state="SKILL_3_BEHAVIORSTATE" anim="7" hits="1" radius="800" selfCentered="1" speed="0" hitAt="0.3" note="D: 1466541041 sphere 1600 x0.6 FLY 1200070020 at 0.3 s" />
+    <Attack state="SKILL_24_BEHAVIORSTATE" like="SKILL_2_BEHAVIORSTATE" anim="9" hits="6" interval="1" />
+    <Attack state="SKILL_25_BEHAVIORSTATE" like="SKILL_2_BEHAVIORSTATE" anim="9" hits="6" interval="1" />
+    <Attack state="SKILL_15_BEHAVIORSTATE" like="SKILL_5_BEHAVIORSTATE" anim="5" evade="4.8" weakAt="4.9" weakTime="3" weakStatus="1263500053" />
+    <Attack state="SKILL_20_BEHAVIORSTATE" like="SKILL_5_BEHAVIORSTATE" anim="5" evade="4.8" weakAt="4.9" weakTime="3" weakStatus="1263500053" />
+    <Step t="0" state="SKILL_1_BEHAVIORSTATE" aiTrigger="2" />
+    <Step t="4.5" state="SKILL_2_BEHAVIORSTATE|SKILL_22_BEHAVIORSTATE" pick="random" />
+    <Step t="9.5" state="SKILL_2_BEHAVIORSTATE|SKILL_22_BEHAVIORSTATE" pick="random" note="H: second beam seen 2 times out of 5" />
+    <Step t="15" hpMin="60" state="SKILL_3_BEHAVIORSTATE" aiTrigger="12" />
+    <Step t="15" hpMax="60" state="SKILL_24_BEHAVIORSTATE|SKILL_25_BEHAVIORSTATE" pick="alternate" aiTrigger="13" />
+    <Step t="24" state="SKILL_15_BEHAVIORSTATE|SKILL_20_BEHAVIORSTATE" pick="random" note="H: 15/20 (3 s window) rather than 5/10" />
+  </Script>
+  <Script ID="106531300" copyOf="106531400" note="H: Extreme, no video" />
+</MONSTER_SCRIPTS>

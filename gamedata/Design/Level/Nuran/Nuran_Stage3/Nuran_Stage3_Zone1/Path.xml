@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_PATH_LIST>
+    <MAP_PATH_INFO DATAKEY="200017">
+      <_PathList dwID="200017" dwParent="200017" kTranslate_x="5567.39" kTranslate_y="12510.79" kTranslate_z="77.54" kRotation_x="0" kRotation_y="0" kRotation_z="0.3190462" _RandomRadius="1" />
+      <_PathList dwID="200028" dwParent="200017" kTranslate_x="5465.14" kTranslate_y="12201.32" kTranslate_z="50.02" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="200066">
+      <_PathList dwID="200066" dwParent="200066" kTranslate_x="6062.12" kTranslate_y="13329.63" kTranslate_z="71.98" kRotation_x="0" kRotation_y="0" kRotation_z="-1.635897" _RandomRadius="1" />
+      <_PathList dwID="200046" dwParent="200066" kTranslate_x="6356.94" kTranslate_y="13348.83" kTranslate_z="50.02" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="400303">
+      <_PathList dwID="400303" dwParent="400303" kTranslate_x="23575" kTranslate_y="11855" kTranslate_z="131.65" kRotation_x="0" kRotation_y="0" kRotation_z="2.395639" _RandomRadius="1" />
+      <_PathList dwID="400032" dwParent="400303" kTranslate_x="22151.69" kTranslate_y="13395.11" kTranslate_z="121.95" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+    <MAP_PATH_INFO DATAKEY="400047">
+      <_PathList dwID="400047" dwParent="400047" kTranslate_x="22078.8" kTranslate_y="14286.58" kTranslate_z="142.06" kRotation_x="0" kRotation_y="0" kRotation_z="-0.3735004" _RandomRadius="1" />
+      <_PathList dwID="400030" dwParent="400047" kTranslate_x="22840.81" kTranslate_y="12341.71" kTranslate_z="121.95" kRotation_x="0" kRotation_y="0" kRotation_z="0" _RandomRadius="0" RunWalk="0" RoundTrip="0" AIPerceptionEnable="0" />
+    </MAP_PATH_INFO>
+  </MAP_PATH_LIST>
+</MAP_INFO>

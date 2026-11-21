@@ -1,0 +1,638 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+	<LevelEventList>
+		<_LevelEventData DATAKEY="SaveKillZSpawnArea18" _ConvertedEventDataID="21" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_SaveKillZSpawnArea _AreaID="27" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이9" _ConvertedEventDataID="20" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="BGMEventInfo3" _ConvertedEventDataID="19" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_BGMEventInfo _EventName="BGM_Boss_Lineage_Deathknight" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="BGMEventInfo2" _ConvertedEventDataID="18" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_BGMEventInfo _EventName="BGM_Boss_End" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이8" _ConvertedEventDataID="17" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="액션 변경2" _ConvertedEventDataID="16" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ActionChangeInfo _ID="8" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_CLOSE" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="진행 목표점 업데이트2" _ConvertedEventDataID="15" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_UpdateObjectivePointInfo _LocalID="5" _Tag="" _TagID="-1" _ActiveType="OFF" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경2" _ConvertedEventDataID="14" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="7" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_MERGED" _ZoomDistanceBase="-1" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이7" _ConvertedEventDataID="13" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="InputLockInfo2" _ConvertedEventDataID="12" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InputLockInfo _lockType="INPUT_LOCKTYPE_NONE" _IsLock="0" _IsClear="1" _LocalID="0" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이6" _ConvertedEventDataID="11" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="1" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경5" _ConvertedEventDataID="10" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="17" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_OTHERS" _ZoomDistanceBase="3500" _ZoomDistanceMax="3500" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이5" _ConvertedEventDataID="9" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="1.9" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경1" _ConvertedEventDataID="8" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="17" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_OTHERS" _ZoomDistanceBase="1000" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이2" _ConvertedEventDataID="7" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="4" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="몬스터 스폰2" _ConvertedEventDataID="6" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallMonsterInfo _Index="100010810" _SpawnAnim="1" _Count="1" _SpawnAreaID="7" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="EXTREME" _Tag="Boss" _TagID="0" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="몬스터 스폰1" _ConvertedEventDataID="5" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallMonsterInfo _Index="100010800" _SpawnAnim="1" _Count="1" _SpawnAreaID="7" _CallCount="1" _CallDelayTime="1" _RandomDelayTimeVariance="0" _CallIntervalTime="0" _RandomIntervalTimeVariance="0" _AIWanderDistOverride="-1" _StageLevel="NORMAL" _Tag="Boss" _TagID="0" _itemDrop="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경6" _ConvertedEventDataID="4" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="17" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_OTHERS" _ZoomDistanceBase="500" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="InputLockInfo1" _ConvertedEventDataID="3" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InputLockInfo _lockType="INPUT_LOCKTYPE_ALL" _IsLock="1" _IsClear="0" _LocalID="0" _Tag="" _TagID="-1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="진행 목표점 업데이트1" _ConvertedEventDataID="25" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_UpdateObjectivePointInfo _LocalID="5" _Tag="" _TagID="-1" _ActiveType="ONLY_ON" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="액션 변경1" _ConvertedEventDataID="24" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ActionChangeInfo _ID="4" _Tag="" _TagID="-1" _RandomChoiceCount="0" _ActionIndex="DYNAMIC_DIE" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이1" _ConvertedEventDataID="23" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지1" _ConvertedEventDataID="34" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="Gludio_Boss_03" _LocalID="7" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이11" _ConvertedEventDataID="33" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="BGMEventInfo5" _ConvertedEventDataID="32" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_BGMEventInfo _EventName="BGM_Boss_End" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이10" _ConvertedEventDataID="31" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경4" _ConvertedEventDataID="30" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="0" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_MERGED" _ZoomDistanceBase="-1" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이4" _ConvertedEventDataID="29" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이3" _ConvertedEventDataID="28" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="카메라 변경3" _ConvertedEventDataID="27" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_ChangeCameraInfo _CameraPresetIdx="0" _TargetLocalID="7" _Tag="" _TagID="-1" _TargetType="CAMERA_TARGET_OTHERS" _ZoomDistanceBase="1000" _ZoomDistanceMax="-1" _ExclusiveTeam="TEAM_TYPE_INVALID" _ConstTime="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행10" _ConvertedEventDataID="45" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1027" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행9" _ConvertedEventDataID="44" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1026" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행8" _ConvertedEventDataID="43" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1025" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행7" _ConvertedEventDataID="42" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1024" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행6" _ConvertedEventDataID="41" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1023" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행5" _ConvertedEventDataID="40" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1022" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행4" _ConvertedEventDataID="39" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1021" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행3" _ConvertedEventDataID="38" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1020" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행2" _ConvertedEventDataID="37" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1019" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행1" _ConvertedEventDataID="36" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1018" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행21" _ConvertedEventDataID="57" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1027" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행22" _ConvertedEventDataID="56" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1126" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행23" _ConvertedEventDataID="55" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1025" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행24" _ConvertedEventDataID="54" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1024" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행25" _ConvertedEventDataID="53" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1023" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행26" _ConvertedEventDataID="52" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1022" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행27" _ConvertedEventDataID="51" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1021" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행28" _ConvertedEventDataID="50" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1020" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행29" _ConvertedEventDataID="49" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1019" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행30" _ConvertedEventDataID="48" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1018" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="BGMEventInfo1" _ConvertedEventDataID="59" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_BGMEventInfo _EventName="BGM_Boss_Intro" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행61" _ConvertedEventDataID="70" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1027" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행62" _ConvertedEventDataID="69" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1026" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행63" _ConvertedEventDataID="68" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1025" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행64" _ConvertedEventDataID="67" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1024" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행65" _ConvertedEventDataID="66" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1023" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행66" _ConvertedEventDataID="65" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1022" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행67" _ConvertedEventDataID="64" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1021" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행68" _ConvertedEventDataID="63" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1120" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행69" _ConvertedEventDataID="62" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1019" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행70" _ConvertedEventDataID="61" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1018" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행71" _ConvertedEventDataID="82" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1027" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행72" _ConvertedEventDataID="81" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1026" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행73" _ConvertedEventDataID="80" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1025" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행74" _ConvertedEventDataID="79" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1024" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행75" _ConvertedEventDataID="78" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1023" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행76" _ConvertedEventDataID="77" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1122" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행77" _ConvertedEventDataID="76" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1021" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행78" _ConvertedEventDataID="75" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1020" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행79" _ConvertedEventDataID="74" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1019" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행80" _ConvertedEventDataID="73" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1018" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행41" _ConvertedEventDataID="94" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1127" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행42" _ConvertedEventDataID="93" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1026" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행43" _ConvertedEventDataID="92" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1025" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행44" _ConvertedEventDataID="91" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1024" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행45" _ConvertedEventDataID="90" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1023" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행46" _ConvertedEventDataID="89" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1022" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행47" _ConvertedEventDataID="88" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1021" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행48" _ConvertedEventDataID="87" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1020" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행49" _ConvertedEventDataID="86" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1019" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="AI 트리거 실행50" _ConvertedEventDataID="85" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_InvokeAITriggerInfo _INDEX="1018" _Description="" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo5" _ConvertedEventDataID="105" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="31" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo16" _ConvertedEventDataID="104" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="30" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이12" _ConvertedEventDataID="103" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo6" _ConvertedEventDataID="102" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="31" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이13" _ConvertedEventDataID="101" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo3" _ConvertedEventDataID="100" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="29" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo15" _ConvertedEventDataID="99" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="28" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이14" _ConvertedEventDataID="98" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo4" _ConvertedEventDataID="97" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="29" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이15" _ConvertedEventDataID="96" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo7" _ConvertedEventDataID="112" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="41" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo18" _ConvertedEventDataID="111" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="27" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이16" _ConvertedEventDataID="110" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo8" _ConvertedEventDataID="109" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="41" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지13" _ConvertedEventDataID="108" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이29" _ConvertedEventDataID="107" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo10" _ConvertedEventDataID="119" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="32" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo19" _ConvertedEventDataID="118" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="18" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이17" _ConvertedEventDataID="117" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo9" _ConvertedEventDataID="116" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="32" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지14" _ConvertedEventDataID="115" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이30" _ConvertedEventDataID="114" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="3" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo12" _ConvertedEventDataID="126" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="33" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo20" _ConvertedEventDataID="125" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="19" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이18" _ConvertedEventDataID="124" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo11" _ConvertedEventDataID="123" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="33" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지15" _ConvertedEventDataID="122" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이31" _ConvertedEventDataID="121" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo14" _ConvertedEventDataID="133" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="34" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo21" _ConvertedEventDataID="132" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="20" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이19" _ConvertedEventDataID="131" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo13" _ConvertedEventDataID="130" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="34" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지16" _ConvertedEventDataID="129" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이32" _ConvertedEventDataID="128" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo16" _ConvertedEventDataID="140" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="35" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo22" _ConvertedEventDataID="139" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="21" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이20" _ConvertedEventDataID="138" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo15" _ConvertedEventDataID="137" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="35" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지17" _ConvertedEventDataID="136" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이33" _ConvertedEventDataID="135" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo18" _ConvertedEventDataID="147" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="36" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo23" _ConvertedEventDataID="146" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="22" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이21" _ConvertedEventDataID="145" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo17" _ConvertedEventDataID="144" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="36" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지18" _ConvertedEventDataID="143" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이34" _ConvertedEventDataID="142" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo20" _ConvertedEventDataID="154" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="37" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo24" _ConvertedEventDataID="153" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="23" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이22" _ConvertedEventDataID="152" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo19" _ConvertedEventDataID="151" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="37" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지19" _ConvertedEventDataID="150" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이35" _ConvertedEventDataID="149" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo22" _ConvertedEventDataID="161" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo25" _ConvertedEventDataID="160" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="24" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이23" _ConvertedEventDataID="159" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo21" _ConvertedEventDataID="158" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지20" _ConvertedEventDataID="157" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이36" _ConvertedEventDataID="156" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo24" _ConvertedEventDataID="168" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo26" _ConvertedEventDataID="167" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="25" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이24" _ConvertedEventDataID="166" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo23" _ConvertedEventDataID="165" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지21" _ConvertedEventDataID="164" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이37" _ConvertedEventDataID="163" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo26" _ConvertedEventDataID="175" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="40" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo27" _ConvertedEventDataID="174" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="26" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이25" _ConvertedEventDataID="173" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo25" _ConvertedEventDataID="172" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="40" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지22" _ConvertedEventDataID="171" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이38" _ConvertedEventDataID="170" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo28" _ConvertedEventDataID="182" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="32" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo28" _ConvertedEventDataID="181" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="18" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이26" _ConvertedEventDataID="180" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo27" _ConvertedEventDataID="179" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="32" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지23" _ConvertedEventDataID="178" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이39" _ConvertedEventDataID="177" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="3" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo32" _ConvertedEventDataID="189" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="34" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo30" _ConvertedEventDataID="188" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="20" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이28" _ConvertedEventDataID="187" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo31" _ConvertedEventDataID="186" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="34" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지25" _ConvertedEventDataID="185" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이41" _ConvertedEventDataID="184" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo36" _ConvertedEventDataID="196" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="36" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo32" _ConvertedEventDataID="195" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="22" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이45" _ConvertedEventDataID="194" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo35" _ConvertedEventDataID="193" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="36" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지27" _ConvertedEventDataID="192" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이44" _ConvertedEventDataID="191" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo40" _ConvertedEventDataID="203" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo34" _ConvertedEventDataID="202" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="24" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이49" _ConvertedEventDataID="201" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo39" _ConvertedEventDataID="200" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="38" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지29" _ConvertedEventDataID="199" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이48" _ConvertedEventDataID="198" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo44" _ConvertedEventDataID="210" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="40" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo36" _ConvertedEventDataID="209" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001066" _SpawnAreaID="26" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이53" _ConvertedEventDataID="208" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo43" _ConvertedEventDataID="207" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP" _Tag="" _TagID="-1" _AreaID="40" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지31" _ConvertedEventDataID="206" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이52" _ConvertedEventDataID="205" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo50" _ConvertedEventDataID="217" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="33" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo39" _ConvertedEventDataID="216" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="19" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이59" _ConvertedEventDataID="215" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo49" _ConvertedEventDataID="214" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="33" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지34" _ConvertedEventDataID="213" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이58" _ConvertedEventDataID="212" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo54" _ConvertedEventDataID="224" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="35" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo41" _ConvertedEventDataID="223" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="21" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이63" _ConvertedEventDataID="222" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo53" _ConvertedEventDataID="221" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="35" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지36" _ConvertedEventDataID="220" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이62" _ConvertedEventDataID="219" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo58" _ConvertedEventDataID="231" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="37" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo43" _ConvertedEventDataID="230" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="23" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이67" _ConvertedEventDataID="229" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo57" _ConvertedEventDataID="228" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="37" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지38" _ConvertedEventDataID="227" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이66" _ConvertedEventDataID="226" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo62" _ConvertedEventDataID="238" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo45" _ConvertedEventDataID="237" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="25" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이71" _ConvertedEventDataID="236" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo61" _ConvertedEventDataID="235" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="39" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지40" _ConvertedEventDataID="234" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이70" _ConvertedEventDataID="233" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo66" _ConvertedEventDataID="245" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="41" _IsCreate="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallItemInfo47" _ConvertedEventDataID="244" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallItemInfo _Index="151001065" _SpawnAreaID="27" _Tag="" _TagID="-1" _DropType="ITEM_DROP_TYPE_PRIVATE_ALL" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이75" _ConvertedEventDataID="243" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="2" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="CallSFXInfo65" _ConvertedEventDataID="242" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_CallSFXInfo _SFXKeyName="ETC_SFX_ITEM_SPAWN_PRE_HP_RED" _Tag="" _TagID="-1" _AreaID="41" _IsCreate="1" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="메시지42" _ConvertedEventDataID="241" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_PrintMessageInfo _Key="PvE_ALL_BuffBox_Send_001" _LocalID="0" _Tag="" _TagID="-1" _Individual="0" />
+		</_LevelEventData>
+		<_LevelEventData DATAKEY="딜레이74" _ConvertedEventDataID="240" _StageDifficultyMask="31" _LoopCount="4294967295">
+			<_DelaySeqInfo _DelayTime="0" _RandomDelayTimeVariance="0" />
+		</_LevelEventData>
+	</LevelEventList>
+</ENTITY_FILE>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="1">
+    <ST_PVP_PRAISE_TABLE>
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="1" praiseType="PRAISE_TYPE_DAMAGE_PC" minValue="1" relationType="PRAISE_RELATION_TYPE_DAMAGE_PC_RATIO" defaultTitle="PRAISE_TITLE_DAMAGE_PC_1">
+        <titleScope scope="40" title="PRAISE_TITLE_DAMAGE_PC_2" />
+      </_PVP_PRAISE_INFO>
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="2" praiseType="PRAISE_TYPE_KILL_ASSIST" minValue="1" relationType="PRAISE_RELATION_TYPE_KILL_ASSIST_RATIO" defaultTitle="PRAISE_TITLE_KILL_ASSIST_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="2" praiseType="PRAISE_TYPE_KILL" minValue="0.5" relationType="PRAISE_RELATION_TYPE_DAMAGE_PC" defaultTitle="PRAISE_TITLE_KILL_1">
+        <titleScope scope="8000" title="PRAISE_TITLE_KILL_2" />
+      </_PVP_PRAISE_INFO>
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="3" praiseType="PRAISE_TYPE_MAX_CONTINUOUS_KILL" minValue="0.7" relationType="PRAISE_RELATION_TYPE_KILL_ASSIST" defaultTitle="PRAISE_TITLE_MAX_CONTINUOUS_KILL_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="3" praiseType="PRAISE_TYPE_MAX_CONTINUOUS_KILL_TRANSFORM" minValue="5" defaultTitle="PRAISE_TITLE_MAX_CONTINUOUS_KILL_TRANSFORM_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="4" praiseType="PRAISE_TYPE_REFLECTION_KILL" minValue="0.5" relationType="PRAISE_RELATION_TYPE_REFLECTION_COUNT" defaultTitle="PRAISE_TITLE_REFLECTION_KILL_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="4" praiseType="PRAISE_TYPE_DOT_KILL" minValue="0.7" relationType="PRAISE_RELATION_TYPE_KILL_ASSIST" defaultTitle="PRAISE_TITLE_DOT_KILL_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="5" praiseType="PRAISE_TYPE_HEAL_OTHERS" minValue="100" relationType="PRAISE_RELATION_TYPE_HEAL_OTHERS_PER_SECOND" defaultTitle="PRAISE_TITLE_HEAL_OTHERS_1">
+        <titleScope scope="300" title="PRAISE_TITLE_HEAL_OTHERS_2" />
+      </_PVP_PRAISE_INFO>
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="5" praiseType="PRAISE_TYPE_HEAL_SELF" minValue="100" relationType="PRAISE_RELATION_TYPE_HEAL_SELF_PER_SECOND" defaultTitle="PRAISE_TITLE_HEAL_SELF_1">
+        <titleScope scope="300" title="PRAISE_TITLE_HEAL_SELF_2" />
+      </_PVP_PRAISE_INFO>
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="6" praiseType="PRAISE_TYPE_TOTAL_SCORE" minValue="1" relationType="PRAISE_RELATION_TYPE_SCORE_RATIO" defaultTitle="PRAISE_TITLE_TOTAL_SCORE_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="6" praiseType="PRAISE_TYPE_DAMAGE_CORE" minValue="1" relationType="PRAISE_RELATION_TYPE_DAMAGE_CORE_RATIO" defaultTitle="PRAISE_TITLE_DAMAGE_CORE_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="7" praiseType="PRAISE_TYPE_DEFEAT_APPLY_COUNT" minValue="0.5" defaultTitle="PRAISE_TITLE_DEFEAT_APPLY_COUNT_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="8" praiseType="PRAISE_TYPE_KILL_TOWER" minValue="2" relationType="PRAISE_RELATION_TYPE_DAMAGE_TOWER" defaultTitle="PRAISE_TITLE_KILL_TOWER_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="8" praiseType="PRAISE_TYPE_OCCUPY_SIGHT" minValue="3" defaultTitle="PRAISE_TITLE_OCCUPY_SIGHT_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="9" praiseType="PRAISE_TYPE_SAVE_PIECE" minValue="3" relationType="PRAISE_RELATION_TYPE_SAVE_PIECE_RATIO" defaultTitle="PRAISE_TITLE_SAVE_PIECE_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="10" praiseType="PRAISE_TYPE_KILL_BOSS" minValue="2" defaultTitle="PRAISE_TITLE_KILL_BOSS_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="10" praiseType="PRAISE_TYPE_STEAL_BOSS" minValue="1" defaultTitle="PRAISE_TITLE_STEAL_BOSS_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="10" praiseType="PRAISE_TYPE_KILL_TANIANKING" minValue="2" defaultTitle="PRAISE_TITLE_KILL_TANIANKING_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="11" praiseType="PRAISE_TYPE_KILL_TRANSFORMCH" minValue="2" defaultTitle="PRAISE_TITLE_KILL_TRANSFORMCH_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="11" praiseType="PRAISE_TYPE_KILL_TRANSFORMREADYCH" minValue="2" defaultTitle="PRAISE_TITLE_KILL_TRANSFORMREADYCH_1" />
+      <_PVP_PRAISE_INFO gameModeType="GAME_MODE_GOT" priority="12" praiseType="PRAISE_TYPE_NEVER_DIE" minValue="0" relationType="PRAISE_RELATION_TYPE_KILL_ASSIST_RATIO" defaultTitle="PRAISE_TITLE_NEVER_DIE_1">
+        <titleScope scope="30" title="PRAISE_TITLE_NEVER_DIE_2" />
+      </_PVP_PRAISE_INFO>
+    </ST_PVP_PRAISE_TABLE>
+  </INFO>
+</ENTITY_FILE>

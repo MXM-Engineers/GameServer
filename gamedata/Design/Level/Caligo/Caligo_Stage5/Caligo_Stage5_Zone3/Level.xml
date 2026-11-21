@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-1000" fSpacing="100" dwWidth="256" dwHeight="256" ReferenceLevel="Design\Level\ART_Levels\Caligo_Art\CLG_S5Z3" ReferenceOffset="1000000">
+      <LockStates>
+        <LockState difficulty="1" IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      </LockStates>
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\CLG_Pillar_ConveyorE_03.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pillar_01\CLG_Pillar_ConveyorE_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_01\CLG_Wall_ServerC_06.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Bridge_01\VTS_Bridge_FanB.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Lamp_01\LCR_Lamp_BeamA_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Effect_01\BG_Effect_LampRayA04_01_Z.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Effect_01\BG_Effect_LightRayA01_01_Z.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="CLG_S5Z3_RGBM" defaultMaterial="True" entityAmbientR="0.101961" entityAmbientG="0.203922" entityAmbientB="0.290196" entityDiffuseR="0.6" entityDiffuseG="0.576471" entityDiffuseB="0.556863" entitySpecularR="0.309804" entitySpecularG="0.658824" entitySpecularB="0.686275" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="100" creatureAmbientR="0.203922" creatureAmbientG="0.329412" creatureAmbientB="0.454902" creatureDiffuseR="0.682353" creatureDiffuseG="0.690196" creatureDiffuseB="0.866667" creatureSpecularR="0.592157" creatureSpecularG="0.713726" creatureSpecularB="0.635294" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="20" dynamicAmbientR="0.121569" dynamicAmbientG="0.329412" dynamicAmbientB="0.352941" dynamicDiffuseR="0.694118" dynamicDiffuseG="0.615686" dynamicDiffuseB="0.560784" dynamicSpecularR="0.066667" dynamicSpecularG="0.45098" dynamicSpecularB="0.545098" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="20" levelAmbientR="0.203922" levelAmbientG="0.211765" levelAmbientB="0.411765" levelDiffuseR="0.976471" levelDiffuseG="0.788235" levelDiffuseB="0.686275" levelSpecularR="0.27451" levelSpecularG="0.372549" levelSpecularB="0.431373" levelEmittanceR="0.015686" levelEmittanceG="0.015686" levelEmittanceB="0.015686" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="36.94" sfxIntensity="0.7" itemIntensity="1.6" bgfxIntensity="1" hitColorIntensity="0.45" specularIntensity="1" dirDimmer="4.74" dirShadowBrightness="0" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.290196" dirAmbientG="0.223529" dirAmbientB="0.298039" dirDiffuseR="0.45098" dirDiffuseG="0.47451" dirDiffuseB="0.639216" dirSpecularR="0.627451" dirSpecularG="0.529412" dirSpecularB="1" globalAmbientR="0" globalAmbientG="0" globalAmbientB="0" rimDirRotate="305" rimDirGradient="5" rimDirPower="3" rimColorR="0.952941" rimColorG="0.611765" rimColorB="0.705882" rimStrength="10" hdrExposure="1.54" hdrShoulderStrength="1.77" hdrLinearStrength="0.72" hdrLinearAngle="1" hdrToeStrength="3" hdrToeNumerator="0.03" hdrToeDenominator="1" hdrWhitePoint="2.24" bloomWhitePoint="0.48" bloomGradient="0.82" bloomStrength="1" bloomTintR="0.866667" bloomTintG="0.47451" bloomTintB="0.470588" bloomThreshold="0.78" bloomIntensity="0.75" bloomRadius="1.41" bloom2Intensity="1.18" bloom2Radius="2.33" bloom3Intensity="1.04" bloom3Radius="3" bloom4Intensity="0.83" bloom4Radius="3.2" bloom5Intensity="0.89" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="1" radius="1200" ambientR="0" ambientG="0" ambientB="0" diffuseR="1" diffuseG="1" diffuseB="0.2313726" specularR="1" specularG="0.8039216" specularB="0.5686275" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="20334.84" y="11508.44" z="566.87" />
+          <_p2 x="20891.16" y="10933.56" z="566.87" />
+        </_line1>
+        <_line2>
+          <_p1 x="20585.41" y="11751.01" z="145.14" />
+          <_p2 x="21147.93" y="11182.17" z="145.14" />
+        </_line2>
+      </_PathObject>
+    </_AIPathObjs>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

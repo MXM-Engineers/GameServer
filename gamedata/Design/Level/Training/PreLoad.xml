@@ -1,0 +1,404 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\COMMON\DUMMYCYLINDER\DummyCylinder.kfm" texture="" />
+        <_resource path="Graphic\Creature\Npc\NPC_MezzanineGuard_T\NPC_MezzanineGuard_T.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Artillery\Artillery\Artillery.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Sniper\Sniper\Sniper.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Striker\Striker\Striker.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc_Summon\Artillery\ARTILLERY_SPIDERMINE\ARTILLERY_SPIDERMINE.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="AI_ARTILLERY" />
+        <_keyname keyname="AI_SNIPER" />
+        <_keyname keyname="AI_STRIKER" />
+        <_keyname keyname="ARTILLERY_SPIDERMINE" />
+        <_keyname keyname="NPC_MezzanineGuard_T" />
+        <_keyname keyname="PC_AuraAgent" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="PC_FX_Artillery_SpiderMine_Move" />
+        <_sfx path="PC_FX_Artillery_SpiderMine_Stand" />
+        <_sfx path="PC_FX_Artllery_SiegeMode_BGHit" />
+        <_sfx path="PC_FX_Sniper_Charge_Fire" />
+        <_sfx path="PC_FX_Sniper_Charge_Mark_0" />
+        <_sfx path="PC_FX_Sniper_Charge_Mark_1" />
+        <_sfx path="PC_FX_Sniper_Charge_Mark_2" />
+        <_sfx path="PC_FX_Sniper_EP_Aura" />
+        <_sfx path="PC_FX_Sniper_Evade" />
+        <_sfx path="PC_FX_Sniper_Evade_B" />
+        <_sfx path="PC_FX_Sniper_Evade_L" />
+        <_sfx path="PC_FX_Sniper_Evade_R" />
+        <_sfx path="PC_FX_Sniper_SKILL_SONICBOMB_Target" />
+        <_sfx path="PC_FX_Sniper_Skill_2_Fire" />
+        <_sfx path="PC_FX_Sniper_Skill_2_Hit" />
+        <_sfx path="PC_FX_Sniper_Skill_2_Remote" />
+        <_sfx path="PC_FX_Striker_Skill_Command_Attack" />
+        <_sfx path="PC_Fx_Artllery_Jump_Dust" />
+        <_sfx path="Pc_Fx_Aerllery_SiegeMode_Casting" />
+        <_sfx path="Pc_Fx_Artillery_EP_Skill_StartFire_1" />
+        <_sfx path="Pc_Fx_Artillery_Hit" />
+        <_sfx path="Pc_Fx_Artillery_SiegeMode_BottomDust" />
+        <_sfx path="Pc_Fx_Artillery_SiegeMode_Charge" />
+        <_sfx path="Pc_Fx_Artillery_SiegeMode_StartFire_L" />
+        <_sfx path="Pc_Fx_Artillery_SiegeMode_StartFire_R" />
+        <_sfx path="Pc_Fx_Artillery_SkillRange_Ep_Circle" />
+        <_sfx path="Pc_Fx_Artllery_Start_Fire_L" />
+        <_sfx path="Pc_Fx_Artllery_Start_Fire_R" />
+        <_sfx path="Pc_Fx_BreakFall" />
+        <_sfx path="Pc_Fx_Striker_CANNONFIST_Hit" />
+        <_sfx path="Pc_Fx_Striker_CannonFist_Fire" />
+        <_sfx path="Pc_Fx_Striker_CannonFist_Remote_3" />
+        <_sfx path="Pc_Fx_Striker_EP_Skill_Area" />
+        <_sfx path="Pc_Fx_Tag_Show_All" />
+        <_sfx path="STATUS_FX_PC_HOLOGRAM" />
+        <_sfx path="STATUS_FX_PC_SNIPER_FluorescenceStatus" />
+        <_sfx path="Status_Fx_Pc_Striker_Skill_Command_Attack_Range_20" />
+        <_sfx path="Test_StrikerEPSkill_Fire" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_BOX_RED" colorIndex="1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED" colorIndex="1" />
+        <_sfxHWInfo path="Npc_Fx_Mezzanine_Guard_Bullet_Normal" colorIndex="-1" />
+        <_sfxHWInfo path="Npc_Fx_Mezzanine_Guard_Fire_Normal" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Artillery_SpiderMine_Damage" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Artllery_Cannongun_BGHIT" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Artllery_Evade_Smoke" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Artllery_Howitzer_BG_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Attack_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Attack_Remote" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Attack_Remote2" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Hit_Normal" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_SKILL_SONICBOMB_FireRange" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_SONICBOMB_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_1_HitBg" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_1_Mark" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_3_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_3_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_3_Remote" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_4_FireRange" colorIndex="1" />
+        <_sfxHWInfo path="PC_FX_Sniper_Skill_4_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="PC_Fx_Stricker_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_Cannongun_remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_DefenceBomb_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_EP_Skill_Mini_rocket" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_Homing_Die" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_Howitzer_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Artillery_SiegeMode_Stance" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Sniper_Remote_Normal01_ChargeFull" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Sniper_Remote_Normal01_ChargeFull_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_BOMB" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_EP_Skill_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Loop" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Remain" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Rifle_Bullet_Normal" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Rifle_Hit_Normal" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_ITEM_INSTANT_HP" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_6f_HIDE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_6f_SHOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_ATTACK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DEFENCE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_HIDE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SHIRK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SNIPER_REST" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_STUN" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SUPERARMOR" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Artillery_Normal_AirDodge" />
+        <_soundEventInfo id="Artillery_Normal_Bodyfall" />
+        <_soundEventInfo id="Artillery_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Artillery_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="Artillery_Normal_Defeat_Push" />
+        <_soundEventInfo id="Artillery_Normal_Die" />
+        <_soundEventInfo id="Artillery_Normal_ElectricShock" />
+        <_soundEventInfo id="Artillery_Normal_Emotion_01" />
+        <_soundEventInfo id="Artillery_Normal_Hit" />
+        <_soundEventInfo id="Artillery_Normal_Jump_End" />
+        <_soundEventInfo id="Artillery_Normal_Jump_Start" />
+        <_soundEventInfo id="Artillery_Normal_Shirk" />
+        <_soundEventInfo id="Artillery_Normal_StandUp" />
+        <_soundEventInfo id="Artillery_Skill00_Explosion_Big_RMT" />
+        <_soundEventInfo id="Artillery_Skill00_Explosion_Small_RMT" />
+        <_soundEventInfo id="Artillery_Skill00_Whoosh_RMT" />
+        <_soundEventInfo id="Artillery_Skill01_Cast" />
+        <_soundEventInfo id="Artillery_Skill02_SpiderMine_Explosion_RMT" />
+        <_soundEventInfo id="Artillery_Skill02_SpiderMine_Spawn" />
+        <_soundEventInfo id="Artillery_Skill02_SpiderMine_VOX" />
+        <_soundEventInfo id="Artillery_Skill03_Cast" />
+        <_soundEventInfo id="Artillery_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="Artillery_Skill04_Cast" />
+        <_soundEventInfo id="Artillery_Skill04_Shot_RMT" />
+        <_soundEventInfo id="Artillery_SkillEP_Cast" />
+        <_soundEventInfo id="Artillery_SkillEP_Charge" />
+        <_soundEventInfo id="Artillery_SkillEP_End" />
+        <_soundEventInfo id="Artillery_SkillEP_Shot" />
+        <_soundEventInfo id="Artillery_SkillEP_Stop" />
+        <_soundEventInfo id="Artillery_Tutorial_Skill00_Weapon" />
+        <_soundEventInfo id="Artillery_Tutorial_SkillEP_Charge" />
+        <_soundEventInfo id="Artillery_Tutorial_SkillEP_End" />
+        <_soundEventInfo id="Artillery_Tutorial_SkillEP_Shot" />
+        <_soundEventInfo id="Assassin_Skill01_End_RST" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="MezzanineGuards_Normal_Attack" />
+        <_soundEventInfo id="MezzanineGuards_Normal_Die" />
+        <_soundEventInfo id="MezzanineGuards_Normal_LongAttack" />
+        <_soundEventInfo id="MezzanineGuards_Normal_Spawn" />
+        <_soundEventInfo id="Sniper_Normal_AirDodge" />
+        <_soundEventInfo id="Sniper_Normal_Bodyfall" />
+        <_soundEventInfo id="Sniper_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Sniper_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="Sniper_Normal_Defeat_Push" />
+        <_soundEventInfo id="Sniper_Normal_Die" />
+        <_soundEventInfo id="Sniper_Normal_ElectricShock" />
+        <_soundEventInfo id="Sniper_Normal_Hit" />
+        <_soundEventInfo id="Sniper_Normal_Shirk" />
+        <_soundEventInfo id="Sniper_Normal_StandUp" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Charge_01" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Charge_02" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Charge_03" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Charge_Fire_RMT" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Charge_Loop" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Fire_RMT" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="Sniper_Skill00_Weapon_Shot" />
+        <_soundEventInfo id="Sniper_Skill01_Cast" />
+        <_soundEventInfo id="Sniper_Skill01_Fire" />
+        <_soundEventInfo id="Sniper_Skill01_Fire_RMT" />
+        <_soundEventInfo id="Sniper_Skill02_Fire" />
+        <_soundEventInfo id="Sniper_Skill02_Fire_RMT" />
+        <_soundEventInfo id="Sniper_Skill02_Hit_RMT" />
+        <_soundEventInfo id="Sniper_Skill03_Jump" />
+        <_soundEventInfo id="Sniper_Skill04_Debuff_RST" />
+        <_soundEventInfo id="Sniper_Skill04_Fire" />
+        <_soundEventInfo id="Sniper_Skill04_Fire_RMT" />
+        <_soundEventInfo id="Sniper_Skill04_Hit_RMT" />
+        <_soundEventInfo id="Sniper_SkillEP_Fire_RMT" />
+        <_soundEventInfo id="Sniper_SkillEP_Loop_RMT" />
+        <_soundEventInfo id="Sniper_SkillEP_Start" />
+        <_soundEventInfo id="State_Slow_to_PC" />
+        <_soundEventInfo id="State_Stun_to_PC" />
+        <_soundEventInfo id="Striker_Normal_AirDodge" />
+        <_soundEventInfo id="Striker_Normal_Bodyfall" />
+        <_soundEventInfo id="Striker_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Striker_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="Striker_Normal_Defeat_Push" />
+        <_soundEventInfo id="Striker_Normal_Die" />
+        <_soundEventInfo id="Striker_Normal_ElectricShock" />
+        <_soundEventInfo id="Striker_Normal_Hit" />
+        <_soundEventInfo id="Striker_Normal_Shirk" />
+        <_soundEventInfo id="Striker_Normal_StandUp" />
+        <_soundEventInfo id="Striker_Skill00_Weapon_Fire" />
+        <_soundEventInfo id="Striker_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="Striker_Skill01_Fire" />
+        <_soundEventInfo id="Striker_Skill02_Cast" />
+        <_soundEventInfo id="Striker_Skill02_Explosion_RMT" />
+        <_soundEventInfo id="Striker_Skill02_Timer_RMT" />
+        <_soundEventInfo id="Striker_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="Striker_Skill03_Fire" />
+        <_soundEventInfo id="Striker_Skill04_Attack" />
+        <_soundEventInfo id="Striker_Skill04_Loop_RST" />
+        <_soundEventInfo id="Striker_Skill04_Loop_Stop_RST" />
+        <_soundEventInfo id="Striker_SkillEP_Explosion_RMT" />
+        <_soundEventInfo id="Striker_SkillEP_Fire" />
+        <_soundEventInfo id="Striker_SkillEP_Incoming_RMT" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PvP\PvP_GoT_PortalEntrance\PvP_GoT_PortalEntrance.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="PvP_GoT_PortalEntrance" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_PvP_GoT_PortalEntrance" />
+        <_sfx path="Dynamic_FX_PvP_Turret_NM_PortalExit_IN" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Defense_Turret_Table_Blue" />
+        <_sfx path="Dynamic_Fx_Defense_Turret_Table_green" />
+        <_sfx path="Dynamic_Fx_Defense_Turret_Table_red" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+        <_sfx path="TRAINING_REFRESH_EFFECT" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_MOVESPEED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="PvP_GoT_PortalEntrance_Active" />
+        <_soundEventInfo id="PvP_GoT_PortalEntrance_Active_Stop" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

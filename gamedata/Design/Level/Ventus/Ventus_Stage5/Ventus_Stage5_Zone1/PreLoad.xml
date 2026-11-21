@@ -1,0 +1,507 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_AMORED\DRON_AMORED.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_BARRICADE_CRESENT\DRON_BARRICADE_CRESENT.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_BUST\DRON_BUST.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_CORPSE_GROUND\DRON_CORPSE_GROUND.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_CURVEBOMB\DRON_CURVEBOMB.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_CURVEBOMB_A\DRON_CURVEBOMB_A.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_EXPLOSIONHEAD\DRON_EXPLOSIONHEAD.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_GRAVIT\DRON_GRAVITY.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_RAIDLEAP\DRON_RAIDLEAP.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_REACHGRAB\DRON_REACHGRAB.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_REGENERATION\DRON_REGENERATION.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_SUPPORTARM\DRON_SUPPORTARM.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_WARP\DRON_WARP.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\VENTUS\DRON_WARP_A\DRON_WARP_A.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="DRON_AMORED" />
+        <_keyname keyname="DRON_BARRICADE_CRESENT" />
+        <_keyname keyname="DRON_BUST" />
+        <_keyname keyname="DRON_CORPSE_GROUND" />
+        <_keyname keyname="DRON_CURVEBOMB" />
+        <_keyname keyname="DRON_CURVEBOMB_A" />
+        <_keyname keyname="DRON_DISCARDS" />
+        <_keyname keyname="DRON_EXPLOSIONHEAD" />
+        <_keyname keyname="DRON_GRAVITY" />
+        <_keyname keyname="DRON_RAIDLEAP" />
+        <_keyname keyname="DRON_REACHGRAB_ELITE" />
+        <_keyname keyname="DRON_REGENERATION" />
+        <_keyname keyname="DRON_SUPPORTARM" />
+        <_keyname keyname="DRON_WARP" />
+        <_keyname keyname="DRON_WARP_A" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_DRON_BUST_SPAWN_Area_Hit" />
+        <_sfx path="Mob_Fx_G003_Aim_laser_Remote_1" />
+        <_sfx path="Mon_FX_DRON_SUPPORTARM_Skill_3_Remote_Fire" />
+        <_sfx path="Mon_Fx_Common_Attack_Range_120_RED" />
+        <_sfx path="Mon_Fx_Common_Attack_Range_45_RED" />
+        <_sfx path="Mon_Fx_DRON_AMORED_Shield" />
+        <_sfx path="Mon_Fx_DRON_AMORED_Skill_2_Fire" />
+        <_sfx path="Mon_Fx_DRON_AMORED_Skill_2_Remote" />
+        <_sfx path="Mon_Fx_DRON_BARRICADE_CRESENT_Shield_End" />
+        <_sfx path="Mon_Fx_DRON_BARRICADE_CRESENT_Shield_Loop" />
+        <_sfx path="Mon_Fx_DRON_BUST_MUTANT_Skill_3_Remote" />
+        <_sfx path="Mon_Fx_DRON_EXPLOSIONHEAD_Die_Explosion" />
+        <_sfx path="Mon_Fx_DRON_GRAVITY_Skill_3_Fire" />
+        <_sfx path="Mon_Fx_DRON_RAIDLEAP_Skill1_Attack" />
+        <_sfx path="Mon_Fx_DRON_REACHGRAB_ELITE_Cast" />
+        <_sfx path="Mon_Fx_DRON_REACHGRAB_Skill_1_Attack" />
+        <_sfx path="Mon_Fx_DRON_REACHGRAB_Skill_2_Attack" />
+        <_sfx path="Mon_Fx_DRON_REACHGRAB_Skill_3_Attack" />
+        <_sfx path="Mon_Fx_DRON_REACHGRAB_Skill_4_Dash" />
+        <_sfx path="Mon_Fx_DRON_REGENERATION_Skill_1_Dash" />
+        <_sfx path="Mon_Fx_DRON_WARP__Warp_End" />
+        <_sfx path="Mon_Fx_DRON_WARP__Warp_Start" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_1s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_2s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash_Reverse" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Destroyer_Gatling_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_FX_DRON_SUPPORTARM_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_AMORED_Skill_1_Extinction" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_AMORED_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_AMORED_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_BARRICADE_CRESENT_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_BARRICADE_CRESENT_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_BARRICADE_CRESENT_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_BARRICADE_CRESENT_hit" colorIndex="0" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill1_BgHit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill2_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill2_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill2_Remote1" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill2_Remote2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_CURVEBOMB_Skill_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_DISCARDS_DIE_EXP_Skill_1_Hit" colorIndex="0" />
+        <_sfxHWInfo path="Mon_Fx_DRON_EXPLOSIONHEAD_Die_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_GRAVITY_Skill_1_Distroy" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_GRAVITY_Skill_1_EXPLOSION" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_GRAVITY_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_GRAVITY_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_GRAVITY_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Poision_Area" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Shield" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Skill_2_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_SUPPORTARM_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_2_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_2_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DRON_WARP_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_ITEM_CONTINUITY_HP" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BOMB" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BURNING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRAGGED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_ROOT" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHIELD" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_VARIATION" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_Mob_Exclamation_Mark" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="DronAmored_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronAmored_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronAmored_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronAmored_Normal_Walk" />
+        <_soundEventInfo id="DronAmored_Skill01_Remote_Impact" />
+        <_soundEventInfo id="DronAmored_Skill01_Remote_Projectile" />
+        <_soundEventInfo id="DronAmored_Skill02_Beam_End" />
+        <_soundEventInfo id="DronAmored_Skill02_Beam_Loop" />
+        <_soundEventInfo id="DronBarricadeCresent_Normal_Move" />
+        <_soundEventInfo id="DronBarricadeCresent_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronBarricadeCresent_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronBarricadeCresent_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill01_Cast" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill01_Shield_Remote_End" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill01_Shield_Remote_Idle" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill01_Wave_Remote_Impact" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill01_Wave_Remote_Projectile" />
+        <_soundEventInfo id="DronBarricadeCresent_Skill02_Cast" />
+        <_soundEventInfo id="DronBust_Normal_Die" />
+        <_soundEventInfo id="DronBust_Normal_Fly_End" />
+        <_soundEventInfo id="DronBust_Normal_Hit" />
+        <_soundEventInfo id="DronBust_Normal_Knockdown" />
+        <_soundEventInfo id="DronBust_Normal_Move" />
+        <_soundEventInfo id="DronBust_Normal_Spawn_Capsule" />
+        <_soundEventInfo id="DronBust_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronBust_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronBust_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronBust_Skill01_Attack" />
+        <_soundEventInfo id="DronBust_Skill02_Attack" />
+        <_soundEventInfo id="DronCorpseGround_Skill01_Attack" />
+        <_soundEventInfo id="DronCorpseGround_Skill01_Return" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Die" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Spawn_Capsule" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronCurveBomb_Normal_Walk" />
+        <_soundEventInfo id="DronCurveBomb_Skill01_Remote_Impact" />
+        <_soundEventInfo id="DronCurveBomb_Skill01_Shot" />
+        <_soundEventInfo id="DronCurveBomb_Skill02_Remote_Impact" />
+        <_soundEventInfo id="DronCurveBomb_Skill02_Remote_Land" />
+        <_soundEventInfo id="DronCurveBomb_Skill03_Whoosh" />
+        <_soundEventInfo id="DronDiscards_Normal_Die" />
+        <_soundEventInfo id="DronDiscards_Normal_Hit" />
+        <_soundEventInfo id="DronDiscards_Normal_Remote_Dash" />
+        <_soundEventInfo id="DronDiscards_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronDiscards_Normal_Suicide" />
+        <_soundEventInfo id="DronDiscards_Normal_Walk" />
+        <_soundEventInfo id="DronDiscards_Skill01_Attack" />
+        <_soundEventInfo id="DronExplosionHead_Explosion_Extramotion01" />
+        <_soundEventInfo id="DronExplosionHead_Explosion_Suicide" />
+        <_soundEventInfo id="DronExplosionHead_Normal_Dash" />
+        <_soundEventInfo id="DronExplosionHead_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronExplosionHead_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronExplosionHead_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronGravity_Normal_Die" />
+        <_soundEventInfo id="DronGravity_Normal_Extra" />
+        <_soundEventInfo id="DronGravity_Normal_Hit" />
+        <_soundEventInfo id="DronGravity_Normal_Move" />
+        <_soundEventInfo id="DronGravity_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronGravity_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronGravity_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronGravity_Skill01_Gravity_Fire" />
+        <_soundEventInfo id="DronGravity_Skill01_Gravity_Remote_Explosion" />
+        <_soundEventInfo id="DronGravity_Skill01_Gravity_Remote_Projectile" />
+        <_soundEventInfo id="DronGravity_Skill02_GravityPull_Fire" />
+        <_soundEventInfo id="DronGravity_Skill03_Multiple_Fire" />
+        <_soundEventInfo id="DronGravity_Skill03_Multiple_Remote_Impact" />
+        <_soundEventInfo id="DronRaidLeap_Hero_Skill03_Remote_Impact" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Die" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Hit" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Move" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronRaidLeap_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronRaidLeap_Skill01_MeleeAttack_Start" />
+        <_soundEventInfo id="DronRaidLeap_Skill02_Leap_Start" />
+        <_soundEventInfo id="DronReachGrab_Normal_Die" />
+        <_soundEventInfo id="DronReachGrab_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronReachGrab_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronReachGrab_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronReachGrab_Normal_Walk" />
+        <_soundEventInfo id="DronReachGrab_Skill01_Attack" />
+        <_soundEventInfo id="DronReachGrab_Skill02_Attack" />
+        <_soundEventInfo id="DronReachGrab_Skill03_GrabDash" />
+        <_soundEventInfo id="DronReachGrab_Skill03_GrabDash_Emotion" />
+        <_soundEventInfo id="DronReachGrab_Skill04_Grab_Dash" />
+        <_soundEventInfo id="DronReachGrab_Skill04_Grab_Try" />
+        <_soundEventInfo id="DronReachGrab_Skill05_Cast" />
+        <_soundEventInfo id="DronRegeneration_Normal_Die" />
+        <_soundEventInfo id="DronRegeneration_Normal_Extramotion1" />
+        <_soundEventInfo id="DronRegeneration_Normal_Hit" />
+        <_soundEventInfo id="DronRegeneration_Normal_Revive" />
+        <_soundEventInfo id="DronRegeneration_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronRegeneration_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronRegeneration_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronRegeneration_Normal_Walk" />
+        <_soundEventInfo id="DronRegeneration_Skill01_Cast" />
+        <_soundEventInfo id="DronRegeneration_Skill01_Dash" />
+        <_soundEventInfo id="DronSupportArm_Normal_Die" />
+        <_soundEventInfo id="DronSupportArm_Normal_Fly_End" />
+        <_soundEventInfo id="DronSupportArm_Normal_Hit" />
+        <_soundEventInfo id="DronSupportArm_Normal_Knockdown" />
+        <_soundEventInfo id="DronSupportArm_Normal_Move" />
+        <_soundEventInfo id="DronWarp_Normal_Die" />
+        <_soundEventInfo id="DronWarp_Normal_Fly_End" />
+        <_soundEventInfo id="DronWarp_Normal_Hit" />
+        <_soundEventInfo id="DronWarp_Normal_Knockdown" />
+        <_soundEventInfo id="DronWarp_Normal_Move" />
+        <_soundEventInfo id="DronWarp_Normal_Push_Start" />
+        <_soundEventInfo id="DronWarp_Normal_Spawn_Drop" />
+        <_soundEventInfo id="DronWarp_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="DronWarp_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="DronWarp_Shield_Remote_Activate" />
+        <_soundEventInfo id="DronWarp_Skill01_Missile_Remote_Impact" />
+        <_soundEventInfo id="DronWarp_Skill01_Missile_Remote_Projectile" />
+        <_soundEventInfo id="DronWarp_Skill01_Missile_Remote_Start" />
+        <_soundEventInfo id="DronWarp_Skill02_AntiHeal_Remote_Destroy" />
+        <_soundEventInfo id="DronWarp_Skill02_AntiHeal_Remote_Hit" />
+        <_soundEventInfo id="DronWarp_Skill02_AntiHeal_Remote_Projectile" />
+        <_soundEventInfo id="DronWarp_Skill02_AntiHeal_Remote_Shot" />
+        <_soundEventInfo id="DronWarp_Skill02_Dash_Start" />
+        <_soundEventInfo id="DronWarp_Warp_Appear" />
+        <_soundEventInfo id="DronWarp_Warp_Disappear" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="STATUS_SFX_MOB_HPREGEN" />
+        <_soundEventInfo id="State_Fire_to_Monster" />
+        <_soundEventInfo id="State_Root_to_Monster" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+        <_soundEventInfo id="UI_GamePlay_Exclamation_Mark" />
+        <_soundEventInfo id="Story02_301" />
+        <_soundEventInfo id="Story02_302" />
+        <_soundEventInfo id="Story02_303" />
+        <_soundEventInfo id="Story02_304" />
+        <_soundEventInfo id="Story02_305" />
+        <_soundEventInfo id="Story02_300" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Goldbox\Box_NM_interaction_Goldbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Silverbox\Box_NM_interaction_Silverbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Jump\Guide_UI_Jump.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_Dm_FlameThrower\VT_Dm_FlameThrower.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_Dm_FlameThrower\VT_Dm_FlameThrower_2.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_GT_BigGate\VT_GT_BigGate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_GT_Guardrail\VT_GT_Guardrail.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_GT_OpeningFloor\VT_GT_OpeningFloor.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Ventus\VT_GT_Railling_Gate_02\VT_GT_Railling_Gate_02.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_NormalAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_ShockAura.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SkillCoolTime.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SuperAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_01.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_02.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Box_NM_interaction_Goldbox" />
+        <_keyname keyname="Box_NM_interaction_Silverbox" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Guide_UI_Jump" />
+        <_keyname keyname="VT_Dm_FlameThrower" />
+        <_keyname keyname="VT_Dm_FlameThrower_2" />
+        <_keyname keyname="VT_GT_BigGate" />
+        <_keyname keyname="VT_GT_Guardrail" />
+        <_keyname keyname="VT_GT_OpeningFloor" />
+        <_keyname keyname="VT_GT_Railling_Gate_02" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_OPEN" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_Stand" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Item_BlueDrop_Get" />
+        <_sfx path="Item_BlueDrop_Spawn" />
+        <_sfx path="Item_PU_Get" />
+        <_sfx path="Item_PU_Spawn" />
+        <_sfx path="Item_PU_Violet_Get" />
+        <_sfx path="Item_PU_Violet_Spawn" />
+        <_sfx path="Item_SP_Previous" />
+        <_sfx path="Item_UG_Get" />
+        <_sfx path="Item_UG_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_FX_Interceptturret_BOSS_charge" />
+        <_sfx path="Mon_Fx_DRON_SLAUGHTER_Skill_3_Remote" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_NormalAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_ShockAura" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SkillAttack" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_G003_Aim_laser_Remote_1" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BURNING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Box_NM_Interaction_Goldbox_Die" />
+        <_soundEventInfo id="Box_NM_Interaction_Silverbox_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="InterceptTurret_Boss_Normal_Charge" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Fire_to_Monster" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="UI_Item_Get_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Pickup_AtkSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Cooltime" />
+        <_soundEventInfo id="UI_Item_Pickup_Critical" />
+        <_soundEventInfo id="UI_Item_Pickup_Overheat" />
+        <_soundEventInfo id="UI_Item_Pickup_UG" />
+        <_soundEventInfo id="UI_Item_Previous" />
+        <_soundEventInfo id="UI_Item_ShockAura_End" />
+        <_soundEventInfo id="UI_Item_ShockAura_Start" />
+        <_soundEventInfo id="UI_Item_Spawn_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Spawn_PU" />
+        <_soundEventInfo id="UI_Item_Spawn_PU_Violet" />
+        <_soundEventInfo id="UI_Item_Spawn_UG" />
+        <_soundEventInfo id="VT_DM_FlameThrower_Fire" />
+        <_soundEventInfo id="VT_DM_FlameThrower_Fire_Stop" />
+        <_soundEventInfo id="VT_DM_FlameThrower_Rotate" />
+        <_soundEventInfo id="VT_GT_BigGate_Normal_Open" />
+        <_soundEventInfo id="VT_GT_OpeningFloor_Close" />
+        <_soundEventInfo id="VT_GT_OpeningFloor_Open" />
+        <_soundEventInfo id="VT_GT_Railling_Gate_02_Close" />
+        <_soundEventInfo id="VT_GT_Railling_Gate_02_Open" />
+        <_soundEventInfo id="VT_GT_Railling_Gate_02_Open_45" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

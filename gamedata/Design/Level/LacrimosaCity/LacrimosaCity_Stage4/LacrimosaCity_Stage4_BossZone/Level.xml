@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="36045" RTSCameraPresetIdx="0" KillZ="-2000" fSpacing="100" dwWidth="512" dwHeight="512" ReferenceLevel="Design\Level\ART_Levels\LacrimosaCity_Art\LCR_S4BZ" ReferenceOffset="1000000">
+      <LockStates>
+        <LockState difficulty="1" IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      </LockStates>
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Pipe_01\LCR_Pipe_PipeProp_18.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Wall_02\LCR_Wall_ConcreteWallB_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Pipe_01\CLG_Cable_ServerD_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Lamp_01\LCR_Lamp_BeamA_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\CRS_Etc_SpiderWebB01_01.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="LCR_S4ZB_RGBM" defaultMaterial="True" entityAmbientR="0.235294" entityAmbientG="0.309804" entityAmbientB="0.490196" entityDiffuseR="0.529412" entityDiffuseG="0.639216" entityDiffuseB="0.870588" entitySpecularR="1" entitySpecularG="0.819608" entitySpecularB="0.431373" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="60" creatureAmbientR="0.235294" creatureAmbientG="0.294118" creatureAmbientB="0.333333" creatureDiffuseR="0.580392" creatureDiffuseG="0.52549" creatureDiffuseB="0.615686" creatureSpecularR="0.643137" creatureSpecularG="0.45098" creatureSpecularB="0.192157" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="46.27" dynamicAmbientR="0.082353" dynamicAmbientG="0.066667" dynamicAmbientB="0.07451" dynamicDiffuseR="0.321569" dynamicDiffuseG="0.203922" dynamicDiffuseB="0.137255" dynamicSpecularR="0.647059" dynamicSpecularG="0.458824" dynamicSpecularB="0.27451" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="20" levelAmbientR="0.07451" levelAmbientG="0.156863" levelAmbientB="0.266667" levelDiffuseR="0.831373" levelDiffuseG="0.701961" levelDiffuseB="0.501961" levelSpecularR="0.364706" levelSpecularG="0.262745" levelSpecularB="0.196078" levelEmittanceR="0.070588" levelEmittanceG="0.109804" levelEmittanceB="0.137255" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="60" sfxIntensity="0.7" itemIntensity="1.17" bgfxIntensity="1" hitColorIntensity="0.84" specularIntensity="1" dirDimmer="3" dirShadowBrightness="0" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.082353" dirAmbientG="0.254902" dirAmbientB="0.337255" dirDiffuseR="0.929412" dirDiffuseG="0.823529" dirDiffuseB="0.603922" dirSpecularR="0.87451" dirSpecularG="0.827451" dirSpecularB="0.694118" globalAmbientR="0.137255" globalAmbientG="0.364706" globalAmbientB="0.431373" rimDirRotate="309" rimDirGradient="20" rimDirPower="6" rimColorR="0.933333" rimColorG="0.501961" rimColorB="0.192157" rimStrength="8" hdrExposure="1.74" hdrShoulderStrength="1.58" hdrLinearStrength="0.84" hdrLinearAngle="0.93" hdrToeStrength="1.98" hdrToeNumerator="0" hdrToeDenominator="1" hdrWhitePoint="2" bloomWhitePoint="0.35" bloomGradient="1" bloomStrength="1" bloomTintR="0.862745" bloomTintG="0.337255" bloomTintB="0.137255" bloomThreshold="0.57" bloomIntensity="0.67" bloomRadius="1.09" bloom2Intensity="0.67" bloom2Radius="2.4" bloom3Intensity="0.7" bloom3Radius="2.74" bloom4Intensity="0.7" bloom4Radius="3.2" bloom5Intensity="0.9" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="1" radius="1703" ambientR="0" ambientG="0" ambientB="0" diffuseR="0.4784314" diffuseG="0.682353" diffuseB="0.2431373" specularR="1" specularG="0.7647059" specularB="0.5333334" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs>
+      <_PathObject biDirectional="True" hizontalMove="True">
+        <_line1>
+          <_p1 x="21104.6" y="4120.44" z="-337.52" />
+          <_p2 x="21104.6" y="3520.44" z="-337.52" />
+        </_line1>
+        <_line2>
+          <_p1 x="20706.51" y="4127.37" z="-337.63" />
+          <_p2 x="20706.51" y="3527.37" z="-337.63" />
+        </_line2>
+      </_PathObject>
+    </_AIPathObjs>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

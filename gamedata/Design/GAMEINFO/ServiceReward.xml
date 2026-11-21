@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SERVICEREWARD_FILE>
+	<ST_SERVICEREWARD _CCoinPerSkinPieceRateForCHN="30">
+	
+		<_ActivityPointInfo _MaxPoint="7200">
+			<_PointRatioInfo DATAKEY="1"	DATA="0.25"/>
+			<_PointRatioInfo DATAKEY="2"	DATA="0.5"/>
+			<_PointRatioInfo DATAKEY="3"	DATA="0.75"/>
+			<_PointRatioInfo DATAKEY="4"	DATA="1"/>
+			<_RewardInfo DATAKEY="1"	_Type="REWARD_TYPE_ITEM"	_Amount="3"		_ItemIndex="138000901"/>
+			<_RewardInfo DATAKEY="2"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137299015"/>
+			<_RewardInfo DATAKEY="3"	_Type="REWARD_TYPE_ITEM"	_Amount="3"		_ItemIndex="138000901"/>
+			<_RewardInfo DATAKEY="4"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137299014"/>
+		</_ActivityPointInfo>
+		
+		<_PCCafeActivityPointInfo _MaxPoint="7200">
+			<_PointRatioInfo DATAKEY="1"	DATA="0.25"/>
+			<_PointRatioInfo DATAKEY="2"	DATA="0.5"/>
+			<_PointRatioInfo DATAKEY="3"	DATA="0.75"/>
+			<_PointRatioInfo DATAKEY="4"	DATA="1"/>
+			<_RewardInfo DATAKEY="1"	_Type="REWARD_TYPE_ITEM"	_Amount="3"		_ItemIndex="138000901"/>
+			<_RewardInfo DATAKEY="2"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137299015"/>
+			<_RewardInfo DATAKEY="3"	_Type="REWARD_TYPE_ITEM"	_Amount="3"		_ItemIndex="138000901"/>
+			<_RewardInfo DATAKEY="4"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137299014"/>
+		</_PCCafeActivityPointInfo>
+		
+		<_MissionRewardInfo>
+			<!-- DAILY -->
+			<_RewardInfo DATAKEY="D_C"		_Type="REWARD_TYPE_CCOIN"	_Amount="35"/>
+			<_RewardInfo DATAKEY="D_1_1"		_Type="REWARD_TYPE_GOLD"	_Amount="1000"/>
+			<_RewardInfo DATAKEY="D_1_2"		_Type="REWARD_TYPE_GOLD"	_Amount="1500"/>
+			<_RewardInfo DATAKEY="D_1_3"		_Type="REWARD_TYPE_GOLD"	_Amount="2000"/>
+			<_RewardInfo DATAKEY="D_2_1"		_Type="REWARD_TYPE_GOLD"	_Amount="3000"/>
+			<_RewardInfo DATAKEY="D_2_2"		_Type="REWARD_TYPE_GOLD"	_Amount="3500"/>
+			<_RewardInfo DATAKEY="D_2_3"		_Type="REWARD_TYPE_GOLD"	_Amount="4000"/>
+			<_RewardInfo DATAKEY="D_3"		_Type="REWARD_TYPE_EXP"	_Amount="500"/>
+			<_RewardInfo DATAKEY="D_3_0"		_Type="REWARD_TYPE_EXP"	_Amount="750"/>
+			<_RewardInfo DATAKEY="D_3_1"		_Type="REWARD_TYPE_EXP"	_Amount="1000"/>
+			<_RewardInfo DATAKEY="D_4_1"		_Type="REWARD_TYPE_EXP"	_Amount="750"/>
+			<_RewardInfo DATAKEY="D_4_2"		_Type="REWARD_TYPE_EXP"	_Amount="1000"/>
+			<_RewardInfo DATAKEY="D_4_3"		_Type="REWARD_TYPE_EXP"	_Amount="1250"/>
+			<!-- WEEKLY -->
+			<_RewardInfo DATAKEY="W_C"		_Type="REWARD_TYPE_CCOIN"	_Amount="50"/>
+			<_RewardInfo DATAKEY="W_STAGE_1"	_Type="REWARD_TYPE_GOLD"	_Amount="5000"/>
+			<_RewardInfo DATAKEY="W_STAGE_2"	_Type="REWARD_TYPE_EXP"	_Amount="2000"/>
+			<_RewardInfo DATAKEY="W_STAGE_3"	_Type="REWARD_TYPE_EXP"	_Amount="3000"/>
+			<_RewardInfo DATAKEY="W_STAGE_4"	_Type="REWARD_TYPE_GOLD"	_Amount="10000"/>
+			<_RewardInfo DATAKEY="W_ARENA_1"	_Type="REWARD_TYPE_ITEM"	_Amount="30"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="W_ARENA_2"	_Type="REWARD_TYPE_ITEM"	_Amount="60"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="W_ARENA_3"	_Type="REWARD_TYPE_ITEM"	_Amount="90"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="W_TOTAL_1"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="130000000"/>
+			<_RewardInfo DATAKEY="W_TOTAL_2"	_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137112091"/>
+			<!-- MONTHLY -->
+			<_RewardInfo DATAKEY="D_CC"			_Type="REWARD_TYPE_CCOIN"	_Amount="50"/>
+			<_RewardInfo DATAKEY="W_CC"			_Type="REWARD_TYPE_CCOIN"	_Amount="100"/>
+			<_RewardInfo DATAKEY="M_C"			_Type="REWARD_TYPE_CCOIN"	_Amount="150"/>
+			<_RewardInfo DATAKEY="M_STAGE_1"		_Type="REWARD_TYPE_GOLD"	_Amount="10000"/>
+			<_RewardInfo DATAKEY="M_STAGE_2"		_Type="REWARD_TYPE_EXP"	_Amount="5000"/>
+			<_RewardInfo DATAKEY="M_STAGE_3"		_Type="REWARD_TYPE_GOLD"	_Amount="20000"/>
+			<_RewardInfo DATAKEY="M_STAGE_4"		_Type="REWARD_TYPE_EXP"	_Amount="10000"/>
+			<_RewardInfo DATAKEY="M_STAGE_CAL"		_Type="REWARD_TYPE_ITEM"	_Amount="50"		_ItemIndex="136020011"/>
+			<_RewardInfo DATAKEY="M_STAGE_LAC"		_Type="REWARD_TYPE_ITEM"	_Amount="50"		_ItemIndex="136020012"/>
+			<_RewardInfo DATAKEY="M_STAGE_VEN"		_Type="REWARD_TYPE_ITEM"	_Amount="50"		_ItemIndex="136020013"/>
+			<_RewardInfo DATAKEY="M_STAGE_CHA"		_Type="REWARD_TYPE_ITEM"	_Amount="50"		_ItemIndex="136020014"/>
+			<_RewardInfo DATAKEY="M_STAGE_NUR"		_Type="REWARD_TYPE_ITEM"	_Amount="50"		_ItemIndex="136020015"/>
+			<_RewardInfo DATAKEY="M_ARENA_1"		_Type="REWARD_TYPE_ITEM"	_Amount="100"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="M_ARENA_2"		_Type="REWARD_TYPE_ITEM"	_Amount="150"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="M_ARENA_3"		_Type="REWARD_TYPE_ITEM"	_Amount="200"		_ItemIndex="138000391"/>
+			<_RewardInfo DATAKEY="M_TOTAL_1"		_Type="REWARD_TYPE_ITEM"	_Amount="3"		_ItemIndex="130000000"/>
+			<_RewardInfo DATAKEY="M_TOTAL_2"		_Type="REWARD_TYPE_ITEM"	_Amount="1"		_ItemIndex="137112001"/>
+			<!-- GUILD -->
+			<_RewardInfo DATAKEY="G_1"		_Type="REWARD_TYPE_GUILDFUND"	_Amount="500"/>
+			<_RewardInfo DATAKEY="G_2"		_Type="REWARD_TYPE_GUILDFUND"	_Amount="1000"/>
+			<_RewardInfo DATAKEY="G_3"		_Type="REWARD_TYPE_GUILDFUND"	_Amount="1500"/>
+			<_RewardInfo DATAKEY="G_4"		_Type="REWARD_TYPE_GUILDFUND"	_Amount="3000"/>
+			<_RewardInfo DATAKEY="G_5"		_Type="REWARD_TYPE_GUILDFUND"	_Amount="4000"/>
+		</_MissionRewardInfo>
+
+		<_TierRankingReward>
+		    <_RankingReward _Tier="TIER_BRONZE">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+			<_RankingReward _Tier="TIER_SILVER">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+			<_RankingReward _Tier="TIER_GOLD">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+			<_RankingReward _Tier="TIER_PLATINUM">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+			<_RankingReward _Tier="TIER_EXPERT">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+		    <_RankingReward _Tier="TIER_MASTER">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+		    <_RankingReward _Tier="TIER_GRANDMASTER">
+				<_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000905" _Amount="1" />
+		    </_RankingReward>
+		</_TierRankingReward>
+
+		<_StageRankingReward>
+		    <_RankingReward _FirstRanking="1" _LastRanking="1">
+		            <_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000391" _Amount="50" />
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="50000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="2" _LastRanking="2">
+		            <_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000391" _Amount="30" />
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="10000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="3" _LastRanking="3">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="10000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="4" _LastRanking="10">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="5000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="11" _LastRanking="999">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="328" />
+		    </_RankingReward>
+		</_StageRankingReward>
+
+		<_DefenceRankingReward>
+		    <_RankingReward _FirstRanking="1" _LastRanking="1">
+		            <_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000391" _Amount="100" />
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="50000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="2" _LastRanking="2">
+		            <_RankingRewardItem _Type="REWARD_TYPE_ITEM" _ItemIndex="138000391" _Amount="50" />
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="10000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="3" _LastRanking="3">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="10000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="4" _LastRanking="10">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="5000" />
+		    </_RankingReward>
+		    <_RankingReward _FirstRanking="11" _LastRanking="999">
+		            <_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="328" />
+		    </_RankingReward>
+		</_DefenceRankingReward>
+
+		<_GuildPointRankingReward>
+			<_RankingReward _FirstRanking="1" _LastRanking="1">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="5000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="50000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="5000" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="2" _LastRanking="2">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="3000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="30000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="4000" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="3" _LastRanking="3">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="2000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="10000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="3000" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="4" _LastRanking="5">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="1000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="9000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="2000" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="6" _LastRanking="10">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="500" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="8000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="1000" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="11" _LastRanking="20">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="450" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="7000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="900" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="21" _LastRanking="50">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="400" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="6000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="800" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="51" _LastRanking="100">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="350" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="5000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="700" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="101" _LastRanking="500">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="250" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="4000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="600" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="501" _LastRanking="1000">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="200" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="3000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="500" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="1001" _LastRanking="99999">
+				<_RankingRewardItem _Type="REWARD_TYPE_GUILDFUND" _ItemIndex="0" _Amount="100" />
+				<_RankingRewardItem _Type="REWARD_TYPE_GOLD" _ItemIndex="0" _Amount="2000" />
+				<_RankingRewardItem _Type="REWARD_TYPE_EXP" _ItemIndex="0" _Amount="300" />
+			</_RankingReward>
+		</_GuildPointRankingReward>
+
+		<_GuildRpRankingReward>
+			<_RankingReward _FirstRanking="1" _LastRanking="1">
+				<_RankingRewardItem _Type="REWARD_TYPE_CCOIN" _ItemIndex="0" _Amount="6596" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="2" _LastRanking="2">
+				<_RankingRewardItem _Type="REWARD_TYPE_CCOIN" _ItemIndex="0" _Amount="3958" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="3" _LastRanking="3">
+				<_RankingRewardItem _Type="REWARD_TYPE_CCOIN" _ItemIndex="0" _Amount="2639" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="4" _LastRanking="10">
+				<_RankingRewardItem _Type="REWARD_TYPE_CCOIN" _ItemIndex="0" _Amount="660" />
+			</_RankingReward>
+			
+			<_RankingReward _FirstRanking="11" _LastRanking="500">
+				<_RankingRewardItem _Type="REWARD_TYPE_CCOIN" _ItemIndex="0" _Amount="132" />
+			</_RankingReward>
+		</_GuildRpRankingReward>	
+
+    <_UserGradeBuffInfo _ResultRewardGold="0.15" _Priority="1" _Rotation="2" />
+    <_UserGradeMembershipInfo _ResultRewardExp="0.25" _ResultRewardGold="0.25" _Priority="1" _SlotReward="1" _Comrade="2" _Rotation="2" />
+
+  </ST_SERVICEREWARD>
+</SERVICEREWARD_FILE>

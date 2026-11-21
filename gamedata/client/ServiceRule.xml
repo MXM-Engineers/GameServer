@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SERVICERULE_FILE>
+	<!--인덱스 1번만 사용합니다.-->
+	<ST_SERVICERULE _SkillGlobalCoolTime="0.15"  _SPActionJump="40"
+				 _InvenSlotCountPerLine="6" _InvenMaxLineCount="16"	_TempInvenMaxSlotCount="100"
+				 _WarehouseSlotCountPerLine="6"	_WarehouseMaxLineCount="9"
+				 _LatestAchievementsMaxCount="10"	_LatestStageSummariesMaxCount="10"
+				 _CommunityStatusMessageIntervalMS="60000" _CommunityChangeStateIntervalMS="10000"
+				 _MaxFriendCount="99" _MaxBlockCount="99" _ComradeRewardRatio="0.5" _CurrentTierSeasonId="1"
+				 _comradeCountPerDay="3" _todayStagePlayMaxCount="0"
+				 _SkinPieceItemDocIndex="138000901"
+				 _MatchingExtensionTime="60000"
+				 _LevelUpCoinItemDocIndex="130000000"
+				 _JukeBoxMaxEnqueue="8" _JukeBoxSamplePlayTimeSec="15" _JukeBoxDocIndex="100036777" 
+				 _CShopDefaultTab="CSHOPTYPE_HOME" _CShopDefaultEtcTab="CSHOP_ETC_SUB_GIFT" _CShopRequestGoodsLockDelay="1" _GiftMinLevel="20" _GiftMinDays="1" _NewbieEscapeLevel="5"
+				 _PvpRankMaxInvitation="1"
+				 _PCCafeRewardPercent="100.0" _PCCafeRewardSlot="1"
+				 _TagBuffRewardPercent="100.0" _TagBuffRewardSlot="1"
+				 _ExpertMMR="40.0" _MaxMateriaSocketCount="5">
+		
+		<_InitAccountInfo _DefaultMoney="1000" _DefaultGearCount="2" _DefaultGearIndex="132199998" _WarehouseDefaultLineCount="1">
+			<_DefaultInvenTabInfo DATAKEY="E_INVEN_TAB_0" _DefaultLineCount="4"/>
+			<_DefaultInvenTabInfo DATAKEY="E_INVEN_TAB_1" _DefaultLineCount="4"/>
+			<_DefaultInvenTabInfo DATAKEY="E_INVEN_TAB_2" _DefaultLineCount="4"/>
+		
+			<_DefaultUnlockCharacter DATA="100000035"/>
+			<_DefaultUnlockCharacter DATA="100000003"/>
+		</_InitAccountInfo>
+		
+		<_DefaultStageLifeSystem DATAKEY="WORLD_STAGE_DIFFICULT_EASY"		_LifeCount = "3" _WaitingTimeByLifeCount = "3" _CanChargeLife = "true"/>
+		<_DefaultStageLifeSystem DATAKEY="WORLD_STAGE_DIFFICULT_NORMAL"		_LifeCount = "2" _WaitingTimeByLifeCount = "3" _CanChargeLife = "true"/>
+		<_DefaultStageLifeSystem DATAKEY="WORLD_STAGE_DIFFICULT_HARD"		_LifeCount = "1" _WaitingTimeByLifeCount = "3" _CanChargeLife = "true"/>
+		<_DefaultStageLifeSystem DATAKEY="WORLD_STAGE_DIFFICULT_EXTREME"	_LifeCount = "1" _WaitingTimeByLifeCount = "3" _CanChargeLife = "true"/>
+		<_DefaultStageLifeSystem DATAKEY="WORLD_STAGE_DIFFICULT_HELL"		_LifeCount = "0" _WaitingTimeByLifeCount = "3" _CanChargeLife = "false"/>
+		
+		<_AchievementTierPoint _Tier="1" _MinPoint="100"/>
+		<_AchievementTierPoint _Tier="2" _MinPoint="1600"/>
+		<_AchievementTierPoint _Tier="3" _MinPoint="2800"/>
+		<_AchievementTierPoint _Tier="4" _MinPoint="4000"/>
+		<_AchievementTierPoint _Tier="5" _MinPoint="5200"/>
+		<_AchievementTierPoint _Tier="6" _MinPoint="6400"/>
+		<_AchievementTierPoint _Tier="7" _MinPoint="7600"/>
+		
+		<_MasterGearInfo _MaxCount="20" _MaxMasterGearDurability="3600" >
+			<_OverPenalty DATAKEY="1"	DATA="22"/>
+			<_OverPenalty DATAKEY="2"	DATA="27"/>
+			<_OverPenalty DATAKEY="3"	DATA="32"/>
+			<_OverPenalty DATAKEY="4"	DATA="37"/>
+			<_OverPenalty DATAKEY="5"	DATA="42"/>
+			
+			<_PvPGearPowerPercent _GameType="PVP_NORMAL"		DATA="50"/>
+			<_PvPGearPowerPercent _GameType="PVP_AI"			DATA="50"/>
+			<_PvPGearPowerPercent _GameType="PVP_NORMAL_FFA"	DATA="0"/>
+			<_PvPGearPowerPercent _GameType="PVP_RANK"			DATA="100"/>
+		</_MasterGearInfo>
+
+		<_combatAchievementIndicationSpec
+			killcount_interval_value="50"
+			killcount_till_received_damage_interval_value="10"
+			killcount_till_received_damage_start_value="20"
+			killcount_in_weakness_start_value="20"
+			received_damage_till_die_interval_value="3000"
+			dodgecount_interval_value="20"
+			damage_interval_value="30000"
+			hitcombo_interval_time_ms="3000"
+			hitcombo_good_value="20"
+			hitcombo_greate_value="50"
+			hitcombo_excellent_value="100"
+			hitcombo_godlike_value="150"
+			chainkill_interval_time_ms="3000"
+			chainkill_start_value="2"
+			multikill_interval_time_ms="2500"
+			multikill_check_interval_time_ms="500"
+			multikill_start_value="10"
+			weakness_value="10" />
+					
+		<_MasterTrainingBots DATA="100015000" />
+		<_MasterTrainingBots DATA="100015010" />
+		<_MasterTrainingBots DATA="100015020" />
+		<_MasterTrainingBots DATA="100015030" />
+		<_MasterTrainingBots DATA="100015040" />
+		<_MasterTrainingBots DATA="100015050" />
+		<_MasterTrainingBots DATA="100015060" />
+		<_MasterTrainingBots DATA="100015070" />
+		
+		<_OpenCShopTab DATA="CSHOPTYPE_RECHARGE"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_HOME"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_BUFF"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_MASTER"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_SKIN"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_BUNDLE"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_FUNCTIONAL"/>
+		<_OpenCShopTab DATA="CSHOPTYPE_ETC"/>
+		
+		<_OpenCShopEtcTab DATA="CSHOP_ETC_SUB_GIFT"/>
+		<_OpenCShopEtcTab DATA="CSHOP_ETC_SUB_HISTORY"/>
+		
+	</ST_SERVICERULE>
+</SERVICERULE_FILE>

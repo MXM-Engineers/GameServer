@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\COMMON\DUMMYCYLINDER\DummyCylinder.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COMMON\Dummy_DirectionGuide\Dummy_DirectionGuide.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\Temple_of_Flame\TEMPLE_KROMEDE\TEMPLE_KROMEDE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\Temple_of_Flame\Temple_Gargoyle\Temple_Gargoyle.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc_Summon\COMMON_CREATURE\EMPTY_CREATURE_Collision_2M.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="DUMMYBOX_DWEventTrigger_0" />
+        <_keyname keyname="DUMMYCYLINDER_DWTargetAgent_0" />
+        <_keyname keyname="TEMPLE_KROMEDE" />
+        <_keyname keyname="TEMPLE_KROMEDE_TRAP" />
+        <_keyname keyname="Temple_Gargoyle" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_Currus_Electric_Remote" />
+        <_sfx path="Mob_Fx_GT_5A_Aim_laser_Remote" />
+        <_sfx path="Mon_Fx_Common_FireStart" />
+        <_sfx path="Mon_Fx_DESERT_HOLE_Remote_15s" />
+        <_sfx path="Mon_Fx_DRON_RAIDLEAP_Beam" />
+        <_sfx path="Mon_Fx_Desert_Hole_Remote" />
+        <_sfx path="Mon_Fx_Temple_Gargoyle_freeze_01" />
+        <_sfx path="Mon_Fx_Temple_Gargoyle_freeze_destroy_01" />
+        <_sfx path="Pc_Fx_Aura_Knockback" />
+        <_sfx path="Pc_Fx_Aura_Knockback_End" />
+        <_sfx path="Pc_Fx_Kromede_Arrow_1" />
+        <_sfx path="Pc_Fx_Kromede_Arrow_2" />
+        <_sfx path="Pc_Fx_Kromede_Arrow_3" />
+        <_sfx path="Pc_Fx_Kromede_Arrowrain_Arrow" />
+        <_sfx path="Pc_Fx_Kromede_Attack_Mark" />
+        <_sfx path="Pc_Fx_Kromede_Snipingshot_Fire1" />
+        <_sfx path="Pc_Fx_Kromede_Snipingshot_Fire2" />
+        <_sfx path="Pc_Fx_Kromede_Snipingshot_Mark1" />
+        <_sfx path="Pc_Fx_Kromede_Strikingshot_Fire2" />
+        <_sfx path="Pc_Fx_Kromede_Trap_Casting" />
+        <_sfx path="Pc_Fx_Kromede_Ultra_Casting" />
+        <_sfx path="Pc_Fx_Kromede_Ultra_Fire" />
+        <_sfx path="Pc_Fx_Kromede_charge_Mark" />
+        <_sfx path="STATUS_FX_DYNAMIC_GROGGY" />
+        <_sfx path="Temple_Kromede_Arrowrain_Fire" />
+        <_sfx path="Temple_Kromede_Arrowrain_SkillMesh" />
+        <_sfx path="Temple_Kromede_Skill_8_Casting" />
+        <_sfx path="mon_fx_Temple_Gargoyle_Scratch_01" />
+        <_sfx path="mon_fx_temple_gargoyle_WingGround_01" />
+        <_sfx path="pc_fx_kromede_snipingshot_fire3" />
+        <_sfx path="temple_kromede_arrowrain_skillmesh_Multi" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_2s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_3s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Square_6s" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="3" />
+        <_sfxHWInfo path="Mon_Fx_Common_Fireloop_4m2s" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Temple_Gargoyle_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Temple_Gargoyle_freeze_Explo_01" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Tribe_Necromencer_Skill_8_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Assassin_Normal_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Arrowrain_BGHIT" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Attack" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Attack_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Attack_Fire_2" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Attack_HIT" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Shirk" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Shirk_Die" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Snipingshot" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Snipingshot_Combo_1_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Snipingshot_Combo_2_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Snipingshot_HIT" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Strikingshot_HIT" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Strikingshot_combo_1_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Trap_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Trap_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Ultra_Arrow" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Kromede_Ultra_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BURNING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_6f_SHOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_HIDE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_SHOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_STUN" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_Mob_Exclamation_Mark" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_BLEEDING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_MOVESPEED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SNIPER_REST" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_Fx_Pc_Kromede_Ultra_Stance" colorIndex="-1" />
+        <_sfxHWInfo path="Temple_Kromede_Skill_8_Hit" colorIndex="0" />
+        <_sfxHWInfo path="Temple_Kromede_Skill_8_Remote" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_15sec" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_End" />
+        <_soundEventInfo id="DronRaidLeap_Beam_Remote_Projectile" />
+        <_soundEventInfo id="DronSlaughterFire_Normal_Fire" />
+        <_soundEventInfo id="GT5A_Skill_Laser_Charge" />
+        <_soundEventInfo id="Kromede_Normal_Shirk_RST" />
+        <_soundEventInfo id="Kromede_Skill00_Weapon_01" />
+        <_soundEventInfo id="Kromede_Skill00_Weapon_02" />
+        <_soundEventInfo id="Kromede_Skill00_Weapon_03" />
+        <_soundEventInfo id="Kromede_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="Kromede_Skill01_Shot_01_RMT" />
+        <_soundEventInfo id="Kromede_Skill01_Shot_02_RMT" />
+        <_soundEventInfo id="Kromede_Skill01_Shot_03_RMT" />
+        <_soundEventInfo id="Kromede_Skill02_Shot_RMT" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_End" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_Hit" />
+        <_soundEventInfo id="Sniper_Skill04_Debuff_RST" />
+        <_soundEventInfo id="State_Bleed_to_PC" />
+        <_soundEventInfo id="State_Fire_to_Monster" />
+        <_soundEventInfo id="State_Hide_to_Monster" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="State_Stun_to_Monster" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_BattleStand" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Bodyfall" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Die" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_ExtraMotion" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Fly_Start" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Knockdown" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Push" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_RunFront" />
+        <_soundEventInfo id="Temple_Gargoyle_Normal_Spawn" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill01" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill02_Cast" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill02_End" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill02_Loop" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill02_Remote_Explosion" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill03_Cast" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill03_End" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill03_Loop" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill04_Cast" />
+        <_soundEventInfo id="Temple_Gargoyle_Skill04_Explosion" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Charge_01" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Charge_02" />
+        <_soundEventInfo id="Temple_Kromede_Normal_ElectricShock" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Hit" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Jump_Start_01" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Jump_Start_02" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Land" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Spawn" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Weapon_01" />
+        <_soundEventInfo id="Temple_Kromede_Normal_Weapon_04" />
+        <_soundEventInfo id="Temple_Kromede_Skill08_Die_Cast" />
+        <_soundEventInfo id="Temple_Kromede_Skill08_Die_Explosion" />
+        <_soundEventInfo id="Temple_Kromede_Skill08_Die_Shot" />
+        <_soundEventInfo id="Temple_Kromede_Skill_ArrowRain_Cast" />
+        <_soundEventInfo id="Temple_Kromede_Skill_ArrowRain_Explosion" />
+        <_soundEventInfo id="Temple_Kromede_Skill_ArrowRain_Shot_01" />
+        <_soundEventInfo id="Temple_Kromede_Skill_ArrowRain_Shot_02" />
+        <_soundEventInfo id="Temple_Kromede_Skill_SnipingShot_01" />
+        <_soundEventInfo id="Temple_Kromede_Skill_SnipingShot_02" />
+        <_soundEventInfo id="Temple_Kromede_Skill_SnipingShot_03" />
+        <_soundEventInfo id="Temple_Kromede_Skill_StrikingShot" />
+        <_soundEventInfo id="Temple_Kromede_Skill_Trap_Explosion" />
+        <_soundEventInfo id="Temple_Kromede_Skill_Trap_Shot" />
+        <_soundEventInfo id="Temple_Kromede_Skill_Trap_Start" />
+        <_soundEventInfo id="Temple_Kromede_Skill_Ultra" />
+        <_soundEventInfo id="TribeNecromancer_Normal_Skill_08_Defence_RMT" />
+        <_soundEventInfo id="UI_GamePlay_Exclamation_Mark" />
+        <_soundEventInfo id="VT_CT_PowerConverter_Laser" />
+        <_soundEventInfo id="TOF_Boss_01" />
+        <_soundEventInfo id="TOF_Boss_03" />
+        <_soundEventInfo id="TOF_Boss_05" />
+        <_soundEventInfo id="TOF_Boss_04" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\BNS\Temple_Public_Gt_Gate\Temple_Public_Gt_Gate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Empty_NoCollision\Empty_NoCollision.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Level_Remote" />
+        <_keyname keyname="Temple_Public_Gt_Gate" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Dynamic_Fx_Temple_Pubic_GT_Gate_Close" />
+        <_sfx path="Dynamic_Fx_Temple_Pubic_GT_Gate_Open" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mon_Fx_DRON_HUMANCLONE_Skill_5_Casting" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRAGGED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="Temple_Public_Gt_Gate_Normal_NormalStand" />
+        <_soundEventInfo id="Temple_Public_Gt_Gate_Normal_NormalStand_End" />
+        <_soundEventInfo id="Temple_Public_Gt_Gate_Normal_Open" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

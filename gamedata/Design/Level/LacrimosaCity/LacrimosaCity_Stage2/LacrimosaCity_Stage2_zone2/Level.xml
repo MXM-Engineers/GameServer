@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-500" fSpacing="100" dwWidth="512" dwHeight="512" ReferenceLevel="Design\Level\ART_Levels\LacrimosaCity_Art\LCR_S2Z2" ReferenceOffset="1000000">
+      <LockStates>
+        <LockState difficulty="1" IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      </LockStates>
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Asset\Gate_01\LCR_Gate_A_A05.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Plant_01\LCR_Plant_A_A32.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Plant_01\LCR_Plant_BushA06.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Plant_01\LCR_Plant_BushA04.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Plant_01\LCR_Plant_A_A33.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Plant_01\LCR_Plant_A_A34.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Tree_01\CRS_Branch_MB_01.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="LCR_S2Z2_RGBM" defaultMaterial="True" entityAmbientR="0.137255" entityAmbientG="0.164706" entityAmbientB="0.215686" entityDiffuseR="0.490196" entityDiffuseG="0.737255" entityDiffuseB="0.894118" entitySpecularR="0.929412" entitySpecularG="0.847059" entitySpecularB="0.717647" entityEmittanceR="0.011765" entityEmittanceG="0.011765" entityEmittanceB="0.011765" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="50" creatureAmbientR="0.113725" creatureAmbientG="0.215686" creatureAmbientB="0.286275" creatureDiffuseR="0.545098" creatureDiffuseG="0.572549" creatureDiffuseB="0.835294" creatureSpecularR="1" creatureSpecularG="0.882353" creatureSpecularB="0.694118" creatureEmittanceR="0.011765" creatureEmittanceG="0.011765" creatureEmittanceB="0.011765" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="30" dynamicAmbientR="0.121569" dynamicAmbientG="0.152941" dynamicAmbientB="0.215686" dynamicDiffuseR="0.827451" dynamicDiffuseG="0.662745" dynamicDiffuseB="0.858824" dynamicSpecularR="0.803922" dynamicSpecularG="0.678431" dynamicSpecularB="0.482353" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="40.33" levelAmbientR="0.439216" levelAmbientG="0.509804" levelAmbientB="0.556863" levelDiffuseR="1" levelDiffuseG="0.956863" levelDiffuseB="0.901961" levelSpecularR="0.482353" levelSpecularG="0.313726" levelSpecularB="0.2" levelEmittanceR="0.109804" levelEmittanceG="0.121569" levelEmittanceB="0.109804" levelVertColIntR="0.737255" levelVertColIntG="0.709804" levelVertColIntB="0.709804" levelShiness="22.16" sfxIntensity="1.2" itemIntensity="1.5" bgfxIntensity="1" hitColorIntensity="1" specularIntensity="1" dirDimmer="4.67" dirShadowBrightness="0.42" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.576471" dirAmbientG="0.654902" dirAmbientB="0.737255" dirDiffuseR="0.941176" dirDiffuseG="0.764706" dirDiffuseB="0.329412" dirSpecularR="0.882353" dirSpecularG="0.67451" dirSpecularB="0.2" globalAmbientR="0.121569" globalAmbientG="0.388235" globalAmbientB="0.239216" rimDirRotate="80" rimDirGradient="20" rimDirPower="5" rimColorR="0.941176" rimColorG="0.501961" rimColorB="0.219608" rimStrength="8" hdrExposure="1.72" hdrShoulderStrength="0.49" hdrLinearStrength="0.6" hdrLinearAngle="1" hdrToeStrength="2.28" hdrToeNumerator="0" hdrToeDenominator="0.72" hdrWhitePoint="1.91" bloomWhitePoint="0.4" bloomGradient="1" bloomStrength="0.83" bloomTintR="0.811765" bloomTintG="0.501961" bloomTintB="0.188235" bloomThreshold="0.77" bloomIntensity="0.46" bloomRadius="0.86" bloom2Intensity="0.48" bloom2Radius="1.36" bloom3Intensity="0.57" bloom3Radius="4.07" bloom4Intensity="0.7" bloom4Radius="3.2" bloom5Intensity="0.85" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

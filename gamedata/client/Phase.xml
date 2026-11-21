@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="200011108">
+    <ST_PHASE_INFO>
+      <_Phase _StepIndex="1" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="80" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave01_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="110070031" />
+        <_ExcludeKillCount _Index="110070032" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_Reward _Gold="90" _Exp="60" _GuildPoint="1">
+          <_PcCafeItem _Index="137299705" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="2" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="40" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave02_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_Reward _Gold="180" _Exp="120" _GuildPoint="2">
+          <_PcCafeItem _Index="137299705" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="3" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="91" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave03_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_Reward _Gold="270" _Exp="180" _GuildPoint="3">
+          <_PcCafeItem _Index="137299705" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="4" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="93" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave04_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_PhaseMonstersOnHud _Index="108012359" />
+        <_Reward _Gold="410" _Exp="260" _GuildPoint="4">
+          <_PcCafeItem _Index="137299705" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="5" _PhaseTimeOut="70" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="50" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave05_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_PhaseMonstersOnHud _Index="108012376" />
+        <_Reward _Gold="530" _Exp="340" _GuildPoint="5">
+          <_PcCafeItem _Index="137299705" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="6" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="42" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave06_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012301" />
+        <_Reward _Gold="600" _Exp="390" _GuildPoint="6">
+          <_PcCafeItem _Index="137299706" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="7" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="100" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave07_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_Reward _Gold="680" _Exp="430" _GuildPoint="7">
+          <_PcCafeItem _Index="137299706" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="8" _PhaseTimeOut="70" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="39" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave08_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_Reward _Gold="810" _Exp="510" _GuildPoint="8">
+          <_PcCafeItem _Index="137299706" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="9" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="3" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave09_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_Reward _Gold="890" _Exp="560" _GuildPoint="9">
+          <_PcCafeItem _Index="137299706" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="10" _PhaseTimeOut="80" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="52" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave10_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_PhaseMonstersOnHud _Index="108012379" />
+        <_PhaseMonstersOnHud _Index="108012365" />
+        <_Reward _Gold="1070" _Exp="670" _GuildPoint="10">
+          <_PcCafeItem _Index="137299706" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="11" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="92" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave11_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012381" />
+        <_PhaseMonstersOnHud _Index="108012383" />
+        <_PhaseMonstersOnHud _Index="108012367" />
+        <_Reward _Gold="1190" _Exp="750" _GuildPoint="12">
+          <_PcCafeItem _Index="137299707" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="12" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="63" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave12_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012384" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_PhaseMonstersOnHud _Index="108012367" />
+        <_Reward _Gold="1300" _Exp="810" _GuildPoint="14">
+          <_PcCafeItem _Index="137299707" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="13" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="45" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave13_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012366" />
+        <_PhaseMonstersOnHud _Index="108012365" />
+        <_Reward _Gold="1460" _Exp="910" _GuildPoint="16">
+          <_PcCafeItem _Index="137299707" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="14" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="98" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave14_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_PhaseMonstersOnHud _Index="108012367" />
+        <_Reward _Gold="1590" _Exp="990" _GuildPoint="18">
+          <_PcCafeItem _Index="137299707" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="15" _PhaseTimeOut="80" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="22" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave15_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012367" />
+        <_PhaseMonstersOnHud _Index="108012375" />
+        <_PhaseMonstersOnHud _Index="108012384" />
+        <_Reward _Gold="1760" _Exp="1100" _GuildPoint="20">
+          <_PcCafeItem _Index="137299707" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="16" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="72" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave16_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012362" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_Reward _Gold="1920" _Exp="1200" _GuildPoint="22">
+          <_PcCafeItem _Index="137299708" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="17" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="21" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave17_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="108012358" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012355" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_PhaseMonstersOnHud _Index="108012384" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_Reward _Gold="2040" _Exp="1270" _GuildPoint="24">
+          <_PcCafeItem _Index="137299708" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="18" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="48" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave18_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012363" />
+        <_PhaseMonstersOnHud _Index="108012393" />
+        <_PhaseMonstersOnHud _Index="108012365" />
+        <_PhaseMonstersOnHud _Index="108012362" />
+        <_Reward _Gold="2180" _Exp="1360" _GuildPoint="26">
+          <_PcCafeItem _Index="137299708" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="19" _PhaseTimeOut="80" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="74" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave19_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012355" />
+        <_PhaseMonstersOnHud _Index="108012381" />
+        <_PhaseMonstersOnHud _Index="108012359" />
+        <_PhaseMonstersOnHud _Index="108012380" />
+        <_Reward _Gold="2290" _Exp="1430" _GuildPoint="28">
+          <_PcCafeItem _Index="137299708" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="20" _PhaseTimeOut="100" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="55" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave20_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012386" />
+        <_PhaseMonstersOnHud _Index="108012363" />
+        <_PhaseMonstersOnHud _Index="108012359" />
+        <_Reward _Gold="2520" _Exp="1570" _GuildPoint="30">
+          <_PcCafeItem _Index="137299708" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="21" _PhaseTimeOut="100" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="89" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave21_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012353" />
+        <_PhaseMonstersOnHud _Index="108012367" />
+        <_Reward _Gold="2690" _Exp="1680" _GuildPoint="34">
+          <_PcCafeItem _Index="137299709" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="22" _PhaseTimeOut="100" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="81" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave22_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_Reward _Gold="2850" _Exp="1780" _GuildPoint="38">
+          <_PcCafeItem _Index="137299709" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="23" _PhaseTimeOut="100" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="45" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave23_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012353" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_PhaseMonstersOnHud _Index="108012383" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_PhaseMonstersOnHud _Index="108012359" />
+        <_Reward _Gold="3020" _Exp="1890" _GuildPoint="42">
+          <_PcCafeItem _Index="137299709" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="24" _PhaseTimeOut="110" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="63" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave24_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="108012462" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_PhaseMonstersOnHud _Index="108012366" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_PhaseMonstersOnHud _Index="108012393" />
+        <_Reward _Gold="3170" _Exp="1980" _GuildPoint="46">
+          <_PcCafeItem _Index="137299709" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="25" _PhaseTimeOut="110" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="46" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave25_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012377" />
+        <_PhaseMonstersOnHud _Index="108012365" />
+        <_Reward _Gold="3370" _Exp="2100" _GuildPoint="50">
+          <_PcCafeItem _Index="137299709" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="26" _PhaseTimeOut="110" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="97" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave26_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012381" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_PhaseMonstersOnHud _Index="108012355" />
+        <_PhaseMonstersOnHud _Index="108012353" />
+        <_PhaseMonstersOnHud _Index="108012361" />
+        <_Reward _Gold="3530" _Exp="2210" _GuildPoint="60">
+          <_PcCafeItem _Index="137299710" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="27" _PhaseTimeOut="120" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="75" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave27_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012359" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_PhaseMonstersOnHud _Index="108012390" />
+        <_PhaseMonstersOnHud _Index="108012393" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_Reward _Gold="3710" _Exp="2320" _GuildPoint="70">
+          <_PcCafeItem _Index="137299710" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="28" _PhaseTimeOut="120" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="10" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave28_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012450" />
+        <_ExcludeKillCount _Index="108012464" />
+        <_ExcludeKillCount _Index="108012461" />
+        <_ExcludeKillCount _Index="108012457" />
+        <_ExcludeKillCount _Index="108012452" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="108012358" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="110070042" />
+        <_PhaseMonstersOnHud _Index="108012351" />
+        <_Reward _Gold="3820" _Exp="2390" _GuildPoint="80">
+          <_PcCafeItem _Index="137299710" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="29" _PhaseTimeOut="120" _PhaseEndDelay="5" _PhasePreStartMessageDelay="5" _PhaseKillCount="92" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave29_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012300" />
+        <_ExcludeKillCount _Index="108012398" />
+        <_ExcludeKillCount _Index="108012399" />
+        <_ExcludeKillCount _Index="110044045" />
+        <_ExcludeKillCount _Index="110044046" />
+        <_ExcludeKillCount _Index="110044047" />
+        <_ExcludeKillCount _Index="108012462" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012360" />
+        <_PhaseMonstersOnHud _Index="108012393" />
+        <_PhaseMonstersOnHud _Index="108012363" />
+        <_PhaseMonstersOnHud _Index="108012366" />
+        <_Reward _Gold="3940" _Exp="2460" _GuildPoint="90">
+          <_PcCafeItem _Index="137299710" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+      <_Phase _StepIndex="30" _PhaseTimeOut="500" _PhaseEndDelay="10" _PhasePreStartMessageDelay="5" _PhaseKillCount="1" _PhaseTimeEndMessage="PvE_DF_Sys_TimeOver" _PhaseKillEndMessage="PvE_DefenseMode_Wave30_End">
+        <_ExcludeKillCount _Index="108012397" />
+        <_ExcludeKillCount _Index="108012380" />
+        <_ExcludeKillCount _Index="108012381" />
+        <_ExcludeKillCount _Index="108012383" />
+        <_ExcludeKillCount _Index="108012384" />
+        <_ExcludeKillCount _Index="108012355" />
+        <_ExcludeKillCount _Index="108012373" />
+        <_ExcludeKillCount _Index="108012353" />
+        <_ExcludeKillCount _Index="108012350" />
+        <_ExcludeKillCount _Index="108012351" />
+        <_ExcludeKillCount _Index="110070041" />
+        <_PhaseMonstersOnHud _Index="108012378" />
+        <_PhaseMonstersOnHud _Index="108012380" />
+        <_PhaseMonstersOnHud _Index="108012381" />
+        <_PhaseMonstersOnHud _Index="108012383" />
+        <_PhaseMonstersOnHud _Index="108012384" />
+        <_Reward _Gold="4260" _Exp="2660" _GuildPoint="100">
+          <_Item _Index="130000000" _Value="1" _Probability="100" />
+          <_PcCafeItem _Index="137299710" _Value="1" _Probability="100" />
+        </_Reward>
+      </_Phase>
+    </ST_PHASE_INFO>
+  </INFO>
+</ENTITY_FILE>

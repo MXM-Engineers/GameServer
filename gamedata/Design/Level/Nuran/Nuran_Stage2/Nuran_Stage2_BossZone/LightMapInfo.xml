@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LightMapSettings forceUnwrap="False" maxStretch="0.5" gutterSize="5" padding="4" textureRatio="1" giColor="75, 130, 225" giMultiplier="1" giSecondaryBounce="1" aoAmount="0.1" aoRadius="5" aoSubDivs="16" dmcAmount="0.9" dmcThreshold="0.02" colorMappingGamma="2.2" irradMapPreset="LOW" ddsRescaleFilter="CUBIC" ddsMipmapFilter="BOX" useHDR="True" maxRGBMValue="6" />
+    <_LevelLights>
+      <_LightData id="1000110" lightType="LM_DIRECTIONAL" x="-5445.81" y="-1592.37" z="-9199.67" angx="-151.98" angy="42.92" angz="-51.99" scale="1">
+        <LM_Light useLight="True" hotspot="50000" fallOff="65000" shape="Circle" aspect="1" shadow="False" color="255, 214, 146" multiplier="0.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="30170.9" end="68157.8" areaShadow="True" vrayShape="Sphere" uvwSize="256" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000104" lightType="LM_DIRECTIONAL" x="7984.84" y="5093.49" z="9023.04" angx="19.57" angy="-35.74" angz="-121.33" scale="1">
+        <LM_Light useLight="True" hotspot="25000" fallOff="35000" shape="Circle" aspect="1" shadow="True" color="255, 227, 139" multiplier="3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="False" start="7825.15" end="16685" areaShadow="True" vrayShape="Sphere" uvwSize="128" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000109" lightType="LMVrayLight" x="1588.72" y="-1476.8" z="0" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light halfWidth="100" halfLength="150" color="255, 255, 255" multiplier="4" useLight="True" subdivs="32" shadow="True" type="Dome" doubleside="False" dome_spherical="False" lightDistribution="0" MapName="Graphic\BG\Temp\HDRI\MXM_DayLight_02.hdr" mappingtype="Spherical" horizontalRotation="34" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+    </_LevelLights>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

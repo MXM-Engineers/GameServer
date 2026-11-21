@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <ActionBase BehaviorState="SKILL_STAGE1_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" Delay="0.2" CommandType="STATE_BLOCK" />
+  <ActionBase BehaviorState="SKILL_STAGE1_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="TELEPORT" Param1="TELEPORT_TARGET_SPAWN_POINT" />
+  <ActionBase BehaviorState="SKILL_STAGE2_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="ENTITY" EntityIndex="110044017" TargetPreset="TARGET_POS_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE4_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="REMOTE" RemoteIndex="1468012104" TargetPreset="TARGET_SELF_FFF" NodeName="Scene Root" />
+  <ActionBase BehaviorState="SKILL_STAGE5_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="REMOTE" RemoteIndex="1468012106" TargetPreset="TARGET_SELF_FFF" NodeName="Scene Root" />
+  <ActionBase BehaviorState="SKILL_STAGE6_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="REMOTE" RemoteIndex="1468012179" TargetPreset="TARGET_SELF_FFF" NodeName="Scene Root" />
+  <ActionBase BehaviorState="SKILL_STAGE7_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102122" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE7_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102124" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE8_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102140" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE8_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102145" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE9_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102147" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE10_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="REMOTE" RemoteIndex="1468012111" TargetPreset="TARGET_POS_FFF" NodeName="Scene Root" />
+  <ActionBase BehaviorState="SKILL_STAGE11_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="REMOTE" RemoteIndex="1440000100" TargetPreset="TARGET_SELF_FFF" NodeName="Scene Root" />
+  <ActionBase BehaviorState="SKILL_STAGE11_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001021" TargetPreset="TARGET_SELF_TFF" />
+  <ActionBase BehaviorState="SKILL_STAGE12_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001041" TargetPreset="TARGET_CURRENT_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE13_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001010" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE14_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102222" TargetPreset="TARGET_SELF_TFF" />
+  <ActionBase BehaviorState="SKILL_STAGE15_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1260102220" TargetPreset="TARGET_SELF_TFF" />
+  <ActionBase BehaviorState="SKILL_STAGE16_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="ENTITY" EntityIndex="105000453" TargetPreset="TARGET_POS_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE17_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001011" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE18_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1238000096" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE18_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1238000097" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE18_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1238000098" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE18_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1238000099" TargetPreset="TARGET_SELF_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE19_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="TELEPORT" Param1="TELEPORT_TARGET_ENTITY" />
+  <ActionBase BehaviorState="SKILL_STAGE20_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001002" Param2="Remove" TargetPreset="TARGET_CURRENT_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE20_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001002" TargetPreset="TARGET_CURRENT_FFF" />
+  <ActionBase BehaviorState="SKILL_STAGE20_BEHAVIORSTATE" AnimationIndex="-1" AnimationId="-1" CommandType="STATUS" StatusIndex="1230001002" TargetPreset="TARGET_SELF_FFF" />
+</ENTITY_FILE>

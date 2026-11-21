@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<STAGE_DIFFICULTY>
+  <DIFFICULTY bit="1" monsterStat="0.1" source="hyp below Normal" />
+  <DIFFICULTY bit="2" monsterStat="0.2" source="official video Caligo Munitions Normal solo: sniper robot 106010300 HP and hits vs Hell capture" />
+  <DIFFICULTY bit="4" monsterStat="0.3" source="hyp between Normal and Extreme" />
+  <DIFFICULTY bit="8" monsterStat="0.4" source="official videos Ascalonian Catacombs and Independence Port, Extreme hits 1.6-2.7x Normal" />
+  <DIFFICULTY bit="16" monsterStat="1" source="Hell captures (munitions factory 200002304, ghost town 200010304)" />
+</STAGE_DIFFICULTY>

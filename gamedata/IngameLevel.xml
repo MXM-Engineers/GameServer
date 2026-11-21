@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<INGAME_LEVEL maxLevel="18" passiveExp="2" passivePeriod="5" shareRadius="1600" propertyPointsEvery="3" propertyPointsStep="3" respawnBaseMs="3880" respawnPerLevelMs="2192" respawnPerSecMs="12.77" killPoints="5">
+  <LEVEL level="1" exp="100" />
+  <LEVEL level="2" exp="120" />
+  <LEVEL level="3" exp="140" />
+  <LEVEL level="4" exp="160" />
+  <LEVEL level="5" exp="200" />
+  <LEVEL level="6" exp="220" />
+  <LEVEL level="7" exp="240" />
+  <LEVEL level="8" exp="260" />
+  <LEVEL level="9" exp="280" />
+  <LEVEL level="10" exp="300" />
+  <LEVEL level="11" exp="340" />
+  <LEVEL level="12" exp="360" />
+  <LEVEL level="13" exp="380" />
+  <LEVEL level="14" exp="400" />
+  <LEVEL level="15" exp="420" />
+  <LEVEL level="16" exp="460" />
+  <LEVEL level="17" exp="480" />
+  <MONSTER ID="105000306" exp="50" points="20" mode="team" killerBonus="30" />
+  <MONSTER ID="105000307" exp="50" points="20" mode="team" killerBonus="30" />
+  <MONSTER ID="105000308" exp="50" points="10" mode="team" killerBonus="30" />
+  <MONSTER ID="105000311" exp="50" points="10" mode="team" killerBonus="30" />
+  <MONSTER ID="105000312" exp="50" points="20" mode="team" killerBonus="30" />
+  <MONSTER ID="105000430" exp="60" points="2" mode="killer" />
+  <MONSTER ID="105000431" exp="60" points="2" mode="killer" />
+  <MONSTER ID="105000453" exp="30" points="0" mode="killer" />
+  <MONSTER ID="105001010" exp="20" growth="1" growthPeriod="120" points="1" mode="share" killerBonus="8" />
+  <MONSTER ID="105001011" exp="20" growth="1" growthPeriod="120" points="1" mode="share" killerBonus="8" />
+  <MONSTER ID="105001012" exp="50" growth="3" growthPeriod="120" points="1" mode="share" killerBonus="20" />
+  <MONSTER ID="105001040" exp="250" points="30" mode="team" />
+  <MONSTER ID="105001200"  points="100" mode="team" exp="50" killerBonus="50" />
+  <MONSTER ID="105001400" exp="150" points="2" mode="killer" />
+  <MONSTER ID="105001401" exp="125" points="1" mode="killer" />
+  <MONSTER ID="105001402" exp="250" points="5" mode="killer" />
+  <MONSTER ID="105001403" exp="150" points="2" mode="killer" />
+  <MONSTER ID="105001410" exp="120" points="12" mode="team" />
+  <MONSTER ID="105001100" mode="team" exp="89" hyp="amount falls with titan lifetime 38-190, median 89" />
+  <MONSTER ID="105001101" mode="team" exp="89" hyp="amount falls with titan lifetime 38-190, median 89" />
+  <MONSTER ID="105001102" mode="team" exp="89" hyp="amount falls with titan lifetime 38-190, median 89" />
+  <MASTER_KILL base="60" perVictimLevel="8.6" assistPool="0.5" assistWindowSec="15" hyp="fit of 17 official kills, error 16 xp; hidden victim value" />
+</INGAME_LEVEL>

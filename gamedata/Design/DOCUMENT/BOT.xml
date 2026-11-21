@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ENTITY_FILE>
+  <INFO ID="200020100">
+    <ST_BOT_TABLE _StageIndex="200020100" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200020102">
+    <ST_BOT_TABLE _StageIndex="200020102" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100012200" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100012210" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100012220" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100012230" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100012240" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100012250" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100012260" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100012270" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100012280" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100012290" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100012300" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100012301" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100012302" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100012303" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100012304" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100012305" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100012306" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100012307" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100012308" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100012309" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200020104">
+    <ST_BOT_TABLE _StageIndex="200020104" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100012200" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100012210" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100012220" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100012230" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100012240" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100012260" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100012270" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100012290" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100012300" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100012301" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100012302" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100012303" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100012304" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100012305" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100012306" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100012307" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100012308" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100012309" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200008100">
+    <ST_BOT_TABLE _StageIndex="200008100" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009202">
+    <ST_BOT_TABLE _StageIndex="200009202" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100013090" />
+      <_BOT_INFO _Class="CLASS_TYPE_DESTROYER" _Index="100013100" />
+      <_BOT_INFO _Class="CLASS_TYPE_JINSEOYEON" _Index="100013110" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100013140" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100013141" />
+      <_BOT_INFO _Class="CLASS_TYPE_MECHANIC" _Index="100013142" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100013143" />
+      <_BOT_INFO _Class="CLASS_TYPE_RODMASTER" _Index="100013144" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100013145" />
+      <_BOT_INFO _Class="CLASS_TYPE_MAGICGIRL" _Index="100013146" />
+      <_BOT_INFO _Class="CLASS_TYPE_SLIME" _Index="100013147" />
+      <_BOT_INFO _Class="CLASS_TYPE_MONDOZAX" _Index="100013148" />
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="100013149" />
+      <_BOT_INFO _Class="CLASS_TYPE_EFREET" _Index="100013150" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHADOWHUNTER" _Index="100013151" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100013152" />
+      <_BOT_INFO _Class="CLASS_TYPE_CATTHECAT" _Index="100013153" />
+      <_BOT_INFO _Class="CLASS_TYPE_RNB" _Index="100013154" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100013155" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100013156" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROB" _Index="100013157" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100013158" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOXER" _Index="100013159" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHUGOTRADER" _Index="100013160" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100013161" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009204">
+    <ST_BOT_TABLE _StageIndex="200009204" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100013090" />
+      <_BOT_INFO _Class="CLASS_TYPE_DESTROYER" _Index="100013100" />
+      <_BOT_INFO _Class="CLASS_TYPE_JINSEOYEON" _Index="100013110" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100013140" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100013141" />
+      <_BOT_INFO _Class="CLASS_TYPE_MECHANIC" _Index="100013142" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100013143" />
+      <_BOT_INFO _Class="CLASS_TYPE_RODMASTER" _Index="100013144" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100013145" />
+      <_BOT_INFO _Class="CLASS_TYPE_MAGICGIRL" _Index="100013146" />
+      <_BOT_INFO _Class="CLASS_TYPE_SLIME" _Index="100013147" />
+      <_BOT_INFO _Class="CLASS_TYPE_MONDOZAX" _Index="100013148" />
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="100013149" />
+      <_BOT_INFO _Class="CLASS_TYPE_EFREET" _Index="100013150" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHADOWHUNTER" _Index="100013151" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100013152" />
+      <_BOT_INFO _Class="CLASS_TYPE_CATTHECAT" _Index="100013153" />
+      <_BOT_INFO _Class="CLASS_TYPE_RNB" _Index="100013154" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100013155" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100013156" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROB" _Index="100013157" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100013158" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOXER" _Index="100013159" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHUGOTRADER" _Index="100013160" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100013161" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200020101">
+    <ST_BOT_TABLE _StageIndex="200020101" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009305">
+    <ST_BOT_TABLE _StageIndex="200009305" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100013090" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DESTROYER" _Index="100013100" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_JINSEOYEON" _Index="100013110" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100013140" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100013141" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_MECHANIC" _Index="100013142" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100013143" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_RODMASTER" _Index="100013144" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100013145" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_MAGICGIRL" _Index="100013146" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SLIME" _Index="100013147" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_MONDOZAX" _Index="100013148" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="100013149" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_EFREET" _Index="100013150" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHADOWHUNTER" _Index="100013151" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100013152" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_CATTHECAT" _Index="100013153" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_RNB" _Index="100013154" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100013155" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100013156" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROB" _Index="100013157" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100013158" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOXER" _Index="100013159" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHUGOTRADER" _Index="100013160" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100013161" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_YURI" _Index="100013163" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ESPER" _Index="100013164" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_PRIEST" _Index="100013165" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_STATESMAN" _Index="100013162" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_GHOSTWIDOW" _Index="100013166" _Category="2" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009306">
+    <ST_BOT_TABLE _StageIndex="200009306" _Type="GAME_MODE_DEATH_MATCH" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100012200" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100012210" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100012220" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100012230" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100012240" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100012250" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100012260" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100012270" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100012280" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100012290" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009405">
+    <ST_BOT_TABLE _StageIndex="200009405" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101000">
+    <ST_BOT_TABLE _StageIndex="200101000" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DOUBLEGUN" _Index="100013090" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DESTROYER" _Index="100013100" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_JINSEOYEON" _Index="100013110" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_LAUNCHER" _Index="100013140" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEATHKNIGHT" _Index="100013141" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_MECHANIC" _Index="100013142" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_SOULMASTER" _Index="100013143" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_RODMASTER" _Index="100013144" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_ICEQUEEN" _Index="100013145" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_MAGICGIRL" _Index="100013146" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_SLIME" _Index="100013147" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_MONDOZAX" _Index="100013148" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="100013149" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_EFREET" _Index="100013150" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHADOWHUNTER" _Index="100013151" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_RYTLOCK" _Index="100013152" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_CATTHECAT" _Index="100013153" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_RNB" _Index="100013154" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_BATTER" _Index="100013155" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROA" _Index="100013156" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_ANDROB" _Index="100013157" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_ATTACKER" _Index="100013158" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOXER" _Index="100013159" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_SHUGOTRADER" _Index="100013160" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_NAGA" _Index="100013161" _Category="2" />
+      <_BOT_INFO _Class="CLASS_TYPE_STATESMAN" _Index="100013162" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_YURI" _Index="100013163" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_ESPER" _Index="100013164" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_PRIEST" _Index="100013165" _Category="1" />
+      <_BOT_INFO _Class="CLASS_TYPE_GHOSTWIDOW" _Index="100013166" _Category="1" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101300">
+    <ST_BOT_TABLE _StageIndex="200101300" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101310">
+    <ST_BOT_TABLE _StageIndex="200101310" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101320">
+    <ST_BOT_TABLE _StageIndex="200101320" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="105000500" />
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101330">
+    <ST_BOT_TABLE _StageIndex="200101330" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="105000500" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101360">
+    <ST_BOT_TABLE _StageIndex="200101360" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_LILU" _Index="105000500" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009505">
+    <ST_BOT_TABLE _StageIndex="200009505" _Type="GAME_MODE_OCCUPY" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200009605">
+    <ST_BOT_TABLE _StageIndex="200009605" _Type="GAME_MODE_OCCUPY" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101340">
+    <ST_BOT_TABLE _StageIndex="200101340" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200101350">
+    <ST_BOT_TABLE _StageIndex="200101350" _Type="GAME_MODE_GOT" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013010" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013020" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013030" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013040" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013050" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013060" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013070" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013080" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013120" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013130" />
+    </ST_BOT_TABLE>
+  </INFO>
+  <INFO ID="200000100">
+    <ST_BOT_TABLE _StageIndex="200000100" _Type="WORLD_STAGE_TYPE_PVE" _Difficult="WORLD_STAGE_DIFFICULT_NORMAL">
+      <_BOT_INFO _Class="CLASS_TYPE_STRIKER" _Index="100013500" />
+      <_BOT_INFO _Class="CLASS_TYPE_ASSASSIN" _Index="100013501" />
+      <_BOT_INFO _Class="CLASS_TYPE_SNIPER" _Index="100013502" />
+      <_BOT_INFO _Class="CLASS_TYPE_ARTILLERY" _Index="100013503" />
+      <_BOT_INFO _Class="CLASS_TYPE_DEFENDER" _Index="100013504" />
+      <_BOT_INFO _Class="CLASS_TYPE_ELECTRO" _Index="100013505" />
+      <_BOT_INFO _Class="CLASS_TYPE_KROMEDE" _Index="100013506" />
+      <_BOT_INFO _Class="CLASS_TYPE_POHWARAN" _Index="100013507" />
+      <_BOT_INFO _Class="CLASS_TYPE_PHOTOG" _Index="100013508" />
+      <_BOT_INFO _Class="CLASS_TYPE_BOOMERANG" _Index="100013509" />
+    </ST_BOT_TABLE>
+  </INFO>
+</ENTITY_FILE>

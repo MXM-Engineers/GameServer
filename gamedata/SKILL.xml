@@ -2755,4 +2755,91 @@
       <_Target _UXType="SKILL_CAST_MY_POSITION" />
     </ST_COMMONSKILL>
   </INFO>
+  <INFO ID="180410000" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_PASSIVE" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_passive_01" _Name="STR_SKILL_NAME_180410000" _Description="STR_SKILL_DESC_180410000" _UpgradeType="E_SKILL_UPGRADE_KEY" _Status="1230410048" />
+  </INFO>
+  <INFO ID="180410002" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_SHIRK" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_active_04_combo_01" _Name="STR_SKILL_NAME_180410002" _Description="STR_SKILL_DESC_180410002" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SHIRK_BEHAVIORSTATE" _CoolTimeType="SHIRK" _CoolTime="0.3" _BotMoveSkill="True" _BotWallMove="True" _BotEvadeSkill="True" />
+  </INFO>
+  <INFO ID="180410010" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_SHUTTLE" _HasMove="1" _IconAlias="shuttle_active_01" _Name="STR_SKILL_NAME_180410010" _Description="STR_SKILL_DESC_180410010" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_1_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFX="Pc_Fx_SkillRange_Box_Normal" _SkillRangeLengthX="300" _SkillRangeLengthY="900" _CoolTimeType="SKILL_1" _CoolTime="11" _ConsumeRP="50" _AddGroggy="34">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION_DIRECTION" _MaxDistance="900" _BotSkillMaxDistance="800" />
+      <_BotSkillCondFeature  _Value="0.8">
+        <_NormalConds _ConditionType="BOT_SKILL_CONDITION_DISTANCE" _ConditionValue="800" _Below="True" _Target="True" />
+      </_BotSkillCondFeature >
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180410020" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_active_02" _Name="STR_SKILL_NAME_180410020" _Description="STR_SKILL_DESC_180410020" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_2_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFXEx="Pc_Fx_SkillRange_Circle_Normal" _SkillRangeSFX="Pc_Fx_SkillRange_Circle_Targetting" _SkillRangeLengthX="400" _SkillRangeLengthY="400" _CoolTimeType="SKILL_2" _CoolTime="9" _ConsumeRP="60" _AddGroggy="45">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION" _MaxDistance="400" _BotSkillMaxDistance="350" />
+      <_BotSkillCondFeature  _Value="0.8">
+        <_NormalConds _ConditionType="BOT_SKILL_CONDITION_DISTANCE" _ConditionValue="350" _Below="True" _Target="True" />
+      </_BotSkillCondFeature >
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180410030" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_active_03" _Name="STR_SKILL_NAME_180410030" _Description="STR_SKILL_DESC_180410030" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_3_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_TRUE" _SkillRangeSFXEx="Pc_Fx_SkillRange_Circle_Normal" _SkillRangeSFX="Pc_Fx_SkillRange_Circle_Targetting" _SkillRangeLengthX="400" _SkillRangeLengthY="400" _CoolTimeType="SKILL_3" _CoolTime="9" _ConsumeRP="30" _AddGroggy="68">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION" _MaxDistance="400" _BotSkillMaxDistance="350" />
+      <_BotSkillCondFeature  _Value="0.8">
+        <_NormalConds _ConditionType="BOT_SKILL_CONDITION_DISTANCE" _ConditionValue="350" _Below="True" _Target="True" />
+      </_BotSkillCondFeature >
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180410040" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_STANCE" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_active_04" _Name="STR_SKILL_NAME_180410040" _Description="STR_SKILL_DESC_180410040" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_4_BEHAVIORSTATE" _BushOff="False" _SmartCast="SKILL_SMARTCAST_FALSE" _CoolTimeType="SKILL_4" _CoolTime="22" _ConsumeRP="50" _AddGroggy="45" _GhostBotUse="False">
+      <_STANCE _NameTagOffsetDelta="110" _Type="STANCE_TYPE_C" _DurationTime="10" _HideGauge="True" />
+      <_Target _UXType="SKILL_CAST_MY_POSITION" />
+      <_BotSkillCondFeature  _Value="0.1">
+        <_NormalConds _ConditionType="BOT_SKILL_CONDITION_FRIENDLY_PC_IN_RANGE" _ConditionValue="1" _Below="False" _Target="False" _ConditionRange="900" />
+      </_BotSkillCondFeature >
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180410050" _DocID="100000041">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_SHUTTLE" _IconAlias="shuttle_ultimate_01" _Name="STR_SKILL_NAME_180410050" _Description="STR_SKILL_DESC_180410050" _UpgradeType="E_SKILL_UPGRADE_KEY" _SmartCast="SKILL_SMARTCAST_FALSE" _PrepayCost="True" _CoolTimeType="ULTIMATE" _CoolTime="180" _ConsumeUG="90" _AddGroggy="101" _GhostBotUse="False">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_TARGET_POSITION" _MaxDistance="50000" _SelectType="SKILL_TARGET_PICKED_MINIMAP" _TargetRangeSFX="Pc_Fx_SkillCursor_Circle_Targetting" _TargetRangeLengthX="600" _TargetRangeLengthY="600" _MinTarget="1" _MaxTarget="1" _Friendly="True" _Neutral="False" _UnFriendly="False" _PC_Ally="False">
+        <_TargetGroupList DATA="PC" />
+      </_Target>
+      <_Cast _CastingGaugeType="SKILL_CASTING_GAUGE_DECREASE" _CastType="SKILL_CAST_TIME_DELAY" _CastTime="3.2" _CastAction="SKILL_5_BEHAVIORSTATE" _InterruptByAttacked="False" _InterruptByMove="False" _InterruptByOtherSkill="False" _InterruptByESC="False" />
+      <_BotSkillCondFeature  _Value="0.1">
+        <_NormalConds _ConditionType="BOT_SKILL_CONDITION_FRIENDLY_PC_IN_RANGE" _ConditionValue="1" _Below="False" _Target="False" _ConditionRange="1300" />
+      </_BotSkillCondFeature >
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180430000" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_PASSIVE" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_passive_01" _Name="STR_SKILL_NAME_180430000" _Description="STR_SKILL_DESC_180430000" _UpgradeType="E_SKILL_UPGRADE_KEY" _Status="1230430030" />
+  </INFO>
+  <INFO ID="180430002" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_SHIRK" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_shirk_01" _Name="STR_SKILL_NAME_180430002" _Description="STR_SKILL_DESC_180430002" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SHIRK_BEHAVIORSTATE" _CoolTimeType="SHIRK" _CoolTime="0.2" _ConsumeStamina="100" />
+  </INFO>
+  <INFO ID="180430010" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_active_01" _Name="STR_SKILL_NAME_180430010" _Description="STR_SKILL_DESC_180430010" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_1_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFX="Pc_Fx_SkillRange_Box_Normal" _SkillRangeLengthX="450" _SkillRangeLengthY="1800" _CoolTimeType="SKILL_1" _CoolTime="22" _ConsumeMP="210" _AddGroggy="1">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION_DIRECTION" _BotSkillMaxDistance="1800" />
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180430020" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_GATLING" _HasMove="1" _IconAlias="gatling_active_02" _Name="STR_SKILL_NAME_180430020" _Description="STR_SKILL_DESC_180430020" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_2_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFXEx="Pc_Fx_SkillRange_Circle_Targetting" _SkillRangeSFX="Pc_Fx_SkillRange_Circle_Targetting_Base" _SkillRangeLengthX="800" _SkillRangeLengthY="800" _CoolTimeType="SKILL_2" _CoolTime="15" _ConsumeMP="180" _AddGroggy="30">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_TARGET_POSITION" _MaxDistance="800" _BotSkillMaxDistance="800" _SelectType="SKILL_TARGET_PICKED_ENTITY" _TestObstructMove="SKILL_OBSTRUCTMOVE_TYPE_JUMPABLE" _TargetRangeSFX="Pc_Fx_SkillCursor_Circle_Targetting" _TargetRangeLengthX="400" _TargetRangeLengthY="400" _MinTarget="1" _MaxTarget="1" _Friendly="False" _Neutral="True" _UnFriendly="True" _Myself="False" _PC_Ally="True">
+        <_TargetGroupList DATA="PC" />
+        <_TargetGroupList DATA="MONSTER" />
+      </_Target>
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180430030" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_active_03" _Name="STR_SKILL_NAME_180430030" _Description="STR_SKILL_DESC_180430030" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_3_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFX="Pc_Fx_Gatling_Skill3_SkillRange_sign180" _SkillRangeLengthX="584" _SkillRangeLengthY="584" _CoolTimeType="SKILL_3" _CoolTime="18" _ConsumeMP="200" _AddGroggy="15">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION_DIRECTION" _BotSkillMaxDistance="584" />
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180430040" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_active_04" _Name="STR_SKILL_NAME_180430040" _Description="STR_SKILL_DESC_180430040" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_4_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFXEx="Pc_Fx_SkillRange_Circle_Normal" _SkillRangeSFX="Pc_Fx_SkillRange_Circle_Targetting" _SkillRangeLengthX="1500" _SkillRangeLengthY="1500" _CoolTimeType="SKILL_4" _CoolTime="25" _ConsumeMP="250" _AddGroggy="0">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_TARGET_POSITION" _MaxDistance="1500" _BotSkillMaxDistance="1500" _SelectType="SKILL_TARGET_PICKED_ENTITY" _TestObstructMove="SKILL_OBSTRUCTMOVE_TYPE_NONE" _TargetRangeSFX="Pc_Fx_SkillCursor_Circle_Targetting" _TargetRangeLengthX="400" _TargetRangeLengthY="400" _Friendly="False" _Neutral="True" _UnFriendly="True" _Myself="False" _PC_Ally="True">
+        <_TargetGroupList DATA="PC" />
+        <_TargetGroupList DATA="MONSTER" />
+      </_Target>
+    </ST_COMMONSKILL>
+  </INFO>
+  <INFO ID="180430050" _DocID="100000043">
+    <ST_COMMONSKILL _Group="SKILL_GROUP_CHARACTER" _Type="SKILL_TYPE_NORMAL" _RequireClass="CLASS_TYPE_GATLING" _IconAlias="gatling_ultimate_01" _Name="STR_SKILL_NAME_180430050" _Description="STR_SKILL_DESC_180430050" _UpgradeType="E_SKILL_UPGRADE_KEY" _Action="SKILL_5_BEHAVIORSTATE" _SmartCast="SKILL_SMARTCAST_BYOPTION" _SkillRangeSFX="Pc_Fx_Gatling_SkillUG_SkillRange" _SkillRangeLengthX="500" _SkillRangeLengthY="500" _CoolTimeType="ULTIMATE" _CoolTime="30" _ConsumeUG="60" _AddGroggy="68">
+      <_Target _SelectStateType="SKILL_TARGET_SELECT_STATE_BEFORECAST" _UXType="SKILL_CAST_MY_POSITION" _MaxDistance="700" _BotSkillMaxDistance="700" />
+    </ST_COMMONSKILL>
+  </INFO>
 </ENTITY_FILE>

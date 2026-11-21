@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\BNS\BNS_AXE\BNS_AXE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\BNS\BNS_SHOOT\Bns_Shoot.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\BNS\BNS_SMALLSWORD\BNS_SMALLSWORD.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\BNS\BNS_SWORD\Bns_Sword.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="BNS_AXE" />
+        <_keyname keyname="BNS_SHOOT" />
+        <_keyname keyname="BNS_SMALLSWORD" />
+        <_keyname keyname="BNS_SWORD" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="BNS_SHOOT_Skill_fire" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mon_Fx_BNS_SWORD_Skill_1_Swin_01" />
+        <_sfx path="Mon_Fx_BNS_SWORD_Skill_1_Swin_02" />
+        <_sfx path="Mon_Fx_BNS_SWORD_Skill_1_Swin_03" />
+        <_sfx path="Mon_Fx_Bns_Axe_Cast_01" />
+        <_sfx path="Mon_Fx_Bns_Axe_Dash_Whirl" />
+        <_sfx path="Mon_Fx_Bns_Axe_swing_01" />
+        <_sfx path="Mon_Fx_Bns_Axe_swing_02" />
+        <_sfx path="Mon_Fx_Bns_Barrier_01" />
+        <_sfx path="Mon_Fx_Bns_SmallSword_swing_01" />
+        <_sfx path="Mon_Fx_Bns_SmallSword_swing_02" />
+        <_sfx path="Mon_Fx_Bns_SmallSword_swing_03" />
+        <_sfx path="Mon_Fx_Bns_Spawn" />
+        <_sfx path="Mon_Fx_Bns_leap01" />
+        <_sfx path="Mon_Fx_Bns_leap02" />
+        <_sfx path="Mon_Fx_Bns_spin_01" />
+        <_sfx path="Mon_Fx_Bns_trail_01" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SHOOT_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SHOOT_Skill_3_Remote_Attack_Area" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SHOOT_Skill_4_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SHOOT_Skill_5_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SHOOT_Skill_5_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="BNS_SMALLSWORD_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="4" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_Fx_Bns_ground_remote_01" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Common_Reflect" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_POISON" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="BNS_AXE_Skill03_Remote_Projectile" />
+        <_soundEventInfo id="BNS_AXE_Skill03_Remote_Projectile_End" />
+        <_soundEventInfo id="BNS_Axe_Normal_Die" />
+        <_soundEventInfo id="BNS_Axe_Normal_Fly_End" />
+        <_soundEventInfo id="BNS_Axe_Normal_Fly_Start" />
+        <_soundEventInfo id="BNS_Axe_Normal_Hit" />
+        <_soundEventInfo id="BNS_Axe_Normal_Jump_Land" />
+        <_soundEventInfo id="BNS_Axe_Normal_Jump_Ready" />
+        <_soundEventInfo id="BNS_Axe_Normal_Knockdown" />
+        <_soundEventInfo id="BNS_Axe_Normal_Lie_Return" />
+        <_soundEventInfo id="BNS_Axe_Normal_Move" />
+        <_soundEventInfo id="BNS_Axe_Normal_Pushed" />
+        <_soundEventInfo id="BNS_Axe_Normal_Spawn_10000" />
+        <_soundEventInfo id="BNS_Axe_Normal_Spawn_10100" />
+        <_soundEventInfo id="BNS_Axe_Normal_Spawn_10200" />
+        <_soundEventInfo id="BNS_Axe_Skill01_AttackA" />
+        <_soundEventInfo id="BNS_Axe_Skill01_AttackB" />
+        <_soundEventInfo id="BNS_Axe_Skill02_Attack" />
+        <_soundEventInfo id="BNS_Axe_Skill02_Ready" />
+        <_soundEventInfo id="BNS_Axe_Skill02_Return" />
+        <_soundEventInfo id="BNS_Axe_Skill03_Attack" />
+        <_soundEventInfo id="BNS_Axe_Skill04_Attack" />
+        <_soundEventInfo id="BNS_Axe_Skill04_Ready" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Die" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Fly_End" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Hit" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Jump_Land" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Jump_Ready" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Knockdown" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Lie_Return" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Pushed" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Spawn_10000" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Spawn_10100" />
+        <_soundEventInfo id="BNS_Shoot_Normal_Spawn_10200" />
+        <_soundEventInfo id="BNS_Shoot_Skill0102_Remote_Projectile" />
+        <_soundEventInfo id="BNS_Shoot_Skill01_Attack" />
+        <_soundEventInfo id="BNS_Shoot_Skill02_Attack" />
+        <_soundEventInfo id="BNS_Shoot_Skill03_Attack" />
+        <_soundEventInfo id="BNS_Shoot_Skill03_Remote_GroundRico" />
+        <_soundEventInfo id="BNS_Shoot_Skill04_Attack" />
+        <_soundEventInfo id="BNS_Shoot_Skill04_Remote_Projectile" />
+        <_soundEventInfo id="BNS_Shoot_Skill05_Attack" />
+        <_soundEventInfo id="BNS_Shoot_Skill05_Remote_Explosion" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_BodyFall" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Die" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Etra_01" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Fly" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Jump_End" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Jump_Start" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Knockdown" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Push" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Spawn_Drop" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="BNS_SmallSword_Normal_StandUp" />
+        <_soundEventInfo id="BNS_SmallSword_Skill01_Attack_01" />
+        <_soundEventInfo id="BNS_SmallSword_Skill01_Attack_02" />
+        <_soundEventInfo id="BNS_SmallSword_Skill01_Attack_03" />
+        <_soundEventInfo id="BNS_SmallSword_Skill02_Attack" />
+        <_soundEventInfo id="BNS_SmallSword_Skill02_End" />
+        <_soundEventInfo id="BNS_SmallSword_Skill03_Cast" />
+        <_soundEventInfo id="BNS_SmallSword_Skill03_End" />
+        <_soundEventInfo id="BNS_SmallSword_Skill04_Attack_01" />
+        <_soundEventInfo id="BNS_SmallSword_Skill04_Attack_02" />
+        <_soundEventInfo id="BNS_SmallSword_Skill04_Attack_03" />
+        <_soundEventInfo id="BNS_Sword_Die" />
+        <_soundEventInfo id="BNS_Sword_Hit" />
+        <_soundEventInfo id="BNS_Sword_KnockDown" />
+        <_soundEventInfo id="BNS_Sword_Skill01_01" />
+        <_soundEventInfo id="BNS_Sword_Skill01_02" />
+        <_soundEventInfo id="BNS_Sword_Skill01_03" />
+        <_soundEventInfo id="BNS_Sword_Skill_02" />
+        <_soundEventInfo id="BNS_Sword_Skill_03" />
+        <_soundEventInfo id="BNS_Sword_Spawn_Drop" />
+        <_soundEventInfo id="BNS_Sword_Spawn_DropGroundJump" />
+        <_soundEventInfo id="BNS_Sword_Spawn_WallJump" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Poison_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\BNS\BNS_Public_GT_EffectGate\BNS_Public_GT_EffectGate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\BNS\BNS_Public_GT_WoodGate\BNS_Public_GT_WoodGate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="BNS_Public_GT_EffectGate" />
+        <_keyname keyname="BNS_Public_GT_WoodGate" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Here" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="BNS_Public_GT_EffectGate_Close" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+        <_sfx path="bns_public_gt_effectgate_open_Fx" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="BNS_Public_GT_EffectGate_Open" />
+        <_soundEventInfo id="BNS_Public_GT_WoodGate_Open" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

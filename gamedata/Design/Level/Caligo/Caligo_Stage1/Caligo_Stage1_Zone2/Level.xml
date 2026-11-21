@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-2000" fSpacing="100" dwWidth="256" dwHeight="256" ReferenceLevel="Design\Level\ART_Levels\Caligo_Art\CLG_S1Z2" ReferenceOffset="1000000">
+      <LockStates />
+    </_LevelData>
+    <_PropResources>
+      <_PropRes ResKey="Graphic\BG\Landscape\CLG\CLG_S1Z2_Wall_H.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Beam_01\CLG_Beam_FrameE_03.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Beam_01\CLG_Beam_FrameE_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\CLG_Util_CrainB01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Beam_01\CLG_Beam_FrameD_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\CLG_Deco_ControlDM_02.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\CLG_Deco_ControlDM_01.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Deco_01\CLG_Deco_ControlDM_03.nif" seeThrough="True" />
+      <_PropRes ResKey="Graphic\BG\Asset\Util_01\CLG_Util_ElevatorA.nif" seeThrough="True" />
+    </_PropResources>
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights>
+      <_LightData id="200115" x="13606.82" y="12160.81" z="633.85" angx="-1.527692" angy="-1.570796" angz="0" type="3" bSwitch="1" bBGOnly="False" dimmer="1" ambientR="1" ambientG="1" ambientB="1" diffuseR="1" diffuseG="1" diffuseB="1" specularR="1" specularG="1" specularB="1" directionShadowDistance="2300" shadowBias="0" autoShadowDistance="True" bShadow="0" />
+      <_LightData id="500115" x="13606.82" y="12160.81" z="633.85" angx="-1.527692" angy="-1.570796" angz="0" type="3" bSwitch="1" bBGOnly="False" dimmer="1" ambientR="1" ambientG="1" ambientB="1" diffuseR="1" diffuseG="1" diffuseB="1" specularR="1" specularG="1" specularB="1" directionShadowDistance="2300" shadowBias="0" autoShadowDistance="True" bShadow="0" />
+      <_LightData id="300115" x="13606.82" y="12160.81" z="633.85" angx="-1.527692" angy="-1.570796" angz="0" type="3" bSwitch="1" bBGOnly="False" dimmer="1" ambientR="1" ambientG="1" ambientB="1" diffuseR="1" diffuseG="1" diffuseB="1" specularR="1" specularG="1" specularB="1" directionShadowDistance="2300" shadowBias="0" autoShadowDistance="True" bShadow="0" />
+      <_LightData id="100115" x="13606.82" y="12160.81" z="633.85" angx="-1.527692" angy="-1.570796" angz="0" type="3" bSwitch="1" bBGOnly="False" dimmer="1" ambientR="1" ambientG="1" ambientB="1" diffuseR="1" diffuseG="1" diffuseB="1" specularR="1" specularG="1" specularB="1" directionShadowDistance="2300" shadowBias="0" autoShadowDistance="True" bShadow="0" />
+      <_LightData id="400115" x="13606.82" y="12160.81" z="633.85" angx="-1.527692" angy="-1.570796" angz="0" type="3" bSwitch="1" bBGOnly="False" dimmer="1" ambientR="1" ambientG="1" ambientB="1" diffuseR="1" diffuseG="1" diffuseB="1" specularR="1" specularG="1" specularB="1" directionShadowDistance="2300" shadowBias="0" autoShadowDistance="True" bShadow="0" />
+    </_LevelLights>
+    <_LevelMaterials>
+      <_MaterialData name="CLG_S1Z2_LWF_Set" defaultMaterial="True" entityAmbientR="0.121569" entityAmbientG="0.164706" entityAmbientB="0.211765" entityDiffuseR="0.235294" entityDiffuseG="0.356863" entityDiffuseB="0.419608" entitySpecularR="0.858824" entitySpecularG="0.67451" entitySpecularB="0.290196" entityEmittanceR="0.019608" entityEmittanceG="0.019608" entityEmittanceB="0.019608" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="100" creatureAmbientR="0.066667" creatureAmbientG="0.156863" creatureAmbientB="0.203922" creatureDiffuseR="0.517647" creatureDiffuseG="0.376471" creatureDiffuseB="0.321569" creatureSpecularR="0.784314" creatureSpecularG="0.603922" creatureSpecularB="0.529412" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="60" dynamicAmbientR="0.086275" dynamicAmbientG="0.121569" dynamicAmbientB="0.137255" dynamicDiffuseR="0.329412" dynamicDiffuseG="0.337255" dynamicDiffuseB="0.337255" dynamicSpecularR="0.380392" dynamicSpecularG="0.360784" dynamicSpecularB="0.337255" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="40" levelAmbientR="0.47451" levelAmbientG="0.396078" levelAmbientB="0.486275" levelDiffuseR="0.701961" levelDiffuseG="0.603922" levelDiffuseB="0.482353" levelSpecularR="0.45098" levelSpecularG="0.4" levelSpecularB="0.407843" levelEmittanceR="0.039216" levelEmittanceG="0.039216" levelEmittanceB="0.039216" levelVertColIntR="0.5" levelVertColIntG="0.5" levelVertColIntB="0.5" levelShiness="80" sfxIntensity="0.6" itemIntensity="0.75" bgfxIntensity="1.5" hitColorIntensity="0.5" specularIntensity="1" dirDimmer="4.5" dirShadowBrightness="0.1" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.4" dirAmbientG="0.392157" dirAmbientB="0.403922" dirDiffuseR="0.635294" dirDiffuseG="0.815686" dirDiffuseB="0.835294" dirSpecularR="0.788235" dirSpecularG="0.737255" dirSpecularB="0.482353" globalAmbientR="0.121569" globalAmbientG="0.329412" globalAmbientB="0.592157" rimDirRotate="290" rimDirGradient="10" rimDirPower="4.2" rimColorR="0.243137" rimColorG="0.403922" rimColorB="0.501961" rimStrength="8.1" hdrExposure="1.51" hdrShoulderStrength="1.75" hdrLinearStrength="0.73" hdrLinearAngle="0.38" hdrToeStrength="1.21" hdrToeNumerator="0" hdrToeDenominator="0.64" hdrWhitePoint="2.38" bloomWhitePoint="0.32" bloomGradient="0.5" bloomStrength="1" bloomTintR="0.717647" bloomTintG="0.439216" bloomTintB="0.235294" bloomThreshold="0.45" bloomIntensity="0.78" bloomRadius="0.7" bloom2Intensity="0.65" bloom2Radius="1.5" bloom3Intensity="0.78" bloom3Radius="2.6" bloom4Intensity="0.8" bloom4Radius="3.2" bloom5Intensity="1.01" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="1.1" radius="1900" ambientR="0" ambientG="0" ambientB="0" diffuseR="1" diffuseG="0.8980392" diffuseB="0.7450981" specularR="0.627451" specularG="0.8392157" specularB="1" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs />
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

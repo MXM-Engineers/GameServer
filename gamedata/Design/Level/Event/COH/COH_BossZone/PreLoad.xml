@@ -1,0 +1,430 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\COH\COH_Galaxy_Arakhn\COH_Galaxy_Arakhn.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COH\COH_Galaxy_Photon\COH_Galaxy_Photon.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COH\COH_Galaxy_Quantum\COH_Galaxy_Quantum.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COH\COH_GhostWidow\COH_GhostWidow.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\COMMON\DUMMYCYLINDER\DummyCylinder.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Statesman\Statesman\Statesman.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc_Summon\GhostWidow\GhostWidow_Phantom\GhostWidow_Phantom.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="COH_Galaxy_Arakhn" />
+        <_keyname keyname="COH_Galaxy_Photon" />
+        <_keyname keyname="COH_Galaxy_Quantum" />
+        <_keyname keyname="COH_GhostWidow" />
+        <_keyname keyname="COH_GhostWidow_Phantom" />
+        <_keyname keyname="COH_STATESMAN" />
+        <_keyname keyname="DUMMYCYLINDER_DWTargetAgent_0" />
+        <_keyname keyname="DUMMYCYLINDER_DWTargetAgent_COH_GhostWidow_Event" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="FX_INTERACTION_Monitor" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_GT_5A_Aim_laser_Remote" />
+        <_sfx path="Mon_FX_GhostWidow_Skill3_Remote" />
+        <_sfx path="Mon_FX_GhostWidow_Skill3_Remote_Core" />
+        <_sfx path="Mon_Fx_COH_Cast_Hand_getin_01" />
+        <_sfx path="Mon_Fx_COH_Cast_Hand_getin_01_L" />
+        <_sfx path="Mon_Fx_COH_Cast_gun_01" />
+        <_sfx path="Mon_Fx_COH_Galaxy_Arakhn_Cast_01" />
+        <_sfx path="Mon_Fx_COH_Galaxy_Arakhn_EYE_01" />
+        <_sfx path="Mon_Fx_COH_Galaxy_Arakhn_Skill_1_cast" />
+        <_sfx path="Mon_Fx_COH_Galaxy_Photon_SK2_Swing" />
+        <_sfx path="Mon_Fx_COH_Galaxy_Quantum_SK2_Swing_01" />
+        <_sfx path="Mon_Fx_COH_GhostWidow_Skill_10_Remote_1" />
+        <_sfx path="Mon_Fx_COH_GhostWidow_Skill_11_Remote_1" />
+        <_sfx path="Mon_Fx_COH_GhostWidow_Skill_11_Remote_2" />
+        <_sfx path="Mon_Fx_COH_fire_gun_01" />
+        <_sfx path="Mon_Fx_Common_FireStart" />
+        <_sfx path="Mon_Fx_DESERT_HOLE_Remote_15s" />
+        <_sfx path="Mon_Fx_Desert_Hole_Remote" />
+        <_sfx path="Mon_Fx_GhostWidow_Emotion" />
+        <_sfx path="Mon_Fx_GhostWidow_Skill_Motion_00" />
+        <_sfx path="Mon_Fx_GhostWidow_Skill_Motion_01" />
+        <_sfx path="PC_FX_GhostWidow_EPSkill_Cast" />
+        <_sfx path="PC_FX_GhostWidow_EPSkill_Fire_Body" />
+        <_sfx path="PC_FX_GhostWidow_EPSkill_RTrail" />
+        <_sfx path="PC_FX_GhostWidow_NormalAttack_Disappear" />
+        <_sfx path="PC_FX_GhostWidow_NormalAttack_Fire" />
+        <_sfx path="PC_FX_GhostWidow_NormalAttack_Hit_Damage" />
+        <_sfx path="PC_FX_GhostWidow_NormalAttack_Remote" />
+        <_sfx path="PC_FX_GhostWidow_Shirk" />
+        <_sfx path="PC_FX_GhostWidow_Skill2_BGHit" />
+        <_sfx path="PC_FX_GhostWidow_Skill2_Cast" />
+        <_sfx path="PC_FX_GhostWidow_Skill2_Remote" />
+        <_sfx path="PC_FX_GhostWidow_Skill3_Cast" />
+        <_sfx path="PC_FX_GhostWidow_Skill4_Cast" />
+        <_sfx path="PC_FX_GhostWidow_Skill4_Creature_Trail" />
+        <_sfx path="PVP_INDICATOR_BLUE_Mon" />
+        <_sfx path="Pc_Fx_BreakFall" />
+        <_sfx path="Pc_Fx_Recall_Warp" />
+        <_sfx path="Pc_Fx_Statesman_Charge_01" />
+        <_sfx path="Pc_Fx_Statesman_Charge_Dash" />
+        <_sfx path="Pc_Fx_Statesman_Charge_Ready" />
+        <_sfx path="Pc_Fx_Statesman_EP" />
+        <_sfx path="Pc_Fx_Statesman_EP_Die" />
+        <_sfx path="Pc_Fx_Statesman_Normal_Attack1_L1" />
+        <_sfx path="Pc_Fx_Statesman_Normal_Attack1_R1" />
+        <_sfx path="Pc_Fx_Statesman_Skill2_Dash1" />
+        <_sfx path="Pc_Fx_Statesman_Skill4_Cast" />
+        <_sfx path="Pc_Fx_Tag_Show_All" />
+        <_sfx path="STATUS_FX_DYNAMIC_GROGGY" />
+        <_sfx path="Status_FX_PC_GhostWidow_EPSkill_Root" />
+        <_sfx path="Status_FX_PC_GhostWidow_Skill1_Dot" />
+        <_sfx path="Status_FX_PC_GhostWidow_Skill1_Heal" />
+        <_sfx path="Status_FX_PC_GhostWidow_Skill1_Link" />
+        <_sfx path="Status_FX_PC_GhostWidow_Skill3_Range_DOT" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED" colorIndex="1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash_Reverse" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="0" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Arakhn_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Arakhn_Skill_1_Remote_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Arakhn_Skill_2_Beam" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Arakhn_Skill_3_Remote_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Photon_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Photon_Skill_1_Remote_destroy" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_Galaxy_Quantum_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_COH_GhostWidow_Skill_10_Remote_2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Common_Fireloop_4m2s" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MOB_COH_Galaxy_Arakhn_BODY" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MOB_COH_Galaxy_Arakhn_LINK" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Tribe_Necromencer_Skill_8_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="PC_FX_GhostWidow_NormalAttack_Hit_Damage" colorIndex="0" />
+        <_sfxHWInfo path="PC_FX_GhostWidow_Skill4_BGHit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Normal_Attack1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Skill1_Area" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Skill1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Skill2_Attack" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Skill3_GrRemote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Statesman_Skill3_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BURNING" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRON_HUMANCLONE_RAGE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_3s_SHOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_HIDE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_STUN" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_FEAR" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SHIRK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_Statesman_Skill4_Selfbuff" colorIndex="-1" />
+        <_sfxHWNifInfo path="Graphic\Effect\Monster\Common_Effect\Mon_FX_Common_Hit_Shape_Spark.nif" colorIndex="0" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Die" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Fly_Start" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Hit" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_KnockDown_Start" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill01" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill01_Explosion_SFX" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill02" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill02_SFX" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill03" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill03_SFX" />
+        <_soundEventInfo id="COH_Galaxy_Arakhn_Skill04" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_BodyFall" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Die" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Fly_Start" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Jump_End" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Jump_Start" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Knockdown" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Push" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Spawn_01" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Normal_Spawn_02" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Skill01_Cast" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Skill01_Explosion_SFX_RMT" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Skill01_Shot_RMT" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Skill02_Shot" />
+        <_soundEventInfo id="COH_Galaxy_Photon_Skill03_Cast" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_BodyFall" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Die" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Fly_Start" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Jump_End" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Jump_Start" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Knockdown" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Push" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Spawn_01" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Normal_Spawn_02" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Skill01_Cast" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Skill01_Shot_RMT" />
+        <_soundEventInfo id="COH_Galaxy_Quantum_Skill02_Shot" />
+        <_soundEventInfo id="COH_GhostWidow_Buff_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Normal_Die_VOX" />
+        <_soundEventInfo id="COH_GhostWidow_Normal_Jump_End" />
+        <_soundEventInfo id="COH_GhostWidow_Normal_Jump_Start" />
+        <_soundEventInfo id="COH_GhostWidow_Normal_Stand" />
+        <_soundEventInfo id="COH_GhostWidow_Skill00_Weapon" />
+        <_soundEventInfo id="COH_GhostWidow_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill00_Weapon_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill01_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill01_Hit_RST" />
+        <_soundEventInfo id="COH_GhostWidow_Skill01_Shot_End_RST" />
+        <_soundEventInfo id="COH_GhostWidow_Skill01_Shot_RST" />
+        <_soundEventInfo id="COH_GhostWidow_Skill02_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill02_Explosion_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill02_Shot_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill03_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill03_Hit_RST" />
+        <_soundEventInfo id="COH_GhostWidow_Skill03_Shot_End_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill03_Shot_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill04_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill04_Explosion_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill05_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill05_End" />
+        <_soundEventInfo id="COH_GhostWidow_Skill05_Shot" />
+        <_soundEventInfo id="COH_GhostWidow_Skill07_Shot" />
+        <_soundEventInfo id="COH_GhostWidow_Skill10_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill10_Shot_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill11_Area_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_Skill11_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_Skill11_Shot_RMT" />
+        <_soundEventInfo id="COH_GhostWidow_SkillEP_Cast" />
+        <_soundEventInfo id="COH_GhostWidow_SkillEP_End" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_15sec" />
+        <_soundEventInfo id="Desert_Hole_NormalStand_Loop_End" />
+        <_soundEventInfo id="DronSlaughterFire_Normal_Fire" />
+        <_soundEventInfo id="GT5A_Skill_Laser_Charge" />
+        <_soundEventInfo id="GhostWidow_Skill01_Heal_End_RST" />
+        <_soundEventInfo id="GhostWidow_Skill01_Heal_RST" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="PC_Common_BackHome_Cast" />
+        <_soundEventInfo id="PC_Common_BackHome_End" />
+        <_soundEventInfo id="State_Fear_to_PC" />
+        <_soundEventInfo id="State_Fire_to_Monster" />
+        <_soundEventInfo id="State_Hide_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_PC" />
+        <_soundEventInfo id="State_Stun_to_Monster" />
+        <_soundEventInfo id="StatesMan_Normal_AirDodge" />
+        <_soundEventInfo id="StatesMan_Normal_Bodyfall" />
+        <_soundEventInfo id="StatesMan_Normal_Defeat_Fly" />
+        <_soundEventInfo id="StatesMan_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="StatesMan_Normal_Defeat_Push" />
+        <_soundEventInfo id="StatesMan_Normal_Die" />
+        <_soundEventInfo id="StatesMan_Normal_ElectricShock" />
+        <_soundEventInfo id="StatesMan_Normal_Emotion_01" />
+        <_soundEventInfo id="StatesMan_Normal_Emotion_02" />
+        <_soundEventInfo id="StatesMan_Normal_Emotion_03" />
+        <_soundEventInfo id="StatesMan_Normal_Footstep_Stop" />
+        <_soundEventInfo id="StatesMan_Normal_Hit" />
+        <_soundEventInfo id="StatesMan_Normal_Jump_End" />
+        <_soundEventInfo id="StatesMan_Normal_Jump_Start" />
+        <_soundEventInfo id="StatesMan_Normal_Return_Cast" />
+        <_soundEventInfo id="StatesMan_Normal_Return_End" />
+        <_soundEventInfo id="StatesMan_Normal_Revive" />
+        <_soundEventInfo id="StatesMan_Normal_Shirk" />
+        <_soundEventInfo id="StatesMan_Normal_Stand" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon_Charge_CastA" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon_Charge_CastB" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon_Charge_Shot" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="StatesMan_Skill00_Weapon_RMT" />
+        <_soundEventInfo id="StatesMan_Skill01_Area_RMT" />
+        <_soundEventInfo id="StatesMan_Skill01_Cast" />
+        <_soundEventInfo id="StatesMan_Skill01_Explosion_RMT" />
+        <_soundEventInfo id="StatesMan_Skill02_Shot" />
+        <_soundEventInfo id="StatesMan_Skill03_Cast" />
+        <_soundEventInfo id="StatesMan_Skill03_Hit_RMT" />
+        <_soundEventInfo id="StatesMan_Skill04_Cast" />
+        <_soundEventInfo id="StatesMan_Skill04_SK5_Cast" />
+        <_soundEventInfo id="StatesMan_SkillEP_Cast" />
+        <_soundEventInfo id="StatesMan_SkillEP_End" />
+        <_soundEventInfo id="TribeNecromancer_Normal_Skill_08_Defence_RMT" />
+        <_soundEventInfo id="COH_Boss_01" />
+        <_soundEventInfo id="COH_Boss_02" />
+        <_soundEventInfo id="COH_Boss_03" />
+        <_soundEventInfo id="COH_Boss_04" />
+        <_soundEventInfo id="COH_Boss_05" />
+        <_soundEventInfo id="COH_Boss_06" />
+        <_soundEventInfo id="COH_Boss_07" />
+        <_soundEventInfo id="COH_Boss_09" />
+        <_soundEventInfo id="COH_Boss_08" />
+        <_soundEventInfo id="COH_Operator_04" />
+        <_soundEventInfo id="COH_Boss_10" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\BNS\COH_Gate_Bollard\COH_Gate_Bollard.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Empty_AIobject_10M\Empty_AIobject_10M.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Empty_NoCollision\Empty_NoCollision.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="COH_Gate_Bollard" />
+        <_keyname keyname="Empty_AIobject_10M" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Level_Remote" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="Dynamic_Fx_COH_Gate_Bollard_Close" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mon_Fx_DRON_HUMANCLONE_Skill_5_Casting" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRAGGED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="COH_Gate_Bollard_Close" />
+        <_soundEventInfo id="COH_Gate_Bollard_Open" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

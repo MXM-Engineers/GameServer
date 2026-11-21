@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LightMapSettings forceUnwrap="False" maxStretch="0.5" gutterSize="5" padding="4" textureRatio="1" giColor="82, 82, 123" giMultiplier="1" giSecondaryBounce="1" aoAmount="1" aoRadius="200" aoSubDivs="16" dmcAmount="0.9" dmcThreshold="0.02" colorMappingGamma="2.2" irradMapPreset="LOW" ddsRescaleFilter="CUBIC" ddsMipmapFilter="BOX" useHDR="True" maxRGBMValue="6" />
+    <_LevelLights>
+      <_LightData id="1000184" lightType="LM_DIRECTIONAL" x="39869.9" y="13552.2" z="5820.59" angx="-57.76" angy="17.19" angz="10.56" scale="1">
+        <LM_Light useLight="True" hotspot="4309.5" fallOff="8330" shape="Circle" aspect="1" shadow="False" color="13, 47, 60" multiplier="0.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="False" show="False" start="7146.25" end="13936" areaShadow="True" vrayShape="Sphere" uvwSize="512" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000183" lightType="LM_DIRECTIONAL" x="43334.4" y="24804.8" z="8441.16" angx="40.98" angy="-9.18" angz="-169.59" scale="1">
+        <LM_Light useLight="True" hotspot="3026.5" fallOff="7331" shape="Circle" aspect="1" shadow="True" color="182, 129, 83" multiplier="0.7" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="7585.89" end="14216.1" areaShadow="True" vrayShape="Sphere" uvwSize="64" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000299" lightType="LM_POINT" x="44772.4" y="18894.7" z="1989.73" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000298" lightType="LM_POINT" x="44793.2" y="18870" z="2353.86" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="104.015" end="342.285" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000297" lightType="LM_POINT" x="43941.3" y="18197.4" z="1989.73" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000296" lightType="LM_POINT" x="43962.1" y="18172.6" z="2353.86" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="104.015" end="342.285" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000295" lightType="LM_POINT" x="42934.4" y="17352.5" z="1989.73" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000294" lightType="LM_POINT" x="42955.1" y="17327.7" z="2353.86" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="104.015" end="342.285" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000293" lightType="LM_POINT" x="42097.3" y="16650.1" z="1989.73" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000292" lightType="LM_POINT" x="42118.1" y="16625.3" z="2353.86" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="104.015" end="342.285" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000291" lightType="LM_POINT" x="39268.2" y="19505.6" z="1989.73" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000290" lightType="LM_POINT" x="42505.8" y="22222.2" z="1955.19" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000289" lightType="LM_POINT" x="41664.6" y="21516.4" z="1955.19" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000288" lightType="LM_POINT" x="40931.4" y="20901.2" z="1955.19" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="False" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000287" lightType="LM_POINT" x="40098.5" y="20202.3" z="1955.19" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="380" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000286" lightType="LM_POINT" x="39234.7" y="19540.9" z="2186.58" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="244, 143, 47" multiplier="1.5" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000285" lightType="LM_POINT" x="45024.5" y="19908.4" z="3256.15" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="10, 102, 128" multiplier="0.4" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="False" start="653.34" end="1334.07" areaShadow="True" vrayShape="Sphere" uvwSize="64" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000284" lightType="LM_POINT" x="43293.3" y="22832.1" z="2368.09" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="36, 57, 111" multiplier="0.4" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="264.222" end="1967.52" areaShadow="True" vrayShape="Sphere" uvwSize="128" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000283" lightType="LM_POINT" x="42474.6" y="22260.3" z="2157.66" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000202" lightType="LM_POINT" x="43895.1" y="16085.7" z="4125.27" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="False" color="13, 47, 60" multiplier="0.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="False" start="2221.77" end="2951.02" areaShadow="True" vrayShape="Sphere" uvwSize="64" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000201" lightType="LM_POINT" x="46041.4" y="18869.5" z="2368.81" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="36, 57, 111" multiplier="0.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="False" start="967.4271" end="3535.19" areaShadow="True" vrayShape="Sphere" uvwSize="64" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000200" lightType="LM_POINT" x="41896.4" y="19409.7" z="2829.4" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="184, 134, 106" multiplier="0.25" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="False" start="1449.38" end="3150.22" areaShadow="True" vrayShape="Sphere" uvwSize="32" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000199" lightType="LM_POINT" x="45013.9" y="20040.9" z="2180.04" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="710.425" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000198" lightType="LM_POINT" x="43460" y="21911.5" z="2180.04" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725.353" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000197" lightType="LM_POINT" x="39452.6" y="16585.6" z="2766.33" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="182, 129, 83" multiplier="2" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="142.58" end="416.33" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000196" lightType="LM_POINT" x="37707.6" y="16295.4" z="2699.12" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="182, 129, 83" multiplier="0.5" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="285.697" end="994.371" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000195" lightType="LM_POINT" x="37101.3" y="16397.1" z="2699.9" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="172, 80, 30" multiplier="0.8" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="195.89" end="363.96" areaShadow="True" vrayShape="Sphere" uvwSize="16" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000194" lightType="LM_POINT" x="38234.1" y="16771.2" z="3008.42" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="182, 129, 83" multiplier="1" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="374.273" end="888.058" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000193" lightType="LM_POINT" x="38588.4" y="16110.2" z="3008.42" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="182, 129, 83" multiplier="1" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="445.563" end="671.5" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="8" />
+      </_LightData>
+      <_LightData id="1000192" lightType="LM_POINT" x="42156.4" y="16567.6" z="2178.36" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000191" lightType="LM_POINT" x="42994.4" y="17270.8" z="2178.36" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000190" lightType="LM_POINT" x="43997.2" y="18112.2" z="2178.36" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000189" lightType="LM_POINT" x="44824.4" y="18806.3" z="2178.36" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000188" lightType="LM_POINT" x="40065" y="20242.2" z="2180.04" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725.353" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000187" lightType="LM_POINT" x="41648.5" y="21567.1" z="2180.04" angx="0" angy="0" angz="-40" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725.353" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000186" lightType="LM_POINT" x="40903.2" y="20951.4" z="2180.04" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 108, 75" multiplier="1.3" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="119.558" end="725.353" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000185" lightType="LM_POINT" x="40969.1" y="17279.6" z="2129.2" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light useLight="True" shadow="True" color="181, 120, 75" multiplier="0.6" useNearAttan="False" showNearAttan="False" startNearAttan="-1" endNearAttan="-1" use="True" show="True" start="95" end="565.216" areaShadow="True" vrayShape="Sphere" uvwSize="10" subdivs="24" />
+      </_LightData>
+      <_LightData id="1000308" lightType="LMVrayLight" x="39176.5" y="16558.9" z="2781.38" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="150" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000307" lightType="LMVrayLight" x="41077.5" y="16498.4" z="3783.6" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="700" color="12, 30, 65" multiplier="3" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000306" lightType="LMVrayLight" x="40616.8" y="17531.6" z="2294.84" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="170" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000305" lightType="LMVrayLight" x="39288.8" y="19460.3" z="2176.38" angx="72.91" angy="53.78" angz="76.07" scale="1">
+        <LM_Light halfWidth="100" halfLength="130" color="244, 143, 47" multiplier="10" useLight="True" subdivs="24" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0.3" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000304" lightType="LMVrayLight" x="39451.8" y="19090.5" z="2241.93" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="160" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000303" lightType="LMVrayLight" x="43361.1" y="20806.2" z="2033" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="300" color="244, 143, 47" multiplier="1.5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000302" lightType="LMVrayLight" x="44676.3" y="19964.1" z="2045.07" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="200" color="244, 143, 47" multiplier="4" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000301" lightType="LMVrayLight" x="43375.2" y="21599.7" z="1921.67" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="150" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000300" lightType="LMVrayLight" x="43751.8" y="21441.3" z="2152.62" angx="90" angy="44.27" angz="0" scale="1">
+        <LM_Light halfWidth="300" halfLength="250" color="244, 143, 47" multiplier="3" useLight="True" subdivs="24" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0.4" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000182" lightType="LMVrayLight" x="39139.8" y="16572.7" z="2762.2" angx="0" angy="0" angz="45" scale="1">
+        <LM_Light halfWidth="20" halfLength="20" color="194, 113, 67" multiplier="300" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000181" lightType="LMVrayLight" x="38431.9" y="17383.1" z="2762.2" angx="0" angy="0" angz="45" scale="1">
+        <LM_Light halfWidth="20" halfLength="20" color="194, 113, 67" multiplier="300" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000180" lightType="LMVrayLight" x="33055.5" y="19603" z="0" angx="0" angy="0" angz="0" scale="1">
+        <LM_Light halfWidth="693.628" halfLength="571.494" color="255, 255, 255" multiplier="1" useLight="True" subdivs="32" shadow="True" type="Dome" doubleside="False" dome_spherical="True" lightDistribution="0" MapName="Graphic\BG\Temp\HDRI\MXM_interior_VTS.hdr" mappingtype="Spherical" horizontalRotation="9.00001" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000179" lightType="LMVrayLight" x="43129.4" y="17443.5" z="3130.72" angx="62.76" angy="36.3" angz="72.54" scale="1">
+        <LM_Light halfWidth="1800" halfLength="60" color="190, 143, 101" multiplier="3" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000178" lightType="LMVrayLight" x="43643.5" y="21196" z="2491.87" angx="-90" angy="-40" angz="-180" scale="1">
+        <LM_Light halfWidth="300" halfLength="200" color="184, 134, 106" multiplier="4" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000177" lightType="LMVrayLight" x="44357.6" y="20443.6" z="2491.87" angx="90" angy="40" angz="0" scale="1">
+        <LM_Light halfWidth="300" halfLength="250" color="184, 134, 106" multiplier="4" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000176" lightType="LMVrayLight" x="44137.8" y="20937.7" z="1632.02" angx="-166.83" angy="15.19" angz="-138.24" scale="1">
+        <LM_Light halfWidth="200" halfLength="120" color="244, 143, 47" multiplier="2" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0.2" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000162" lightType="LMVrayLight" x="44079.1" y="20888.4" z="3149.41" angx="-6.47" angy="7.64" angz="-40.43" scale="1">
+        <LM_Light halfWidth="230" halfLength="230" color="184, 134, 106" multiplier="7" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0.2" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000159" lightType="LMVrayLight" x="39751.2" y="17840.7" z="1882.13" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="111" halfLength="600" color="176, 106, 67" multiplier="1.25" useLight="True" subdivs="32" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000158" lightType="LMVrayLight" x="40544.9" y="21019.5" z="5007.3" angx="0" angy="0" angz="47.54" scale="1">
+        <LM_Light halfWidth="1900" halfLength="800" color="12, 30, 65" multiplier="7" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0.25" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000152" lightType="LMVrayLight" x="38405.8" y="16073.1" z="2876.43" angx="79.62" angy="42.42" angz="-90.58" scale="1">
+        <LM_Light halfWidth="100" halfLength="170" color="182, 129, 83" multiplier="2" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000141" lightType="LMVrayLight" x="39762" y="17814" z="3124.38" angx="-90" angy="50" angz="0" scale="1">
+        <LM_Light halfWidth="800" halfLength="500" color="183, 103, 67" multiplier="1.5" useLight="True" subdivs="32" shadow="True" type="Plane" doubleside="True" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000140" lightType="LMVrayLight" x="38177.5" y="16798.8" z="5007.3" angx="0" angy="0" angz="47.54" scale="1">
+        <LM_Light halfWidth="1200" halfLength="800" color="27, 87, 121" multiplier="2" useLight="True" subdivs="32" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000135" lightType="LMVrayLight" x="44900.9" y="19936.3" z="2206.63" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="25" halfLength="25" color="194, 113, 67" multiplier="300" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000115" lightType="LMVrayLight" x="43334.8" y="21802.8" z="2206.63" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="25" halfLength="25" color="194, 113, 67" multiplier="300" useLight="True" subdivs="8" shadow="True" type="Plane" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000309" lightType="LMVrayLight" x="38216.7" y="17310.7" z="2790.38" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="150" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000310" lightType="LMVrayLight" x="42401.1" y="21864.8" z="2084.04" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="150" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000311" lightType="LMVrayLight" x="41088.5" y="20826" z="1875.09" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="100" color="244, 143, 47" multiplier="5" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000312" lightType="LMVrayLight" x="40943" y="20924.6" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000313" lightType="LMVrayLight" x="41657.7" y="21524.3" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000314" lightType="LMVrayLight" x="40095.4" y="20213.4" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000315" lightType="LMVrayLight" x="42501.1" y="22232" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000316" lightType="LMVrayLight" x="43444.5" y="21903.1" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000317" lightType="LMVrayLight" x="44999.8" y="20039.6" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000318" lightType="LMVrayLight" x="39253.7" y="19501.9" z="2328.23" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="60" color="200, 115, 50" multiplier="8" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+      <_LightData id="1000319" lightType="LMVrayLight" x="37161.9" y="15642.1" z="3783.6" angx="0" angy="0" angz="50" scale="1">
+        <LM_Light halfWidth="200" halfLength="700" color="12, 30, 65" multiplier="3" useLight="True" subdivs="24" shadow="True" type="Sphere" doubleside="False" dome_spherical="False" lightDistribution="0" mappingtype="Angular" horizontalRotation="0" verticalRotation="0" horizontalFlip="False" verticalFlip="False" overal_mult="1" render_mult="1" gamma="1" />
+      </_LightData>
+    </_LevelLights>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

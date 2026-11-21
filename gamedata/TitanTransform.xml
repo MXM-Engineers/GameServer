@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<TITAN cost="5" votePeriod="5000" teamCoolTime="10000" failPlayerCool="60000" endTeamCool="10000" endPlayerCool="0" giants="105001102 105001100 105001101">
+  <FORM doc="100000900" duration="25000" weapon="131190000" skill1="189000010" skill2="189000020" ug="189000050" moveSpeed="800">
+    <STAT type="0" value="12000" />
+    <STAT type="2" value="200" />
+    <STAT type="5" value="8" />
+    <STAT type="6" value="1248" />
+    <STAT type="7" value="30" />
+    <STAT type="9" value="3" />
+    <STAT type="10" value="150" />
+    <STAT type="13" value="100" />
+    <STAT type="14" value="100" />
+    <STAT type="15" value="100" />
+    <STAT type="16" value="1" />
+    <STAT type="18" value="2000" />
+    <STAT type="20" value="100" />
+    <STAT type="22" value="2" />
+    <STAT type="23" value="10" />
+    <STAT type="29" value="20" />
+    <STAT type="31" value="10" />
+    <STAT type="37" value="120" />
+    <STAT type="42" value="0.6" />
+    <STAT type="46" value="5" />
+    <STAT type="52" value="100" />
+    <STAT type="54" value="15" />
+    <STAT type="55" value="15" />
+    <STAT type="63" value="3" />
+    <STAT type="64" value="150" />
+  </FORM>
+  <FORM doc="100000901" duration="0" weapon="131190001" skill1="189100010" skill2="189100020" ug="189100050" moveSpeed="540">
+    <STAT type="0" value="12000" />
+    <STAT type="2" value="200" />
+    <STAT type="5" value="8" />
+    <STAT type="6" value="2826" />
+    <STAT type="7" value="200" />
+    <STAT type="9" value="3" />
+    <STAT type="10" value="150" />
+    <STAT type="13" value="100" />
+    <STAT type="14" value="100" />
+    <STAT type="15" value="100" />
+    <STAT type="16" value="1" />
+    <STAT type="18" value="2000" />
+    <STAT type="22" value="2" />
+    <STAT type="23" value="10" />
+    <STAT type="29" value="20" />
+    <STAT type="31" value="10" />
+    <STAT type="37" value="120" />
+    <STAT type="42" value="0.6" />
+    <STAT type="46" value="5" />
+    <STAT type="52" value="100" />
+    <STAT type="54" value="15" />
+    <STAT type="55" value="15" />
+    <STAT type="63" value="3" />
+    <STAT type="64" value="150" />
+  </FORM>
+</TITAN>

@@ -1,0 +1,501 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\L2_ANTNEST\L2_Nanny_Ant\L2_Nanny_Ant.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\LACRIMOSA_FLOWER\LACRIMOSA_FLOWER.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_melee\MONOS_melee.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\PvE_DEFENCE\Defense_Public_In_Turret\Defense_Public_In_Turret_Blue_2.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\PvP\PVP_TITAN_ROBOT_COMPONENT\PVP_TITAN_ROBOT_COMPONENT.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\PvP\PvP_GoT_Core\PvP_GoT_Core_TC.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\PvP\PvP_Titan_Tower_TC\PvP_Titan_Tower_Center.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\PvP\PvP_Titan_Ward\PvP_Titan_Ward.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Defender\Defender\Defender.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc\Striker\Striker\Striker.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1\DEFENDER_SHIELDWALL_1.kfm" texture="" />
+        <_resource path="Graphic\Creature\Pc_Summon\Defender\DEFENDER_SHIELDWALL_1\DEFENDER_SHIELDWALL_2.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PC_Summon\DynamicObj_DEFENDER_SHIELDWALL_1\DynamaicObj_DEFENDER_SHIELDWALL_1.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PC_Summon\DynamicObj_DEFENDER_SHIELDWALL_1\DynamaicObj_DEFENDER_SHIELDWALL_2.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Titan_Piece_01.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="AI_DEFENDER" />
+        <_keyname keyname="AI_DEFENDER_Titan" />
+        <_keyname keyname="AI_STRIKER" />
+        <_keyname keyname="AI_STRIKER_Titan" />
+        <_keyname keyname="DEFENDER_SHIELDWALL_1" />
+        <_keyname keyname="DEFENDER_SHIELDWALL_2" />
+        <_keyname keyname="DF_TURRET_FRIENDLY_2" />
+        <_keyname keyname="DynamicObj_DEFENDER_SHIELDWALL_1" />
+        <_keyname keyname="DynamicObj_DEFENDER_SHIELDWALL_2" />
+        <_keyname keyname="L2_Nanny_Ant" />
+        <_keyname keyname="LACRIMOSA_FLOWER" />
+        <_keyname keyname="MONOS_melee" />
+        <_keyname keyname="PVP_TITAN_ROBOT_COMPONENT" />
+        <_keyname keyname="PvP_GoT_Core" />
+        <_keyname keyname="PvP_Titan_Tower_Center" />
+        <_keyname keyname="PvP_Titan_Ward" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="Dynamic_Fx_Defense_Public_In_Turret_Blue_End_Core" />
+        <_sfx path="Dynamic_Fx_Defense_Public_In_Turret_Blue_End_Pillar01" />
+        <_sfx path="Dynamic_Fx_Defense_Public_In_Turret_Blue_Start" />
+        <_sfx path="FX_INTERACTION_Monitor" />
+        <_sfx path="Item_TitanDrop_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_Monos_Spore_Ground_explosion" />
+        <_sfx path="Mon_FX_L2_Nanny_Ant_Skill_2_Cast" />
+        <_sfx path="Mon_FX_L2_Solider_Ant_Spawn_Dust" />
+        <_sfx path="Mon_FX_L2_Worker_Ant_Skill_1_Cast" />
+        <_sfx path="Mon_FX_L2_Worker_Ant_Tail_Dust" />
+        <_sfx path="Mon_Fx_Common_Attack_Range_90_RED" />
+        <_sfx path="Mon_Fx_DRON_HUMANCLONE_Skill_5_Casting" />
+        <_sfx path="Mon_Fx_Desert_Atlassandstorm_Skill_3_Remote" />
+        <_sfx path="Mon_Fx_LACRIMOSA_FLOWER_Skill_1" />
+        <_sfx path="Mon_Fx_LACRIMOSA_FLOWER_Spawn" />
+        <_sfx path="Mon_Fx_MONOS_melee_Dust" />
+        <_sfx path="Mon_Fx_MONOS_melee_Swing_01" />
+        <_sfx path="Mon_Fx_PvP_GoT_Core_Skill_1_Cast" />
+        <_sfx path="Mon_Fx_PvP_GoT_Core_Skill_1_Explosion" />
+        <_sfx path="Mon_Fx_PvP_GoT_Core_Skill_1_Hit" />
+        <_sfx path="Mon_Fx_PvP_Titan_Ward" />
+        <_sfx path="PC_FX_Striker_Skill_Command_Attack" />
+        <_sfx path="PC_Fx_Defender_ShieldWall_End" />
+        <_sfx path="Pc_Fx_BreakFall" />
+        <_sfx path="Pc_Fx_DEFENDER_SHIELD_1_FX" />
+        <_sfx path="Pc_Fx_Defender_EP_Buff_Cast" />
+        <_sfx path="Pc_Fx_Defender_Reflect_Hit" />
+        <_sfx path="Pc_Fx_Defender_ShieldWall_Small_End" />
+        <_sfx path="Pc_Fx_Defender_ShieldWall_Small_Start" />
+        <_sfx path="Pc_Fx_Defender_ShieldWall_Start" />
+        <_sfx path="Pc_Fx_Defender_Skill3_Shield_Hit_Remote" />
+        <_sfx path="Pc_Fx_Defender_Skill4_Area_Remote" />
+        <_sfx path="Pc_Fx_Defender_Skill4_Dash" />
+        <_sfx path="Pc_Fx_Defender_normal_Throw_l" />
+        <_sfx path="Pc_Fx_Defender_normal_Throw_r" />
+        <_sfx path="Pc_Fx_Recall_Warp" />
+        <_sfx path="Pc_Fx_STAGESKILL_Wind_Remote" />
+        <_sfx path="Pc_Fx_StageSkill_Heal_Remote" />
+        <_sfx path="Pc_Fx_Striker_CANNONFIST_Hit" />
+        <_sfx path="Pc_Fx_Striker_CannonFist_Fire" />
+        <_sfx path="Pc_Fx_Striker_CannonFist_Remote_3" />
+        <_sfx path="Pc_Fx_Striker_EP_Skill_Area" />
+        <_sfx path="Pc_Fx_Tag_Show_All" />
+        <_sfx path="PhysX_Defense_Public_In_Turret_Blue_Crystal_PhysX" />
+        <_sfx path="PhysX_Defense_Public_In_Turret_Blue_PhysX" />
+        <_sfx path="PhysX_GOT_Core" />
+        <_sfx path="PhysX_PvP_Titan_Tower" />
+        <_sfx path="PhysX_PvP_Titan_Tower_A_Body" />
+        <_sfx path="PhysX_PvP_Titan_Tower_A_Wi_1" />
+        <_sfx path="PhysX_PvP_Titan_Tower_A_Wi_2" />
+        <_sfx path="PhysX_PvP_Titan_Tower_A_Wi_3" />
+        <_sfx path="PhysX_PvP_Titan_Tower_Crystal" />
+        <_sfx path="PhysX_PvP_Titan_Tower_Crystal_Die" />
+        <_sfx path="PhysX_PvP_Titan_Tower_Die_Wi" />
+        <_sfx path="PvP_GoT_Core_Blue_Explosion" />
+        <_sfx path="PvP_GoT_Core_Blue_Explosion_Pre" />
+        <_sfx path="PvP_GoT_Core_Blue_Idle" />
+        <_sfx path="PvP_GoT_Core_Blue_Spawn" />
+        <_sfx path="PvP_GoT_Core_Red_Explosion" />
+        <_sfx path="PvP_GoT_Core_Red_Explosion_Pre" />
+        <_sfx path="PvP_GoT_Core_Red_Idle" />
+        <_sfx path="PvP_GoT_Core_Red_Spawn" />
+        <_sfx path="PvP_Titan_Robot_Component_Shield" />
+        <_sfx path="PvP_Titan_Robot_Component_Skill1_Cast_Pre" />
+        <_sfx path="PvP_Titan_Robot_Component_Skill2_Cast" />
+        <_sfx path="PvP_Titan_Robot_Component_Skill3_Cast" />
+        <_sfx path="PvP_Titan_Robot_Component_SkillCast" />
+        <_sfx path="PvP_Titan_Tower_Center_Exp" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SpeedUp" />
+        <_sfx path="STATUS_FX_TOWER_SHIELD" />
+        <_sfx path="STATUS_Fx_Pc_Defender_Skill3_Shield" />
+        <_sfx path="STATUS_Fx_Pc_Defender_Skill3_Shield_Hit" />
+        <_sfx path="Status_Fx_Pc_Striker_Skill_Command_Attack_Range_20" />
+        <_sfx path="Test_StrikerEPSkill_Fire" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED" colorIndex="1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_GT_5A_Aim_laser_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Mob_Fx_MONOS_Melee_Area_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_FX_L2_Nanny_Ant_Skill_2_remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_L2_Nanny_Ant_Skill_3_remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DF_TURRET_FRIENDLY_Skill_1_Ground" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_DF_TURRET_FRIENDLY_Skill_1_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_DF_TURRET_Laser_Guide" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_GoT_Main_Explosion" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_MAIN_TURRET_PVP_Skill_3_FIRE" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MAIN_TURRET_PVP_Skill_3_Remote_1" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_PvP_GoT_Core_Skill_1_Area" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_SUB_TURRET_PVP_Skill_3_Area" colorIndex="1" />
+        <_sfxHWInfo path="Mon_Fx_SUB_TURRET_PVP_Skill_3_Cast" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TURRET_PVP_Homing_Hit" colorIndex="1" />
+        <_sfxHWInfo path="PC_Fx_Stricker_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Defender_EP_Buff" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Defender_ShieldWall_SpawnSign" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Defender_normal_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Defender_normal_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_BOMB" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Stricker_Dogpalm_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_EP_Skill_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Loop" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Remain" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Grenade_Remote" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Rifle_Bullet_Normal" colorIndex="1" />
+        <_sfxHWInfo path="Pc_Fx_Striker_Rifle_Hit_Normal" colorIndex="-1" />
+        <_sfxHWInfo path="PvP_Titan_Robot_Component_Attack_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="PvP_Titan_Robot_Component_Attack_Remote_Hit" colorIndex="0" />
+        <_sfxHWInfo path="PvP_Titan_Robot_Component_Beam_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="PvP_Titan_Robot_Component_Range_Damage_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_ITEM_CONTINUITY_HP" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_POISON" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_STUN" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_Mob_Exclamation_Mark_Titan_Turret" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_ATTACK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_COHBUFF" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_COHBUFF_Start" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Attack_Buff" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Attack_Buff_Range" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Regen_Buff" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Regen_Buff_Range" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Skill_Buff" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_DF_Skill_Buff_Range" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_Defender_Evade" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_MOVESPEED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SHIRK" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_SUPERARMOR" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_TARGET" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_TITAN_DROPITEM_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_Fx_Pc_Defender_Shield" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_Fx_Pc_Defender_Shield_Die" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="COH_Buff_Remote" />
+        <_soundEventInfo id="DF_Turret_Friendly_Normal_Die" />
+        <_soundEventInfo id="DF_Turret_Friendly_Normal_Spawn_02" />
+        <_soundEventInfo id="DF_Turret_Friendly_Skill01_Remote_Ground" />
+        <_soundEventInfo id="DF_Turret_Friendly_Skill01_Remote_Projectile" />
+        <_soundEventInfo id="Defender_Normal_AirDodge" />
+        <_soundEventInfo id="Defender_Normal_Bodyfall" />
+        <_soundEventInfo id="Defender_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Defender_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="Defender_Normal_Defeat_Push" />
+        <_soundEventInfo id="Defender_Normal_Die" />
+        <_soundEventInfo id="Defender_Normal_ElectricShock" />
+        <_soundEventInfo id="Defender_Normal_Emotion_01" />
+        <_soundEventInfo id="Defender_Normal_Emotion_02" />
+        <_soundEventInfo id="Defender_Normal_Emotion_03" />
+        <_soundEventInfo id="Defender_Normal_Hit" />
+        <_soundEventInfo id="Defender_Normal_Jump_End" />
+        <_soundEventInfo id="Defender_Normal_Jump_Start" />
+        <_soundEventInfo id="Defender_Normal_Return_Start" />
+        <_soundEventInfo id="Defender_Normal_Revive" />
+        <_soundEventInfo id="Defender_Normal_Shirk" />
+        <_soundEventInfo id="Defender_Normal_Tag" />
+        <_soundEventInfo id="Defender_Skill00_Weapon" />
+        <_soundEventInfo id="Defender_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="Defender_Skill01_Cast" />
+        <_soundEventInfo id="Defender_Skill01_End" />
+        <_soundEventInfo id="Defender_Skill01_Reflect_RMT" />
+        <_soundEventInfo id="Defender_Skill02_Cast" />
+        <_soundEventInfo id="Defender_Skill02_End" />
+        <_soundEventInfo id="Defender_Skill02_Shot" />
+        <_soundEventInfo id="Defender_Skill03_Cast" />
+        <_soundEventInfo id="Defender_Skill03_Explosion_RST" />
+        <_soundEventInfo id="Defender_Skill04_Cast" />
+        <_soundEventInfo id="Defender_Skill04_End_RST" />
+        <_soundEventInfo id="Defender_Skill04_Shot" />
+        <_soundEventInfo id="Defender_SkillEP_Cast" />
+        <_soundEventInfo id="Defender_SkillEP_End_RST" />
+        <_soundEventInfo id="Defense_Dragged" />
+        <_soundEventInfo id="Defense_Wind_Remote" />
+        <_soundEventInfo id="Desert_AtlasSandStorm_Skill03_Explosion" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Die" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Fly_End" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Fly_Start" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Jump_End" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Jump_Start" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Knockdown_Start" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Spawn_Jump" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Spawn_Lift" />
+        <_soundEventInfo id="L2_Nanny_Ant_Normal_Standup" />
+        <_soundEventInfo id="L2_Nanny_Ant_Skill01_Start" />
+        <_soundEventInfo id="L2_Nanny_Ant_Skill02_End" />
+        <_soundEventInfo id="L2_Nanny_Ant_Skill02_Ready" />
+        <_soundEventInfo id="L2_Nanny_Ant_Skill02_Start" />
+        <_soundEventInfo id="L2_Nanny_Ant_Skill03_Start" />
+        <_soundEventInfo id="Lacrimosa_Flower_Attack" />
+        <_soundEventInfo id="Lacrimosa_Flower_Die" />
+        <_soundEventInfo id="Lacrimosa_Flower_Spawn" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="Monos_Baby_Normal" />
+        <_soundEventInfo id="Monos_Melee_Defeat_Airborne" />
+        <_soundEventInfo id="Monos_Melee_Defeat_KnockDown" />
+        <_soundEventInfo id="Monos_Melee_Defeat_StandUp" />
+        <_soundEventInfo id="Monos_Melee_Die_Vox" />
+        <_soundEventInfo id="Monos_Melee_Move_VOX" />
+        <_soundEventInfo id="Monos_Melee_Nomal_Spawn_VOX" />
+        <_soundEventInfo id="Monos_Melee_Normal_Attack_VOX" />
+        <_soundEventInfo id="Monos_Melee_Normal_EvadeL" />
+        <_soundEventInfo id="Monos_Melee_Normal_EvadeR" />
+        <_soundEventInfo id="Monos_Melee_Skill01" />
+        <_soundEventInfo id="Monos_Melee_Skill02" />
+        <_soundEventInfo id="PC_Common_BackHome_Cast" />
+        <_soundEventInfo id="PC_Common_BackHome_End" />
+        <_soundEventInfo id="PVP_Titan_Tower_Center_Normal_Die_ACT" />
+        <_soundEventInfo id="PVP_Titan_Tower_Center_Normal_Extramotion_ACT" />
+        <_soundEventInfo id="PVP_Titan_Tower_Center_Normal_Spawn_ACT" />
+        <_soundEventInfo id="PVP_Titan_Tower_Center_Skill04_Shot_SFX" />
+        <_soundEventInfo id="PvP_GoT_Core_Die" />
+        <_soundEventInfo id="PvP_GoT_Core_Skill01" />
+        <_soundEventInfo id="PvP_GoT_Core_Stand" />
+        <_soundEventInfo id="PvP_GoT_Turret_Main_Skill_Remote_Destroy" />
+        <_soundEventInfo id="PvP_GoT_Turret_Main_Skill_Remote_Hit" />
+        <_soundEventInfo id="PvP_GoT_Turret_Main_Skill_Remote_Projectile" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Die" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Extramotion01" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Extramotion02" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Shield_RMT" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Shield_RMT_Stop" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Normal_Spawn" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Skill01" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Skill02" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Skill03_Ready" />
+        <_soundEventInfo id="PvP_Titan_Robot_Component_Skill03_Shot" />
+        <_soundEventInfo id="PvP_Titan_Ward_Normal_Die" />
+        <_soundEventInfo id="PvP_Titan_Ward_Normal_Spawn" />
+        <_soundEventInfo id="PvP_Titan_Ward_Normal_Stand" />
+        <_soundEventInfo id="PvP_Titan_Ward_Normal_Stand_Stop" />
+        <_soundEventInfo id="STATUS_SFX_MOB_HPREGEN" />
+        <_soundEventInfo id="State_Poison_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_PC" />
+        <_soundEventInfo id="State_Stun_to_Monster" />
+        <_soundEventInfo id="Striker_Normal_AirDodge" />
+        <_soundEventInfo id="Striker_Normal_Bodyfall" />
+        <_soundEventInfo id="Striker_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Striker_Normal_Defeat_KnockDown" />
+        <_soundEventInfo id="Striker_Normal_Defeat_Push" />
+        <_soundEventInfo id="Striker_Normal_Die" />
+        <_soundEventInfo id="Striker_Normal_ElectricShock" />
+        <_soundEventInfo id="Striker_Normal_Emotion_01" />
+        <_soundEventInfo id="Striker_Normal_Emotion_02" />
+        <_soundEventInfo id="Striker_Normal_Emotion_03" />
+        <_soundEventInfo id="Striker_Normal_Emotion_04" />
+        <_soundEventInfo id="Striker_Normal_Hit" />
+        <_soundEventInfo id="Striker_Normal_Jump_End" />
+        <_soundEventInfo id="Striker_Normal_Jump_Start" />
+        <_soundEventInfo id="Striker_Normal_Return_Start" />
+        <_soundEventInfo id="Striker_Normal_Revive" />
+        <_soundEventInfo id="Striker_Normal_Shirk" />
+        <_soundEventInfo id="Striker_Normal_StandUp" />
+        <_soundEventInfo id="Striker_Normal_Tag" />
+        <_soundEventInfo id="Striker_Skill00_Weapon_Fire" />
+        <_soundEventInfo id="Striker_Skill00_Weapon_Hit_RMT" />
+        <_soundEventInfo id="Striker_Skill01_Fire" />
+        <_soundEventInfo id="Striker_Skill02_Cast" />
+        <_soundEventInfo id="Striker_Skill02_Explosion_RMT" />
+        <_soundEventInfo id="Striker_Skill02_Timer_RMT" />
+        <_soundEventInfo id="Striker_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="Striker_Skill03_Fire" />
+        <_soundEventInfo id="Striker_Skill04_Attack" />
+        <_soundEventInfo id="Striker_Skill04_Cast" />
+        <_soundEventInfo id="Striker_Skill04_Loop_RST" />
+        <_soundEventInfo id="Striker_Skill04_Loop_Stop_RST" />
+        <_soundEventInfo id="Striker_SkillEP_Explosion_RMT" />
+        <_soundEventInfo id="Striker_SkillEP_Fire" />
+        <_soundEventInfo id="Striker_SkillEP_Incoming_RMT" />
+        <_soundEventInfo id="Titan_Heal_Remote" />
+        <_soundEventInfo id="Titan_Teleport_Remote" />
+        <_soundEventInfo id="Titan_Teleport_Remote_End" />
+        <_soundEventInfo id="Titan_TowerShield_Remote" />
+        <_soundEventInfo id="UI_GamePlay_Exclamation_Mark" />
+        <_soundEventInfo id="UI_Item_Pickup_MovSpeed" />
+        <_soundEventInfo id="UI_Item_Spawn_TitanDrop" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\BNS\AntNest_DM_LarvaEgg\AntNest_DM_LarvaEgg.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PvP\PvP_GoT_Jumpable\PvP_GoT_Jumpable.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PvP\PvP_Titan_Robot_Component_Floor\PVP_TITAN_ROBOT_COMPONENT_FLOOR.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="AntNest_DM_LarvaEgg" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="PvP_GoT_Jumpable" />
+        <_keyname keyname="PvP_Titan_Robot_Component_Floor" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Dynamic_Fx_PvP_GoT_Jumpable_Die" />
+        <_sfx path="Dynamic_Fx_PvP_GoT_Jumpable_End" />
+        <_sfx path="Dynamic_Fx_PvP_GoT_Jumpable_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="PhysX_AntNest_DM_LarvaEgg" />
+        <_sfx path="PhysX_PvP_GoT_Jumpable" />
+      </SFXList>
+      <SFXHWInstList />
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="L2_AntNest_LarvaEggBreak" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="PvP_GoT_Jumpable_Die" />
+        <_soundEventInfo id="PvP_GoT_Jumpable_Open" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

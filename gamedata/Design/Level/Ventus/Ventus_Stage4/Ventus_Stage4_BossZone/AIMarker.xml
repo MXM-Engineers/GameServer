@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <AI_MARKER_INFO>
+    <_MarkerGroup id="0">
+      <_MarkerList DATAKEY="200100" id="200100" x="4995" y="5000" z="1035.76" aiMarkerGroup="0" />
+      <_MarkerList DATAKEY="100003" id="100003" x="4995" y="5000" z="1035.76" aiMarkerGroup="0" />
+    </_MarkerGroup>
+    <_MarkerGroup id="1">
+      <_MarkerList DATAKEY="200003" id="200003" x="3928.98" y="6054.14" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200005" id="200005" x="3450.85" y="4997.38" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200006" id="200006" x="3912.62" y="3924.39" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200007" id="200007" x="4998.08" y="3462" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200018" id="200018" x="6064.15" y="3936.92" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200019" id="200019" x="6542.15" y="5000.23" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200020" id="200020" x="6080.01" y="6088.69" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="200021" id="200021" x="5000.46" y="6554.23" z="1024" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100005" id="100005" x="3450.85" y="4997.38" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100006" id="100006" x="3928.98" y="6054.14" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100007" id="100007" x="4998.08" y="3462" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100018" id="100018" x="3912.62" y="3924.39" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100019" id="100019" x="5000.46" y="6554.23" z="1024.17" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100020" id="100020" x="6542.15" y="5000.23" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100021" id="100021" x="6064.15" y="3936.92" z="1035.76" aiMarkerGroup="1" />
+      <_MarkerList DATAKEY="100022" id="100022" x="6080.01" y="6088.69" z="1035.76" aiMarkerGroup="1" />
+    </_MarkerGroup>
+  </AI_MARKER_INFO>
+</MAP_INFO>

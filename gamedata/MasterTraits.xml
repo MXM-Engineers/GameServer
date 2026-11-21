@@ -1,0 +1,617 @@
+<?xml version="1.0"?>
+<MASTER_TRAITS maxPointsPerTrait="12" source="CREATURE_CHARACTER.xml _AbilityData">
+  <INFO class="1">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="3.19" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="9" perPoint="3.86" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="2">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="31.76" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="31.9" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="3">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="6.01" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="9" perPoint="3.72" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+  </INFO>
+  <INFO class="4">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="1.89" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="37" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="5">
+    <TRAIT index="0">
+      <STAT type="0" perPoint="58" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="7" perPoint="2.09" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="2.87" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="51" perPoint="0.12" />
+    </TRAIT>
+  </INFO>
+  <INFO class="6">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="19.01" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="9" perPoint="3.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+  </INFO>
+  <INFO class="7">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="3.51" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="57" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.73" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="58" perPoint="3.56" />
+    </TRAIT>
+  </INFO>
+  <INFO class="8">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="8.72" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="7" perPoint="2.29" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="3.09" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="51" perPoint="0.39" />
+    </TRAIT>
+  </INFO>
+  <INFO class="9">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="24.2" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.81" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="10">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="41.7" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="54" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="11">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="3.95" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="45.5" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="12">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="6.61" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="13">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="8.96" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="41.7" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="3.29" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="14">
+    <TRAIT index="0">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="7" perPoint="2.63" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="3.45" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.25" />
+    </TRAIT>
+  </INFO>
+  <INFO class="15">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="3.79" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="16">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="18.6" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="29.2" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+  </INFO>
+  <INFO class="17">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="4.62" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="18">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="6.67" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="19">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="14.67" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="28.8" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="54" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="20">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="8.27" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="58" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.16" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.25" />
+    </TRAIT>
+  </INFO>
+  <INFO class="21">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="37" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="54" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="22">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="10.05" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.25" />
+    </TRAIT>
+  </INFO>
+  <INFO class="23">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="67.3" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="7" perPoint="2.15" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="3.05" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="51" perPoint="0.39" />
+    </TRAIT>
+  </INFO>
+  <INFO class="24">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="30.8" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="9" perPoint="4.89" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="41" perPoint="0.17" />
+    </TRAIT>
+  </INFO>
+  <INFO class="25">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="28.4" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="58" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.15" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+    </TRAIT>
+  </INFO>
+  <INFO class="26">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="3.56" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="3.09" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.25" />
+    </TRAIT>
+  </INFO>
+  <INFO class="27">
+    <TRAIT index="0">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="28">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="13.42" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="29">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="33.7" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="30">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="2.14" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="58" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="3.05" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="31">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="7.54" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="32">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="10.48" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="37" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.25" />
+    </TRAIT>
+  </INFO>
+  <INFO class="33">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="5.8" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="7" perPoint="3.29" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="51" perPoint="0.39" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="34">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="41.7" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="57" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.31" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="35">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="4.29" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="36">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="5.13" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="56" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="7" perPoint="2.12" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="58" perPoint="3.01" />
+    </TRAIT>
+  </INFO>
+  <INFO class="37">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="23.1" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="43" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="0.89" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+  <INFO class="38">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="41.7" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="20" perPoint="2.04" />
+      <STAT type="21" perPoint="2.04" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="55" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="39">
+    <TRAIT index="0">
+      <STAT type="8" perPoint="41.7" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="0" perPoint="56" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="58" perPoint="4.23" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="53" perPoint="2.22" />
+      <STAT type="39" perPoint="0.28" />
+    </TRAIT>
+  </INFO>
+  <INFO class="40">
+    <TRAIT index="0">
+      <STAT type="6" perPoint="15.46" />
+    </TRAIT>
+    <TRAIT index="1">
+      <STAT type="8" perPoint="30.2" />
+    </TRAIT>
+    <TRAIT index="2">
+      <STAT type="0" perPoint="53" />
+    </TRAIT>
+    <TRAIT index="3">
+      <STAT type="14" perPoint="1.4" />
+      <STAT type="5" perPoint="0.4" />
+    </TRAIT>
+  </INFO>
+</MASTER_TRAITS>

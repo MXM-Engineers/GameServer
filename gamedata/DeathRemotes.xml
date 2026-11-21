@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<DEATH_REMOTES>
+  <DEATH doc="105001105" remote="1480000178" delay="2" radius="1250" multiplier="0.5" status="1200100026 1200070905" group="enemy" pc="1" npc="1" />
+  <DEATH doc="105001106" remote="1480000132" delay="3" radius="1250" multiplier="3" status="1200070400" group="enemy" pc="1" npc="0" />
+  <DEATH doc="105001106" remote="1480000130" delay="3.1" radius="1250" multiplier="8" status="1200070400" group="enemy" pc="0" npc="1" />
+  <DEATH doc="105001107" remote="1480000147" delay="0" radius="1250" multiplier="0" status="1200100027" group="ally" pc="1" npc="1" />
+</DEATH_REMOTES>

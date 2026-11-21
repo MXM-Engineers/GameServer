@@ -1,0 +1,546 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_BIGSWORD\TRIBE_BIGSWORD.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_BIGSWORD\TRIBE_BIGSWORD_ALLY.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_BIGSWORD\TRIBE_BIGSWORD_ELITE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_ELECTRIC_WIZARD\TRIBE_ELECTRIC_WIZARD.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_INFILTRATOR\TRIBE_INFILTRATOR.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_LONGBOW\TRIBE_LONGBOW.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_LONGBOW\TRIBE_LONGBOW_ELITE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_MASTER_WARRIOR\TRIBE_MASTER_WARRIOR.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_PIERCE\TRIBE_PIERCE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_RUSH\TRIBE_RUSH.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SAVAGE\TRIBE_SAVAGE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SHOTBOW\TRIBE_SHOTBOW_ALLY.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SUICIDE_EXPLOSION\TRIBE_SUICIDE_EXPLOSION.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SWORD\TRIBE_SWORD.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SWORD\TRIBE_SWORD_ALLY.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\CHARIS\TRIBE_SWORD\TRIBE_SWORD_ELITE.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="TRIBE_BIGSWORD" />
+        <_keyname keyname="TRIBE_BIGSWORD_ALLY" />
+        <_keyname keyname="TRIBE_BIGSWORD_ELITE" />
+        <_keyname keyname="TRIBE_ELECTRIC_WIZARD" />
+        <_keyname keyname="TRIBE_INFILTRATOR" />
+        <_keyname keyname="TRIBE_LONGBOW" />
+        <_keyname keyname="TRIBE_LONGBOW_ELITE" />
+        <_keyname keyname="TRIBE_MASTER_WARRIOR" />
+        <_keyname keyname="TRIBE_PIERCE" />
+        <_keyname keyname="TRIBE_RUSH" />
+        <_keyname keyname="TRIBE_SAVAGE" />
+        <_keyname keyname="TRIBE_SHOTBOW_ALLY" />
+        <_keyname keyname="TRIBE_SUICIDE_EXPLOSION" />
+        <_keyname keyname="TRIBE_SWORD" />
+        <_keyname keyname="TRIBE_SWORD_ALLY" />
+        <_keyname keyname="TRIBE_SWORD_ELITE" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="Attack_Range_Ring_RED_Mon" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Hit" />
+        <_sfx path="Mon_Fx_Common_Attack_Range_90_RED" />
+        <_sfx path="Mon_Fx_TRIBE_BIGSWORD_Skill_1_swing_a" />
+        <_sfx path="Mon_Fx_TRIBE_BIGSWORD_Skill_1_swing_b" />
+        <_sfx path="Mon_Fx_TRIBE_BIGSWORD_Skill_1_swing_c" />
+        <_sfx path="Mon_Fx_TRIBE_BIGSWORD_Skill_2_Defense" />
+        <_sfx path="Mon_Fx_TRIBE_BIGSWORD_Skill_3_Remote" />
+        <_sfx path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_2_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_INFILTRATOR_Skill_1_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_INFILTRATOR_Skill_2_END" />
+        <_sfx path="Mon_Fx_TRIBE_INFILTRATOR_Skill_2_START" />
+        <_sfx path="Mon_Fx_TRIBE_MASTER_WARRIOR_Cast" />
+        <_sfx path="Mon_Fx_TRIBE_MASTER_WARRIOR_Skill_1_Buff_Remote" />
+        <_sfx path="Mon_Fx_TRIBE_MASTER_WARRIOR_Skill_1_Remote" />
+        <_sfx path="Mon_Fx_TRIBE_PIERCE_Skill_1_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_PIERCE_Skill_2_Trail" />
+        <_sfx path="Mon_Fx_TRIBE_RUSH_Dash" />
+        <_sfx path="Mon_Fx_TRIBE_RUSH_Skill_1_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_RUSH_Skill_2_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_SAVAGE_Skill_1_Fire" />
+        <_sfx path="Mon_Fx_TRIBE_SAVAGE_Skill_1_Hit" />
+        <_sfx path="Mon_Fx_TRIBE_SWORD_Skill_1_swing" />
+        <_sfx path="Mon_Fx_TRIBE_SWORD_Skill_2_swing" />
+        <_sfx path="Mon_Fx_TRIBE_SWORD_Skill_4_fire" />
+        <_sfx path="PVP_INDICATOR_BLUE_Mon" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Dash_RingArea180" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash_Reverse" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_1_Beam" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_4_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_ELECTRIC_WIZARD_Skill_4_Remote_Explo" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_LONGBOW_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_LONGBOW_Skill_4_EXPLOSION" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_LONGBOW_Skill_4_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_MASTER_WARRIOR_SKILL_2_GUIDE" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_MASTER_WARRIOR_SKILL_2_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_RUSH_Skill_2_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SAVAGE_SKILL_5_EXPLOSION" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SAVAGE_Skill_1_GroundDamage" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SAVAGE_Skill_1_GroundDamage_2" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SAVAGE_Skill_1_LeapExplosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SHOTBOW_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SHOTBOW_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SUICIDE_EXPLOSION_Die_1_EXPLOSION" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SUICIDE_EXPLOSION_Die_1_GROUND" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SWORD_Skill_4_remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TRIBE_SWORD_Skill_4_remote_FadeOut" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Tribe_BLACKSHAMAN_SUMMON_Skill_1_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Pc_Fx_Assassin_Normal_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BOMB" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_DRAGGED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_PC_BLEEDING" colorIndex="-1" />
+        <_sfxHWInfo path="STAT_TYPE_ATTACK_ORDER" colorIndex="-1" />
+        <_sfxHWInfo path="STAT_TYPE_MON_ATTACK" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="DronGravity_Skill01_Gravity_Remote_Explosion" />
+        <_soundEventInfo id="Hit_Result_Sound_Common_Reflect" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Bleed_to_PC" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+        <_soundEventInfo id="TribeBigSword_Normal_BodyFall" />
+        <_soundEventInfo id="TribeBigSword_Normal_Die" />
+        <_soundEventInfo id="TribeBigSword_Normal_Extramotion" />
+        <_soundEventInfo id="TribeBigSword_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeBigSword_Normal_Jump_End" />
+        <_soundEventInfo id="TribeBigSword_Normal_Jump_UP" />
+        <_soundEventInfo id="TribeBigSword_Normal_Knockdown" />
+        <_soundEventInfo id="TribeBigSword_Normal_Push" />
+        <_soundEventInfo id="TribeBigSword_Normal_Skill_01_02" />
+        <_soundEventInfo id="TribeBigSword_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeBigSword_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeBigSword_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeBigSword_Normal_Spawn_04" />
+        <_soundEventInfo id="TribeBigSword_Normal_Spawn_05" />
+        <_soundEventInfo id="TribeBigSword_Skill01_01" />
+        <_soundEventInfo id="TribeBigSword_Skill01_02" />
+        <_soundEventInfo id="TribeBigSword_Skill02_Cast" />
+        <_soundEventInfo id="TribeBigSword_Skill03_Shot" />
+        <_soundEventInfo id="TribeBigSword_Skill04_Shot" />
+        <_soundEventInfo id="TribeBigSword_Skill05_Shot" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_BodyFall" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Die" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Jump_End" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Knockdown" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Push" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Spawn_Drop" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="TribeElectricWizard_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="TribeElectricWizard_Skill01_Cast" />
+        <_soundEventInfo id="TribeElectricWizard_Skill01_Hit_RMT" />
+        <_soundEventInfo id="TribeElectricWizard_Skill02_Cast" />
+        <_soundEventInfo id="TribeElectricWizard_Skill02_Impact_RMT" />
+        <_soundEventInfo id="TribeElectricWizard_Skill02_Projectile_RMT" />
+        <_soundEventInfo id="TribeElectricWizard_Skill04_Explosion_RMT" />
+        <_soundEventInfo id="TribeElectricWizard_Skill04_Projectile_RMT" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_BodyFall" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Die" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Extramotion" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Jump_End" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Knockdown" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Push" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Skill_01" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Skill_02_01" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Skill_02_02" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeInfiltrator_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeLongBow_Normal_BodyFall" />
+        <_soundEventInfo id="TribeLongBow_Normal_Die" />
+        <_soundEventInfo id="TribeLongBow_Normal_Extamotion" />
+        <_soundEventInfo id="TribeLongBow_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeLongBow_Normal_Jump_End" />
+        <_soundEventInfo id="TribeLongBow_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeLongBow_Normal_Knockdown" />
+        <_soundEventInfo id="TribeLongBow_Normal_Push" />
+        <_soundEventInfo id="TribeLongBow_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeLongBow_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeLongBow_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeLongBow_Skill01_Shot" />
+        <_soundEventInfo id="TribeLongBow_Skill02_Shot" />
+        <_soundEventInfo id="TribeLongBow_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="TribeLongBow_Skill03_Shot" />
+        <_soundEventInfo id="TribeLongBow_Skill04_Shot" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_BodyFall" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Die" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Extramotion" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Knockdown" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Push" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Spawn" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_Spawn_Drop" />
+        <_soundEventInfo id="TribeMasterWarrior_Normal_StandUp" />
+        <_soundEventInfo id="TribeMasterWarrior_Skill01" />
+        <_soundEventInfo id="TribeMasterWarrior_Skill02" />
+        <_soundEventInfo id="TribePierce_Normal_BodyFall" />
+        <_soundEventInfo id="TribePierce_Normal_Die" />
+        <_soundEventInfo id="TribePierce_Normal_Extramotion" />
+        <_soundEventInfo id="TribePierce_Normal_Fly_Start" />
+        <_soundEventInfo id="TribePierce_Normal_Jump_End" />
+        <_soundEventInfo id="TribePierce_Normal_Jump_Up" />
+        <_soundEventInfo id="TribePierce_Normal_Knockdown" />
+        <_soundEventInfo id="TribePierce_Normal_Push" />
+        <_soundEventInfo id="TribePierce_Normal_Spawn_01" />
+        <_soundEventInfo id="TribePierce_Normal_Spawn_02" />
+        <_soundEventInfo id="TribePierce_Normal_Spawn_03" />
+        <_soundEventInfo id="TribePierce_Skill01_Attack" />
+        <_soundEventInfo id="TribePierce_Skill02_Cast" />
+        <_soundEventInfo id="TribePierce_Skill02_Shot" />
+        <_soundEventInfo id="TribeRush_Normal_BodyFall" />
+        <_soundEventInfo id="TribeRush_Normal_Die" />
+        <_soundEventInfo id="TribeRush_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeRush_Normal_Jump_End" />
+        <_soundEventInfo id="TribeRush_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeRush_Normal_Knockdown" />
+        <_soundEventInfo id="TribeRush_Normal_Push" />
+        <_soundEventInfo id="TribeRush_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeRush_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeRush_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeRush_Skill01_Attack" />
+        <_soundEventInfo id="TribeRush_Skill01_Cast" />
+        <_soundEventInfo id="TribeRush_Skill01_End" />
+        <_soundEventInfo id="TribeRush_Skill02_Cast" />
+        <_soundEventInfo id="TribeRush_Skill02_Explosion_RMT" />
+        <_soundEventInfo id="TribeSavage_Normal_BodyFall" />
+        <_soundEventInfo id="TribeSavage_Normal_Die" />
+        <_soundEventInfo id="TribeSavage_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeSavage_Normal_Jump_End" />
+        <_soundEventInfo id="TribeSavage_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeSavage_Normal_Knockdown" />
+        <_soundEventInfo id="TribeSavage_Normal_Push" />
+        <_soundEventInfo id="TribeSavage_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeSavage_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeSavage_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeSavage_Skill01_Attack_01" />
+        <_soundEventInfo id="TribeSavage_Skill01_Attack_02" />
+        <_soundEventInfo id="TribeSavage_Skill01_Cast" />
+        <_soundEventInfo id="TribeSavage_Skill02_Attack" />
+        <_soundEventInfo id="TribeSavage_Skill02_End" />
+        <_soundEventInfo id="TribeSavage_Skill03_Cast" />
+        <_soundEventInfo id="TribeSavage_Skill03_Explosion_RMT" />
+        <_soundEventInfo id="TribeSavage_Skill05_Explosion_RMT" />
+        <_soundEventInfo id="TribeShotBow_Normal_BodyFall" />
+        <_soundEventInfo id="TribeShotBow_Normal_Die" />
+        <_soundEventInfo id="TribeShotBow_Normal_Extramotion" />
+        <_soundEventInfo id="TribeShotBow_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeShotBow_Normal_Jump_End" />
+        <_soundEventInfo id="TribeShotBow_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeShotBow_Normal_Knockndown" />
+        <_soundEventInfo id="TribeShotBow_Normal_Push" />
+        <_soundEventInfo id="TribeShotBow_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeShotBow_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeShotBow_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeShotBow_Normal_Spawn_04" />
+        <_soundEventInfo id="TribeShotBow_Normal_Spawn_05" />
+        <_soundEventInfo id="TribeShotBow_Skill01_Shot" />
+        <_soundEventInfo id="TribeShotBow_Skill02_Cast" />
+        <_soundEventInfo id="TribeShotBow_Skill02_Shot" />
+        <_soundEventInfo id="TribeShotBow_Skill03_Hit_RMT" />
+        <_soundEventInfo id="TribeShotBow_Skill03_Shot" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_BodyFall" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Die_Delay" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Extramotion" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Jump_End" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Knockdown" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Push" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Skill_01" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeSuicideExplosion_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeSword_Normal_BodyFall" />
+        <_soundEventInfo id="TribeSword_Normal_Die" />
+        <_soundEventInfo id="TribeSword_Normal_Extramotion" />
+        <_soundEventInfo id="TribeSword_Normal_Fly_Start" />
+        <_soundEventInfo id="TribeSword_Normal_Jump_End" />
+        <_soundEventInfo id="TribeSword_Normal_Jump_Up" />
+        <_soundEventInfo id="TribeSword_Normal_Knockdown" />
+        <_soundEventInfo id="TribeSword_Normal_Push" />
+        <_soundEventInfo id="TribeSword_Normal_Spawn_01" />
+        <_soundEventInfo id="TribeSword_Normal_Spawn_02" />
+        <_soundEventInfo id="TribeSword_Normal_Spawn_03" />
+        <_soundEventInfo id="TribeSword_Normal_Spawn_04" />
+        <_soundEventInfo id="TribeSword_Normal_Spawn_05" />
+        <_soundEventInfo id="TribeSword_Skill_01" />
+        <_soundEventInfo id="TribeSword_Skill_02" />
+        <_soundEventInfo id="TribeSword_Skill_04" />
+        <_soundEventInfo id="Tribe_Master_Warrior_Normal_Extramotion_1_SFX" />
+        <_soundEventInfo id="Story04_201" />
+        <_soundEventInfo id="Story04_202" />
+        <_soundEventInfo id="Story04_418" />
+        <_soundEventInfo id="Story04_204" />
+        <_soundEventInfo id="Story04_205" />
+        <_soundEventInfo id="StoryCut04_2100" />
+        <_soundEventInfo id="StoryCut04_2101" />
+        <_soundEventInfo id="StoryCut04_2102" />
+        <_soundEventInfo id="Story04_200" />
+        <_soundEventInfo id="PvE_ALL_BuffBox_Send_001" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Charis\Charis_Public_GT_EffectGate\Charis_Public_GT_EffectGate.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Charis\Charis_Public_NM_BigSword\Charis_Public_NM_BigSword.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Charis\Charis_Public_NM_ShortBow\Charis_Public_NM_ShortBow.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Charis\Charis_Public_NM_Sword\Charis_Public_NM_Sword.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Goldbox\Box_NM_interaction_Goldbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Silverbox\Box_NM_interaction_Silverbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Charis_Public_GT_EffectGate\Charis_Public_GT_EffectGate1.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Jump\Guide_UI_Jump.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Guide_UI_Point\Guide_UI_Point.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_NormalAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_ShockAura.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SkillCoolTime.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SuperAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_01.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_02.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Box_NM_interaction_Goldbox" />
+        <_keyname keyname="Box_NM_interaction_Silverbox" />
+        <_keyname keyname="Charis_Public_GT_EffectGate1_RED" />
+        <_keyname keyname="Charis_Public_GT_EffectGate_RED" />
+        <_keyname keyname="Charis_Public_NM_BigSword" />
+        <_keyname keyname="Charis_Public_NM_ShortBow" />
+        <_keyname keyname="Charis_Public_NM_Sword" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Guide_UI_Jump" />
+        <_keyname keyname="Guide_UI_Point" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_OPEN" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_Stand" />
+        <_sfx path="Dynamic_FX_Charis_Public_GT_EffectGate1_Effect_Close_RED" />
+        <_sfx path="Dynamic_FX_Charis_Public_GT_EffectGate_RED" />
+        <_sfx path="Dynamic_FX_Charis_Public_GT_EffectGate_ShowHide_RED" />
+        <_sfx path="Dynamic_Fx_Charis_Public_GT_Effectgate1_Effect_Open_RED" />
+        <_sfx path="Dynamic_Fx_Charis_Public_NM_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Item_BlueDrop_Get" />
+        <_sfx path="Item_BlueDrop_Spawn" />
+        <_sfx path="Item_PU_Get" />
+        <_sfx path="Item_PU_Spawn" />
+        <_sfx path="Item_PU_Violet_Get" />
+        <_sfx path="Item_PU_Violet_Spawn" />
+        <_sfx path="Item_SP_Previous" />
+        <_sfx path="Item_UG_Get" />
+        <_sfx path="Item_UG_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_NormalAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_ShockAura" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SkillAttack" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Box_NM_Interaction_Goldbox_Die" />
+        <_soundEventInfo id="Box_NM_Interaction_Silverbox_Die" />
+        <_soundEventInfo id="Charis_Public_GT_EffectGate01_Close" />
+        <_soundEventInfo id="Charis_Public_GT_EffectGate01_Open" />
+        <_soundEventInfo id="Charis_Public_GT_EffectGate_Close" />
+        <_soundEventInfo id="Charis_Public_GT_EffectGate_Open" />
+        <_soundEventInfo id="Charis_Public_NM_BigSword_Active" />
+        <_soundEventInfo id="Charis_Public_NM_BigSword_Die" />
+        <_soundEventInfo id="Charis_Public_NM_ShortBow_Active" />
+        <_soundEventInfo id="Charis_Public_NM_ShortBow_Die" />
+        <_soundEventInfo id="Charis_Public_NM_Sword_Active" />
+        <_soundEventInfo id="Charis_Public_NM_Sword_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="UI_Item_Get_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Pickup_AtkSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Cooltime" />
+        <_soundEventInfo id="UI_Item_Pickup_Critical" />
+        <_soundEventInfo id="UI_Item_Pickup_Overheat" />
+        <_soundEventInfo id="UI_Item_Pickup_UG" />
+        <_soundEventInfo id="UI_Item_Previous" />
+        <_soundEventInfo id="UI_Item_ShockAura_End" />
+        <_soundEventInfo id="UI_Item_ShockAura_Start" />
+        <_soundEventInfo id="UI_Item_Spawn_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Spawn_PU" />
+        <_soundEventInfo id="UI_Item_Spawn_PU_Violet" />
+        <_soundEventInfo id="UI_Item_Spawn_UG" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

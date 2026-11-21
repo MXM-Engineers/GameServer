@@ -1,0 +1,595 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <PRE_LOAD_INFO>
+    <PreLoadSet Type="ENTITY_TYPE_CREATURE">
+      <ResourceList>
+        <_resource path="Graphic\Creature\Monster\COMMON\Dummy_DirectionGuide\Dummy_DirectionGuide.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\BARGHEST_dash_bite\Mon_BARGHEST_bite.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\BARGHEST_dash_bite\Mon_BARGHEST_dash.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\BLACKI\BLACKI.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\DERMA\DERMA.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\GASSPORE\EXPLOSIONSPORE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\GIGANTOS\GIGANTOS.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\LACRIMOSA_FLOWER\LACRIMOSA_FLOWER.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_FAT\MONOS_FAT.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_baby\MONOS_baby.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_entangle\MONOS_entangle.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_melee\MONOS_melee.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_normal\MONOS_curve.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MONOS_normal\MONOS_normal.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\MUTANTBARGHEST_thorn\Mon_MUTANTBARGHEST_thorn.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\PARASITE\PARASITE.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\SEEDSPORE_BOMB\SEEDSPORE_BOMB.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\TREE_MUTANT_STEM\TREE_MUTANT_STEM.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\TREE_MUTANT_STEM_SUMMON\TREE_MONSTER_A_SUMMON.kfm" texture="" />
+        <_resource path="Graphic\Creature\Monster\LACRIMOSA\TURRETSPORE\TURRETSPORE.kfm" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="BARGHEST_bite" />
+        <_keyname keyname="BARGHEST_dash" />
+        <_keyname keyname="BLACKI" />
+        <_keyname keyname="DERMA" />
+        <_keyname keyname="DUMMYBOX_DWEventTrigger_0" />
+        <_keyname keyname="EXPLOSIONSPORE" />
+        <_keyname keyname="GIGANTOS" />
+        <_keyname keyname="LACRIMOSA_FLOWER" />
+        <_keyname keyname="MONOS_FAT" />
+        <_keyname keyname="MONOS_baby" />
+        <_keyname keyname="MONOS_curve" />
+        <_keyname keyname="MONOS_entangle" />
+        <_keyname keyname="MONOS_melee" />
+        <_keyname keyname="MONOS_normal" />
+        <_keyname keyname="MUTANTBARGHEST_thorn" />
+        <_keyname keyname="PARASITE" />
+        <_keyname keyname="SEEDSPORE_BOMB" />
+        <_keyname keyname="TREE_MUTANT_STEM" />
+        <_keyname keyname="TREE_MUTANT_STEM_SUMMON1" />
+        <_keyname keyname="TREE_MUTANT_STEM_SUMMON2" />
+        <_keyname keyname="TURRETSPORE" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="Mob_Fx_Armcru_Melee_Area_Hit_1" />
+        <_sfx path="Mob_Fx_Barghest_Dash_Fire" />
+        <_sfx path="Mob_Fx_Blacki_Area_Hit" />
+        <_sfx path="Mob_Fx_Blacki_Area_Hit_1" />
+        <_sfx path="Mob_Fx_Blacki_Area_Trail" />
+        <_sfx path="Mob_Fx_Currus_Electric_Remote" />
+        <_sfx path="Mob_Fx_Explosionspore_Explosion_Fire" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Hit" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Cast1" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Cast2" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Cast3" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Cast_Common" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Hit1" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Hit2" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Hit3" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Hit4" />
+        <_sfx path="Mob_Fx_Gigantos_Area_Spread_Hit5" />
+        <_sfx path="Mob_Fx_Gigantos_Melee_Hit" />
+        <_sfx path="Mob_Fx_MONOS_entangle_Skill_3_Charge" />
+        <_sfx path="Mob_Fx_Monos_Spore_Ground_explosion" />
+        <_sfx path="Mob_Fx_Monos_Spore_Throw_Bg_Hit" />
+        <_sfx path="Mob_Fx_Monos_Spore_Throw_Remote" />
+        <_sfx path="Mob_Fx_Parasite_Destruct" />
+        <_sfx path="Mob_Fx_Reaper_Rocket_Bg_Hit" />
+        <_sfx path="Mob_Fx_Seedspore_Spawn_Fire" />
+        <_sfx path="Mob_Fx_ThontailBoss_Spawn_Attack" />
+        <_sfx path="Mon_Fx_Common_Attack_Range_90_RED" />
+        <_sfx path="Mon_Fx_DRON_RAIDLEAP_Beam" />
+        <_sfx path="Mon_Fx_Derma_Ground_Attack" />
+        <_sfx path="Mon_Fx_Derma_Skill_3_Charge" />
+        <_sfx path="Mon_Fx_GIGANTOS_SKILL_18_Cast" />
+        <_sfx path="Mon_Fx_LACRIMOSA_FLOWER_Skill_1" />
+        <_sfx path="Mon_Fx_LACRIMOSA_FLOWER_Spawn" />
+        <_sfx path="Mon_Fx_MONOS_FAT_Skill_3_Fire" />
+        <_sfx path="Mon_Fx_MONOS_melee_Dust" />
+        <_sfx path="Mon_Fx_MONOS_melee_Swing_01" />
+        <_sfx path="Mon_Fx_MUTANTBARGHEST_Skill_1_Cast" />
+        <_sfx path="Mon_Fx_MUTANTBARGHEST_thorn_AREAATTCK" />
+        <_sfx path="Mon_Fx_MonosEntangle_Ground_Attack" />
+        <_sfx path="Mon_Fx_TREE_MUTANT_STEM_SUMMON1_Spawn" />
+        <_sfx path="Mon_Fx_TREE_MUTANT_STEM_Skill_1_Remote" />
+        <_sfx path="Mon_Fx_TREE_MUTANT_STEM_Skill_4_Remote" />
+        <_sfx path="Pc_Fx_Aura_Knockback" />
+        <_sfx path="Pc_Fx_Aura_Knockback_End" />
+        <_sfx path="STATUS_FX_DYNAMIC_GROGGY" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="0" />
+        <_sfxHWInfo path="Attack_Range_Box_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Dash_RingArea180" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_1_5s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_2s" colorIndex="-1" />
+        <_sfxHWInfo path="Attack_Range_Ring_RED_Mon" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash" colorIndex="-1" />
+        <_sfxHWInfo path="MBA_Fx_Common_AttackRange_Dash_Reverse" colorIndex="-1" />
+        <_sfxHWInfo path="MoN_FX_BLACKI_Skill_3_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_GIGANTOS_Skill_20_Destroy" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_GIGANTOS_Skill_20_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_MONOS_Melee_Area_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_MONOS_entangle_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Monos_Spore_Throw_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Monos_Spore_Throw_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_Reaper_Ground_Missile_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_SeedSporeBomb_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_SeedSporeBomb_Down_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_SeedSporeBomb_Up_Remot" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_TurretSpore_Throw_Bg_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mob_Fx_TurretSpore_Throw_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="4" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="5" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="6" />
+        <_sfxHWInfo path="Mon_FX_DERMA_Damage_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_BLACKI_SPAWN" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DF_MONOS_RANGE_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_DF_MONOS_RANGE_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Derma_Skill_3_Guide" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_Derma_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_GIGANTOS_SKILL_17_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_GIGANTOS_SKILL_17_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_GIGANTOS_SKILL_18_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_GIGANTOS_Skill_18_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_GIGANTOS_Skill_18_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_FAT_Die_Explosion" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_FAT_Skill_3_Ground_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_FAT_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_Front_Spurt_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_Poison_Ground" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_MONOS_entangle_Skill_3_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_PARASITE_BOMB_AREA" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TREE_MUTANT_STEM_SUMMON2_Skill_1_Fire" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TREE_MUTANT_STEM_SUMMON2_Skill_1_Hit" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_Fx_TREE_MUTANT_STEM_SUMMON2_Skill_1_Remote" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_BOMB" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_GHOSTSPAWN_SHOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_POISON" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_ROOT" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SLOW" colorIndex="-1" />
+        <_sfxHWInfo path="STATUS_FX_MOB_STUN" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="BarghestBite_Skill_1_Fail" />
+        <_soundEventInfo id="Barghest_Normal_Common_Defeat_ACT" />
+        <_soundEventInfo id="Barghest_Normal_Common_Defeat_Kdwn_ACT" />
+        <_soundEventInfo id="Barghest_Normal_Common_Defeat_Push_ACT" />
+        <_soundEventInfo id="Barghest_Normal_Common_Die" />
+        <_soundEventInfo id="Barghest_Normal_Common_Jumpdown_Start" />
+        <_soundEventInfo id="Barghest_Normal_Common_Jumpup_Start" />
+        <_soundEventInfo id="Barghest_Normal_Common_RunFront" />
+        <_soundEventInfo id="Barghest_Normal_Common_RunFrontFire" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_1" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_2" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_3" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_4" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_5" />
+        <_soundEventInfo id="Barghest_Normal_Common_Spawn_6" />
+        <_soundEventInfo id="Barghest_Skill_Common_1_a" />
+        <_soundEventInfo id="Blacki_Normal_Defeat_Fly" />
+        <_soundEventInfo id="Blacki_Normal_Defeat_Kdwn" />
+        <_soundEventInfo id="Blacki_Normal_Defeat_Push" />
+        <_soundEventInfo id="Blacki_Normal_Die_32000" />
+        <_soundEventInfo id="Blacki_Normal_Die_32001" />
+        <_soundEventInfo id="Blacki_Normal_ExtraMotion01" />
+        <_soundEventInfo id="Blacki_Normal_RotationLeft" />
+        <_soundEventInfo id="Blacki_Normal_RotationRight" />
+        <_soundEventInfo id="Blacki_Normal_RunFront_21000" />
+        <_soundEventInfo id="Blacki_Normal_Spawn01" />
+        <_soundEventInfo id="Blacki_Normal_Spawn02" />
+        <_soundEventInfo id="Blacki_Normal_WalkFront" />
+        <_soundEventInfo id="Blacki_Skill02_Return" />
+        <_soundEventInfo id="Blacki_Skill02_Start" />
+        <_soundEventInfo id="Blacki_Skill03" />
+        <_soundEventInfo id="Derma_Normal_Die_Back" />
+        <_soundEventInfo id="Derma_Normal_Die_Front" />
+        <_soundEventInfo id="Derma_Normal_Idle" />
+        <_soundEventInfo id="Derma_Normal_Move" />
+        <_soundEventInfo id="Derma_Normal_Spawn_Stand" />
+        <_soundEventInfo id="Derma_Normal_Spawn_Stone" />
+        <_soundEventInfo id="Derma_Skill01_Summon" />
+        <_soundEventInfo id="Derma_Skill02_Earthquake" />
+        <_soundEventInfo id="Desert_Spider_Boss_Skill03_Remote_SandBlast" />
+        <_soundEventInfo id="DronRaidLeap_Beam_Remote_Projectile" />
+        <_soundEventInfo id="ExplosionSpore_Normal_Die_ACT_01" />
+        <_soundEventInfo id="ExplosionSpore_Normal_Extra01_ACT_01" />
+        <_soundEventInfo id="ExplosionSpore_Normal_Extra02_ACT_01" />
+        <_soundEventInfo id="ExplosionSpore_Normal_Spawn_ACT_01" />
+        <_soundEventInfo id="Gigantos_Normal_BattleStandEmotion" />
+        <_soundEventInfo id="Gigantos_Normal_Cry" />
+        <_soundEventInfo id="Gigantos_Normal_Cry_Stop" />
+        <_soundEventInfo id="Gigantos_Normal_DefeatKnockDown_Start01" />
+        <_soundEventInfo id="Gigantos_Normal_Die" />
+        <_soundEventInfo id="Gigantos_Normal_Extramotion2" />
+        <_soundEventInfo id="Gigantos_Normal_Footstep" />
+        <_soundEventInfo id="Gigantos_Normal_Spawn" />
+        <_soundEventInfo id="Gigantos_Normal_Spawn_10020_Start" />
+        <_soundEventInfo id="Gigantos_Normal_Stun_VOX" />
+        <_soundEventInfo id="Gigantos_Skill01" />
+        <_soundEventInfo id="Gigantos_Skill01_End" />
+        <_soundEventInfo id="Gigantos_Skill02_Attack_End" />
+        <_soundEventInfo id="Gigantos_Skill02_Start" />
+        <_soundEventInfo id="Gigantos_Skill03_Attack" />
+        <_soundEventInfo id="Gigantos_Skill04_CarAttack" />
+        <_soundEventInfo id="Gigantos_Skill07_Attack" />
+        <_soundEventInfo id="Gigantos_Skill07_Start" />
+        <_soundEventInfo id="Gigantos_Skill17_Explosion_ACT" />
+        <_soundEventInfo id="Gigantos_Skill18_Attack_Projectile_ACT" />
+        <_soundEventInfo id="Gigantos_Skill18_Explosion_ACT" />
+        <_soundEventInfo id="Gigantos_Skill_Areaspread_Hit_ACT" />
+        <_soundEventInfo id="Gigantos_Skill_Shockwave_ACT" />
+        <_soundEventInfo id="L2_HighMale_Ant_Skill01_Remote_Area" />
+        <_soundEventInfo id="Lacrimosa_Flower_Attack" />
+        <_soundEventInfo id="Lacrimosa_Flower_Die" />
+        <_soundEventInfo id="Lacrimosa_Flower_Spawn" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="MonosEntangle_Normal_BodyFall" />
+        <_soundEventInfo id="MonosEntangle_Normal_Die" />
+        <_soundEventInfo id="MonosEntangle_Normal_Extra" />
+        <_soundEventInfo id="MonosEntangle_Normal_Fly_Start" />
+        <_soundEventInfo id="MonosEntangle_Normal_KnockDown" />
+        <_soundEventInfo id="MonosEntangle_Normal_Push" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_01_End" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_01_Loop" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_01_Start" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_02_End" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_02_Start" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_03_RMT" />
+        <_soundEventInfo id="MonosEntangle_Normal_Skill_03_Start" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_01" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_02" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_03" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_04" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_05" />
+        <_soundEventInfo id="MonosEntangle_Normal_Spawn_06" />
+        <_soundEventInfo id="Monos_Baby_Attack" />
+        <_soundEventInfo id="Monos_Baby_Die" />
+        <_soundEventInfo id="Monos_Baby_Kdwn" />
+        <_soundEventInfo id="Monos_Baby_Normal" />
+        <_soundEventInfo id="Monos_Baby_Normal_VOX" />
+        <_soundEventInfo id="Monos_Curve_Attack" />
+        <_soundEventInfo id="Monos_Curve_Die" />
+        <_soundEventInfo id="Monos_Curve_Normal" />
+        <_soundEventInfo id="Monos_Curve_Normal_VOX" />
+        <_soundEventInfo id="Monos_Fat_Normal_Die" />
+        <_soundEventInfo id="Monos_Fat_Normal_Fly_End" />
+        <_soundEventInfo id="Monos_Fat_Normal_Hit" />
+        <_soundEventInfo id="Monos_Fat_Normal_Knockdown" />
+        <_soundEventInfo id="Monos_Fat_Normal_Pushed" />
+        <_soundEventInfo id="Monos_Fat_Normal_Return" />
+        <_soundEventInfo id="Monos_Fat_Normal_Spawn_Drop" />
+        <_soundEventInfo id="Monos_Fat_Normal_Spawn_GroundJump" />
+        <_soundEventInfo id="Monos_Fat_Normal_Spawn_WallJump" />
+        <_soundEventInfo id="Monos_Fat_Skill01_Fly_Cast" />
+        <_soundEventInfo id="Monos_Fat_Skill01_Fly_Cast_VOX" />
+        <_soundEventInfo id="Monos_Fat_Skill02_Explosion_RMT_ACT" />
+        <_soundEventInfo id="Monos_Hide_Normal_Drop_Exploer" />
+        <_soundEventInfo id="Monos_Hide_Skill_Projectile_Drop" />
+        <_soundEventInfo id="Monos_Melee_Defeat_Airborne" />
+        <_soundEventInfo id="Monos_Melee_Defeat_KnockDown" />
+        <_soundEventInfo id="Monos_Melee_Defeat_StandUp" />
+        <_soundEventInfo id="Monos_Melee_Die_Vox" />
+        <_soundEventInfo id="Monos_Melee_Move_VOX" />
+        <_soundEventInfo id="Monos_Melee_Nomal_Spawn_VOX" />
+        <_soundEventInfo id="Monos_Melee_Normal_Attack_VOX" />
+        <_soundEventInfo id="Monos_Melee_Normal_EvadeL" />
+        <_soundEventInfo id="Monos_Melee_Normal_EvadeR" />
+        <_soundEventInfo id="Monos_Melee_Skill01" />
+        <_soundEventInfo id="Monos_Melee_Skill02" />
+        <_soundEventInfo id="Monos_Nomal_Nomal_Spawn" />
+        <_soundEventInfo id="Monos_Nomal_Normal_EvadeR" />
+        <_soundEventInfo id="Monos_Normal_Normal_EvadeL" />
+        <_soundEventInfo id="Monos_Normal_Normal_EvadeR" />
+        <_soundEventInfo id="Monos_Normal_Normal_Spawn" />
+        <_soundEventInfo id="Monos_Normal_Skill01" />
+        <_soundEventInfo id="Monos_Normal_Skill02" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Defeat_Airborne" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Defeat_Knockdown" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Defeat_Push" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Defeat_StandUp" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Die" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Run" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Spwan01" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Spwan03" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Spwan04" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Spwan05" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Normal_Spwan06" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill01" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill02" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill_Attack" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill_Impact_Projectile_RMT" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill_Impact_RMT" />
+        <_soundEventInfo id="Mutantbarghest_Thorn_Skill_Vox" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_End" />
+        <_soundEventInfo id="PC_Common_Fx_Aura_Knockback_Hit" />
+        <_soundEventInfo id="Parasite_Normal_Die" />
+        <_soundEventInfo id="Parasite_Normal_RunFront_Roll" />
+        <_soundEventInfo id="Parasite_Normal_Spawn01" />
+        <_soundEventInfo id="Reaper_Missile_Explosion" />
+        <_soundEventInfo id="SeedSporeBomb_Normal_Die" />
+        <_soundEventInfo id="SeedSporeBomb_Projectile_Explosion" />
+        <_soundEventInfo id="SeedSporeBomb_Skill_Fire" />
+        <_soundEventInfo id="SeedSpore_Normal_Spawn" />
+        <_soundEventInfo id="Seedspore_Boss_Attack" />
+        <_soundEventInfo id="State_Hide_to_Monster" />
+        <_soundEventInfo id="State_Poison_to_Monster" />
+        <_soundEventInfo id="State_Root_to_Monster" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="State_Slow_to_Monster" />
+        <_soundEventInfo id="State_Stun_to_Monster" />
+        <_soundEventInfo id="TreeMutantStem_Normal_DefeatFly_End" />
+        <_soundEventInfo id="TreeMutantStem_Normal_DefeatKnockdown" />
+        <_soundEventInfo id="TreeMutantStem_Normal_DefeatPush_Start" />
+        <_soundEventInfo id="TreeMutantStem_Normal_Die" />
+        <_soundEventInfo id="TreeMutantStem_Normal_Move" />
+        <_soundEventInfo id="TreeMutantStem_Normal_StandUp" />
+        <_soundEventInfo id="TreeMutantStem_Skill01" />
+        <_soundEventInfo id="TreeMutantStem_Skill02" />
+        <_soundEventInfo id="TreeMutantStem_Summon_Die" />
+        <_soundEventInfo id="TreeMutantStem_Summon_Projectile_Explosion" />
+        <_soundEventInfo id="TreeMutantStem_Summon_Projectile_Fire" />
+        <_soundEventInfo id="TreeMutantStem_Summon_Spawn" />
+        <_soundEventInfo id="TreeMutantStem_Summon_Transform" />
+        <_soundEventInfo id="TurretSpore_Normal_Die" />
+        <_soundEventInfo id="TurretSpore_Normal_Spawn_ACT_01" />
+        <_soundEventInfo id="TurretSpore_Skill_ACT_01" />
+        <_soundEventInfo id="TurretSpore_Skill_Explosion" />
+        <_soundEventInfo id="TurretSpore_Skill_Projectile_Flying" />
+        <_soundEventInfo id="VT_CT_PowerConverter_Laser" />
+        <_soundEventInfo id="Story03_107" />
+        <_soundEventInfo id="Story03_108" />
+        <_soundEventInfo id="Story03_104" />
+        <_soundEventInfo id="Story03_105" />
+        <_soundEventInfo id="Story03_109" />
+        <_soundEventInfo id="Story03_110" />
+        <_soundEventInfo id="Story03_106" />
+        <_soundEventInfo id="PvE_ALL_BuffBox_Send_001" />
+        <_soundEventInfo id="StoryCut03_1100" />
+        <_soundEventInfo id="StoryCut03_1101" />
+        <_soundEventInfo id="StoryCut03_1102" />
+        <_soundEventInfo id="StoryCut03_1103" />
+      </SoundEventList>
+    </PreLoadSet>
+    <PreLoadSet Type="ENTITY_TYPE_DYNAMIC">
+      <ResourceList>
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Goldbox\Box_NM_interaction_Goldbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Box_NM_interaction_Silverbox\Box_NM_interaction_Silverbox.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Common_Portal_New_01\Common_Portal_New_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Attack\Guide_UI_Move.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Common\Guide_UI_Here\Guide_UI_Here.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S1_NM_Vine_01\Lac_S1_NM_Vine_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S2_GT_PlantGate_01\Lac_S2_GT_PlantGate_01.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\Lacrimosa\Lac_S2_GT_PlantGate_02\Lac_S2_GT_PlantGate_02.kfm" texture="" />
+        <_resource path="Graphic\Dynamic\PvP\PvP_GoT_PortalEntrance\PvP_GoT_PortalEntrance.kfm" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_NormalAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_ShockAura.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SkillCoolTime.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\Drop_Item_PVE_SuperAttack.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\INSTANCE_DROP_EP_011.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_01.nif" texture="" />
+        <_resource path="Graphic\Item\Drop\MATERIAL_WEAPON_DROP_02.nif" texture="" />
+      </ResourceList>
+      <KeyNameList>
+        <_keyname keyname="Box_NM_interaction_Goldbox" />
+        <_keyname keyname="Box_NM_interaction_Silverbox" />
+        <_keyname keyname="Common_Portal_New_01" />
+        <_keyname keyname="Common_Public_Event" />
+        <_keyname keyname="Guide_UI_Attack" />
+        <_keyname keyname="Guide_UI_Here" />
+        <_keyname keyname="Lac_S1_NM_Vine_01" />
+        <_keyname keyname="Lac_S2_GT_PlantGate_01" />
+        <_keyname keyname="Lac_S2_GT_PlantGate_02" />
+      </KeyNameList>
+      <SFXList>
+        <_sfx path="0" />
+        <_sfx path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_OPEN" />
+        <_sfx path="Dynamic_FX_Box_NM_interaction_Goldbox_Stand" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Loop" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Spawn" />
+        <_sfx path="Dynamic_Fx_Common_Portal_New_01_Warp" />
+        <_sfx path="Dynamic_Fx_Guide_UI_Here" />
+        <_sfx path="Dynamic_Fx_Lac_S1_NM_Vine_Distroy" />
+        <_sfx path="Dynamic_Fx_PlantGate_01_Close" />
+        <_sfx path="Dynamic_Fx_PlantGate_01_Open" />
+        <_sfx path="Dynamic_Fx_PlantGate_02_Open" />
+        <_sfx path="Dynamic_Fx_Smoke_02" />
+        <_sfx path="Item_BlueDrop_Get" />
+        <_sfx path="Item_BlueDrop_Spawn" />
+        <_sfx path="Item_PU_Get" />
+        <_sfx path="Item_PU_Spawn" />
+        <_sfx path="Item_PU_Violet_Get" />
+        <_sfx path="Item_PU_Violet_Spawn" />
+        <_sfx path="Item_SP_Previous" />
+        <_sfx path="Item_UG_Get" />
+        <_sfx path="Item_UG_Spawn" />
+        <_sfx path="MATERIAL_FX_BG_WATER_I" />
+        <_sfx path="MATERIAL_FX_BG_WATER_M" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_Common_Blood_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_METAL_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_D" />
+        <_sfx path="MATERIAL_FX_CHARACTER_PLANT_E" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_CHARACTER_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_EGG_ORANGE_C" />
+        <_sfx path="MATERIAL_FX_DYNAMIC_PROTECT_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_HUMAN_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_METAL_E" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_C" />
+        <_sfx path="MATERIAL_FX_PCONLY_SHIELD_D" />
+        <_sfx path="MATERIAL_FX_PCONLY_STONE_D" />
+        <_sfx path="MATERIAL_FX_REMOTE_BLUESHIELD_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_BLUE_C" />
+        <_sfx path="MATERIAL_FX_SHIELD_JINSEOYEON_C" />
+        <_sfx path="PhysX_Lac_S1_NM_Vine_01_PhsyX" />
+        <_sfx path="PhysX_Lac_S2_GT_PlantGate_02_PhsyX" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_NormalAttack" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_ShockAura" />
+        <_sfx path="STATUS_FX_ITEM_BUFF_SkillAttack" />
+        <_sfx path="STATUS_FX_PC_SHOCKED" />
+      </SFXList>
+      <SFXHWInstList>
+        <_sfxHWInfo path="" colorIndex="-1" />
+        <_sfxHWInfo path="0" colorIndex="-1" />
+        <_sfxHWInfo path="DYNAMIC_FX_SPARK_MACHINE_REMOTE" colorIndex="-1" />
+        <_sfxHWInfo path="Mon_FX_Common_Hit_01" colorIndex="4" />
+        <_sfxHWInfo path="STATUS_FX_MOB_SHOCKED" colorIndex="-1" />
+      </SFXHWInstList>
+      <SoundEventList>
+        <_soundEventInfo id="0" />
+        <_soundEventInfo id="Box_NM_Interaction_Goldbox_Die" />
+        <_soundEventInfo id="Box_NM_Interaction_Silverbox_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_BattleStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Die" />
+        <_soundEventInfo id="Common_Portal_New_01_NormalStand" />
+        <_soundEventInfo id="Common_Portal_New_01_Open_Loop" />
+        <_soundEventInfo id="Lac_S1_NM_Vine_01_Open" />
+        <_soundEventInfo id="Lac_S2_GT_PlantGate_01_Close" />
+        <_soundEventInfo id="Lac_S2_GT_PlantGate_01_Open" />
+        <_soundEventInfo id="Lac_S2_GT_PlantGate_02_Die" />
+        <_soundEventInfo id="Lac_S3_NM_WarpPortal_Explosion" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_DIRT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_ORE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_SAND_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_BG_WOOD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_BLACKSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_CLONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_METAL_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_PLANT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_REDSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_SHIELD_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_CHARACTER_STONE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_EGG_ORANGE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_GREENSKIN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_DYNAMIC_PROTECT_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_HUMAN_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_MACHINE_E" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_C" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_D" />
+        <_soundEventInfo id="MATERIAL_SOUND_PCONLY_STONE_E" />
+        <_soundEventInfo id="State_Shock_to_Monster" />
+        <_soundEventInfo id="UI_Item_Get_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Pickup_AtkSpeed" />
+        <_soundEventInfo id="UI_Item_Pickup_Cooltime" />
+        <_soundEventInfo id="UI_Item_Pickup_Critical" />
+        <_soundEventInfo id="UI_Item_Pickup_Overheat" />
+        <_soundEventInfo id="UI_Item_Pickup_UG" />
+        <_soundEventInfo id="UI_Item_Previous" />
+        <_soundEventInfo id="UI_Item_ShockAura_End" />
+        <_soundEventInfo id="UI_Item_ShockAura_Start" />
+        <_soundEventInfo id="UI_Item_Spawn_BlueDrop" />
+        <_soundEventInfo id="UI_Item_Spawn_PU" />
+        <_soundEventInfo id="UI_Item_Spawn_PU_Violet" />
+        <_soundEventInfo id="UI_Item_Spawn_UG" />
+      </SoundEventList>
+    </PreLoadSet>
+  </PRE_LOAD_INFO>
+</MAP_INFO>

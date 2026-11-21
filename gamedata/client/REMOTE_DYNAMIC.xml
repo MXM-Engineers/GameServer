@@ -1,0 +1,2599 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ENTITY_FILE>
+  <INFO ID="1400100000" KEYNAME="REMOTE_LEVEL_PUBLIC_SUPPLIES_GUIDE">
+    <EntityComData _Description="보급품 예고 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="7" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="2500" />
+    <RemoteSFXComData _ResName="TRIBE_BEAMBEAM_Skill_ReadyBeam" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400100001" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400100001" KEYNAME="REMOTE_LEVEL_PUBLIC_SUPPLIES_BEAM">
+    <EntityComData _Description="보급품 예고 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="7" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="2500" />
+    <RemoteSFXComData _ResName="MONDOZAX_EP_Remote" />
+  </INFO>
+  <INFO ID="1400100002" KEYNAME="REMOTE_LEVEL_PUBLIC_SUICIDE">
+    <EntityComData _Description="서린의 전투 보급품 파괴 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="10" _LengthY="10" _LengthZ="10" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="false" _VsOwner="true" _VsPC="false" _VsRemote="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040101" KEYNAME="REMOTE_CALIGO_BOSS_LASER">
+    <EntityComData _Description="보스존 레이저" />
+    <RemoteBoundComData2 _Angle="360" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="4" _LengthY="3800" _LengthZ="90" _OffsetZ="0" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040150" KEYNAME="REMOTE_CALIGO_ROBOTBOX_PUSH">
+    <EntityComData _Description="움직이는 로봇 박스(푸쉬형)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _LengthX="200" _LengthY="200" _LengthZ="400" _OffsetX="0" _OffsetY="0" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="BABYWORM_MELEE_ATTACK" />
+  </INFO>
+  <INFO ID="1400040144" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_A">
+    <EntityComData _Description="공장S3 컨베이어벨트 리모트A" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="4300" _LengthZ="500" _OffsetX="0" _OffsetY="2150" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040145" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_B">
+    <EntityComData _Description="공장S3 컨베이어벨트 리모트B" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="3600" _LengthZ="500" _OffsetX="0" _OffsetY="1800" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040146" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_C">
+    <EntityComData _Description="공장S3 컨베이어벨트 리모트C" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="5100" _LengthZ="500" _OffsetX="0" _OffsetY="2550" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040147" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_D">
+    <EntityComData _Description="공장S3 컨베이어벨트 리모트D" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="2400" _LengthZ="500" _OffsetX="0" _OffsetY="1200" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040148" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_E">
+    <EntityComData _Description="공장S3 컨베이어벨트 리모트E" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="1600" _LengthZ="500" _OffsetX="0" _OffsetY="800" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040149" KEYNAME="REMOTE_CALIGO_CONVEYOR_DRAGGED_F">
+    <EntityComData _Description="공장S1 컨베이어벨트 리모트F" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="260" _LengthY="5500" _LengthZ="500" _OffsetX="0" _OffsetY="2750" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040290" KEYNAME="REMOTE_CALIGO_HUEBLADE_PUSH_PC">
+    <EntityComData _Description="거대 칼날에 맞으면 약한 힘으로 튕겨내기 위한 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="75" _LengthY="440" _LengthZ="440" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+  <INFO ID="1400040291" KEYNAME="REMOTE_CALIGO_HUEBLADE_PUSH_MOB">
+    <EntityComData _Description="거대 칼날에 맞으면 약한 힘으로 튕겨내기 위한 리모트(몬스터용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="75" _LengthY="440" _LengthZ="440" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+  <INFO ID="1400040310" KEYNAME="REMOTE_CALIGO_PRESSBARRIER_STUN_MOB">
+    <EntityComData _DensityCount="0" _Description="프레스 배리어에 맞으면 스턴 및 데미지 리모트(몬스터용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="240" _LengthY="200" _LengthZ="300" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Dynamic_PressBarrier_Trap_REMOTE" />
+  </INFO>
+  <INFO ID="1400040311" KEYNAME="REMOTE_CALIGO_PRESSBARRIER_STUN_PC">
+    <EntityComData _DensityCount="0" _Description="프레스 배리어에 맞으면 스턴 거는 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="240" _LengthY="200" _LengthZ="300" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+  <INFO ID="1400040312" KEYNAME="REMOTE_CALIGO_SERVER_PUSH">
+    <EntityComData _Description="서버 컴퓨터가 약한 힘으로 튕겨내기 위한 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _LengthY="300" _LengthZ="400" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400040503" KEYNAME="REMOTE_CALIGO_SERVER_EXPLOSION">
+    <EntityComData _Description="중앙서버 폭발 시 리모트 생성" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Common_Hit_01_Blue" />
+  </INFO>
+  <INFO ID="1400040504" KEYNAME="REMOTE_CALIGO_LASER_SHOCK_A">
+    <EntityComData _Description="5-1레이저장치뒤" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1000" _LengthY="20" _LengthZ="130" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040502" KEYNAME="REMOTE_CALIGO_LASER_SHOCK_B">
+    <EntityComData _Description="5-1레이저장치뒤-긴 것" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1300" _LengthY="30" _LengthZ="130" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040505" KEYNAME="REMOTE_CALIGO_LASER_SHOCK_C">
+    <EntityComData _Description="5-1레이저장치옆에서오는놈" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="500" _LengthY="20" _LengthZ="130" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040506" KEYNAME="REMOTE_CALIGO_LASER_SHOCK_D">
+    <EntityComData _Description="5-1레이저장치마지막구간1" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="700" _LengthY="20" _LengthZ="130" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040517" KEYNAME="REMOTE_CALIGO_LASER_STEAMPACK">
+    <EntityComData _Description="2- 스파크 스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1300" _LengthY="30" _LengthZ="130" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060015" KEYNAME="REMOTE_CALIGO_SERVER_LASERFLOOR_NORMAL">
+    <EntityComData _Description="서버컴퓨터 전기 바닥 - 노멀" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="2500" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200400009" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1200400010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DRON_DESTROYER_GROUND_ELECTRIC" _ScaleX="0.75" _ScaleY="0.75" _ScaleZ="0.75" />
+  </INFO>
+  <INFO ID="1400060018" KEYNAME="REMOTE_CALIGO_SERVER_LASERFLOOR_HELL">
+    <EntityComData _Description="서버컴퓨터 전기 바닥 - 헬모드" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="2500" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="8" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200400009" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1200400010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DRON_DESTROYER_GROUND_ELECTRIC" _ScaleX="0.75" _ScaleY="0.75" _ScaleZ="0.75" />
+  </INFO>
+  <INFO ID="1400060016" KEYNAME="REMOTE_CALIGO_ROBOTMACHINE_DAMAGE">
+    <EntityComData _Description="자동 보안 장치 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="600" _OffsetX="0" _OffsetY="0" _OffsetZ="150" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="false" _VsOwner="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_ForceDir _Angle="330" _Type="REMOTE_FORCE_DIRECTION_TYPE_FIXED_ANGLE" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060017" KEYNAME="REMOTE_CALIGO_ROBOTMACHINE_DAMAGE_STRONG">
+    <EntityComData _Description="자동 보안 장치 리모트 (데미지최고)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="600" _OffsetX="0" _OffsetY="0" _OffsetZ="150" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="false" _VsOwner="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="50" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_ForceDir _Angle="330" _Type="REMOTE_FORCE_DIRECTION_TYPE_FIXED_ANGLE" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040019" KEYNAME="REMOTE_CALIGO_wire_DAMAGE_A">
+    <EntityComData _Description="전력 케이블 스파크(3m)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="20" _LengthY="300" _LengthZ="100" _OffsetY="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Cal_S2_DM_Wiregate_Remote_1" />
+  </INFO>
+  <INFO ID="1400040020" KEYNAME="REMOTE_CALIGO_wire_DAMAGE_B">
+    <EntityComData _Description="전력 케이블 스파크(5m)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="20" _LengthY="450" _LengthZ="100" _OffsetY="200" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Cal_S2_DM_Wiregate_Remote_2" />
+  </INFO>
+  <INFO ID="1400040021" KEYNAME="REMOTE_CALIGO_wire_STEAMPACK_A">
+    <EntityComData _Description="전력 케이블 스파크(3m) -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="20" _LengthY="300" _LengthZ="100" _OffsetY="100" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040022" KEYNAME="REMOTE_CALIGO_wire_STEAMPACK_B">
+    <EntityComData _Description="전력 케이블 스파크(5m) -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="20" _LengthY="450" _LengthZ="100" _OffsetY="200" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040023" KEYNAME="REMOTE_CALIGO_Spark_DAMAGE">
+    <EntityComData _Description="찢어진 케이블 스파크" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="250" _LengthY="250" _LengthZ="400" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040024" KEYNAME="REMOTE_CALIGO_Spark_STEAMPACK">
+    <EntityComData _Description="찢어진 케이블 스파크 -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="250" _LengthY="250" _LengthZ="400" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040025" KEYNAME="REMOTE_CALIGO_SparkWave_STEAMPACK_A">
+    <EntityComData _Description="케이블 스파크 웨이브(25m) -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="2400" _LengthZ="150" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040026" KEYNAME="REMOTE_CALIGO_SparkWave_STEAMPACK_B">
+    <EntityComData _Description="케이블 스파크 웨이브(30m) -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="3000" _LengthZ="150" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040027" KEYNAME="REMOTE_CALIGO_SparkWave_DAMAGE_A">
+    <EntityComData _Description="케이블 스파크 웨이브(25m)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="2400" _LengthZ="150" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040028" KEYNAME="REMOTE_CALIGO_SparkWave_DAMAGE_B">
+    <EntityComData _Description="케이블 스파크 웨이브(30m)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="3000" _LengthZ="150" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040029" KEYNAME="REMOTE_CALIGO_CrusherCutter_START_3s">
+    <EntityComData _Description="보스 커터 빔(8m) 준비" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="600" _LengthZ="150" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4.7" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="CRUSHER_CUTTER_Skill_1_RemoteStart" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400040030" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_3s">
+    <EntityComData _Description="보스 커터 빔(8m) 3초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="600" _LengthZ="150" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.7" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="CRUSHER_CUTTER_Skill_1_Remote" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400040031" KEYNAME="REMOTE_CALIGO_SparkWave_DAMAGE_C">
+    <EntityComData _Description="케이블 스파크 웨이브(3m)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="200" _LengthY="200" _LengthZ="150" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Cal_S2_DM_Sparkwave_Remote" />
+  </INFO>
+  <INFO ID="1400040032" KEYNAME="REMOTE_CALIGO_SparkWave_STEAMPACK_C">
+    <EntityComData _Description="케이블 스파크 웨이브(3m) -스팀팩(몬스터)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="200" _LengthY="200" _LengthZ="150" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040033" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_5s">
+    <EntityComData _Description="보스 커터 빔(8m) 5초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="600" _LengthZ="150" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5.3" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="CRUSHER_CUTTER_Skill_1_Remote" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400040034" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_0.5s">
+    <EntityComData _Description="보스 커터 빔(8m) 0.5초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="600" _LengthZ="150" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="CRUSHER_CUTTER_Skill_1_Remote" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400040037" KEYNAME="REMOTE_CALIGO_CrusherCutter_START_5s">
+    <EntityComData _Description="보스 커터 빔(8m) 준비" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="600" _LengthZ="150" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5.3" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="CRUSHER_CUTTER_Skill_1_RemoteStart" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400040040" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_Material">
+    <EntityComData _Description="보스 커터 대미지 머티리얼" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="500" _LengthY="150" _LengthZ="300" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="99999" _OffsetY="0" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000008" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040041" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_PC_L">
+    <EntityComData _Description="보스 커터 대미지 PC 왼쪽" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="500" _LengthY="120" _LengthZ="400" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="99999" _OffsetX="0" _OffsetY="-40" _OffsetZ="100" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+  <INFO ID="1400040042" KEYNAME="REMOTE_CALIGO_CrusherCutter_DAMAGE_PC_R">
+    <EntityComData _Description="보스 커터 대미지 PC 오른쪽" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="200" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="99999" _OffsetX="150" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Yellow" />
+  </INFO>
+  <INFO ID="1400040043" KEYNAME="REMOTE_CALIGO_SparkWave_NOTICE2s_25m">
+    <EntityComData _Description="케이블 스파크 웨이브(25m) 예고 FX" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX_2" _ScaleX="4.5" _ScaleY="24" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400040044" KEYNAME="REMOTE_CALIGO_SparkWave_NOTICE2s_30m">
+    <EntityComData _Description="케이블 스파크 웨이브(30m) 예고 FX" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX_2" _ScaleX="4.5" _ScaleY="31" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400040045" KEYNAME="REMOTE_CALIGO_MonWall_PUSH_Front">
+    <EntityComData _Description="장애물 올라올 때 위 대상을 밀어내는 리모트 정면" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="320" _LengthY="10" _LengthZ="400" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.7" _OffsetZ="200" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400040046" KEYNAME="REMOTE_CALIGO_MonWall_PUSH_Left">
+    <EntityComData _Description="장애물 올라올 때 위 대상을 밀어내는 리모트 왼쪽" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="10" _LengthY="320" _LengthZ="400" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.7" _OffsetX="-180" _OffsetY="160" _OffsetZ="200" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400040047" KEYNAME="REMOTE_CALIGO_MonWall_PUSH_Right">
+    <EntityComData _Description="장애물 올라올 때 위 대상을 밀어내는 리모트 오른쪽" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="10" _LengthY="320" _LengthZ="400" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.7" _OffsetX="180" _OffsetY="160" _OffsetZ="200" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400040048" KEYNAME="REMOTE_CALIGO_Spark_NOTICE">
+    <EntityComData _Description="배전 시설 전기줄 예고" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="10" _LengthY="500" _LengthZ="10" _Type="E_BOUND_NONE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="10" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400040300" KEYNAME="REMOTE_CALIGO_LASERMACHINE_SHOCK_A">
+    <EntityComData _DensityCount="0" _Description="레이저 절단 장치A에 닿으면 쇼크를 발생시키기 위한 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="1000" _LengthZ="15" _Type="E_BOUND_BOX" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="CAL_S4_DM_LAGERMACHINE_REMOTE" />
+  </INFO>
+  <INFO ID="1400040301" KEYNAME="REMOTE_CALIGO_LASERMACHINE_SHOCK_B">
+    <EntityComData _DensityCount="0" _Description="레이저 절단 장치B에 닿으면 쇼크를 발생시키기 위한 리모" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="60" _LengthY="60" _LengthZ="1000" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="CAL_S4_DM_LAGERMACHINEB_REMOTE" />
+  </INFO>
+  <INFO ID="1400040302" KEYNAME="REMOTE_CALIGO_LASERMACHINE_SHOCK_C">
+    <EntityComData _DensityCount="0" _Description="레이저 절단장치A에 붙는 몬스터용 감전만 주는 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="60" _LengthY="1000" _LengthZ="60" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400041000" KEYNAME="REMOTE_LACRI_PORTAL_PUSH">
+    <EntityComData _Description="포탈 전송장치 내려올 때 PC 푸쉬" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="350" _LengthY="350" _LengthZ="500" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.2" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400042003" KEYNAME="REMOTE_LACRI_PORTAL_EXPLOSION">
+    <EntityComData _Description="포탈 전송장치 완료시 전기폭풍" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="5000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="30" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200040002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DYNAMIC_LAC_S3_WARPPORTAL_EXPLOSION" />
+  </INFO>
+  <INFO ID="1400042004" KEYNAME="REMOTE_LACRI_ZONE_END_REMOTE">
+    <EntityComData _Description="라크리마 타워 종료 시 몬스터 제거" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="10000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="100" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DYNAMIC_LAC_S3_WARPPORTAL_EXPLOSION" />
+  </INFO>
+  <INFO ID="1400040201" KEYNAME="REMOTE_LACRI_CAR_FIREDOT">
+    <EntityComData _Description="라크리 자동차 도트데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _LengthY="175" _LengthZ="650" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="10000" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.3" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" />
+  </INFO>
+  <INFO ID="1400042100" KEYNAME="REMOTE_LACRI_CAR_EXPLOSION">
+    <EntityComData _Description="라크리 자동차 폭발뎀쥐" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1400" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="PvP_GoT_Tower_Cannon_Explosion" />
+  </INFO>
+  <INFO ID="1400040515" KEYNAME="REMOTE_LACRI_VINE_EXPLOSION">
+    <EntityComData _Description="거대 줄기 폭발 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="500" _LengthY="500" _LengthZ="3200" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400040520" KEYNAME="REMOTE_LACRI_PLANTBRIDGE_DAMAGE">
+    <EntityComData _Description="식물 다리 접힐 때 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1000" _LengthY="3000" _LengthZ="1500" _Type="E_BOUND_BOX" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="20" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400040001" KEYNAME="REMOTE_LACRI_ELECRONICLINE_SHOCK">
+    <EntityComData _Description="바닥 전선 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1050" _LengthY="10" _LengthZ="50" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="10000" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200040001" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400042002" KEYNAME="REMOTE_LACRI_ELECRONICGATE_PUSH">
+    <EntityComData _Description="전력설비 닫힐 때 푸쉬 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _LengthY="150" _LengthZ="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400100" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040519" KEYNAME="REMOTE_LACRI_MOVETRAIN_PUSH">
+    <EntityComData _Description="엄폐형 움직이는 열차(데미지)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="220" _LengthZ="600" _OffsetX="500" _OffsetY="20" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Blue" />
+  </INFO>
+  <INFO ID="1400044100" KEYNAME="REMOTE_LACRI_GIGANTOSCAR_EXPLOSION_A">
+    <EntityComData _Description="기간토스 자동차 데미지 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="650" _LengthY="400" _LengthZ="300" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" />
+  </INFO>
+  <INFO ID="1400044102" KEYNAME="REMOTE_LACRI_GIGANTOSCAR_EFFECT">
+    <EntityComData _Description="기간토스 자동차 폭발 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="TEST_DESIGN_CARBOMB" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400044103" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400044103" KEYNAME="REMOTE_LACRI_GIGANTOSCAR_EXPLOSION_C">
+    <EntityComData _Description="기간토스 자동차 폭발 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1200" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" />
+  </INFO>
+  <INFO ID="1400070001" KEYNAME="REMOTE_CHARIS_TOTEM_EXPLOSION">
+    <EntityComData _Description="토템 - 20m 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="2000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dyn_Fx_Totem_Skill_1_Explosion" />
+  </INFO>
+  <INFO ID="1400070002" KEYNAME="REMOTE_CHARIS_TOTEM_BUFF_ATTACK">
+    <EntityComData _Description="토템 - 25m 공격 버프" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="2500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dyn_Fx_Totem_Skill_2_Buff" />
+  </INFO>
+  <INFO ID="1400070004" KEYNAME="REMOTE_CHARIS_TOTEM_HEAL">
+    <EntityComData _Description="토템 - 15m 힐" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200070004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dyn_Fx_Totem_Skill_2_Buff" />
+  </INFO>
+  <INFO ID="1400070009" KEYNAME="REMOTE_CHARIS_LIGHT_BUFF_STAMINA">
+    <EntityComData _Description="섬광 - 30m 스테미나 버프" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="3000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.5" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1200070009" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400070003" KEYNAME="REMOTE_CHARIS_4BOSSWALL_PUSH">
+    <EntityComData _Description="보스존 푸쉬벽 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="850" _LengthY="150" _LengthZ="500" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1.5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DRON_MELEE" />
+  </INFO>
+  <INFO ID="1400070008" KEYNAME="REMOTE_CHARIS_4BOSSWALL_PUSH_REDBOX">
+    <EntityComData _Description="보스존 푸쉬벽 리모트 범위표시" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="850" _LengthY="150" _LengthZ="100" _Type="E_BOUND_NONE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _OffsetY="215" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="9" _ScaleY="5" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400070010" KEYNAME="REMOTE_CHARIS_STALACTITE_EXPLOSION_LARGE">
+    <EntityComData _Description="종유석 - 10m 데미지 (대)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Cha_Dm_Stalactite_Explosion" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400070005" KEYNAME="REMOTE_CHARIS_STALACTITE_EXPLOSION_SMALL">
+    <EntityComData _Description="종유석 - 10m 데미지 (소)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170002" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Cha_Dm_Stalactite_Explosion" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400070006" KEYNAME="REMOTE_CHARIS_STALACTITE_EXPLOSION_REDCIRCLE">
+    <EntityComData _Description="종유석 - 범위 표시" />
+    <RemoteBoundComData2 _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDCIRCLE" _ScaleX="10" _ScaleY="10" />
+  </INFO>
+  <INFO ID="1400070007" KEYNAME="REMOTE_CHARIS_STALACTITE_EXPLOSION_REDCIRCLE_2S">
+    <EntityComData _Description="종유석 - 범위 표시(2초)" />
+    <RemoteBoundComData2 _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDCIRCLE_2" _ScaleX="10" _ScaleY="10" />
+  </INFO>
+  <INFO ID="1400060003" KEYNAME="REMOTE_VENTUS_FLUORESCENCE_FALL">
+    <EntityComData _Description="벤투스 이속 저하하는 형광 물질 리모트(떨어지는 것)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="200" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="False" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400060009" KEYNAME="REMOTE_VENTUS_FLUORESCENCE_FLOOR">
+    <EntityComData _Description="벤투스 이속 저하하는 형광 물질 리모트(바닥 생성)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="False" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="120" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400060005" KEYNAME="REMOTE_VENTUS_LASER_SHOCK">
+    <EntityComData _Description="회전 레이저용 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="7" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxDistance="800" />
+    <RemoteSFXComData _ResName="VT_CT_SpinLaser_BEAM" />
+  </INFO>
+  <INFO ID="1400060006" KEYNAME="REMOTE_VENTUS_LASERWALL_PUSH_HUGE">
+    <EntityComData _Description="전기벽 대 (튕겨냄)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="2350" _LengthY="100" _LengthZ="500" _OffsetY="-50" _OffsetZ="250" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="999999" _PenetrationCount="10000000">
+      <_ForceDir _Angle="180" _Type="REMOTE_FORCE_DIRECTION_TYPE_FIXED_ANGLE" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000002" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1202000003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060007" KEYNAME="REMOTE_VENTUS_LASERWALL_PUSH_SMALL">
+    <EntityComData _Description="전기벽 소 (튕겨냄)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _LengthY="100" _LengthZ="500" _OffsetY="-50" _OffsetZ="250" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="999999" _PenetrationCount="10000000">
+      <_ForceDir _Angle="180" _Type="REMOTE_FORCE_DIRECTION_TYPE_FIXED_ANGLE" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000002" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1202000003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060010" KEYNAME="REMOTE_VENTUS_DRAGGED">
+    <EntityComData _Description="벤투스 빨아들이는 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1000" _LengthY="2500" _LengthZ="500" _OffsetX="0" _OffsetY="1500" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200007" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060019" KEYNAME="REMOTE_VENTUS_FIRE_BEAM_PC">
+    <EntityComData _Description="화염방사 (PC용)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="3000" _LengthZ="200" _OffsetY="1500" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000009" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="VT_Dm_FlameThrower_Remote" />
+  </INFO>
+  <INFO ID="1400060020" KEYNAME="REMOTE_VENTUS_FIRE_BEAM_MOB">
+    <EntityComData _Description="화염방사 (몹용)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eALL" _IgnoreGround="true" _LengthX="350" _LengthY="3000" _LengthZ="200" _OffsetY="1500" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060021" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR">
+    <EntityComData _Description="작은 바닥불길 (어미탄) - 보통속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="1.1">
+        <_CreateEntity _RemoteIndex="1400060035" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060037" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_FAST">
+    <EntityComData _Description="작은 바닥불길 (어미탄) - 빠른속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="0.9">
+        <_CreateEntity _RemoteIndex="1400060044" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060038" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_SLOW">
+    <EntityComData _Description="작은 바닥불길 (어미탄) - 느린속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="1.65">
+        <_CreateEntity _RemoteIndex="1400060045" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060035" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_AREA">
+    <EntityComData _Description="작은 바닥불길 범위표시 (어미) - 보통속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.6">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="3" _ScaleY="3" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060022" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060044" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_AREA_FAST">
+    <EntityComData _Description="작은 바닥불길 범위표시 (어미) - 빠른속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.4">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="3" _ScaleY="3" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060022" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060045" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_AREA_SLOW">
+    <EntityComData _Description="작은 바닥불길 범위표시 (어미) - 느린속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.8">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="3" _ScaleY="3" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060022" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060022" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_PC">
+    <EntityComData _Description="작은 바닥불길 (PC용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="100" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1263510001" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1.5" />
+    <RemoteSFXComData _ResName="DRON_SLAUGHTER_FIRE_Fire_1" />
+    <RemoteSystemComData>
+      <_Time _Recycle="false" _Time="0">
+        <_CreateEntity _RemoteIndex="1400060023" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060023" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_MOB">
+    <EntityComData _Description="작은 바닥불길 (몹용)" />
+    <RemoteBoundComData2 _DamageGroup="eFRIEND" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="100" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DRON_SLAUGHTER_FIRE_Fire_4m_5s" />
+  </INFO>
+  <INFO ID="1400060026" KEYNAME="REMOTE_VENTUS_FIRE_FLOOR_STAY">
+    <EntityComData _Description="바닥불길 - 제자리 (어미탄)" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="3.3">
+        <_CreateEntity _RemoteIndex="1400060035" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060030" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR">
+    <EntityComData _Description="넓은 바닥불길 (어미탄) - 보통속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="0.76">
+        <_CreateEntity _RemoteIndex="1400060036" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060039" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR_FAST">
+    <EntityComData _Description="넓은 바닥불길 (어미탄) - 빠른속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="0.55">
+        <_CreateEntity _RemoteIndex="1400060046" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060014" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR_SLOW">
+    <EntityComData _Description="넓은 바닥불길 (어미탄) - 느린속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="20" _LifeTime="20">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="0.93">
+        <_CreateEntity _RemoteIndex="1400060047" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060036" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR_AREA">
+    <EntityComData _Description="넓은 바닥불길 범위표시 (어미) - 보통속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.6">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="6" _ScaleY="6" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060031" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060046" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR_AREA_FAST">
+    <EntityComData _Description="넓은 바닥불길 범위표시 (어미) - 빠른속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.45">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="6" _ScaleY="6" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060031" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060047" KEYNAME="REMOTE_VENTUS_BIG_FIRE_FLOOR_AREA_SLOW">
+    <EntityComData _Description="넓은 바닥불길 범위표시 (어미) - 느린속도" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="0.8">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDBOX" _ScaleX="6" _ScaleY="6" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060031" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060031" KEYNAME="REMOTE_VENTUS_BIGFIRE_FLOOR_PC">
+    <EntityComData _Description="넓은 바닥불길 (PC용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="600" _LengthY="600" _LengthZ="100" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0.4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="5" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1263510001" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1.5" />
+    <RemoteSFXComData _ResName="DRON_SLAUGHTER_FIRE_Fire_2" />
+    <RemoteSystemComData>
+      <_Time _Recycle="false" _Time="0">
+        <_CreateEntity _RemoteIndex="1400060032" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060032" KEYNAME="REMOTE_VENTUS_BIGFIRE_FLOOR_MOB">
+    <EntityComData _Description="넓은 바닥불길 (몹용)" />
+    <RemoteBoundComData2 _DamageGroup="eFRIEND" _IgnoreGround="true" _LengthX="600" _LengthY="600" _LengthZ="100" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="DRON_SLAUGHTER_FIRE_Fire_8m_5s" />
+  </INFO>
+  <INFO ID="1400060024" KEYNAME="REMOTE_VENTUS_FIRE_ROTATION_PC">
+    <EntityComData _Description="회전형 화염방사 (PC용)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="3000" _LengthZ="200" _OffsetY="1420" _Type="E_BOUND_BOX" _VsDynamic="True" _VsPC="True" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="False" _AttachFireObject="True" _AttackMultiplier="0.7" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000009" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="VT_Dm_FlameThrower_Remote" />
+  </INFO>
+  <INFO ID="1400060025" KEYNAME="REMOTE_VENTUS_FIRE_ROTATION_MOB">
+    <EntityComData _Description="회전형 화염방사 (몹용)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eALL" _IgnoreGround="true" _LengthX="280" _LengthY="3000" _LengthZ="200" _OffsetY="1420" _Type="E_BOUND_BOX" _VsNPC_Monster="True" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="False" _AttachFireObject="True" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000010" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060027" KEYNAME="REMOTE_VENTUS_CAPSULE_MUTANT_MOB">
+    <EntityComData _Description="변이 용액" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1200" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="False" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="8" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000015" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="VT_CT_Capsule_B_Remote" />
+  </INFO>
+  <INFO ID="1400060028" KEYNAME="REMOTE_VENTUS_CAPSULE_PUSH">
+    <EntityComData _Description="캡슐 올라올 때 위 대상을 밀어내는 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="290" _LengthY="290" _LengthZ="600" _OffsetZ="300" _Type="E_BOUND_BOX" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400060029" KEYNAME="REMOTE_VENTUS_FIRE_WARNING">
+    <EntityComData _Description="화염방사 예고 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="10" _Type="E_BOUND_BEAM" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="False" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxDistance="3000" />
+    <RemoteSFXComData _ResName="Common_Guide_Beam" />
+  </INFO>
+  <INFO ID="1400070300" KEYNAME="REMOTE_DESERT_WATER_EXPLOSION">
+    <EntityComData _Description="사막_물 충격파 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="1000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202070301" _Rate="100" _Value="100" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+  </INFO>
+  <INFO ID="1400070301" KEYNAME="REMOTE_DESERT_WATER_EXPLOSION_EFFECT">
+    <EntityComData _Description="사막_물 충격파 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dyn_Fx_Water_Explosion" _ScaleX="1.2" _ScaleY="1.2" _ScaleZ="1.2" />
+  </INFO>
+  <INFO ID="1400070302" KEYNAME="REMOTE_DESERT_WATERFountain_BUFF">
+    <EntityComData _Description="사막_물 충격파 PC 이속증가" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.2" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202070300" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+  </INFO>
+  <INFO ID="1400070303" KEYNAME="REMOTE_DESERT_WATERFALL_BUFF">
+    <EntityComData _Description="사막_흐르는 물줄기 버프 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202070300" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+  </INFO>
+  <INFO ID="1400070305" KEYNAME="REMOTE_NURAN_SAND_DRAGGED">
+    <EntityComData _Description="사막_ 직선형 유사" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="800" _LengthZ="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000113" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400070311" KEYNAME="REMOTE_DESERT_STALACTITE_EXPLOSION_REDCIRCLE_2S">
+    <EntityComData _Description="암석 - 범위 표시(2초)" />
+    <RemoteBoundComData2 _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDCIRCLE_2" _ScaleX="8" _ScaleY="8" />
+  </INFO>
+  <INFO ID="1400070312" KEYNAME="REMOTE_DESERT_STALACTITE_EXPLOSION">
+    <EntityComData _Description="암석 - 10m 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="800" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.1" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Cha_Dm_Stalactite_Explosion" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400060040" KEYNAME="REMOTE_PVP_OCCUPY_EFFECT">
+    <EntityComData _Description="점령 장치 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999999">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="PVPDynamic_TeamColor" />
+  </INFO>
+  <INFO ID="1400050010" KEYNAME="REMOTE_PVP_UPDOWNWALL_PUSH">
+    <EntityComData _Description="PvP 업다운 벽 생성 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="380" _LengthY="240" _LengthZ="1000" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400101" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400050011" KEYNAME="REMOTE_PVP_BUSHUPWALL_PUSH">
+    <EntityComData _Description="부시 업 되는 벽 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="100" _LengthY="500" _LengthZ="1000" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400101" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400050012" KEYNAME="REMOTE_PVP_BUSHUPWALL2_PUSH">
+    <EntityComData _Description="부시 업 되는 벽 리모트 작은벽" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="100" _LengthY="300" _LengthZ="1000" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.5" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400101" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400090000" KEYNAME="REMOTE_TUTORIAL_LASER_SHOCK">
+    <EntityComData _Description="튜토리얼 레이저 감전" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1300" _LengthY="30" _LengthZ="130" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060000" KEYNAME="REMOTE_TUTORIAL_NITROGEN_EXPLOSION">
+    <EntityComData _Description="질소 배럴 폭발 리모트 8m" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="800" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170006" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060001" KEYNAME="REMOTE_TUTORIAL_SILENCE_EFFECT">
+    <EntityComData _Description="튜토리얼 챠지 구간 침묵" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dyn_Fx_Water_Explosion" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060004" KEYNAME="REMOTE_TUTORIAL_WALL_FALL_FLY">
+    <EntityComData _Description="튜토리얼 천장 내려앉음 밀려남" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="2400" _LengthY="1000" _LengthZ="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000350" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400060002" KEYNAME="REMOTE_TUTORIAL_WALL_FALL_REMOTE">
+    <EntityComData _Description="튜토리얼 천장 내려앉음 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _LengthY="1000" _LengthZ="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170004" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Green" />
+  </INFO>
+  <INFO ID="1400060041" KEYNAME="REMOTE_SPORTS_ROTATIONLASER_SHOCK">
+    <EntityComData _Description="운동회용 회전 레이저용 리모트 (달리기)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="7" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxDistance="800" />
+    <RemoteSFXComData _ResName="VT_CT_SpinLaser_BEAM" />
+  </INFO>
+  <INFO ID="1400060043" KEYNAME="REMOTE_SPORTS_RUNLASER_SHOCK_1">
+    <EntityComData _Description="달리기 바닥 배치용 레이저 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="7" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+    <SteeringBehaviorsComData _MaxDistance="400" />
+    <RemoteSFXComData _ResName="VT_CT_SpinLaser_BEAM" />
+  </INFO>
+  <INFO ID="1400040151" KEYNAME="REMOTE_SPORTS_CONVEYOR_DRAGGED">
+    <EntityComData _Description="운동회 컨베이어 밸트용 바닥 리모트 (달리기)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="400" _LengthY="1500" _LengthZ="500" _OffsetX="0" _OffsetY="1000" _OffsetZ="200" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400040511" KEYNAME="REMOTE_SPORTS_LASERMACHINE_SHOCK">
+    <EntityComData _Description="운동회 레이저장치용 (달리기)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="700" _LengthY="18" _LengthZ="90" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060042" KEYNAME="REMOTE_SPORTS_ROTATIONLASER_SHOCK_1">
+    <EntityComData _Description="운동회용 회전 레이저용 리모트 (점프용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _OffsetX="200" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxDistance="1200" />
+    <RemoteSFXComData _ResName="VT_CT_SpinLaser_BEAM" />
+  </INFO>
+  <INFO ID="1400060643" KEYNAME="REMOTE_SPORTS_JUMP_LASER_1">
+    <EntityComData _Description="운동회용 점프 레이저 리모트 (점프용)" />
+    <RemoteBoundComData2 _Angle="360" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="3800" _LengthZ="15" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060644" KEYNAME="REMOTE_SPORTS_JUMP_FIREDOT_1">
+    <EntityComData _Description="운동회 점프용 날아가는 탄 (점프용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="90" _LengthY="100" _LengthZ="90" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="12" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <SteeringBehaviorsComData _MaxSpeed="200" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote" _ScaleX="1" _ScaleY="1" />
+  </INFO>
+  <INFO ID="1400060645" KEYNAME="REMOTE_SPORTS_ITEM_SPAWN_1">
+    <EntityComData _Description="운동회 아이템 스폰용 이펙트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1" _LengthY="1" _LengthZ="1" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Item_Sports_Spawn" />
+  </INFO>
+  <INFO ID="1400060646" KEYNAME="REMOTE_SPORTS_JUMP_LASER_2">
+    <EntityComData _Description="운동회용 점프 레이저 리모트 (달리기)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="3" _LengthY="2400" _LengthZ="3" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060649" KEYNAME="REMOTE_SPORTS_JUMP_LASER_3">
+    <EntityComData _Description="운동회용 점프 레이저 리모트 (점프용)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="3" _LengthY="2400" _LengthZ="3" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060654" KEYNAME="REMOTE_SPORTS_JUMP_LASER_4">
+    <EntityComData _Description="운동회용 점프 레이저 리모트 (점프용 긴것)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="3" _LengthY="3800" _LengthZ="3" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060655" KEYNAME="REMOTE_SPORTS_JUMP_LASER_5">
+    <EntityComData _Description="운동회 점프 레이저 2번 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="3" _LengthY="900" _LengthZ="3" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060647" KEYNAME="REMOTE_SPORTS_FLUORESCENCE_FALL">
+    <EntityComData _Description="운동회 점프 떨어지는 물질" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="200" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400060648" KEYNAME="REMOTE_SPORTS_FLUORESCENCE_FLOOR">
+    <EntityComData _Description="운동회 점프 물질 바닥용" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060700" KEYNAME="REMOTE_Dredgion_Defect_DRAGGEDBYFORCE">
+    <EntityComData _Description="결함_빨아드리기" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _LengthX="2400" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000110" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _AccelerateMaxSpeed="0.2" />
+    <RemoteSFXComData _ResName="DRON_HUMANCLONE_Skill_5_Casting" />
+  </INFO>
+  <INFO ID="1400060800" KEYNAME="REMOTE_Dredgion_IceBox_BEAM">
+    <EntityComData _Description="냉각장치" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="900" _LengthZ="100" _OffsetY="500" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000112" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.2" />
+    <RemoteSFXComData _ResName="Dynamic_Box_CoolingValve_REMOTE_LOOP" />
+  </INFO>
+  <INFO ID="1400060900" KEYNAME="REMOTE_PvE_State_FLOOR">
+    <EntityComData _Description="상태이상용 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="14400" _LengthY="11600" _LengthZ="200" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000114" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.2" />
+  </INFO>
+  <INFO ID="1400060650" KEYNAME="REMOTE_SPORTS_HAND_STUN_1">
+    <EntityComData _Description="달리기 손바닥 리모트 밀어내기" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="400" _LengthY="10" _LengthZ="400" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201400101" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060651" KEYNAME="REMOTE_SPORTS_MISSILE_DIRECT_1">
+    <EntityComData _Description="운동회 미사일 직선탄" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSystemComData>
+      <_Time _Recycle="false" _Time="0">
+        <_CreateRemote>
+          <_Radiate _Index="1400060653" _MaxAngle="180" _MaxNum="4" />
+        </_CreateRemote>
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060652" KEYNAME="REMOTE_SPORTS_MISSILE_HOMING_1">
+    <EntityComData _Description="운동회 미사일 유도탄" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_HOMING" _CriticalRate="0" _LifeTime="7" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2">
+      <_Homing _ReactionAngle="360" _ReactionLength="3000" _ReactionTime="10" />
+    </RemoteTargetComData>
+    <SteeringBehaviorsComData _AngularVel="6" _ForceDelay="0.2" _ForceScale="600" _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_H_Remote" />
+  </INFO>
+  <INFO ID="1400060653" KEYNAME="REMOTE_SPORTS_MISSILE_DIRECT_2">
+    <EntityComData _Description="운동회 미사일 직선탄_탄막형" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000024" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="450" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote" />
+  </INFO>
+  <INFO ID="1400060658" KEYNAME="REMOTE_SPORTS_MISSILE_HOMING_2">
+    <EntityComData _Description="운동회 미사일 유도탄 (점프맵)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_HOMING" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000014" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2">
+      <_Homing _ReactionAngle="360" _ReactionLength="3000" _ReactionTime="10" />
+    </RemoteTargetComData>
+    <SteeringBehaviorsComData _AngularVel="6" _ForceDelay="0.2" _ForceScale="600" _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_H_Remote" />
+  </INFO>
+  <INFO ID="1400060656" KEYNAME="REMOTE_SPORTS_BALLOON_FALL">
+    <EntityComData _Description="운동회 점프 물폭탄(떨어지는 것)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="200" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="False" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_Balloon_1_Remote" />
+  </INFO>
+  <INFO ID="1400060657" KEYNAME="REMOTE_SPORTS_BALLOON_FLOOR">
+    <EntityComData _Description="운동회 점프 물폭탄(바닥)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="300" _LengthY="300" _LengthZ="350" _OffsetX="0" _OffsetY="0" _OffsetZ="100" _Type="E_BOUND_SPHERE" _VsDynamic="False" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000011" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_Balloon_1_BG" />
+  </INFO>
+  <INFO ID="1400060661" KEYNAME="REMOTE_SPORTS_IceBox_DRAGGED">
+    <EntityComData _Description="운동희 사이드뷰 달리기(컨트롤 블록)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="250" _LengthY="190" _LengthZ="50" _OffsetX="0" _OffsetY="0" _OffsetZ="0" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060662" KEYNAME="REMOTE_SPORTS_Side_DRAGGED">
+    <EntityComData _Description="운동희 사이드뷰 달리기(내리막길 벨트)" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="200" _LengthY="1500" _LengthZ="100" _OffsetX="0" _OffsetY="0" _OffsetZ="0" _Type="E_BOUND_BOX" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201200003" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400060663" KEYNAME="REMOTE_SPORTS_RopeTrap_SHOCK_1">
+    <EntityComData _Description="운동회 사이드뷰 달리기 (로프 트랩_쇼크)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="600" _LengthZ="15" _OffsetZ="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060664" KEYNAME="REMOTE_SPORTS_SideMissile_HOMING_1">
+    <EntityComData _Description="운동회 미사일 유도탄_쇼크" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_HOMING" _CriticalRate="0" _LifeTime="7" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2">
+      <_Homing _ReactionAngle="360" _ReactionLength="3000" _ReactionTime="10" />
+    </RemoteTargetComData>
+    <SteeringBehaviorsComData _AngularVel="6" _ForceDelay="0.2" _ForceScale="600" _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_H_Remote" />
+  </INFO>
+  <INFO ID="1400060665" KEYNAME="REMOTE_SPORTS_SideMissile_HOMING_2">
+    <EntityComData _Description="운동회 미사일 유도탄_슬로우" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_HOMING" _CriticalRate="0" _LifeTime="7" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000024" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2">
+      <_Homing _ReactionAngle="360" _ReactionLength="3000" _ReactionTime="10" />
+    </RemoteTargetComData>
+    <SteeringBehaviorsComData _AngularVel="6" _ForceDelay="0.2" _ForceScale="600" _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_H_Remote" />
+  </INFO>
+  <INFO ID="1400060666" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_1">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_빠름_90도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="1000" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote_2" />
+  </INFO>
+  <INFO ID="1400060667" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_2">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_기본_90도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="600" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote" />
+  </INFO>
+  <INFO ID="1400060668" KEYNAME="REMOTE_SPORTS_SparkWave_SHOCK">
+    <EntityComData _Description="운동회 쇼크 트랩" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="40" _LengthY="200" _LengthZ="90" _OffsetZ="20" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000219" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+  </INFO>
+  <INFO ID="1400060669" KEYNAME="REMOTE_SPORTS_Pendulum_SHOCK_1">
+    <EntityComData _Description="운동회_회전 트랩 시계추1" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="5" _OffsetY="0" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _OffsetY="600" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_SpinTrap_1_Sphere_Remote" />
+  </INFO>
+  <INFO ID="1400060670" KEYNAME="REMOTE_SPORTS_Pendulum_SHOCK_2">
+    <EntityComData _Description="운동회_회전 트랩 시계추2" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="5" _OffsetY="0" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _OffsetY="400" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_SpinTrap_1_Sphere_Remote" />
+  </INFO>
+  <INFO ID="1400060671" KEYNAME="REMOTE_SPORTS_LASER_SHOCK">
+    <EntityComData _Description="운동회_회전 트랩 막대" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1" _LengthY="680" _LengthZ="1" _OffsetY="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="99999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_SpinTrap_1_L_Remote" _ScaleY="1.5" />
+  </INFO>
+  <INFO ID="1400060672" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_3">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_빠름_45도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="1000" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote_2" />
+  </INFO>
+  <INFO ID="1400060673" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_4">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_기본_45도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3.5" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="600" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote" />
+  </INFO>
+  <INFO ID="1400060674" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_5">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_빠름_0도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1.8" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="1000" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote_2" />
+  </INFO>
+  <INFO ID="1400060675" KEYNAME="REMOTE_SPORTS_SideMissile_DIRECT_6">
+    <EntityComData _Description="운동회 미사일 직선탄_쇼크_기본_0도" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000220" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <SteeringBehaviorsComData _MaxSpeed="600" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_GasLaser_D_Remote" />
+  </INFO>
+  <INFO ID="1400060676" KEYNAME="REMOTE_SPORTS_RopeTrap_PUSH_1">
+    <EntityComData _Description="운동회 사이드뷰 달리기 (로프 트랩_푸쉬)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="600" _LengthZ="15" _OffsetZ="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000221" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060677" KEYNAME="REMOTE_SPORTS_RopeTrap_Fly_1">
+    <EntityComData _Description="운동회 사이드뷰 달리기 (로프 트랩_슬로우)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="600" _LengthZ="15" _OffsetZ="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000222" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060678" KEYNAME="REMOTE_SPORTS_FIRE_BEAM_1">
+    <EntityComData _Description="운동회 가로 피하기 (직선형 화염 방사10초)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="3600" _LengthZ="200" _OffsetY="1800" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000224" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="VT_Dm_FlameThrower_Remote" />
+  </INFO>
+  <INFO ID="1400060679" KEYNAME="REMOTE_SPORTS_FIRE_BEAM_2">
+    <EntityComData _Description="운동회 가로 피하기 (직선형 고정 공격5초)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="3600" _LengthZ="200" _OffsetY="1800" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000224" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sports_SideViewDodge_Stay_Shot_Beam" />
+  </INFO>
+  <INFO ID="1400060680" KEYNAME="REMOTE_SPORTS_FIRE_BEAM_3">
+    <EntityComData _Description="운동회 가로 피하기 (직선형 고정 공격2초)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="3600" _LengthZ="200" _OffsetY="1800" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000224" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sports_SideViewDodge_Stay_Shot_Beam" />
+  </INFO>
+  <INFO ID="1400060681" KEYNAME="REMOTE_SPORTS_FIRE_BEAM_4">
+    <EntityComData _Description="운동회 가로 피하기 (직선형 무빙 공격5초)" />
+    <RemoteBoundComData2 _CreateSubBound="True" _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="350" _LengthY="3600" _LengthZ="200" _OffsetY="1800" _Type="E_BOUND_BOX" _VsDynamic="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2.2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _OffsetY="1000" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000224" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sports_SideViewDodge_Move_Long_Beam" />
+  </INFO>
+  <INFO ID="1400060901" KEYNAME="REMOTE_SPORTS_Floor_Damage_1">
+    <EntityComData _Description="탄막 맞기_주기적 데미지1" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="4000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="0.8" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+  </INFO>
+  <INFO ID="1400060902" KEYNAME="REMOTE_SPORTS_Floor_Damage_2">
+    <EntityComData _Description="탄막 맞기_주기적 데미지2" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="4000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="0.9" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+  </INFO>
+  <INFO ID="1400060903" KEYNAME="REMOTE_SPORTS_Floor_Damage_3">
+    <EntityComData _Description="탄막 맞기_주기적 데미지3" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="4000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1.1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+  </INFO>
+  <INFO ID="1400060904" KEYNAME="REMOTE_SPORTS_Floor_Damage_4">
+    <EntityComData _Description="탄막 맞기_주기적 데미지4" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="4000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1.3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+  </INFO>
+  <INFO ID="1400060905" KEYNAME="REMOTE_SPORTS_Floor_Damage_5">
+    <EntityComData _Description="탄막 맞기_주기적 데미지5" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="4000" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="1.5" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="0.1" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+  </INFO>
+  <INFO ID="1400060906" KEYNAME="REMOTE_SPORTS_Floor_Start">
+    <EntityComData _Description="탄막 맞기_바닥 어미탄" />
+    <RemoteBoundComData2 _IgnoreGround="true" _Type="E_BOUND_NONE" _VsDynamic="false" _VsNPC_Monster="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSystemComData>
+      <_Time _Recycle="True" _Time="1">
+        <_CreateRemote>
+          <_CircleAreaFall _Index="1400060907" _MaxNum="1" _Radius="1300" />
+        </_CreateRemote>
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060907" KEYNAME="REMOTE_SPORTS_Floor_Guide">
+    <EntityComData _Description="탄막 맞기_바닥 범위표시" />
+    <RemoteBoundComData2 _IgnoreGround="true" _Type="E_BOUND_NONE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_Dounut_Target" _ScaleX="1.8" _ScaleY="1.8" _ScaleZ="1.8" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060908" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060908" KEYNAME="REMOTE_SPORTS_Floor_Explosion">
+    <EntityComData _Description="탄막 맞기_바닥 폭발 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="375" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000209" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _GroundMoveType="E_GROUND_MOVE_TYPE_A" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_Dounut_P_Remote" _ScaleX="1.8" _ScaleY="1.8" _ScaleZ="1.8" />
+  </INFO>
+  <INFO ID="1400060909" KEYNAME="REMOTE_SPORTS_Curve_Remote_Left1">
+    <EntityComData _Description="탄막 맞기_커브드 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="30" _OffsetY="10" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_GRAPH" _CanReflect="True" _CriticalRate="0" _LifeTime="6.2" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="650" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_Y_Remote" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteGraphComData _FixedGraphLength="3000" _Type="REMOTE_GRAPH_BEZIER_CURVE">
+      <_BezierUp DATA="500" />
+      <_BezierUp DATA="500" />
+      <_BezierRotate DATA="90" />
+      <_BezierRotate DATA="90" />
+    </RemoteGraphComData>
+  </INFO>
+  <INFO ID="1400060910" KEYNAME="REMOTE_SPORTS_Curve_Remote_Left2">
+    <EntityComData _Description="탄막 맞기_커브드 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="30" _OffsetY="10" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_GRAPH" _CanReflect="True" _CriticalRate="0" _LifeTime="6.2" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="650" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_Y_Remote" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteGraphComData _FixedGraphLength="3000" _Type="REMOTE_GRAPH_BEZIER_CURVE">
+      <_BezierUp DATA="500" />
+      <_BezierUp DATA="2000" />
+      <_BezierRotate DATA="90" />
+      <_BezierRotate DATA="90" />
+    </RemoteGraphComData>
+  </INFO>
+  <INFO ID="1400060911" KEYNAME="REMOTE_SPORTS_Curve_Remote_Right1">
+    <EntityComData _Description="탄막 맞기_커브드 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="30" _OffsetY="10" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_GRAPH" _CanReflect="True" _CriticalRate="0" _LifeTime="6.2" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="650" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_V_Remote" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteGraphComData _FixedGraphLength="3000" _Type="REMOTE_GRAPH_BEZIER_CURVE">
+      <_BezierUp DATA="500" />
+      <_BezierUp DATA="500" />
+      <_BezierRotate DATA="270" />
+      <_BezierRotate DATA="270" />
+    </RemoteGraphComData>
+  </INFO>
+  <INFO ID="1400060912" KEYNAME="REMOTE_SPORTS_Curve_Remote_Right2">
+    <EntityComData _Description="탄막 맞기_커브드 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="30" _OffsetY="10" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_GRAPH" _CanReflect="True" _CriticalRate="0" _LifeTime="6.2" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="650" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_R_Remote" _ScaleX="1.5" _ScaleY="1.5" _ScaleZ="1.5" />
+    <RemoteGraphComData _FixedGraphLength="3000" _Type="REMOTE_GRAPH_BEZIER_CURVE">
+      <_BezierUp DATA="500" />
+      <_BezierUp DATA="2000" />
+      <_BezierRotate DATA="270" />
+      <_BezierRotate DATA="270" />
+    </RemoteGraphComData>
+  </INFO>
+  <INFO ID="1400060913" KEYNAME="REMOTE_SPORTS_Delay_Fake_V">
+    <EntityComData _Description="탄막 맞기_중력탄 페이크_V" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_V_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060914" KEYNAME="REMOTE_SPORTS_Delay_Fake_R">
+    <EntityComData _Description="탄막 맞기_중력탄 페이크_R" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_R_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060915" KEYNAME="REMOTE_SPORTS_Delay_Fake_G">
+    <EntityComData _Description="탄막 맞기_중력탄 페이크_G" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_G_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060916" KEYNAME="REMOTE_SPORTS_Delay_Fake_B">
+    <EntityComData _Description="탄막 맞기_중력탄 페이크_B" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_B_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060917" KEYNAME="REMOTE_SPORTS_Delay_V_P">
+    <EntityComData _Description="탄막 맞기_중력탄 V_4초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_V_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="3">
+        <_CreateEntity _RemoteIndex="1400060918" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060918" KEYNAME="REMOTE_SPORTS_Delay_V_A">
+    <EntityComData _Description="탄막 맞기_중력탄 범위 표시 V_4초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Area_Range" _ScaleX="6.5" _ScaleY="6.5" _ScaleZ="6.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060919" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060919" KEYNAME="REMOTE_SPORTS_Delay_V">
+    <EntityComData _Description="탄막 맞기_중력탄 폭발 V_4초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="650" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _MultiHitTimeOut="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000215" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Explosion" />
+  </INFO>
+  <INFO ID="1400060920" KEYNAME="REMOTE_SPORTS_Delay_R_P">
+    <EntityComData _Description="탄막 맞기_중력탄 R_7초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="7" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_R_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="6">
+        <_CreateEntity _RemoteIndex="1400060921" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060921" KEYNAME="REMOTE_SPORTS_Delay_R_A">
+    <EntityComData _Description="탄막 맞기_중력탄 범위 표시 R_7초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Area_Range" _ScaleX="6.5" _ScaleY="6.5" _ScaleZ="6.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060922" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060922" KEYNAME="REMOTE_SPORTS_Delay_R">
+    <EntityComData _Description="탄막 맞기_중력탄 폭발 R_7초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="650" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _MultiHitTimeOut="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000215" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Explosion" />
+  </INFO>
+  <INFO ID="1400060923" KEYNAME="REMOTE_SPORTS_Delay_G_P">
+    <EntityComData _Description="탄막 맞기_중력탄 G_4초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_G_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="3">
+        <_CreateEntity _RemoteIndex="1400060924" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060924" KEYNAME="REMOTE_SPORTS_Delay_G_A">
+    <EntityComData _Description="탄막 맞기_중력탄 범위 표시 G_4초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Area_Range" _ScaleX="6.5" _ScaleY="6.5" _ScaleZ="6.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060925" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060925" KEYNAME="REMOTE_SPORTS_Delay_G">
+    <EntityComData _Description="탄막 맞기_중력탄 폭발 G_4초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="650" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _MultiHitTimeOut="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000215" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Explosion" />
+  </INFO>
+  <INFO ID="1400060926" KEYNAME="REMOTE_SPORTS_Delay_B_P">
+    <EntityComData _Description="탄막 맞기_중력탄 B_7초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="150" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="7" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_B_Shield" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Time _Recycle="true" _Time="6">
+        <_CreateEntity _RemoteIndex="1400060927" />
+      </_Time>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060927" KEYNAME="REMOTE_SPORTS_Delay_B_A">
+    <EntityComData _Description="탄막 맞기_중력탄 범위 표시 B_7초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="350" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Area_Range" _ScaleX="6.5" _ScaleY="6.5" _ScaleZ="6.5" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateEntity _RemoteIndex="1400060928" />
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060928" KEYNAME="REMOTE_SPORTS_Delay_B">
+    <EntityComData _Description="탄막 맞기_중력탄 폭발 B_7초" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="650" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _MultiHitTimeOut="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000215" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Explosion" />
+  </INFO>
+  <INFO ID="1400060929" KEYNAME="REMOTE_SPORTS_Divide_V_P">
+    <EntityComData _Description="탄막 맞기_분리탄 어미(5초)_바이올렛" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="120" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="5" _MultiHitTimeOut="0.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_ST_Big_Remote" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateRemote>
+          <_Radiate _Index="1400060930" _MaxAngle="360" _MaxNum="4" />
+        </_CreateRemote>
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060930" KEYNAME="REMOTE_SPORTS_Divide_V_A">
+    <EntityComData _Description="탄막 맞기_분리탄 새끼탄_바이올렛" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="300" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_V_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+  </INFO>
+  <INFO ID="1400060931" KEYNAME="REMOTE_SPORTS_Divide_R_P">
+    <EntityComData _Description="탄막 맞기_분리탄 어미(3초)_레드" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="120" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _MultiHitTimeOut="0.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_ST_Big_Remote" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateRemote>
+          <_Radiate _Index="1400060932" _MaxAngle="360" _MaxNum="4" />
+        </_CreateRemote>
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060932" KEYNAME="REMOTE_SPORTS_Divide_R_A">
+    <EntityComData _Description="탄막 맞기_분리탄 새끼탄_레드" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="300" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_R_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+  </INFO>
+  <INFO ID="1400060933" KEYNAME="REMOTE_SPORTS_Divide_G_P">
+    <EntityComData _Description="탄막 맞기_분리탄 어미(5초)_그린" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="120" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="5" _MultiHitTimeOut="0.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_ST_Big_Remote" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateRemote>
+          <_Radiate _Index="1400060934" _MaxAngle="360" _MaxNum="4" />
+        </_CreateRemote>
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060934" KEYNAME="REMOTE_SPORTS_Divide_G_A">
+    <EntityComData _Description="탄막 맞기_분리탄 새끼탄_그린" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="300" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_G_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+  </INFO>
+  <INFO ID="1400060935" KEYNAME="REMOTE_SPORTS_Divide_B_P">
+    <EntityComData _Description="탄막 맞기_분리탄 어미(3초)_블루" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="120" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _MultiHitTimeOut="0.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_ST_Big_Remote" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+    <RemoteSystemComData>
+      <_Destroy>
+        <_CreateRemote>
+          <_Radiate _Index="1400060936" _MaxAngle="360" _MaxNum="4" />
+        </_CreateRemote>
+      </_Destroy>
+    </RemoteSystemComData>
+  </INFO>
+  <INFO ID="1400060936" KEYNAME="REMOTE_SPORTS_Divide_B_A">
+    <EntityComData _Description="탄막 맞기_분리탄 새끼탄_블루" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000213" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="300" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_ST_B_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+  </INFO>
+  <INFO ID="1400060937" KEYNAME="REMOTE_SPORTS_Divide_Fake">
+    <EntityComData _Description="탄막 맞기_분리탄 페이크" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="120" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="1" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="10" _MultiHitTimeOut="0.3" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_HitRemote_ST_Big_Remote" _ScaleX="0.8" _ScaleY="0.8" _ScaleZ="0.8" />
+  </INFO>
+  <INFO ID="1400060938" KEYNAME="REMOTE_SPORTS_Rain">
+    <EntityComData _Description="탄막 맞기_비 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="90" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_GRAPH" _CriticalRate="0" _LifeTime="6" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000216" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _MaxSpeed="400" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Ice_CH_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+  </INFO>
+  <INFO ID="1400060939" KEYNAME="REMOTE_SPORTS_Homing">
+    <EntityComData _Description="탄막 먹기_유도탄" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="60" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="1" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_HOMING" _CriticalRate="0" _LifeTime="12" _PenetrationCount="10">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000216" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _AngularVel="6" _ForceDelay="0.2" _ForceScale="600" _MaxSpeed="400" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Ice_P_Remote" _ScaleX="0.7" _ScaleY="0.7" _ScaleZ="0.7" />
+    <RemoteTargetComData>
+      <_Homing _ReactionAngle="360" _ReactionLength="3000" _ReactionTime="10" />
+    </RemoteTargetComData>
+  </INFO>
+  <INFO ID="1400060940" KEYNAME="REMOTE_SPORTS_Beam_Start_1">
+    <EntityComData _Description="탄막 맞기_초고속_빔 공용 조준 1.5초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="15" _Type="E_BOUND_BEAM" _VsDynamic="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="1.5" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _AccelerateMaxSpeed="4500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Beam_notice" />
+  </INFO>
+  <INFO ID="1400060941" KEYNAME="REMOTE_SPORTS_Beam_Start_2">
+    <EntityComData _Description="탄막 맞기_초고속_빔 공용 조준 2초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="15" _Type="E_BOUND_BEAM" _VsDynamic="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _AccelerateMaxSpeed="4500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Beam_notice" />
+  </INFO>
+  <INFO ID="1400060942" KEYNAME="REMOTE_SPORTS_Rapid_Damage">
+    <EntityComData _Description="탄막 맞기_초고속 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="30" _LengthY="5000" _LengthZ="30" _OffsetY="2500" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000211" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="TRIBE_BEAMBEAM_Skill_3_Beam" />
+  </INFO>
+  <INFO ID="1400060943" KEYNAME="REMOTE_SPORTS_Beam_Damage">
+    <EntityComData _Description="탄막 맞기_빔 발사" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _LengthX="8" _Type="E_BOUND_BEAM" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="10" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000208" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.7" />
+    <SteeringBehaviorsComData _AccelerateMaxSpeed="4500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Beam" />
+  </INFO>
+  <INFO ID="1400060944" KEYNAME="REMOTE_SPORTS_Accel">
+    <EntityComData _Description="탄막 맞기_가속탄" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="200" _Type="E_BOUND_SPHERE" _VsDynamic="true" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CanReflect="True" _CriticalRate="0" _LifeTime="4" _MultiHitTimeOut="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000215" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _ForceDelay="1.6" _ForceScale="2500" _MaxSpeed="3500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_V_Remote" _ScaleX="3" _ScaleY="3" _ScaleZ="3" />
+  </INFO>
+  <INFO ID="1400060945" KEYNAME="REMOTE_SPORTS_Slow_Remote">
+    <EntityComData _Description="탄막 맞기_느린탄" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="20" _LengthY="200" _LengthZ="1" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="6" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="12" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000209" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+    <SteeringBehaviorsComData _MaxSpeed="300" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_SP_B_Remote" _ScaleX="2.5" _ScaleY="2.5" _ScaleZ="2.5" />
+  </INFO>
+  <INFO ID="1400060946" KEYNAME="REMOTE_SPORTS_Beam_Start_3">
+    <EntityComData _Description="탄막 맞기_초고속_빔 공용 조준 1초" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _LengthX="15" _Type="E_BOUND_BEAM" _VsDynamic="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_BEAM" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <SteeringBehaviorsComData _AccelerateMaxSpeed="4500" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_HitRemote_Beam_notice" />
+  </INFO>
+  <INFO ID="1400060950" KEYNAME="REMOTE_SPORTS_LiftJump_Damage_2">
+    <EntityComData _Description="단 생존 바닥 장판 공격 예고" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _Type="E_BOUND_NONE" />
+    <RemoteComData2 _ActivateGround="false" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="4">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_LiftJump_Area_Attack_Notice" />
+  </INFO>
+  <INFO ID="1400060951" KEYNAME="REMOTE_SPORTS_LiftJump_Damage_1">
+    <EntityComData _Description="단 생존 바닥 장판 공격" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _LengthX="2500" _LengthY="1500" _LengthZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.4" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000121" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_LiftJump_Area_Attack_Remote" />
+  </INFO>
+  <INFO ID="1400060952" KEYNAME="REMOTE_SPORTS_LiftJump_SmallBeam_1">
+    <EntityComData _Description="단 생존 단 위 빠른 직선탄 예고" />
+    <RemoteBoundComData2 _DamageGroup="eNONE" _IgnoreGround="true" _LengthX="100" _LengthY="100" _LengthZ="100" _Type="E_BOUND_BEAM" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_LiftJump_LiftUp_Notice" />
+  </INFO>
+  <INFO ID="1400060953" KEYNAME="REMOTE_SPORTS_LiftJump_SmallBeam_2">
+    <EntityComData _Description="단 생존 단 위 빠른 직선탄" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="3000" _LengthY="350" _LengthZ="350" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.3" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000121" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_Sport_LiftJump_LiftUp_Remote" />
+  </INFO>
+  <INFO ID="1400060954" KEYNAME="REMOTE_SPORTS_LiftJump_SHOCK_1">
+    <EntityComData _Description="단 생존 단 위 이동 공격" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1900" _LengthY="20" _LengthZ="400" _OffsetZ="300" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="4" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="600" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000121" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060995" KEYNAME="REMOTE_SPORTS_SideDodge_RopeTrap_1">
+    <EntityComData _Description="가로 달리기 - 밧줄 트랩(쇼크 데미지)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="15" _LengthY="600" _LengthZ="15" _OffsetZ="100" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060996" KEYNAME="REMOTE_SPORTS_SideDodge_ShockTrap_1">
+    <EntityComData _Description="가로 달리기 - 쇼크 트랩(쇼크 데미지)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="40" _LengthY="200" _LengthZ="90" _OffsetZ="20" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+  </INFO>
+  <INFO ID="1400060997" KEYNAME="REMOTE_SPORTS_SideDodge_Pendulum_1">
+    <EntityComData _Description="가로 달리기 - 시계추(쇼크 데미지)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="5" _OffsetY="0" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _OffsetY="600" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Dynamic_FX_Sports_Dm_SpinTrap_1_Sphere_Remote" />
+  </INFO>
+  <INFO ID="1400061001" KEYNAME="REMOTE_AntNest_FLUORESCENCE_FLOOR_PC">
+    <EntityComData _Description="개미 유충알 수액(슬로우 효과)_PC" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="250" _OffsetX="0" _OffsetY="0" _OffsetZ="30" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="90" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000236" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_AntNest_DM_LarvaEgg_Remote" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400061002" KEYNAME="REMOTE_AntNest_FLUORESCENCE_FLOOR_Mob">
+    <EntityComData _Description="개미 유충알 수액(슬로우 효과)_Mob" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="250" _OffsetX="0" _OffsetY="0" _OffsetZ="30" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="90" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000237" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+    <RemoteSFXComData _ResName="Dynamic_Fx_AntNest_DM_LarvaEgg_Remote" _ScaleX="1" _ScaleY="1" _ScaleZ="1" />
+  </INFO>
+  <INFO ID="1400061010" KEYNAME="REMOTE_Ascalon_Floor_EXPLOSION_REDCIRCLE_2S">
+    <EntityComData _Description="아스칼론 지하 묘지 트랩 범위 표시(2초)" />
+    <RemoteBoundComData2 _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="2">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDCIRCLE_2" _ScaleX="8" _ScaleY="8" />
+  </INFO>
+  <INFO ID="1400061011" KEYNAME="REMOTE_Ascalon_Floor_Damage">
+    <EntityComData _Description="아스칼론 지하 묘지 트랩 8m 데미지" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="800" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.5" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="GW2_RANGER_Skill_3_Remote_2" _ScaleX="1.3" _ScaleY="1.3" _ScaleZ="1.3" />
+  </INFO>
+  <INFO ID="1400061012" KEYNAME="REMOTE_COH_ForkLift_REDCIRCLE_1.5S">
+    <EntityComData _Description="인디펜던스항 지게차 폭발 범위 표시(2초)" />
+    <RemoteBoundComData2 _Type="E_BOUND_NONE" />
+    <RemoteComData2 _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1.5">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="MOB_SKILL_AREA_REDCIRCLE_1_5" _ScaleX="16.7" _ScaleY="16.7" />
+  </INFO>
+  <INFO ID="1400061013" KEYNAME="REMOTE_COH_ForkLift_AIRBORNE">
+    <EntityComData _Description="인디펜던스항 지게차 폭발 16m 에어본" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1600" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttackMultiplier="3" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DirectExplosion="true" _LifeTime="0.5" _PenetrationCount="1000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1201170005" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400062000" KEYNAME="REMOTE_SPORTS_FadeFloor_KillZ_Remote">
+    <EntityComData _Description="바닥 삭제_추락 데미지 리모트" _bForceUpdate="True" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="7000" _LengthY="7000" _LengthZ="2000" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="50" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="99999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" _ScaleX="3" _ScaleY="3" _ScaleZ="3" />
+  </INFO>
+  <INFO ID="1400062001" KEYNAME="REMOTE_Titan_Boss_Damage_Remote">
+    <EntityComData _Description="보스에게 입히는 데미지" _bForceUpdate="True" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="500" _Type="E_BOUND_SPHERE" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="200" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" _ScaleX="3" _ScaleY="3" _ScaleZ="3" />
+  </INFO>
+  <INFO ID="1400062002" KEYNAME="REMOTE_Titan_LevelRemote_Damage_Remote">
+    <EntityComData _Description="티탄 튜토리얼 상대 HP 줄이기용" _bForceUpdate="True" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="1150" _Type="E_BOUND_SPHERE" _VsDynamic="True" _VsNPC_Monster="true" _VsPC="false" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="35" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="0.2" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="5" />
+  </INFO>
+  <INFO ID="1400062011" KEYNAME="REMOTE_ALL_Gate_Speed_1">
+    <EntityComData _Description="레벨공용 이속 버프 리모트(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="1000" _OffsetZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000231" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062012" KEYNAME="REMOTE_ALL_Gate_Speed_2">
+    <EntityComData _Description="레벨공용 이속 버프 리모트(3x3, 2개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="570" _LengthY="290" _LengthZ="1000" _OffsetZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000231" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062013" KEYNAME="REMOTE_ALL_Gate_Speed_3">
+    <EntityComData _Description="레벨공용 이속 버프 리모트(3x3, 3개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="860" _LengthY="290" _LengthZ="1000" _OffsetZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000231" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062014" KEYNAME="REMOTE_ALL_Gate_Speed_4">
+    <EntityComData _Description="레벨공용 이속 버프 리모트(3x3, 4개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="1150" _LengthY="290" _LengthZ="1000" _OffsetZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000231" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062015" KEYNAME="REMOTE_DEFENCE_Magic_Speed_1">
+    <EntityComData _Description="나티움 이속 버프 리모트(3x3, 2개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="570" _LengthY="290" _LengthZ="1000" _OffsetZ="10" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000241" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062020" KEYNAME="REMOTE_DEFENCE_Fall_Damage">
+    <EntityComData _Description="낙사 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="9600" _LengthY="6000" _LengthZ="2000" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="50" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" _ScaleX="3" _ScaleY="3" _ScaleZ="3" />
+  </INFO>
+  <INFO ID="1400062021" KEYNAME="REMOTE_DEFENCE_B_BOMB_Damage">
+    <EntityComData _Description="B 폭탄 리모트" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="700000" _LengthY="600000" _LengthZ="20000" _Type="E_BOUND_BOX" _VsNPC_Monster="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="50" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="1" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+    <RemoteSFXComData _ResName="Common_Hit_01_Red" _ScaleX="3" _ScaleY="3" _ScaleZ="3" />
+  </INFO>
+  <INFO ID="1400062022" KEYNAME="REMOTE_DEFENCE_Magic_Zone_Damage">
+    <EntityComData _Description="마법진 A_대미지" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="600" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="1" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000242" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="1" />
+  </INFO>
+  <INFO ID="1400062023" KEYNAME="REMOTE_DEFENCE_Magic_Zone_Slow">
+    <EntityComData _Description="마법진 C_슬로우" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="600" _Type="E_BOUND_SPHERE" _VsNPC_Monster="true" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000243" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.2" />
+  </INFO>
+  <INFO ID="1400062024" KEYNAME="REMOTE_DEFENCE_Magic_Zone_SpeedUp">
+    <EntityComData _Description="마법진 B_이속증가" />
+    <RemoteBoundComData2 _DamageGroup="eALL" _IgnoreGround="true" _LengthX="600" _Type="E_BOUND_SPHERE" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999999" _PenetrationCount="10000000">
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000244" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="0.5" />
+  </INFO>
+  <INFO ID="1400062031" KEYNAME="REMOTE_SideRun_Buff_Speed_1">
+    <EntityComData _Description="가로 달리기 이속 버프 리모트1(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000031" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062032" KEYNAME="REMOTE_SideRun_Buff_Speed_2">
+    <EntityComData _Description="가로 달리기 이속 버프 리모트2(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000032" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062033" KEYNAME="REMOTE_SideRun_Buff_Speed_3">
+    <EntityComData _Description="가로 달리기 이속 버프 리모트3(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000033" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062034" KEYNAME="REMOTE_Run_Buff_Speed_1">
+    <EntityComData _Description="달리기 이속 버프 리모트1(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000034" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062035" KEYNAME="REMOTE_Run_Buff_Speed_2">
+    <EntityComData _Description="달리기 이속 버프 리모트2(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000035" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400062036" KEYNAME="REMOTE_Run_Buff_Speed_3">
+    <EntityComData _Description="달리기 이속 버프 리모트3(3x3, 1개)" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="280" _LengthY="290" _LengthZ="450" _OffsetZ="250" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="0" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _DisableHitAction="true" _DisableHitSFX="true" _LifeTime="99999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000036" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="2" />
+  </INFO>
+  <INFO ID="1400060998" KEYNAME="REMOTE_TEST_SideDodge_ShockTrap_1">
+    <EntityComData _Description="작은 크기의 쇼크 트랩" />
+    <RemoteBoundComData2 _DamageGroup="eENEMY" _IgnoreGround="true" _LengthX="40" _LengthY="90" _LengthZ="90" _OffsetZ="20" _Type="E_BOUND_BOX" _VsDynamic="false" _VsNPC_Monster="false" _VsPC="true" />
+    <RemoteComData2 _ActivateCount="9999" _ActivateGround="false" _AttachFireObject="true" _AttackMultiplier="2" _BehaviorType="E_REMOTE_BEHAVIOR_TYPE_NONETARGET" _CriticalRate="0" _LifeTime="9999" _PenetrationCount="10000000">
+      <_ForceDir _Type="REMOTE_FORCE_DIRECTION_TYPE_TARGET_DIR" />
+      <_Resist DATAKEY="RESIST_TYPE_IMPACT" />
+      <_Status DATAKEY="1202000223" _Rate="100" _Value="100" />
+    </RemoteComData2>
+    <RemoteTargetComData _HitInvalidTime="3" />
+  </INFO>
+</ENTITY_FILE>

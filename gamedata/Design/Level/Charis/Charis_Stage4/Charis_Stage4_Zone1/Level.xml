@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<MAP_INFO version="0.0">
+  <MAP_LEVEL_INFO>
+    <_LevelData CameraPresetIdx="0" RTSCameraPresetIdx="0" KillZ="-2000" fSpacing="100" dwWidth="512" dwHeight="512" ReferenceLevel="Design\Level\ART_Levels\Charis_Art\CRS_S4Z1" ReferenceOffset="1000000">
+      <LockStates>
+        <LockState difficulty="1" IsInputLocked="true" IsSkillLocked="true" IsAttackLocked="true" />
+      </LockStates>
+    </_LevelData>
+    <_PropResources />
+    <_LevelProps />
+    <_PropGroups />
+    <_LevelLights />
+    <_LevelMaterials>
+      <_MaterialData name="CRS_S4Z1_RGBM" defaultMaterial="True" entityAmbientR="0.1647059" entityAmbientG="0.1843137" entityAmbientB="0.3372549" entityDiffuseR="0.2392157" entityDiffuseG="0.4" entityDiffuseB="0.7843137" entitySpecularR="0.67451" entitySpecularG="0.494118" entitySpecularB="0.356863" entityEmittanceR="0.011765" entityEmittanceG="0.011765" entityEmittanceB="0.015686" entityVertColIntR="1" entityVertColIntG="1" entityVertColIntB="1" entityShiness="50" creatureAmbientR="0.06666667" creatureAmbientG="0.07450981" creatureAmbientB="0.06666667" creatureDiffuseR="0.3568628" creatureDiffuseG="0.3764706" creatureDiffuseB="0.7490196" creatureSpecularR="0.482353" creatureSpecularG="0.592157" creatureSpecularB="0.819608" creatureEmittanceR="0.019608" creatureEmittanceG="0.019608" creatureEmittanceB="0.019608" creatureVertColIntR="1" creatureVertColIntG="1" creatureVertColIntB="1" creatureShiness="60" dynamicAmbientR="0.047059" dynamicAmbientG="0.090196" dynamicAmbientB="0.172549" dynamicDiffuseR="0.286275" dynamicDiffuseG="0.211765" dynamicDiffuseB="0.466667" dynamicSpecularR="0.458824" dynamicSpecularG="0.415686" dynamicSpecularB="0.258824" dynamicEmittanceR="0.019608" dynamicEmittanceG="0.019608" dynamicEmittanceB="0.019608" dynamicVertColIntR="1" dynamicVertColIntG="1" dynamicVertColIntB="1" dynamicShiness="40" levelAmbientR="0.176471" levelAmbientG="0.121569" levelAmbientB="0.266667" levelDiffuseR="0.588235" levelDiffuseG="0.435294" levelDiffuseB="0.305882" levelSpecularR="0.196078" levelSpecularG="0.2" levelSpecularB="0.184314" levelEmittanceR="0.12549" levelEmittanceG="0.05098" levelEmittanceB="0.05098" levelVertColIntR="0.513726" levelVertColIntG="0.513726" levelVertColIntB="0.513726" levelShiness="60" sfxIntensity="0.6" itemIntensity="0.75" bgfxIntensity="1.41" hitColorIntensity="0.45" specularIntensity="0.83" dirDimmer="6.86" dirShadowBrightness="0.39" dirShadowR="0" dirShadowG="0" dirShadowB="0" dirAmbientR="0.168627" dirAmbientG="0.203922" dirAmbientB="0.25098" dirDiffuseR="0.690196" dirDiffuseG="0.831373" dirDiffuseB="0.501961" dirSpecularR="1" dirSpecularG="0.796078" dirSpecularB="0.54902" globalAmbientR="0.482353" globalAmbientG="0.270588" globalAmbientB="0.117647" rimDirRotate="89" rimDirGradient="21" rimDirPower="6" rimColorR="0.8392157" rimColorG="0.5921569" rimColorB="0.2862745" rimStrength="6" hdrExposure="1.8" hdrShoulderStrength="1.99" hdrLinearStrength="0.47" hdrLinearAngle="0.96" hdrToeStrength="2.03" hdrToeNumerator="0" hdrToeDenominator="1" hdrWhitePoint="1.71" bloomWhitePoint="0.43" bloomGradient="1" bloomStrength="1" bloomTintR="0.792157" bloomTintG="0.666667" bloomTintB="0.419608" bloomThreshold="0.46" bloomIntensity="0.67" bloomRadius="1.36" bloom2Intensity="0.78" bloom2Radius="2.44" bloom3Intensity="0.73" bloom3Radius="2.91" bloom4Intensity="0.71" bloom4Radius="3.2" bloom5Intensity="1.05" bloom5Radius="3.25" />
+    </_LevelMaterials>
+    <_PCLight dimmer="1.27" radius="1600" ambientR="0" ambientG="0" ambientB="0" diffuseR="0.4666667" diffuseG="0.4156863" diffuseB="0.6745098" specularR="0.8901961" specularG="0.7294118" specularB="0.4392157" />
+    <_NaviMeshInfo navmeshinputgeometrytype="Default" />
+    <_AIPathObjs>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="29378.84" y="10233.78" z="401.53" />
+          <_p2 x="28981.42" y="10188.42" z="401.53" />
+        </_line1>
+        <_line2>
+          <_p1 x="29290.27" y="9927.525" z="627" />
+          <_p2 x="29091.29" y="9907.314" z="627" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27431.87" y="12606.29" z="401.46" />
+          <_p2 x="27431.87" y="12206.29" z="401.46" />
+        </_line1>
+        <_line2>
+          <_p1 x="27740.63" y="12606.82" z="626.75" />
+          <_p2 x="27740.63" y="12406.82" z="626.75" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27763.27" y="12387.24" z="626.75" />
+          <_p2 x="27904.69" y="12245.82" z="626.75" />
+        </_line1>
+        <_line2>
+          <_p1 x="27480.74" y="12124.04" z="401.47" />
+          <_p2 x="27763.58" y="11841.2" z="401.47" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28613.07" y="12577.57" z="401.6" />
+          <_p2 x="28613.07" y="12177.57" z="401.6" />
+        </_line1>
+        <_line2>
+          <_p1 x="28336.62" y="12610.42" z="626.75" />
+          <_p2 x="28336.62" y="12410.42" z="626.75" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28567.8" y="12124.04" z="401.59" />
+          <_p2 x="28284.96" y="11841.2" z="401.59" />
+        </_line1>
+        <_line2>
+          <_p1 x="28292.44" y="12329.79" z="626.75" />
+          <_p2 x="28151.02" y="12188.37" z="626.75" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28131.45" y="12187.27" z="626.75" />
+          <_p2 x="27931.45" y="12187.27" z="626.75" />
+        </_line1>
+        <_line2>
+          <_p1 x="28231.45" y="11821.05" z="401.64" />
+          <_p2 x="27831.45" y="11821.05" z="401.64" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27717.26" y="11147.6" z="666.47" />
+          <_p2 x="27575.84" y="11006.18" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="27464.85" y="11473.23" z="401.76" />
+          <_p2 x="27182.01" y="11190.39" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28262.98" y="10515.69" z="666.47" />
+          <_p2 x="28121.56" y="10374.27" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="28617.33" y="10259.67" z="401.76" />
+          <_p2 x="28334.49" y="9976.829" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27561.49" y="10530.05" z="666.47" />
+          <_p2 x="27702.91" y="10388.63" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="27182.01" y="10324.3" z="401.76" />
+          <_p2 x="27464.85" y="10041.46" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28015.83" y="10344.45" z="666.47" />
+          <_p2 x="27815.83" y="10344.45" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="28126.6" y="9942.32" z="401.76" />
+          <_p2 x="27726.6" y="9942.32" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28021.98" y="11189.83" z="666.47" />
+          <_p2 x="27822.02" y="11186.17" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="28114.9" y="11532.99" z="401.76" />
+          <_p2 x="27715.1" y="11545.77" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27495.78" y="10907.62" z="666.47" />
+          <_p2 x="27495.78" y="10707.62" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="27100.84" y="11007.61" z="401.76" />
+          <_p2 x="27100.84" y="10607.61" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="27119.84" y="9567.826" z="401.6" />
+          <_p2 x="26954.16" y="9203.754" z="401.6" />
+        </_line1>
+        <_line2>
+          <_p1 x="26837.72" y="9709.113" z="625.01" />
+          <_p2 x="26675.3" y="9456.887" z="625.01" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="26820.89" y="10222.84" z="401.55" />
+          <_p2 x="27064.84" y="9905.839" z="401.55" />
+        </_line1>
+        <_line2>
+          <_p1 x="26631.61" y="10039.47" z="625.01" />
+          <_p2 x="26823.41" y="9808.787" z="625.01" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="26557" y="10043.78" z="625.01" />
+          <_p2 x="26281" y="9926.222" z="625.01" />
+        </_line1>
+        <_line2>
+          <_p1 x="26542.81" y="10297.33" z="401.51" />
+          <_p2 x="26166.83" y="10160.79" z="401.51" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="29465.18" y="10200.43" z="404.27" />
+          <_p2 x="29756.82" y="9926.666" z="404.27" />
+        </_line1>
+        <_line2>
+          <_p1 x="29355" y="9924.591" z="627" />
+          <_p2 x="29499.66" y="9786.489" z="627" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28879.17" y="10144.73" z="401.51" />
+          <_p2 x="28670.83" y="9803.271" z="401.51" />
+        </_line1>
+        <_line2>
+          <_p1 x="29049.91" y="9874.598" z="627" />
+          <_p2 x="28951.82" y="9700.303" z="627" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28665.94" y="9651.611" z="401.44" />
+          <_p2 x="28782.62" y="9269.008" z="401.44" />
+        </_line1>
+        <_line2>
+          <_p1 x="28959.2" y="9641.039" z="627" />
+          <_p2 x="29027.93" y="9453.221" z="627" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28350.25" y="10896.83" z="666.47" />
+          <_p2 x="28350.25" y="10696.83" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="28673.37" y="10993.25" z="401.76" />
+          <_p2 x="28673.37" y="10593.25" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="True" hizontalMove="False">
+        <_line1>
+          <_p1 x="28146.71" y="11129.65" z="666.47" />
+          <_p2 x="28288.13" y="10988.23" z="666.47" />
+        </_line1>
+        <_line2>
+          <_p1 x="28323.72" y="11469.64" z="401.76" />
+          <_p2 x="28606.56" y="11186.8" z="401.76" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="8440.997" y="6413.848" z="1491.07" />
+          <_p2 x="8041.003" y="6416.152" z="1491.07" />
+        </_line1>
+        <_line2>
+          <_p1 x="8529.851" y="6065.854" z="1105.64" />
+          <_p2 x="7930.149" y="6084.806" z="1105.64" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="15654.79" y="6898.521" z="1973.94" />
+          <_p2 x="15841.21" y="6663.479" z="1973.94" />
+        </_line1>
+        <_line2>
+          <_p1 x="15364.08" y="6720.215" z="1577.73" />
+          <_p2 x="15777.92" y="6285.785" z="1577.73" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="16126.07" y="6879.872" z="1973.94" />
+          <_p2 x="15906.13" y="6675.848" z="1973.94" />
+        </_line1>
+        <_line2>
+          <_p1 x="16281.7" y="6598.628" z="1577.73" />
+          <_p2 x="15982.3" y="6333.372" z="1577.73" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="19400.1" y="2612.139" z="1969.69" />
+          <_p2 x="19287.38" y="2334.121" z="1969.69" />
+        </_line1>
+        <_line2>
+          <_p1 x="19186.21" y="2716.055" z="1577.73" />
+          <_p2 x="19034.49" y="2345.945" z="1577.73" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="14051.21" y="3570.074" z="1807.77" />
+          <_p2 x="14650.97" y="3553.426" z="1807.77" />
+        </_line1>
+        <_line2>
+          <_p1 x="14037.09" y="4092.518" z="1577.73" />
+          <_p2 x="14637.07" y="4087.282" z="1577.73" />
+        </_line2>
+      </_PathObject>
+      <_PathObject biDirectional="False" hizontalMove="False">
+        <_line1>
+          <_p1 x="18609.01" y="6587.527" z="1806" />
+          <_p2 x="19208.99" y="6581.873" z="1806" />
+        </_line1>
+        <_line2>
+          <_p1 x="18619.31" y="6041.491" z="1578" />
+          <_p2 x="19219.31" y="6044.528" z="1578" />
+        </_line2>
+      </_PathObject>
+    </_AIPathObjs>
+  </MAP_LEVEL_INFO>
+</MAP_INFO>

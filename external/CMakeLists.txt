@@ -58,6 +58,17 @@ if(NOT WIN32)
 	set_target_properties(eaassert eathread eastdc eastl PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
+# ---- sqlite (amalgamation) ----
+add_library(sqlite3 STATIC ${EXTERNAL_DIR}/sqlite-3.49.1/sqlite3.c)
+target_include_directories(sqlite3 PUBLIC ${EXTERNAL_DIR}/sqlite-3.49.1)
+target_compile_definitions(sqlite3 PRIVATE
+	SQLITE_THREADSAFE=1
+	SQLITE_OMIT_LOAD_EXTENSION
+	SQLITE_DQS=0)
+if(MSVC)
+	target_compile_options(sqlite3 PRIVATE /W0)
+endif()
+
 # ---- tinyxml2 (compiled into the server targets, as genie did) ----
 add_library(tinyxml2 INTERFACE)
 target_include_directories(tinyxml2 INTERFACE ${EXTERNAL_DIR}/tinyxml2-8.0.0)

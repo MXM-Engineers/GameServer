@@ -686,7 +686,7 @@ struct GameXmlContent
 	FileBuffer filePvpDeathNmWall04;
 	FileBuffer fileCylinderCollision;
 
-	bool Load();
+	bool Load(MapIndex lobbyMap);
 	const MapList* FindMapListByID(MapIndex index) const;
 	const Song* FindJukeboxSongByID(SongID songID) const;
 	bool LoadCharacterBaseStats();
@@ -891,7 +891,8 @@ private:
 	bool LoadBotBrain();
 };
 
-bool GameXmlContentLoad();
+// lobbyMap: the city whose Spawn.xml/Area.xml the hub serves (hub.cfg LobbyMap)
+bool GameXmlContentLoad(MapIndex lobbyMap = MapIndex::LOBBY_NORMAL);
 const GameXmlContent& GetGameXmlContent();
 
 bool OpenMeshFile(const char* path, MeshFile* out);

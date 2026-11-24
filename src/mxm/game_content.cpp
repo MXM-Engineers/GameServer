@@ -1826,7 +1826,7 @@ bool GameXmlContent::LoadRemoteData()
 	return true;
 }
 
-bool GameXmlContent::Load()
+bool GameXmlContent::Load(MapIndex lobbyMap)
 {
 	LOG("Loading GameContent...");
 
@@ -1849,7 +1849,7 @@ bool GameXmlContent::Load()
 	r = LoadMapList();
 	if (!r) return false;
 
-	r = LoadLobby(MapIndex::LOBBY_NORMAL);
+	r = LoadLobby(lobbyMap);
 	if (!r) return false;
 
 	r = LoadPvpDeathmach();
@@ -3125,11 +3125,11 @@ const Remote& GameXmlContent::GetRemote(RemoteIdx remoteID) const
 	return found->second;
 }
 
-bool GameXmlContentLoad()
+bool GameXmlContentLoad(MapIndex lobbyMap)
 {
 	GameXmlContent* content = new GameXmlContent();
 	g_GameXmlContent = content;
-	return content->Load();
+	return content->Load(lobbyMap);
 }
 
 const GameXmlContent& GetGameXmlContent()

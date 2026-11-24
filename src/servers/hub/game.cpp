@@ -144,7 +144,7 @@ void HubGame::OnPlayerConnect(ClientHandle clientHd, const Account* accountData)
 	LOG("[client%x] HubGame :: account %llu connected (%ls)", clientHd, (u64)accountData->UID, accountData->nickname.data());
 	if(TakeAccountReturningFromGame(accountData->nickname)) {
 		LOG("[client%x] HubGame :: back from a game, loading the lobby", clientHd);
-		replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
+		replication.SendLoadLobby(clientHd, (MapIndex)Config().LobbyMap);
 	}
 }
 
@@ -328,7 +328,7 @@ void HubGame::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 
 void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
 {
-	replication.SendLoadLobby(clientHd, MapIndex::LOBBY_NORMAL);
+	replication.SendLoadLobby(clientHd, (MapIndex)Config().LobbyMap);
 }
 
 void HubGame::OnCreateParty(ClientHandle clientHd, EntrySystemID entry, StageType stageType)

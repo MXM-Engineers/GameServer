@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	r = GameXmlContentLoad();
+	r = GameXmlContentLoad((MapIndex)Config().LobbyMap);
 	if(!r) {
 		LOG("ERROR: failed to load game xml content");
 		return 1;

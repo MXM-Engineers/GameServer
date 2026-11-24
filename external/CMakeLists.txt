@@ -69,6 +69,21 @@ if(MSVC)
 	target_compile_options(sqlite3 PRIVATE /W0)
 endif()
 
+# ---- argon2 (reference implementation, single-threaded) ----
+set(ARGON2_DIR ${EXTERNAL_DIR}/argon2-20190702)
+add_library(argon2 STATIC
+	${ARGON2_DIR}/src/argon2.c
+	${ARGON2_DIR}/src/core.c
+	${ARGON2_DIR}/src/encoding.c
+	${ARGON2_DIR}/src/ref.c
+	${ARGON2_DIR}/src/thread.c
+	${ARGON2_DIR}/src/blake2/blake2b.c)
+target_include_directories(argon2 PUBLIC ${ARGON2_DIR}/include PRIVATE ${ARGON2_DIR}/src)
+target_compile_definitions(argon2 PRIVATE ARGON2_NO_THREADS)
+if(MSVC)
+	target_compile_options(argon2 PRIVATE /W0)
+endif()
+
 # ---- tinyxml2 (compiled into the server targets, as genie did) ----
 add_library(tinyxml2 INTERFACE)
 target_include_directories(tinyxml2 INTERFACE ${EXTERNAL_DIR}/tinyxml2-8.0.0)

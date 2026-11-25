@@ -213,7 +213,7 @@ struct Client
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_ServerVersionInfo>(packetData, packetSize));
 
 				{
-					PacketWriter<Sv::SN_TgchatServerInfo> packet;
+					PacketWriter<Sv::SN_TgchatServerInfo,512> packet;
 
 					// host (ANSI byte string, length in bytes)
 					const char* host = "0.0.0.0";

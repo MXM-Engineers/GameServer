@@ -8,6 +8,9 @@ struct CConfigHub
 	i32 DevQuickConnect = false;
 	i32 TraceNetwork = false;
 	i32 LobbyMap = 160000042; // TODO: restore
+	char AccountsDatabasePath[256] = "accounts.db";
+	char GameDatabasePath[256] = "game.db";
+	i32 RequireLoginSession = true;
 	eastl::fixed_vector<i32,16> regionBanMaster = {};
 	eastl::fixed_vector<i32,16> regionNewMaster = {};
 	eastl::fixed_vector<i32,16> eventBanMaster = {};

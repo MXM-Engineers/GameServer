@@ -490,6 +490,11 @@ bool Coordinator::Init(Server* server_)
 
 	clientHandle.fill(ClientHandle::INVALID);
 
+	if(!gameDB.Open(Config().GameDatabasePath)) {
+		LOG("ERROR: failed to open game database '%s'", Config().GameDatabasePath);
+		return false;
+	}
+
 	bool r = matchmaker.Init();
 	if(!r) return false;
 
@@ -506,6 +511,8 @@ void Coordinator::Cleanup()
 
 	instancePool.Cleanup();
 	thread.WaitForEnd();
+	gameDB.Close();
+	accountDB.Close();
 }
 
 void Coordinator::Update(f64 delta)
@@ -620,7 +627,7 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 
 		default: {
 			WARN("Unhandled packet (netID=%d size=%d)", header.netID, header.size);
-			ASSERT(instancePool.IsClientInsideAnInstance(clientHd));
+			if(!instancePool.IsClientInsideAnInstance(clientHd)) break;
 			instancePool.QueueRogueCoordinatorPacket(clientHd, header, packetData);
 		} break;
 	}
@@ -665,47 +672,112 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		WARN("WARNING: invalid CQ_Authenticate (size=%d)", packetSize);
 		return;
 	}
-	ConstBuffer request(packetData, packetSize);
-	const u16 nickLen = request.Read<u16>();
-	const wchar* nick = (wchar*)request.ReadRaw(nickLen * sizeof(wchar));
 	NT_LOG("[client%x] Client :: %s", clientHd, PacketSerialize<Cl::CQ_Authenticate>(packetData, packetSize));
 
+	ConstBuffer request(packetData, packetSize);
+	const u16 nickStrLen = request.Read<u16>();
+	const wchar* nick = (wchar*)request.ReadRaw(nickStrLen * sizeof(wchar));
+	const u32 instantKey = request.Read<u32>();
+
 	const i32 clientID = plidMap.Get(clientHd);
-	const Server::ClientInfo& info = server->clientInfo[clientID];
+	if(clientAccountUID[clientID] != AccountUID::INVALID) {
+		WARN("client %x is already authenticated", clientHd);
+		return;
+	}
 
-	// TODO: check authentication
+	i32 nickLen = 0;
+	while(nickLen < nickStrLen && nick[nickLen] != L'@') nickLen++;
+	if(nickLen < 1 || nickLen > AccountDB::MAX_LOGIN_NAME_LEN) {
+		RefuseClient(clientHd, ErrorType::AUTH_NOT_LOGIN);
+		return;
+	}
 
-	// send authentication result
+	LoginSession session;
+	ErrorType error = ErrorType::AUTH_NOT_LOGIN;
+	const bool hasSession = ResolveLogin(nick, nickLen, instantKey, &session, &error);
+	if(!hasSession && Config().RequireLoginSession) {
+		RefuseClient(clientHd, error);
+		return;
+	}
+
+	AccountUID accountUID = session.accountUID;
+	if(!hasSession) {
+		accountUID = AccountUID((u32)clientHd);
+		if(Config().DevMode && Config().DevQuickConnect) accountUID = AccountUID(0x1337);
+	}
+
+	if(accChdMap.find(accountUID) != accChdMap.end()) {
+		RefuseClient(clientHd, ErrorType::AUTH_WRONG_CONNECTION);
+		return;
+	}
+
+	if(hasSession) {
+		bool created = false;
+		const bool touched = gameDB.TouchPlayer(accountUID, &created);
+		ASSERT(touched);
+		if(created) LOG("[client%x] account %u enters this server for the first time", clientHd, (u32)accountUID);
+	}
+
 	Sv::SA_AuthResult auth;
-	auth.nResult = 91;
+	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;
 	SendPacket(clientHd, auth);
 
-	// TODO: fetch account data
 	AccountManager& am = GetAccountManager();
-	AccountUID accountUID = AccountUID((u32)clientHd); // FIXME: hack, actually get the accountID
-
-	if(Config().DevMode && Config().DevQuickConnect) accountUID = AccountUID(0x1337);
-
-	am.accountList.emplace_back(accountUID);
-	am.accountMap.emplace(accountUID, --am.accountList.end());
-
-	Account& account = *(--am.accountList.end());
-	account.nickname.assign(nick, nickLen);
-	account.guildTag = L"Alpha";
-	account.leaderMasterID = 0; // Lua
-
-	// remove the @plaync... part
-	i64 f = account.nickname.find(L'@');
-	if(f != -1) {
-		account.nickname = account.nickname.left(f);
+	auto found = am.accountMap.find(accountUID);
+	if(found == am.accountMap.end()) {
+		am.accountList.emplace_back(accountUID);
+		found = am.accountMap.emplace(accountUID, --am.accountList.end()).first;
 	}
+
+	Account& account = *found->second;
+	account.guildTag = L"Alpha";
+	account.leaderMasterID = 0;
+	if(hasSession) account.nickname = session.nickname;
+	else account.nickname.assign(nick, nickLen);
 
 	accChdMap.emplace(accountUID, clientHd);
 	clientAccountUID[clientID] = accountUID;
 
-	// send account data
-	ClientSendAccountData(clientHd); // TODO: move this to hub instance
+	EnterHub(clientHd);
+}
 
+bool Coordinator::ResolveLogin(const wchar* name, i32 nameLen, u32 instantKey, LoginSession* outSession, ErrorType* outError)
+{
+	*outSession = LoginSession();
+	*outError = ErrorType::AUTH_NOT_LOGIN;
+
+	if(!accountDBOpen) accountDBOpen = accountDB.OpenReadOnly(Config().AccountsDatabasePath);
+	if(!accountDBOpen) return false;
+
+	const WideString asNickname(name, nameLen);
+	if(IsAccountSentToGame(asNickname)) {
+		return accountDB.FindSessionByNickname(name, nameLen, outSession);
+	}
+
+	LoginSession session;
+	if(!accountDB.FindSession(name, nameLen, &session)) return false;
+	if(session.instantKey != instantKey) {
+		*outError = ErrorType::AUTH_WRONG_KEY;
+		return false;
+	}
+	if(session.nickname.empty()) return false;
+
+	*outSession = session;
+	return true;
+}
+
+void Coordinator::RefuseClient(ClientHandle clientHd, ErrorType error)
+{
+	LOG("[client%x] authentication refused (%u)", clientHd, (u32)error);
+	Sv::SA_AuthResult auth;
+	auth.nResult = (i32)error;
+	SendPacket(clientHd, auth);
+	server->DisconnectClient(clientHd);
+}
+
+void Coordinator::EnterHub(ClientHandle clientHd)
+{
+	ClientSendAccountData(clientHd);
 	PushClientToHubInstance(clientHd);
 }
 

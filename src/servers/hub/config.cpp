@@ -28,6 +28,9 @@ bool CConfigHub::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "DevQuickConnect=%d", &DevQuickConnect) == 1) return true;
 	if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &TraceNetwork) == 1) return true;
 	if(EA::StdC::Sscanf(line, "LobbyMap=%d", &LobbyMap) == 1) return true;
+	if(EA::StdC::Sscanf(line, "AccountsDatabasePath=%255s", AccountsDatabasePath) == 1) return true;
+	if(EA::StdC::Sscanf(line, "GameDatabasePath=%255s", GameDatabasePath) == 1) return true;
+	if(EA::StdC::Sscanf(line, "RequireLoginSession=%d", &RequireLoginSession) == 1) return true;
 	if(ParseIdList(line, "RegionBanMaster=", regionBanMaster)) return true;
 	if(ParseIdList(line, "RegionNewMaster=", regionNewMaster)) return true;
 	if(ParseIdList(line, "EventBanMaster=", eventBanMaster)) return true;
@@ -96,6 +99,9 @@ bool CConfigHub::SaveConfigFile()
 	out.append_sprintf("DevQuickConnect=%d\n", DevQuickConnect);
 	out.append_sprintf("TraceNetwork=%d\n", TraceNetwork);
 	out.append_sprintf("LobbyMap=%d\n", LobbyMap);
+	out.append_sprintf("AccountsDatabasePath=%s\n", AccountsDatabasePath);
+	out.append_sprintf("GameDatabasePath=%s\n", GameDatabasePath);
+	out.append_sprintf("RequireLoginSession=%d\n", RequireLoginSession);
 	AppendIdList(out, "RegionBanMaster", regionBanMaster);
 	AppendIdList(out, "RegionNewMaster", regionNewMaster);
 	AppendIdList(out, "EventBanMaster", eventBanMaster);
@@ -123,6 +129,9 @@ void CConfigHub::Print() const
 	LOG("	DevQuickConnect=%d", DevQuickConnect);
 	LOG("	TraceNetwork=%d", TraceNetwork);
 	LOG("	LobbyMap=%d", LobbyMap);
+	LOG("	AccountsDatabasePath=%s", AccountsDatabasePath);
+	LOG("	GameDatabasePath=%s", GameDatabasePath);
+	LOG("	RequireLoginSession=%d", RequireLoginSession);
 	LogIdList("RegionBanMaster", regionBanMaster);
 	LogIdList("RegionNewMaster", regionNewMaster);
 	LogIdList("EventBanMaster", eventBanMaster);

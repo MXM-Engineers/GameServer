@@ -9,6 +9,8 @@
 #include "matchmaker_connector.h"
 #include "instance.h"
 #include "account.h"
+#include <storage/account_db.h>
+#include <storage/game_db.h>
 
 template<typename PacketHandler>
 void NetworkParseReceiveBuffer(PacketHandler* ph, Server* server, const u8* data, const u32 size, const char* handlerName)
@@ -173,6 +175,9 @@ struct Coordinator
 	eastl::array<AccountUID, MAX_CLIENTS> clientAccountUID;
 
 	hash_map<AccountUID,ClientHandle,MAX_CLIENTS> accChdMap;
+	AccountDB accountDB;
+	bool accountDBOpen = false;
+	GameDB gameDB;
 
 	GrowableBuffer recvDataBuff;
 
@@ -193,6 +198,10 @@ private:
 
 	void HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
 	void HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize);
+
+	bool ResolveLogin(const wchar* name, i32 nameLen, u32 instantKey, LoginSession* outSession, ErrorType* outError);
+	void RefuseClient(ClientHandle clientHd, ErrorType error);
+	void EnterHub(ClientHandle clientHd);
 
 	void ClientSendAccountData(ClientHandle clientHd);
 

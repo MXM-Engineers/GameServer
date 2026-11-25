@@ -77,6 +77,8 @@ struct SentToGameEntry
 
 typedef eastl::fixed_vector<SentToGameEntry,64,true> SentToGameList;
 
+static Mutex g_SentToGameMutex;
+
 static SentToGameList& GetSentToGameList()
 {
 	static SentToGameList list;
@@ -91,6 +93,7 @@ static SentToGameList& GetSentToGameList()
 
 void MarkAccountSentToGame(const WideString& nickname)
 {
+	LOCK_MUTEX(g_SentToGameMutex);
 	SentToGameList& list = GetSentToGameList();
 	const Time now = TimeRelNow();
 	bool found = false;
@@ -103,11 +106,22 @@ void MarkAccountSentToGame(const WideString& nickname)
 
 bool TakeAccountReturningFromGame(const WideString& nickname)
 {
+	LOCK_MUTEX(g_SentToGameMutex);
 	SentToGameList& list = GetSentToGameList();
 	foreach(it, list) {
 		if(it->nickname != nickname) continue;
 		list.erase(it);
 		return true;
+	}
+	return false;
+}
+
+bool IsAccountSentToGame(const WideString& nickname)
+{
+	LOCK_MUTEX(g_SentToGameMutex);
+	const SentToGameList& list = GetSentToGameList();
+	foreach_const(it, list) {
+		if(it->nickname == nickname) return true;
 	}
 	return false;
 }

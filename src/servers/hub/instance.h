@@ -32,6 +32,7 @@ struct HubInstance
 
 void MarkAccountSentToGame(const WideString& nickname);
 bool TakeAccountReturningFromGame(const WideString& nickname);
+bool IsAccountSentToGame(const WideString& nickname);
 
 struct RoomInstance
 {

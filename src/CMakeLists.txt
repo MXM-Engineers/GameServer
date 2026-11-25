@@ -67,14 +67,14 @@ mxm_debug_suffix(login_srv)
 
 # ---- HubServer (hub_srv) ----
 add_executable(hub_srv
-	${COMMON_SOURCES} ${MXM_SOURCES} ${HUB_SOURCES}
+	${COMMON_SOURCES} ${MXM_SOURCES} ${STORAGE_SOURCES} ${HUB_SOURCES}
 	${EXTERNAL_DIR}/tinyxml2-8.0.0/tinyxml2.cpp
 	${EXTERNAL_DIR}/tracy-0.8/TracyClient.cpp)
 if(WIN32)
 	target_sources(hub_srv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/servers/hub/hub_rc.rc)
 endif()
 target_include_directories(hub_srv PRIVATE ${SERVER_COMMON_INCLUDES})
-target_link_libraries(hub_srv PRIVATE ${SERVER_COMMON_LINKS} ${SERVER_COMMON_LINKS_PLATFORM})
+target_link_libraries(hub_srv PRIVATE ${SERVER_COMMON_LINKS} sqlite3 argon2 ${SERVER_COMMON_LINKS_PLATFORM})
 target_compile_definitions(hub_srv PRIVATE ${SERVER_COMMON_DEFINES})
 if(MSVC)
 	target_sources(hub_srv PRIVATE ${NATVIS})

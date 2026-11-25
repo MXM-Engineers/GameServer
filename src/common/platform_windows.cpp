@@ -84,4 +84,10 @@ uint64_t CurrentFiletimeTimestampUTC()
 	large.HighPart = ft.dwHighDateTime;
 	return large.QuadPart;
 }
+extern "C" BOOLEAN NTAPI SystemFunction036(PVOID randomBuffer, ULONG randomBufferLength);
+
+bool PlatformRandomBytes(void* out, int32_t size)
+{
+	return SystemFunction036(out, (ULONG)size) != 0;
+}
 #endif

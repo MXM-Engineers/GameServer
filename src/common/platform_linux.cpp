@@ -5,6 +5,9 @@
 #include <sys/stat.h>
 #include <sys/prctl.h>
 #include <unistd.h>
+#include <sys/random.h>
+#include <sys/time.h>
+#include <errno.h>
 
 void DbgBreak()
 {
@@ -52,5 +55,21 @@ uint64_t CurrentFiletimeTimestampUTC()
 	gettimeofday(&tv, NULL);
 	uint64_t result = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
 	return result * 10 + 116444736000000000ULL;
+}
+
+bool PlatformRandomBytes(void* out, int32_t size)
+{
+	uint8_t* cursor = (uint8_t*)out;
+	int32_t remaining = size;
+	while(remaining > 0) {
+		const ssize_t r = getrandom(cursor, remaining, 0);
+		if(r < 0) {
+			if(errno == EINTR) continue;
+			return false;
+		}
+		cursor += r;
+		remaining -= (int32_t)r;
+	}
+	return true;
 }
 #endif

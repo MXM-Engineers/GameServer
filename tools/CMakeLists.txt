@@ -16,6 +16,19 @@ target_include_directories(test_lea PRIVATE ${TOOL_COMMON_INCLUDES} ${CMAKE_CURR
 target_link_libraries(test_lea PRIVATE ${TOOL_COMMON_LINKS})
 mxm_debug_suffix(test_lea)
 
+# ---- Accounts (test_accounts) ----
+add_executable(test_accounts ${TOOL_COMMON_SOURCES}
+	${SRC_DIR}/storage/database.cpp
+	${SRC_DIR}/storage/account_db.cpp
+	${SRC_DIR}/storage/game_db.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/accounts/test_accounts.cpp)
+target_include_directories(test_accounts PRIVATE ${TOOL_COMMON_INCLUDES})
+target_link_libraries(test_accounts PRIVATE ${TOOL_COMMON_LINKS} sqlite3 argon2)
+if(NOT WIN32)
+	target_link_libraries(test_accounts PRIVATE pthread)
+endif()
+mxm_debug_suffix(test_accounts)
+
 # ---- LeaDll (lea.dll) ----
 add_library(lea SHARED ${TOOL_COMMON_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/lea/lea.cpp)
 target_include_directories(lea PRIVATE ${TOOL_COMMON_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/lea)

@@ -31,3 +31,5 @@ void MakeDirectory(const char* path);
 const char* FormatPath(const char* path); // replace / with \ on windows
 
 uint64_t CurrentFiletimeTimestampUTC();
+
+bool PlatformRandomBytes(void* out, int32_t size);

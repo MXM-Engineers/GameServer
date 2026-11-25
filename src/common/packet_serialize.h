@@ -59,7 +59,9 @@ inline const char* PacketSerialize<Cl::CQ_UserLogin>(const void* packetData, con
 
 	SER("CQ_UserLogin(%d, %d) :: {", Cl::CQ_UserLogin::NET_ID, packetSize);
 	SER("	nick='%ls'", buff.ReadWideStringObj().data());
-	SER("	password='%ls'", buff.ReadWideStringObj().data());
+	u16 passwordLen = 0;
+	buff.ReadWideStringObj(&passwordLen);
+	SER("	password=<%d chars>", passwordLen);
 	SER("	type='%ls'", buff.ReadWideStringObj().data());
 	SER("	extra='%ls'", buff.ReadWideStringObj().data());
 	SER("	unknown=%u", buff.Read<u32>());
@@ -3251,6 +3253,70 @@ inline const char* PacketSerialize<Sv::SN_LoadCharacterStart>(const void* packet
 	return str.data();
 }
 */
+
+template<>
+inline const char* PacketSerialize<Cl::SetNickname>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SetNickname(%d, %d) :: {", Cl::SetNickname::NET_ID, packetSize);
+	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CheckDupNickname>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CheckDupNickname(%d, %d) :: {", Cl::CheckDupNickname::NET_ID, packetSize);
+	SER("	nick='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_NicknameNeeded>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+
+	SER("SN_NicknameNeeded(%d, %d) :: {}", Sv::SN_NicknameNeeded::NET_ID, packetSize);
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_NicknameSet>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_NicknameSet(%d, %d) :: {", Sv::SA_NicknameSet::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("	reqNickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_CheckDupNickname>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_CheckDupNickname(%d, %d) :: {", Sv::SA_CheckDupNickname::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("	reqNickname='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+
+	return str.data();
+}
 
 #undef SER_BEGIN
 #undef SER

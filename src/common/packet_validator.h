@@ -289,3 +289,22 @@ inline bool ValidatePacket<Cl::CQ_PlayerCastSkill>(const void* packetData, i32 p
 	return buff.CanRead(sizeof(Cl::CQ_PlayerCastSkill::PosStruct));
 }
 
+inline bool ValidateSingleWideString(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u16))) return false;
+	const u16 len = buff.Read<u16>();
+	return packetSize == (i32)(sizeof(u16) + len * sizeof(wchar));
+}
+
+template<>
+inline bool ValidatePacket<Cl::SetNickname>(const void* packetData, i32 packetSize)
+{
+	return ValidateSingleWideString(packetData, packetSize);
+}
+
+template<>
+inline bool ValidatePacket<Cl::CheckDupNickname>(const void* packetData, i32 packetSize)
+{
+	return ValidateSingleWideString(packetData, packetSize);
+}

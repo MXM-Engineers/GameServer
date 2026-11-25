@@ -5,6 +5,7 @@
 #include <common/packet_serialize.h>
 #include <common/packet_validator.h>
 #include <common/platform.h>
+#include <storage/account_db.h>
 #include <EAStdC/EASprintf.h>
 
 struct Config
@@ -13,6 +14,10 @@ struct Config
 	u8 gameServerIP[4] = { 127, 0, 0, 1 };
 	i32 gameServerPort = 11900;
 	i32 traceNetwork = 0;
+	char databasePath[256] = "accounts.db";
+	i32 autoCreateAccounts = 1;
+	i32 requirePassword = 1;
+	i32 nicknamePrompt = 1;
 
 	bool ParseLine(const char* line)
 	{
@@ -27,6 +32,10 @@ struct Config
 		}
 		if(EA::StdC::Sscanf(line, "GameServerPort=%d", &gameServerPort) == 1) return true;
 		if(EA::StdC::Sscanf(line, "TraceNetwork=%d", &traceNetwork) == 1) return true;
+		if(EA::StdC::Sscanf(line, "DatabasePath=%255s", databasePath) == 1) return true;
+		if(EA::StdC::Sscanf(line, "AutoCreateAccounts=%d", &autoCreateAccounts) == 1) return true;
+		if(EA::StdC::Sscanf(line, "RequirePassword=%d", &requirePassword) == 1) return true;
+		if(EA::StdC::Sscanf(line, "NicknamePrompt=%d", &nicknamePrompt) == 1) return true;
 		return false;
 	}
 
@@ -84,11 +93,16 @@ struct Config
 		LOG("	GameServerIP=%d.%d.%d.%d", gameServerIP[0], gameServerIP[1], gameServerIP[2], gameServerIP[3]);
 		LOG("	GameServerPort=%d", gameServerPort);
 		LOG("	TraceNetwork=%d", traceNetwork);
+		LOG("	DatabasePath=%s", databasePath);
+		LOG("	AutoCreateAccounts=%d", autoCreateAccounts);
+		LOG("	RequirePassword=%d", requirePassword);
+		LOG("	NicknamePrompt=%d", nicknamePrompt);
 		LOG("}");
 	}
 };
 
 static Config g_Config;
+static AccountDB g_Accounts;
 
 struct Client
 {
@@ -102,6 +116,8 @@ struct Client
 	bool running = true;
 
 	WideString nickname;
+	LoginSession session;
+	bool queueRequestHeld = false;
 
 	void Run()
 	{
@@ -197,18 +213,97 @@ struct Client
 				}
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_UserLogin>(packetData, packetSize));
 
-				ConstBuffer data(packetData, header.size);
-				u16 loginStrSize = data.Read<u16>();
-				wchar* loginStr = (wchar*)data.ReadRaw(sizeof(wchar) * loginStrSize);
-				nickname.assign(loginStr, loginStrSize);
+				ConstBuffer data(packetData, packetSize);
+				const u16 loginStrLen = data.Read<u16>();
+				const wchar* loginName = (wchar*)data.ReadRaw(sizeof(wchar) * loginStrLen);
+				i32 loginNameLen = 0;
+				while(loginNameLen < loginStrLen && loginName[loginNameLen] != L'@') loginNameLen++;
+				const u16 passwordLen = data.Read<u16>();
+				const wchar* password = (wchar*)data.ReadRaw(sizeof(wchar) * passwordLen);
 
-				Sv::SA_UserloginResult accept;
-				accept.result = 0x33;
-				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_UserloginResult>(&accept, sizeof(accept)));
-				SendPacket(accept);
+				LoginRules rules;
+				rules.autoCreateAccounts = g_Config.autoCreateAccounts != 0;
+				rules.requirePassword = g_Config.requirePassword != 0;
+				rules.loginNameAsNickname = g_Config.nicknamePrompt == 0;
+
+				session = LoginSession();
+				queueRequestHeld = false;
+				const char* ip = FMT("%d.%d.%d.%d", clientIp[0], clientIp[1], clientIp[2], clientIp[3]);
+				const LoginOutcome outcome = g_Accounts.Login(loginName, loginNameLen, password, passwordLen, ip, rules, &session);
+
+				Sv::SA_UserloginResult result;
+				switch(outcome) {
+					case LoginOutcome::SUCCESS: result.result = (i32)ErrorType::LOGIN_SUCCESS; break;
+					case LoginOutcome::NOT_REGISTERED: result.result = (i32)ErrorType::LOGIN_NOT_REGISTERED; break;
+					case LoginOutcome::INCORRECT_PASSWORD: result.result = (i32)ErrorType::LOGIN_INCORRECT_PASSWORD; break;
+					case LoginOutcome::BANNED: result.result = (i32)ErrorType::LOGIN_BANNED; break;
+					case LoginOutcome::DATABASE_FAILURE: result.result = (i32)ErrorType::LOGIN_DATABASE_FAILURE; break;
+				}
+
+				if(outcome == LoginOutcome::SUCCESS) {
+					nickname.assign(loginName, loginNameLen);
+					LOG("[client%x] account %u logged in%s", clientID, (u32)session.accountUID, session.created ? " (created)" : "");
+				}
+				else {
+					LOG("[client%x] login refused (%d)", clientID, result.result);
+				}
+
+				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_UserloginResult>(&result, sizeof(result)));
+				SendPacket(result);
+
+				if(outcome == LoginOutcome::SUCCESS && session.nickname.empty()) {
+					LOG("[client%x] account %u has no nickname yet", clientID, (u32)session.accountUID);
+					NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_NicknameNeeded>(nullptr, 0));
+					SendPacketData(Sv::SN_NicknameNeeded::NET_ID, 0, nullptr);
+				}
+			} break;
+
+			case Cl::CheckDupNickname::NET_ID: {
+				if(!ValidatePacket<Cl::CheckDupNickname>(packetData, packetSize)) {
+					LOG("WARNING: invalid CheckDupNickname (size=%d)", packetSize);
+					break;
+				}
+				if(!IsChoosingNickname(header.netID)) break;
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CheckDupNickname>(packetData, packetSize));
+
+				ConstBuffer data(packetData, packetSize);
+				const u16 nicknameLen = data.Read<u16>();
+				const wchar* nickname = (wchar*)data.ReadRaw(sizeof(wchar) * nicknameLen);
+
+				SendNicknameResult<Sv::SA_CheckDupNickname>(g_Accounts.CheckNickname(nickname, nicknameLen), nickname, nicknameLen);
+			} break;
+
+			case Cl::SetNickname::NET_ID: {
+				if(!ValidatePacket<Cl::SetNickname>(packetData, packetSize)) {
+					LOG("WARNING: invalid SetNickname (size=%d)", packetSize);
+					break;
+				}
+				if(!IsChoosingNickname(header.netID)) break;
+				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::SetNickname>(packetData, packetSize));
+
+				ConstBuffer data(packetData, packetSize);
+				const u16 nicknameLen = data.Read<u16>();
+				const wchar* nickname = (wchar*)data.ReadRaw(sizeof(wchar) * nicknameLen);
+
+				const NicknameResult result = g_Accounts.SetNickname(session.accountUID, nickname, nicknameLen);
+				if(result == NicknameResult::OK) {
+					session.nickname.assign(nickname, nicknameLen);
+					LOG("[client%x] account %u is now '%ls'", clientID, (u32)session.accountUID, session.nickname.data());
+				}
+				SendNicknameResult<Sv::SA_NicknameSet>(result, nickname, nicknameLen);
+
+				if(result == NicknameResult::OK && queueRequestHeld) {
+					queueRequestHeld = false;
+					SendToChannelServer();
+				}
+			} break;
+
+			default: {
+				LOG("[client%x] unknown packet netID=%d size=%d", clientID, header.netID, packetSize);
 			} break;
 
 			case Cl::CQ_ServerVersionInfo::NET_ID: {
+				if(!IsLoggedIn(header.netID)) break;
 				// header-only packet (no payload): nothing to validate, just log
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_ServerVersionInfo>(packetData, packetSize));
 
@@ -255,6 +350,7 @@ struct Client
 					LOG("WARNING: invalid CQ_SetIspName (size=%d)", packetSize);
 					break;
 				}
+				if(!IsLoggedIn(header.netID)) break;
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_SetIspName>(packetData, packetSize));
 
 				PacketWriter<Sv::SN_StationList> packet;
@@ -286,34 +382,78 @@ struct Client
 					LOG("WARNING: invalid CQ_EnterWaitingQueue (size=%d)", packetSize);
 					break;
 				}
+				if(!IsLoggedIn(header.netID)) break;
 				NT_LOG("[client%x] Client :: %s", clientID, PacketSerialize<Cl::CQ_EnterWaitingQueue>(packetData, packetSize));
+				if(session.nickname.empty()) {
+					LOG("[client%x] queue request held until a nickname is set", clientID);
+					queueRequestHeld = true;
+					break;
+				}
 
-				Sv::SA_EnterWaitingQueue status;
-				memset(&status, 0, sizeof(status));
-				status.var1 = 2;
-				status.var1 = 5;
-				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_EnterWaitingQueue>(&status, sizeof(status)));
-				SendPacket(status);
-
-				PacketWriter<Sv::SN_DoConnectChannelServer> packet;
-
-				packet.Write<u16>(1); // count
-				packet.Write<u8[4]>(g_Config.gameServerIP); // ip
-				packet.Write<u16>(g_Config.gameServerPort); // port
-
-				const wchar* serverName = L"XMX_SERVER";
-				packet.Write<u16>(10); // serverNamelen
-				packet.WriteRaw(serverName, 10 * sizeof(wchar)); // serverName
-
-				packet.WriteStringObj(nickname.data(), nickname.size()); // nick
-
-				packet.Write<i32>(536);
-				packet.Write<i32>(1);
-
-				NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_DoConnectChannelServer>(packet.data, packet.size));
-				SendPacketData(Sv::SN_DoConnectChannelServer::NET_ID, packet.size, packet.data);
+				SendToChannelServer();
 			} break;
 		}
+	}
+
+	void SendToChannelServer()
+	{
+		Sv::SA_EnterWaitingQueue status;
+		memset(&status, 0, sizeof(status));
+		status.var1 = 2;
+		status.var1 = 5;
+		NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SA_EnterWaitingQueue>(&status, sizeof(status)));
+		SendPacket(status);
+
+		PacketWriter<Sv::SN_DoConnectChannelServer> packet;
+
+		packet.Write<u16>(1); // count
+		packet.Write<u8[4]>(g_Config.gameServerIP); // ip
+		packet.Write<u16>(g_Config.gameServerPort); // port
+
+		const wchar* serverName = L"XMX_SERVER";
+		packet.Write<u16>(10); // serverNamelen
+		packet.WriteRaw(serverName, 10 * sizeof(wchar)); // serverName
+
+		packet.WriteStringObj(nickname.data(), nickname.size()); // nick
+
+		packet.Write<u32>(session.instantKey);
+		packet.Write<i32>(1);
+
+		NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Sv::SN_DoConnectChannelServer>(packet.data, packet.size));
+		SendPacketData(Sv::SN_DoConnectChannelServer::NET_ID, packet.size, packet.data);
+	}
+
+	bool IsChoosingNickname(u16 netID)
+	{
+		if(session.accountUID != AccountUID::INVALID && session.nickname.empty()) return true;
+		LOG("WARNING: packet %d outside of the nickname step, dropped", netID);
+		return false;
+	}
+
+	template<typename Packet>
+	void SendNicknameResult(NicknameResult result, const wchar* nickname, i32 nicknameLen)
+	{
+		ErrorType code = ErrorType::SUCCESS;
+		switch(result) {
+			case NicknameResult::OK: code = ErrorType::SUCCESS; break;
+			case NicknameResult::INVALID_FORMAT: code = ErrorType::NICKNAME_USES_INVALID_FORMAT; break;
+			case NicknameResult::TAKEN: code = ErrorType::NICKNAME_OVERLAP; break;
+			case NicknameResult::DATABASE_FAILURE: code = ErrorType::NICKNAME_SYSTEM_ERROR; break;
+		}
+
+		PacketWriter<Packet> packet;
+		packet.template Write<u32>((u32)code);
+		packet.WriteStringObj(nickname, MIN(nicknameLen, (i32)AccountDB::MAX_LOGIN_NAME_LEN));
+
+		NT_LOG("[client%x] Server :: %s", clientID, PacketSerialize<Packet>(packet.data, packet.size));
+		SendPacketData(Packet::NET_ID, packet.size, packet.data);
+	}
+
+	bool IsLoggedIn(u16 netID)
+	{
+		if(session.accountUID != AccountUID::INVALID) return true;
+		LOG("WARNING: packet %d before login, dropped", netID);
+		return false;
 	}
 
 	template<typename Packet>
@@ -434,6 +574,11 @@ int main(int argc, char** argv)
 
 	MakeDirectory("trace");
 
+	if(!g_Accounts.Open(g_Config.databasePath)) {
+		LOG("ERROR: failed to open accounts database '%s'", g_Config.databasePath);
+		return 1;
+	}
+
 	static LoginServer server;
 	g_LoginServer = &server;
 
@@ -470,6 +615,7 @@ int main(int argc, char** argv)
 	}
 
 	server.Cleanup();
+	g_Accounts.Close();
 	LOG("Done.");
 	return 0;
 }

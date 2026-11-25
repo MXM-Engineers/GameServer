@@ -10,6 +10,9 @@ file(GLOB_RECURSE MXM_SOURCES CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/mxm/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/mxm/*.c
 	${CMAKE_CURRENT_SOURCE_DIR}/mxm/*.cpp)
+file(GLOB_RECURSE STORAGE_SOURCES CONFIGURE_DEPENDS
+	${CMAKE_CURRENT_SOURCE_DIR}/storage/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/storage/*.cpp)
 file(GLOB_RECURSE LOGIN_SOURCES CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/login/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/servers/login/*.c
@@ -51,12 +54,12 @@ set(SERVER_COMMON_DEFINES GLM_FORCE_XYZW_ONLY)
 set(NATVIS ${EXTERNAL_DIR}/EASTL-3.16.07/doc/EASTL.natvis)
 
 # ---- Login (login_srv) ----
-add_executable(login_srv ${COMMON_SOURCES} ${LOGIN_SOURCES})
+add_executable(login_srv ${COMMON_SOURCES} ${STORAGE_SOURCES} ${LOGIN_SOURCES})
 if(WIN32)
 	target_sources(login_srv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/servers/login/login_rc.rc)
 endif()
 target_include_directories(login_srv PRIVATE ${SRC_DIR} ${EA_INCLUDES})
-target_link_libraries(login_srv PRIVATE eastl eathread eastdc ${SERVER_COMMON_LINKS_PLATFORM})
+target_link_libraries(login_srv PRIVATE eastl eathread eastdc sqlite3 argon2 ${SERVER_COMMON_LINKS_PLATFORM})
 if(MSVC)
 	target_sources(login_srv PRIVATE ${NATVIS})
 endif()

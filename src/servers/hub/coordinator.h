@@ -177,7 +177,10 @@ struct Coordinator
 	hash_map<AccountUID,ClientHandle,MAX_CLIENTS> accChdMap;
 	AccountDB accountDB;
 	bool accountDBOpen = false;
-	GameDB gameDB;
+	SqliteGameStore gameStoreBackend;
+	GameStore gameStore;
+	GameStore::LoadedList loadedProfiles;
+	eastl::array<bool, MAX_CLIENTS> clientLoadingProfile;
 
 	GrowableBuffer recvDataBuff;
 
@@ -202,6 +205,8 @@ private:
 	bool ResolveLogin(const wchar* name, i32 nameLen, u32 instantKey, LoginSession* outSession, ErrorType* outError);
 	void RefuseClient(ClientHandle clientHd, ErrorType error);
 	void EnterHub(ClientHandle clientHd);
+	void HandleLoadedProfiles();
+	Account& FindOrAddAccount(AccountUID accountUID);
 
 	void ClientSendAccountData(ClientHandle clientHd);
 

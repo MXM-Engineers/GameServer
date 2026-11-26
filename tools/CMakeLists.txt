@@ -21,6 +21,7 @@ add_executable(test_accounts ${TOOL_COMMON_SOURCES}
 	${SRC_DIR}/storage/database.cpp
 	${SRC_DIR}/storage/account_db.cpp
 	${SRC_DIR}/storage/game_db.cpp
+	${SRC_DIR}/storage/game_store.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/accounts/test_accounts.cpp)
 target_include_directories(test_accounts PRIVATE ${TOOL_COMMON_INCLUDES})
 target_link_libraries(test_accounts PRIVATE ${TOOL_COMMON_LINKS} sqlite3 argon2)
@@ -28,6 +29,19 @@ if(NOT WIN32)
 	target_link_libraries(test_accounts PRIVATE pthread)
 endif()
 mxm_debug_suffix(test_accounts)
+
+# ---- GameStore (test_game_store) ----
+add_executable(test_game_store ${TOOL_COMMON_SOURCES}
+	${SRC_DIR}/storage/database.cpp
+	${SRC_DIR}/storage/game_db.cpp
+	${SRC_DIR}/storage/game_store.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_store/test_game_store.cpp)
+target_include_directories(test_game_store PRIVATE ${TOOL_COMMON_INCLUDES})
+target_link_libraries(test_game_store PRIVATE ${TOOL_COMMON_LINKS} sqlite3)
+if(NOT WIN32)
+	target_link_libraries(test_game_store PRIVATE pthread)
+endif()
+mxm_debug_suffix(test_game_store)
 
 # ---- LeaDll (lea.dll) ----
 add_library(lea SHARED ${TOOL_COMMON_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/lea/lea.cpp)

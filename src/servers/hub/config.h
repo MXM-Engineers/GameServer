@@ -11,6 +11,7 @@ struct CConfigHub
 	char AccountsDatabasePath[256] = "accounts.db";
 	char GameDatabasePath[256] = "game.db";
 	i32 RequireLoginSession = true;
+	i32 DevSeedProfile = false;
 	eastl::fixed_vector<i32,16> regionBanMaster = {};
 	eastl::fixed_vector<i32,16> regionNewMaster = {};
 	eastl::fixed_vector<i32,16> eventBanMaster = {};

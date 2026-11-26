@@ -172,14 +172,23 @@ static void TestNicknames()
 
 static void TestGamePlayers()
 {
-	GameDB db;
+	SqliteGameStore db;
 	CHECK(db.Open(":memory:"));
 
-	bool created = false;
-	CHECK(db.TouchPlayer(AccountUID(7), &created));
-	CHECK(created);
-	CHECK(db.TouchPlayer(AccountUID(7), &created));
-	CHECK(!created);
+	const ProfileSeed seed;
+	PlayerProfile profile;
+	CHECK(db.Begin());
+	CHECK(db.LoadProfile(AccountUID(7), 1000, seed, &profile));
+	CHECK(db.Commit());
+	CHECK(profile.firstEntry);
+	CHECK(profile.createdAt == 1000);
+
+	CHECK(db.Begin());
+	CHECK(db.LoadProfile(AccountUID(7), 2000, seed, &profile));
+	CHECK(db.Commit());
+	CHECK(!profile.firstEntry);
+	CHECK(profile.createdAt == 1000);
+	CHECK(profile.lastLoginAt == 2000);
 
 	db.Close();
 }

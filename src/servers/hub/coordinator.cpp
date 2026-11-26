@@ -489,17 +489,23 @@ bool Coordinator::Init(Server* server_)
 	recvDataBuff.Init(10 * (1024*1024)); // 10 MB
 
 	clientHandle.fill(ClientHandle::INVALID);
-
-	if(!gameDB.Open(Config().GameDatabasePath)) {
-		LOG("ERROR: failed to open game database '%s'", Config().GameDatabasePath);
-		return false;
-	}
+	clientLoadingProfile.fill(false);
 
 	bool r = matchmaker.Init();
 	if(!r) return false;
 
+	GameStoreOptions storeOptions;
+	storeOptions.seed.dev = Config().DevSeedProfile != 0;
+	if(!gameStore.Start(&gameStoreBackend, Config().GameDatabasePath, storeOptions)) {
+		LOG("ERROR: failed to open game database '%s'", Config().GameDatabasePath);
+		return false;
+	}
+
 	r = instancePool.Init(server);
-	if(!r) return false;
+	if(!r) {
+		gameStore.Shutdown();
+		return false;
+	}
 
 	thread.Begin(ThreadCoordinator, this);
 	return true;
@@ -511,7 +517,7 @@ void Coordinator::Cleanup()
 
 	instancePool.Cleanup();
 	thread.WaitForEnd();
-	gameDB.Close();
+	gameStore.Shutdown();
 	accountDB.Close();
 }
 
@@ -582,6 +588,7 @@ void Coordinator::Update(f64 delta)
 		const i32 clientID = plidMap.Push(*cl);
 		clientHandle[clientID] = *cl;
 		clientAccountUID[clientID] = AccountUID::INVALID;
+		clientLoadingProfile[clientID] = false;
 	}
 
 	// handle client disconnections
@@ -597,7 +604,10 @@ void Coordinator::Update(f64 delta)
 			accChdMap.erase(clientAccountUID[clientID]);
 		}
 		clientAccountUID[clientID] = AccountUID::INVALID;
+		clientLoadingProfile[clientID] = false;
 	}
+
+	HandleLoadedProfiles();
 
 	// handle received data
 	eastl::fixed_vector<ClientHandle,MAX_CLIENTS> clientList;
@@ -711,34 +721,68 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		return;
 	}
 
-	if(hasSession) {
-		bool created = false;
-		const bool touched = gameDB.TouchPlayer(accountUID, &created);
-		ASSERT(touched);
-		if(created) LOG("[client%x] account %u enters this server for the first time", clientHd, (u32)accountUID);
-	}
-
-	Sv::SA_AuthResult auth;
-	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;
-	SendPacket(clientHd, auth);
-
-	AccountManager& am = GetAccountManager();
-	auto found = am.accountMap.find(accountUID);
-	if(found == am.accountMap.end()) {
-		am.accountList.emplace_back(accountUID);
-		found = am.accountMap.emplace(accountUID, --am.accountList.end()).first;
-	}
-
-	Account& account = *found->second;
+	Account& account = FindOrAddAccount(accountUID);
 	account.guildTag = L"Alpha";
 	account.leaderMasterID = 0;
+	account.profile = PlayerProfile();
+	account.profile.accountUID = accountUID;
+	account.profileStored = false;
 	if(hasSession) account.nickname = session.nickname;
 	else account.nickname.assign(nick, nickLen);
 
 	accChdMap.emplace(accountUID, clientHd);
 	clientAccountUID[clientID] = accountUID;
 
+	if(hasSession) {
+		clientLoadingProfile[clientID] = true;
+		gameStore.QueueLoadProfile((u32)clientHd, accountUID);
+		return;
+	}
+
+	Sv::SA_AuthResult auth;
+	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;
+	SendPacket(clientHd, auth);
+
 	EnterHub(clientHd);
+}
+
+Account& Coordinator::FindOrAddAccount(AccountUID accountUID)
+{
+	AccountManager& am = GetAccountManager();
+	auto found = am.accountMap.find(accountUID);
+	if(found == am.accountMap.end()) {
+		am.accountList.emplace_back(accountUID);
+		found = am.accountMap.emplace(accountUID, --am.accountList.end()).first;
+	}
+	return *found->second;
+}
+
+void Coordinator::HandleLoadedProfiles()
+{
+	gameStore.TransferLoaded(&loadedProfiles);
+
+	foreach_const(it, loadedProfiles) {
+		const ClientHandle clientHd = (ClientHandle)it->tag;
+		const AccountUID accountUID = it->profile.accountUID;
+
+		const i32 clientID = plidMap.TryGet(clientHd);
+		if(clientID == -1 || !clientLoadingProfile[clientID] || clientAccountUID[clientID] != accountUID) {
+			LOG("[client%x] profile of account %u loaded after the client left, dropped", (u32)clientHd, (u32)accountUID);
+			continue;
+		}
+		clientLoadingProfile[clientID] = false;
+
+		Account& account = FindOrAddAccount(accountUID);
+		account.profile = it->profile;
+		account.profileStored = true;
+		if(it->profile.firstEntry) LOG("[client%x] account %u enters this server for the first time", (u32)clientHd, (u32)accountUID);
+
+		Sv::SA_AuthResult auth;
+		auth.nResult = (i32)ErrorType::AUTH_SUCCESS;
+		SendPacket(clientHd, auth);
+
+		EnterHub(clientHd);
+	}
 }
 
 bool Coordinator::ResolveLogin(const wchar* name, i32 nameLen, u32 instantKey, LoginSession* outSession, ErrorType* outError)

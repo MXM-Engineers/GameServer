@@ -16,6 +16,7 @@ struct Database
 	i32 SchemaVersion();
 	i64 LastInsertRowID() const;
 	i32 Changes() const;
+	bool InTransaction() const;
 	const char* LastError() const;
 };
 

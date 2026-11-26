@@ -1,14 +1,17 @@
 #pragma once
 #include "database.h"
-#include <common/inner_protocol.h>
+#include "game_store.h"
 
-struct GameDB
+struct SqliteGameStore: GameStoreBackend
 {
 	Database db;
-	Mutex mutex;
 
-	bool Open(const char* path);
-	void Close();
+	bool Open(const char* path) override;
+	void Close() override;
 
-	bool TouchPlayer(AccountUID accountUID, bool* outCreated);
+	bool Begin() override;
+	bool Commit() override;
+	void Rollback() override;
+
+	bool LoadProfile(AccountUID accountUID, i64 now, const ProfileSeed& seed, PlayerProfile* out) override;
 };

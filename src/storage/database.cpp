@@ -94,6 +94,11 @@ i32 Database::Changes() const
 	return sqlite3_changes(handle);
 }
 
+bool Database::InTransaction() const
+{
+	return sqlite3_get_autocommit(handle) == 0;
+}
+
 const char* Database::LastError() const
 {
 	return sqlite3_errmsg(handle);

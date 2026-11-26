@@ -2,6 +2,7 @@
 #include <common/inner_protocol.h>
 #include <common/utils.h>
 #include <common/network.h> // MAX_CLIENTS
+#include <storage/game_store.h>
 
 struct Account
 {
@@ -9,6 +10,8 @@ struct Account
 	WideString nickname;
 	WideString guildTag;
 	i32 leaderMasterID;
+	PlayerProfile profile;
+	bool profileStored = false;
 
 	// TODO: add to this
 

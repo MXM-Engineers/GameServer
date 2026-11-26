@@ -55,6 +55,8 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CN_GamePlayerSyncActionStateOnly);
 		HANDLE_CASE(CQ_JukeboxQueueSong);
 		HANDLE_CASE(CQ_WhisperSend);
+		HANDLE_CASE(CQ_SaveSettings);
+		HANDLE_CASE(CQ_CommunityStatusMessage);
 		HANDLE_CASE(CQ_PartyCreate);
 		HANDLE_CASE(CQ_RTT_Time);
 		HANDLE_CASE(CQ_LoadingProgressData);
@@ -475,6 +477,37 @@ void HubPacketHandler::HandlePacket_CQ_WhisperSend(ClientHandle clientHd, const 
 	msg.assign(msg_str, msg_len);
 
 	game->OnPlayerChatWhisper(clientHd, destNick.data(), msg.data());
+}
+
+void HubPacketHandler::HandlePacket_CQ_SaveSettings(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_SaveSettings>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_SaveSettings (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_SaveSettings>(packetData, packetSize));
+
+	ConstBuffer buff(packetData, packetSize);
+	const u8 settingType = buff.Read<u8>();
+	const u16 len = buff.Read<u16>();
+	const u8* data = (const u8*)buff.ReadRaw(len);
+
+	game->OnPlayerSaveSettings(clientHd, settingType, data, len);
+}
+
+void HubPacketHandler::HandlePacket_CQ_CommunityStatusMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_CommunityStatusMessage>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_CommunityStatusMessage (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_CommunityStatusMessage>(packetData, packetSize));
+
+	ConstBuffer buff(packetData, packetSize);
+	const u16 len = buff.Read<u16>();
+	const wchar* msg = (const wchar*)buff.ReadRaw(len * sizeof(wchar));
+
+	game->OnPlayerCommunityStatusMessage(clientHd, msg, len);
 }
 
 void HubPacketHandler::HandlePacket_CQ_RTT_Time(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

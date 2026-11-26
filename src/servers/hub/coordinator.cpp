@@ -3,6 +3,7 @@
 #include <common/inner_protocol.h>
 #include <mxm/game_content.h>
 #include <zlib.h>
+#include <time.h>
 #include <EAStdC/EAString.h>
 #include <EAStdC/EASprintf.h>
 
@@ -10,6 +11,7 @@
 #include "config.h"
 #include "channel.h"
 #include "instance.h"
+#include "default_settings.h"
 
 static GameStore* g_GameStore = nullptr;
 
@@ -209,15 +211,17 @@ void InstancePool::Lane::Update()
 		clientList.push_back();
 		Client& client = *(--clientList.end());
 		client.clientHd = hp->clientHd;
-		client.accountUID = hp->accountUID;
+		client.accountUID = hp->account->UID;
 		client.instanceType = InstanceType::HUB;
 		client.instanceUID = hub.UID;
 		clientMap.emplace(client.clientHd, --clientList.end());
 		clientHandleSet.insert(client.clientHd);
 
+		hp->account->ApplyLogin(hp->login);
+
 		HubInstance::NewUser nu;
 		nu.clientHd = hp->clientHd;
-		nu.accountUID = hp->accountUID;
+		nu.account = hp->account;
 		hubNewUsers.push_back(nu);
 
 		LOG("[Lande_%d][client%x] client joins hub", laneIndex, client.clientHd);
@@ -380,7 +384,7 @@ void InstancePool::Cleanup()
 	}
 }
 
-void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID)
+void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, Account* account, const AccountLogin& login)
 {
 	// TODO: choose a lane based on capacity
 	Lane& l = lanes.front();
@@ -391,7 +395,8 @@ void InstancePool::QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accoun
 
 	Lane::HubPlayerEntry player;
 	player.clientHd = clientHd;
-	player.accountUID = accountUID;
+	player.account = account;
+	player.login = login;
 
 	LOCK_MUTEX(l.mutexHubPushPlayerQueue);
 	l.hubPushPlayerQueue.push_back(player);
@@ -638,6 +643,7 @@ void Coordinator::Update(f64 delta)
 		clientHandle[clientID] = *cl;
 		clientAccountUID[clientID] = AccountUID::INVALID;
 		clientLoadingProfile[clientID] = false;
+		clientLogin[clientID] = AccountLogin();
 	}
 
 	// handle client disconnections
@@ -651,9 +657,11 @@ void Coordinator::Update(f64 delta)
 		clientHandle[clientID] = ClientHandle::INVALID;
 		if(clientAccountUID[clientID] != AccountUID::INVALID) {
 			accChdMap.erase(clientAccountUID[clientID]);
+			RecordLogout(*cl, clientAccountUID[clientID], clientLogin[clientID]);
 		}
 		clientAccountUID[clientID] = AccountUID::INVALID;
 		clientLoadingProfile[clientID] = false;
+		clientLogin[clientID] = AccountLogin();
 	}
 
 	HandleLoadedProfiles();
@@ -697,7 +705,7 @@ void Coordinator::ClientHandlePacket(ClientHandle clientHd, const NetHeader& hea
 void Coordinator::PushClientToHubInstance(ClientHandle clientHd)
 {
 	const i32 clientID = plidMap.Get(clientHd);
-	instancePool.QueuePushPlayerToHub(clientHd, clientAccountUID[clientID]);
+	instancePool.QueuePushPlayerToHub(clientHd, &FindOrAddAccount(clientAccountUID[clientID]), clientLogin[clientID]);
 }
 
 void Coordinator::HandlePacket_CQ_FirstHello(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
@@ -770,14 +778,13 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		return;
 	}
 
-	Account& account = FindOrAddAccount(accountUID);
-	account.guildTag = L"Alpha";
-	account.leaderMasterID = 0;
-	account.profile = PlayerProfile();
-	account.profile.accountUID = accountUID;
-	account.profileStored = false;
-	if(hasSession) account.nickname = session.nickname;
-	else account.nickname.assign(nick, nickLen);
+	FindOrAddAccount(accountUID);
+	AccountLogin& login = clientLogin[clientID];
+	login = AccountLogin();
+	login.guildTag = L"Alpha";
+	login.profile.accountUID = accountUID;
+	if(hasSession) login.nickname = session.nickname;
+	else login.nickname.assign(nick, nickLen);
 
 	accChdMap.emplace(accountUID, clientHd);
 	clientAccountUID[clientID] = accountUID;
@@ -788,13 +795,27 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		return;
 	}
 
-	SeedProfileInMemory(profileSeed, &account.profile);
+	SeedProfileInMemory(profileSeed, &login.profile);
 
 	Sv::SA_AuthResult auth;
 	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;
 	SendPacket(clientHd, auth);
 
 	EnterHub(clientHd);
+}
+
+void Coordinator::RecordLogout(ClientHandle clientHd, AccountUID accountUID, const AccountLogin& login)
+{
+	if(!login.profileStored) return;
+	if(IsAccountSentToGame(login.nickname)) {
+		LOG("[client%x] account %u left for a game server, last logout not written", (u32)clientHd, (u32)accountUID);
+		return;
+	}
+
+	const i64 now = (i64)time(nullptr);
+	gameStore.QueueWrite("SetLastLogout", [accountUID, now](GameStoreBackend& b) {
+		return b.SetLastLogout(accountUID, now);
+	});
 }
 
 Account& Coordinator::FindOrAddAccount(AccountUID accountUID)
@@ -823,9 +844,8 @@ void Coordinator::HandleLoadedProfiles()
 		}
 		clientLoadingProfile[clientID] = false;
 
-		Account& account = FindOrAddAccount(accountUID);
-		account.profile = it->profile;
-		account.profileStored = true;
+		clientLogin[clientID].profile = it->profile;
+		clientLogin[clientID].profileStored = true;
 		if(it->profile.firstEntry) LOG("[client%x] account %u enters this server for the first time", (u32)clientHd, (u32)accountUID);
 
 		Sv::SA_AuthResult auth;
@@ -876,359 +896,38 @@ void Coordinator::EnterHub(ClientHandle clientHd)
 	PushClientToHubInstance(clientHd);
 }
 
+void Coordinator::SendClientSettings(ClientHandle clientHd, u8 settingType, const u8* data, i32 size)
+{
+	ASSERT(size > 0 && size <= PROFILE_SETTINGS_MAX_SIZE);
+	PacketWriter<Sv::SN_ClientSettings,3 + PROFILE_SETTINGS_MAX_SIZE> packet;
+	packet.Write<u8>(settingType);
+	packet.Write<u16>((u16)size);
+	packet.WriteRaw(data, size);
+	SendPacket(clientHd, packet);
+}
+
 void Coordinator::ClientSendAccountData(ClientHandle clientHd)
 {
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,2048> packet;
+	const PlayerProfile& profile = clientLogin[plidMap.Get(clientHd)].profile;
 
-		const char* src = R"foo(
-						  <?xml version="1.0" encoding="utf-8"?>
-						  <KEY_DATA highDateTime="30633031" lowDateTime="3986680182" isCustom="0" keyboardLayoutName="00000813">
-						  <data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_SHIRK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
-						  <data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
-						  <data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
-						  <data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
-						  <data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
-						  <data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
-						  </KEY_DATA>
-						  )foo";
+	for(i32 settingType = 0; settingType < PROFILE_SETTINGS_SLOTS; settingType++) {
+		const ProfileSettings& stored = profile.settings[settingType];
+		if(stored.present) {
+			SendClientSettings(clientHd, (u8)settingType, stored.data.data(), (i32)stored.data.size());
+			continue;
+		}
 
-		u8 dest[2048];
+		const char* src = DefaultClientSettingsXml((u8)settingType);
+		if(!src) continue;
+
+		u8 dest[PROFILE_SETTINGS_MAX_SIZE];
 		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
+		const int r = compress((Bytef*)dest, &destLen, (const Bytef*)src, strlen(src));
 		if(r != Z_OK) {
 			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
 			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
 			ASSERT_MSG(0, "compress failed");
 		}
-
-		packet.Write<u8>(0); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,2048> packet;
-
-		const char* src =
-				R"foo(
-				<?xml version="1.0" encoding="utf-8"?>
-				<userdata
-				version="2">
-				<useroption>
-				<displayUserName
-				version="0"
-				value="1" />
-				<displayNameOfUserTeam
-				version="0"
-				value="1" />
-				<displayNameOfOtherTeam
-				version="0"
-				value="1" />
-				<displayMonsterName
-				version="0"
-				value="1" />
-				<displayNpcName
-				version="0"
-				value="1" />
-				<displayUserTitle
-				version="0"
-				value="1" />
-				<displayOtherTitle
-				version="0"
-				value="1" />
-				<displayUserStatusBar
-				version="0"
-				value="1" />
-				<displayStatusBarOfOtherTeam
-				version="0"
-				value="1" />
-				<displayStatusBarOfUserTeam
-				version="0"
-				value="1" />
-				<displayMonsterStatusBar
-				version="0"
-				value="1" />
-				<displayDamage
-				version="0"
-				value="1" />
-				<displayStatus
-				version="0"
-				value="1" />
-				<displayMasterBigImageType
-				version="0"
-				value="0" />
-				<displayCursorSFX
-				version="0"
-				value="1" />
-				<displayTutorialInfos
-				version="0"
-				value="1" />
-				<displayUserStat
-				version="0"
-				value="0" />
-				<chatFiltering
-				version="0"
-				value="1" />
-				<chatTimstamp
-				version="0"
-				value="0" />
-				<useSmartCast
-				version="0"
-				value="0" />
-				<useMouseSight
-				version="0"
-				value="0" />
-				<alwaysActivateHUD
-				version="0"
-				value="1" />
-				</useroption>
-				</userdata>
-				)foo";
-
-		u8 dest[2048];
-		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
-		if(r != Z_OK) {
-			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
-			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
-			ASSERT_MSG(0, "compress failed");
-		}
-
-		packet.Write<u8>(1); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
-	}
-
-	// SN_ClientSettings
-	{
-		PacketWriter<Sv::SN_ClientSettings,2048> packet;
-
-		const char* src =
-				R"foo(
-				<?xml version="1.0" encoding="utf-8"?>
-				<KEY_DATA highDateTime="30633030" lowDateTime="3827081041" isCustom="0" keyboardLayoutName="00000813">
-				<data input="INPUT_SHIRK" key="MKC_NOKEY" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_UIEDITMODE" key="MKC_NOKEY" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_PING" key="MKC_NOKEY" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_LATTACK" key="MKC_LBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GAMEPING" key="MKC_LBUTTON" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_BACKPING" key="MKC_RBUTTON" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_DASHBOARD" key="MKC_TAB" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATON" key="MKC_RETURN" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHAT_ALLPLAYER_ONCE" key="MKC_RETURN" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_ESC" key="MKC_ESCAPE" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_JUMP_SAFEFALL" key="MKC_SPACE" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_REPLAY_GOTO_LIVE" key="MKC_0" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_0" key="MKC_0" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_1" key="MKC_1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_1" key="MKC_1" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_0" key="MKC_1" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_2" key="MKC_2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_2" key="MKC_2" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_1" key="MKC_2" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_3" key="MKC_3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_3" key="MKC_3" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_EMOTION_2" key="MKC_3" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_WARFOGMODE_4" key="MKC_4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_4" key="MKC_4" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_5" key="MKC_5" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_TOGGLE_TIME_CONTROLLER" key="MKC_6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_6" key="MKC_6" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_7" key="MKC_7" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_REPLAY_MOVEBACK" key="MKC_8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_8" key="MKC_8" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_REPLAY_PAUSE_RESUME" key="MKC_9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHATMACRO_9" key="MKC_9" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_1" key="MKC_A" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_1" key="MKC_A" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_1_NOTIFY" key="MKC_A" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_OPT" key="MKC_B" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_3" key="MKC_C" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CSHOP" key="MKC_C" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_STAGE_SKILL_NOTIFY" key="MKC_C" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_RIGHT" key="MKC_D" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_2" key="MKC_E" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_2" key="MKC_E" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_2_NOTIFY" key="MKC_E" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_ACTION" key="MKC_F" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GUILD" key="MKC_G" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TUTORIAL" key="MKC_H" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_INVENTORY" key="MKC_I" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_MISSIONLIST" key="MKC_J" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_NAME_DECO" key="MKC_K" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLIST" key="MKC_L" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SCHEDULE" key="MKC_M" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_NO" key="MKC_N" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_OPTIONWINDOW" key="MKC_O" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CHARACTER" key="MKC_P" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_POST" key="MKC_P" modifier="MKC_SHIFT" isaddkey="0" />
-				<data input="INPUT_LEFT" key="MKC_Q" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_UG" key="MKC_R" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_SKILLUP_UG" key="MKC_R" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_QUICKSLOT_UG_NOTIFY" key="MKC_R" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_BACK" key="MKC_S" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ATTRIBUTE" key="MKC_T" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_AVATAR_NOTIFY" key="MKC_T" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_SUMMARY" key="MKC_U" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_PASSIVE_NOTIFY" key="MKC_V" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_TITAN_AVATAR" key="MKC_W" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_UI_TOGGLE" key="MKC_X" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_YES" key="MKC_Y" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRONT" key="MKC_Z" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_GUARDIAN_CAM" key="MKC_NUMPAD0" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_WIZARD_CAM" key="MKC_NUMPAD1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ADAMAN_CAM" key="MKC_NUMPAD2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_RUAK_CAM" key="MKC_NUMPAD3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_1" key="MKC_NUMPAD4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_2" key="MKC_NUMPAD5" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_BLUE_CAM_3" key="MKC_NUMPAD6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_1" key="MKC_NUMPAD7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_2" key="MKC_NUMPAD8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TITAN_RED_CAM_3" key="MKC_NUMPAD9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_1" key="MKC_F1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_2" key="MKC_F2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_3" key="MKC_F3" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_4" key="MKC_F4" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_FRIENDLY_CAM_5" key="MKC_F5" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_1" key="MKC_F6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_2" key="MKC_F7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_3" key="MKC_F8" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_4" key="MKC_F9" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ENEMY_CAM_5" key="MKC_F10" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CAM_MANUAL" key="MKC_F11" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_CAM_AUTO" key="MKC_F12" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_VIDEO_RECORDING" key="MKC_F12" modifier="MKC_CONTROL" isaddkey="0" />
-				<data input="INPUT_CAM_ZOOM_TOGGLE" key="MKC_OEM_1" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_INGREDIENT" key="MKC_OEM_PLUS" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_SKIN" key="MKC_OEM_PERIOD" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TRADER_MEDAL" key="MKC_OEM_2" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TAG" key="MKC_WHEELDOWN" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TAG_NOTIFY" key="MKC_WHEELDOWN" modifier="MKC_MENU" isaddkey="0" />
-				<data input="INPUT_BATTLELOG" key="MKC_OEM_6" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_TOGGLE_INGAME_INFORMATION" key="MKC_OEM_7" modifier="MKC_NOKEY" isaddkey="0" />
-				<data input="INPUT_ATTRIBUTE" key="MKC_NOKEY" modifier="MKC_NOKEY" isaddkey="1" />
-				<data input="INPUT_RATTACK" key="MKC_RBUTTON" modifier="MKC_CONTROL" isaddkey="1" />
-				<data input="INPUT_TAG" key="MKC_WHEELUP" modifier="MKC_NOKEY" isaddkey="1" />
-				</KEY_DATA>
-				)foo";
-
-		u8 dest[2048];
-		uLongf destLen = sizeof(dest);
-		int r = compress((Bytef*)dest, &destLen, (Bytef*)src, strlen(src));
-		if(r != Z_OK) {
-			if(r == Z_MEM_ERROR) LOG("ERROR(compress) not enough memory");
-			else if(r == Z_BUF_ERROR) LOG("ERROR(compress) not enough room in the output buffer");
-			ASSERT_MSG(0, "compress failed");
-		}
-
-		packet.Write<u8>(2); // settingType
-		packet.Write<u16>(destLen);
-		packet.WriteRaw(dest, destLen);
-
-		SendPacket(clientHd, packet);
+		SendClientSettings(clientHd, (u8)settingType, dest, (i32)destLen);
 	}
 }

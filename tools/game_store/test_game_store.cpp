@@ -3,6 +3,7 @@
 #include <storage/game_db.h>
 #include <EASTL/vector.h>
 #include <stdio.h>
+#include <string.h>
 
 #define CHECK(cond) do { if(!(cond)) { LOG("FAILED: %s (line %d)", #cond, __LINE__); failures++; } } while(0)
 
@@ -370,6 +371,213 @@ static void TestSeedInMemory()
 	CHECK(profile.OwnsSkin(ClassType::LAUNCHER, SkinIndex::DEFAULT));
 }
 
+static eastl::vector<u8> MakeBlob(u8 seed, i32 size)
+{
+	eastl::vector<u8> blob;
+	for(i32 i = 0; i < size; i++) blob.push_back((u8)(seed + i * 7));
+	return blob;
+}
+
+static bool SameBlob(const ProfileSettings& slot, const eastl::vector<u8>& blob)
+{
+	return slot.present && slot.data.size() == blob.size() && memcmp(slot.data.data(), blob.data(), blob.size()) == 0;
+}
+
+static void TestSettingsDefaultWhenAbsent()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(20), RetailSeed(), &profile));
+	for(i32 i = 0; i < PROFILE_SETTINGS_SLOTS; i++) {
+		CHECK(!profile.settings[i].present);
+		CHECK(profile.settings[i].data.empty());
+	}
+	CHECK(profile.tutorialState == TUTORIAL_STATE_TOWN);
+	CHECK(profile.statusMessage.empty());
+	CHECK(profile.statusMessageAt == 0);
+	CHECK(profile.lastLogoutAt == 0);
+
+	PlayerProfile inMemory;
+	CHECK(inMemory.tutorialState == -1);
+	CHECK(!inMemory.settings[0].present);
+
+	backend.Close();
+}
+
+static void TestSettingsSurviveRestart()
+{
+	const char* path = "test_game_store_settings.db";
+	RemoveDatabase(path);
+
+	GameStoreOptions options = TestOptions();
+	options.seed = RetailSeed();
+
+	eastl::vector<u8> blobs[PROFILE_SETTINGS_SLOTS] = {
+		MakeBlob(0x78, 300),
+		MakeBlob(0x10, 1),
+		MakeBlob(0x55, 2048),
+		MakeBlob(0x99, PROFILE_SETTINGS_MAX_SIZE),
+	};
+	const eastl::vector<u8> replaced = MakeBlob(0x20, 900);
+
+	{
+		SqliteGameStore backend;
+		GameStore store;
+		CHECK(store.Start(&backend, path, options));
+		store.QueueLoadProfile(1, AccountUID(21));
+		ProfileLoaded loaded;
+		CHECK(WaitLoaded(store, &loaded));
+		store.QueueLoadProfile(2, AccountUID(22));
+		CHECK(WaitLoaded(store, &loaded));
+
+		for(i32 i = 0; i < PROFILE_SETTINGS_SLOTS; i++) {
+			const eastl::vector<u8> blob = blobs[i];
+			store.QueueWrite("SaveSettings", [i, blob](GameStoreBackend& b) {
+				return b.SaveSettings(AccountUID(21), i, blob.data(), (i32)blob.size(), 3000 + i);
+			});
+		}
+		store.QueueWrite("SaveSettings", [replaced](GameStoreBackend& b) {
+			return b.SaveSettings(AccountUID(21), 0, replaced.data(), (i32)replaced.size(), 4000);
+		});
+		store.QueueWrite("SaveSettings", [](GameStoreBackend& b) {
+			const eastl::vector<u8> blob = MakeBlob(1, 10);
+			return b.SaveSettings(AccountUID(22), 2, blob.data(), (i32)blob.size(), 4000);
+		});
+		store.Shutdown();
+		CHECK(store.FailedJobCount() == 0);
+	}
+
+	{
+		SqliteGameStore backend;
+		GameStore store;
+		CHECK(store.Start(&backend, path, options));
+		store.QueueLoadProfile(3, AccountUID(21));
+		ProfileLoaded loaded;
+		CHECK(WaitLoaded(store, &loaded));
+		CHECK(SameBlob(loaded.profile.settings[0], replaced));
+		CHECK(SameBlob(loaded.profile.settings[1], blobs[1]));
+		CHECK(SameBlob(loaded.profile.settings[2], blobs[2]));
+		CHECK(SameBlob(loaded.profile.settings[3], blobs[3]));
+
+		store.QueueLoadProfile(4, AccountUID(22));
+		CHECK(WaitLoaded(store, &loaded));
+		CHECK(!loaded.profile.settings[0].present);
+		CHECK(!loaded.profile.settings[1].present);
+		CHECK(SameBlob(loaded.profile.settings[2], MakeBlob(1, 10)));
+		CHECK(!loaded.profile.settings[3].present);
+		store.Shutdown();
+	}
+
+	RemoveDatabase(path);
+}
+
+static void TestSettingsRefused()
+{
+	CHECK(PlayerProfile::CheckSettingsSave(0, 1) == SettingsSaveCheck::OK);
+	CHECK(PlayerProfile::CheckSettingsSave(3, PROFILE_SETTINGS_MAX_SIZE) == SettingsSaveCheck::OK);
+	CHECK(PlayerProfile::CheckSettingsSave(0, PROFILE_SETTINGS_MAX_SIZE + 1) == SettingsSaveCheck::TOO_LARGE);
+	CHECK(PlayerProfile::CheckSettingsSave(2, 0xFFFF) == SettingsSaveCheck::TOO_LARGE);
+	CHECK(PlayerProfile::CheckSettingsSave(1, 0) == SettingsSaveCheck::EMPTY);
+	CHECK(PlayerProfile::CheckSettingsSave(4, 10) == SettingsSaveCheck::BAD_SLOT);
+	CHECK(PlayerProfile::CheckSettingsSave(255, 10) == SettingsSaveCheck::BAD_SLOT);
+	CHECK(PlayerProfile::CheckSettingsSave(-1, 10) == SettingsSaveCheck::BAD_SLOT);
+
+	SqliteGameStore backend;
+	GameStore store;
+	GameStoreOptions options = TestOptions();
+	options.seed = RetailSeed();
+	CHECK(store.Start(&backend, ":memory:", options));
+	store.QueueLoadProfile(1, AccountUID(23));
+	ProfileLoaded loaded;
+	CHECK(WaitLoaded(store, &loaded));
+
+	store.QueueWrite("SaveSettingsOversize", [](GameStoreBackend& b) {
+		const eastl::vector<u8> blob = MakeBlob(0, PROFILE_SETTINGS_MAX_SIZE + 1);
+		return b.SaveSettings(AccountUID(23), 0, blob.data(), (i32)blob.size(), 5000);
+	});
+	store.QueueWrite("SaveSettingsBadSlot", [](GameStoreBackend& b) {
+		const eastl::vector<u8> blob = MakeBlob(0, 10);
+		return b.SaveSettings(AccountUID(23), 4, blob.data(), (i32)blob.size(), 5000);
+	});
+	store.QueueLoadProfile(2, AccountUID(23));
+	CHECK(WaitLoaded(store, &loaded));
+	for(i32 i = 0; i < PROFILE_SETTINGS_SLOTS; i++) {
+		CHECK(!loaded.profile.settings[i].present);
+	}
+	store.Shutdown();
+	CHECK(store.FailedJobCount() == 2);
+}
+
+static void TestStatusMessageRule()
+{
+	PlayerProfile profile;
+	CHECK(profile.CheckStatusMessage(10, 1000) == ErrorType::SUCCESS);
+	CHECK(profile.CheckStatusMessage(STATUS_MESSAGE_MAX_LEN, 1000) == ErrorType::SUCCESS);
+	CHECK(profile.CheckStatusMessage(STATUS_MESSAGE_MAX_LEN + 1, 1000) == ErrorType::STATUS_MESSAGE_TOO_LONG);
+	CHECK((u32)ErrorType::STATUS_MESSAGE_TOO_LONG == 378);
+	CHECK((u32)ErrorType::STATUS_MESSAGE_TOO_OFTEN == 379);
+
+	profile.SetStatusMessage(L"hello", 5, 1000);
+	CHECK(profile.statusMessage == L"hello");
+	CHECK(profile.statusMessageAt == 1000);
+	CHECK(profile.CheckStatusMessage(3, 1000) == ErrorType::STATUS_MESSAGE_TOO_OFTEN);
+	CHECK(profile.CheckStatusMessage(3, 1059) == ErrorType::STATUS_MESSAGE_TOO_OFTEN);
+	CHECK(profile.CheckStatusMessage(0, 1059) == ErrorType::STATUS_MESSAGE_TOO_OFTEN);
+	CHECK(profile.CheckStatusMessage(3, 1060) == ErrorType::SUCCESS);
+	CHECK(profile.CheckStatusMessage(STATUS_MESSAGE_MAX_LEN + 1, 1060) == ErrorType::STATUS_MESSAGE_TOO_LONG);
+
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+	PlayerProfile stored;
+	CHECK(LoadIn(backend, AccountUID(24), RetailSeed(), &stored));
+
+	const wchar text[] = L"été 你好";
+	const i32 textLen = (i32)(sizeof(text) / sizeof(wchar)) - 1;
+	CHECK(backend.Begin());
+	CHECK(backend.SetStatusMessage(AccountUID(24), text, textLen, 7000));
+	CHECK(!backend.SetStatusMessage(AccountUID(25), text, textLen, 7000));
+	CHECK(!backend.SetStatusMessage(AccountUID(24), text, STATUS_MESSAGE_MAX_LEN + 1, 7000));
+	CHECK(backend.Commit());
+
+	CHECK(LoadIn(backend, AccountUID(24), RetailSeed(), &stored));
+	CHECK((i32)stored.statusMessage.size() == textLen);
+	CHECK(memcmp(stored.statusMessage.data(), text, textLen * sizeof(wchar)) == 0);
+	CHECK(stored.statusMessageAt == 7000);
+	CHECK(stored.CheckStatusMessage(1, 7030) == ErrorType::STATUS_MESSAGE_TOO_OFTEN);
+	CHECK(stored.CheckStatusMessage(1, 7060) == ErrorType::SUCCESS);
+
+	CHECK(backend.Begin());
+	CHECK(backend.SetStatusMessage(AccountUID(24), L"", 0, 7100));
+	CHECK(backend.Commit());
+	CHECK(LoadIn(backend, AccountUID(24), RetailSeed(), &stored));
+	CHECK(stored.statusMessage.empty());
+	CHECK(stored.statusMessageAt == 7100);
+
+	backend.Close();
+}
+
+static void TestLastLogout()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(26), RetailSeed(), &profile));
+	CHECK(profile.lastLogoutAt == 0);
+
+	CHECK(backend.Begin());
+	CHECK(backend.SetLastLogout(AccountUID(26), 8000));
+	CHECK(!backend.SetLastLogout(AccountUID(27), 8000));
+	CHECK(backend.Commit());
+
+	CHECK(LoadIn(backend, AccountUID(26), RetailSeed(), &profile));
+	CHECK(profile.lastLogoutAt == 8000);
+	CHECK(profile.lastLoginAt == 2000);
+
+	backend.Close();
+}
+
 int main(int argc, char** argv)
 {
 	PlatformInit();
@@ -386,6 +594,11 @@ int main(int argc, char** argv)
 	TestSetLeaderAndRefuseUnowned();
 	TestLeaderSurvivesRestart();
 	TestSeedInMemory();
+	TestSettingsDefaultWhenAbsent();
+	TestSettingsSurviveRestart();
+	TestSettingsRefused();
+	TestStatusMessageRule();
+	TestLastLogout();
 
 	if(failures > 0) {
 		LOG("test_game_store: %d check(s) failed", failures);

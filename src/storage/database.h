@@ -39,6 +39,7 @@ struct Statement
 	void BindText(i32 index, const char* text);
 	void BindWide(i32 index, const wchar* text, i32 len);
 	void BindNull(i32 index);
+	void BindBlob(i32 index, const void* data, i32 size);
 
 	StepResult Step();
 
@@ -46,6 +47,7 @@ struct Statement
 	i64 ColumnInt(i32 column);
 	const char* ColumnText(i32 column);
 	const wchar* ColumnWide(i32 column, i32* outLen);
+	const u8* ColumnBlob(i32 column, i32* outSize);
 
 private:
 	Statement(const Statement&);

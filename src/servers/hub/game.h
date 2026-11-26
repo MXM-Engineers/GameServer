@@ -92,6 +92,8 @@ struct HubGame
 	void OnPlayerEnterCity(ClientHandle clientHd);
 	void OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex);
 	void SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex);
+	void OnPlayerSaveSettings(ClientHandle clientHd, u8 settingType, const u8* data, i32 size);
+	void OnPlayerCommunityStatusMessage(ClientHandle clientHd, const wchar* msg, i32 len);
 	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);

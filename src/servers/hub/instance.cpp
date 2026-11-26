@@ -25,11 +25,9 @@ void HubInstance::OnClientsConnected(const NewUser* clientList, const i32 count)
 		plidMap.Push(clientList[i].clientHd);
 	}
 
-	// FIXME: we should pull account data at the last moment and just pass AccountUIDs
-	AccountManager& am = GetAccountManager();
 	eastl::fixed_vector<eastl::pair<ClientHandle, Account*>,MAX_CLIENTS> list;
 	for(int i = 0; i < count; i++) {
-		list.push_back({ clientList[i].clientHd, &*am.accountMap.at(clientList[i].accountUID) });
+		list.push_back({ clientList[i].clientHd, clientList[i].account });
 	}
 
 	packetHandler.OnClientsConnected(list.data(), count);

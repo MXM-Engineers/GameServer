@@ -23,7 +23,19 @@ static const char* const g_GameMigrations[] = {
 	"	expire_at INTEGER NOT NULL DEFAULT 0,"
 	"	unlocked_at INTEGER NOT NULL,"
 	"	PRIMARY KEY(account_uid, class_type, skin_index)"
+	");",
+
+	"CREATE TABLE player_settings("
+	"	account_uid INTEGER NOT NULL,"
+	"	setting_type INTEGER NOT NULL,"
+	"	data BLOB NOT NULL,"
+	"	updated_at INTEGER NOT NULL,"
+	"	PRIMARY KEY(account_uid, setting_type)"
 	");"
+	"ALTER TABLE players ADD COLUMN tutorial_state INTEGER NOT NULL DEFAULT -1;"
+	"ALTER TABLE players ADD COLUMN status_message TEXT NOT NULL DEFAULT '';"
+	"ALTER TABLE players ADD COLUMN status_message_at INTEGER NOT NULL DEFAULT 0;"
+	"ALTER TABLE players ADD COLUMN last_logout_at INTEGER;"
 };
 
 bool SqliteGameStore::Open(const char* path)
@@ -79,16 +91,23 @@ bool SqliteGameStore::LoadProfile(AccountUID accountUID, i64 now, const ProfileS
 	if(!SeedMasters(accountUID, now, seed)) return false;
 
 	{
-		Statement select(db, "SELECT created_at, last_login_at, leader_class, leader_skin FROM players WHERE account_uid=?1");
+		Statement select(db, "SELECT created_at, last_login_at, leader_class, leader_skin, tutorial_state, status_message, status_message_at, last_logout_at FROM players WHERE account_uid=?1");
 		select.BindInt(1, (u32)accountUID);
 		if(select.Step() != StepResult::ROW) return false;
 		out->createdAt = select.ColumnInt(0);
 		out->lastLoginAt = select.ColumnInt(1);
 		out->leaderClass = select.ColumnIsNull(2) ? ClassType::NONE : (ClassType)select.ColumnInt(2);
 		out->leaderSkin = (SkinIndex)select.ColumnInt(3);
+		out->tutorialState = (i32)select.ColumnInt(4);
+		i32 msgLen = 0;
+		const wchar* msg = select.ColumnWide(5, &msgLen);
+		if(msg && msgLen > 0) out->statusMessage.assign(msg, msgLen);
+		out->statusMessageAt = select.ColumnInt(6);
+		out->lastLogoutAt = select.ColumnIsNull(7) ? 0 : select.ColumnInt(7);
 	}
 
-	return LoadMasters(accountUID, out);
+	if(!LoadMasters(accountUID, out)) return false;
+	return LoadSettings(accountUID, out);
 }
 
 bool SqliteGameStore::SeedMasters(AccountUID accountUID, i64 now, const ProfileSeed& seed)
@@ -181,4 +200,59 @@ bool SqliteGameStore::SetLeader(AccountUID accountUID, ClassType classType, Skin
 	leader.BindInt(2, (i32)classType);
 	leader.BindInt(3, (i32)skinIndex);
 	return leader.Step() == StepResult::DONE && db.Changes() == 1;
+}
+
+bool SqliteGameStore::LoadSettings(AccountUID accountUID, PlayerProfile* out)
+{
+	Statement select(db, "SELECT setting_type, data FROM player_settings WHERE account_uid=?1 ORDER BY setting_type");
+	select.BindInt(1, (u32)accountUID);
+	StepResult r;
+	while((r = select.Step()) == StepResult::ROW) {
+		const i64 settingType = select.ColumnInt(0);
+		i32 size = 0;
+		const u8* data = select.ColumnBlob(1, &size);
+		if(PlayerProfile::CheckSettingsSave((i32)settingType, size) != SettingsSaveCheck::OK || settingType != (i32)settingType) {
+			LOG("ERROR(GameStore): account %u has an invalid settings row (type=%lld size=%d)", (u32)accountUID, (long long)settingType, size);
+			return false;
+		}
+		out->SetSettings((i32)settingType, data, size);
+	}
+	return r == StepResult::DONE;
+}
+
+bool SqliteGameStore::SaveSettings(AccountUID accountUID, i32 settingType, const u8* data, i32 size, i64 now)
+{
+	ASSERT(accountUID != AccountUID::INVALID);
+	if(PlayerProfile::CheckSettingsSave(settingType, size) != SettingsSaveCheck::OK) return false;
+
+	Statement upsert(db, "INSERT INTO player_settings(account_uid, setting_type, data, updated_at) VALUES(?1, ?2, ?3, ?4) "
+		"ON CONFLICT(account_uid, setting_type) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at");
+	upsert.BindInt(1, (u32)accountUID);
+	upsert.BindInt(2, settingType);
+	upsert.BindBlob(3, data, size);
+	upsert.BindInt(4, now);
+	return upsert.Step() == StepResult::DONE && db.Changes() == 1;
+}
+
+bool SqliteGameStore::SetStatusMessage(AccountUID accountUID, const wchar* msg, i32 len, i64 at)
+{
+	ASSERT(accountUID != AccountUID::INVALID);
+	if(len < 0 || len > STATUS_MESSAGE_MAX_LEN) return false;
+
+	Statement update(db, "UPDATE players SET status_message=?2, status_message_at=?3 WHERE account_uid=?1");
+	update.BindInt(1, (u32)accountUID);
+	if(len > 0) update.BindWide(2, msg, len);
+	else update.BindText(2, "");
+	update.BindInt(3, at);
+	return update.Step() == StepResult::DONE && db.Changes() == 1;
+}
+
+bool SqliteGameStore::SetLastLogout(AccountUID accountUID, i64 at)
+{
+	ASSERT(accountUID != AccountUID::INVALID);
+
+	Statement update(db, "UPDATE players SET last_logout_at=?2 WHERE account_uid=?1");
+	update.BindInt(1, (u32)accountUID);
+	update.BindInt(2, at);
+	return update.Step() == StepResult::DONE && db.Changes() == 1;
 }

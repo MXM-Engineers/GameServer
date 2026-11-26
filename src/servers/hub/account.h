@@ -4,18 +4,25 @@
 #include <common/network.h> // MAX_CLIENTS
 #include <storage/game_store.h>
 
+struct AccountLogin
+{
+	WideString nickname;
+	WideString guildTag;
+	PlayerProfile profile;
+	bool profileStored = false;
+};
+
 struct Account
 {
 	const AccountUID UID;
 	WideString nickname;
 	WideString guildTag;
-	i32 leaderMasterID;
 	PlayerProfile profile;
 	bool profileStored = false;
 
-	// TODO: add to this
-
 	Account(AccountUID accountUID_): UID(accountUID_) {}
+
+	void ApplyLogin(const AccountLogin& login);
 };
 
 

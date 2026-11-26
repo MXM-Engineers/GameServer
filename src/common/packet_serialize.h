@@ -2363,6 +2363,40 @@ inline const char* PacketSerialize<Cl::CN_GameUpdateRotation>(const void* packet
 }
 
 template<>
+inline const char* PacketSerialize<Cl::CQ_SaveSettings>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_SaveSettings(%d, %d) :: {", Cl::CQ_SaveSettings::NET_ID, packetSize);
+	SER("	settingType=%u", buff.Read<u8>());
+	SER("	settingsData_len=%u", buff.Read<u16>());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_CommunityStatusMessage>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("CQ_CommunityStatusMessage(%d, %d) :: {", Cl::CQ_CommunityStatusMessage::NET_ID, packetSize);
+	SER("	textField='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_CommunityStatusMessage>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SA_CommunityStatusMessage(%d, %d) :: {", Sv::SA_CommunityStatusMessage::NET_ID, packetSize);
+	SER("	retval=%u", buff.Read<u32>());
+	SER("}");
+	return str.data();
+}
+
+template<>
 inline const char* PacketSerialize<Cl::CQ_SetLeaderCharacter>(const void* packetData, const i32 packetSize)
 {
 	SER_BEGIN();
@@ -2527,6 +2561,17 @@ inline const char* PacketSerialize<Sv::SN_WhisperReceived>(const void* packetDat
 	SER("}");
 	return str.data();
 }
+template<>
+inline const char* PacketSerialize<Sv::SN_CommunityStatusMessage>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_CommunityStatusMessage(%d, %d) :: {", Sv::SN_CommunityStatusMessage::NET_ID, packetSize);
+	SER("	nickname='%ls'", buff.ReadWideStringObj().data());
+	SER("	msg='%ls'", buff.ReadWideStringObj().data());
+	SER("}");
+	return str.data();
+}
 DEFAULT_SERIALIZE(Sv::SA_LoadingComplete);
 DEFAULT_SERIALIZE(Sv::SN_GameStart);
 DEFAULT_SERIALIZE(Sv::SN_ScanEnd);
@@ -2583,7 +2628,17 @@ DEFAULT_SERIALIZE(Sv::SA_GetGuildMemberList);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildHistoryList);
 DEFAULT_SERIALIZE(Sv::SA_GetGuildRankingSeasonList);
 DEFAULT_SERIALIZE(Sv::SA_TierRecord);
-DEFAULT_SERIALIZE(Sv::SN_ClientSettings);
+template<>
+inline const char* PacketSerialize<Sv::SN_ClientSettings>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+	SER("SN_ClientSettings(%d, %d) :: {", Sv::SN_ClientSettings::NET_ID, packetSize);
+	SER("	settingType=%u", buff.Read<u8>());
+	SER("	data_len=%u", buff.Read<u16>());
+	SER("}");
+	return str.data();
+}
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildProfile);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildMemberList);
 DEFAULT_SERIALIZE(Cl::CQ_GetGuildHistoryList);

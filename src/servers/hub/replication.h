@@ -229,6 +229,8 @@ struct HubReplication
 	void SendChatWhisperToClient(ClientHandle destClientHd, const wchar* destNick, const wchar* msg);
 
 	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);
+	void SendCommunityStatusMessageResult(ClientHandle clientHd, ErrorType result);
+	void SendCommunityStatusMessage(ClientHandle clientHd, const wchar* nickname, const wchar* msg, i32 msgLen);
 
 	void SendGameReady(ClientHandle clientHd);
 

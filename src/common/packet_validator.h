@@ -308,3 +308,19 @@ inline bool ValidatePacket<Cl::CheckDupNickname>(const void* packetData, i32 pac
 {
 	return ValidateSingleWideString(packetData, packetSize);
 }
+
+template<>
+inline bool ValidatePacket<Cl::CQ_SaveSettings>(const void* packetData, i32 packetSize)
+{
+	ConstBuffer buff(packetData, packetSize);
+	if(!buff.CanRead(sizeof(u8) + sizeof(u16))) return false;
+	buff.Read<u8>();
+	const u16 len = buff.Read<u16>();
+	return packetSize == (i32)(sizeof(u8) + sizeof(u16) + len);
+}
+
+template<>
+inline bool ValidatePacket<Cl::CQ_CommunityStatusMessage>(const void* packetData, i32 packetSize)
+{
+	return ValidateSingleWideString(packetData, packetSize);
+}

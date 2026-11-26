@@ -106,7 +106,8 @@ struct InstancePool
 		ProfileMutex(Mutex, mutexHubPushPlayerQueue);
 		struct HubPlayerEntry {
 			ClientHandle clientHd;
-			AccountUID accountUID;
+			Account* account;
+			AccountLogin login;
 		};
 		eastl::fixed_vector<HubPlayerEntry,128> hubPushPlayerQueue;
 
@@ -150,7 +151,7 @@ struct InstancePool
 	void Cleanup();
 
 	// Thread: Coordinator
-	void QueuePushPlayerToHub(ClientHandle clientHd, AccountUID accountUID);
+	void QueuePushPlayerToHub(ClientHandle clientHd, Account* account, const AccountLogin& login);
 	void QueueCreateRoom(SortieUID sortieUID, const RoomUser* userList, const i32 userCount);
 
 	void QueuePopPlayers(const ClientHandle* clientList, const i32 count); // on disconnect
@@ -182,6 +183,7 @@ struct Coordinator
 	ProfileSeed profileSeed;
 	GameStore::LoadedList loadedProfiles;
 	eastl::array<bool, MAX_CLIENTS> clientLoadingProfile;
+	eastl::array<AccountLogin, MAX_CLIENTS> clientLogin;
 
 	GrowableBuffer recvDataBuff;
 
@@ -207,10 +209,12 @@ private:
 	void RefuseClient(ClientHandle clientHd, ErrorType error);
 	void EnterHub(ClientHandle clientHd);
 	void HandleLoadedProfiles();
+	void RecordLogout(ClientHandle clientHd, AccountUID accountUID, const AccountLogin& login);
 	bool BuildProfileSeed(ProfileSeed* out);
 	Account& FindOrAddAccount(AccountUID accountUID);
 
 	void ClientSendAccountData(ClientHandle clientHd);
+	void SendClientSettings(ClientHandle clientHd, u8 settingType, const u8* data, i32 size);
 
 	template<typename Packet>
 	inline void SendPacket(ClientHandle clientHd, const Packet& packet)

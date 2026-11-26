@@ -188,6 +188,8 @@ enum class ErrorType: u32
 	NICKNAME_USES_INVALID_FORMAT = 369,
 	NICKNAME_OVERLAP = 371,
 	NICKNAME_SYSTEM_ERROR = 375,
+	STATUS_MESSAGE_TOO_LONG = 378,
+	STATUS_MESSAGE_TOO_OFTEN = 379,
 	SET_LEADER_INVALID = 380,
 	WHISPER_SEND_NOT_FOUND = 0x126,
 };
@@ -2983,7 +2985,7 @@ PUSH_PACKED
 struct CQ_SaveSettings
 {
 	enum { NET_ID = 60250 };
-	u8 unkFlag;
+	u8 settingType;
 	VEC(u8, settingsData); // blob
 
 

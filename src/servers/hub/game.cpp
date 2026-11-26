@@ -5,6 +5,7 @@
 #include "config.h"
 #include <EAStdC/EAString.h>
 #include <common/utils.h>
+#include <time.h>
 
 static const ClassType DEFAULT_LEADER_CLASS = ClassType::LAUNCHER;
 
@@ -260,6 +261,11 @@ void HubGame::OnPlayerEnterCity(ClientHandle clientHd)
 
 	LOG("[client%x] HubGame :: entered the city without a leader character, spawning the stored one (class=%d skin=%d)", (u32)clientHd, (i32)classType, (i32)skin);
 	SpawnLeader(clientHd, classType, skin);
+
+	const WideString& statusMessage = profile.statusMessage;
+	if(!statusMessage.empty()) {
+		replication.SendCommunityStatusMessage(clientHd, playerAccountData[userID]->nickname.data(), statusMessage.data(), (i32)statusMessage.size());
+	}
 }
 
 void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
@@ -297,6 +303,59 @@ void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 	}
 
 	SpawnLeader(clientHd, classType, skinIndex);
+}
+
+void HubGame::OnPlayerSaveSettings(ClientHandle clientHd, u8 settingType, const u8* data, i32 size)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+
+	const SettingsSaveCheck check = PlayerProfile::CheckSettingsSave(settingType, size);
+	if(check != SettingsSaveCheck::OK) {
+		WARN("[client%x] HubGame :: settings save refused (account=%u settingType=%u size=%d check=%d)", (u32)clientHd, (u32)account->UID, settingType, size, (i32)check);
+		return;
+	}
+
+	account->profile.SetSettings(settingType, data, size);
+	LOG("[client%x] HubGame :: settings saved (account=%u settingType=%u size=%d stored=%d)", (u32)clientHd, (u32)account->UID, settingType, size, account->profileStored);
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		eastl::vector<u8> blob(data, data + size);
+		const i64 now = (i64)time(nullptr);
+		GetGameStore().QueueWrite("SaveSettings", [accountUID, settingType, blob, now](GameStoreBackend& b) {
+			return b.SaveSettings(accountUID, settingType, blob.data(), (i32)blob.size(), now);
+		});
+	}
+}
+
+void HubGame::OnPlayerCommunityStatusMessage(ClientHandle clientHd, const wchar* msg, i32 len)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+
+	const i64 now = (i64)time(nullptr);
+	const ErrorType result = account->profile.CheckStatusMessage(len, now);
+	if(result != ErrorType::SUCCESS) {
+		WARN("[client%x] HubGame :: status message refused (account=%u len=%d result=%u)", (u32)clientHd, (u32)account->UID, len, (u32)result);
+		replication.SendCommunityStatusMessageResult(clientHd, result);
+		return;
+	}
+
+	account->profile.SetStatusMessage(msg, len, now);
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		const WideString text = account->profile.statusMessage;
+		GetGameStore().QueueWrite("SetStatusMessage", [accountUID, text, now](GameStoreBackend& b) {
+			return b.SetStatusMessage(accountUID, text.data(), (i32)text.size(), now);
+		});
+	}
+
+	replication.SendCommunityStatusMessageResult(clientHd, ErrorType::SUCCESS);
+	replication.SendCommunityStatusMessage(clientHd, account->nickname.data(), account->profile.statusMessage.data(), (i32)account->profile.statusMessage.size());
 }
 
 void HubGame::SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex)

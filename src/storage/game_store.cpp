@@ -25,6 +25,36 @@ bool PlayerProfile::OwnsSkin(ClassType classType, SkinIndex skinIndex) const
 	return false;
 }
 
+SettingsSaveCheck PlayerProfile::CheckSettingsSave(i32 settingType, i32 size)
+{
+	if(settingType < 0 || settingType >= PROFILE_SETTINGS_SLOTS) return SettingsSaveCheck::BAD_SLOT;
+	if(size <= 0) return SettingsSaveCheck::EMPTY;
+	if(size > PROFILE_SETTINGS_MAX_SIZE) return SettingsSaveCheck::TOO_LARGE;
+	return SettingsSaveCheck::OK;
+}
+
+void PlayerProfile::SetSettings(i32 settingType, const u8* data, i32 size)
+{
+	ASSERT(CheckSettingsSave(settingType, size) == SettingsSaveCheck::OK);
+	ProfileSettings& slot = settings[settingType];
+	slot.present = true;
+	slot.data.assign(data, data + size);
+}
+
+ErrorType PlayerProfile::CheckStatusMessage(i32 len, i64 now) const
+{
+	if(len > STATUS_MESSAGE_MAX_LEN) return ErrorType::STATUS_MESSAGE_TOO_LONG;
+	if(statusMessageAt != 0 && now - statusMessageAt < STATUS_MESSAGE_INTERVAL_SEC) return ErrorType::STATUS_MESSAGE_TOO_OFTEN;
+	return ErrorType::SUCCESS;
+}
+
+void PlayerProfile::SetStatusMessage(const wchar* msg, i32 len, i64 now)
+{
+	ASSERT(len >= 0 && len <= STATUS_MESSAGE_MAX_LEN);
+	statusMessage.assign(msg, len);
+	statusMessageAt = now;
+}
+
 void SeedProfileInMemory(const ProfileSeed& seed, PlayerProfile* profile)
 {
 	ASSERT(!seed.masters.empty());

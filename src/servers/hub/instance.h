@@ -11,7 +11,7 @@ struct HubInstance
 	struct NewUser
 	{
 		ClientHandle clientHd;
-		AccountUID accountUID;
+		Account* account;
 	};
 
 	const HubInstanceUID UID;

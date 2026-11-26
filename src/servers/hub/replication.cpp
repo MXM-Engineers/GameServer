@@ -365,6 +365,21 @@ void HubReplication::SendChatWhisperToClient(ClientHandle destClientHd, const wc
 	SendPacket(destClientHd, packet);
 }
 
+void HubReplication::SendCommunityStatusMessageResult(ClientHandle clientHd, ErrorType result)
+{
+	Sv::SA_CommunityStatusMessage packet;
+	packet.retval = (u32)result;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendCommunityStatusMessage(ClientHandle clientHd, const wchar* nickname, const wchar* msg, i32 msgLen)
+{
+	PacketWriter<Sv::SN_CommunityStatusMessage> packet;
+	packet.WriteStringObj(nickname);
+	packet.WriteStringObj(msg, msgLen);
+	SendPacket(clientHd, packet);
+}
+
 void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& account)
 {
 	// SN_RegionServicePolicy
@@ -634,7 +649,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<i32>(-1);
 #endif
 		packet.Write<i32>(1); // warehouseLineCount
-		packet.Write<i32>(-1); // tutorialState
+		packet.Write<i32>(account.profile.tutorialState); // tutorialState
 		packet.Write<i32>(3600); // masterGearDurability
 		packet.Write<u8>(0); // badgeType
 

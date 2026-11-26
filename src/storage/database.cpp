@@ -139,6 +139,13 @@ void Statement::BindWide(i32 index, const wchar* text, i32 len)
 	ASSERT(r == SQLITE_OK);
 }
 
+void Statement::BindBlob(i32 index, const void* data, i32 size)
+{
+	ASSERT(size >= 0);
+	const i32 r = sqlite3_bind_blob(handle, index, data, size, SQLITE_TRANSIENT);
+	ASSERT(r == SQLITE_OK);
+}
+
 void Statement::BindNull(i32 index)
 {
 	const i32 r = sqlite3_bind_null(handle, index);
@@ -174,4 +181,11 @@ const wchar* Statement::ColumnWide(i32 column, i32* outLen)
 	const wchar* text = (const wchar*)sqlite3_column_text16(handle, column);
 	*outLen = sqlite3_column_bytes16(handle, column) / (i32)sizeof(wchar);
 	return text;
+}
+
+const u8* Statement::ColumnBlob(i32 column, i32* outSize)
+{
+	const u8* data = (const u8*)sqlite3_column_blob(handle, column);
+	*outSize = sqlite3_column_bytes(handle, column);
+	return data;
 }

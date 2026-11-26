@@ -128,7 +128,7 @@ bool HubGame::LoadMap()
 	return true;
 }
 
-void HubGame::OnPlayerConnect(ClientHandle clientHd, const Account* accountData)
+void HubGame::OnPlayerConnect(ClientHandle clientHd, Account* accountData)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	playerAccountData[userID] = accountData;
@@ -247,27 +247,63 @@ void HubGame::OnPlayerEnterCity(ClientHandle clientHd)
 {
 	const i32 userID = plidMap->Get(clientHd);
 	if(playerActorUID[userID] != ActorUID::INVALID || !playerAccountData[userID]) return;
-	LocalActorID characterID = LocalActorID((u32)LocalActorID::FIRST_SELF_MASTER + (u32)DEFAULT_LEADER_CLASS);
-	SkinIndex skin = SkinIndex::DEFAULT;
-	foreach_const(it, lastLeaders) {
-		if(it->nickname == playerAccountData[userID]->nickname) { characterID = it->characterID; skin = it->skin; }
+
+	const GameXmlContent& content = GetGameXmlContent();
+	const PlayerProfile& profile = playerAccountData[userID]->profile;
+	ClassType classType = profile.leaderClass;
+	SkinIndex skin = profile.leaderSkin;
+	if(content.masterClassTypeMap.find(classType) == content.masterClassTypeMap.end() || !profile.FindMaster(classType) || !profile.OwnsSkin(classType, skin)) {
+		WARN("[client%x] HubGame :: stored leader (class=%d skin=%d) is not a known owned master, spawning class %d", (u32)clientHd, (i32)classType, (i32)skin, (i32)DEFAULT_LEADER_CLASS);
+		classType = DEFAULT_LEADER_CLASS;
+		skin = SkinIndex::DEFAULT;
 	}
-	LOG("[client%x] HubGame :: entered the city without a leader character, spawning the last one", clientHd);
-	OnPlayerSetLeaderCharacter(clientHd, characterID, skin);
+
+	LOG("[client%x] HubGame :: entered the city without a leader character, spawning the stored one (class=%d skin=%d)", (u32)clientHd, (i32)classType, (i32)skin);
+	SpawnLeader(clientHd, classType, skin);
 }
 
 void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex)
 {
 	const i32 userID = plidMap->Get(clientHd);
-	if(playerAccountData[userID]) {
-		bool found = false;
-		foreach(it, lastLeaders) {
-			if(it->nickname == playerAccountData[userID]->nickname) { it->characterID = characterID; it->skin = skinIndex; found = true; }
-		}
-		if(!found) lastLeaders.push_back({ playerAccountData[userID]->nickname, characterID, skinIndex });
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+	PlayerProfile& profile = account->profile;
+
+	if(playerActorUID[userID] == ActorUID::INVALID) {
+		OnPlayerEnterCity(clientHd);
+		return;
 	}
 
-	const i32 leaderMasterContentID = (u32)characterID - (u32)LocalActorID::FIRST_SELF_MASTER - 1;
+	const ClassType classType = (ClassType)((i64)(u32)characterID - (i64)LocalActorID::FIRST_SELF_MASTER);
+	const GameXmlContent& content = GetGameXmlContent();
+	const bool known = content.masterClassTypeMap.find(classType) != content.masterClassTypeMap.end();
+	ProfileMaster* master = profile.FindMaster(classType);
+
+	if(!known || !master || !profile.OwnsSkin(classType, skinIndex)) {
+		WARN("[client%x] HubGame :: set leader refused (account=%u characterID=%u skinIndex=%d known=%d ownedMaster=%d)", (u32)clientHd, (u32)account->UID, (u32)characterID, (i32)skinIndex, known, master != nullptr);
+		replication.SendSetLeaderRefused(clientHd, ErrorType::SET_LEADER_INVALID, profile.leaderClass, profile.leaderSkin);
+		return;
+	}
+
+	profile.leaderClass = classType;
+	profile.leaderSkin = skinIndex;
+	master->skinIndex = skinIndex;
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		GetGameStore().QueueWrite("SetLeader", [accountUID, classType, skinIndex](GameStoreBackend& b) {
+			return b.SetLeader(accountUID, classType, skinIndex);
+		});
+	}
+
+	SpawnLeader(clientHd, classType, skinIndex);
+}
+
+void HubGame::SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	const auto masterIt = GetGameXmlContent().masterClassTypeMap.find(classType);
+	ASSERT(masterIt != GetGameXmlContent().masterClassTypeMap.end());
 
 	// select a spawn point at random
 	const SpawnPoint& spawnPoint = mapSpawnPoints[RandUint() % mapSpawnPoints.size()];
@@ -287,12 +323,9 @@ void HubGame::OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID cha
 		world.DestroyPlayerActor(playerActorUID[userID]);
 	}
 
-	ASSERT(playerAccountData[userID]); // account data is not assigned
+	ASSERT(playerAccountData[userID]);
 	const Account* account = playerAccountData[userID];
-
-	// TODO: tie in account->leaderMasterID,skinIndex with class and model
-	const ClassType classType = GetGameXmlContent().masters[leaderMasterContentID].classType;
-	ASSERT((i32)classType == leaderMasterContentID+1);
+	ASSERT(masterIt->second->classType == classType);
 
 	WorldHub::ActorPlayer& actor = world.SpawnPlayerActor(userID, classType, skinIndex, account->nickname.data(), account->guildTag.data());
 	actor.pos = pos;

@@ -299,6 +299,15 @@ void HubReplication::SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID m
 	}
 }
 
+void HubReplication::SendSetLeaderRefused(ClientHandle clientHd, ErrorType error, ClassType currentClass, SkinIndex currentSkin)
+{
+	Sv::SA_SetLeader leader;
+	leader.result = (i32)error;
+	leader.leaderID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)currentClass);
+	leader.skinIndex = currentSkin;
+	SendPacket(clientHd, leader);
+}
+
 void HubReplication::SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen)
 {
 	// TODO: restrict message length
@@ -454,9 +463,17 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	{
 		PacketWriter<Sv::SN_ProfileCharacters,2048> packet;
 
-		packet.Write<u16>(content.masters.size()); // charaList_count
+		u16 masterCount = 0;
+		foreach_const(it, account.profile.masters) {
+			if(content.masterClassTypeMap.find(it->classType) != content.masterClassTypeMap.end()) masterCount++;
+		}
+		packet.Write<u16>(masterCount);
 
-		foreach(it, content.masters) {
+		foreach_const(owned, account.profile.masters) {
+			const auto found = content.masterClassTypeMap.find(owned->classType);
+			if(found == content.masterClassTypeMap.end()) continue;
+			const GameXmlContent::Master* it = found->second;
+
 			Sv::SN_ProfileCharacters::Character chara;
 			chara.characterID = (LocalActorID)((u32)LocalActorID::FIRST_SELF_MASTER + (i32)it->classType);
 			chara.creatureIndex = it->ID;
@@ -467,7 +484,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 			chara.y = 0;
 			chara.z = 0;
 			chara.characterType = 1;
-			chara.skinIndex = SkinIndex::DEFAULT;
+			chara.skinIndex = owned->skinIndex;
 			chara.weaponIndex = it->defaultWeaponIDs[0];
 			chara.masterGearNo = 1;
 			packet.Write(chara);
@@ -589,22 +606,13 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 	{
 		PacketWriter<Sv::SN_ProfileCharacterSkinList,4096> packet;
 
-		i32 skinCount = 0;
-		foreach(it, content.masters) {
-			skinCount += it->skinIDs.size();
-		}
+		packet.Write<u16>((u16)account.profile.skins.size());
 
-		packet.Write<u16>(skinCount); // skins_count
-
-		foreach(it, content.masters) {
-			const ClassType classType = it->classType;
-
-			foreach(s, it->skinIDs) {
-				packet.Write<ClassType>(classType); // classType
-				packet.Write<SkinIndex>(*s); // skinIndex
-				packet.Write<i32>(0); // bufCount
-				packet.Write<i64>(0); // expireDateTime
-			}
+		foreach_const(it, account.profile.skins) {
+			packet.Write<ClassType>(it->classType);
+			packet.Write<SkinIndex>(it->skinIndex);
+			packet.Write<i32>(0);
+			packet.Write<i64>(it->expireAt);
 		}
 
 		SendPacket(clientHd, packet);

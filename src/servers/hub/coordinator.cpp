@@ -11,6 +11,8 @@
 #include "channel.h"
 #include "instance.h"
 
+static GameStore* g_GameStore = nullptr;
+
 intptr_t ThreadLane(void* pData)
 {
 	InstancePool::Lane& lane = *(InstancePool::Lane*)pData;
@@ -494,12 +496,15 @@ bool Coordinator::Init(Server* server_)
 	bool r = matchmaker.Init();
 	if(!r) return false;
 
+	if(!BuildProfileSeed(&profileSeed)) return false;
+
 	GameStoreOptions storeOptions;
-	storeOptions.seed.dev = Config().DevSeedProfile != 0;
+	storeOptions.seed = profileSeed;
 	if(!gameStore.Start(&gameStoreBackend, Config().GameDatabasePath, storeOptions)) {
 		LOG("ERROR: failed to open game database '%s'", Config().GameDatabasePath);
 		return false;
 	}
+	g_GameStore = &gameStore;
 
 	r = instancePool.Init(server);
 	if(!r) {
@@ -509,6 +514,50 @@ bool Coordinator::Init(Server* server_)
 
 	thread.Begin(ThreadCoordinator, this);
 	return true;
+}
+
+bool Coordinator::BuildProfileSeed(ProfileSeed* out)
+{
+	const GameXmlContent& content = GetGameXmlContent();
+	*out = ProfileSeed();
+	out->dev = Config().DevSeedProfile != 0;
+
+	if(out->dev) {
+		foreach_const(it, content.masters) {
+			out->masters.push_back(it->classType);
+			foreach_const(s, it->skinIDs) {
+				out->skins.push_back(ProfileSeed::Skin{ it->classType, *s });
+			}
+		}
+		out->leaderClass = content.masterClassTypeMap.find(ClassType::LAUNCHER) != content.masterClassTypeMap.end() ? ClassType::LAUNCHER : out->masters.front();
+		LOG("Coordinator :: new profiles own every master (%d) and skin (%d) (DevSeedProfile=1)", (i32)out->masters.size(), (i32)out->skins.size());
+		return true;
+	}
+
+	foreach_const(it, Config().serviceRuleDefaultUnlockClass) {
+		const ClassType classType = (ClassType)*it;
+		if(content.masterClassTypeMap.find(classType) == content.masterClassTypeMap.end()) {
+			LOG("ERROR: ServiceRuleDefaultUnlockClass names class %d, which is not a known master", *it);
+			return false;
+		}
+		out->masters.push_back(classType);
+		out->skins.push_back(ProfileSeed::Skin{ classType, SkinIndex::DEFAULT });
+	}
+
+	if(out->masters.empty()) {
+		LOG("ERROR: ServiceRuleDefaultUnlockClass is empty, new profiles would own no master");
+		return false;
+	}
+
+	out->leaderClass = out->masters.front();
+	LOG("Coordinator :: new profiles own %d starter master(s), leader class %d", (i32)out->masters.size(), (i32)out->leaderClass);
+	return true;
+}
+
+GameStore& GetGameStore()
+{
+	ASSERT(g_GameStore);
+	return *g_GameStore;
 }
 
 void Coordinator::Cleanup()
@@ -738,6 +787,8 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		gameStore.QueueLoadProfile((u32)clientHd, accountUID);
 		return;
 	}
+
+	SeedProfileInMemory(profileSeed, &account.profile);
 
 	Sv::SA_AuthResult auth;
 	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;

@@ -12,6 +12,7 @@ struct CConfigHub
 	char GameDatabasePath[256] = "game.db";
 	i32 RequireLoginSession = true;
 	i32 DevSeedProfile = false;
+	eastl::fixed_vector<i32,16> serviceRuleDefaultUnlockClass = { 35, 3 };
 	eastl::fixed_vector<i32,16> regionBanMaster = {};
 	eastl::fixed_vector<i32,16> regionNewMaster = {};
 	eastl::fixed_vector<i32,16> eventBanMaster = {};

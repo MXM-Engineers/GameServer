@@ -32,6 +32,7 @@ bool CConfigHub::ParseLine(const char* line)
 	if(EA::StdC::Sscanf(line, "GameDatabasePath=%255s", GameDatabasePath) == 1) return true;
 	if(EA::StdC::Sscanf(line, "RequireLoginSession=%d", &RequireLoginSession) == 1) return true;
 	if(EA::StdC::Sscanf(line, "DevSeedProfile=%d", &DevSeedProfile) == 1) return true;
+	if(ParseIdList(line, "ServiceRuleDefaultUnlockClass=", serviceRuleDefaultUnlockClass)) return true;
 	if(ParseIdList(line, "RegionBanMaster=", regionBanMaster)) return true;
 	if(ParseIdList(line, "RegionNewMaster=", regionNewMaster)) return true;
 	if(ParseIdList(line, "EventBanMaster=", eventBanMaster)) return true;
@@ -104,6 +105,7 @@ bool CConfigHub::SaveConfigFile()
 	out.append_sprintf("GameDatabasePath=%s\n", GameDatabasePath);
 	out.append_sprintf("RequireLoginSession=%d\n", RequireLoginSession);
 	out.append_sprintf("DevSeedProfile=%d\n", DevSeedProfile);
+	AppendIdList(out, "ServiceRuleDefaultUnlockClass", serviceRuleDefaultUnlockClass);
 	AppendIdList(out, "RegionBanMaster", regionBanMaster);
 	AppendIdList(out, "RegionNewMaster", regionNewMaster);
 	AppendIdList(out, "EventBanMaster", eventBanMaster);
@@ -135,6 +137,7 @@ void CConfigHub::Print() const
 	LOG("	GameDatabasePath=%s", GameDatabasePath);
 	LOG("	RequireLoginSession=%d", RequireLoginSession);
 	LOG("	DevSeedProfile=%d", DevSeedProfile);
+	LogIdList("ServiceRuleDefaultUnlockClass", serviceRuleDefaultUnlockClass);
 	LogIdList("RegionBanMaster", regionBanMaster);
 	LogIdList("RegionNewMaster", regionNewMaster);
 	LogIdList("EventBanMaster", eventBanMaster);

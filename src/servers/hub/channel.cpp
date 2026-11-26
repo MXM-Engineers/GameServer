@@ -14,7 +14,7 @@ bool HubPacketHandler::Init(HubGame* game_)
 	return true;
 }
 
-void HubPacketHandler::OnClientsConnected(const eastl::pair<ClientHandle, const Account*>* clientList, const i32 count)
+void HubPacketHandler::OnClientsConnected(const eastl::pair<ClientHandle, Account*>* clientList, const i32 count)
 {
 	for(int i = 0; i < count; i++) {
 		auto& it = clientList[i];

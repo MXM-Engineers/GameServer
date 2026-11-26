@@ -184,6 +184,192 @@ static void TestRestartAfterShutdown()
 	CHECK(list.size() == 1);
 }
 
+static ProfileSeed RetailSeed()
+{
+	ProfileSeed seed;
+	seed.leaderClass = ClassType::LAUNCHER;
+	seed.masters.push_back(ClassType::LAUNCHER);
+	seed.masters.push_back(ClassType::ASSASSIN);
+	seed.skins.push_back(ProfileSeed::Skin{ ClassType::LAUNCHER, SkinIndex::DEFAULT });
+	seed.skins.push_back(ProfileSeed::Skin{ ClassType::ASSASSIN, SkinIndex::DEFAULT });
+	return seed;
+}
+
+static ProfileSeed DevSeed()
+{
+	ProfileSeed seed;
+	seed.dev = true;
+	seed.leaderClass = ClassType::LAUNCHER;
+	for(i32 c = 1; c <= 40; c++) {
+		seed.masters.push_back((ClassType)c);
+		for(i32 s = 0; s < 3; s++) {
+			seed.skins.push_back(ProfileSeed::Skin{ (ClassType)c, (SkinIndex)s });
+		}
+	}
+	return seed;
+}
+
+static bool LoadIn(SqliteGameStore& backend, AccountUID accountUID, const ProfileSeed& seed, PlayerProfile* out)
+{
+	if(!backend.Begin()) return false;
+	if(!backend.LoadProfile(accountUID, 2000, seed, out)) {
+		backend.Rollback();
+		return false;
+	}
+	return backend.Commit();
+}
+
+static bool SetLeaderIn(SqliteGameStore& backend, AccountUID accountUID, ClassType classType, SkinIndex skinIndex)
+{
+	if(!backend.Begin()) return false;
+	if(!backend.SetLeader(accountUID, classType, skinIndex)) {
+		backend.Rollback();
+		return false;
+	}
+	return backend.Commit();
+}
+
+static void TestRetailSeed()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(1), RetailSeed(), &profile));
+	CHECK(profile.firstEntry);
+	CHECK(profile.leaderClass == ClassType::LAUNCHER);
+	CHECK(profile.leaderSkin == SkinIndex::DEFAULT);
+	CHECK(profile.masters.size() == 2);
+	CHECK(profile.skins.size() == 2);
+	CHECK(profile.FindMaster(ClassType::LAUNCHER) && profile.FindMaster(ClassType::ASSASSIN));
+	CHECK(!profile.FindMaster(ClassType::STRIKER));
+	CHECK(profile.OwnsSkin(ClassType::ASSASSIN, SkinIndex::DEFAULT));
+	CHECK(!profile.OwnsSkin(ClassType::ASSASSIN, (SkinIndex)1));
+
+	PlayerProfile again;
+	CHECK(LoadIn(backend, AccountUID(1), DevSeed(), &again));
+	CHECK(!again.firstEntry);
+	CHECK(again.masters.size() == 2);
+	CHECK(again.skins.size() == 2);
+
+	backend.Close();
+}
+
+static void TestDevSeed()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(2), DevSeed(), &profile));
+	CHECK(profile.masters.size() == 40);
+	CHECK(profile.skins.size() == 120);
+	CHECK(profile.leaderClass == ClassType::LAUNCHER);
+	CHECK(profile.OwnsSkin((ClassType)17, (SkinIndex)2));
+
+	backend.Close();
+}
+
+static void TestExistingPlayerWithoutMastersIsSeeded()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(3), ProfileSeed(), &profile));
+	CHECK(profile.firstEntry);
+	CHECK(profile.masters.empty());
+	CHECK(profile.leaderClass == ClassType::NONE);
+
+	CHECK(LoadIn(backend, AccountUID(3), RetailSeed(), &profile));
+	CHECK(!profile.firstEntry);
+	CHECK(profile.masters.size() == 2);
+	CHECK(profile.leaderClass == ClassType::LAUNCHER);
+
+	backend.Close();
+}
+
+static void TestSetLeaderAndRefuseUnowned()
+{
+	SqliteGameStore backend;
+	CHECK(backend.Open(":memory:"));
+
+	ProfileSeed seed = RetailSeed();
+	seed.skins.push_back(ProfileSeed::Skin{ ClassType::ASSASSIN, (SkinIndex)4 });
+
+	PlayerProfile profile;
+	CHECK(LoadIn(backend, AccountUID(4), seed, &profile));
+
+	CHECK(SetLeaderIn(backend, AccountUID(4), ClassType::ASSASSIN, (SkinIndex)4));
+	CHECK(!SetLeaderIn(backend, AccountUID(4), ClassType::STRIKER, SkinIndex::DEFAULT));
+	CHECK(!SetLeaderIn(backend, AccountUID(4), ClassType::LAUNCHER, (SkinIndex)4));
+	CHECK(!SetLeaderIn(backend, AccountUID(5), ClassType::ASSASSIN, SkinIndex::DEFAULT));
+
+	CHECK(LoadIn(backend, AccountUID(4), seed, &profile));
+	CHECK(profile.leaderClass == ClassType::ASSASSIN);
+	CHECK(profile.leaderSkin == (SkinIndex)4);
+	const ProfileMaster* assassin = profile.FindMaster(ClassType::ASSASSIN);
+	CHECK(assassin && assassin->skinIndex == (SkinIndex)4);
+	const ProfileMaster* launcher = profile.FindMaster(ClassType::LAUNCHER);
+	CHECK(launcher && launcher->skinIndex == SkinIndex::DEFAULT);
+
+	backend.Close();
+}
+
+static void TestLeaderSurvivesRestart()
+{
+	const char* path = "test_game_store_leader.db";
+	RemoveDatabase(path);
+
+	GameStoreOptions options = TestOptions();
+	options.seed = RetailSeed();
+
+	{
+		SqliteGameStore backend;
+		GameStore store;
+		CHECK(store.Start(&backend, path, options));
+		store.QueueLoadProfile(1, AccountUID(8));
+		ProfileLoaded loaded;
+		CHECK(WaitLoaded(store, &loaded));
+		CHECK(loaded.profile.leaderClass == ClassType::LAUNCHER);
+		CHECK(loaded.profile.masters.size() == 2);
+
+		store.QueueWrite("SetLeader", [](GameStoreBackend& b) {
+			return b.SetLeader(AccountUID(8), ClassType::ASSASSIN, SkinIndex::DEFAULT);
+		});
+		store.QueueWrite("SetLeaderUnowned", [](GameStoreBackend& b) {
+			return b.SetLeader(AccountUID(8), ClassType::STRIKER, SkinIndex::DEFAULT);
+		});
+		store.Shutdown();
+		CHECK(store.FailedJobCount() == 1);
+	}
+
+	{
+		SqliteGameStore backend;
+		GameStore store;
+		CHECK(store.Start(&backend, path, options));
+		store.QueueLoadProfile(2, AccountUID(8));
+		ProfileLoaded loaded;
+		CHECK(WaitLoaded(store, &loaded));
+		CHECK(!loaded.profile.firstEntry);
+		CHECK(loaded.profile.leaderClass == ClassType::ASSASSIN);
+		CHECK(loaded.profile.leaderSkin == SkinIndex::DEFAULT);
+		CHECK(loaded.profile.masters.size() == 2);
+		store.Shutdown();
+	}
+
+	RemoveDatabase(path);
+}
+
+static void TestSeedInMemory()
+{
+	PlayerProfile profile;
+	SeedProfileInMemory(RetailSeed(), &profile);
+	CHECK(profile.leaderClass == ClassType::LAUNCHER);
+	CHECK(profile.masters.size() == 2);
+	CHECK(profile.OwnsSkin(ClassType::LAUNCHER, SkinIndex::DEFAULT));
+}
+
 int main(int argc, char** argv)
 {
 	PlatformInit();
@@ -194,6 +380,12 @@ int main(int argc, char** argv)
 	TestFailedJobRollsBack();
 	TestShutdownDrains();
 	TestRestartAfterShutdown();
+	TestRetailSeed();
+	TestDevSeed();
+	TestExistingPlayerWithoutMastersIsSeeded();
+	TestSetLeaderAndRefuseUnowned();
+	TestLeaderSurvivesRestart();
+	TestSeedInMemory();
 
 	if(failures > 0) {
 		LOG("test_game_store: %d check(s) failed", failures);

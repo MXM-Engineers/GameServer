@@ -1,6 +1,50 @@
 #include "game_store.h"
 #include <time.h>
 
+ProfileMaster* PlayerProfile::FindMaster(ClassType classType)
+{
+	foreach(it, masters) {
+		if(it->classType == classType) return &*it;
+	}
+	return nullptr;
+}
+
+const ProfileMaster* PlayerProfile::FindMaster(ClassType classType) const
+{
+	foreach_const(it, masters) {
+		if(it->classType == classType) return &*it;
+	}
+	return nullptr;
+}
+
+bool PlayerProfile::OwnsSkin(ClassType classType, SkinIndex skinIndex) const
+{
+	foreach_const(it, skins) {
+		if(it->classType == classType && it->skinIndex == skinIndex) return true;
+	}
+	return false;
+}
+
+void SeedProfileInMemory(const ProfileSeed& seed, PlayerProfile* profile)
+{
+	ASSERT(!seed.masters.empty());
+	profile->masters.clear();
+	profile->skins.clear();
+	foreach_const(it, seed.masters) {
+		ProfileMaster master;
+		master.classType = *it;
+		profile->masters.push_back(master);
+	}
+	foreach_const(it, seed.skins) {
+		ProfileSkin skin;
+		skin.classType = it->classType;
+		skin.skinIndex = it->skinIndex;
+		profile->skins.push_back(skin);
+	}
+	profile->leaderClass = seed.leaderClass;
+	profile->leaderSkin = SkinIndex::DEFAULT;
+}
+
 bool GameStore::Start(GameStoreBackend* backend_, const char* path, const GameStoreOptions& options_)
 {
 	ASSERT(!running);

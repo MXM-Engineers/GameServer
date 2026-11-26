@@ -14,4 +14,9 @@ struct SqliteGameStore: GameStoreBackend
 	void Rollback() override;
 
 	bool LoadProfile(AccountUID accountUID, i64 now, const ProfileSeed& seed, PlayerProfile* out) override;
+	bool SetLeader(AccountUID accountUID, ClassType classType, SkinIndex skinIndex) override;
+
+private:
+	bool SeedMasters(AccountUID accountUID, i64 now, const ProfileSeed& seed);
+	bool LoadMasters(AccountUID accountUID, PlayerProfile* out);
 };

@@ -179,6 +179,7 @@ struct Coordinator
 	bool accountDBOpen = false;
 	SqliteGameStore gameStoreBackend;
 	GameStore gameStore;
+	ProfileSeed profileSeed;
 	GameStore::LoadedList loadedProfiles;
 	eastl::array<bool, MAX_CLIENTS> clientLoadingProfile;
 
@@ -206,6 +207,7 @@ private:
 	void RefuseClient(ClientHandle clientHd, ErrorType error);
 	void EnterHub(ClientHandle clientHd);
 	void HandleLoadedProfiles();
+	bool BuildProfileSeed(ProfileSeed* out);
 	Account& FindOrAddAccount(AccountUID accountUID);
 
 	void ClientSendAccountData(ClientHandle clientHd);
@@ -229,3 +231,5 @@ private:
 		server->SendPacketData(clientHd, Packet::NET_ID, packetSize, packetData);
 	}
 };
+
+GameStore& GetGameStore();

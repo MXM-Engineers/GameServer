@@ -54,9 +54,7 @@ struct HubGame
 	};
 
 	const ClientLocalMapping* plidMap;
-	struct LastLeader { WideString nickname; LocalActorID characterID; SkinIndex skin; };
-	eastl::fixed_vector<LastLeader,64,true> lastLeaders;
-	eastl::array<const Account*,MAX_PLAYERS> playerAccountData;
+	eastl::array<Account*,MAX_PLAYERS> playerAccountData;
 
 	WorldHub world;
 	HubReplication replication;
@@ -85,7 +83,7 @@ struct HubGame
 
 	bool LoadMap();
 
-	void OnPlayerConnect(ClientHandle clientHd, const Account* accountData);
+	void OnPlayerConnect(ClientHandle clientHd, Account* accountData);
 	void OnPlayerDisconnect(ClientHandle clientHd);
 	void OnPlayerGetCharacterInfo(ClientHandle clientHd, ActorUID actorUID);
 	void OnPlayerUpdatePosition(ClientHandle clientHd, ActorUID characterActorUID, const vec3& pos, const vec3& dir, const vec3& eye, f32 rotate, f32 speed, ActionStateID state, i32 actionID);
@@ -93,6 +91,7 @@ struct HubGame
 	void OnPlayerChatWhisper(ClientHandle clientHd, const wchar* destNick, const wchar* msg);
 	void OnPlayerEnterCity(ClientHandle clientHd);
 	void OnPlayerSetLeaderCharacter(ClientHandle clientHd, LocalActorID characterID, SkinIndex skinIndex);
+	void SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex);
 	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);

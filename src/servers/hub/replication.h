@@ -221,6 +221,7 @@ struct HubReplication
 	void SetPlayerAsInGame(ClientHandle clientHd);
 	void SendCharacterInfo(ClientHandle clientHd, ActorUID actorUID, CreatureIndex docID, ClassType classType, i32 health, i32 healthMax);
 	void SendPlayerSetLeaderMaster(ClientHandle clientHd, ActorUID masterActorUID, ClassType classType, SkinIndex skinIndex);
+	void SendSetLeaderRefused(ClientHandle clientHd, ErrorType error, ClassType currentClass, SkinIndex currentSkin);
 
 	void SendChatMessageToAll(const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen);
 	void SendChatMessageToClient(ClientHandle toClientID, const wchar* senderName, i32 chatType, const wchar* msg, i32 msgLen = -1);

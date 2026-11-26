@@ -1,11 +1,26 @@
 #pragma once
 #include <common/base.h>
 #include <common/inner_protocol.h>
+#include <common/protocol.h>
 #include <eathread/eathread_thread.h>
 #include <eathread/eathread_semaphore.h>
 #include <EASTL/functional.h>
 #include <EASTL/deque.h>
 #include <EASTL/fixed_vector.h>
+#include <EASTL/vector.h>
+
+struct ProfileMaster
+{
+	ClassType classType = ClassType::NONE;
+	SkinIndex skinIndex = SkinIndex::DEFAULT;
+};
+
+struct ProfileSkin
+{
+	ClassType classType = ClassType::NONE;
+	SkinIndex skinIndex = SkinIndex::DEFAULT;
+	i64 expireAt = 0;
+};
 
 struct PlayerProfile
 {
@@ -13,12 +28,31 @@ struct PlayerProfile
 	i64 createdAt = 0;
 	i64 lastLoginAt = 0;
 	bool firstEntry = false;
+	ClassType leaderClass = ClassType::NONE;
+	SkinIndex leaderSkin = SkinIndex::DEFAULT;
+	eastl::vector<ProfileMaster> masters;
+	eastl::vector<ProfileSkin> skins;
+
+	ProfileMaster* FindMaster(ClassType classType);
+	const ProfileMaster* FindMaster(ClassType classType) const;
+	bool OwnsSkin(ClassType classType, SkinIndex skinIndex) const;
 };
 
 struct ProfileSeed
 {
+	struct Skin
+	{
+		ClassType classType;
+		SkinIndex skinIndex;
+	};
+
 	bool dev = false;
+	ClassType leaderClass = ClassType::NONE;
+	eastl::vector<ClassType> masters;
+	eastl::vector<Skin> skins;
 };
+
+void SeedProfileInMemory(const ProfileSeed& seed, PlayerProfile* profile);
 
 struct GameStoreBackend
 {
@@ -32,6 +66,7 @@ struct GameStoreBackend
 	virtual void Rollback() = 0;
 
 	virtual bool LoadProfile(AccountUID accountUID, i64 now, const ProfileSeed& seed, PlayerProfile* out) = 0;
+	virtual bool SetLeader(AccountUID accountUID, ClassType classType, SkinIndex skinIndex) = 0;
 };
 
 struct GameStoreOptions

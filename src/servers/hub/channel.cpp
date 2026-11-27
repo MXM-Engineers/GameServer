@@ -57,6 +57,10 @@ void HubPacketHandler::OnNewPacket(ClientHandle clientHd, const NetHeader& heade
 		HANDLE_CASE(CQ_WhisperSend);
 		HANDLE_CASE(CQ_SaveSettings);
 		HANDLE_CASE(CQ_CommunityStatusMessage);
+		HANDLE_CASE(CQ_ItemDelete);
+		HANDLE_CASE(CQ_WarehouseItemDelete);
+		HANDLE_CASE(CQ_WarehouseItemChange);
+		HANDLE_CASE(CQ_InventoryExpand);
 		HANDLE_CASE(CQ_PartyCreate);
 		HANDLE_CASE(CQ_RTT_Time);
 		HANDLE_CASE(CQ_LoadingProgressData);
@@ -493,6 +497,54 @@ void HubPacketHandler::HandlePacket_CQ_SaveSettings(ClientHandle clientHd, const
 	const u8* data = (const u8*)buff.ReadRaw(len);
 
 	game->OnPlayerSaveSettings(clientHd, settingType, data, len);
+}
+
+void HubPacketHandler::HandlePacket_CQ_ItemDelete(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_ItemDelete>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_ItemDelete (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_ItemDelete>(packetData, packetSize));
+
+	const Cl::CQ_ItemDelete& packet = SafeCast<Cl::CQ_ItemDelete>(packetData, packetSize);
+	game->OnPlayerItemDelete(clientHd, InvenType::INVENTORY, packet.itemUID, packet.count);
+}
+
+void HubPacketHandler::HandlePacket_CQ_WarehouseItemDelete(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_WarehouseItemDelete>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_WarehouseItemDelete (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_WarehouseItemDelete>(packetData, packetSize));
+
+	const Cl::CQ_WarehouseItemDelete& packet = SafeCast<Cl::CQ_WarehouseItemDelete>(packetData, packetSize);
+	game->OnPlayerItemDelete(clientHd, InvenType::WAREHOUSE, packet.itemUID, packet.count);
+}
+
+void HubPacketHandler::HandlePacket_CQ_WarehouseItemChange(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_WarehouseItemChange>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_WarehouseItemChange (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_WarehouseItemChange>(packetData, packetSize));
+
+	const Cl::CQ_WarehouseItemChange& packet = SafeCast<Cl::CQ_WarehouseItemChange>(packetData, packetSize);
+	game->OnPlayerWarehouseItemChange(clientHd, packet.itemUID, packet.srcInvenType, packet.dstInvenType, packet.dstSlot, packet.count);
+}
+
+void HubPacketHandler::HandlePacket_CQ_InventoryExpand(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)
+{
+	if(!ValidatePacket<Cl::CQ_InventoryExpand>(packetData, packetSize)) {
+		WARN("[client%x] WARNING: invalid CQ_InventoryExpand (size=%d)", (u32)clientHd, packetSize);
+		return;
+	}
+	NT_LOG("[client%x] Client :: %s", (u32)clientHd, PacketSerialize<Cl::CQ_InventoryExpand>(packetData, packetSize));
+
+	const Cl::CQ_InventoryExpand& packet = SafeCast<Cl::CQ_InventoryExpand>(packetData, packetSize);
+	game->OnPlayerInventoryExpand(clientHd, packet.invenTab);
 }
 
 void HubPacketHandler::HandlePacket_CQ_CommunityStatusMessage(ClientHandle clientHd, const NetHeader& header, const u8* packetData, const i32 packetSize)

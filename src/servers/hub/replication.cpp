@@ -380,6 +380,184 @@ void HubReplication::SendCommunityStatusMessage(ClientHandle clientHd, const wch
 	SendPacket(clientHd, packet);
 }
 
+enum {
+	ITEM_PACKET_CAPACITY = 8000
+};
+
+static i32 ProfileItemWireSize(const ProfileItem& item)
+{
+	return (i32)(sizeof(Sv::PST_ProfileItem) - sizeof(Sv::PST_Property)) + (i32)item.properties.size() * (i32)sizeof(Sv::PST_Property);
+}
+
+template<typename Packet, u32 CAPACITY>
+static void WriteProfileItem(PacketWriter<Packet,CAPACITY>& packet, const ProfileItem& item)
+{
+	packet.template Write<u32>((u32)item.uid);
+	packet.template Write<u8>((u8)item.invenType);
+	packet.template Write<i32>(item.slot);
+	packet.template Write<u32>((u32)item.docIndex);
+	packet.template Write<i32>(item.count);
+	packet.template Write<i32>(item.propertyGroup);
+	packet.template Write<u8>(item.lifeAbsolute);
+	packet.template Write<i64>(item.lifeEndUTC);
+	packet.template Write<u16>((u16)item.properties.size());
+	foreach_const(p, item.properties) {
+		packet.template Write<u8>(p->type);
+		packet.template Write<i32>(p->typeDetail);
+		packet.template Write<u8>(p->valueType);
+		packet.template Write<f32>(p->value);
+		packet.template Write<u8>(p->fixed);
+	}
+}
+
+void HubReplication::SendMoney(ClientHandle clientHd, i64 gold, AssetChangeReason reason)
+{
+	Sv::SN_Money packet;
+	packet.nMoney = gold;
+	packet.nReason = (i32)reason;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendCCoin(ClientHandle clientHd, i64 ccoin, AssetChangeReason reason)
+{
+	Sv::SN_CCoin packet;
+	packet.amount = ccoin;
+	packet.nReason = (u32)reason;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendProfileItems(ClientHandle clientHd, const PlayerProfile& profile)
+{
+	eastl::fixed_vector<const ProfileItem*,512,true> list;
+	foreach_const(it, profile.items) {
+		if(it->invenType == InvenType::INVENTORY) list.push_back(&*it);
+	}
+
+	u8 packetNum = 1;
+	i32 next = 0;
+	do {
+		PacketWriter<Sv::SN_ProfileItems,ITEM_PACKET_CAPACITY> packet;
+		i32 used = (i32)(sizeof(u8) + sizeof(u16));
+		i32 end = next;
+		while(end < (i32)list.size() && used + ProfileItemWireSize(*list[end]) <= ITEM_PACKET_CAPACITY) {
+			used += ProfileItemWireSize(*list[end]);
+			end++;
+		}
+		ASSERT(end > next || list.empty());
+
+		packet.Write<u8>(packetNum);
+		packet.Write<u16>((u16)(end - next));
+		for(i32 i = next; i < end; i++) {
+			WriteProfileItem(packet, *list[i]);
+		}
+		SendPacket(clientHd, packet);
+
+		next = end;
+		packetNum++;
+	} while(next < (i32)list.size());
+}
+
+void HubReplication::SendWarehouseItems(ClientHandle clientHd, const PlayerProfile& profile)
+{
+	PacketWriter<Sv::SN_WarehouseItems,ITEM_PACKET_CAPACITY> packet;
+
+	u16 count = 0;
+	foreach_const(it, profile.items) {
+		if(it->invenType == InvenType::WAREHOUSE) count++;
+	}
+	packet.Write<u16>(count);
+	foreach_const(it, profile.items) {
+		if(it->invenType == InvenType::WAREHOUSE) WriteProfileItem(packet, *it);
+	}
+
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendItemUpdate(ClientHandle clientHd, const ProfileItem* items, i32 count, u32 context)
+{
+	PacketWriter<Sv::SN_ItemUpdate,ITEM_PACKET_CAPACITY> packet;
+
+	ASSERT(count >= 0 && count <= 0xFFFF);
+	packet.Write<u16>((u16)count);
+	for(i32 i = 0; i < count; i++) {
+		WriteProfileItem(packet, items[i]);
+	}
+	packet.Write<u32>(context);
+
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendWarehouseItemUpdate(ClientHandle clientHd, const ProfileItem* items, i32 count)
+{
+	PacketWriter<Sv::SN_WarehouseItemUpdate,ITEM_PACKET_CAPACITY> packet;
+
+	ASSERT(count >= 0 && count <= 0xFFFF);
+	packet.Write<u16>((u16)count);
+	for(i32 i = 0; i < count; i++) {
+		ASSERT(items[i].invenType == InvenType::WAREHOUSE);
+		WriteProfileItem(packet, items[i]);
+	}
+
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendItemNotices(ClientHandle clientHd, const ProfileItem* items, i32 count)
+{
+	i32 start = 0;
+	while(start < count) {
+		const InvenType invenType = items[start].invenType;
+		i32 end = start + 1;
+		while(end < count && items[end].invenType == invenType) end++;
+
+		if(invenType == InvenType::WAREHOUSE) SendWarehouseItemUpdate(clientHd, items + start, end - start);
+		else {
+			ASSERT(invenType == InvenType::INVENTORY);
+			SendItemUpdate(clientHd, items + start, end - start, 0);
+		}
+		start = end;
+	}
+}
+
+void HubReplication::SendItemDeleteResult(ClientHandle clientHd, InvenType invenType, ErrorType result)
+{
+	if(invenType == InvenType::WAREHOUSE) {
+		Sv::SA_WarehouseItemDelete packet;
+		packet.result = (u32)result;
+		SendPacket(clientHd, packet);
+		return;
+	}
+	Sv::SA_ItemDelete packet;
+	packet.result = (u32)result;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendWarehouseItemChangeResult(ClientHandle clientHd, ItemUID uid, i32 orgInvenType, i32 targetInvenType, u32 targetSlot, ErrorType result)
+{
+	Sv::SA_WarehouseItemChange packet;
+	packet.orgItemID = uid;
+	packet.orgInvenType = (u32)orgInvenType;
+	packet.targetInvenType = (u32)targetInvenType;
+	packet.targetSlot = targetSlot;
+	packet.nErrorType = (u32)result;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendJukeboxEnqueueResult(ClientHandle clientHd, ErrorType result)
+{
+	Sv::SA_JukeboxEnqueue packet;
+	packet.result = (u32)result;
+	SendPacket(clientHd, packet);
+}
+
+void HubReplication::SendInventoryExpandResult(ClientHandle clientHd, ErrorType result, u32 invenTab, i32 lineCount)
+{
+	Sv::SA_InventoryExpand packet;
+	packet.result = (u32)result;
+	packet.invenTab = invenTab;
+	packet.lineCount = (u32)lineCount;
+	SendPacket(clientHd, packet);
+}
+
 void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& account)
 {
 	// SN_RegionServicePolicy
@@ -557,26 +735,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		SendPacket(clientHd, packet);
 	}
 
-	// SN_ProfileItems
-	{
-		PacketWriter<Sv::SN_ProfileItems> packet;
-
-		packet.Write<u8>(1); // packetNum
-		packet.Write<u16>(1); // items_count
-
-		// jukebox coins
-		packet.Write<i32>(1073741864); // itemID
-		packet.Write<u8>(0); // invenType
-		packet.Write<i32>(200); // slot
-		packet.Write<i32>(137120001); // itemIndex -> actual jukebox coin identifier
-		packet.Write<i32>(1337); // count
-		packet.Write<i32>(-1); // propertyGroupIndex
-		packet.Write<u8>(0); // isLifeTimeAbsolute
-		packet.Write<i64>(0); // lifeEndTimeUTC
-		packet.Write<u16>(0); // properties_count
-
-		SendPacket(clientHd, packet);
-	}
+	SendProfileItems(clientHd, account.profile);
 
 	// SN_ProfileSkills
 	{
@@ -638,9 +797,9 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		PacketWriter<Sv::SN_AccountInfo> packet;
 
 		packet.WriteStringObj(account.nickname.data()); // nick
-		packet.Write<i32>(4); // inventoryLineCountTab0
-		packet.Write<i32>(4); // inventoryLineCountTab1
-		packet.Write<i32>(4); // inventoryLineCountTab2
+		packet.Write<i32>(account.profile.lines[0]); // inventoryLineCountTab0
+		packet.Write<i32>(account.profile.lines[1]); // inventoryLineCountTab1
+		packet.Write<i32>(account.profile.lines[2]); // inventoryLineCountTab2
 #if 0
 		packet.Write<i32>(320080005);
 		packet.Write<i32>(320080005);
@@ -648,7 +807,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		packet.Write<i32>(-1);
 		packet.Write<i32>(-1);
 #endif
-		packet.Write<i32>(1); // warehouseLineCount
+		packet.Write<i32>(account.profile.lines[CONTAINER_WAREHOUSE]); // warehouseLineCount
 		packet.Write<i32>(account.profile.tutorialState); // tutorialState
 		packet.Write<i32>(3600); // masterGearDurability
 		packet.Write<u8>(0); // badgeType
@@ -773,14 +932,7 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		SendPacket(clientHd, packet);
 	}
 
-	// SN_WarehouseItems
-	{
-		PacketWriter<Sv::SN_WarehouseItems> packet;
-
-		packet.Write<u16>(0); // items_count
-
-		SendPacket(clientHd, packet);
-	}
+	SendWarehouseItems(clientHd, account.profile);
 
 	// SN_MutualFriendList
 	{
@@ -800,11 +952,8 @@ void HubReplication::SendAccountDataLobby(ClientHandle clientHd, const Account& 
 		SendPacket(clientHd, packet);
 	}
 
-	// SN_Money
-	Sv::SN_Money money;
-	money.nMoney = 116472;
-	money.nReason = 1;
-	SendPacket(clientHd, money);
+	SendMoney(clientHd, account.profile.gold, AssetChangeReason::INITIALIZE);
+	SendCCoin(clientHd, account.profile.ccoin, AssetChangeReason::INITIALIZE);
 
 	// SN_UpdateEntrySystem
 	{

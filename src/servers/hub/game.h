@@ -79,7 +79,8 @@ struct HubGame
 	void Init(Server* server_, const ClientLocalMapping* plidMap_);
 	void Update(Time localTime_);
 
-	bool JukeboxQueueSong(i32 userID, SongID songID);
+	ErrorType JukeboxQueueSong(i32 userID, SongID songID);
+	void DevJukeboxQueueSong(i32 userID, SongID songID);
 
 	bool LoadMap();
 
@@ -94,6 +95,9 @@ struct HubGame
 	void SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex);
 	void OnPlayerSaveSettings(ClientHandle clientHd, u8 settingType, const u8* data, i32 size);
 	void OnPlayerCommunityStatusMessage(ClientHandle clientHd, const wchar* msg, i32 len);
+	void OnPlayerItemDelete(ClientHandle clientHd, InvenType invenType, ItemUID uid, u32 count);
+	void OnPlayerWarehouseItemChange(ClientHandle clientHd, ItemUID uid, i32 srcInvenType, i32 dstInvenType, u32 dstSlot, i32 count);
+	void OnPlayerInventoryExpand(ClientHandle clientHd, u32 invenTab);
 	void OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, ActionStateID state, i32 param1, i32 param2, f32 rotate, f32 upperRotate);
 	void OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID);
 	void OnPlayerReadyToLoad(ClientHandle clientHd);

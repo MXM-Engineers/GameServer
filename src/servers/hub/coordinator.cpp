@@ -502,6 +502,7 @@ bool Coordinator::Init(Server* server_)
 	if(!r) return false;
 
 	if(!BuildProfileSeed(&profileSeed)) return false;
+	if(!BuildWalletSeed(&profileSeed)) return false;
 
 	GameStoreOptions storeOptions;
 	storeOptions.seed = profileSeed;
@@ -556,6 +557,69 @@ bool Coordinator::BuildProfileSeed(ProfileSeed* out)
 
 	out->leaderClass = out->masters.front();
 	LOG("Coordinator :: new profiles own %d starter master(s), leader class %d", (i32)out->masters.size(), (i32)out->leaderClass);
+	return true;
+}
+
+bool Coordinator::BuildWalletSeed(ProfileSeed* out)
+{
+	const CConfigHub& cfg = Config();
+
+	if(cfg.ServiceRuleDefaultMoney < 0 || cfg.ServiceRuleDefaultMoneyBM < 0) {
+		LOG("ERROR: ServiceRuleDefaultMoney and ServiceRuleDefaultMoneyBM must not be negative");
+		return false;
+	}
+	if(cfg.serviceRuleDefaultLineCount.size() != INVENTORY_TABS) {
+		LOG("ERROR: ServiceRuleDefaultLineCount needs %d values (E_INVEN_TAB_0..2)", (i32)INVENTORY_TABS);
+		return false;
+	}
+	for(i32 t = 0; t < INVENTORY_TABS; t++) {
+		out->lines[t] = cfg.serviceRuleDefaultLineCount[t];
+	}
+	out->lines[CONTAINER_WAREHOUSE] = cfg.ServiceRuleWarehouseDefaultLineCount;
+	for(i32 c = 0; c < INVENTORY_CONTAINERS; c++) {
+		if(out->lines[c] < 1 || out->lines[c] > ContainerMaxLines(c)) {
+			LOG("ERROR: default line count %d of container %d is outside 1..%d", out->lines[c], c, ContainerMaxLines(c));
+			return false;
+		}
+	}
+	foreach_const(it, cfg.servicePriceInvenUnlockGold) {
+		if(*it <= 0) {
+			LOG("ERROR: ServicePriceInvenUnlockGold has a price %d, prices must be positive", *it);
+			return false;
+		}
+	}
+	if(cfg.FixedDataJukeboxCoinIndex <= 0) {
+		LOG("ERROR: FixedDataJukeboxCoinIndex=%d is not an item index", cfg.FixedDataJukeboxCoinIndex);
+		return false;
+	}
+
+	out->gold = cfg.ServiceRuleDefaultMoney;
+	out->ccoin = cfg.ServiceRuleDefaultMoneyBM;
+
+	if(out->dev) {
+		out->gold = 10000000;
+		out->ccoin = 1000000;
+		for(i32 c = 0; c < INVENTORY_CONTAINERS; c++) {
+			out->lines[c] = ContainerMaxLines(c);
+		}
+	}
+
+	out->items.clear();
+	if(cfg.ServiceRuleDefaultGearCount < 0 || cfg.ServiceRuleDefaultGearCount > out->lines[0] * INVENTORY_SLOTS_PER_LINE) {
+		LOG("ERROR: ServiceRuleDefaultGearCount=%d does not fit the gear tab", cfg.ServiceRuleDefaultGearCount);
+		return false;
+	}
+	if(cfg.ServiceRuleDefaultGearCount > 0 && cfg.ServiceRuleDefaultGearIndex <= 0) {
+		LOG("ERROR: ServiceRuleDefaultGearIndex must name an item");
+		return false;
+	}
+	for(i32 i = 0; i < cfg.ServiceRuleDefaultGearCount; i++) {
+		out->items.push_back(ProfileSeed::Item{ (ItemDocIndex)cfg.ServiceRuleDefaultGearIndex, 1, cfg.ItemBasicDefaultGearOptionGroup, 0 });
+	}
+
+	LOG("Coordinator :: new profiles start with %lld gold, %lld ccoin, %d x item %d, lines %d/%d/%d warehouse %d%s",
+		(long long)out->gold, (long long)out->ccoin, (i32)out->items.size(), cfg.ServiceRuleDefaultGearIndex,
+		out->lines[0], out->lines[1], out->lines[2], out->lines[CONTAINER_WAREHOUSE], out->dev ? " (DevSeedProfile=1)" : "");
 	return true;
 }
 
@@ -795,7 +859,7 @@ void Coordinator::HandlePacket_CQ_Authenticate(ClientHandle clientHd, const NetH
 		return;
 	}
 
-	SeedProfileInMemory(profileSeed, &login.profile);
+	SeedProfileInMemory(profileSeed, gameStore.ItemUIDs(), &login.profile);
 
 	Sv::SA_AuthResult auth;
 	auth.nResult = (i32)ErrorType::AUTH_SUCCESS;

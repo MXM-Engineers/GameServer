@@ -211,6 +211,7 @@ private:
 	void HandleLoadedProfiles();
 	void RecordLogout(ClientHandle clientHd, AccountUID accountUID, const AccountLogin& login);
 	bool BuildProfileSeed(ProfileSeed* out);
+	bool BuildWalletSeed(ProfileSeed* out);
 	Account& FindOrAddAccount(AccountUID accountUID);
 
 	void ClientSendAccountData(ClientHandle clientHd);

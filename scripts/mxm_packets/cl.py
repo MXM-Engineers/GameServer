@@ -530,11 +530,11 @@ class ClientSerializer:
         print('}')
     def serialize_60105(netid, p: common.PacketReader):
         print('CQ_InventoryExpand {')
-        print('    field1=%d' % p.read_u32())
+        print('    invenTab=%d' % p.read_u32())
         print('}')
     def serialize_60106(netid, p: common.PacketReader):
-        print('CQ_InventoryRearrange {')
-        print('    field1=%d' % p.read_u32())
+        print('CN_InventoryRearrange {')
+        print('    invenTab=%d' % p.read_u32())
         print('}')
     def serialize_60107(netid, p: common.PacketReader):
         print('Cl_60107 {')
@@ -1037,12 +1037,12 @@ class ClientSerializer:
         print('    field13=%d' % p.read_u32())
         print('}')
     def serialize_60207(netid, p: common.PacketReader):
-        print('Cl_60207 {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
-        print('    field3=%d' % p.read_u32())
-        print('    field4=%d' % p.read_u32())
-        print('    field5=%d' % p.read_u32())
+        print('CQ_WarehouseItemChange {')
+        print('    itemUID=0x%08x' % p.read_u32())
+        print('    srcInvenType=%d' % p.read_i32())
+        print('    dstInvenType=%d' % p.read_i32())
+        print('    dstSlot=%d' % p.read_u32())
+        print('    count=%d' % p.read_i32())
         print('}')
     def serialize_60208(netid, p: common.PacketReader):
         print('CN_UNKNOWN_60208 {')
@@ -1102,7 +1102,7 @@ class ClientSerializer:
         print('}')
     
     def serialize_60226(netid, p: common.PacketReader):
-        print('CQ_WarehouseItemDelete {')
+        print('Cl_60226 {')
         print('    field1=%d' % p.read_u32())
         print('}')
     def serialize_60227(netid, p: common.PacketReader):
@@ -1116,9 +1116,9 @@ class ClientSerializer:
         print('}')
 
     def serialize_60230(netid, p: common.PacketReader):
-        print('Cl_60230 {')
-        print('    field1=%d' % p.read_u32())
-        print('    field2=%d' % p.read_u32())
+        print('CQ_WarehouseItemDelete {')
+        print('    itemUID=0x%08x' % p.read_u32())
+        print('    count=%d' % p.read_u32())
         print('}')
     def serialize_60232(netid, p: common.PacketReader):
         print('Cl_60232 {')

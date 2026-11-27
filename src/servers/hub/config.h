@@ -13,6 +13,15 @@ struct CConfigHub
 	i32 RequireLoginSession = true;
 	i32 DevSeedProfile = false;
 	eastl::fixed_vector<i32,16> serviceRuleDefaultUnlockClass = { 35, 3 };
+	i32 ServiceRuleDefaultMoney = 1000;
+	i32 ServiceRuleDefaultMoneyBM = 30;
+	i32 ServiceRuleDefaultGearIndex = 132199998;
+	i32 ServiceRuleDefaultGearCount = 2;
+	i32 ItemBasicDefaultGearOptionGroup = 723002202;
+	eastl::fixed_vector<i32,16> serviceRuleDefaultLineCount = { 4, 4, 4 };
+	i32 ServiceRuleWarehouseDefaultLineCount = 1;
+	eastl::fixed_vector<i32,16> servicePriceInvenUnlockGold = { 1800, 3500 };
+	i32 FixedDataJukeboxCoinIndex = 137120001;
 	eastl::fixed_vector<i32,16> regionBanMaster = {};
 	eastl::fixed_vector<i32,16> regionNewMaster = {};
 	eastl::fixed_vector<i32,16> eventBanMaster = {};

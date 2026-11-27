@@ -11,6 +11,7 @@
 #include <EASTL/fixed_map.h>
 #include <EASTL/fixed_list.h>
 #include <mxm/core.h>
+#include <storage/game_store.h>
 
 struct Account;
 
@@ -231,6 +232,17 @@ struct HubReplication
 	void SendAccountDataLobby(ClientHandle clientHd, const Account& account);
 	void SendCommunityStatusMessageResult(ClientHandle clientHd, ErrorType result);
 	void SendCommunityStatusMessage(ClientHandle clientHd, const wchar* nickname, const wchar* msg, i32 msgLen);
+	void SendMoney(ClientHandle clientHd, i64 gold, AssetChangeReason reason);
+	void SendCCoin(ClientHandle clientHd, i64 ccoin, AssetChangeReason reason);
+	void SendProfileItems(ClientHandle clientHd, const PlayerProfile& profile);
+	void SendWarehouseItems(ClientHandle clientHd, const PlayerProfile& profile);
+	void SendItemUpdate(ClientHandle clientHd, const ProfileItem* items, i32 count, u32 context);
+	void SendWarehouseItemUpdate(ClientHandle clientHd, const ProfileItem* items, i32 count);
+	void SendItemNotices(ClientHandle clientHd, const ProfileItem* items, i32 count);
+	void SendItemDeleteResult(ClientHandle clientHd, InvenType invenType, ErrorType result);
+	void SendWarehouseItemChangeResult(ClientHandle clientHd, ItemUID uid, i32 orgInvenType, i32 targetInvenType, u32 targetSlot, ErrorType result);
+	void SendJukeboxEnqueueResult(ClientHandle clientHd, ErrorType result);
+	void SendInventoryExpandResult(ClientHandle clientHd, ErrorType result, u32 invenTab, i32 lineCount);
 
 	void SendGameReady(ClientHandle clientHd);
 

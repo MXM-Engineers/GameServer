@@ -1217,6 +1217,14 @@ bool GameXmlContent::LoadJukeboxSongs()
 		XMLElement* pJukeboxElt = pSongElt->FirstChildElement();
 		pJukeboxElt->QueryAttribute("_Time", &song.length);
 
+		const XMLElement* pCostElt = pJukeboxElt->FirstChildElement("_Cost");
+		ASSERT_MSG(pCostElt, "jukebox song has no _Cost");
+		const char* costType = pCostElt->Attribute("_Type");
+		ASSERT_MSG(costType && strcmp(costType, "BUY_TYPE_JUKEBOX") == 0, "jukebox song cost is not BUY_TYPE_JUKEBOX");
+		song.coinCost = 0;
+		pCostElt->QueryAttribute("_Amount", &song.coinCost);
+		ASSERT_MSG(song.coinCost > 0, "jukebox song has no coin cost");
+
 		jukeboxSongs.push_back(song);
 
 		pSongElt = pSongElt->NextSiblingElement();

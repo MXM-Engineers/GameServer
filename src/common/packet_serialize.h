@@ -855,6 +855,43 @@ inline const char* PacketSerialize<Sv::SN_ProfileCharacters>(const void* packetD
 	return str.data();
 }
 
+namespace PS
+{
+	template<typename String>
+	inline void SerializeProfileItems(String& str, ConstBuffer& buff)
+	{
+		const u16 count = buff.Read<u16>();
+		SER("	items(%d)=[", count);
+
+		for(int i = 0; i < count; i++) {
+			SER("	{");
+			SER("		itemID=0x%08x", buff.Read<i32>());
+			SER("		invenType=%u", buff.Read<u8>());
+			SER("		slot=%d", buff.Read<i32>());
+			SER("		itemIndex=%d", buff.Read<i32>());
+			SER("		count=%d", buff.Read<i32>());
+			SER("		propertyGroupIndex=%d", buff.Read<i32>());
+			SER("		isLifeTimeAbsolute=%u", buff.Read<u8>());
+			SER("		lifeEndTimeUTC=%lld", buff.Read<i64>());
+			const u16 propCount = buff.Read<u16>();
+			SER("		properties(%d)=[", propCount);
+			for(int p = 0; p < propCount; p++) {
+				SER("		{");
+				SER("			type=%u", buff.Read<u8>());
+				SER("			typeDetail=%d", buff.Read<i32>());
+				SER("			valueType=%u", buff.Read<u8>());
+				SER("			value=%f", buff.Read<f32>());
+				SER("			fixed=%u", buff.Read<u8>());
+				SER("		},");
+			}
+			SER("		]");
+			SER("	},");
+		}
+
+		SER("	]");
+	}
+}
+
 template<>
 inline const char* PacketSerialize<Sv::SN_ProfileItems>(const void* packetData, const i32 packetSize)
 {
@@ -863,36 +900,203 @@ inline const char* PacketSerialize<Sv::SN_ProfileItems>(const void* packetData, 
 
 	SER("SN_ProfileItems(%d, %d) :: {", Sv::SN_ProfileItems::NET_ID, packetSize);
 	SER("	packetNum=%d", buff.Read<u8>());
+	PS::SerializeProfileItems(str, buff);
+	SER("}");
 
-	const u16 count = buff.Read<u16>();
-	SER("	items(%d)=[", count);
+	return str.data();
+}
 
-	for(int i = 0; i < count; i++) {
-		SER("	{");
-		SER("		itemID=0x%08x", buff.Read<i32>());
-		SER("		invenType=%u", buff.Read<u8>());
-		SER("		slot=%d", buff.Read<i32>());
-		SER("		itemIndex=0x%08x", buff.Read<i32>());
-		SER("		count=%d", buff.Read<i32>());
-		SER("		propertyGroupIndex=%d", buff.Read<i32>());
-		SER("		isLifeTimeAbsolute=%u", buff.Read<u8>());
-		SER("		lifeEndTimeUTC=%lld", buff.Read<i64>());
-		const u16 propCount = buff.Read<u16>();
-		SER("		properties(%d)=[", propCount);
-		for(int p = 0; p < propCount; p++) {
-			SER("		{");
-			SER("			type=%u", buff.Read<u8>());
-			SER("			typeDetail=%d", buff.Read<i32>());
-			SER("			valueType=%u", buff.Read<u8>());
-			SER("			value=%f", buff.Read<f32>());
-			SER("			fixed=%u", buff.Read<u8>());
-			SER("		},");
-		}
-		SER("		]");
-		SER("	},");
-	}
+template<>
+inline const char* PacketSerialize<Sv::SN_WarehouseItems>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
 
-	SER("	]");
+	SER("SN_WarehouseItems(%d, %d) :: {", Sv::SN_WarehouseItems::NET_ID, packetSize);
+	PS::SerializeProfileItems(str, buff);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_ItemUpdate>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_ItemUpdate(%d, %d) :: {", Sv::SN_ItemUpdate::NET_ID, packetSize);
+	PS::SerializeProfileItems(str, buff);
+	SER("	context=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_CCoin>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_CCoin(%d, %d) :: {", Sv::SN_CCoin::NET_ID, packetSize);
+	SER("	amount=%lld", buff.Read<i64>());
+	SER("	nReason=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_ItemDelete>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_ItemDelete(%d, %d) :: {", Sv::SA_ItemDelete::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_WarehouseItemDelete>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_WarehouseItemDelete(%d, %d) :: {", Sv::SA_WarehouseItemDelete::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_WarehouseItemChange>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_WarehouseItemChange(%d, %d) :: {", Sv::SA_WarehouseItemChange::NET_ID, packetSize);
+	SER("	orgItemID=0x%08x", buff.Read<u32>());
+	SER("	orgInvenType=%u", buff.Read<u32>());
+	SER("	targetInvenType=%u", buff.Read<u32>());
+	SER("	targetSlot=%u", buff.Read<u32>());
+	SER("	nErrorType=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_ItemDelete>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_ItemDelete(%d, %d) :: {", Cl::CQ_ItemDelete::NET_ID, packetSize);
+	SER("	itemUID=0x%08x", buff.Read<u32>());
+	SER("	count=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_WarehouseItemDelete>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_WarehouseItemDelete(%d, %d) :: {", Cl::CQ_WarehouseItemDelete::NET_ID, packetSize);
+	SER("	itemUID=0x%08x", buff.Read<u32>());
+	SER("	count=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_WarehouseItemChange>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_WarehouseItemChange(%d, %d) :: {", Cl::CQ_WarehouseItemChange::NET_ID, packetSize);
+	SER("	itemUID=0x%08x", buff.Read<u32>());
+	SER("	srcInvenType=%d", buff.Read<i32>());
+	SER("	dstInvenType=%d", buff.Read<i32>());
+	SER("	dstSlot=%u", buff.Read<u32>());
+	SER("	count=%d", buff.Read<i32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SN_WarehouseItemUpdate>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SN_WarehouseItemUpdate(%d, %d) :: {", Sv::SN_WarehouseItemUpdate::NET_ID, packetSize);
+	PS::SerializeProfileItems(str, buff);
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CQ_InventoryExpand>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CQ_InventoryExpand(%d, %d) :: {", Cl::CQ_InventoryExpand::NET_ID, packetSize);
+	SER("	invenTab=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_InventoryExpand>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_InventoryExpand(%d, %d) :: {", Sv::SA_InventoryExpand::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("	invenTab=%u", buff.Read<u32>());
+	SER("	lineCount=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Sv::SA_JukeboxEnqueue>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("SA_JukeboxEnqueue(%d, %d) :: {", Sv::SA_JukeboxEnqueue::NET_ID, packetSize);
+	SER("	result=%u", buff.Read<u32>());
+	SER("}");
+
+	return str.data();
+}
+
+template<>
+inline const char* PacketSerialize<Cl::CN_InventoryRearrange>(const void* packetData, const i32 packetSize)
+{
+	SER_BEGIN();
+	ConstBuffer buff(packetData, packetSize);
+
+	SER("CN_InventoryRearrange(%d, %d) :: {", Cl::CN_InventoryRearrange::NET_ID, packetSize);
+	SER("	invenTab=%u", buff.Read<u32>());
 	SER("}");
 
 	return str.data();
@@ -2615,7 +2819,6 @@ DEFAULT_SERIALIZE(Sv::SN_AchieveUpdate);
 DEFAULT_SERIALIZE(Sv::SN_FriendRequestList);
 DEFAULT_SERIALIZE(Sv::SN_BlockList);
 DEFAULT_SERIALIZE(Sv::SN_MailUnreadNotice);
-DEFAULT_SERIALIZE(Sv::SN_WarehouseItems);
 DEFAULT_SERIALIZE(Sv::SN_MutualFriendList);
 DEFAULT_SERIALIZE(Sv::SN_GuildMemberStatus);
 DEFAULT_SERIALIZE(Sv::SN_GamePlayerSyncByInt);

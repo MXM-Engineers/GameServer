@@ -526,6 +526,7 @@ struct GameXmlContent
 	{
 		SongID ID;
 		i32 length;
+		i32 coinCost;
 	};
 
 	struct Action

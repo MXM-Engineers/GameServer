@@ -70,6 +70,24 @@ enum class GroundItemUID: u32
 	INVALID = 0
 };
 
+enum class InvenType: u8
+{
+	INVENTORY = 0,
+	WAREHOUSE = 1
+};
+
+enum class AssetChangeReason: i32
+{
+	UNKNOWN = 0,
+	INITIALIZE = 1,
+	BUILDER_COMMAND = 2,
+	SHOP_BUY_ITEM = 7,
+	SHOP_SELL_ITEM = 8,
+	INVENTORY_EXPAND = 13,
+	MAIL_ATTACHMENT = 14,
+	PLAY_JUKEBOX = 45
+};
+
 enum class ClassType: i32
 {
 	NONE = -1,
@@ -176,6 +194,7 @@ enum class EChatType : i32
 enum class ErrorType: u32
 {
 	SUCCESS = 0,
+	INVENFULL = 14,
 	LOGIN_SUCCESS = 51,
 	LOGIN_DATABASE_FAILURE = 52,
 	LOGIN_NOT_REGISTERED = 57,
@@ -185,12 +204,20 @@ enum class ErrorType: u32
 	AUTH_NOT_LOGIN = 93,
 	AUTH_WRONG_KEY = 95,
 	AUTH_WRONG_CONNECTION = 96,
+	INVENTORY_EXPAND_ALREADY_FULL = 121,
+	INVENTORY_EXPAND_NOT_ENOUGH_RON = 124,
+	INVENTORY_EXPAND_UNKNOWN = 125,
 	NICKNAME_USES_INVALID_FORMAT = 369,
 	NICKNAME_OVERLAP = 371,
 	NICKNAME_SYSTEM_ERROR = 375,
 	STATUS_MESSAGE_TOO_LONG = 378,
 	STATUS_MESSAGE_TOO_OFTEN = 379,
 	SET_LEADER_INVALID = 380,
+	INVENTORY_NOT_FOUND = 384,
+	JUKEBOX_NOT_IN_TOWN = 607,
+	JUKEBOX_ALREADY_ENQUEUED = 608,
+	JUKEBOX_QUEUE_FULL = 609,
+	JUKEBOX_NOT_ENOUGH_COIN = 610,
 	WHISPER_SEND_NOT_FOUND = 0x126,
 };
 
@@ -1144,7 +1171,7 @@ PUSH_PACKED
 struct CQ_ItemDelete
 {
 	enum { NET_ID = 60031 };
-	u32 itemId; // 4 bytes
+	ItemUID itemUID; // 4 bytes
 	u32 count; // 4 bytes
 };
 POP_PACKED
@@ -1600,20 +1627,19 @@ PUSH_PACKED
 struct CQ_InventoryExpand
 {
 	enum { NET_ID = 60105 };
-	u32 field1_id_id; // 4 bytes
+	u32 invenTab; // 4 bytes
 };
 POP_PACKED
 ASSERT_SIZE(CQ_InventoryExpand, 4);
 
 PUSH_PACKED
-struct CQ_InventoryRearrange
+struct CN_InventoryRearrange
 {
 	enum { NET_ID = 60106 };
-	u32 roomTypeOrStageId; // 4 bytes
-	u32 option; // 4 bytes
+	u32 invenTab; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_InventoryRearrange, 8);
+ASSERT_SIZE(CN_InventoryRearrange, 4);
 
 PUSH_PACKED
 struct CN_UNKNOWN_60107
@@ -2608,17 +2634,17 @@ POP_PACKED
 ASSERT_SIZE(CN_UNKNOWN_60206, 52);
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60207
+struct CQ_WarehouseItemChange
 {
 	enum { NET_ID = 60207 };
-	u32 itemId; // 4 bytes
-	u32 destSlot; // 4 bytes
-	u32 srcSlot; // 4 bytes
-	u32 slotExtra; // 4 bytes
-	u32 itemCount; // 4 bytes
+	ItemUID itemUID; // 4 bytes
+	i32 srcInvenType; // 4 bytes
+	i32 dstInvenType; // 4 bytes
+	u32 dstSlot; // 4 bytes
+	i32 count; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60207, 20);
+ASSERT_SIZE(CQ_WarehouseItemChange, 20);
 
 PUSH_PACKED
 // NOTE: old-version ID mapping called this CQ_RewardSelectSlot, but that packet is
@@ -2771,13 +2797,13 @@ struct CQ_RequestMissionList
 POP_PACKED
 
 PUSH_PACKED
-struct CQ_WarehouseItemDelete
+struct CQ_UNKNOWN_60226
 {
 	enum { NET_ID = 60226 };
-	u32 amount_u32; // 4 bytes
+	u32 value_u32; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_WarehouseItemDelete, 4);
+ASSERT_SIZE(CQ_UNKNOWN_60226, 4);
 
 PUSH_PACKED
 struct CQ_UNKNOWN_60227
@@ -2808,14 +2834,14 @@ ASSERT_SIZE(CQ_PvpDetailRecord, 5);
 
 
 PUSH_PACKED
-struct CQ_UNKNOWN_60230
+struct CQ_WarehouseItemDelete
 {
 	enum { NET_ID = 60230 };
-	u32 slot_id_u32; // 4 bytes
-	u32 flag_u32; // 4 bytes
+	ItemUID itemUID; // 4 bytes
+	u32 count; // 4 bytes
 };
 POP_PACKED
-ASSERT_SIZE(CQ_UNKNOWN_60230, 8);
+ASSERT_SIZE(CQ_WarehouseItemDelete, 8);
 
 PUSH_PACKED
 struct CN_RewardStageReady

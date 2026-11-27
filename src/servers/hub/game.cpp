@@ -6,6 +6,7 @@
 #include <EAStdC/EAString.h>
 #include <common/utils.h>
 #include <time.h>
+#include <EASTL/sort.h>
 
 static const ClassType DEFAULT_LEADER_CLASS = ClassType::LAUNCHER;
 
@@ -35,7 +36,7 @@ void HubGame::Update(Time localTime_)
 	replication.FrameEnd();
 }
 
-bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
+ErrorType HubGame::JukeboxQueueSong(i32 userID, SongID songID)
 {
 	ASSERT(playerAccountData[userID]);
 	const ClientHandle clientHd = playerMap[userID]->clientHd;
@@ -43,21 +44,16 @@ bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
 	WorldHub::ActorJukebox& jukebox = world.jukebox;
 	ASSERT(jukebox.UID != ActorUID::INVALID);
 
-	if(jukebox.queue.full()) {
-		// TODO: send *actual* packet answer
-		SendDbgMsg(clientHd, L"Jukebox queue is full");
-		return false;
+	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
+	if(!xmlSong) {
+		WARN("[client%x] HubGame :: jukebox song %d is unknown", (u32)clientHd, (i32)songID);
+		return ErrorType::JUKEBOX_NOT_IN_TOWN;
 	}
 
-	// limit reservation to 1 per player
-	// @Speed
-	// TODO: store the accountID (when we have it)
+	if(jukebox.queue.full()) return ErrorType::JUKEBOX_QUEUE_FULL;
+
 	const WideString& nick = playerAccountData[userID]->nickname;
-	bool found = false;
-	if(jukebox.currentSong.requesterNick.compare(nick) == 0) {
-		found = true;
-	}
-
+	bool found = jukebox.currentSong.requesterNick.compare(nick) == 0;
 	if(!found) {
 		foreach(it, jukebox.queue) {
 			if(it->requesterNick.compare(nick) == 0) {
@@ -66,24 +62,26 @@ bool HubGame::JukeboxQueueSong(i32 userID, SongID songID)
 			}
 		}
 	}
-
-	if(found) {
-		SendDbgMsg(clientHd, L"Song reservation is limited to 1 per player");
-		return false;
-	}
-
-	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
-	if(!xmlSong) {
-		SendDbgMsg(clientHd, LFMT(L"ERROR: Jukebox song not found (%d)", songID));
-		return false;
-	}
+	if(found) return ErrorType::JUKEBOX_ALREADY_ENQUEUED;
 
 	WorldHub::ActorJukebox::Song song;
-	song.requesterNick = playerAccountData[userID]->nickname;
+	song.requesterNick = nick;
 	song.songID = songID;
 	song.lengthInSec = xmlSong->length;
 	jukebox.queue.push_back(song);
-	return true;
+	return ErrorType::SUCCESS;
+}
+
+void HubGame::DevJukeboxQueueSong(i32 userID, SongID songID)
+{
+	const ClientHandle clientHd = playerMap[userID]->clientHd;
+	const ErrorType result = JukeboxQueueSong(userID, songID);
+	switch(result) {
+		case ErrorType::SUCCESS: break;
+		case ErrorType::JUKEBOX_QUEUE_FULL: SendDbgMsg(clientHd, L"Jukebox queue is full"); break;
+		case ErrorType::JUKEBOX_ALREADY_ENQUEUED: SendDbgMsg(clientHd, L"Song reservation is limited to 1 per player"); break;
+		default: SendDbgMsg(clientHd, LFMT(L"ERROR: Jukebox song not found (%d)", songID)); break;
+	}
 }
 
 bool HubGame::LoadMap()
@@ -358,6 +356,195 @@ void HubGame::OnPlayerCommunityStatusMessage(ClientHandle clientHd, const wchar*
 	replication.SendCommunityStatusMessage(clientHd, account->nickname.data(), account->profile.statusMessage.data(), (i32)account->profile.statusMessage.size());
 }
 
+static ProfileItem RemovedNotice(const ProfileItem& item)
+{
+	ProfileItem notice = item;
+	notice.count = 0;
+	return notice;
+}
+
+void HubGame::OnPlayerItemDelete(ClientHandle clientHd, InvenType invenType, ItemUID uid, u32 count)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+	PlayerProfile& profile = account->profile;
+
+	const ProfileItem* item = profile.FindItem(uid);
+	ItemCheck check = ItemCheck::OK;
+	if(!item || item->invenType != invenType) check = ItemCheck::NOT_FOUND;
+	else if(count > (u32)INT32_MAX) check = ItemCheck::BAD_COUNT;
+	else check = profile.CheckRemoveItem(uid, (i32)count);
+	if(check != ItemCheck::OK) {
+		WARN("[client%x] HubGame :: item delete refused (account=%u invenType=%d uid=0x%08x count=%u check=%d)", (u32)clientHd, (u32)account->UID, (i32)invenType, (u32)uid, count, (i32)check);
+		replication.SendItemDeleteResult(clientHd, invenType, ErrorType::INVENTORY_NOT_FOUND);
+		return;
+	}
+
+	const ProfileItem before = *profile.FindItem(uid);
+	profile.RemoveItem(uid, (i32)count);
+	const ProfileItem* left = profile.FindItem(uid);
+	const ProfileItem notice = left ? *left : RemovedNotice(before);
+	LOG("[client%x] HubGame :: item deleted (account=%u uid=0x%08x doc=%u count=%u left=%d)", (u32)clientHd, (u32)account->UID, (u32)uid, (u32)before.docIndex, count, notice.count);
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		LedgerNote note;
+		note.reason = AssetChangeReason::UNKNOWN;
+		note.docIndex = before.docIndex;
+		note.quantity = (i32)count;
+		note.at = (i64)time(nullptr);
+		GetGameStore().QueueWrite("RemoveItem", [accountUID, uid, count, note](GameStoreBackend& b) {
+			return b.RemoveItem(accountUID, uid, (i32)count, note);
+		});
+	}
+
+	replication.SendItemDeleteResult(clientHd, invenType, ErrorType::SUCCESS);
+	replication.SendItemNotices(clientHd, &notice, 1);
+}
+
+void HubGame::OnPlayerWarehouseItemChange(ClientHandle clientHd, ItemUID uid, i32 srcInvenType, i32 dstInvenType, u32 dstSlot, i32 count)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+	PlayerProfile& profile = account->profile;
+
+	const ProfileItem* item = profile.FindItem(uid);
+	const bool knownTypes = (srcInvenType == (i32)InvenType::INVENTORY || srcInvenType == (i32)InvenType::WAREHOUSE) &&
+		(dstInvenType == (i32)InvenType::INVENTORY || dstInvenType == (i32)InvenType::WAREHOUSE);
+
+	if(knownTypes && dstInvenType == (i32)InvenType::INVENTORY && dstSlot == 0) {
+		WARN("[client%x] HubGame :: item move refused (account=%u uid=0x%08x): the TO_INVENTORY button needs the item's tab, later work", (u32)clientHd, (u32)account->UID, (u32)uid);
+		replication.SendWarehouseItemChangeResult(clientHd, uid, srcInvenType, dstInvenType, dstSlot, ErrorType::INVENFULL);
+		return;
+	}
+
+	InvenType invenType = (InvenType)dstInvenType;
+	i32 slot = (i32)dstSlot;
+	ItemCheck check = ItemCheck::OK;
+	if(!item || !knownTypes || (i32)item->invenType != srcInvenType) check = ItemCheck::NOT_FOUND;
+	else if(count <= 0 || count > item->count) check = ItemCheck::BAD_COUNT;
+	else if(invenType == InvenType::WAREHOUSE && dstSlot == 0xFFFFFFFF) {
+		if(!profile.FindFreeSlot(CONTAINER_WAREHOUSE, &invenType, &slot)) check = ItemCheck::NO_FREE_SLOT;
+	}
+	else if(dstSlot > (u32)INT32_MAX) check = ItemCheck::BAD_SLOT;
+	if(check == ItemCheck::OK) check = profile.CheckMoveItem(uid, invenType, slot);
+
+	const bool split = check == ItemCheck::OK && count < item->count;
+	ProfileItem splitItem;
+	if(split) {
+		splitItem = *item;
+		splitItem.uid = GetGameStore().AllocateItemUID();
+		splitItem.invenType = invenType;
+		splitItem.slot = slot;
+		splitItem.count = count;
+		check = profile.CheckAddItem(splitItem);
+	}
+
+	if(check != ItemCheck::OK) {
+		WARN("[client%x] HubGame :: item move refused (account=%u uid=0x%08x src=%d dst=%d dstSlot=%u count=%d check=%d)", (u32)clientHd, (u32)account->UID, (u32)uid, srcInvenType, dstInvenType, dstSlot, count, (i32)check);
+		const ErrorType error = check == ItemCheck::NOT_FOUND ? ErrorType::INVENTORY_NOT_FOUND : ErrorType::INVENFULL;
+		replication.SendWarehouseItemChangeResult(clientHd, uid, srcInvenType, dstInvenType, dstSlot, error);
+		return;
+	}
+
+	const ProfileItem before = *item;
+	LedgerNote note;
+	note.reason = AssetChangeReason::UNKNOWN;
+	note.docIndex = before.docIndex;
+	note.quantity = count;
+	note.at = (i64)time(nullptr);
+	const AccountUID accountUID = account->UID;
+
+	eastl::fixed_vector<ProfileItem,2,false> notices;
+	if(split) {
+		profile.RemoveItem(uid, count);
+		profile.AddItem(splitItem);
+		notices.push_back(*profile.FindItem(uid));
+		notices.push_back(splitItem);
+		LOG("[client%x] HubGame :: item split (account=%u uid=0x%08x doc=%u %d slot %d -> %d slot %d, new uid=0x%08x count=%d left=%d)", (u32)clientHd, (u32)account->UID, (u32)uid, (u32)before.docIndex, srcInvenType, before.slot, (i32)invenType, slot, (u32)splitItem.uid, count, notices[0].count);
+
+		if(account->profileStored) {
+			GetGameStore().QueueWrite("SplitItem", [accountUID, uid, count, splitItem, note](GameStoreBackend& b) {
+				return b.RemoveItem(accountUID, uid, count, note) && b.AddItem(accountUID, splitItem, note);
+			});
+		}
+	}
+	else {
+		profile.MoveItem(uid, invenType, slot);
+		if(before.invenType != invenType) notices.push_back(RemovedNotice(before));
+		notices.push_back(*profile.FindItem(uid));
+		LOG("[client%x] HubGame :: item moved (account=%u uid=0x%08x doc=%u %d slot %d -> %d slot %d)", (u32)clientHd, (u32)account->UID, (u32)uid, (u32)before.docIndex, srcInvenType, before.slot, (i32)invenType, slot);
+
+		if(account->profileStored) {
+			GetGameStore().QueueWrite("MoveItem", [accountUID, uid, invenType, slot, note](GameStoreBackend& b) {
+				return b.MoveItem(accountUID, uid, invenType, slot, note);
+			});
+		}
+	}
+
+	replication.SendWarehouseItemChangeResult(clientHd, uid, srcInvenType, (i32)invenType, (u32)slot, ErrorType::SUCCESS);
+	replication.SendItemNotices(clientHd, notices.data(), (i32)notices.size());
+}
+
+void HubGame::OnPlayerInventoryExpand(ClientHandle clientHd, u32 invenTab)
+{
+	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+	PlayerProfile& profile = account->profile;
+
+	if(invenTab < 1 || invenTab > INVENTORY_TABS) {
+		WARN("[client%x] HubGame :: inventory expand refused (account=%u invenTab=%u is not a tab)", (u32)clientHd, (u32)account->UID, invenTab);
+		replication.SendInventoryExpandResult(clientHd, ErrorType::INVENTORY_EXPAND_UNKNOWN, invenTab, 0);
+		return;
+	}
+
+	const i32 container = (i32)invenTab - 1;
+	const i32 lines = profile.lines[container];
+	if(lines >= ContainerMaxLines(container)) {
+		WARN("[client%x] HubGame :: inventory expand refused (account=%u invenTab=%u lines=%d is full)", (u32)clientHd, (u32)account->UID, invenTab, lines);
+		replication.SendInventoryExpandResult(clientHd, ErrorType::INVENTORY_EXPAND_ALREADY_FULL, invenTab, lines);
+		return;
+	}
+
+	const eastl::fixed_vector<i32,16>& prices = Config().servicePriceInvenUnlockGold;
+	const i32 step = eastl::max(lines - Config().serviceRuleDefaultLineCount[container] + 1, 1);
+	if(step > (i32)prices.size()) {
+		WARN("[client%x] HubGame :: inventory expand refused (account=%u invenTab=%u lines=%d step=%d is a CCoin step, not built)", (u32)clientHd, (u32)account->UID, invenTab, lines, step);
+		replication.SendInventoryExpandResult(clientHd, ErrorType::INVENTORY_EXPAND_UNKNOWN, invenTab, lines);
+		return;
+	}
+
+	const i64 price = prices[step - 1];
+	if(!profile.CanSpend(Currency::GOLD, price)) {
+		WARN("[client%x] HubGame :: inventory expand refused (account=%u invenTab=%u step=%d price=%lld gold=%lld)", (u32)clientHd, (u32)account->UID, invenTab, step, (long long)price, (long long)profile.gold);
+		replication.SendInventoryExpandResult(clientHd, ErrorType::INVENTORY_EXPAND_NOT_ENOUGH_RON, invenTab, lines);
+		return;
+	}
+
+	profile.Spend(Currency::GOLD, price);
+	const i32 newLines = lines + 1;
+	profile.lines[container] = newLines;
+	LOG("[client%x] HubGame :: inventory expanded (account=%u invenTab=%u lines=%d step=%d price=%lld gold=%lld)", (u32)clientHd, (u32)account->UID, invenTab, newLines, step, (long long)price, (long long)profile.gold);
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		LedgerNote note;
+		note.reason = AssetChangeReason::INVENTORY_EXPAND;
+		note.docIndex = (ItemDocIndex)0;
+		note.quantity = 1;
+		note.at = (i64)time(nullptr);
+		GetGameStore().QueueWrite("InventoryExpand", [accountUID, price, note, container, newLines](GameStoreBackend& b) {
+			return b.SpendCurrency(accountUID, Currency::GOLD, price, note) && b.SetInventoryLines(accountUID, container, newLines);
+		});
+	}
+
+	replication.SendInventoryExpandResult(clientHd, ErrorType::SUCCESS, invenTab, newLines);
+	replication.SendMoney(clientHd, profile.gold, AssetChangeReason::INVENTORY_EXPAND);
+}
+
 void HubGame::SpawnLeader(ClientHandle clientHd, ClassType classType, SkinIndex skinIndex)
 {
 	const i32 userID = plidMap->Get(clientHd);
@@ -414,8 +601,80 @@ void HubGame::OnPlayerSyncActionState(ClientHandle clientHd, ActorUID actorUID, 
 void HubGame::OnPlayerJukeboxQueueSong(ClientHandle clientHd, SongID songID)
 {
 	const i32 userID = plidMap->Get(clientHd);
+	Account* account = playerAccountData[userID];
+	ASSERT(account);
+	PlayerProfile& profile = account->profile;
 
-	JukeboxQueueSong(userID, songID);
+	const GameXmlContent::Song* xmlSong = GetGameXmlContent().FindJukeboxSongByID(songID);
+	if(!xmlSong) {
+		WARN("[client%x] HubGame :: jukebox song refused (account=%u song=%d is unknown)", (u32)clientHd, (u32)account->UID, (i32)songID);
+		replication.SendJukeboxEnqueueResult(clientHd, ErrorType::JUKEBOX_NOT_IN_TOWN);
+		return;
+	}
+
+	const ItemDocIndex coinIndex = (ItemDocIndex)Config().FixedDataJukeboxCoinIndex;
+	eastl::fixed_vector<const ProfileItem*,32,true> stacks;
+	i32 owned = 0;
+	foreach_const(it, profile.items) {
+		if(it->invenType != InvenType::INVENTORY || it->docIndex != coinIndex) continue;
+		stacks.push_back(&*it);
+		owned += it->count;
+	}
+	eastl::sort(stacks.begin(), stacks.end(), [](const ProfileItem* a, const ProfileItem* b) { return a->slot < b->slot; });
+
+	if(owned < xmlSong->coinCost) {
+		WARN("[client%x] HubGame :: jukebox song refused (account=%u song=%d cost=%d coins=%d)", (u32)clientHd, (u32)account->UID, (i32)songID, xmlSong->coinCost, owned);
+		replication.SendJukeboxEnqueueResult(clientHd, ErrorType::JUKEBOX_NOT_ENOUGH_COIN);
+		return;
+	}
+
+	const ErrorType result = JukeboxQueueSong(userID, songID);
+	if(result != ErrorType::SUCCESS) {
+		WARN("[client%x] HubGame :: jukebox song refused (account=%u song=%d result=%u)", (u32)clientHd, (u32)account->UID, (i32)songID, (u32)result);
+		replication.SendJukeboxEnqueueResult(clientHd, result);
+		return;
+	}
+
+	eastl::fixed_vector<ProfileItem,8,true> notices;
+	eastl::fixed_vector<i32,8,true> taken;
+	i32 remaining = xmlSong->coinCost;
+	foreach_const(it, stacks) {
+		if(remaining == 0) break;
+		const i32 take = eastl::min((*it)->count, remaining);
+		notices.push_back(**it);
+		notices.back().count -= take;
+		taken.push_back(take);
+		remaining -= take;
+	}
+	ASSERT(remaining == 0);
+
+	for(i32 i = 0; i < (i32)notices.size(); i++) {
+		profile.RemoveItem(notices[i].uid, taken[i]);
+	}
+	LOG("[client%x] HubGame :: jukebox song queued (account=%u song=%d coins=%d left=%d)", (u32)clientHd, (u32)account->UID, (i32)songID, xmlSong->coinCost, owned - xmlSong->coinCost);
+
+	if(account->profileStored) {
+		const AccountUID accountUID = account->UID;
+		const i64 now = (i64)time(nullptr);
+		eastl::vector<eastl::pair<ItemUID,i32>> removals;
+		for(i32 i = 0; i < (i32)notices.size(); i++) {
+			removals.push_back(eastl::make_pair(notices[i].uid, taken[i]));
+		}
+		GetGameStore().QueueWrite("PlayJukebox", [accountUID, coinIndex, removals, now](GameStoreBackend& b) {
+			foreach_const(it, removals) {
+				LedgerNote note;
+				note.reason = AssetChangeReason::PLAY_JUKEBOX;
+				note.docIndex = coinIndex;
+				note.quantity = it->second;
+				note.at = now;
+				if(!b.RemoveItem(accountUID, it->first, it->second, note)) return false;
+			}
+			return true;
+		});
+	}
+
+	replication.SendJukeboxEnqueueResult(clientHd, ErrorType::SUCCESS);
+	replication.SendItemNotices(clientHd, notices.data(), (i32)notices.size());
 }
 
 void HubGame::OnPlayerReadyToLoad(ClientHandle clientHd)
@@ -729,27 +988,27 @@ bool HubGame::ParseChatCommand(ClientHandle clientHd, const wchar* msg, const i3
 		}
 
 		if(EA::StdC::Strncmp(msg, L"upsidedown", 10) == 0) {
-			JukeboxQueueSong(userID, SongID::UpsideDown);
+			DevJukeboxQueueSong(userID, SongID::UpsideDown);
 			return true;
 		}
 		
 		if(EA::StdC::Strncmp(msg, L"scml", 4) == 0) {
-			JukeboxQueueSong(userID, SongID::Scml);
+			DevJukeboxQueueSong(userID, SongID::Scml);
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"poharan", 7) == 0) {
-			JukeboxQueueSong(userID, SongID::Poharan);
+			DevJukeboxQueueSong(userID, SongID::Poharan);
 			return true;
 		}
 
 		if(EA::StdC::Strncmp(msg, L"triangle", 8) == 0) {
-			JukeboxQueueSong(userID, SongID::Triangle);
+			DevJukeboxQueueSong(userID, SongID::Triangle);
 			return true;
 		}
 		
 		if(EA::StdC::Strncmp(msg, L"arami", 5) == 0) {
-			JukeboxQueueSong(userID, SongID::Arami);
+			DevJukeboxQueueSong(userID, SongID::Arami);
 			return true;
 		}
 

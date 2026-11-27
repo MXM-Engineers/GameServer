@@ -146,6 +146,12 @@ void Statement::BindBlob(i32 index, const void* data, i32 size)
 	ASSERT(r == SQLITE_OK);
 }
 
+void Statement::BindDouble(i32 index, f64 value)
+{
+	const i32 r = sqlite3_bind_double(handle, index, value);
+	ASSERT(r == SQLITE_OK);
+}
+
 void Statement::BindNull(i32 index)
 {
 	const i32 r = sqlite3_bind_null(handle, index);
@@ -188,4 +194,9 @@ const u8* Statement::ColumnBlob(i32 column, i32* outSize)
 	const u8* data = (const u8*)sqlite3_column_blob(handle, column);
 	*outSize = sqlite3_column_bytes(handle, column);
 	return data;
+}
+
+f64 Statement::ColumnDouble(i32 column)
+{
+	return sqlite3_column_double(handle, column);
 }
